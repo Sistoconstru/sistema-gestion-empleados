@@ -1,0 +1,201 @@
+INFO 2025-07-15 09:07:07,359 autoreload 11760 15080 Watching for file changes with StatReloader
+INFO 2025-07-15 09:09:38,565 autoreload 26408 26448 Watching for file changes with StatReloader
+INFO 2025-07-15 09:10:20,871 autoreload 24224 2020 Watching for file changes with StatReloader
+INFO 2025-07-15 09:25:47,138 autoreload 22700 20456 Watching for file changes with StatReloader
+INFO 2025-07-15 09:28:47,914 autoreload 22700 20456 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-15 09:28:48,538 autoreload 17508 7516 Watching for file changes with StatReloader
+INFO 2025-07-15 09:28:53,838 basehttp 17508 14260 "GET / HTTP/1.1" 302 0
+ERROR 2025-07-15 09:28:53,976 log 17508 14260 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:28:53,979 basehttp 17508 14260 "GET /dashboard/ HTTP/1.1" 500 87147
+ERROR 2025-07-15 09:29:54,965 log 17508 14260 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:29:54,967 basehttp 17508 14260 "GET /dashboard/ HTTP/1.1" 500 87284
+INFO 2025-07-15 09:32:45,885 basehttp 17508 14260 "GET /admin HTTP/1.1" 301 0
+INFO 2025-07-15 09:32:45,899 basehttp 17508 26520 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-07-15 09:32:46,049 basehttp 17508 26520 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4252
+INFO 2025-07-15 09:32:46,189 basehttp 17508 26520 "GET /static/admin/css/base.css HTTP/1.1" 200 22154
+INFO 2025-07-15 09:32:46,215 basehttp 17508 25016 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-07-15 09:32:46,217 basehttp 17508 8820 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-07-15 09:32:46,217 basehttp 17508 25460 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-07-15 09:32:46,219 basehttp 17508 21624 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16632
+INFO 2025-07-15 09:32:46,227 basehttp 17508 4576 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-07-15 09:32:46,242 basehttp 17508 21624 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-07-15 09:33:04,751 basehttp 17508 21624 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-07-15 09:33:04,795 basehttp 17508 21624 "GET /admin/ HTTP/1.1" 200 5621
+INFO 2025-07-15 09:33:04,839 basehttp 17508 21624 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-07-15 09:33:04,879 basehttp 17508 4576 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-07-15 09:33:04,879 basehttp 17508 21624 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-07-15 09:36:26,185 basehttp 17508 21624 "GET /admin/auth/group/ HTTP/1.1" 200 7389
+INFO 2025-07-15 09:36:26,242 basehttp 17508 21624 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-07-15 09:36:26,246 basehttp 17508 8820 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-07-15 09:36:26,256 basehttp 17508 25016 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-07-15 09:36:26,256 basehttp 17508 26520 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-07-15 09:36:26,269 basehttp 17508 8820 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-07-15 09:36:26,278 basehttp 17508 21624 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-07-15 09:36:26,281 basehttp 17508 25016 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-07-15 09:36:26,296 basehttp 17508 8820 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-07-15 09:36:26,301 basehttp 17508 25460 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-07-15 09:36:26,364 basehttp 17508 4576 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:36:26,386 basehttp 17508 4576 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-07-15 09:36:26,412 basehttp 17508 26520 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-07-15 09:36:26,443 basehttp 17508 26520 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-07-15 09:36:38,491 basehttp 17508 26520 "GET /admin/ HTTP/1.1" 200 5621
+INFO 2025-07-15 09:37:03,437 basehttp 17508 26520 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:37:12,054 basehttp 17508 26520 "GET /admin/auth/group/ HTTP/1.1" 200 7389
+INFO 2025-07-15 09:37:12,093 basehttp 17508 26520 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:37:21,279 basehttp 17508 26520 "GET /admin/auth/group/add/ HTTP/1.1" 200 35401
+INFO 2025-07-15 09:37:21,327 basehttp 17508 26520 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-07-15 09:37:21,335 basehttp 17508 8820 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-07-15 09:37:21,341 basehttp 17508 4576 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-07-15 09:37:21,341 basehttp 17508 25460 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15709
+INFO 2025-07-15 09:37:21,354 basehttp 17508 25460 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-07-15 09:37:21,382 basehttp 17508 25016 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:37:21,395 basehttp 17508 25460 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-07-15 09:37:21,474 basehttp 17508 25460 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+INFO 2025-07-15 09:39:56,654 basehttp 17508 25460 "GET /admin/auth/group/ HTTP/1.1" 200 7389
+INFO 2025-07-15 09:40:09,515 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:40:12,879 basehttp 17508 25460 "GET /admin/ HTTP/1.1" 200 5621
+INFO 2025-07-15 09:40:46,695 basehttp 17508 25460 "GET /admin/auth/group/add/ HTTP/1.1" 200 35401
+INFO 2025-07-15 09:40:46,737 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:41:08,839 basehttp 17508 25460 "POST /admin/auth/group/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 09:41:08,884 basehttp 17508 25460 "GET /admin/auth/group/ HTTP/1.1" 200 8899
+INFO 2025-07-15 09:41:08,916 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:41:08,952 basehttp 17508 25460 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-07-15 09:41:17,640 basehttp 17508 25460 "GET /admin/auth/group/1/change/ HTTP/1.1" 200 38132
+INFO 2025-07-15 09:41:17,682 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:41:25,410 basehttp 17508 25460 "GET /admin/auth/group/ HTTP/1.1" 200 8703
+INFO 2025-07-15 09:41:34,089 basehttp 17508 25460 "GET /admin/auth/group/ HTTP/1.1" 200 8703
+INFO 2025-07-15 09:41:34,128 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:41:47,917 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:41:53,582 basehttp 17508 25460 "GET /admin/ HTTP/1.1" 200 5992
+INFO 2025-07-15 09:42:02,011 basehttp 17508 25460 "GET /admin/auth/group/1/change/ HTTP/1.1" 200 38132
+INFO 2025-07-15 09:42:02,042 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:42:11,833 basehttp 17508 25460 "GET /admin/ HTTP/1.1" 200 5992
+INFO 2025-07-15 09:42:19,780 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:42:42,049 basehttp 17508 25460 "GET /admin/auth/group/ HTTP/1.1" 200 8703
+INFO 2025-07-15 09:42:42,086 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:42:44,148 basehttp 17508 25460 "GET /admin/auth/group/1/change/ HTTP/1.1" 200 38132
+INFO 2025-07-15 09:42:44,184 basehttp 17508 25460 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 09:43:40,502 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:43:50,647 basehttp 17508 25460 "GET / HTTP/1.1" 302 0
+ERROR 2025-07-15 09:43:50,674 log 17508 25460 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:43:50,677 basehttp 17508 25460 "GET /dashboard/ HTTP/1.1" 500 88075
+INFO 2025-07-15 09:44:16,291 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+WARNING 2025-07-15 09:44:32,229 log 17508 25460 Not Found: /admin/dashboard
+WARNING 2025-07-15 09:44:32,230 basehttp 17508 25460 "GET /admin/dashboard HTTP/1.1" 404 5173
+INFO 2025-07-15 09:44:37,760 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:44:44,264 basehttp 17508 25460 "GET / HTTP/1.1" 302 0
+ERROR 2025-07-15 09:44:44,325 log 17508 25460 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:44:44,327 basehttp 17508 25460 "GET /dashboard/ HTTP/1.1" 500 88075
+WARNING 2025-07-15 09:45:05,566 log 17508 25460 Not Found: /admin/dashboard/
+WARNING 2025-07-15 09:45:05,567 basehttp 17508 25460 "GET /admin/dashboard/ HTTP/1.1" 404 5176
+INFO 2025-07-15 09:45:11,236 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 09:47:57,280 basehttp 17508 25460 "GET / HTTP/1.1" 302 0
+ERROR 2025-07-15 09:47:57,345 log 17508 25460 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:47:57,346 basehttp 17508 25460 "GET /dashboard/ HTTP/1.1" 500 87913
+ERROR 2025-07-15 09:48:02,487 log 17508 25460 Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: core/dashboard.html
+ERROR 2025-07-15 09:48:02,489 basehttp 17508 25460 "GET /dashboard/ HTTP/1.1" 500 88050
+INFO 2025-07-15 09:48:41,316 basehttp 17508 25460 "GET /admin/auth/ HTTP/1.1" 200 5636
+INFO 2025-07-15 11:17:00,926 autoreload 13400 16176 Watching for file changes with StatReloader
+INFO 2025-07-15 11:17:06,709 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:17:59,232 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:18:03,686 basehttp 13400 18236 "GET /reconocimientos/ HTTP/1.1" 200 0
+INFO 2025-07-15 11:18:31,823 basehttp 13400 18236 "GET /admin/ HTTP/1.1" 200 5992
+INFO 2025-07-15 11:18:53,175 basehttp 13400 18236 "GET /notificaciones/ HTTP/1.1" 200 0
+INFO 2025-07-15 11:19:20,035 basehttp 13400 18236 "GET / HTTP/1.1" 302 0
+INFO 2025-07-15 11:19:20,044 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:19:25,695 basehttp 13400 18236 "GET / HTTP/1.1" 302 0
+INFO 2025-07-15 11:19:25,714 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:19:39,861 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:19:42,082 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 11:19:51,095 basehttp 13400 18236 "GET / HTTP/1.1" 302 0
+INFO 2025-07-15 11:19:51,109 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927

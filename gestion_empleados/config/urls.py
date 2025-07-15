@@ -15,8 +15,31 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/dashboard/', permanent=False)),
+    path('auth/', include('apps.authentication.urls')),
+    path('dashboard/', include('apps.core.urls')),
+    path('empleados/', include('apps.employees.urls')),
+    path('organizacional/', include('apps.organizational.urls')),
+    path('documentos/', include('apps.documents.urls')),
+    path('capacitaciones/', include('apps.training.urls')),
+    path('evaluaciones/', include('apps.evaluations.urls')),
+    path('encuestas/', include('apps.surveys.urls')),
+    path('reconocimientos/', include('apps.recognition.urls')),
+    path('notificaciones/', include('apps.notifications.urls')),
+    path('reportes/', include('apps.reports.urls')),
+    
+    # API URLs
+    path('api/v1/', include('config.api_urls')),
 ]
+
+# Servir archivos media en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
