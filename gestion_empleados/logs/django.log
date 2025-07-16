@@ -199,3 +199,1058 @@ INFO 2025-07-15 11:19:39,861 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200
 INFO 2025-07-15 11:19:42,082 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
 INFO 2025-07-15 11:19:51,095 basehttp 13400 18236 "GET / HTTP/1.1" 302 0
 INFO 2025-07-15 11:19:51,109 basehttp 13400 18236 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 12:24:36,208 autoreload 23588 26256 Watching for file changes with StatReloader
+INFO 2025-07-15 12:24:46,987 basehttp 23588 4484 "GET /empleados/ HTTP/1.1" 200 0
+INFO 2025-07-15 12:25:03,172 basehttp 23588 4484 "GET /capacitaciones/ HTTP/1.1" 200 0
+INFO 2025-07-15 12:25:10,570 basehttp 23588 4484 "GET /reconocimientos/ HTTP/1.1" 200 0
+INFO 2025-07-15 12:25:49,367 basehttp 23588 4484 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 12:25:52,132 basehttp 23588 4484 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 12:38:39,671 autoreload 23588 26256 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\authentication\admin.py changed, reloading.
+INFO 2025-07-15 12:38:40,395 autoreload 5000 26432 Watching for file changes with StatReloader
+INFO 2025-07-15 12:39:21,754 autoreload 5000 26432 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\core\admin.py changed, reloading.
+INFO 2025-07-15 12:39:22,505 autoreload 1812 21520 Watching for file changes with StatReloader
+INFO 2025-07-15 12:51:11,297 autoreload 18904 18512 Watching for file changes with StatReloader
+INFO 2025-07-15 12:54:48,256 autoreload 18904 18512 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\core\admin.py changed, reloading.
+INFO 2025-07-15 12:54:48,820 autoreload 19960 19872 Watching for file changes with StatReloader
+INFO 2025-07-15 12:58:36,503 autoreload 19960 19872 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\core\admin.py changed, reloading.
+INFO 2025-07-15 12:58:37,340 autoreload 24724 11124 Watching for file changes with StatReloader
+INFO 2025-07-15 12:59:07,047 basehttp 24724 8244 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 12:59:11,589 basehttp 24724 8244 "GET /empleados/ HTTP/1.1" 200 0
+INFO 2025-07-15 12:59:40,199 autoreload 20320 25952 Watching for file changes with StatReloader
+INFO 2025-07-15 12:59:53,548 basehttp 20320 17248 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 12:59:54,776 basehttp 20320 17248 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 13:00:34,921 basehttp 20320 17248 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 13:00:36,334 basehttp 20320 17248 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 13:00:47,844 basehttp 20320 17248 "GET /notificaciones/ HTTP/1.1" 200 0
+INFO 2025-07-15 13:00:57,419 basehttp 20320 17248 "GET /admin/ HTTP/1.1" 200 43301
+INFO 2025-07-15 13:00:57,459 basehttp 20320 17248 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,459 basehttp 20320 20144 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,463 basehttp 20320 17248 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,465 basehttp 20320 14032 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,466 basehttp 20320 20884 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,466 basehttp 20320 24008 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,530 basehttp 20320 24008 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,553 basehttp 20320 24008 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:00:57,553 basehttp 20320 20884 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:44,992 basehttp 20320 20884 "GET /admin/authentication/rol/ HTTP/1.1" 200 36309
+INFO 2025-07-15 13:02:45,024 basehttp 20320 20884 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,038 basehttp 20320 24008 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,039 basehttp 20320 20144 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,040 basehttp 20320 17248 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,040 basehttp 20320 14032 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,047 basehttp 20320 24008 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,048 basehttp 20320 17248 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,048 basehttp 20320 20144 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,048 basehttp 20320 18508 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,049 basehttp 20320 14032 "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,054 basehttp 20320 20884 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:02:45,092 basehttp 20320 20884 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,105 basehttp 20320 20884 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:02:45,200 basehttp 20320 14032 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-07-15 13:07:55,354 basehttp 20320 17540 "GET /admin/authentication/rol/add/ HTTP/1.1" 200 38395
+INFO 2025-07-15 13:07:55,395 basehttp 20320 17540 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:07:55,396 basehttp 20320 19304 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:07:55,429 basehttp 20320 19304 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:07:55,437 basehttp 20320 25720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:07:55,437 basehttp 20320 19304 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:09:28,739 basehttp 20320 19304 "POST /admin/authentication/rol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:09:28,765 basehttp 20320 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 39396
+INFO 2025-07-15 13:09:28,806 basehttp 20320 25720 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:09:28,808 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:09:28,870 basehttp 20320 19304 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-07-15 13:09:35,923 basehttp 20320 19304 "GET /admin/authentication/rol/add/ HTTP/1.1" 200 38395
+INFO 2025-07-15 13:09:35,957 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:04,304 basehttp 20320 19304 "POST /admin/authentication/rol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:10:04,330 basehttp 20320 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 39913
+INFO 2025-07-15 13:10:04,358 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:07,894 basehttp 20320 19304 "GET /admin/authentication/rol/add/ HTTP/1.1" 200 38395
+INFO 2025-07-15 13:10:07,930 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:21,571 basehttp 20320 19304 "POST /admin/authentication/rol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:10:21,602 basehttp 20320 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40419
+INFO 2025-07-15 13:10:21,642 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:28,542 basehttp 20320 19304 "GET /admin/authentication/rol/add/ HTTP/1.1" 200 38395
+INFO 2025-07-15 13:10:28,587 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:42,403 basehttp 20320 19304 "POST /admin/authentication/rol/add/ HTTP/1.1" 200 38651
+INFO 2025-07-15 13:10:42,432 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:10:57,509 basehttp 20320 19304 "POST /admin/authentication/rol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:10:57,534 basehttp 20320 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40943
+INFO 2025-07-15 13:10:57,562 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:11:09,075 basehttp 20320 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 36391
+INFO 2025-07-15 13:11:09,108 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:11:14,867 basehttp 20320 19304 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 40703
+INFO 2025-07-15 13:11:14,902 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:11:32,412 basehttp 20320 19304 "GET /admin/authentication/permiso/add/?_to_field=id&_popup=1 HTTP/1.1" 200 8369
+INFO 2025-07-15 13:11:32,448 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:11:51,440 basehttp 20320 19304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 36419
+INFO 2025-07-15 13:11:51,475 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:11:54,957 basehttp 20320 19304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39891
+INFO 2025-07-15 13:11:54,993 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:12:12,330 basehttp 20320 19304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39891
+INFO 2025-07-15 13:12:12,365 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:12:16,648 basehttp 20320 19304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39891
+INFO 2025-07-15 13:12:16,684 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:12:22,565 basehttp 20320 19304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 36214
+INFO 2025-07-15 13:12:22,604 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:12:39,773 basehttp 20320 19304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 37819
+INFO 2025-07-15 13:12:39,816 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:12:50,286 basehttp 20320 19304 "GET /admin/authentication/usuario/ HTTP/1.1" 200 40495
+INFO 2025-07-15 13:12:50,322 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:13:00,805 basehttp 20320 19304 "GET /admin/authentication/usuario/add/ HTTP/1.1" 200 42595
+INFO 2025-07-15 13:13:00,841 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:13:00,851 basehttp 20320 25720 "GET /static/admin/css/unusable_password_field.css HTTP/1.1" 200 663
+INFO 2025-07-15 13:13:00,864 basehttp 20320 19304 "GET /static/admin/js/unusable_password_field.js HTTP/1.1" 200 1480
+INFO 2025-07-15 13:14:57,003 basehttp 20320 19304 "POST /admin/authentication/usuario/add/ HTTP/1.1" 200 43170
+INFO 2025-07-15 13:14:57,041 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:15:49,515 basehttp 20320 19304 "POST /admin/authentication/usuario/add/ HTTP/1.1" 200 42939
+INFO 2025-07-15 13:15:49,551 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:17:20,364 basehttp 20320 19304 "POST /admin/authentication/usuario/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:17:20,462 basehttp 20320 19304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 75793
+INFO 2025-07-15 13:17:20,501 basehttp 20320 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:17:20,502 basehttp 20320 11116 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:17:20,503 basehttp 20320 17508 "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2025-07-15 13:17:20,521 basehttp 20320 25720 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-07-15 13:17:20,523 basehttp 20320 11304 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-07-15 13:17:20,634 basehttp 20320 17508 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2025-07-15 13:17:20,642 basehttp 20320 11304 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-07-15 13:17:20,642 basehttp 20320 25720 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+INFO 2025-07-15 13:19:18,016 basehttp 20320 25720 "POST /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:19:18,036 basehttp 20320 25720 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41487
+INFO 2025-07-15 13:19:18,076 basehttp 20320 25720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:19:18,085 basehttp 20320 11304 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-07-15 13:19:48,732 basehttp 20320 11304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 37819
+INFO 2025-07-15 13:19:48,767 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:20:23,463 basehttp 20320 11304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 37819
+INFO 2025-07-15 13:20:23,496 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:20:44,542 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 200 36468
+INFO 2025-07-15 13:20:44,579 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:20:53,285 basehttp 20320 11304 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:20:53,290 basehttp 20320 11304 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-15 13:21:03,462 basehttp 20320 11304 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-15 13:21:07,802 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:21:07,822 basehttp 20320 11304 "GET /admin/login/?next=/admin/employees/empleado/ HTTP/1.1" 200 4290
+INFO 2025-07-15 13:21:43,466 basehttp 20320 11304 "POST /admin/login/?next=/admin/employees/empleado/ HTTP/1.1" 200 4507
+INFO 2025-07-15 13:21:43,491 basehttp 20320 11304 "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2025-07-15 13:22:27,737 basehttp 20320 11304 "POST /admin/login/?next=/admin/employees/empleado/ HTTP/1.1" 200 4507
+INFO 2025-07-15 13:22:44,833 basehttp 20320 11304 "POST /admin/login/?next=/admin/employees/empleado/ HTTP/1.1" 200 4507
+INFO 2025-07-15 13:23:19,091 basehttp 20320 11304 "POST /admin/login/?next=/admin/employees/empleado/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:23:19,121 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 200 36468
+INFO 2025-07-15 13:23:19,152 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:23:35,654 basehttp 20320 11304 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41236
+INFO 2025-07-15 13:23:35,696 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:23:41,359 basehttp 20320 11304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 75499
+INFO 2025-07-15 13:23:41,398 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:24:10,592 basehttp 20320 11304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/password/ HTTP/1.1" 200 36838
+INFO 2025-07-15 13:24:37,872 basehttp 20320 11304 "POST /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/password/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:24:37,923 basehttp 20320 11304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 75646
+INFO 2025-07-15 13:24:37,960 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:24:48,268 basehttp 20320 11304 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:24:48,273 basehttp 20320 11304 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-15 13:24:53,507 basehttp 20320 11304 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-15 13:24:57,287 basehttp 20320 11304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:24:57,293 basehttp 20320 11304 "GET /admin/login/?next=/admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 4386
+INFO 2025-07-15 13:25:37,186 basehttp 20320 11304 "POST /admin/login/?next=/admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 4603
+INFO 2025-07-15 13:25:59,699 basehttp 20320 11304 "POST /admin/login/?next=/admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:25:59,748 basehttp 20320 11304 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/ HTTP/1.1" 200 75499
+INFO 2025-07-15 13:25:59,784 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:26:36,768 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 36419
+INFO 2025-07-15 13:26:36,802 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:26:41,565 basehttp 20320 11304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39891
+INFO 2025-07-15 13:26:41,604 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:27:18,685 basehttp 20320 11304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 36214
+INFO 2025-07-15 13:27:18,718 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:27:34,472 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 200 36468
+INFO 2025-07-15 13:27:34,504 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:27:37,558 basehttp 20320 11304 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 52537
+INFO 2025-07-15 13:27:37,587 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:27:37,605 basehttp 20320 11304 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-07-15 13:28:06,299 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 36493
+INFO 2025-07-15 13:28:06,341 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:28:09,580 basehttp 20320 11304 "GET /admin/employees/tipodocumento/add/ HTTP/1.1" 200 39683
+INFO 2025-07-15 13:28:09,615 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:28:55,831 basehttp 20320 11304 "POST /admin/employees/tipodocumento/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:28:55,849 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 39095
+INFO 2025-07-15 13:28:55,879 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:29:00,479 basehttp 20320 11304 "GET /admin/employees/tipodocumento/add/ HTTP/1.1" 200 39683
+INFO 2025-07-15 13:29:00,513 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:29:33,189 basehttp 20320 11304 "POST /admin/employees/tipodocumento/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:29:33,210 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 39657
+INFO 2025-07-15 13:29:33,246 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:29:49,643 basehttp 20320 11304 "GET /admin/employees/tipodocumento/add/ HTTP/1.1" 200 39683
+INFO 2025-07-15 13:29:49,680 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:30:25,981 basehttp 20320 11304 "POST /admin/employees/tipodocumento/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:30:25,999 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40225
+INFO 2025-07-15 13:30:26,036 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:30:45,842 basehttp 20320 11304 "GET /admin/employees/tipodocumento/3/change/ HTTP/1.1" 200 39937
+INFO 2025-07-15 13:30:45,882 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:30:57,208 basehttp 20320 11304 "POST /admin/employees/tipodocumento/3/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:30:57,232 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40223
+INFO 2025-07-15 13:30:57,264 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:31:40,138 basehttp 20320 11304 "GET /admin/employees/historialcargo/ HTTP/1.1" 200 36806
+INFO 2025-07-15 13:31:40,178 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:31:43,107 basehttp 20320 11304 "GET /admin/employees/historialcargo/add/ HTTP/1.1" 200 44462
+INFO 2025-07-15 13:31:43,140 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:32:30,061 basehttp 20320 11304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 35919
+INFO 2025-07-15 13:32:30,098 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:32:33,294 basehttp 20320 11304 "GET /admin/employees/estadoempleado/add/ HTTP/1.1" 200 37870
+INFO 2025-07-15 13:32:33,333 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:33:34,962 basehttp 20320 11304 "POST /admin/employees/estadoempleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:33:34,982 basehttp 20320 11304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 37929
+INFO 2025-07-15 13:33:35,011 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:33:37,730 basehttp 20320 11304 "GET /admin/employees/estadoempleado/add/ HTTP/1.1" 200 37870
+INFO 2025-07-15 13:33:37,768 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:33:59,824 basehttp 20320 11304 "POST /admin/employees/estadoempleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:33:59,854 basehttp 20320 11304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 38346
+INFO 2025-07-15 13:33:59,889 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:34:04,679 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 35137
+INFO 2025-07-15 13:34:04,720 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:34:07,989 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:34:08,025 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:34:59,528 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 200 37468
+INFO 2025-07-15 13:34:59,563 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:35:11,992 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:35:12,012 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 37274
+INFO 2025-07-15 13:35:12,045 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:35:19,742 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:35:19,782 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:35:48,304 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:35:48,325 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 37618
+INFO 2025-07-15 13:35:48,356 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:35:52,780 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:35:52,817 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:36:24,433 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:36:24,452 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 37965
+INFO 2025-07-15 13:36:24,499 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:36:32,446 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:36:32,485 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:37:03,472 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:37:03,496 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 38301
+INFO 2025-07-15 13:37:03,526 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:37:10,765 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:37:10,812 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:37:39,831 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:37:39,849 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 38646
+INFO 2025-07-15 13:37:39,880 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:37:45,063 basehttp 20320 11304 "GET /admin/employees/escolaridad/add/ HTTP/1.1" 200 37208
+INFO 2025-07-15 13:37:45,102 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:39:17,052 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 200 37604
+INFO 2025-07-15 13:39:17,088 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:40:48,767 basehttp 20320 11304 "POST /admin/employees/escolaridad/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:40:48,786 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 38995
+INFO 2025-07-15 13:40:48,826 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:41:26,643 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 200 37439
+INFO 2025-07-15 13:41:26,681 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:41:29,240 basehttp 20320 11304 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 52959
+INFO 2025-07-15 13:41:29,275 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:42:40,250 basehttp 20320 11304 "GET /static/admin/img/calendar-icons.svg HTTP/1.1" 200 2455
+INFO 2025-07-15 13:46:39,884 basehttp 20320 11304 "POST /admin/employees/empleado/add/ HTTP/1.1" 200 53391
+INFO 2025-07-15 13:46:39,914 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:47:03,902 basehttp 20320 11304 "GET /admin/organizational/sede/add/ HTTP/1.1" 200 40225
+INFO 2025-07-15 13:47:03,940 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:48:29,956 basehttp 20320 11304 "POST /admin/organizational/sede/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:48:29,976 basehttp 20320 11304 "GET /admin/organizational/sede/ HTTP/1.1" 200 39165
+INFO 2025-07-15 13:48:30,014 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:48:33,366 basehttp 20320 11304 "GET /admin/organizational/sede/add/ HTTP/1.1" 200 40225
+INFO 2025-07-15 13:48:33,405 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:49:50,527 basehttp 20320 11304 "POST /admin/organizational/sede/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:49:50,547 basehttp 20320 11304 "GET /admin/organizational/sede/ HTTP/1.1" 200 39771
+INFO 2025-07-15 13:49:50,578 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:50:06,972 basehttp 20320 11304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 36184
+INFO 2025-07-15 13:50:07,007 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:50:11,814 basehttp 20320 11304 "GET /admin/organizational/areaempresa/add/ HTTP/1.1" 200 41584
+INFO 2025-07-15 13:50:11,850 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:54:28,322 basehttp 20320 11304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 36674
+INFO 2025-07-15 13:54:28,366 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:54:33,103 basehttp 20320 11304 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45398
+INFO 2025-07-15 13:54:33,138 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:55:59,756 basehttp 20320 11304 "GET /admin/core/logactividad/ HTTP/1.1" 200 36876
+INFO 2025-07-15 13:55:59,803 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:56:05,219 basehttp 20320 11304 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 37079
+INFO 2025-07-15 13:56:05,254 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:56:27,867 basehttp 20320 11304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 36214
+INFO 2025-07-15 13:56:27,906 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:56:33,281 basehttp 20320 11304 "GET /admin/authentication/modulosistema/add/ HTTP/1.1" 200 37822
+INFO 2025-07-15 13:56:33,315 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:56:54,008 basehttp 20320 11304 "POST /admin/authentication/modulosistema/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:56:54,035 basehttp 20320 11304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 38186
+INFO 2025-07-15 13:56:54,066 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:57:02,584 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 36419
+INFO 2025-07-15 13:57:02,621 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:57:07,017 basehttp 20320 11304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39928
+INFO 2025-07-15 13:57:07,057 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:57:29,351 basehttp 20320 11304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 37957
+INFO 2025-07-15 13:57:29,388 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:58:08,119 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 36419
+INFO 2025-07-15 13:58:08,160 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:58:10,568 basehttp 20320 11304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39928
+INFO 2025-07-15 13:58:10,602 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:59:12,767 basehttp 20320 11304 "POST /admin/authentication/permiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:59:12,788 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38509
+INFO 2025-07-15 13:59:12,824 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:59:26,386 basehttp 20320 11304 "GET /admin/authentication/permiso/1/change/ HTTP/1.1" 200 40203
+INFO 2025-07-15 13:59:26,424 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:59:30,406 basehttp 20320 11304 "POST /admin/authentication/permiso/1/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 13:59:30,425 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38507
+INFO 2025-07-15 13:59:30,458 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 13:59:58,135 basehttp 20320 11304 "GET /admin/authentication/permiso/1/change/ HTTP/1.1" 200 40203
+INFO 2025-07-15 13:59:58,170 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:00:12,863 basehttp 20320 11304 "POST /admin/authentication/permiso/1/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:00:12,882 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38501
+INFO 2025-07-15 14:00:12,914 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:00:16,369 basehttp 20320 11304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39928
+INFO 2025-07-15 14:00:16,407 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:00:48,526 basehttp 20320 11304 "POST /admin/authentication/permiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:00:48,547 basehttp 20320 11304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38915
+INFO 2025-07-15 14:00:48,588 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:00:52,103 basehttp 20320 11304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 36391
+INFO 2025-07-15 14:00:52,139 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:00:55,103 basehttp 20320 11304 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 40876
+INFO 2025-07-15 14:00:55,139 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:01:34,589 basehttp 20320 11304 "POST /admin/authentication/rolpermiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:01:34,611 basehttp 20320 11304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38611
+INFO 2025-07-15 14:01:34,645 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:01:46,830 basehttp 20320 11304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40733
+INFO 2025-07-15 14:01:46,869 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:01:50,438 basehttp 20320 11304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 37819
+INFO 2025-07-15 14:01:50,470 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:01:55,206 basehttp 20320 11304 "GET /admin/authentication/usuariorol/add/ HTTP/1.1" 200 42236
+INFO 2025-07-15 14:01:55,241 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:02:35,971 basehttp 20320 11304 "POST /admin/authentication/usuariorol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:02:35,990 basehttp 20320 11304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 40287
+INFO 2025-07-15 14:02:36,027 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:02:42,999 basehttp 20320 11304 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41236
+INFO 2025-07-15 14:02:43,038 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:02:52,353 basehttp 20320 11304 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 37079
+INFO 2025-07-15 14:02:52,391 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:02:58,784 basehttp 20320 11304 "GET /admin/core/logactividad/ HTTP/1.1" 200 36876
+INFO 2025-07-15 14:02:58,827 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:03:05,705 basehttp 20320 11304 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 37135
+INFO 2025-07-15 14:03:05,744 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:03:09,633 basehttp 20320 11304 "GET /admin/documents/documentoempleado/add/ HTTP/1.1" 200 45976
+INFO 2025-07-15 14:03:09,667 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:03:59,793 basehttp 20320 11304 "POST /admin/documents/documentoempleado/add/ HTTP/1.1" 200 46699
+INFO 2025-07-15 14:03:59,830 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:04:03,760 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 35194
+INFO 2025-07-15 14:04:03,792 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:04:11,602 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 38951
+INFO 2025-07-15 14:04:11,637 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:04:21,829 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 37217
+INFO 2025-07-15 14:04:21,869 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:04:25,083 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 200 41663
+INFO 2025-07-15 14:04:25,119 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:05:23,118 basehttp 20320 11304 "POST /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:05:23,136 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 39971
+INFO 2025-07-15 14:05:23,168 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:05:29,430 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 200 41663
+INFO 2025-07-15 14:05:29,471 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:06:29,519 basehttp 20320 11304 "POST /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:06:29,538 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 40696
+INFO 2025-07-15 14:06:29,575 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:06:38,333 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 35194
+INFO 2025-07-15 14:06:38,367 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:06:41,298 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 39040
+INFO 2025-07-15 14:06:41,336 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:06:56,733 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 40439
+INFO 2025-07-15 14:06:56,768 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:06:59,563 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 200 41663
+INFO 2025-07-15 14:06:59,602 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:07:27,296 basehttp 20320 11304 "POST /admin/documents/tipodocumentoempleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:07:27,319 basehttp 20320 11304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 41396
+INFO 2025-07-15 14:07:27,360 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:07:30,589 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 35194
+INFO 2025-07-15 14:07:30,625 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:07:33,367 basehttp 20320 11304 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 39089
+INFO 2025-07-15 14:07:33,402 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:08:09,629 basehttp 20320 11304 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 37564
+INFO 2025-07-15 14:08:09,662 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:08:14,223 basehttp 20320 11304 "GET /admin/documents/documentoempleado/add/ HTTP/1.1" 200 46114
+INFO 2025-07-15 14:08:14,266 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:08:45,344 basehttp 20320 11304 "GET /admin/employees/empleado/ HTTP/1.1" 200 37753
+INFO 2025-07-15 14:08:45,378 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:08:48,195 basehttp 20320 11304 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53056
+INFO 2025-07-15 14:08:48,230 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+ERROR 2025-07-15 14:09:43,688 log 20320 11304 Internal Server Error: /admin/employees/empleado/add/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: el valor nulo en la columna «creado_por_id» de la relación «empleados» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (6813d208-b84d-4243-980d-0a8505104e25, 43911451, pepe, GOMEZ, 3007794375, 2025-07-15, 2015-06-05, MEDELLÍN, ANTIOQUIA, 3007794375, , miryam.osorio08@yahoo.com, 2025-07-15 19:09:43.507653+00, 2025-07-15 19:09:43.507661+00, null, 1, 2e2b354d-b4d4-4a66-86bc-4ab5034fb92d, 3, 1, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1984, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1894, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1314, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1854, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1881, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: el valor nulo en la columna «creado_por_id» de la relación «empleados» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (6813d208-b84d-4243-980d-0a8505104e25, 43911451, pepe, GOMEZ, 3007794375, 2025-07-15, 2015-06-05, MEDELLÍN, ANTIOQUIA, 3007794375, , miryam.osorio08@yahoo.com, 2025-07-15 19:09:43.507653+00, 2025-07-15 19:09:43.507661+00, null, 1, 2e2b354d-b4d4-4a66-86bc-4ab5034fb92d, 3, 1, 1).
+
+ERROR 2025-07-15 14:09:43,697 basehttp 20320 11304 "POST /admin/employees/empleado/add/ HTTP/1.1" 500 219800
+INFO 2025-07-15 14:10:07,713 basehttp 20320 11304 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53056
+INFO 2025-07-15 14:10:52,028 basehttp 20320 11304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 38776
+INFO 2025-07-15 14:10:52,068 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:10:56,800 basehttp 20320 11304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 38120
+INFO 2025-07-15 14:10:56,840 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:11:00,481 basehttp 20320 11304 "GET /admin/employees/historialcargo/ HTTP/1.1" 200 36806
+INFO 2025-07-15 14:11:00,513 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:11:04,309 basehttp 20320 11304 "GET /admin/employees/historialcargo/ HTTP/1.1" 200 36806
+INFO 2025-07-15 14:11:04,342 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:11:22,614 basehttp 20320 11304 "GET /admin/employees/historialcargo/add/ HTTP/1.1" 200 44462
+INFO 2025-07-15 14:11:22,648 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:12:32,572 basehttp 20320 11304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40003
+INFO 2025-07-15 14:12:32,607 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:12:39,736 basehttp 20320 11304 "GET /admin/evaluations/asignacionevaluacion/ HTTP/1.1" 200 36414
+INFO 2025-07-15 14:12:39,787 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:12:43,124 basehttp 20320 11304 "GET /admin/evaluations/asignacionevaluacion/add/ HTTP/1.1" 200 48678
+INFO 2025-07-15 14:12:43,160 basehttp 20320 11304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:21:54,582 basehttp 20320 22068 "GET /admin/employees/empleado/ HTTP/1.1" 200 37753
+INFO 2025-07-15 14:21:54,618 basehttp 20320 22068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:21:57,441 basehttp 20320 22068 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53056
+INFO 2025-07-15 14:21:57,483 basehttp 20320 22068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+ERROR 2025-07-15 14:22:39,189 log 20320 22068 Internal Server Error: /admin/employees/empleado/add/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: el valor nulo en la columna «creado_por_id» de la relación «empleados» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (d4bc53ad-9a68-421d-8253-3edb5e2ba782, 43911451, pepe, GOMEZ, 3007794375, 2025-07-15, 2015-06-05, MEDELLÍN, ANTIOQUIA, 3007794375, , miryam.osorio08@yahoo.com, 2025-07-15 19:22:39.157091+00, 2025-07-15 19:22:39.157099+00, null, 1, 32b0beb2-71e0-4d6d-9a08-ff36a5f793da, 3, 1, 1).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1984, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1894, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\admin\options.py", line 1314, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1854, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1881, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: el valor nulo en la columna «creado_por_id» de la relación «empleados» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (d4bc53ad-9a68-421d-8253-3edb5e2ba782, 43911451, pepe, GOMEZ, 3007794375, 2025-07-15, 2015-06-05, MEDELLÍN, ANTIOQUIA, 3007794375, , miryam.osorio08@yahoo.com, 2025-07-15 19:22:39.157091+00, 2025-07-15 19:22:39.157099+00, null, 1, 32b0beb2-71e0-4d6d-9a08-ff36a5f793da, 3, 1, 1).
+
+ERROR 2025-07-15 14:22:39,193 basehttp 20320 22068 "POST /admin/employees/empleado/add/ HTTP/1.1" 500 219814
+INFO 2025-07-15 14:30:07,490 autoreload 20320 25952 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\employees\admin.py changed, reloading.
+INFO 2025-07-15 14:30:08,323 autoreload 6428 26520 Watching for file changes with StatReloader
+INFO 2025-07-15 14:30:18,678 autoreload 6428 26520 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\employees\admin.py changed, reloading.
+INFO 2025-07-15 14:30:19,293 autoreload 7700 8052 Watching for file changes with StatReloader
+INFO 2025-07-15 14:34:33,406 autoreload 7700 8052 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\employees\admin.py changed, reloading.
+INFO 2025-07-15 14:34:34,044 autoreload 26200 25244 Watching for file changes with StatReloader
+INFO 2025-07-15 14:35:28,218 autoreload 26200 25244 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\documents\admin.py changed, reloading.
+INFO 2025-07-15 14:35:28,812 autoreload 12452 25772 Watching for file changes with StatReloader
+INFO 2025-07-15 14:36:22,792 autoreload 12452 25772 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\training\admin.py changed, reloading.
+INFO 2025-07-15 14:36:23,443 autoreload 10392 13800 Watching for file changes with StatReloader
+INFO 2025-07-15 14:37:15,708 basehttp 10392 13116 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53056
+INFO 2025-07-15 14:37:30,162 basehttp 10392 13116 "POST /admin/employees/empleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:37:30,195 basehttp 10392 13116 "GET /admin/employees/empleado/ HTTP/1.1" 200 40386
+INFO 2025-07-15 14:37:30,238 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:40:41,404 basehttp 10392 13116 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53056
+INFO 2025-07-15 14:40:41,445 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:41:55,277 basehttp 10392 13116 "POST /admin/employees/empleado/add/ HTTP/1.1" 200 53690
+INFO 2025-07-15 14:41:55,314 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:42:20,327 basehttp 10392 13116 "POST /admin/employees/empleado/add/ HTTP/1.1" 200 53495
+INFO 2025-07-15 14:42:20,356 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:43:11,503 basehttp 10392 13116 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41236
+INFO 2025-07-15 14:43:11,551 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:43:16,143 basehttp 10392 13116 "GET /admin/authentication/usuario/add/ HTTP/1.1" 200 42595
+INFO 2025-07-15 14:43:16,177 basehttp 10392 13116 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:45:05,828 basehttp 10392 3360 "POST /admin/authentication/usuario/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:45:05,882 basehttp 10392 3360 "GET /admin/authentication/usuario/37593ddd-1974-4a82-b96b-63a7524e8e02/change/ HTTP/1.1" 200 75775
+INFO 2025-07-15 14:45:05,917 basehttp 10392 3360 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:48:02,914 basehttp 10392 3360 "POST /admin/authentication/usuario/37593ddd-1974-4a82-b96b-63a7524e8e02/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:48:02,933 basehttp 10392 3360 "GET /admin/authentication/usuario/ HTTP/1.1" 200 42215
+INFO 2025-07-15 14:48:02,972 basehttp 10392 3360 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:48:20,202 basehttp 10392 3360 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53132
+INFO 2025-07-15 14:48:20,233 basehttp 10392 3360 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:49:10,413 basehttp 10392 3360 "POST /admin/employees/empleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:49:10,436 basehttp 10392 3360 "GET /admin/employees/empleado/ HTTP/1.1" 200 40984
+INFO 2025-07-15 14:49:10,475 basehttp 10392 3360 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:50:02,626 basehttp 10392 720 "GET /admin/evaluations/asignacionevaluacion/add/ HTTP/1.1" 200 49060
+INFO 2025-07-15 14:50:02,671 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:52:03,720 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 36196
+INFO 2025-07-15 14:52:03,761 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:52:06,254 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 200 39659
+INFO 2025-07-15 14:52:06,290 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:53:28,571 basehttp 10392 720 "POST /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:53:28,588 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 38662
+INFO 2025-07-15 14:53:28,624 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:53:31,380 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 200 39659
+INFO 2025-07-15 14:53:31,420 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:54:24,845 basehttp 10392 720 "POST /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:54:24,868 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 39231
+INFO 2025-07-15 14:54:24,899 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:54:26,917 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 200 39659
+INFO 2025-07-15 14:54:26,957 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:54:53,073 basehttp 10392 720 "POST /admin/evaluations/tipoevaluacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:54:53,092 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 39772
+INFO 2025-07-15 14:54:53,123 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:55:17,022 basehttp 10392 720 "GET /admin/evaluations/asignacionevaluacion/ HTTP/1.1" 200 36414
+INFO 2025-07-15 14:55:17,059 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:55:20,209 basehttp 10392 720 "GET /admin/evaluations/asignacionevaluacion/add/ HTTP/1.1" 200 49060
+INFO 2025-07-15 14:55:20,242 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:56:19,817 basehttp 10392 720 "GET /admin/evaluations/certificadocapacitacion/ HTTP/1.1" 200 35577
+INFO 2025-07-15 14:56:19,854 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:56:33,493 basehttp 10392 720 "GET /admin/evaluations/certificadocapacitacion/add/ HTTP/1.1" 200 41424
+INFO 2025-07-15 14:56:33,528 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:57:16,808 basehttp 10392 720 "GET /admin/evaluations/certificadocapacitacion/ HTTP/1.1" 200 35577
+INFO 2025-07-15 14:57:16,842 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:57:36,292 basehttp 10392 720 "GET /admin/evaluations/evaluaciondesempe%C3%B1o/ HTTP/1.1" 200 36361
+INFO 2025-07-15 14:57:36,324 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:57:39,740 basehttp 10392 720 "GET /admin/evaluations/evaluaciondesempe%C3%B1o/add/ HTTP/1.1" 200 43076
+INFO 2025-07-15 14:57:39,769 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:59:03,400 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 39536
+INFO 2025-07-15 14:59:03,439 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:59:21,417 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/2/change/ HTTP/1.1" 200 39974
+INFO 2025-07-15 14:59:21,451 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 14:59:44,431 basehttp 10392 720 "POST /admin/evaluations/tipoevaluacion/2/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 14:59:44,452 basehttp 10392 720 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 39769
+INFO 2025-07-15 14:59:44,484 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:00:01,373 basehttp 10392 720 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 36225
+INFO 2025-07-15 15:00:01,410 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:00:04,202 basehttp 10392 720 "GET /admin/evaluations/tipopregunta/add/ HTTP/1.1" 200 38400
+INFO 2025-07-15 15:00:04,244 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:00:35,048 basehttp 10392 720 "POST /admin/evaluations/tipopregunta/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:00:35,069 basehttp 10392 720 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 38482
+INFO 2025-07-15 15:00:35,098 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:00:45,432 basehttp 10392 720 "GET /admin/evaluations/tipopregunta/add/ HTTP/1.1" 200 38400
+INFO 2025-07-15 15:00:45,472 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:01:20,944 basehttp 10392 720 "POST /admin/evaluations/tipopregunta/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:01:20,962 basehttp 10392 720 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 39018
+INFO 2025-07-15 15:01:21,002 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:01:47,025 basehttp 10392 720 "GET /admin/notifications/notificacion/ HTTP/1.1" 200 37287
+INFO 2025-07-15 15:01:47,066 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:01:49,729 basehttp 10392 720 "GET /admin/notifications/notificacion/add/ HTTP/1.1" 200 43770
+INFO 2025-07-15 15:01:49,761 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:02:40,934 basehttp 10392 720 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 36502
+INFO 2025-07-15 15:02:40,974 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:02:43,301 basehttp 10392 720 "GET /admin/notifications/tiponotificacion/add/ HTTP/1.1" 200 40928
+INFO 2025-07-15 15:02:43,339 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:05:12,980 basehttp 10392 720 "POST /admin/notifications/tiponotificacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:05:13,001 basehttp 10392 720 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 38974
+INFO 2025-07-15 15:05:13,045 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:05:31,163 basehttp 10392 720 "GET /admin/notifications/tiponotificacion/add/ HTTP/1.1" 200 40928
+INFO 2025-07-15 15:05:31,203 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:07:20,006 basehttp 10392 720 "POST /admin/notifications/tiponotificacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:07:20,024 basehttp 10392 720 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 39563
+INFO 2025-07-15 15:07:20,057 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:07:27,015 basehttp 10392 720 "GET /admin/notifications/notificacion/ HTTP/1.1" 200 37287
+INFO 2025-07-15 15:07:27,051 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:07:32,988 basehttp 10392 720 "GET /admin/notifications/notificacion/add/ HTTP/1.1" 200 43853
+INFO 2025-07-15 15:07:33,024 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:08:01,526 basehttp 10392 720 "POST /admin/notifications/notificacion/add/ HTTP/1.1" 200 44272
+INFO 2025-07-15 15:08:01,559 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:09:31,979 basehttp 10392 720 "GET /admin/organizational/cargo/ HTTP/1.1" 200 36674
+INFO 2025-07-15 15:09:32,012 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:09:44,372 basehttp 10392 720 "GET /admin/organizational/sede/ HTTP/1.1" 200 39559
+INFO 2025-07-15 15:09:44,409 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:09:48,722 basehttp 10392 720 "GET /admin/organizational/cargo/ HTTP/1.1" 200 36674
+INFO 2025-07-15 15:09:48,767 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:09:51,276 basehttp 10392 720 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45398
+INFO 2025-07-15 15:09:51,308 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:10:07,940 basehttp 10392 720 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 36184
+INFO 2025-07-15 15:10:07,992 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:10:10,590 basehttp 10392 720 "GET /admin/organizational/areaempresa/add/ HTTP/1.1" 200 41737
+INFO 2025-07-15 15:10:10,623 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:10:28,016 basehttp 10392 720 "GET /admin/organizational/areaempresa/add/?_to_field=id&_popup=1 HTTP/1.1" 200 10204
+INFO 2025-07-15 15:10:28,049 basehttp 10392 720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:12:40,260 autoreload 10392 13800 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\organizational\models.py changed, reloading.
+INFO 2025-07-15 15:12:40,873 autoreload 25020 17208 Watching for file changes with StatReloader
+INFO 2025-07-15 15:12:50,172 autoreload 25020 17208 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\organizational\models.py changed, reloading.
+INFO 2025-07-15 15:12:50,675 autoreload 23628 7072 Watching for file changes with StatReloader
+INFO 2025-07-15 15:12:53,066 autoreload 23628 7072 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\organizational\models.py changed, reloading.
+INFO 2025-07-15 15:12:53,662 autoreload 3828 24052 Watching for file changes with StatReloader
+INFO 2025-07-15 15:21:46,262 autoreload 3828 24052 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\organizational\models.py changed, reloading.
+INFO 2025-07-15 15:21:46,791 autoreload 24712 2284 Watching for file changes with StatReloader
+INFO 2025-07-15 15:30:39,728 basehttp 24712 23672 "GET /admin/employees/empleado/ HTTP/1.1" 200 40736
+INFO 2025-07-15 15:30:39,784 basehttp 24712 23672 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,790 basehttp 24712 22396 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,791 basehttp 24712 23672 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,791 basehttp 24712 21076 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,791 basehttp 24712 5804 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,792 basehttp 24712 22396 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,792 basehttp 24712 19880 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,796 basehttp 24712 23672 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,796 basehttp 24712 21076 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,796 basehttp 24712 5804 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,797 basehttp 24712 22396 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,797 basehttp 24712 23672 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,803 basehttp 24712 19880 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,804 basehttp 24712 5804 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,804 basehttp 24712 23672 "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,824 basehttp 24712 23672 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,842 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:30:39,842 basehttp 24712 23672 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,906 basehttp 24712 23672 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,906 basehttp 24712 5804 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:39,907 basehttp 24712 19304 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:30:53,639 basehttp 24712 19304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 38120
+INFO 2025-07-15 15:30:53,676 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:31:03,142 basehttp 24712 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40733
+INFO 2025-07-15 15:31:03,180 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:31:11,069 basehttp 24712 19304 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41967
+INFO 2025-07-15 15:31:11,106 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:31:25,187 basehttp 24712 19304 "GET /admin/employees/empleado/ HTTP/1.1" 200 40736
+INFO 2025-07-15 15:31:25,230 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:31:27,587 basehttp 24712 19304 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 53132
+INFO 2025-07-15 15:31:27,630 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:31:27,634 basehttp 24712 19304 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:32:17,241 basehttp 24712 19304 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 37564
+INFO 2025-07-15 15:32:17,279 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:32:24,577 basehttp 24712 19304 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 35194
+INFO 2025-07-15 15:32:24,609 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:32:28,776 basehttp 24712 19304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 41142
+INFO 2025-07-15 15:32:28,813 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:32:45,160 basehttp 24712 19304 "GET /admin/documents/tipodocumentoempleado/3/change/ HTTP/1.1" 200 41956
+INFO 2025-07-15 15:32:45,197 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:33:34,776 basehttp 24712 19304 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 39325
+INFO 2025-07-15 15:33:34,811 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:34:06,361 basehttp 24712 19304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 36184
+INFO 2025-07-15 15:34:06,398 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:34:11,906 basehttp 24712 19304 "GET /admin/organizational/areaempresa/add/ HTTP/1.1" 200 41737
+INFO 2025-07-15 15:34:11,948 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:38:57,406 basehttp 24712 19304 "GET / HTTP/1.1" 302 0
+INFO 2025-07-15 15:38:57,464 basehttp 24712 19304 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 15:39:01,495 basehttp 24712 19304 "GET /empleados/ HTTP/1.1" 200 0
+INFO 2025-07-15 15:39:10,741 basehttp 24712 19304 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-15 15:39:12,458 basehttp 24712 19304 "GET /admin/organizational/areaempresa/add/ HTTP/1.1" 200 41737
+INFO 2025-07-15 15:40:46,480 basehttp 24712 19304 "POST /admin/organizational/areaempresa/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:40:46,510 basehttp 24712 19304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 38881
+INFO 2025-07-15 15:40:46,542 basehttp 24712 24420 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:40:46,544 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:41:00,208 basehttp 24712 19304 "GET /admin/organizational/areaempresa/add/ HTTP/1.1" 200 41782
+INFO 2025-07-15 15:41:00,243 basehttp 24712 19304 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:41:00,249 basehttp 24712 24420 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:41:00,250 basehttp 24712 19788 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2025-07-15 15:41:00,252 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:41:00,286 basehttp 24712 19304 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:41:47,310 basehttp 24712 19304 "POST /admin/organizational/areaempresa/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:41:47,356 basehttp 24712 19304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 39447
+INFO 2025-07-15 15:41:47,389 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:42:06,683 basehttp 24712 19304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 36977
+INFO 2025-07-15 15:42:06,724 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:42:09,487 basehttp 24712 19304 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45484
+INFO 2025-07-15 15:42:09,524 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:42:57,347 basehttp 24712 19304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 39219
+INFO 2025-07-15 15:42:57,379 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:43:08,775 basehttp 24712 19304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 36977
+INFO 2025-07-15 15:43:08,807 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:43:11,217 basehttp 24712 19304 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45484
+INFO 2025-07-15 15:43:11,256 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:44:14,840 basehttp 24712 19304 "POST /admin/organizational/cargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:44:14,877 basehttp 24712 19304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 39589
+INFO 2025-07-15 15:44:14,908 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:44:47,636 basehttp 24712 19304 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45537
+INFO 2025-07-15 15:44:47,677 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:46:14,930 basehttp 24712 19304 "POST /admin/organizational/cargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:46:14,963 basehttp 24712 19304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 40234
+INFO 2025-07-15 15:46:14,994 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:46:33,929 basehttp 24712 19304 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 45603
+INFO 2025-07-15 15:46:33,966 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:47:35,865 basehttp 24712 19304 "POST /admin/organizational/cargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:47:35,901 basehttp 24712 19304 "GET /admin/organizational/cargo/ HTTP/1.1" 200 40772
+INFO 2025-07-15 15:47:35,929 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:48:22,652 basehttp 24712 19304 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 39219
+INFO 2025-07-15 15:48:22,688 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:49:10,362 basehttp 24712 19304 "GET /admin/auth/group/ HTTP/1.1" 200 36738
+INFO 2025-07-15 15:49:10,393 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:49:19,502 basehttp 24712 19304 "GET /admin/auth/group/add/ HTTP/1.1" 200 63436
+INFO 2025-07-15 15:49:19,543 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:49:19,548 basehttp 24712 22576 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:49:19,549 basehttp 24712 19304 "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:49:19,660 basehttp 24712 19304 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:52:40,809 basehttp 24712 19304 "POST /admin/auth/group/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:52:40,854 basehttp 24712 19304 "GET /admin/auth/group/ HTTP/1.1" 200 37222
+INFO 2025-07-15 15:52:40,887 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:52:43,895 basehttp 24712 19304 "GET /admin/auth/group/2/change/ HTTP/1.1" 200 63805
+INFO 2025-07-15 15:52:43,933 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:52:46,114 basehttp 24712 19304 "POST /admin/auth/group/2/change/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:52:46,148 basehttp 24712 19304 "GET /admin/auth/group/ HTTP/1.1" 200 37220
+INFO 2025-07-15 15:52:46,181 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:53:10,497 basehttp 24712 19304 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 37957
+INFO 2025-07-15 15:53:10,537 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:53:19,756 basehttp 24712 19304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38691
+INFO 2025-07-15 15:53:19,789 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:53:31,745 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38378
+INFO 2025-07-15 15:53:31,787 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:53:35,329 basehttp 24712 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40733
+INFO 2025-07-15 15:53:35,365 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:53:48,639 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38378
+INFO 2025-07-15 15:53:48,674 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:54:00,348 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 40952
+INFO 2025-07-15 15:54:00,383 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:54:35,843 basehttp 24712 19304 "POST /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 41188
+INFO 2025-07-15 15:54:35,872 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:54:44,413 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38378
+INFO 2025-07-15 15:54:44,442 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:54:49,664 basehttp 24712 19304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 38691
+INFO 2025-07-15 15:54:49,705 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:55:00,482 basehttp 24712 19304 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 39928
+INFO 2025-07-15 15:55:00,522 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:55:48,220 basehttp 24712 19304 "POST /admin/authentication/permiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:55:48,243 basehttp 24712 19304 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39296
+INFO 2025-07-15 15:55:48,284 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:56:16,369 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38378
+INFO 2025-07-15 15:56:16,401 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:56:23,632 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 40993
+INFO 2025-07-15 15:56:23,671 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:56:47,169 basehttp 24712 19304 "POST /admin/authentication/rolpermiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:56:47,206 basehttp 24712 19304 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39089
+INFO 2025-07-15 15:56:47,234 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:56:59,886 basehttp 24712 19304 "GET /admin/authentication/rol/ HTTP/1.1" 200 40733
+INFO 2025-07-15 15:56:59,925 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:57:02,097 basehttp 24712 19304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 40054
+INFO 2025-07-15 15:57:02,132 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:57:12,022 basehttp 24712 19304 "GET /admin/authentication/usuariorol/add/ HTTP/1.1" 200 42388
+INFO 2025-07-15 15:57:12,068 basehttp 24712 5996 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:57:12,068 basehttp 24712 25540 "GET /static/admin/js/calendar.js HTTP/1.1" 304 0
+INFO 2025-07-15 15:57:12,069 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:57:12,160 basehttp 24712 19304 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:58:08,519 basehttp 24712 19304 "POST /admin/authentication/usuariorol/add/ HTTP/1.1" 302 0
+INFO 2025-07-15 15:58:08,569 basehttp 24712 19304 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 40848
+INFO 2025-07-15 15:58:08,605 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:29,747 basehttp 24712 19304 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41967
+INFO 2025-07-15 15:58:29,792 basehttp 24712 25540 "GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+INFO 2025-07-15 15:58:29,794 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:38,111 basehttp 24712 19304 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 37079
+INFO 2025-07-15 15:58:38,145 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:44,327 basehttp 24712 19304 "GET /admin/core/logactividad/ HTTP/1.1" 200 36876
+INFO 2025-07-15 15:58:44,359 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:50,288 basehttp 24712 19304 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 37564
+INFO 2025-07-15 15:58:50,324 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:55,559 basehttp 24712 19304 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 35194
+INFO 2025-07-15 15:58:55,590 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:58:57,481 basehttp 24712 19304 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 41142
+INFO 2025-07-15 15:58:57,520 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:02,537 basehttp 24712 19304 "GET /admin/employees/empleado/ HTTP/1.1" 200 40736
+INFO 2025-07-15 15:59:02,574 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:10,006 basehttp 24712 19304 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 38776
+INFO 2025-07-15 15:59:10,044 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:14,393 basehttp 24712 19304 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 38120
+INFO 2025-07-15 15:59:14,430 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:19,583 basehttp 24712 19304 "GET /admin/employees/historialcargo/ HTTP/1.1" 200 37123
+INFO 2025-07-15 15:59:19,618 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:24,055 basehttp 24712 19304 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40003
+INFO 2025-07-15 15:59:24,093 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:32,841 basehttp 24712 19304 "GET /admin/evaluations/asignacionevaluacion/ HTTP/1.1" 200 36414
+INFO 2025-07-15 15:59:32,876 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 15:59:36,860 basehttp 24712 19304 "GET /admin/evaluations/certificadocapacitacion/ HTTP/1.1" 200 35577
+INFO 2025-07-15 15:59:36,895 basehttp 24712 19304 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-15 16:00:00,380 autoreload 24712 2284 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\organizational\models.py changed, reloading.
+INFO 2025-07-15 16:00:01,001 autoreload 11124 19548 Watching for file changes with StatReloader
+INFO 2025-07-16 08:30:46,135 autoreload 23904 17868 Watching for file changes with StatReloader
+INFO 2025-07-16 08:30:51,818 basehttp 23904 1240 "GET / HTTP/1.1" 302 0
+INFO 2025-07-16 08:30:51,883 basehttp 23904 1240 "GET /dashboard/ HTTP/1.1" 200 3935
+WARNING 2025-07-16 08:30:52,410 log 23904 1240 Not Found: /favicon.ico
+WARNING 2025-07-16 08:30:52,411 basehttp 23904 1240 "GET /favicon.ico HTTP/1.1" 404 4542
+INFO 2025-07-16 08:30:58,281 basehttp 23904 1240 "GET /dashboard/ HTTP/1.1" 200 3935
+INFO 2025-07-16 08:31:04,042 basehttp 23904 1240 "GET /reconocimientos/ HTTP/1.1" 200 0
+INFO 2025-07-16 08:31:12,250 basehttp 23904 1240 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-16 08:31:23,854 basehttp 23904 1240 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-16 08:31:30,507 basehttp 23904 1240 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-16 08:31:36,188 basehttp 23904 1240 "GET /dashboard/ HTTP/1.1" 200 3935
+INFO 2025-07-16 08:31:37,593 basehttp 23904 1240 "GET /dashboard/ HTTP/1.1" 200 3935
+INFO 2025-07-16 08:31:38,915 basehttp 23904 1240 "GET /dashboard/ HTTP/1.1" 200 3935
+INFO 2025-07-16 08:31:41,263 basehttp 23904 1240 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-16 08:32:55,483 basehttp 23904 1240 "GET /admin HTTP/1.1" 301 0
+INFO 2025-07-16 08:32:55,544 basehttp 23904 19640 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-07-16 08:32:55,742 basehttp 23904 19640 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4252
+INFO 2025-07-16 08:32:55,897 basehttp 23904 9476 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-07-16 08:32:55,899 basehttp 23904 23200 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-07-16 08:32:55,901 basehttp 23904 5112 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16632
+INFO 2025-07-16 08:32:55,901 basehttp 23904 19640 "GET /static/admin/css/base.css HTTP/1.1" 200 22154
+INFO 2025-07-16 08:32:55,903 basehttp 23904 7616 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-07-16 08:32:55,910 basehttp 23904 5220 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-07-16 08:32:55,922 basehttp 23904 7616 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-07-16 08:33:11,365 basehttp 23904 7616 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-07-16 08:33:11,506 basehttp 23904 7616 "GET /admin/ HTTP/1.1" 200 46656
+INFO 2025-07-16 08:33:11,531 basehttp 23904 7616 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-07-16 08:33:11,543 basehttp 23904 5220 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-07-16 08:33:11,543 basehttp 23904 7616 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-07-16 08:33:40,396 basehttp 23904 7616 "GET /admin/employees/empleado/ HTTP/1.1" 200 40736
+INFO 2025-07-16 08:33:40,424 basehttp 23904 7616 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-07-16 08:33:40,433 basehttp 23904 5112 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-07-16 08:33:40,440 basehttp 23904 23200 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-07-16 08:33:40,442 basehttp 23904 9476 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-07-16 08:33:40,453 basehttp 23904 5112 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-07-16 08:33:40,453 basehttp 23904 7616 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-07-16 08:33:40,464 basehttp 23904 23200 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-07-16 08:33:40,467 basehttp 23904 5112 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-07-16 08:33:40,480 basehttp 23904 19640 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-07-16 08:33:40,510 basehttp 23904 5220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:33:40,527 basehttp 23904 5220 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-07-16 08:33:40,563 basehttp 23904 9476 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-07-16 08:33:40,588 basehttp 23904 9476 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-07-16 08:33:40,588 basehttp 23904 5220 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-07-16 08:33:45,758 basehttp 23904 5220 "GET /admin/auth/group/ HTTP/1.1" 200 37018
+INFO 2025-07-16 08:33:45,779 basehttp 23904 5220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:57:07,820 basehttp 23904 15996 "GET /admin/auth/group/ HTTP/1.1" 200 37018
+INFO 2025-07-16 08:57:07,832 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:57:13,085 basehttp 23904 15996 "GET /admin/auth/group/add/ HTTP/1.1" 200 63436
+INFO 2025-07-16 08:57:13,114 basehttp 23904 15996 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-07-16 08:57:13,123 basehttp 23904 20428 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-07-16 08:57:13,123 basehttp 23904 7860 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-07-16 08:57:13,126 basehttp 23904 25972 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15709
+INFO 2025-07-16 08:57:13,129 basehttp 23904 15996 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-07-16 08:57:13,143 basehttp 23904 15996 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-07-16 08:57:13,150 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:57:13,201 basehttp 23904 12992 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+INFO 2025-07-16 08:58:54,854 basehttp 23904 12992 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 37957
+INFO 2025-07-16 08:58:54,874 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:58:54,886 basehttp 23904 15996 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-07-16 08:59:02,333 basehttp 23904 15996 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39081
+INFO 2025-07-16 08:59:02,354 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:05,615 basehttp 23904 15996 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 37957
+INFO 2025-07-16 08:59:05,632 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:07,955 basehttp 23904 15996 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39081
+INFO 2025-07-16 08:59:07,971 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:09,274 basehttp 23904 15996 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39081
+INFO 2025-07-16 08:59:09,287 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:19,532 basehttp 23904 15996 "GET /admin/authentication/permiso/1/change/ HTTP/1.1" 200 40195
+INFO 2025-07-16 08:59:19,551 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:26,316 basehttp 23904 15996 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38856
+INFO 2025-07-16 08:59:26,335 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:30,944 basehttp 23904 15996 "GET /admin/authentication/rol/ HTTP/1.1" 200 40733
+INFO 2025-07-16 08:59:30,966 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:30,989 basehttp 23904 15996 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-07-16 08:59:34,256 basehttp 23904 15996 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 40615
+INFO 2025-07-16 08:59:34,274 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:36,436 basehttp 23904 15996 "GET /admin/authentication/usuario/ HTTP/1.1" 200 41967
+INFO 2025-07-16 08:59:36,455 basehttp 23904 15996 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:36,469 basehttp 23904 12992 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-07-16 08:59:44,250 basehttp 23904 12992 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 37079
+INFO 2025-07-16 08:59:44,269 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 08:59:52,375 basehttp 23904 12992 "GET /admin/core/configuracionsistema/add/ HTTP/1.1" 200 40432
+INFO 2025-07-16 08:59:52,399 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:00:13,912 basehttp 23904 12992 "GET /admin/core/logactividad/ HTTP/1.1" 200 36876
+INFO 2025-07-16 09:00:13,932 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:00:24,078 basehttp 23904 12992 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 37564
+INFO 2025-07-16 09:00:24,098 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:00:29,776 basehttp 23904 12992 "GET /admin/documents/documentoempleado/add/ HTTP/1.1" 200 44049
+INFO 2025-07-16 09:00:29,798 basehttp 23904 12992 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:00:29,817 basehttp 23904 25972 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-07-16 09:00:29,817 basehttp 23904 15996 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-07-16 09:00:29,856 basehttp 23904 25972 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-07-16 09:00:44,720 basehttp 23904 25972 "GET /admin/employees/empleado/ HTTP/1.1" 200 40736
+INFO 2025-07-16 09:00:44,738 basehttp 23904 25972 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:01:30,097 basehttp 23904 25972 "GET /admin/employees/empleado/2b9b69f7-9920-40ae-94af-88b764a5d560/change/ HTTP/1.1" 200 53611
+INFO 2025-07-16 09:01:30,117 basehttp 23904 25972 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:01:30,131 basehttp 23904 15996 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-07-16 09:19:32,316 autoreload 23904 17868 C:\SIGHU\sighu\sistema-gestion-empleados\gestion_empleados\apps\employees\admin.py changed, reloading.
+INFO 2025-07-16 09:19:32,995 autoreload 17680 25304 Watching for file changes with StatReloader
+INFO 2025-07-16 09:26:34,214 basehttp 17680 8716 "GET /admin/employees/empleado/2b9b69f7-9920-40ae-94af-88b764a5d560/change/ HTTP/1.1" 200 51463
+INFO 2025-07-16 09:26:34,231 basehttp 17680 8716 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:26:45,100 basehttp 17680 8716 "GET /admin/auth/group/ HTTP/1.1" 200 37018
+INFO 2025-07-16 09:26:45,119 basehttp 17680 8716 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:26:48,767 basehttp 17680 8716 "GET /admin/employees/empleado/ HTTP/1.1" 200 40987
+INFO 2025-07-16 09:26:48,784 basehttp 17680 8716 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:27:09,763 basehttp 17680 8716 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 50984
+INFO 2025-07-16 09:27:09,779 basehttp 17680 8716 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:28:16,075 basehttp 17680 8716 "GET /static/admin/img/calendar-icons.svg HTTP/1.1" 200 2455
+INFO 2025-07-16 09:31:19,655 basehttp 17680 8716 "POST /admin/employees/empleado/add/ HTTP/1.1" 302 0
+INFO 2025-07-16 09:31:19,704 basehttp 17680 8716 "GET /admin/employees/empleado/ HTTP/1.1" 200 42060
+INFO 2025-07-16 09:31:19,728 basehttp 17680 8716 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:39:02,101 basehttp 17680 13952 "GET /admin/employees/empleado/e7a7faf6-9ea9-4852-b038-d4ed62c53246/change/ HTTP/1.1" 200 51451
+INFO 2025-07-16 09:39:02,124 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:39:32,155 basehttp 17680 13952 "GET /admin/employees/empleado/ HTTP/1.1" 200 41632
+INFO 2025-07-16 09:39:32,172 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:41:58,798 basehttp 17680 13952 "GET /admin/employees/empleado/ HTTP/1.1" 200 41632
+INFO 2025-07-16 09:41:58,816 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:42:01,662 basehttp 17680 13952 "GET /admin/employees/empleado/e7a7faf6-9ea9-4852-b038-d4ed62c53246/change/ HTTP/1.1" 200 51451
+INFO 2025-07-16 09:42:01,685 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:42:23,830 basehttp 17680 13952 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 40615
+INFO 2025-07-16 09:42:23,848 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 09:42:29,868 basehttp 17680 13952 "GET /admin/authentication/usuario/ HTTP/1.1" 200 42683
+INFO 2025-07-16 09:42:29,885 basehttp 17680 13952 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-16 10:24:17,878 basehttp 17680 10564 "GET /admin/employees/empleado/ HTTP/1.1" 200 41632
+INFO 2025-07-16 10:24:17,899 basehttp 17680 10564 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+WARNING 2025-07-16 10:25:12,389 log 17680 10564 Not Found: /employees
+WARNING 2025-07-16 10:25:12,390 basehttp 17680 10564 "GET /employees HTTP/1.1" 404 4536
+INFO 2025-07-16 10:26:45,061 basehttp 17680 10564 "GET /empleados HTTP/1.1" 301 0
+INFO 2025-07-16 10:26:45,151 basehttp 17680 17072 "GET /empleados/ HTTP/1.1" 200 5018
+INFO 2025-07-16 10:27:02,966 basehttp 17680 17072 "GET /capacitaciones/ HTTP/1.1" 200 0
+INFO 2025-07-16 10:31:08,585 basehttp 17680 17072 "GET /capacitaciones/ HTTP/1.1" 200 5028
+INFO 2025-07-16 10:33:52,700 basehttp 17680 17072 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 10:33:56,220 basehttp 17680 17072 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 11:29:21,485 basehttp 17680 6056 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 11:29:28,534 basehttp 17680 6056 "GET /empleados/ HTTP/1.1" 200 5018
+INFO 2025-07-16 11:29:31,598 basehttp 17680 6056 "GET /capacitaciones/ HTTP/1.1" 200 5028
+INFO 2025-07-16 11:29:33,302 basehttp 17680 6056 "GET /reconocimientos/ HTTP/1.1" 200 0
+INFO 2025-07-16 11:29:39,570 basehttp 17680 6056 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 11:29:40,746 basehttp 17680 6056 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 11:29:42,147 basehttp 17680 6056 "GET /dashboard/ HTTP/1.1" 200 4927
+INFO 2025-07-16 11:29:48,093 basehttp 17680 6056 "GET /admin/ HTTP/1.1" 200 46674
