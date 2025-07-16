@@ -7,9 +7,7 @@ from django.db import models
 
 from django.db import models
 
-
 class Sede(models.Model):
-    """Sedes de la empresa"""
     codigo = models.CharField(max_length=10, unique=True)
     nombre = models.CharField(max_length=100)
     direccion = models.TextField()
@@ -27,9 +25,7 @@ class Sede(models.Model):
     def __str__(self):
         return f"{self.codigo} - {self.nombre}"
 
-
 class AreaEmpresa(models.Model):
-    """Áreas de la empresa"""
     codigo = models.CharField(max_length=20, unique=True)
     nombre = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField(blank=True)
@@ -46,9 +42,7 @@ class AreaEmpresa(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class Cargo(models.Model):
-    """Cargos de la empresa"""
     codigo = models.CharField(max_length=20, unique=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
@@ -62,6 +56,15 @@ class Cargo(models.Model):
     activo = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     
+    # NUEVO CAMPO: Rol automático
+    rol_automatico = models.ForeignKey(
+        'authentication.Rol', 
+        on_delete=models.SET_NULL, 
+        null=True, blank=True,
+        verbose_name="Rol del Sistema",
+        help_text="Rol que se asigna automáticamente a empleados con este cargo"
+    )
+    
     class Meta:
         db_table = 'cargos'
         unique_together = ['nombre', 'area']
@@ -69,4 +72,5 @@ class Cargo(models.Model):
         verbose_name_plural = 'Cargos'
     
     def __str__(self):
-        return f"{self.nombre} - {self.area.nombre}"
+        rol_info = f" → {self.rol_automatico.nombre}" if self.rol_automatico else ""
+        return f"{self.nombre} - {self.area.nombre}{rol_info}"

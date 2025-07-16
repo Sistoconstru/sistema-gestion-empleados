@@ -1,7 +1,6 @@
 # =============================================================================
 # apps/organizational/admin.py
 # =============================================================================
-
 from django.contrib import admin
 from .models import Sede, AreaEmpresa, Cargo
 
@@ -34,16 +33,20 @@ class AreaEmpresaAdmin(admin.ModelAdmin):
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'area', 'nivel_jerarquico', 'salario_minimo', 'activo')
-    list_filter = ('activo', 'area', 'nivel_jerarquico', 'requiere_licencia_conducir')
+    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'nivel_jerarquico', 'activo')
+    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico')
     search_fields = ('codigo', 'nombre', 'area__nombre')
     
     fieldsets = (
         ('Información Básica', {
             'fields': ('codigo', 'nombre', 'descripcion', 'activo')
         }),
-        ('Estructura', {
+        ('Estructura Organizacional', {
             'fields': ('area', 'cargo_jefe', 'nivel_jerarquico')
+        }),
+        ('Rol del Sistema', {
+            'fields': ('rol_automatico',),
+            'description': 'Rol que se asignará automáticamente a empleados con este cargo'
         }),
         ('Salarios', {
             'fields': ('salario_minimo', 'salario_maximo')
@@ -52,3 +55,7 @@ class CargoAdmin(admin.ModelAdmin):
             'fields': ('requiere_licencia_conducir', 'requiere_certificado_alturas')
         }),
     )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('area', 'rol_automatico')
+
