@@ -1,0 +1,433 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if object %}
+    Editar Empleado - {{ object.nombre_completo }}
+{% else %}
+    Nuevo Empleado
+{% endif %}
+- RRHH Pro
+{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">
+    {% if object %}Editar{% else %}Nuevo{% endif %}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    {% if object %}
+                        Editar Empleado - {{ object.nombre_completo }}
+                    {% else %}
+                        Registrar Nuevo Empleado
+                    {% endif %}
+                </h4>
+            </div>
+            
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    <!-- Información Básica -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-id-card text-primary me-2"></i>
+                                Información Básica
+                                <small class="text-muted">(Administrada por RRHH)</small>
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.tipo_documento.label }} <span class="text-danger">*</span></label>
+                                {{ form.tipo_documento }}
+                                {% if form.tipo_documento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.tipo_documento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.numero_documento.label }} <span class="text-danger">*</span></label>
+                                {{ form.numero_documento }}
+                                {% if form.numero_documento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.numero_documento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Solo números, sin espacios ni puntos</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.nombres.label }} <span class="text-danger">*</span></label>
+                                {{ form.nombres }}
+                                {% if form.nombres.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.nombres.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.apellidos.label }} <span class="text-danger">*</span></label>
+                                {{ form.apellidos }}
+                                {% if form.apellidos.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.apellidos.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.telefono_contacto.label }} <span class="text-danger">*</span></label>
+                                {{ form.telefono_contacto }}
+                                {% if form.telefono_contacto.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.telefono_contacto.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Formato: +57 300 123 4567 o 300 123 4567</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.fecha_ingreso.label }} <span class="text-danger">*</span></label>
+                                {{ form.fecha_ingreso }}
+                                {% if form.fecha_ingreso.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.fecha_ingreso.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.sede.label }} <span class="text-danger">*</span></label>
+                                {{ form.sede }}
+                                {% if form.sede.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.sede.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.cargo.label }} <span class="text-danger">*</span></label>
+                                {{ form.cargo }}
+                                {% if form.cargo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.cargo.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if object %}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.estado.label }}</label>
+                                {{ form.estado }}
+                                {% if form.estado.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.estado.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">El estado se determina automáticamente por la fecha de ingreso</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Información Personal -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-user text-success me-2"></i>
+                                Información Personal
+                                {% if not object %}
+                                <small class="text-muted">(Opcional en creación - El empleado la completará después)</small>
+                                {% else %}
+                                <small class="text-muted">(Completada por el empleado)</small>
+                                {% endif %}
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.fecha_nacimiento.label }}</label>
+                                {{ form.fecha_nacimiento }}
+                                {% if form.fecha_nacimiento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.fecha_nacimiento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Debe ser mayor de 16 años</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.ciudad_nacimiento.label }}</label>
+                                {{ form.ciudad_nacimiento }}
+                                {% if form.ciudad_nacimiento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.ciudad_nacimiento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.escolaridad.label }}</label>
+                                {{ form.escolaridad }}
+                                {% if form.escolaridad.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.escolaridad.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.correo_electronico.label }}</label>
+                                {{ form.correo_electronico }}
+                                {% if form.correo_electronico.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.correo_electronico.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Se usará para el acceso al sistema</div>
+                            </div>
+                        </div>
+                        
+                        {% if not object %}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.confirmar_email.label }}</label>
+                                {{ form.confirmar_email }}
+                                {% if form.confirmar_email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.confirmar_email.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Contacto de Emergencia -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-phone text-warning me-2"></i>
+                                Contacto de Emergencia
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.contacto_emergencia_nombre.label }}</label>
+                                {{ form.contacto_emergencia_nombre }}
+                                {% if form.contacto_emergencia_nombre.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contacto_emergencia_nombre.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.contacto_emergencia_telefono.label }}</label>
+                                {{ form.contacto_emergencia_telefono }}
+                                {% if form.contacto_emergencia_telefono.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contacto_emergencia_telefono.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Debe ser diferente al teléfono principal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información Adicional para Edición -->
+                    {% if object %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                Información del Sistema
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Fecha de Registro</label>
+                                <input type="text" class="form-control" value="{{ object.fecha_creacion|date:'d/m/Y H:i' }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Creado por</label>
+                                <input type="text" class="form-control" value="{{ object.creado_por.get_full_name|default:object.creado_por.username }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Antigüedad</label>
+                                <input type="text" class="form-control" value="{{ object.fecha_ingreso|timesince }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ID Único</label>
+                                <input type="text" class="form-control" value="{{ object.id }}" readonly>
+                                <div class="form-text">Identificador único en el sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Campos de Error Global -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Errores en el formulario:</strong>
+                        <ul class="mb-0 mt-2">
+                            {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Cancelar
+                        </a>
+                        
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                {% if object %}Actualizar{% else %}Crear{% endif %} Empleado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Ayuda e Información -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Información Importante
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Campos Obligatorios:</h6>
+                        <ul class="small">
+                            <li>Tipo y número de documento</li>
+                            <li>Nombres y apellidos completos</li>
+                            <li>Teléfono de contacto</li>
+                            <li>Fecha de ingreso</li>
+                            <li>Sede y cargo</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-success">Proceso de Registro:</h6>
+                        <ul class="small">
+                            <li>El administrador crea el empleado</li>
+                            <li>El empleado completa información personal</li>
+                            <li>Se generan credenciales de acceso</li>
+                            <li>Se asignan capacitaciones automáticamente</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formatear número de documento
+    const docInput = document.querySelector('#id_numero_documento');
+    if (docInput) {
+        docInput.addEventListener('input', function() {
+            // Remover caracteres no numéricos
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+    
+    // Formatear teléfonos
+    const phoneInputs = document.querySelectorAll('#id_telefono_contacto, #id_contacto_emergencia_telefono');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                // Aplicar formato básico
+                if (value.startsWith('57')) {
+                    value = '+' + value;
+                } else if (value.length === 10) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+                }
+                this.value = value;
+            }
+        });
+    });
+    
+    // Validación de confirmación de email
+    const emailInput = document.querySelector('#id_correo_electronico');
+    const confirmEmailInput = document.querySelector('#id_confirmar_email');
+    
+    if (emailInput && confirmEmailInput) {
+        function validateEmails() {
+            if (confirmEmailInput.value && emailInput.value !== confirmEmailInput.value) {
+                confirmEmailInput.setCustomValidity('Los correos electrónicos no coinciden');
+            } else {
+                confirmEmailInput.setCustomValidity('');
+            }
+        }
+        
+        emailInput.addEventListener('input', validateEmails);
+        confirmEmailInput.addEventListener('input', validateEmails);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Empleados - RRHH Pro{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item">Empleados</li>
+<li class="breadcrumb-item active">Listado</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-users text-primary me-2"></i>
+            Gestión de Empleados
+        </h1>
+        <p class="text-muted mb-0">Administra toda la información de los empleados</p>
+    </div>
+    <div>
+        {% if perms.employees.add_empleado %}
+        <a href="{% url 'employees:empleado_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>
+            Nuevo Empleado
+        </a>
+        {% endif %}
+        <div class="btn-group ms-2">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-download me-1"></i>Exportar
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="?export=excel"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                <li><a class="dropdown-item" href="?export=pdf"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Empleados</h5>
+                        <h3 class="mb-0">{{ total_empleados }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Activos</h5>
+                        <h3 class="mb-0">{{ empleados_activos }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">En Prueba</h5>
+                        <h3 class="mb-0">{{ empleados_prueba }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Nuevos (Este mes)</h5>
+                        <h3 class="mb-0">{{ nuevos_mes }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-plus fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros de Búsqueda -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Buscar</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    {{ form.search }}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                {{ form.estado }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Área</label>
+                {{ form.area }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Cargo</label>
+                {{ form.cargo }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sede</label>
+                {{ form.sede }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search me-1"></i>Buscar
+                </button>
+                <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-1"></i>Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Empleados -->
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>Empleados Registrados
+            </h5>
+            <span class="badge bg-secondary">
+                {{ page_obj.paginator.count }} empleados
+            </span>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Empleado</th>
+                    <th>Documento</th>
+                    <th>Cargo</th>
+                    <th>Área</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empleado in empleados %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle bg-primary text-white me-3">
+                                {{ empleado.nombres|first }}{{ empleado.apellidos|first }}
+                            </div>
+                            <div>
+                                <div class="fw-bold">
+                                    {{ empleado.nombre_completo }}
+                                </div>
+                                <div class="text-muted small">
+                                    {{ empleado.correo_electronico|default:"Sin email" }}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark">
+                            {{ empleado.tipo_documento.codigo }}
+                        </span>
+                        {{ empleado.numero_documento }}
+                    </td>
+                    <td>
+                        {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                            {% if cargo_actual %}
+                                {{ cargo_actual.cargo.nombre }}
+                            {% else %}
+                                <span class="text-muted">Sin cargo asignado</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                            {% if cargo_actual %}
+                                {{ cargo_actual.cargo.area.nombre }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        {{ empleado.fecha_ingreso|date:"d/m/Y" }}
+                        <div class="text-muted small">
+                            {% now "Y-m-d" as today %}
+                            {% with empleado.fecha_ingreso|timesince as tiempo %}
+                                {{ tiempo|truncatewords:2 }}
+                            {% endwith %}
+                        </div>
+                    </td>
+                    <td>
+                        {% if empleado.estado.codigo == 'ACTIVO' %}
+                            <span class="badge bg-success">{{ empleado.estado.nombre }}</span>
+                        {% elif empleado.estado.codigo == 'PRUEBA' %}
+                            <span class="badge bg-warning">{{ empleado.estado.nombre }}</span>
+                        {% elif empleado.estado.codigo == 'INACTIVO' %}
+                            <span class="badge bg-danger">{{ empleado.estado.nombre }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ empleado.estado.nombre }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'employees:empleado_detail' empleado.pk %}" 
+                               class="btn btn-outline-primary" 
+                               data-bs-toggle="tooltip" 
+                               title="Ver perfil">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if perms.employees.change_empleado %}
+                            <a href="{% url 'employees:empleado_edit' empleado.pk %}" 
+                               class="btn btn-outline-warning"
+                               data-bs-toggle="tooltip" 
+                               title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            {% endif %}
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" 
+                                        class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                        data-bs-toggle="dropdown">
+                                    <span class="visually-hidden">Más opciones</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">
+                                        <i class="fas fa-file-alt me-2"></i>Documentos
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#">
+                                        <i class="fas fa-history me-2"></i>Historial
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">
+                                        <i class="fas fa-download me-2"></i>Exportar
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-users fa-3x mb-3"></i>
+                            <div class="h5">No se encontraron empleados</div>
+                            <p>Intenta ajustar los filtros de búsqueda o 
+                               <a href="{% url 'employees:empleado_create' %}">crear un nuevo empleado</a>.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Paginación -->
+    {% if page_obj.has_other_pages %}
+    <div class="card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+                Mostrando {{ page_obj.start_index }}-{{ page_obj.end_index }} 
+                de {{ page_obj.paginator.count }} empleados
+            </div>
+            
+            <nav aria-label="Paginación">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Inicializar tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+</script>
+{% endblock %}

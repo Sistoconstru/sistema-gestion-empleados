@@ -1,0 +1,1020 @@
+{% comment %} {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Capacitaciones - RRHH Pro{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h2 mb-2">Mis Capacitaciones</h1>
+        <p class="text-muted">Gestiona tu desarrollo profesional y capacitaciones</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'training:mis_certificados' %}" class="btn btn-outline-success">
+            <i class="fas fa-certificate"></i>
+            Mis Certificados
+        </a>
+        <a href="{% url 'training:catalogo' %}" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+            Explorar Catálogo
+        </a>
+    </div>
+</div>
+
+<!-- Progress Overview -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ completadas }}</h3>
+                        <small>Completadas</small>
+                    </div>
+                    <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                </div>
+                <div class="mt-2 small">
+                    <i class="fas fa-arrow-up"></i>
+                    +2 este mes
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ en_progreso }}</h3>
+                        <small>En Progreso</small>
+                    </div>
+                    <i class="fas fa-clock fa-2x opacity-75"></i>
+                </div>
+                <div class="mt-2 small">
+                    <i class="fas fa-calendar"></i>
+                    2 vencen pronto
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ horas_acumuladas|default:48 }}</h3>
+                        <small>Horas Acumuladas</small>
+                    </div>
+                    <i class="fas fa-clock fa-2x opacity-75"></i>
+                </div>
+                <div class="mt-2 small">
+                    <i class="fas fa-arrow-up"></i>
+                    +12 este mes
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">92%</h3>
+                        <small>Promedio Calificación</small>
+                    </div>
+                    <i class="fas fa-star fa-2x opacity-75"></i>
+                </div>
+                <div class="mt-2 small">
+                    <i class="fas fa-arrow-up"></i>
+                    Excelente
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" 
+                           class="form-control" 
+                           name="search" 
+                           value="{{ request.GET.search }}"
+                           placeholder="Buscar capacitaciones...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="estado">
+                    <option value="">Todos los Estados</option>
+                    <option value="completado" {% if request.GET.estado == 'completado' %}selected{% endif %}>Completadas</option>
+                    <option value="en_progreso" {% if request.GET.estado == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                    <option value="no_iniciado" {% if request.GET.estado == 'no_iniciado' %}selected{% endif %}>Pendientes</option>
+                    <option value="vencido" {% if request.GET.estado == 'vencido' %}selected{% endif %}>Vencidas</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="tipo">
+                    <option value="">Todos los Tipos</option>
+                    <option value="obligatoria" {% if request.GET.tipo == 'obligatoria' %}selected{% endif %}>Obligatorias</option>
+                    <option value="opcional" {% if request.GET.tipo == 'opcional' %}selected{% endif %}>Opcionales</option>
+                    <option value="libre" {% if request.GET.tipo == 'libre' %}selected{% endif %}>Libres</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="proveedor">
+                    <option value="">Todos los Proveedores</option>
+                    <option value="interno" {% if request.GET.proveedor == 'interno' %}selected{% endif %}>Interno</option>
+                    <option value="comfama" {% if request.GET.proveedor == 'comfama' %}selected{% endif %}>Comfama</option>
+                    <option value="politecnico" {% if request.GET.proveedor == 'politecnico' %}selected{% endif %}>Politécnico</option>
+                    <option value="sena" {% if request.GET.proveedor == 'sena' %}selected{% endif %}>SENA</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Training Cards -->
+<div class="row">
+    {% for inscripcion in inscripciones %}
+    <div class="col-12 mb-4">
+        <div class="card training-card" data-training-id="{{ inscripcion.pk }}">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Header -->
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <h5 class="mb-0">
+                                        {% if inscripcion.capacitacion.tipo.codigo == 'OBLIGATORIA' %}🛡️{% elif inscripcion.capacitacion.tipo.codigo == 'LIBRE' %}💻{% else %}📚{% endif %}
+                                        {{ inscripcion.capacitacion.nombre }}
+                                    </h5>
+                                    
+                                    {% if inscripcion.estado == 'en_progreso' %}
+                                        <span class="badge bg-warning">En Progreso</span>
+                                    {% elif inscripcion.estado == 'aprobado' %}
+                                        <span class="badge bg-success">Completada</span>
+                                    {% elif inscripcion.estado == 'no_iniciado' %}
+                                        <span class="badge bg-secondary">No Iniciada</span>
+                                    {% elif inscripcion.estado == 'vencido' %}
+                                        <span class="badge bg-danger">Vencida</span>
+                                    {% endif %}
+                                    
+                                    {% if inscripcion.obligatoria %}
+                                        <span class="badge bg-danger">Obligatoria</span>
+                                    {% else %}
+                                        <span class="badge bg-info">Opcional</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-muted mb-2">{{ inscripcion.capacitacion.descripcion|truncatewords:20 }}</p>
+                                <div class="d-flex gap-4 small text-muted">
+                                    <span><i class="fas fa-building"></i> Proveedor Interno</span>
+                                    <span><i class="fas fa-clock"></i> {{ inscripcion.capacitacion.duracion_estimada_horas }} horas</span>
+                                    {% if inscripcion.fecha_limite %}
+                                    <span><i class="fas fa-calendar"></i> Vence: {{ inscripcion.fecha_limite|date:"d M Y" }}</span>
+                                    {% endif %}
+                                    <span><i class="fas fa-star"></i> {{ inscripcion.capacitacion.duracion_estimada_horas|mul:10 }} puntos</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                {% if inscripcion.estado == 'aprobado' and inscripcion.puntaje_final %}
+                                    <div class="h4 text-success mb-1">{{ inscripcion.puntaje_final }}%</div>
+                                    <small class="text-muted">Calificación</small>
+                                {% elif inscripcion.estado == 'en_progreso' %}
+                                    <div class="h4 text-warning mb-1">{{ progreso_actual|default:65 }}%</div>
+                                    <small class="text-muted">Completado</small>
+                                {% else %}
+                                    <div class="h4 text-muted mb-1">0%</div>
+                                    <small class="text-muted">Sin iniciar</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        {% if inscripcion.estado == 'en_progreso' %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Progreso General</span>
+                                <span>{{ progreso_actual|default:65 }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: {{ progreso_actual|default:65 }}%"></div>
+                            </div>
+                        </div>
+                        {% elif inscripcion.estado == 'aprobado' %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Calificación Final</span>
+                                <span>{{ inscripcion.puntaje_final|default:95 }}/100</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: {{ inscripcion.puntaje_final|default:95 }}%"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2">
+                            {% if inscripcion.estado == 'en_progreso' %}
+                                <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-primary">
+                                    <i class="fas fa-play"></i>
+                                    Continuar Capacitación
+                                </a>
+                                <a href="{% url 'training:progreso' inscripcion.pk %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-chart-line"></i>
+                                    Ver Progreso
+                                </a>
+                            {% elif inscripcion.estado == 'aprobado' %}
+                                <a href="{% url 'training:certificado' inscripcion.pk %}" class="btn btn-success">
+                                    <i class="fas fa-certificate"></i>
+                                    Ver Certificado
+                                </a>
+                                <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-redo"></i>
+                                    Repetir Curso
+                                </a>
+                            {% elif inscripcion.estado == 'no_iniciado' %}
+                                {% if inscripcion.aprobada_supervisor %}
+                                    <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-primary">
+                                        <i class="fas fa-play"></i>
+                                        Iniciar Capacitación
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-clock"></i>
+                                        Pendiente Aprobación
+                                    </button>
+                                {% endif %}
+                                <a href="{% url 'training:capacitacion_detail' inscripcion.capacitacion.pk %}" class="btn btn-outline-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Ver Detalles
+                                </a>
+                            {% elif inscripcion.estado == 'vencido' %}
+                                <button class="btn btn-outline-warning" onclick="requestExtension('{{ inscripcion.pk }}')">
+                                    <i class="fas fa-clock"></i>
+                                    Solicitar Extensión
+                                </button>
+                            {% endif %}
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="downloadMaterial('{{ inscripcion.pk }}')">
+                                        <i class="fas fa-download me-2"></i>Descargar Material
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="shareCourse('{{ inscripcion.pk }}')">
+                                        <i class="fas fa-share me-2"></i>Compartir
+                                    </a></li>
+                                    {% if inscripcion.estado == 'aprobado' %}
+                                    <li><a class="dropdown-item" href="#" onclick="shareAchievement('{{ inscripcion.pk }}')">
+                                        <i class="fas fa-trophy me-2"></i>Compartir Logro
+                                    </a></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item" href="#" onclick="addToFavorites('{{ inscripcion.pk }}')">
+                                        <i class="fas fa-bookmark me-2"></i>Agregar a Favoritos
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Thumbnail/Info -->
+                    <div class="col-md-4">
+                        <div class="course-thumbnail mb-3">
+                            {% if inscripcion.capacitacion.imagen %}
+                                <img src="{{ inscripcion.capacitacion.imagen.url }}" alt="Course thumbnail" class="img-fluid rounded">
+                            {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px;">
+                                    <i class="fas fa-graduation-cap fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Course Stats -->
+                        <div class="small text-muted">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Módulos:</span>
+                                <span>{{ inscripcion.capacitacion.modulocapacitacion_set.count }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Lecciones:</span>
+                                <span>{{ total_lecciones|default:12 }}</span>
+                            </div>
+                            {% if inscripcion.fecha_inicio %}
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Iniciado:</span>
+                                <span>{{ inscripcion.fecha_inicio|date:"d M Y" }}</span>
+                            </div>
+                            {% endif %}
+                            {% if inscripcion.tiempo_total_minutos %}
+                            <div class="d-flex justify-content-between">
+                                <span>Tiempo dedicado:</span>
+                                <span>{{ inscripcion.tiempo_total_minutos|div:60|floatformat:1 }}h</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <!-- Empty State -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-graduation-cap text-muted" style="font-size: 4rem;"></i>
+                <h4 class="mt-3">No tienes capacitaciones asignadas</h4>
+                <p class="text-muted">Explora el catálogo para encontrar capacitaciones disponibles</p>
+                <a href="{% url 'training:catalogo' %}" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Explorar Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav aria-label="Paginación de capacitaciones">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+        {% endif %}
+        
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function requestExtension(inscripcionId) {
+    if (confirm('¿Solicitar extensión de tiempo para esta capacitación?')) {
+        showNotification('Solicitud enviada', 'Se ha enviado la solicitud de extensión', 'info');
+        // Implementar lógica de extensión
+    }
+}
+
+function downloadMaterial(inscripcionId) {
+    showNotification('Descargando material', 'Preparando archivos para descarga...', 'info');
+    // Implementar descarga de material
+}
+
+function shareCourse(inscripcionId) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Capacitación en RRHH Pro',
+            text: 'Estoy tomando esta capacitación',
+            url: window.location.href
+        });
+    } else {
+        // Fallback para navegadores que no soportan Web Share API
+        alert('Función de compartir - implementar modal');
+    }
+}
+
+function shareAchievement(inscripcionId) {
+    showNotification('¡Logro compartido!', 'Has compartido tu logro en redes sociales', 'success');
+    // Implementar compartir logro
+}
+
+function addToFavorites(inscripcionId) {
+    showNotification('Agregado a favoritos', 'La capacitación se agregó a tus favoritos', 'success');
+    // Implementar favoritos
+}
+
+// Animaciones al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.training-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+});
+</script>
+{% endblock %}
+
+<!-- templates/training/player.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ capacitacion.nombre }} - Reproductor - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+.player-container {
+    height: calc(100vh - 140px);
+}
+
+.course-outline {
+    height: 100%;
+    overflow-y: auto;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+}
+
+.content-player {
+    height: 100%;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.lesson-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lesson-item:hover {
+    background: #e2e8f0;
+}
+
+.lesson-item.active {
+    background: #dbeafe;
+    border-left: 4px solid #2563eb;
+}
+
+.lesson-item.completed {
+    background: #f0fdf4;
+}
+
+.video-player {
+    background: #000;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.video-content {
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    background: linear-gradient(45deg, #1f2937, #374151);
+}
+
+.video-controls {
+    background: rgba(0,0,0,0.8);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.video-timeline {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.video-progress {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 2px;
+    transition: width 0.1s ease;
+}
+
+.module-header {
+    background: #334155;
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.module-content {
+    background: white;
+}
+
+.lesson-progress {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center gap-3">
+        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </a>
+        <div>
+            <h1 class="h4 mb-1">{{ inscripcion.capacitacion.nombre }}</h1>
+            <p class="text-muted mb-0">{{ current_lesson_title|default:"Módulo 1 - Lección 1" }} • {{ current_progress|default:35 }}% Completado</p>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning fs-6">{{ current_progress|default:35 }}% Completado</span>
+        <button class="btn btn-outline-secondary" onclick="toggleNotes()">
+            <i class="fas fa-sticky-note"></i>
+            Notas
+        </button>
+        <button class="btn btn-outline-info" onclick="toggleFullscreen()">
+            <i class="fas fa-expand"></i>
+            Pantalla Completa
+        </button>
+    </div>
+</div>
+
+<!-- Main Player -->
+<div class="player-container">
+    <div class="row g-3 h-100">
+        <!-- Course Outline -->
+        <div class="col-lg-3">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Contenido del Curso
+                    </h6>
+                    <small class="text-muted">{{ total_lecciones|default:15 }} lecciones</small>
+                </div>
+                <div class="course-outline">
+                    <!-- Module 1 -->
+                    <div class="module">
+                        <div class="module-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span>Módulo 1: Introducción</span>
+                                <i class="fas fa-check-circle text-success"></i>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-item completed">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-success text-white">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Conceptos básicos</div>
+                                        <small class="text-muted">10 min</small>
+                                    </div>
+                                    <i class="fas fa-play-circle text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item completed">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-success text-white">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Normatividad</div>
+                                        <small class="text-muted">15 min</small>
+                                    </div>
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item completed">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-success text-white">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Evaluación</div>
+                                        <small class="text-muted">5 min</small>
+                                    </div>
+                                    <i class="fas fa-clipboard-check text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 2 (Current) -->
+                    <div class="module">
+                        <div class="module-header bg-primary">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span>Módulo 2: EPP</span>
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-item completed">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-success text-white">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Tipos de EPP</div>
+                                        <small class="text-muted">20 min</small>
+                                    </div>
+                                    <i class="fas fa-play-circle text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item completed">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-success text-white">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Uso correcto</div>
+                                        <small class="text-muted">25 min</small>
+                                    </div>
+                                    <i class="fas fa-play-circle text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item active">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-primary text-white">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">Mantenimiento</div>
+                                        <small class="text-muted">15 min</small>
+                                    </div>
+                                    <i class="fas fa-play-circle text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-light border">
+                                        <i class="fas fa-circle text-muted"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium text-muted">Evaluación</div>
+                                        <small class="text-muted">10 min</small>
+                                    </div>
+                                    <i class="fas fa-lock text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Module 3 (Locked) -->
+                    <div class="module">
+                        <div class="module-header bg-secondary">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span>Módulo 3: Emergencias</span>
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="lesson-item">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-light border">
+                                        <i class="fas fa-circle text-muted"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium text-muted">Procedimientos</div>
+                                        <small class="text-muted">30 min</small>
+                                    </div>
+                                    <i class="fas fa-lock text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-light border">
+                                        <i class="fas fa-circle text-muted"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium text-muted">Evacuación</div>
+                                        <small class="text-muted">20 min</small>
+                                    </div>
+                                    <i class="fas fa-lock text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="lesson-item">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="lesson-progress bg-light border">
+                                        <i class="fas fa-circle text-muted"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium text-muted">Evaluación Final</div>
+                                        <small class="text-muted">15 min</small>
+                                    </div>
+                                    <i class="fas fa-lock text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Player -->
+        <div class="col-lg-9">
+            <div class="content-player">
+                <!-- Video Player -->
+                <div class="video-player">
+                    <div class="video-content">
+                        <div class="text-center">
+                            <i class="fas fa-hard-hat fa-4x mb-3"></i>
+                            <h3 class="mb-3">Mantenimiento de Equipos de Protección</h3>
+                            <p class="mb-4">Aprende las mejores prácticas para el cuidado y mantenimiento de tu EPP</p>
+                            <button class="btn btn-primary btn-lg" onclick="playVideo()">
+                                <i class="fas fa-play me-2"></i>
+                                Reproducir Video
+                            </button>
+                        </div>
+                    </div>
+                    <div class="video-controls">
+                        <button class="btn btn-link text-white p-0 me-2" onclick="playPauseVideo()">
+                            <i class="fas fa-play" id="play-pause-icon"></i>
+                        </button>
+                        <span class="text-white small me-2" id="current-time">03:45</span>
+                        <div class="video-timeline" onclick="seekVideo(event)">
+                            <div class="video-progress" id="video-progress" style="width: 35%"></div>
+                        </div>
+                        <span class="text-white small ms-2 me-3" id="total-time">10:30</span>
+                        <button class="btn btn-link text-white p-0 me-2" onclick="toggleMute()">
+                            <i class="fas fa-volume-up" id="volume-icon"></i>
+                        </button>
+                        <button class="btn btn-link text-white p-0" onclick="toggleFullscreen()">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Lesson Content -->
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Transcripción y Notas</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="downloadPDF()">
+                                <i class="fas fa-download"></i>
+                                Descargar PDF
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm" onclick="toggleBookmark()">
+                                <i class="fas fa-bookmark"></i>
+                                Marcar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-light p-4 rounded mb-4">
+                        <p>En esta lección aprenderemos sobre la importancia del mantenimiento preventivo de los equipos de protección personal. Un EPP en mal estado puede comprometer seriamente la seguridad del trabajador...</p>
+                        <p class="mt-3">Los principales aspectos a considerar son:</p>
+                        <ul class="mt-2">
+                            <li>Inspección visual diaria</li>
+                            <li>Limpieza y desinfección</li>
+                            <li>Almacenamiento adecuado</li>
+                            <li>Reemplazo oportuno</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Progress Tracking -->
+                    <div class="bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded p-3 mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="fas fa-clock text-primary"></i>
+                            <strong class="text-primary">Progreso de esta lección</strong>
+                        </div>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar" style="width: 70%"></div>
+                        </div>
+                        <small class="text-muted">7 de 10 minutos completados</small>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-outline-secondary" onclick="previousLesson()">
+                            <i class="fas fa-chevron-left"></i>
+                            Lección Anterior
+                        </button>
+                        
+                        <button class="btn btn-success" onclick="markAsCompleted()">
+                            <i class="fas fa-check"></i>
+                            Marcar como Completada
+                        </button>
+                        
+                        <button class="btn btn-primary" onclick="nextLesson()">
+                            Siguiente Lección
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notes Panel (Hidden by default) -->
+<div id="notes-panel" class="position-fixed end-0 top-0 h-100 bg-white shadow-lg" style="width: 300px; transform: translateX(100%); transition: transform 0.3s ease; z-index: 1050;">
+    <div class="p-3 border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Mis Notas</h6>
+            <button class="btn btn-sm btn-outline-secondary" onclick="toggleNotes()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="p-3">
+        <textarea class="form-control" rows="20" placeholder="Escribe tus notas aquí..." id="lesson-notes"></textarea>
+        <button class="btn btn-primary btn-sm mt-2 w-100" onclick="saveNotes()">
+            <i class="fas fa-save"></i>
+            Guardar Notas
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let isPlaying = false;
+let currentTime = 225; // 3:45 in seconds
+let totalTime = 630; // 10:30 in seconds
+let videoInterval;
+
+function playVideo() {
+    const videoContent = document.querySelector('.video-content');
+    videoContent.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border text-white mb-3" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p>Cargando video...</p>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        videoContent.innerHTML = `
+            <video width="100%" height="100%" controls autoplay>
+                <source src="#" type="video/mp4">
+                Tu navegador no soporta el elemento video.
+            </video>
+        `;
+        isPlaying = true;
+        startVideoTracking();
+    }, 2000);
+}
+
+function playPauseVideo() {
+    isPlaying = !isPlaying;
+    const icon = document.getElementById('play-pause-icon');
+    icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+    
+    if (isPlaying) {
+        startVideoTracking();
+    } else {
+        stopVideoTracking();
+    }
+}
+
+function startVideoTracking() {
+    videoInterval = setInterval(() => {
+        if (isPlaying && currentTime < totalTime) {
+            currentTime++;
+            updateVideoProgress();
+        }
+    }, 1000);
+}
+
+function stopVideoTracking() {
+    clearInterval(videoInterval);
+}
+
+function updateVideoProgress() {
+    const progress = (currentTime / totalTime) * 100;
+    document.getElementById('video-progress').style.width = `${progress}%`;
+    
+    document.getElementById('current-time').textContent = formatTime(currentTime);
+    document.getElementById('total-time').textContent = formatTime(totalTime);
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+function seekVideo(event) {
+    const timeline = event.currentTarget;
+    const rect = timeline.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const percentage = clickX / rect.width;
+    currentTime = Math.floor(totalTime * percentage);
+    updateVideoProgress();
+}
+
+function toggleMute() {
+    const icon = document.getElementById('volume-icon');
+    icon.className = icon.className.includes('volume-up') ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+}
+
+function toggleFullscreen() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        document.documentElement.requestFullscreen();
+    }
+}
+
+function toggleNotes() {
+    const panel = document.getElementById('notes-panel');
+    const isVisible = panel.style.transform === 'translateX(0px)';
+    panel.style.transform = isVisible ? 'translateX(100%)' : 'translateX(0px)';
+}
+
+function saveNotes() {
+    const notes = document.getElementById('lesson-notes').value;
+    if (notes.trim()) {
+        showNotification('Notas guardadas', 'Tus notas se han guardado correctamente', 'success');
+        // Implementar guardado de notas
+    }
+}
+
+function markAsCompleted() {
+    if (confirm('¿Marcar esta lección como completada?')) {
+        showNotification('Lección completada', '¡Has ganado 10 puntos!', 'success');
+        // Actualizar UI
+        setTimeout(() => {
+            nextLesson();
+        }, 1500);
+    }
+}
+
+function previousLesson() {
+    showNotification('Cargando lección anterior', '', 'info');
+    // Implementar navegación
+}
+
+function nextLesson() {
+    showNotification('Cargando siguiente lección', '', 'info');
+    // Implementar navegación
+}
+
+function downloadPDF() {
+    showNotification('Descargando PDF', 'El material se está descargando...', 'info');
+}
+
+function toggleBookmark() {
+    showNotification('Marcador agregado', 'Has marcado esta sección', 'success');
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateVideoProgress();
+    
+    // Lesson item click handlers
+    document.querySelectorAll('.lesson-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (!this.classList.contains('active') && !this.querySelector('.fa-lock')) {
+                document.querySelectorAll('.lesson-item').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                showNotification('Cargando lección', '', 'info');
+            }
+        });
+    });
+});
+
+// Track time spent
+let startTime = Date.now();
+window.addEventListener('beforeunload', function() {
+    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+    // Send time tracking data
+    console.log(`Time spent: ${timeSpent} seconds`);
+});
+</script>
+{% endblock %} {% endcomment %}

@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ empleado.nombre_completo }} - Perfil de Empleado{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">{{ empleado.nombre_completo }}</li>
+{% endblock %}
+
+{% block content %}
+<!-- Header del Perfil -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-large bg-primary text-white me-4">
+                                {{ empleado.nombres|first }}{{ empleado.apellidos|first }}
+                            </div>
+                            <div>
+                                <h2 class="mb-1">{{ empleado.nombre_completo }}</h2>
+                                <p class="mb-1">
+                                    {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                                        {% if cargo_actual %}
+                                            <span class="fw-bold">{{ cargo_actual.cargo.nombre }}</span>
+                                            <span class="text-muted">• {{ cargo_actual.cargo.area.nombre }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Sin cargo asignado</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </p>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="badge bg-{{ empleado.estado.codigo|lower == 'activo'|yesno:'success,warning' }} fs-6">
+                                        {{ empleado.estado.nombre }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Ingresó {{ empleado.fecha_ingreso|date:"d/m/Y" }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ empleado.fecha_ingreso|timesince }} en la empresa
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        {% if perms.employees.change_empleado %}
+                        <a href="{% url 'employees:empleado_edit' empleado.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i>
+                            Editar Perfil
+                        </a>
+                        {% endif %}
+                        <div class="btn-group ms-2">
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-download me-2"></i>Exportar Perfil
+                                </a></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-print me-2"></i>Imprimir
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-history me-2"></i>Historial de Cambios
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Columna Izquierda -->
+    <div class="col-md-4">
+        <!-- Información de Contacto -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-address-card me-2"></i>
+                    Información de Contacto
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small">Email</label>
+                    <div class="fw-bold">
+                        {% if empleado.correo_electronico %}
+                            <a href="mailto:{{ empleado.correo_electronico }}">
+                                {{ empleado.correo_electronico }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No registrado</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small">Teléfono</label>
+                    <div class="fw-bold">
+                        <a href="tel:{{ empleado.telefono_contacto }}">
+                            {{ empleado.telefono_contacto }}
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small">Documento</label>
+                    <div class="fw-bold">
+                        {{ empleado.tipo_documento.nombre }}: {{ empleado.numero_documento }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small">Sede</label>
+                    <div class="fw-bold">{{ empleado.sede.nombre }}</div>
+                    <div class="text-muted small">{{ empleado.sede.ciudad }}, {{ empleado.sede.departamento }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Personal -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Información Personal
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if empleado.fecha_nacimiento %}
+                <div class="mb-3">
+                    <label class="text-muted small">Fecha de Nacimiento</label>
+                    <div class="fw-bold">
+                        {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
+                        <span class="text-muted">
+                            ({{ empleado.fecha_nacimiento|age }} años)
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.ciudad_nacimiento %}
+                <div class="mb-3">
+                    <label class="text-muted small">Ciudad de Nacimiento</label>
+                    <div class="fw-bold">{{ empleado.ciudad_nacimiento }}</div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.escolaridad %}
+                <div class="mb-3">
+                    <label class="text-muted small">Escolaridad</label>
+                    <div class="fw-bold">{{ empleado.escolaridad.nivel }}</div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.contacto_emergencia_nombre %}
+                <div class="mb-3">
+                    <label class="text-muted small">Contacto de Emergencia</label>
+                    <div class="fw-bold">{{ empleado.contacto_emergencia_nombre }}</div>
+                    {% if empleado.contacto_emergencia_telefono %}
+                    <div class="text-muted">
+                        <a href="tel:{{ empleado.contacto_emergencia_telefono }}">
+                            {{ empleado.contacto_emergencia_telefono }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if not empleado.fecha_nacimiento and not empleado.ciudad_nacimiento %}
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <div>Información personal pendiente</div>
+                    <small>El empleado debe completar estos datos</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Resumen de Actividad
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <div class="h4 text-success">{{ capacitaciones.count }}</div>
+                            <div class="text-muted small">Capacitaciones</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-primary">{{ evaluaciones.count }}</div>
+                        <div class="text-muted small">Evaluaciones</div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <div class="h4 text-warning">{{ documentos_completos }}</div>
+                            <div class="text-muted small">Docs. Completos</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-danger">{{ documentos_pendientes }}</div>
+                        <div class="text-muted small">Docs. Pendientes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna Derecha -->
+    <div class="col-md-8">
+        <!-- Pestañas de Contenido -->
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" role="tab">
+                    <i class="fas fa-history me-1"></i>Historial de Cargos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="capacitaciones-tab" data-bs-toggle="tab" data-bs-target="#capacitaciones" type="button" role="tab">
+                    <i class="fas fa-graduation-cap me-1"></i>Capacitaciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="evaluaciones-tab" data-bs-toggle="tab" data-bs-target="#evaluaciones" type="button" role="tab">
+                    <i class="fas fa-clipboard-check me-1"></i>Evaluaciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="documentos-tab" data-bs-toggle="tab" data-bs-target="#documentos" type="button" role="tab">
+                    <i class="fas fa-file-alt me-1"></i>Documentos
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content border border-top-0 p-4" id="profileTabsContent">
+            <!-- Historial de Cargos -->
+            <div class="tab-pane fade show active" id="historial" role="tabpanel">
+                <div class="timeline">
+                    {% for historial in historial_cargos %}
+                    <div class="timeline-item {% if historial.activo %}current{% endif %}">
+                        <div class="timeline-marker {% if historial.activo %}bg-success{% else %}bg-secondary{% endif %}"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ historial.cargo.nombre }}</h6>
+                                    <p class="text-muted mb-1">{{ historial.cargo.area.nombre }}</p>
+                                    <small class="text-muted">
+                                        {{ historial.fecha_inicio|date:"d/m/Y" }} - 
+                                        {% if historial.activo %}
+                                            Actual
+                                        {% elif historial.fecha_fin %}
+                                            {{ historial.fecha_fin|date:"d/m/Y" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% if historial.activo %}
+                                <span class="badge bg-success">Actual</span>
+                                {% endif %}
+                            </div>
+                            {% if historial.motivo_cambio %}
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <strong>Motivo:</strong> {{ historial.motivo_cambio }}
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-briefcase fa-2x mb-2"></i>
+                        <div>No hay historial de cargos registrado</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Capacitaciones -->
+            <div class="tab-pane fade" id="capacitaciones" role="tabpanel">
+                {% for capacitacion in capacitaciones %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-title">{{ capacitacion.capacitacion.nombre }}</h6>
+                                <p class="card-text text-muted">{{ capacitacion.capacitacion.descripcion|truncatewords:20 }}</p>
+                                <small class="text-muted">
+                                    Inscrito: {{ capacitacion.fecha_inscripcion|date:"d/m/Y" }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% if capacitacion.estado == 'completado' %}
+                                    <span class="badge bg-success">Completada</span>
+                                {% elif capacitacion.estado == 'en_progreso' %}
+                                    <span class="badge bg-warning">En Progreso</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ capacitacion.get_estado_display }}</span>
+                                {% endif %}
+                                {% if capacitacion.puntaje_final %}
+                                <div class="mt-1">
+                                    <small class="text-muted">Puntaje: {{ capacitacion.puntaje_final }}%</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-graduation-cap fa-2x mb-2"></i>
+                    <div>No hay capacitaciones registradas</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Evaluaciones -->
+            <div class="tab-pane fade" id="evaluaciones" role="tabpanel">
+                {% for evaluacion in evaluaciones %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-title">{{ evaluacion.evaluacion.nombre }}</h6>
+                                <p class="card-text text-muted">Período: {{ evaluacion.periodo_evaluacion }}</p>
+                                <small class="text-muted">
+                                    Asignada: {{ evaluacion.fecha_asignacion|date:"d/m/Y" }}
+                                    {% if evaluacion.evaluador %}
+                                    • Evaluador: {{ evaluacion.evaluador.nombre_completo }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% if evaluacion.estado == 'completada' %}
+                                    <span class="badge bg-success">Completada</span>
+                                    {% if evaluacion.puntaje_total %}
+                                    <div class="mt-1">
+                                        <small class="text-muted">Puntaje: {{ evaluacion.puntaje_total }}%</small>
+                                    </div>
+                                    {% endif %}
+                                {% elif evaluacion.estado == 'en_progreso' %}
+                                    <span class="badge bg-warning">En Progreso</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ evaluacion.get_estado_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-clipboard-check fa-2x mb-2"></i>
+                    <div>No hay evaluaciones registradas</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Documentos -->
+            <div class="tab-pane fade" id="documentos" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Documentos Obligatorios</h6>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Cédula de Ciudadanía
+                                <span class="badge bg-success">✓ Completo</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Certificado EPS
+                                <span class="badge bg-success">✓ Completo</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Certificado AFP
+                                <span class="badge bg-warning">⚠ Por vencer</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Documentos Opcionales</h6>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Certificados Laborales
+                                <span class="badge bg-success">✓ 2 archivos</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Referencias Personales
+                                <span class="badge bg-secondary">Sin cargar</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Estudios
+                                <span class="badge bg-success">✓ 1 archivo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-upload me-1"></i>
+                        Gestionar Documentos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #dee2e6;
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -30px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #dee2e6;
+}
+
+.timeline-item.current .timeline-marker {
+    box-shadow: 0 0 0 2px #198754;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border-left: 3px solid #dee2e6;
+}
+
+.timeline-item.current .timeline-content {
+    border-left-color: #198754;
+}
+</style>
+{% endblock %}

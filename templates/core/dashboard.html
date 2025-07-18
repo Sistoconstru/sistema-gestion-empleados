@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - RRHH Pro{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">Dashboard</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    ¡Bienvenido{% if user.first_name %}, {{ user.first_name }}{% endif %}! 👋
+                </h1>
+                <p class="text-muted mb-0">Panel de control del sistema de gestión de empleados</p>
+            </div>
+            <div>
+                <span class="badge bg-success fs-6">
+                    <i class="fas fa-circle me-1"></i>Sistema Activo
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Total Empleados</h5>
+                        <h3 class="mb-0">127</h3>
+                        <small class="opacity-75">+5 este mes</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Activos</h5>
+                        <h3 class="mb-0">98</h3>
+                        <small class="opacity-75">77% del total</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">En Prueba</h5>
+                        <h3 class="mb-0">15</h3>
+                        <small class="opacity-75">Últimos 60 días</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Capacitaciones</h5>
+                        <h3 class="mb-0">45</h3>
+                        <small class="opacity-75">Activas</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-graduation-cap fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Accesos Rápidos -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Accesos Rápidos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="fas fa-users fa-2x d-block mb-2"></i>
+                            <strong>Ver Empleados</strong>
+                            <div class="small text-muted">Gestionar personal</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-success w-100 py-3">
+                            <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
+                            <strong>Nuevo Empleado</strong>
+                            <div class="small text-muted">Registrar personal</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="#" class="btn btn-outline-warning w-100 py-3">
+                            <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
+                            <strong>Capacitaciones</strong>
+                            <div class="small text-muted">Gestionar formación</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="#" class="btn btn-outline-info w-100 py-3">
+                            <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
+                            <strong>Reportes</strong>
+                            <div class="small text-muted">Análisis y datos</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actividad Reciente y Alertas -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>Actividad Reciente
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-success"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Nuevo empleado registrado</strong>
+                                    <div class="text-muted">Ana García López - Coordinadora RRHH</div>
+                                </div>
+                                <small class="text-muted">Hace 2 horas</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-primary"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Capacitación completada</strong>
+                                    <div class="text-muted">Juan Pérez - Seguridad Industrial</div>
+                                </div>
+                                <small class="text-muted">Hace 4 horas</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-warning"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Documento por vencer</strong>
+                                    <div class="text-muted">Licencia de conducir - Carlos López</div>
+                                </div>
+                                <small class="text-muted">Hace 1 día</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="#" class="btn btn-outline-primary btn-sm">
+                        Ver todas las actividades
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Alertas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bell me-2"></i>Alertas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning alert-sm mb-2">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>3 documentos</strong> por vencer esta semana
+                </div>
+                
+                <div class="alert alert-info alert-sm mb-2">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    <strong>5 empleados</strong> con capacitaciones pendientes
+                </div>
+                
+                <div class="alert alert-danger alert-sm mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>
+                    <strong>2 evaluaciones</strong> vencidas
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estado del Sistema -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>Estado del Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Base de Datos</span>
+                    <span class="badge bg-success">Conectado</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Notificaciones</span>
+                    <span class="badge bg-success">Activo</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Respaldos</span>
+                    <span class="badge bg-success">Al día</span>
+                </div>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <small class="text-muted">
+                        Última actualización: {{ "now"|date:"d/m/Y H:i" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.alert-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn.py-3 {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,543 @@
+<!-- templates/reports/dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reportes y Analytics - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.metric-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.filter-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border: none;
+    color: white;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #0f877a 0%, #32d969 100%);
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h2 mb-2">📊 Reportes y Analytics</h1>
+        <p class="text-muted">Panel de control con métricas y reportes del sistema</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn export-btn" onclick="exportAllReports()">
+            <i class="fas fa-download"></i>
+            Exportar Todo
+        </button>
+        <button class="btn btn-primary" onclick="scheduleReport()">
+            <i class="fas fa-clock"></i>
+            Programar Reporte
+        </button>
+    </div>
+</div>
+
+<!-- Filters Card -->
+<div class="card filter-card text-white mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">
+            <i class="fas fa-filter me-2"></i>
+            Filtros de Análisis
+        </h5>
+        <form id="filters-form" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Período</label>
+                <select class="form-select" name="periodo" id="periodo-filter">
+                    <option value="mes">Este Mes</option>
+                    <option value="trimestre" selected>Este Trimestre</option>
+                    <option value="semestre">Este Semestre</option>
+                    <option value="año">Este Año</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Área</label>
+                <select class="form-select" name="area">
+                    <option value="">Todas las Áreas</option>
+                    <option value="produccion">Producción</option>
+                    <option value="administracion">Administración</option>
+                    <option value="ventas">Ventas</option>
+                    <option value="rrhh">RRHH</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Sede</label>
+                <select class="form-select" name="sede">
+                    <option value="">Todas las Sedes</option>
+                    <option value="principal">Sede Principal</option>
+                    <option value="planta2">Planta 2</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="button" class="btn btn-light w-100" onclick="applyFilters()">
+                    <i class="fas fa-search"></i>
+                    Aplicar Filtros
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Total Empleados</h6>
+                        <h2 class="mb-0" id="total-empleados">{{ total_empleados|default:127 }}</h2>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up"></i> +5% vs mes anterior
+                        </small>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 rounded p-3">
+                        <i class="fas fa-users text-primary fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Capacitaciones Activas</h6>
+                        <h2 class="mb-0" id="capacitaciones-activas">{{ capacitaciones_activas|default:24 }}</h2>
+                        <small class="text-info">
+                            <i class="fas fa-graduation-cap"></i> 89% completion rate
+                        </small>
+                    </div>
+                    <div class="bg-success bg-opacity-10 rounded p-3">
+                        <i class="fas fa-graduation-cap text-success fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Evaluaciones Pendientes</h6>
+                        <h2 class="mb-0" id="evaluaciones-pendientes">{{ evaluaciones_pendientes|default:8 }}</h2>
+                        <small class="text-warning">
+                            <i class="fas fa-clock"></i> 3 vencen esta semana
+                        </small>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 rounded p-3">
+                        <i class="fas fa-clipboard-check text-warning fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Satisfacción General</h6>
+                        <h2 class="mb-0" id="satisfaccion-general">{{ satisfaccion_general|default:4.2 }}/5</h2>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up"></i> +0.3 vs trimestre anterior
+                        </small>
+                    </div>
+                    <div class="bg-info bg-opacity-10 rounded p-3">
+                        <i class="fas fa-heart text-info fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <!-- Employee Growth Chart -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Crecimiento de Empleados
+                </h5>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary active" onclick="changeChartPeriod('month')">Mes</button>
+                    <button class="btn btn-outline-primary" onclick="changeChartPeriod('quarter')">Trimestre</button>
+                    <button class="btn btn-outline-primary" onclick="changeChartPeriod('year')">Año</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="employeeGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Department Distribution -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Distribución por Área
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">Producción</span>
+                        <span class="badge bg-primary">45%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">Administración</span>
+                        <span class="badge bg-success">25%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">Ventas</span>
+                        <span class="badge bg-warning">20%</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small">RRHH</span>
+                        <span class="badge bg-info">10%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Training & Performance Row -->
+<div class="row mb-4">
+    <!-- Training Completion -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Completación de Capacitaciones
+                </h5>
+                <button class="btn btn-outline-secondary btn-sm" onclick="exportTrainingReport()">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="trainingChart"></canvas>
+                </div>
+                <div class="row text-center mt-3">
+                    <div class="col-4">
+                        <h4 class="text-success mb-0">89%</h4>
+                        <small class="text-muted">Completadas</small>
+                    </div>
+                    <div class="col-4">
+                        <h4 class="text-warning mb-0">8%</h4>
+                        <small class="text-muted">En Progreso</small>
+                    </div>
+                    <div class="col-4">
+                        <h4 class="text-danger mb-0">3%</h4>
+                        <small class="text-muted">Vencidas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Trends -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Tendencias de Desempeño
+                </h5>
+                <button class="btn btn-outline-secondary btn-sm" onclick="exportPerformanceReport()">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="row text-center mt-3">
+                    <div class="col-3">
+                        <h4 class="text-success mb-0">23%</h4>
+                        <small class="text-muted">Excelente</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-primary mb-0">45%</h4>
+                        <small class="text-muted">Muy Bueno</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-warning mb-0">28%</h4>
+                        <small class="text-muted">Satisfactorio</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-danger mb-0">4%</h4>
+                        <small class="text-muted">Mejorable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Reports Table -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-table me-2"></i>
+            Reportes Detallados
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover" id="reports-table">
+                <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th>Empleados</th>
+                        <th>Capacitaciones</th>
+                        <th>Evaluaciones</th>
+                        <th>Satisfacción</th>
+                        <th>Rotación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Producción</strong>
+                            <br><small class="text-muted">57 empleados</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                            </div>
+                            <small>85% activos</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" style="width: 92%"></div>
+                            </div>
+                            <small>92% completadas</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 78%"></div>
+                            </div>
+                            <small>78% al día</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">4.3/5</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">2.1%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewAreaDetail('produccion')">
+                                <i class="fas fa-eye"></i>
+                                Ver Detalle
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Administración</strong>
+                            <br><small class="text-muted">32 empleados</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 96%"></div>
+                            </div>
+                            <small>96% activos</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" style="width: 89%"></div>
+                            </div>
+                            <small>89% completadas</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 95%"></div>
+                            </div>
+                            <small>95% al día</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">4.5/5</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">1.2%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewAreaDetail('administracion')">
+                                <i class="fas fa-eye"></i>
+                                Ver Detalle
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Ventas</strong>
+                            <br><small class="text-muted">25 empleados</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 88%"></div>
+                            </div>
+                            <small>88% activos</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 76%"></div>
+                            </div>
+                            <small>76% completadas</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 82%"></div>
+                            </div>
+                            <small>82% al día</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning">3.9/5</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning">3.8%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewAreaDetail('ventas')">
+                                <i class="fas fa-eye"></i>
+                                Ver Detalle
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>RRHH</strong>
+                            <br><small class="text-muted">13 empleados</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                            </div>
+                            <small>100% activos</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 98%"></div>
+                            </div>
+                            <small>98% completadas</small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                            </div>
+                            <small>100% al día</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">4.7/5</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">0.5%</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewAreaDetail('rrhh')">
+                                <i class="fas fa-eye"></i>
+                                Ver Detalle
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h6>Reporte de Empleados</h6>
+                <button class="btn btn-primary btn-sm" onclick="generateEmployeeReport()">
+                    Generar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-graduation-cap fa-3x text-success mb-3"></i>
+                <h6>Reporte de Capacitaciones</h6>
+                <button class="btn btn-success btn-sm" onclick="generateTrainingReport()">
+                    Generar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-chart-bar fa-3x text-warning mb-3"></i>
+                <h6>Reporte de Desempeño</h6>
+                <button class="btn btn-warning btn-sm" onclick="generatePerformanceReport()">
+                    Generar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-heart fa-3x text-info mb-3"></i>
+                <h6>Reporte de Clima</h6>
+                <button class="btn btn-info btn-sm" onclick="generateClimateReport()">
+                    Generar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
