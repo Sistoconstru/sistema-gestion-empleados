@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.employees',
+    'apps.organizational',
+    'apps.authentication',
 
 ]
 
@@ -85,6 +87,9 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
+# Modelo de usuario personalizado
+AUTH_USER_MODEL = 'authentication.Usuario'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -122,3 +127,26 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# =============================================================================
+# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS PARA SETTINGS.PY
+# Agregar al final de tu archivo settings.py
+# =============================================================================
+
+import os
+
+
+
+# Directorios donde Django buscará archivos estáticos
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Carpeta static en la raíz del proyecto
+]
+
+# Directorio donde se recopilarán todos los archivos estáticos para producción
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración de archivos de media (uploads de usuarios)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+

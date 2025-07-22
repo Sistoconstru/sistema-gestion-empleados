@@ -1,6 +1,6 @@
 /**
  * =============================================================================
- * Custom JavaScript for RRHH Pro Sistema de Gestión de Empleados
+ * templates/static/js/Custom JavaScript for RRHH Pro Sistema de Gestión de Empleados
  * =============================================================================
  */
 

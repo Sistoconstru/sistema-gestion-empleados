@@ -63,7 +63,16 @@ class EstadoEmpleado(models.Model):
 class Empleado(models.Model):
     """Modelo principal de empleados"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    usuario = models.OneToOneField('authentication.Usuario', on_delete=models.CASCADE)
+    
+    # CAMBIO IMPORTANTE: Hacer usuario opcional
+    usuario = models.OneToOneField(
+        'authentication.Usuario', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        help_text="Usuario del sistema (se crea automáticamente)"
+    )
+    
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.CASCADE)
     numero_documento = models.CharField(max_length=20, unique=True)
     nombres = models.CharField(max_length=100)
@@ -72,16 +81,18 @@ class Empleado(models.Model):
     fecha_ingreso = models.DateField()
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoEmpleado, on_delete=models.CASCADE)
+    
     fecha_nacimiento = models.DateField(null=True, blank=False)
     ciudad_nacimiento = models.CharField(max_length=50, blank=True)
     escolaridad = models.ForeignKey(Escolaridad, on_delete=models.SET_NULL, null=True, blank=True)
     contacto_emergencia_nombre = models.CharField(max_length=100, blank=True)
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)
     correo_electronico = models.EmailField(blank=True)
+    
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     creado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='empleados_creados')
-    
+
     class Meta:
         db_table = 'empleados'
         verbose_name = 'Empleado'
@@ -91,10 +102,10 @@ class Empleado(models.Model):
             models.Index(fields=['estado']),
             models.Index(fields=['sede']),
         ]
-    
+
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
-    
+
     @property
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}"

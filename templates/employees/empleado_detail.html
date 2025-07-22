@@ -33,9 +33,16 @@
                                     {% endwith %}
                                 </p>
                                 <div class="d-flex align-items-center gap-3">
-                                    <span class="badge bg-{{ empleado.estado.codigo|lower == 'activo'|yesno:'success,warning' }} fs-6">
-                                        {{ empleado.estado.nombre }}
-                                    </span>
+                                    {% if empleado.estado.codigo|lower == 'activo' %}
+                                        <span class="badge bg-success fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% elif empleado.estado.codigo|lower == 'prueba' %}
+                                        <span class="badge bg-warning fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% elif empleado.estado.codigo|lower == 'inactivo' %}
+                                        <span class="badge bg-danger fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% endif %}
+                                    
                                     <span class="text-muted">
                                         <i class="fas fa-calendar me-1"></i>
                                         Ingresó {{ empleado.fecha_ingreso|date:"d/m/Y" }}
@@ -60,15 +67,39 @@
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-download me-2"></i>Exportar Perfil
+                                <li><h6 class="dropdown-header">Exportar Perfil</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_export_individual' empleado.pk %}?format=pdf">
+                                    <i class="fas fa-file-pdf me-2 text-danger"></i>Perfil Completo (PDF)
                                 </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-print me-2"></i>Imprimir
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_export_individual' empleado.pk %}?format=excel">
+                                    <i class="fas fa-file-excel me-2 text-success"></i>Datos Básicos (Excel)
                                 </a></li>
+                                
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-history me-2"></i>Historial de Cambios
+                                <li><h6 class="dropdown-header">Imprimir</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_print' empleado.pk %}?autoprint=true" target="_blank">
+                                    <i class="fas fa-print me-2 text-primary"></i>Imprimir Perfil
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_print' empleado.pk %}" target="_blank">
+                                    <i class="fas fa-eye me-2 text-info"></i>Vista Previa de Impresión
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Historial</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_historial_export' empleado.pk %}?format=pdf">
+                                    <i class="fas fa-history me-2 text-warning"></i>Historial de Cargos (PDF)
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_historial_export' empleado.pk %}?format=excel">
+                                    <i class="fas fa-table me-2 text-success"></i>Historial de Cargos (Excel)
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Otras Acciones</h6></li>
+                                <li><a class="dropdown-item" href="#" onclick="copiarUrlPerfil()">
+                                    <i class="fas fa-link me-2 text-secondary"></i>Copiar Enlace del Perfil
+                                </a></li>
+                                <li><a class="dropdown-item" href="mailto:?subject=Perfil de {{ empleado.nombre_completo }}&body=Te comparto el perfil de {{ empleado.nombre_completo }}: {{ request.build_absolute_uri }}">
+                                    <i class="fas fa-envelope me-2 text-info"></i>Enviar por Email
                                 </a></li>
                             </ul>
                         </div>
@@ -120,7 +151,9 @@
                 <div class="mb-3">
                     <label class="text-muted small">Sede</label>
                     <div class="fw-bold">{{ empleado.sede.nombre }}</div>
-                    <div class="text-muted small">{{ empleado.sede.ciudad }}, {{ empleado.sede.departamento }}</div>
+                    {% if empleado.sede.ciudad %}
+                    <div class="text-muted small">{{ empleado.sede.ciudad }}{% if empleado.sede.departamento %}, {{ empleado.sede.departamento }}{% endif %}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -140,7 +173,7 @@
                     <div class="fw-bold">
                         {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
                         <span class="text-muted">
-                            ({{ empleado.fecha_nacimiento|age }} años)
+                            ({{ empleado.fecha_nacimiento|timesince }} de edad)
                         </span>
                     </div>
                 </div>
@@ -196,12 +229,12 @@
                 <div class="row text-center">
                     <div class="col-6">
                         <div class="border-end">
-                            <div class="h4 text-success">{{ capacitaciones.count }}</div>
+                            <div class="h4 text-success">{{ capacitaciones.count|default:0 }}</div>
                             <div class="text-muted small">Capacitaciones</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="h4 text-primary">{{ evaluaciones.count }}</div>
+                        <div class="h4 text-primary">{{ evaluaciones.count|default:0 }}</div>
                         <div class="text-muted small">Evaluaciones</div>
                     </div>
                 </div>
@@ -209,12 +242,12 @@
                 <div class="row text-center">
                     <div class="col-6">
                         <div class="border-end">
-                            <div class="h4 text-warning">{{ documentos_completos }}</div>
+                            <div class="h4 text-warning">{{ documentos_completos|default:0 }}</div>
                             <div class="text-muted small">Docs. Completos</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="h4 text-danger">{{ documentos_pendientes }}</div>
+                        <div class="h4 text-danger">{{ documentos_pendientes|default:1 }}</div>
                         <div class="text-muted small">Docs. Pendientes</div>
                     </div>
                 </div>
@@ -421,6 +454,80 @@
         </div>
     </div>
 </div>
+
+<script>
+function copiarUrlPerfil() {
+    const url = window.location.href;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+            // Mostrar notificación de éxito
+            mostrarNotificacion('URL copiada al portapapeles', 'success');
+        }).catch(function(err) {
+            console.error('Error al copiar: ', err);
+            mostrarNotificacion('Error al copiar URL', 'danger');
+        });
+    } else {
+        // Fallback para navegadores antiguos
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            mostrarNotificacion('URL copiada al portapapeles', 'success');
+        } catch (err) {
+            mostrarNotificacion('Error al copiar URL', 'danger');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+}
+
+function mostrarNotificacion(mensaje, tipo) {
+    // Crear elemento de notificación
+    const notificacion = document.createElement('div');
+    notificacion.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+    notificacion.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notificacion.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Agregar al documento
+    document.body.appendChild(notificacion);
+    
+    // Auto-remover después de 3 segundos
+    setTimeout(() => {
+        if (notificacion.parentNode) {
+            notificacion.remove();
+        }
+    }, 3000);
+}
+// Mejorar tooltips para el dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar tooltips a los elementos del dropdown
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        if (!item.hasAttribute('data-bs-toggle')) {
+            const icon = item.querySelector('i');
+            if (icon) {
+                const title = item.textContent.trim();
+                item.setAttribute('title', title);
+                item.setAttribute('data-bs-toggle', 'tooltip');
+                item.setAttribute('data-bs-placement', 'left');
+            }
+        }
+    });
+    
+    // Inicializar tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}
 
 {% block extra_css %}

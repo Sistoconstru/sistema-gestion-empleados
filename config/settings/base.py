@@ -1,3 +1,5 @@
+# config/settings/base.py
+
 import os
 import sys
 from pathlib import Path
