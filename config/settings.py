@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.employees',
     'apps.organizational',
     'apps.authentication',
+    'apps.documents',
 
 ]
 
@@ -164,3 +165,36 @@ MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 # Render database config
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+# Configuración de email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Cambiar según proveedor
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tu-email@empresa.com'
+EMAIL_HOST_PASSWORD = 'tu-password'
+DEFAULT_FROM_EMAIL = 'RRHH Pro <noreply@empresa.com>'
+
+# Configuración de logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'documents.log',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'apps.documents': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

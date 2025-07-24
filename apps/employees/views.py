@@ -1,5 +1,5 @@
 # =============================================================================
-# apps/employees/views.py - VISTAS CORREGIDAS DE EMPLEADOS
+# apps/employees/views.py - VISTAS DE EMPLEADOS
 # =============================================================================
 
 

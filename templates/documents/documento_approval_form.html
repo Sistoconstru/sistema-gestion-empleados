@@ -1,0 +1,379 @@
+<!-- =============================================================================
+templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
+============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' documento.empleado.pk %}">{{ documento.empleado.nombre_completo }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'documents:empleado_documentos' documento.empleado.pk %}">Documentos</a></li>
+<li class="breadcrumb-item active">Revisar</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Información del Documento -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Información del Documento
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold">Empleado:</td>
+                                <td>{{ documento.empleado.nombre_completo }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Documento:</td>
+                                <td>{{ documento.empleado.numero_documento }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Tipo:</td>
+                                <td>
+                                    {{ documento.tipo_documento.nombre }}
+                                    {% if documento.tipo_documento.obligatorio %}
+                                        <span class="badge bg-warning ms-2">Obligatorio</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Archivo:</td>
+                                <td>{{ documento.nombre_archivo }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold">Fecha de Carga:</td>
+                                <td>{{ documento.fecha_carga|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Cargado por:</td>
+                                <td>{{ documento.cargado_por.get_full_name|default:documento.cargado_por.username }}</td>
+                            </tr>
+                            {% if documento.fecha_documento %}
+                            <tr>
+                                <td class="fw-bold">Fecha Documento:</td>
+                                <td>{{ documento.fecha_documento|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if documento.fecha_vencimiento %}
+                            <tr>
+                                <td class="fw-bold">Vencimiento:</td>
+                                <td class="{% if documento.fecha_vencimiento < today %}text-danger{% elif documento.fecha_vencimiento <= today|add:'30' %}text-warning{% endif %}">
+                                    {{ documento.fecha_vencimiento|date:"d/m/Y" }}
+                                    {% if documento.fecha_vencimiento < today %}
+                                        <span class="badge bg-danger ms-2">VENCIDO</span>
+                                    {% elif documento.fecha_vencimiento <= today|add:'7' %}
+                                        <span class="badge bg-warning ms-2">PRÓXIMO A VENCER</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+                
+                {% if documento.observaciones %}
+                <div class="alert alert-info mt-3">
+                    <h6><i class="fas fa-comment me-2"></i>Observaciones del Empleado:</h6>
+                    <p class="mb-0">{{ documento.observaciones }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Visualizador del Documento -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-eye me-2"></i>Vista Previa del Documento
+                    </h5>
+                    <div>
+                        <a href="{% url 'documents:documento_download' documento.pk %}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-download me-1"></i>Descargar
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleFullscreen()">
+                            <i class="fas fa-expand me-1"></i>Pantalla Completa
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="documentViewer" style="min-height: 500px; background: #f8f9fa;">
+                    {% if documento.archivo.name|lower|slice:"-4:" == ".pdf" %}
+                        <embed src="{{ documento.archivo.url }}" 
+                               type="application/pdf" 
+                               width="100%" 
+                               height="500px"
+                               style="border: none;">
+                    {% else %}
+                        <div class="text-center p-4">
+                            <img src="{{ documento.archivo.url }}" 
+                                 class="img-fluid" 
+                                 style="max-height: 500px; max-width: 100%;"
+                                 alt="{{ documento.nombre_archivo }}">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulario de Aprobación -->
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>Revisión del Documento
+                </h4>
+            </div>
+            
+            <form method="post" id="approvalForm">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Decisión</label>
+                                {{ form.estado_aprobacion }}
+                                {% if form.estado_aprobacion.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.estado_aprobacion.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Observaciones</label>
+                                {{ form.observaciones }}
+                                {% if form.observaciones.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.observaciones.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <strong>Obligatorio si rechaza el documento.</strong> 
+                                    Explique claramente el motivo del rechazo para que el empleado pueda corregir el documento.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Plantillas de Observaciones -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Plantillas de Observaciones:</label>
+                        <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                                    data-template="Documento ilegible o con baja calidad de imagen. Por favor, suba una versión más clara.">
+                                📷 Calidad de imagen deficiente
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                                    data-template="El documento está vencido. Por favor, suba la versión vigente.">
+                                ⏰ Documento vencido
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                                    data-template="Falta información requerida en el documento. Verifique que esté completo.">
+                                📋 Información incompleta
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                                    data-template="El tipo de documento no corresponde. Por favor, verifique y suba el documento correcto.">
+                                🔄 Tipo incorrecto
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                                    data-template="El documento no pertenece al empleado indicado. Verifique los datos.">
+                                👤 Datos no coinciden
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de Verificación -->
+                    <div class="card bg-light">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-list-check me-2"></i>Lista de Verificación
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check1">
+                                <label class="form-check-label" for="check1">
+                                    El documento es legible y de buena calidad
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check2">
+                                <label class="form-check-label" for="check2">
+                                    La información coincide con los datos del empleado
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check3">
+                                <label class="form-check-label" for="check3">
+                                    El documento está vigente (si aplica)
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check4">
+                                <label class="form-check-label" for="check4">
+                                    El tipo de documento es correcto
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check5">
+                                <label class="form-check-label" for="check5">
+                                    El documento contiene toda la información requerida
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'documents:empleado_documentos' documento.empleado.pk %}" 
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Volver sin Guardar
+                        </a>
+                        
+                        <div>
+                            <button type="submit" class="btn btn-success me-2" id="approveBtn" 
+                                    onclick="setDecision('aprobado')">
+                                <i class="fas fa-check me-1"></i>Aprobar Documento
+                            </button>
+                            <button type="submit" class="btn btn-danger" id="rejectBtn" 
+                                    onclick="setDecision('rechazado')">
+                                <i class="fas fa-times me-1"></i>Rechazar Documento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('approvalForm');
+    const estadoSelect = document.querySelector('[name="estado_aprobacion"]');
+    const observacionesTextarea = document.querySelector('[name="observaciones"]');
+    const approveBtn = document.getElementById('approveBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    
+    // Configurar plantillas de observaciones
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const template = this.dataset.template;
+            observacionesTextarea.value = template;
+            
+            // Marcar como rechazado automáticamente
+            estadoSelect.value = 'rechazado';
+            updateButtonStates();
+        });
+    });
+    
+    // Manejar cambios en el select de estado
+    estadoSelect.addEventListener('change', updateButtonStates);
+    
+    function updateButtonStates() {
+        const estado = estadoSelect.value;
+        
+        if (estado === 'aprobado') {
+            approveBtn.classList.add('btn-success');
+            approveBtn.classList.remove('btn-outline-success');
+            rejectBtn.classList.add('btn-outline-danger');
+            rejectBtn.classList.remove('btn-danger');
+        } else if (estado === 'rechazado') {
+            rejectBtn.classList.add('btn-danger');
+            rejectBtn.classList.remove('btn-outline-danger');
+            approveBtn.classList.add('btn-outline-success');
+            approveBtn.classList.remove('btn-success');
+        }
+    }
+    
+    function setDecision(decision) {
+        estadoSelect.value = decision;
+        updateButtonStates();
+    }
+    
+    // Hacer accesible globalmente
+    window.setDecision = setDecision;
+    
+    // Validar formulario antes de enviar
+    form.addEventListener('submit', function(e) {
+        const estado = estadoSelect.value;
+        const observaciones = observacionesTextarea.value.trim();
+        
+        if (estado === 'rechazado' && !observaciones) {
+            e.preventDefault();
+            alert('Debe proporcionar observaciones cuando rechaza un documento.');
+            observacionesTextarea.focus();
+            return false;
+        }
+        
+        // Confirmación antes de enviar
+        const mensaje = estado === 'aprobado' 
+            ? '¿Está seguro de que desea aprobar este documento?' 
+            : '¿Está seguro de que desea rechazar este documento?';
+            
+        if (!confirm(mensaje)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Deshabilitar botones para evitar doble envío
+        approveBtn.disabled = true;
+        rejectBtn.disabled = true;
+        
+        if (estado === 'aprobado') {
+            approveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Aprobando...';
+        } else {
+            rejectBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Rechazando...';
+        }
+    });
+    
+    // Lista de verificación - comportamiento opcional
+    const checkboxes = document.querySelectorAll('.form-check-input');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            if (allChecked) {
+                estadoSelect.value = 'aprobado';
+                updateButtonStates();
+            }
+        });
+    });
+});
+
+function toggleFullscreen() {
+    const viewer = document.getElementById('documentViewer');
+    
+    if (!document.fullscreenElement) {
+        viewer.requestFullscreen().catch(err => {
+            console.log(`Error al entrar en pantalla completa: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+</script>
+{% endblock %}

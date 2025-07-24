@@ -2,22 +2,33 @@
 # =============================================================================
 # apps/documents/urls.py
 # =============================================================================
+from django.views.generic import TemplateView
 
 from django.urls import path
-from django.views.generic import TemplateView
+from . import views
 
 app_name = 'documents'
 
 urlpatterns = [
-    # URLs básicas
+    # Página de inicio
     path('', TemplateView.as_view(template_name='documents/index.html'), name='index'),
     
-    # Documentos
-    # path('upload/', views.DocumentUploadView.as_view(), name='document_upload'),
-    # path('list/', views.DocumentListView.as_view(), name='document_list'),
-    # path('<uuid:pk>/', views.DocumentDetailView.as_view(), name='document_detail'),
-    # path('<uuid:pk>/approve/', views.DocumentApproveView.as_view(), name='document_approve'),
+    # Gestión de documentos por empleado
+    path('empleado/<uuid:empleado_pk>/', views.documento_empleado_detail, name='empleado_documentos'),
     
-    # Tipos de documento
-    # path('tipos/', views.TipoDocumentoListView.as_view(), name='tipo_documento_list'),
+    # Subir documentos
+    path('empleado/<uuid:empleado_pk>/subir/', views.documento_upload, name='documento_upload'),
+    path('empleado/<uuid:empleado_pk>/subir-multiple/', views.documento_multiple_upload, name='documento_multiple_upload'),
+    
+    # Aprobar documentos
+    path('documento/<uuid:documento_pk>/aprobar/', views.documento_approve, name='documento_approve'),
+    
+    # Descargar documento
+    path('documento/<uuid:documento_pk>/descargar/', views.documento_download, name='documento_download'),
+    
+    # APIs
+    path('api/pendientes/', views.documentos_pendientes_api, name='documentos_pendientes_api'),
+    
+    # Lista general (para administradores)
+    path('', views.DocumentoEmpleadoListView.as_view(), name='documento_list'),
 ]

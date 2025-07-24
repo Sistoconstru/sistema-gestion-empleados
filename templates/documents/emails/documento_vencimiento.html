@@ -1,0 +1,50 @@
+<!-- templates/documents/emails/documento_vencimiento.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Documentos próximos a vencer</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #d63384;">🚨 Documentos Próximos a Vencer</h2>
+        
+        <p>Estimado/a <strong>{{ empleado.nombre_completo }}</strong>,</p>
+        
+        <p>Le informamos que tiene documentos próximos a vencer o ya vencidos:</p>
+        
+        {% if documentos_vencidos %}
+        <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 15px 0;">
+            <h3 style="color: #721c24; margin-top: 0;">📋 Documentos Vencidos</h3>
+            <ul>
+                {% for doc in documentos_vencidos %}
+                <li><strong>{{ doc.tipo_documento.nombre }}</strong> - Venció el {{ doc.fecha_vencimiento|date:"d/m/Y" }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        {% if documentos_proximos %}
+        <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0;">
+            <h3 style="color: #856404; margin-top: 0;">⏰ Documentos Próximos a Vencer</h3>
+            <ul>
+                {% for doc in documentos_proximos %}
+                <li><strong>{{ doc.tipo_documento.nombre }}</strong> - Vence el {{ doc.fecha_vencimiento|date:"d/m/Y" }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <p><strong>Acción requerida:</strong> Por favor, renueve estos documentos lo antes posible y súbalos al sistema.</p>
+        
+        <p>Si tiene preguntas, contacte al área de Recursos Humanos.</p>
+        
+        <hr style="margin: 30px 0;">
+        <p style="font-size: 12px; color: #666;">
+            Este es un mensaje automático del Sistema RRHH Pro.<br>
+            Fecha de envío: {{ fecha_actual|date:"d/m/Y" }}
+        </p>
+    </div>
+</body>
+</html>
+
