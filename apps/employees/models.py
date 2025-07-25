@@ -62,11 +62,37 @@ class EstadoEmpleado(models.Model):
         return self.nombre
 
 
+
+# ===================== NUEVOS MODELOS =====================
+class Departamento(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    codigo = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        verbose_name = 'Departamento'
+        verbose_name_plural = 'Departamentos'
+        ordering = ['nombre']
+
+    def __str__(self):
+        return self.nombre
+
+class Ciudad(models.Model):
+    nombre = models.CharField(max_length=100)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, related_name='ciudades')
+
+    class Meta:
+        verbose_name = 'Ciudad'
+        verbose_name_plural = 'Ciudades'
+        ordering = ['nombre']
+        unique_together = ('nombre', 'departamento')
+
+    def __str__(self):
+        return f"{self.nombre} ({self.departamento.nombre})"
+
+# ===================== MODELO EMPLEADO =====================
 class Empleado(models.Model):
     """Modelo principal de empleados"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
-    # CAMBIO IMPORTANTE: Hacer usuario opcional
     usuario = models.OneToOneField(
         'authentication.Usuario', 
         on_delete=models.CASCADE, 
@@ -74,7 +100,6 @@ class Empleado(models.Model):
         blank=True,
         help_text="Usuario del sistema (se crea automáticamente)"
     )
-    
     tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.CASCADE)
     numero_documento = models.CharField(max_length=20, unique=True)
     nombres = models.CharField(max_length=100)
@@ -83,14 +108,12 @@ class Empleado(models.Model):
     fecha_ingreso = models.DateField()
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoEmpleado, on_delete=models.CASCADE)
-    
     fecha_nacimiento = models.DateField(null=True, blank=False)
-    ciudad_nacimiento = models.CharField(max_length=50, blank=True)
+    ciudad_nacimiento = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)  # Nuevo campo FK
     escolaridad = models.ForeignKey(Escolaridad, on_delete=models.SET_NULL, null=True, blank=True)
     contacto_emergencia_nombre = models.CharField(max_length=100, blank=True)
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)
     correo_electronico = models.EmailField(blank=True)
-    
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     creado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='empleados_creados')

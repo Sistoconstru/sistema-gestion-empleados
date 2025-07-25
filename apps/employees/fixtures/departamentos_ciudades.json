@@ -1,0 +1,18 @@
+[
+  {"model": "employees.departamento", "pk": 1, "fields": {"nombre": "Antioquia", "codigo": "05"}},
+  {"model": "employees.departamento", "pk": 2, "fields": {"nombre": "Cundinamarca", "codigo": "25"}},
+  {"model": "employees.departamento", "pk": 3, "fields": {"nombre": "Valle del Cauca", "codigo": "76"}},
+  {"model": "employees.departamento", "pk": 4, "fields": {"nombre": "Atlántico", "codigo": "08"}},
+  {"model": "employees.departamento", "pk": 5, "fields": {"nombre": "Santander", "codigo": "68"}},
+
+  {"model": "employees.ciudad", "pk": 1, "fields": {"nombre": "Medellín", "departamento": 1}},
+  {"model": "employees.ciudad", "pk": 2, "fields": {"nombre": "Envigado", "departamento": 1}},
+  {"model": "employees.ciudad", "pk": 3, "fields": {"nombre": "Bogotá", "departamento": 2}},
+  {"model": "employees.ciudad", "pk": 4, "fields": {"nombre": "Soacha", "departamento": 2}},
+  {"model": "employees.ciudad", "pk": 5, "fields": {"nombre": "Cali", "departamento": 3}},
+  {"model": "employees.ciudad", "pk": 6, "fields": {"nombre": "Palmira", "departamento": 3}},
+  {"model": "employees.ciudad", "pk": 7, "fields": {"nombre": "Barranquilla", "departamento": 4}},
+  {"model": "employees.ciudad", "pk": 8, "fields": {"nombre": "Malambo", "departamento": 4}},
+  {"model": "employees.ciudad", "pk": 9, "fields": {"nombre": "Bucaramanga", "departamento": 5}},
+  {"model": "employees.ciudad", "pk": 10, "fields": {"nombre": "Floridablanca", "departamento": 5}}
+]

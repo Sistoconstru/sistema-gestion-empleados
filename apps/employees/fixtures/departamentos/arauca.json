@@ -1,0 +1,66 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 25,
+    "fields": {
+      "nombre": "Arauca",
+      "codigo": "81"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1046,
+    "fields": {
+      "nombre": "Arauca",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1047,
+    "fields": {
+      "nombre": "Arauquita",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1048,
+    "fields": {
+      "nombre": "Cravo Norte",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1049,
+    "fields": {
+      "nombre": "Fortul",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1050,
+    "fields": {
+      "nombre": "Puerto Rondon",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1051,
+    "fields": {
+      "nombre": "Saravena",
+      "departamento": 25
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1052,
+    "fields": {
+      "nombre": "Tame",
+      "departamento": 25
+    }
+  }
+]

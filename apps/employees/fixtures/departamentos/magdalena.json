@@ -1,0 +1,250 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 15,
+    "fields": {
+      "nombre": "Magdalena",
+      "codigo": "47"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 655,
+    "fields": {
+      "nombre": "Santa Marta",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 656,
+    "fields": {
+      "nombre": "Algarrobo",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 657,
+    "fields": {
+      "nombre": "Aracataca",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 658,
+    "fields": {
+      "nombre": "Ariguani",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 659,
+    "fields": {
+      "nombre": "Cerro San Antonio",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 660,
+    "fields": {
+      "nombre": "Chibolo",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 661,
+    "fields": {
+      "nombre": "Cienaga",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 662,
+    "fields": {
+      "nombre": "Concordia",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 663,
+    "fields": {
+      "nombre": "El Banco",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 664,
+    "fields": {
+      "nombre": "El Piñon",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 665,
+    "fields": {
+      "nombre": "El Reten",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 666,
+    "fields": {
+      "nombre": "Fundacion",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 667,
+    "fields": {
+      "nombre": "Guamal",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 668,
+    "fields": {
+      "nombre": "Nueva Granada",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 669,
+    "fields": {
+      "nombre": "Pedraza",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 670,
+    "fields": {
+      "nombre": "Pijiño Del Carmen",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 671,
+    "fields": {
+      "nombre": "Pivijay",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 672,
+    "fields": {
+      "nombre": "Plato",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 673,
+    "fields": {
+      "nombre": "Puebloviejo",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 674,
+    "fields": {
+      "nombre": "Remolino",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 675,
+    "fields": {
+      "nombre": "Sabanas De San Angel",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 676,
+    "fields": {
+      "nombre": "Salamina",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 677,
+    "fields": {
+      "nombre": "San Sebastian De Buenavista",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 678,
+    "fields": {
+      "nombre": "San Zenon",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 679,
+    "fields": {
+      "nombre": "Santa Ana",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 680,
+    "fields": {
+      "nombre": "Santa Barbara De Pinto",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 681,
+    "fields": {
+      "nombre": "Sitionuevo",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 682,
+    "fields": {
+      "nombre": "Tenerife",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 683,
+    "fields": {
+      "nombre": "Zapayan",
+      "departamento": 15
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 684,
+    "fields": {
+      "nombre": "Zona Bananera",
+      "departamento": 15
+    }
+  }
+]

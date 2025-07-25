@@ -1,0 +1,114 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 27,
+    "fields": {
+      "nombre": "Putumayo",
+      "codigo": "86"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1072,
+    "fields": {
+      "nombre": "Mocoa",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1073,
+    "fields": {
+      "nombre": "Colon",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1074,
+    "fields": {
+      "nombre": "Orito",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1075,
+    "fields": {
+      "nombre": "Puerto Asis",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1076,
+    "fields": {
+      "nombre": "Puerto Caicedo",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1077,
+    "fields": {
+      "nombre": "Puerto Guzman",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1078,
+    "fields": {
+      "nombre": "Leguizamo",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1079,
+    "fields": {
+      "nombre": "Sibundoy",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1080,
+    "fields": {
+      "nombre": "San Francisco",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1081,
+    "fields": {
+      "nombre": "San Miguel",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1082,
+    "fields": {
+      "nombre": "Santiago",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1083,
+    "fields": {
+      "nombre": "Valle Del Guamuez",
+      "departamento": 27
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1084,
+    "fields": {
+      "nombre": "Villagarzon",
+      "departamento": 27
+    }
+  }
+]

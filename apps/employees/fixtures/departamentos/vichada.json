@@ -1,0 +1,42 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 33,
+    "fields": {
+      "nombre": "Vichada",
+      "codigo": "99"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1117,
+    "fields": {
+      "nombre": "Puerto Carreño",
+      "departamento": 33
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1118,
+    "fields": {
+      "nombre": "La Primavera",
+      "departamento": 33
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1119,
+    "fields": {
+      "nombre": "Santa Rosalia",
+      "departamento": 33
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1120,
+    "fields": {
+      "nombre": "Cumaribo",
+      "departamento": 33
+    }
+  }
+]

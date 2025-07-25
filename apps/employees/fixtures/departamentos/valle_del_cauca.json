@@ -1,0 +1,346 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 24,
+    "fields": {
+      "nombre": "Valle Del Cauca",
+      "codigo": "76"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1004,
+    "fields": {
+      "nombre": "Cali",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1005,
+    "fields": {
+      "nombre": "Alcala",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1006,
+    "fields": {
+      "nombre": "Andalucia",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1007,
+    "fields": {
+      "nombre": "Ansermanuevo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1008,
+    "fields": {
+      "nombre": "Argelia",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1009,
+    "fields": {
+      "nombre": "Bolivar",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1010,
+    "fields": {
+      "nombre": "Buenaventura",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1011,
+    "fields": {
+      "nombre": "Guadalajara De Buga",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1012,
+    "fields": {
+      "nombre": "Bugalagrande",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1013,
+    "fields": {
+      "nombre": "Caicedonia",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1014,
+    "fields": {
+      "nombre": "Calima",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1015,
+    "fields": {
+      "nombre": "Candelaria",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1016,
+    "fields": {
+      "nombre": "Cartago",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1017,
+    "fields": {
+      "nombre": "Dagua",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1018,
+    "fields": {
+      "nombre": "El Aguila",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1019,
+    "fields": {
+      "nombre": "El Cairo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1020,
+    "fields": {
+      "nombre": "El Cerrito",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1021,
+    "fields": {
+      "nombre": "El Dovio",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1022,
+    "fields": {
+      "nombre": "Florida",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1023,
+    "fields": {
+      "nombre": "Ginebra",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1024,
+    "fields": {
+      "nombre": "Guacari",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1025,
+    "fields": {
+      "nombre": "Jamundi",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1026,
+    "fields": {
+      "nombre": "La Cumbre",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1027,
+    "fields": {
+      "nombre": "La Union",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1028,
+    "fields": {
+      "nombre": "La Victoria",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1029,
+    "fields": {
+      "nombre": "Obando",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1030,
+    "fields": {
+      "nombre": "Palmira",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1031,
+    "fields": {
+      "nombre": "Pradera",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1032,
+    "fields": {
+      "nombre": "Restrepo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1033,
+    "fields": {
+      "nombre": "Riofrio",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1034,
+    "fields": {
+      "nombre": "Roldanillo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1035,
+    "fields": {
+      "nombre": "San Pedro",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1036,
+    "fields": {
+      "nombre": "Sevilla",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1037,
+    "fields": {
+      "nombre": "Toro",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1038,
+    "fields": {
+      "nombre": "Trujillo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1039,
+    "fields": {
+      "nombre": "Tulua",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1040,
+    "fields": {
+      "nombre": "Ulloa",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1041,
+    "fields": {
+      "nombre": "Versalles",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1042,
+    "fields": {
+      "nombre": "Vijes",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1043,
+    "fields": {
+      "nombre": "Yotoco",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1044,
+    "fields": {
+      "nombre": "Yumbo",
+      "departamento": 24
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1045,
+    "fields": {
+      "nombre": "Zarzal",
+      "departamento": 24
+    }
+  }
+]

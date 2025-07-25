@@ -9778,3 +9778,95 @@ INFO 2025-07-25 13:13:17,771 basehttp 24248 16756 "GET /admin/jsi18n/ HTTP/1.1" 
 INFO 2025-07-25 13:13:27,088 basehttp 24248 16756 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 26352
 INFO 2025-07-25 13:32:05,271 basehttp 24248 21744 "GET /dashboard/ HTTP/1.1" 200 15057
 INFO 2025-07-25 13:32:45,254 basehttp 24248 21744 "GET /empleados/crear/ HTTP/1.1" 200 23670
+INFO 2025-07-25 14:28:59,473 autoreload 15832 21352 Watching for file changes with StatReloader
+INFO 2025-07-25 14:29:08,889 basehttp 15832 5932 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-25 14:29:13,235 basehttp 15832 5932 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-25 14:29:15,400 basehttp 15832 5932 "GET /empleados/ HTTP/1.1" 200 94340
+INFO 2025-07-25 14:29:21,802 basehttp 15832 5932 "GET /empleados/crear/ HTTP/1.1" 200 23709
+INFO 2025-07-25 14:32:04,220 autoreload 21364 20576 Watching for file changes with StatReloader
+INFO 2025-07-25 14:32:09,070 basehttp 21364 23052 "GET /empleados/ HTTP/1.1" 200 94340
+INFO 2025-07-25 14:32:23,115 basehttp 21364 23052 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35281
+INFO 2025-07-25 14:32:40,214 basehttp 21364 23052 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 26358
+INFO 2025-07-25 14:32:50,188 basehttp 21364 23052 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12417
+INFO 2025-07-25 14:32:53,274 basehttp 21364 23052 "GET /empleados/ HTTP/1.1" 200 94340
+INFO 2025-07-25 14:32:55,254 basehttp 21364 23052 "GET /empleados/crear/ HTTP/1.1" 200 23385
+INFO 2025-07-25 14:38:49,368 autoreload 21364 20576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\forms.py changed, reloading.
+INFO 2025-07-25 14:38:49,985 autoreload 24552 23692 Watching for file changes with StatReloader
+INFO 2025-07-25 14:40:01,202 basehttp 24552 22156 "GET /empleados/crear/ HTTP/1.1" 200 25155
+INFO 2025-07-25 14:56:49,208 autoreload 24868 1100 Watching for file changes with StatReloader
+INFO 2025-07-25 14:56:54,020 basehttp 24868 16112 "GET /empleados/crear/ HTTP/1.1" 200 26870
+INFO 2025-07-25 14:59:15,418 basehttp 24868 16112 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-07-25 14:59:15,588 basehttp 24868 16112 "GET /empleados/ HTTP/1.1" 200 95119
+INFO 2025-07-25 15:00:16,199 basehttp 24868 16112 "GET /empleados/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 35040
+INFO 2025-07-25 15:00:20,295 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 12905
+INFO 2025-07-25 15:00:35,677 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12709
+INFO 2025-07-25 15:01:01,378 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12709
+INFO 2025-07-25 15:01:37,769 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:01:37,794 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 14745
+INFO 2025-07-25 15:02:06,841 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12656
+INFO 2025-07-25 15:02:52,259 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:02:52,289 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 16740
+INFO 2025-07-25 15:03:03,434 basehttp 24868 16112 "GET /documentos/documento/95f26ee1-2e84-4d28-abe4-937354d970c9/aprobar/ HTTP/1.1" 200 20233
+INFO 2025-07-25 15:03:03,488 basehttp 24868 16112 "GET /media/documentos/777732654/CEDULA/CEDULA_20250725_200137.png HTTP/1.1" 200 96226
+INFO 2025-07-25 15:03:14,967 basehttp 24868 16112 "POST /documentos/documento/95f26ee1-2e84-4d28-abe4-937354d970c9/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:03:14,984 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 16558
+INFO 2025-07-25 15:03:26,651 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12612
+INFO 2025-07-25 15:03:49,628 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:03:49,658 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 18543
+INFO 2025-07-25 15:03:56,992 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12566
+INFO 2025-07-25 15:04:32,020 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:04:32,047 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 21004
+INFO 2025-07-25 15:04:35,842 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12518
+INFO 2025-07-25 15:04:58,325 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12768
+INFO 2025-07-25 15:05:35,148 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:05:35,182 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 23000
+INFO 2025-07-25 15:05:38,371 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12472
+INFO 2025-07-25 15:05:41,737 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 22585
+INFO 2025-07-25 15:05:43,761 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12472
+INFO 2025-07-25 15:06:04,055 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12722
+INFO 2025-07-25 15:06:26,914 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:06:26,953 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 24227
+INFO 2025-07-25 15:06:33,778 basehttp 24868 16112 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12417
+INFO 2025-07-25 15:06:48,600 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12667
+INFO 2025-07-25 15:07:02,260 basehttp 24868 16112 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 200 12667
+INFO 2025-07-25 15:07:19,161 basehttp 24868 12408 "POST /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:07:19,201 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 26696
+INFO 2025-07-25 15:07:32,458 basehttp 24868 12408 "GET /documentos/documento/220ac572-06a2-41fc-93b3-d203a74e6cc2/aprobar/ HTTP/1.1" 200 20133
+INFO 2025-07-25 15:07:32,508 basehttp 24868 12408 "GET /media/documentos/777732654/EPS/EPS_20250725_200535.pdf HTTP/1.1" 200 46336
+INFO 2025-07-25 15:07:38,789 basehttp 24868 12408 "POST /documentos/documento/220ac572-06a2-41fc-93b3-d203a74e6cc2/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:07:38,819 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 26497
+INFO 2025-07-25 15:07:40,690 basehttp 24868 12408 "GET /documentos/documento/7c8a7543-defd-476f-be36-9373a4bf9702/aprobar/ HTTP/1.1" 200 20133
+INFO 2025-07-25 15:07:40,727 basehttp 24868 12408 "GET /media/documentos/777732654/AFP/AFP_20250725_200349.pdf HTTP/1.1" 200 78704
+INFO 2025-07-25 15:07:45,937 basehttp 24868 12408 "POST /documentos/documento/7c8a7543-defd-476f-be36-9373a4bf9702/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:07:45,963 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 26300
+INFO 2025-07-25 15:07:48,194 basehttp 24868 12408 "GET /documentos/documento/ce841f9d-2dd0-44a8-a8bb-010d779ab575/aprobar/ HTTP/1.1" 200 20042
+INFO 2025-07-25 15:07:48,229 basehttp 24868 12408 "GET /media/documentos/777732654/REF_PERSONAL/REF_PERSONAL_20250725_200719.pdf HTTP/1.1" 200 7263
+INFO 2025-07-25 15:07:52,504 basehttp 24868 12408 "POST /documentos/documento/ce841f9d-2dd0-44a8-a8bb-010d779ab575/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:07:52,532 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 26110
+INFO 2025-07-25 15:07:55,321 basehttp 24868 12408 "GET /documentos/documento/bdb4f08c-7986-46c9-89c7-40b9660ae553/aprobar/ HTTP/1.1" 200 20593
+INFO 2025-07-25 15:07:55,345 basehttp 24868 12408 "GET /media/documentos/777732654/LIC_CONDUCIR/LIC_CONDUCIR_20250725_200626.png HTTP/1.1" 200 709991
+INFO 2025-07-25 15:08:00,694 basehttp 24868 12408 "POST /documentos/documento/bdb4f08c-7986-46c9-89c7-40b9660ae553/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:08:00,721 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 25914
+INFO 2025-07-25 15:08:05,258 basehttp 24868 12408 "GET /documentos/documento/3e008b4e-e0c4-48ca-96cc-05a7d02693f7/aprobar/ HTTP/1.1" 200 20018
+INFO 2025-07-25 15:08:05,294 basehttp 24868 12408 "GET /media/documentos/777732654/CONTRATO/CONTRATO_20250725_200431.pdf HTTP/1.1" 200 218855
+INFO 2025-07-25 15:08:10,359 basehttp 24868 12408 "POST /documentos/documento/3e008b4e-e0c4-48ca-96cc-05a7d02693f7/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:08:10,387 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 25710
+INFO 2025-07-25 15:08:14,397 basehttp 24868 12408 "GET /documentos/documento/d6a57fc9-d510-4729-80bf-2e8dad01d3c0/aprobar/ HTTP/1.1" 200 20145
+INFO 2025-07-25 15:08:14,437 basehttp 24868 12408 "GET /media/documentos/777732654/HOJA_VIDA/HOJA_VIDA_20250725_200252.pdf HTTP/1.1" 200 218855
+INFO 2025-07-25 15:08:27,122 basehttp 24868 12408 "POST /documentos/documento/d6a57fc9-d510-4729-80bf-2e8dad01d3c0/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 15:08:27,172 basehttp 24868 12408 "GET /documentos/empleado/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 25509
+INFO 2025-07-25 15:08:42,157 basehttp 24868 12408 "GET /empleados/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 35817
+INFO 2025-07-25 15:52:46,114 autoreload 9364 19564 Watching for file changes with StatReloader
+INFO 2025-07-25 15:53:03,498 basehttp 9364 7376 "GET /empleados/ HTTP/1.1" 200 94271
+INFO 2025-07-25 15:53:05,437 basehttp 9364 7376 "GET /empleados/crear/ HTTP/1.1" 200 26870
+INFO 2025-07-25 15:53:13,195 basehttp 9364 7376 "GET /empleados/crear/ HTTP/1.1" 200 26870
+INFO 2025-07-25 16:05:49,786 autoreload 9112 21540 Watching for file changes with StatReloader
+INFO 2025-07-25 16:05:53,770 basehttp 9112 23708 "GET /empleados/crear/ HTTP/1.1" 200 85276
+INFO 2025-07-25 16:10:27,901 autoreload 23844 14396 Watching for file changes with StatReloader
+INFO 2025-07-25 16:10:40,000 basehttp 23844 20524 "GET /empleados/crear/ HTTP/1.1" 200 195209
+INFO 2025-07-25 16:11:23,714 autoreload 23844 14396 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\forms.py changed, reloading.
+INFO 2025-07-25 16:11:24,442 autoreload 26320 6908 Watching for file changes with StatReloader
+INFO 2025-07-25 16:13:36,265 basehttp 26320 17320 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-07-25 16:13:36,469 basehttp 26320 17320 "GET /empleados/ HTTP/1.1" 200 95107
+INFO 2025-07-25 16:14:31,984 basehttp 26320 17320 "GET /empleados/?search=ma&estado=&area=&cargo=&sede= HTTP/1.1" 200 72797
+INFO 2025-07-25 16:14:37,681 basehttp 26320 17320 "GET /empleados/810b16de-5c15-4a73-a2ed-a2aa6366104e/ HTTP/1.1" 200 35030

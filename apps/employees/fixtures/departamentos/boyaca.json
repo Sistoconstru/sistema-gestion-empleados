@@ -1,0 +1,994 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 5,
+    "fields": {
+      "nombre": "Boyaca",
+      "codigo": "15"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 196,
+    "fields": {
+      "nombre": "Tunja",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 197,
+    "fields": {
+      "nombre": "Almeida",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 198,
+    "fields": {
+      "nombre": "Aquitania",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 199,
+    "fields": {
+      "nombre": "Arcabuco",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 200,
+    "fields": {
+      "nombre": "Belen",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 201,
+    "fields": {
+      "nombre": "Berbeo",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 202,
+    "fields": {
+      "nombre": "Beteitiva",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 203,
+    "fields": {
+      "nombre": "Boavita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 204,
+    "fields": {
+      "nombre": "Boyaca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 205,
+    "fields": {
+      "nombre": "Briceño",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 206,
+    "fields": {
+      "nombre": "Buenavista",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 207,
+    "fields": {
+      "nombre": "Busbanza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 208,
+    "fields": {
+      "nombre": "Caldas",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 209,
+    "fields": {
+      "nombre": "Campohermoso",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 210,
+    "fields": {
+      "nombre": "Cerinza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 211,
+    "fields": {
+      "nombre": "Chinavita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 212,
+    "fields": {
+      "nombre": "Chiquinquira",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 213,
+    "fields": {
+      "nombre": "Chiscas",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 214,
+    "fields": {
+      "nombre": "Chita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 215,
+    "fields": {
+      "nombre": "Chitaraque",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 216,
+    "fields": {
+      "nombre": "Chivata",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 217,
+    "fields": {
+      "nombre": "Cienega",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 218,
+    "fields": {
+      "nombre": "Combita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 219,
+    "fields": {
+      "nombre": "Coper",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 220,
+    "fields": {
+      "nombre": "Corrales",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 221,
+    "fields": {
+      "nombre": "Covarachia",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 222,
+    "fields": {
+      "nombre": "Cubara",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 223,
+    "fields": {
+      "nombre": "Cucaita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 224,
+    "fields": {
+      "nombre": "Cuitiva",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 225,
+    "fields": {
+      "nombre": "Chiquiza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 226,
+    "fields": {
+      "nombre": "Chivor",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 227,
+    "fields": {
+      "nombre": "Duitama",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 228,
+    "fields": {
+      "nombre": "El Cocuy",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 229,
+    "fields": {
+      "nombre": "El Espino",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 230,
+    "fields": {
+      "nombre": "Firavitoba",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 231,
+    "fields": {
+      "nombre": "Floresta",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 232,
+    "fields": {
+      "nombre": "Gachantiva",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 233,
+    "fields": {
+      "nombre": "Gameza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 234,
+    "fields": {
+      "nombre": "Garagoa",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 235,
+    "fields": {
+      "nombre": "Guacamayas",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 236,
+    "fields": {
+      "nombre": "Guateque",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 237,
+    "fields": {
+      "nombre": "Guayata",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 238,
+    "fields": {
+      "nombre": "Gsican",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 239,
+    "fields": {
+      "nombre": "Iza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 240,
+    "fields": {
+      "nombre": "Jenesano",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 241,
+    "fields": {
+      "nombre": "Jerico",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 242,
+    "fields": {
+      "nombre": "Labranzagrande",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 243,
+    "fields": {
+      "nombre": "La Capilla",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 244,
+    "fields": {
+      "nombre": "La Victoria",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 245,
+    "fields": {
+      "nombre": "La Uvita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 246,
+    "fields": {
+      "nombre": "Villa De Leyva",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 247,
+    "fields": {
+      "nombre": "Macanal",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 248,
+    "fields": {
+      "nombre": "Maripi",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 249,
+    "fields": {
+      "nombre": "Miraflores",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 250,
+    "fields": {
+      "nombre": "Mongua",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 251,
+    "fields": {
+      "nombre": "Mongui",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 252,
+    "fields": {
+      "nombre": "Moniquira",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 253,
+    "fields": {
+      "nombre": "Motavita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 254,
+    "fields": {
+      "nombre": "Muzo",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 255,
+    "fields": {
+      "nombre": "Nobsa",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 256,
+    "fields": {
+      "nombre": "Nuevo Colon",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 257,
+    "fields": {
+      "nombre": "Oicata",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 258,
+    "fields": {
+      "nombre": "Otanche",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 259,
+    "fields": {
+      "nombre": "Pachavita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 260,
+    "fields": {
+      "nombre": "Paez",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 261,
+    "fields": {
+      "nombre": "Paipa",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 262,
+    "fields": {
+      "nombre": "Pajarito",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 263,
+    "fields": {
+      "nombre": "Panqueba",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 264,
+    "fields": {
+      "nombre": "Pauna",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 265,
+    "fields": {
+      "nombre": "Paya",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 266,
+    "fields": {
+      "nombre": "Paz De Rio",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 267,
+    "fields": {
+      "nombre": "Pesca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 268,
+    "fields": {
+      "nombre": "Pisba",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 269,
+    "fields": {
+      "nombre": "Puerto Boyaca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 270,
+    "fields": {
+      "nombre": "Quipama",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 271,
+    "fields": {
+      "nombre": "Ramiriqui",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 272,
+    "fields": {
+      "nombre": "Raquira",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 273,
+    "fields": {
+      "nombre": "Rondon",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 274,
+    "fields": {
+      "nombre": "Saboya",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 275,
+    "fields": {
+      "nombre": "Sachica",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 276,
+    "fields": {
+      "nombre": "Samaca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 277,
+    "fields": {
+      "nombre": "San Eduardo",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 278,
+    "fields": {
+      "nombre": "San Jose De Pare",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 279,
+    "fields": {
+      "nombre": "San Luis De Gaceno",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 280,
+    "fields": {
+      "nombre": "San Mateo",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 281,
+    "fields": {
+      "nombre": "San Miguel De Sema",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 282,
+    "fields": {
+      "nombre": "San Pablo De Borbur",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 283,
+    "fields": {
+      "nombre": "Santana",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 284,
+    "fields": {
+      "nombre": "Santa Maria",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 285,
+    "fields": {
+      "nombre": "Santa Rosa De Viterbo",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 286,
+    "fields": {
+      "nombre": "Santa Sofia",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 287,
+    "fields": {
+      "nombre": "Sativanorte",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 288,
+    "fields": {
+      "nombre": "Sativasur",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 289,
+    "fields": {
+      "nombre": "Siachoque",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 290,
+    "fields": {
+      "nombre": "Soata",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 291,
+    "fields": {
+      "nombre": "Socota",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 292,
+    "fields": {
+      "nombre": "Socha",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 293,
+    "fields": {
+      "nombre": "Sogamoso",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 294,
+    "fields": {
+      "nombre": "Somondoco",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 295,
+    "fields": {
+      "nombre": "Sora",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 296,
+    "fields": {
+      "nombre": "Sotaquira",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 297,
+    "fields": {
+      "nombre": "Soraca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 298,
+    "fields": {
+      "nombre": "Susacon",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 299,
+    "fields": {
+      "nombre": "Sutamarchan",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 300,
+    "fields": {
+      "nombre": "Sutatenza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 301,
+    "fields": {
+      "nombre": "Tasco",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 302,
+    "fields": {
+      "nombre": "Tenza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 303,
+    "fields": {
+      "nombre": "Tibana",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 304,
+    "fields": {
+      "nombre": "Tibasosa",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 305,
+    "fields": {
+      "nombre": "Tinjaca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 306,
+    "fields": {
+      "nombre": "Tipacoque",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 307,
+    "fields": {
+      "nombre": "Toca",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 308,
+    "fields": {
+      "nombre": "Togsi",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 309,
+    "fields": {
+      "nombre": "Topaga",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 310,
+    "fields": {
+      "nombre": "Tota",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 311,
+    "fields": {
+      "nombre": "Tunungua",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 312,
+    "fields": {
+      "nombre": "Turmeque",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 313,
+    "fields": {
+      "nombre": "Tuta",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 314,
+    "fields": {
+      "nombre": "Tutaza",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 315,
+    "fields": {
+      "nombre": "Umbita",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 316,
+    "fields": {
+      "nombre": "Ventaquemada",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 317,
+    "fields": {
+      "nombre": "Viracacha",
+      "departamento": 5
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 318,
+    "fields": {
+      "nombre": "Zetaquira",
+      "departamento": 5
+    }
+  }
+]

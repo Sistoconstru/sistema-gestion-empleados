@@ -1,0 +1,162 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 26,
+    "fields": {
+      "nombre": "Casanare",
+      "codigo": "85"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1053,
+    "fields": {
+      "nombre": "Yopal",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1054,
+    "fields": {
+      "nombre": "Aguazul",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1055,
+    "fields": {
+      "nombre": "Chameza",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1056,
+    "fields": {
+      "nombre": "Hato Corozal",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1057,
+    "fields": {
+      "nombre": "La Salina",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1058,
+    "fields": {
+      "nombre": "Mani",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1059,
+    "fields": {
+      "nombre": "Monterrey",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1060,
+    "fields": {
+      "nombre": "Nunchia",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1061,
+    "fields": {
+      "nombre": "Orocue",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1062,
+    "fields": {
+      "nombre": "Paz De Ariporo",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1063,
+    "fields": {
+      "nombre": "Pore",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1064,
+    "fields": {
+      "nombre": "Recetor",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1065,
+    "fields": {
+      "nombre": "Sabanalarga",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1066,
+    "fields": {
+      "nombre": "Sacama",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1067,
+    "fields": {
+      "nombre": "San Luis De Palenque",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1068,
+    "fields": {
+      "nombre": "Tamara",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1069,
+    "fields": {
+      "nombre": "Tauramena",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1070,
+    "fields": {
+      "nombre": "Trinidad",
+      "departamento": 26
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1071,
+    "fields": {
+      "nombre": "Villanueva",
+      "departamento": 26
+    }
+  }
+]

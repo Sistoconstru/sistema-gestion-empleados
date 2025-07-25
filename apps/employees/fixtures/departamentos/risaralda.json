@@ -1,0 +1,122 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 20,
+    "fields": {
+      "nombre": "Risaralda",
+      "codigo": "66"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 830,
+    "fields": {
+      "nombre": "Pereira",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 831,
+    "fields": {
+      "nombre": "Apia",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 832,
+    "fields": {
+      "nombre": "Balboa",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 833,
+    "fields": {
+      "nombre": "Belen De Umbria",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 834,
+    "fields": {
+      "nombre": "Dosquebradas",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 835,
+    "fields": {
+      "nombre": "Guatica",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 836,
+    "fields": {
+      "nombre": "La Celia",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 837,
+    "fields": {
+      "nombre": "La Virginia",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 838,
+    "fields": {
+      "nombre": "Marsella",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 839,
+    "fields": {
+      "nombre": "Mistrato",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 840,
+    "fields": {
+      "nombre": "Pueblo Rico",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 841,
+    "fields": {
+      "nombre": "Quinchia",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 842,
+    "fields": {
+      "nombre": "Santa Rosa De Cabal",
+      "departamento": 20
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 843,
+    "fields": {
+      "nombre": "Santuario",
+      "departamento": 20
+    }
+  }
+]

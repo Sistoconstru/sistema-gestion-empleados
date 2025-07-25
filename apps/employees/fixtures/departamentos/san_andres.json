@@ -1,0 +1,26 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 28,
+    "fields": {
+      "nombre": "San Andres",
+      "codigo": "88"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1085,
+    "fields": {
+      "nombre": "San Andres",
+      "departamento": 28
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1086,
+    "fields": {
+      "nombre": "Providencia",
+      "departamento": 28
+    }
+  }
+]

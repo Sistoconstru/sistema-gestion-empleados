@@ -1,0 +1,346 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 8,
+    "fields": {
+      "nombre": "Cauca",
+      "codigo": "19"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 362,
+    "fields": {
+      "nombre": "Popayan",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 363,
+    "fields": {
+      "nombre": "Almaguer",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 364,
+    "fields": {
+      "nombre": "Argelia",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 365,
+    "fields": {
+      "nombre": "Balboa",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 366,
+    "fields": {
+      "nombre": "Bolivar",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 367,
+    "fields": {
+      "nombre": "Buenos Aires",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 368,
+    "fields": {
+      "nombre": "Cajibio",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 369,
+    "fields": {
+      "nombre": "Caldono",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 370,
+    "fields": {
+      "nombre": "Caloto",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 371,
+    "fields": {
+      "nombre": "Corinto",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 372,
+    "fields": {
+      "nombre": "El Tambo",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 373,
+    "fields": {
+      "nombre": "Florencia",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 374,
+    "fields": {
+      "nombre": "Guachene",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 375,
+    "fields": {
+      "nombre": "Guapi",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 376,
+    "fields": {
+      "nombre": "Inza",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 377,
+    "fields": {
+      "nombre": "Jambalo",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 378,
+    "fields": {
+      "nombre": "La Sierra",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 379,
+    "fields": {
+      "nombre": "La Vega",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 380,
+    "fields": {
+      "nombre": "Lopez",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 381,
+    "fields": {
+      "nombre": "Mercaderes",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 382,
+    "fields": {
+      "nombre": "Miranda",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 383,
+    "fields": {
+      "nombre": "Morales",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 384,
+    "fields": {
+      "nombre": "Padilla",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 385,
+    "fields": {
+      "nombre": "Paez",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 386,
+    "fields": {
+      "nombre": "Patia",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 387,
+    "fields": {
+      "nombre": "Piamonte",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 388,
+    "fields": {
+      "nombre": "Piendamo",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 389,
+    "fields": {
+      "nombre": "Puerto Tejada",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 390,
+    "fields": {
+      "nombre": "Purace",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 391,
+    "fields": {
+      "nombre": "Rosas",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 392,
+    "fields": {
+      "nombre": "San Sebastian",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 393,
+    "fields": {
+      "nombre": "Santander De Quilichao",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 394,
+    "fields": {
+      "nombre": "Santa Rosa",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 395,
+    "fields": {
+      "nombre": "Silvia",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 396,
+    "fields": {
+      "nombre": "Sotara",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 397,
+    "fields": {
+      "nombre": "Suarez",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 398,
+    "fields": {
+      "nombre": "Sucre",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 399,
+    "fields": {
+      "nombre": "Timbio",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 400,
+    "fields": {
+      "nombre": "Timbiqui",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 401,
+    "fields": {
+      "nombre": "Toribio",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 402,
+    "fields": {
+      "nombre": "Totoro",
+      "departamento": 8
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 403,
+    "fields": {
+      "nombre": "Villa Rica",
+      "departamento": 8
+    }
+  }
+]

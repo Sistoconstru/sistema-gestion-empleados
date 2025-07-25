@@ -39,16 +39,23 @@ class EmpleadoForm(forms.ModelForm):
         help_text="Cargo que ocupará el empleado"
     )
     
+    departamento = forms.ModelChoiceField(
+        queryset=None,
+        label="Departamento",
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Seleccione departamento'}),
+        help_text="Filtra las ciudades por departamento"
+    )
+
     class Meta:
         model = Empleado
         fields = [
             'tipo_documento', 'numero_documento', 'nombres', 'apellidos',
-            'telefono_contacto', 'fecha_ingreso', 'sede',
-            'fecha_nacimiento', 'ciudad_nacimiento', 'escolaridad',
+            'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo',
+            'fecha_nacimiento', 'departamento', 'ciudad_nacimiento', 'escolaridad',
             'contacto_emergencia_nombre', 'contacto_emergencia_telefono',
             'correo_electronico'
         ]
-        
         widgets = {
             'tipo_documento': forms.Select(attrs={
                 'class': 'form-control',
@@ -89,9 +96,9 @@ class EmpleadoForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'date'
             }),
-            'ciudad_nacimiento': forms.TextInput(attrs={
+            'ciudad_nacimiento': forms.Select(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ej: Medellín, Antioquia'
+                'placeholder': 'Seleccione ciudad de nacimiento'
             }),
             'escolaridad': forms.Select(attrs={
                 'class': 'form-control'
@@ -112,31 +119,35 @@ class EmpleadoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+        from apps.employees.models import Departamento, Ciudad
+        # Configurar queryset de departamento
+        self.fields['departamento'].queryset = Departamento.objects.all().order_by('nombre')
         # Configurar querysets para campos relacionados
         try:
             self.fields['tipo_documento'].queryset = TipoDocumento.objects.filter(activo=True)
             self.fields['sede'].queryset = Sede.objects.filter(activa=True)
             self.fields['escolaridad'].queryset = Escolaridad.objects.all()
             self.fields['cargo'].queryset = Cargo.objects.filter(activo=True).select_related('area')
+            self.fields['ciudad_nacimiento'].queryset = Ciudad.objects.all().order_by('nombre')
         except Exception as e:
             logger.error(f"Error configurando querysets en formulario: {e}")
-        
         # Si estamos editando, cargar el cargo actual
         if self.instance and self.instance.pk:
             try:
                 cargo_actual = self.instance.historialcargo_set.filter(activo=True).first()
                 if cargo_actual:
                     self.fields['cargo'].initial = cargo_actual.cargo
+                # Inicializar departamento según la ciudad actual
+                ciudad_actual = self.instance.ciudad_nacimiento
+                if ciudad_actual:
+                    self.fields['departamento'].initial = ciudad_actual.departamento
             except Exception as e:
-                logger.warning(f"Error cargando cargo actual: {e}")
-        
+                logger.warning(f"Error cargando cargo/departamento actual: {e}")
         # Hacer campos requeridos más explícitos
         required_fields = [
             'tipo_documento', 'numero_documento', 'nombres', 'apellidos',
             'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo'
         ]
-        
         for field_name in required_fields:
             if field_name in self.fields:
                 self.fields[field_name].required = True

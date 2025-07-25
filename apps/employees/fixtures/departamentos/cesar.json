@@ -1,0 +1,210 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 9,
+    "fields": {
+      "nombre": "Cesar",
+      "codigo": "20"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 404,
+    "fields": {
+      "nombre": "Valledupar",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 405,
+    "fields": {
+      "nombre": "Aguachica",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 406,
+    "fields": {
+      "nombre": "Agustin Codazzi",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 407,
+    "fields": {
+      "nombre": "Astrea",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 408,
+    "fields": {
+      "nombre": "Becerril",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 409,
+    "fields": {
+      "nombre": "Bosconia",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 410,
+    "fields": {
+      "nombre": "Chimichagua",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 411,
+    "fields": {
+      "nombre": "Chiriguana",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 412,
+    "fields": {
+      "nombre": "Curumani",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 413,
+    "fields": {
+      "nombre": "El Copey",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 414,
+    "fields": {
+      "nombre": "El Paso",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 415,
+    "fields": {
+      "nombre": "Gamarra",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 416,
+    "fields": {
+      "nombre": "Gonzalez",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 417,
+    "fields": {
+      "nombre": "La Gloria",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 418,
+    "fields": {
+      "nombre": "La Jagua De Ibirico",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 419,
+    "fields": {
+      "nombre": "Manaure",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 420,
+    "fields": {
+      "nombre": "Pailitas",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 421,
+    "fields": {
+      "nombre": "Pelaya",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 422,
+    "fields": {
+      "nombre": "Pueblo Bello",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 423,
+    "fields": {
+      "nombre": "Rio De Oro",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 424,
+    "fields": {
+      "nombre": "La Paz",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 425,
+    "fields": {
+      "nombre": "San Alberto",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 426,
+    "fields": {
+      "nombre": "San Diego",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 427,
+    "fields": {
+      "nombre": "San Martin",
+      "departamento": 9
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 428,
+    "fields": {
+      "nombre": "Tamalameque",
+      "departamento": 9
+    }
+  }
+]

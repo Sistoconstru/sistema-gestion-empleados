@@ -1,0 +1,378 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 4,
+    "fields": {
+      "nombre": "Bolivar",
+      "codigo": "13"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 150,
+    "fields": {
+      "nombre": "Cartagena",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 151,
+    "fields": {
+      "nombre": "Achi",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 152,
+    "fields": {
+      "nombre": "Altos Del Rosario",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 153,
+    "fields": {
+      "nombre": "Arenal",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 154,
+    "fields": {
+      "nombre": "Arjona",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 155,
+    "fields": {
+      "nombre": "Arroyohondo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 156,
+    "fields": {
+      "nombre": "Barranco De Loba",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 157,
+    "fields": {
+      "nombre": "Calamar",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 158,
+    "fields": {
+      "nombre": "Cantagallo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 159,
+    "fields": {
+      "nombre": "Cicuco",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 160,
+    "fields": {
+      "nombre": "Cordoba",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 161,
+    "fields": {
+      "nombre": "Clemencia",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 162,
+    "fields": {
+      "nombre": "El Carmen De Bolivar",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 163,
+    "fields": {
+      "nombre": "El Guamo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 164,
+    "fields": {
+      "nombre": "El Peñon",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 165,
+    "fields": {
+      "nombre": "Hatillo De Loba",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 166,
+    "fields": {
+      "nombre": "Magangue",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 167,
+    "fields": {
+      "nombre": "Mahates",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 168,
+    "fields": {
+      "nombre": "Margarita",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 169,
+    "fields": {
+      "nombre": "Maria La Baja",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 170,
+    "fields": {
+      "nombre": "Montecristo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 171,
+    "fields": {
+      "nombre": "Mompos",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 172,
+    "fields": {
+      "nombre": "Norosi",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 173,
+    "fields": {
+      "nombre": "Morales",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 174,
+    "fields": {
+      "nombre": "Pinillos",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 175,
+    "fields": {
+      "nombre": "Regidor",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 176,
+    "fields": {
+      "nombre": "Rio Viejo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 177,
+    "fields": {
+      "nombre": "San Cristobal",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 178,
+    "fields": {
+      "nombre": "San Estanislao",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 179,
+    "fields": {
+      "nombre": "San Fernando",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 180,
+    "fields": {
+      "nombre": "San Jacinto",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 181,
+    "fields": {
+      "nombre": "San Jacinto Del Cauca",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 182,
+    "fields": {
+      "nombre": "San Juan Nepomuceno",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 183,
+    "fields": {
+      "nombre": "San Martin De Loba",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 184,
+    "fields": {
+      "nombre": "San Pablo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 185,
+    "fields": {
+      "nombre": "Santa Catalina",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 186,
+    "fields": {
+      "nombre": "Santa Rosa",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 187,
+    "fields": {
+      "nombre": "Santa Rosa Del Sur",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 188,
+    "fields": {
+      "nombre": "Simiti",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 189,
+    "fields": {
+      "nombre": "Soplaviento",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 190,
+    "fields": {
+      "nombre": "Talaigua Nuevo",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 191,
+    "fields": {
+      "nombre": "Tiquisio",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 192,
+    "fields": {
+      "nombre": "Turbaco",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 193,
+    "fields": {
+      "nombre": "Turbana",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 194,
+    "fields": {
+      "nombre": "Villanueva",
+      "departamento": 4
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 195,
+    "fields": {
+      "nombre": "Zambrano",
+      "departamento": 4
+    }
+  }
+]

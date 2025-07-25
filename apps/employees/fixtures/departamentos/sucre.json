@@ -1,0 +1,218 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 22,
+    "fields": {
+      "nombre": "Sucre",
+      "codigo": "70"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 931,
+    "fields": {
+      "nombre": "Sincelejo",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 932,
+    "fields": {
+      "nombre": "Buenavista",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 933,
+    "fields": {
+      "nombre": "Caimito",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 934,
+    "fields": {
+      "nombre": "Coloso",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 935,
+    "fields": {
+      "nombre": "Corozal",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 936,
+    "fields": {
+      "nombre": "Coveñas",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 937,
+    "fields": {
+      "nombre": "Chalan",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 938,
+    "fields": {
+      "nombre": "El Roble",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 939,
+    "fields": {
+      "nombre": "Galeras",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 940,
+    "fields": {
+      "nombre": "Guaranda",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 941,
+    "fields": {
+      "nombre": "La Union",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 942,
+    "fields": {
+      "nombre": "Los Palmitos",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 943,
+    "fields": {
+      "nombre": "Majagual",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 944,
+    "fields": {
+      "nombre": "Morroa",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 945,
+    "fields": {
+      "nombre": "Ovejas",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 946,
+    "fields": {
+      "nombre": "Palmito",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 947,
+    "fields": {
+      "nombre": "Sampues",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 948,
+    "fields": {
+      "nombre": "San Benito Abad",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 949,
+    "fields": {
+      "nombre": "San Juan De Betulia",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 950,
+    "fields": {
+      "nombre": "San Marcos",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 951,
+    "fields": {
+      "nombre": "San Onofre",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 952,
+    "fields": {
+      "nombre": "San Pedro",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 953,
+    "fields": {
+      "nombre": "San Luis De Since",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 954,
+    "fields": {
+      "nombre": "Sucre",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 955,
+    "fields": {
+      "nombre": "Santiago De Tolu",
+      "departamento": 22
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 956,
+    "fields": {
+      "nombre": "Tolu Viejo",
+      "departamento": 22
+    }
+  }
+]

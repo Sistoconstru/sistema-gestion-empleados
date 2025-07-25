@@ -185,8 +185,24 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label class="form-label">{{ form.departamento.label }}</label>
+                                {{ form.departamento }}
+                                {% if form.departamento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.departamento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label class="form-label">{{ form.ciudad_nacimiento.label }}</label>
-                                {{ form.ciudad_nacimiento }}
+                                <select name="ciudad_nacimiento" class="form-control" id="id_ciudad_nacimiento">
+                                    <option value="">---------</option>
+                                    {% for ciudad in form.fields.ciudad_nacimiento.queryset %}
+                                        <option value="{{ ciudad.pk }}" data-departamento="{{ ciudad.departamento.pk }}" {% if form.initial.ciudad_nacimiento == ciudad.pk or form.data.ciudad_nacimiento == ciudad.pk %}selected{% endif %}>{{ ciudad.nombre }} ({{ ciudad.departamento.nombre }})</option>
+                                    {% endfor %}
+                                </select>
                                 {% if form.ciudad_nacimiento.errors %}
                                     <div class="invalid-feedback d-block">
                                         {{ form.ciudad_nacimiento.errors.0 }}
@@ -491,15 +507,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Auto-completar ciudad de nacimiento
-    const ciudadInput = document.querySelector('[name="ciudad_nacimiento"]');
-    if (ciudadInput) {
-        ciudadInput.addEventListener('blur', function() {
-            if (this.value) {
-                // Capitalizar primera letra de cada palabra
-                this.value = this.value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    // Filtro dinámico de ciudades por departamento
+    const departamentoSelect = document.querySelector('[name="departamento"]');
+    const ciudadSelect = document.querySelector('[name="ciudad_nacimiento"]');
+    if (departamentoSelect && ciudadSelect) {
+        departamentoSelect.addEventListener('change', function() {
+            const deptoId = this.value;
+            // Ocultar todas las opciones de ciudad excepto las del departamento seleccionado
+            Array.from(ciudadSelect.options).forEach(option => {
+                if (!deptoId || option.value === "") {
+                    option.style.display = '';
+                } else {
+                    const dataDepto = option.getAttribute('data-departamento');
+                    option.style.display = (dataDepto === deptoId) ? '' : 'none';
+                }
+            });
+            // Si la ciudad seleccionada no pertenece al departamento, limpiar selección
+            const selectedOption = ciudadSelect.options[ciudadSelect.selectedIndex];
+            if (selectedOption && selectedOption.getAttribute('data-departamento') !== deptoId) {
+                ciudadSelect.selectedIndex = 0;
             }
         });
+        // Inicializar filtro al cargar
+        departamentoSelect.dispatchEvent(new Event('change'));
     }
 });
 </script>
