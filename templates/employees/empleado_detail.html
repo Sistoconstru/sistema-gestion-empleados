@@ -407,49 +407,313 @@
 
             <!-- Documentos -->
             <div class="tab-pane fade" id="documentos" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Documentos Obligatorios</h6>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Cédula de Ciudadanía
-                                <span class="badge bg-success">✓ Completo</span>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Certificado EPS
-                                <span class="badge bg-success">✓ Completo</span>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Certificado AFP
-                                <span class="badge bg-warning">⚠ Por vencer</span>
-                            </div>
+                {% load document_filters %}
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Estado de Documentos</h6>
+                    <div class="btn-group">
+                        <a href="{% url 'documents:empleado_documentos' empleado.pk %}" 
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-folder-open me-1"></i>Ver Todos
+                        </a>
+                        {% if perms.documents.add_documentoempleado %}
+                        <a href="{% url 'documents:documento_upload' empleado.pk %}" 
+                        class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-upload me-1"></i>Subir
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Barra de Progreso -->
+                {% document_progress_bar empleado %}
+                
+                <!-- Obtener documentos reales del empleado -->
+                {% with documentos_empleado=empleado.documentoempleado_set.all %}
+                
+                <!-- Alertas de documentos vencidos -->
+                {% with docs_vencidos=documentos_empleado|select:"fecha_vencimiento__lt,today" %}
+                {% if docs_vencidos %}
+                <div class="alert alert-danger border-0 mb-3" role="alert">
+                    <div class="d-flex">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <div>
+                            <h6 class="alert-heading mb-1">Documentos Vencidos</h6>
+                            {% for doc in docs_vencidos %}
+                            <div class="small">• {{ doc.tipo_documento.nombre }} ({{ doc.fecha_vencimiento|date:"d/m/Y" }})</div>
+                            {% endfor %}
                         </div>
                     </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                <div class="row">
+                    <!-- Documentos Obligatorios -->
                     <div class="col-md-6">
-                        <h6>Documentos Opcionales</h6>
+                        <h6 class="text-success border-bottom pb-1">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Documentos Obligatorios
+                        </h6>
+                        
+                        {% comment "Obtener tipos de documentos obligatorios" %}
+                        {% endcomment %}
                         <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Certificados Laborales
-                                <span class="badge bg-success">✓ 2 archivos</span>
+                            <!-- Cédula de Ciudadanía -->
+                            {% with doc_cedula=documentos_empleado|select:"tipo_documento__codigo,CEDULA"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-id-card me-2 text-primary"></i>
+                                    <div>
+                                        <div class="fw-bold">Cédula de Ciudadanía</div>
+                                        {% if doc_cedula %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_cedula.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_cedula %}
+                                        {{ doc_cedula|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Referencias Personales
-                                <span class="badge bg-secondary">Sin cargar</span>
+                            {% endwith %}
+                            
+                            <!-- Certificado EPS -->
+                            {% with doc_eps=documentos_empleado|select:"tipo_documento__codigo,EPS"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-heartbeat me-2 text-danger"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado EPS</div>
+                                        {% if doc_eps %}
+                                        <div class="text-muted small">
+                                            {% if doc_eps.fecha_vencimiento %}
+                                            Vence: {{ doc_eps.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% else %}
+                                            Cargado: {{ doc_eps.fecha_carga|date:"d/m/Y" }}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_eps %}
+                                        {{ doc_eps|document_status_badge }}
+                                        {% if doc_eps.fecha_vencimiento %}
+                                            {% with dias_vencer=doc_eps.fecha_vencimiento|timeuntil %}
+                                            {% if "day" in dias_vencer and "30" in dias_vencer %}
+                                            <div class="badge bg-warning small mt-1">Próximo a vencer</div>
+                                            {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Estudios
-                                <span class="badge bg-success">✓ 1 archivo</span>
+                            {% endwith %}
+                            
+                            <!-- Certificado AFP -->
+                            {% with doc_afp=documentos_empleado|select:"tipo_documento__codigo,AFP"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-piggy-bank me-2 text-success"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado AFP</div>
+                                        {% if doc_afp %}
+                                        <div class="text-muted small">
+                                            {% if doc_afp.fecha_vencimiento %}
+                                            Vence: {{ doc_afp.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% else %}
+                                            Cargado: {{ doc_afp.fecha_carga|date:"d/m/Y" }}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_afp %}
+                                        {{ doc_afp|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Documentos Específicos del Cargo -->
+                            {% with cargo_actual=empleado.historialcargo_set.all|first %}
+                            {% if cargo_actual %}
+                                {% comment "Aquí se mostrarían documentos específicos del cargo como licencia de conducir, certificado de alturas, etc." %}
+                                {% endcomment %}
+                                
+                                <!-- Ejemplo: Licencia de Conducir para conductores -->
+                                {% if "CONDUCTOR" in cargo_actual.cargo.codigo|upper %}
+                                {% with doc_licencia=documentos_empleado|select:"tipo_documento__codigo,LIC_CONDUCIR"|first %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-car me-2 text-info"></i>
+                                        <div>
+                                            <div class="fw-bold">Licencia de Conducir</div>
+                                            <div class="text-muted small">Requerido para {{ cargo_actual.cargo.nombre }}</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {% if doc_licencia %}
+                                            {{ doc_licencia|document_status_badge }}
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Requerido
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                {% endif %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    
+                    <!-- Documentos Opcionales -->
+                    <div class="col-md-6">
+                        <h6 class="text-info border-bottom pb-1">
+                            <i class="fas fa-star me-2"></i>Documentos Opcionales
+                        </h6>
+                        
+                        <div class="list-group list-group-flush">
+                            <!-- Certificados Laborales -->
+                            {% with docs_laborales=documentos_empleado|select:"tipo_documento__codigo,CERT_LABORAL" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-briefcase me-2 text-secondary"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificados Laborales</div>
+                                        <div class="text-muted small">Experiencia laboral previa</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_laborales %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_laborales|length }} archivo{{ docs_laborales|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Referencias Personales -->
+                            {% with docs_referencias=documentos_empleado|select:"tipo_documento__codigo,REF_PERSONAL" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-users me-2 text-warning"></i>
+                                    <div>
+                                        <div class="fw-bold">Referencias Personales</div>
+                                        <div class="text-muted small">Contactos de referencia</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_referencias %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_referencias|length }} archivo{{ docs_referencias|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificados de Estudios -->
+                            {% with docs_estudios=documentos_empleado|select:"tipo_documento__codigo,ESTUDIOS" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificados de Estudios</div>
+                                        <div class="text-muted small">Diplomas y certificaciones</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_estudios %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_estudios|length }} archivo{{ docs_estudios|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificado de Cesantías -->
+                            {% with doc_cesantias=documentos_empleado|select:"tipo_documento__codigo,CESANTIAS"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-money-bill-wave me-2 text-success"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado de Cesantías</div>
+                                        <div class="text-muted small">Certificación de cesantías</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_cesantias %}
+                                        {{ doc_cesantias|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen de Acciones -->
+                <div class="mt-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="btn-group">
+                                <a href="{% url 'documents:empleado_documentos' empleado.pk %}" 
+                                class="btn btn-primary">
+                                    <i class="fas fa-folder-open me-1"></i>Gestionar Documentos
+                                </a>
+                                {% if perms.documents.add_documentoempleado %}
+                                <a href="{% url 'documents:documento_upload' empleado.pk %}" 
+                                class="btn btn-outline-primary">
+                                    <i class="fas fa-upload me-1"></i>Subir Documento
+                                </a>
+                                <a href="{% url 'documents:documento_multiple_upload' empleado.pk %}" 
+                                class="btn btn-outline-secondary">
+                                    <i class="fas fa-cloud-upload-alt me-1"></i>Subida Múltiple
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <!-- Indicadores rápidos -->
+                            <div class="small text-muted">
+                                <div>📄 Total: {{ documentos_empleado|length }} documentos</div>
+                                <div>✅ Aprobados: {{ documentos_empleado|select:"estado_aprobacion,aprobado"|length }}</div>
+                                <div>⏳ Pendientes: {{ documentos_empleado|select:"estado_aprobacion,pendiente"|length }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="mt-4">
-                    <button class="btn btn-primary">
-                        <i class="fas fa-upload me-1"></i>
-                        Gestionar Documentos
-                    </button>
-                </div>
+                {% endwith %}
             </div>
         </div>
     </div>

@@ -1,0 +1,376 @@
+<!-- =============================================================================
+templates/documents/documento_list.html - LISTA GENERAL PARA ADMINISTRADORES
+============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% load document_filters %}
+
+{% block title %}Gestión de Documentos - RRHH Pro{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item">Documentos</li>
+<li class="breadcrumb-item active">Administración</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-file-alt text-primary me-2"></i>
+            Administración de Documentos
+        </h1>
+        <p class="text-muted mb-0">Gestión completa de documentos de empleados</p>
+    </div>
+    <div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-download me-1"></i>Reportes
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-file-excel me-2 text-success"></i>Documentos Pendientes (Excel)
+                </a></li>
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-file-pdf me-2 text-danger"></i>Documentos Vencidos (PDF)
+                </a></li>
+                <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-chart-bar me-2 text-info"></i>Reporte de Cumplimiento
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Total Documentos</h5>
+                        <h3 class="mb-0">{{ documentos|length }}</h3>
+                    </div>
+                    <div><i class="fas fa-file-alt fa-2x opacity-75"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Pendientes</h5>
+                        <h3 class="mb-0">{{ documentos|select:"estado_aprobacion,pendiente"|length }}</h3>
+                    </div>
+                    <div><i class="fas fa-clock fa-2x opacity-75"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Vencidos</h5>
+                        <h3 class="mb-0">5</h3> <!-- Calcular dinámicamente -->
+                    </div>
+                    <div><i class="fas fa-calendar-times fa-2x opacity-75"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Aprobados</h5>
+                        <h3 class="mb-0">{{ documentos|select:"estado_aprobacion,aprobado"|length }}</h3>
+                    </div>
+                    <div><i class="fas fa-check-circle fa-2x opacity-75"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros de Búsqueda -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Empleado</label>
+                <input type="text" class="form-control" name="empleado" placeholder="Nombre o documento">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <select class="form-select" name="estado">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="aprobado">Aprobado</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tipo</label>
+                <select class="form-select" name="tipo">
+                    <option value="">Todos</option>
+                    <option value="obligatorio">Obligatorios</option>
+                    <option value="opcional">Opcionales</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Vencimiento</label>
+                <select class="form-select" name="vencimiento">
+                    <option value="">Todos</option>
+                    <option value="vencidos">Vencidos</option>
+                    <option value="proximos">Próximos (30 días)</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Buscar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Documentos -->
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>Documentos Registrados
+            </h5>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Actualizar">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Configurar columnas">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Empleado</th>
+                    <th>Documento</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha Carga</th>
+                    <th>Vencimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for documento in documentos %}
+                <tr class="{% if documento.estado_aprobacion == 'pendiente' %}table-warning{% elif documento.estado_aprobacion == 'rechazado' %}table-danger{% endif %}">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle bg-primary text-white me-2">
+                                {{ documento.empleado.nombres|first }}{{ documento.empleado.apellidos|first }}
+                            </div>
+                            <div>
+                                <div class="fw-bold">
+                                    <a href="{% url 'employees:empleado_detail' documento.empleado.pk %}" 
+                                       class="text-decoration-none">
+                                        {{ documento.empleado.nombre_completo }}
+                                    </a>
+                                </div>
+                                <div class="text-muted small">{{ documento.empleado.numero_documento }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            {{ documento.nombre_archivo|file_icon }}
+                            <div class="ms-2">
+                                <div class="fw-bold">{{ documento.tipo_documento.nombre }}</div>
+                                <div class="text-muted small">{{ documento.nombre_archivo }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if documento.tipo_documento.obligatorio %}
+                            <span class="badge bg-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Obligatorio
+                            </span>
+                        {% else %}
+                            <span class="badge bg-info">
+                                <i class="fas fa-star me-1"></i>Opcional
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ documento|document_status_badge }}
+                        {% if documento.aprobado_por %}
+                        <div class="text-muted small mt-1">
+                            {{ documento.aprobado_por.get_full_name|default:documento.aprobado_por.username }}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ documento.fecha_carga|date:"d/m/Y" }}
+                        <div class="text-muted small">{{ documento.fecha_carga|date:"H:i" }}</div>
+                    </td>
+                    <td>
+                        {% if documento.fecha_vencimiento %}
+                            <div class="{% if documento.fecha_vencimiento < today %}text-danger{% elif documento.fecha_vencimiento <= today|add:'30' %}text-warning{% endif %}">
+                                {{ documento.fecha_vencimiento|date:"d/m/Y" }}
+                                {% if documento.fecha_vencimiento < today %}
+                                    <div class="badge bg-danger small">VENCIDO</div>
+                                {% elif documento.fecha_vencimiento <= today|add:'7' %}
+                                    <div class="badge bg-warning small">PRÓXIMO</div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <span class="text-muted small">Sin vencimiento</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'documents:documento_download' documento.pk %}" 
+                               class="btn btn-outline-primary" 
+                               data-bs-toggle="tooltip" 
+                               title="Descargar">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            
+                            {% if documento.estado_aprobacion == 'pendiente' %}
+                            <a href="{% url 'documents:documento_approve' documento.pk %}" 
+                               class="btn btn-outline-warning" 
+                               data-bs-toggle="tooltip" 
+                               title="Revisar">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+                            
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" 
+                                        class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                        data-bs-toggle="dropdown">
+                                    <span class="visually-hidden">Más opciones</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'documents:empleado_documentos' documento.empleado.pk %}">
+                                        <i class="fas fa-folder-open me-2"></i>Ver todos los documentos
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'employees:empleado_detail' documento.empleado.pk %}">
+                                        <i class="fas fa-user me-2"></i>Perfil del empleado
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="return confirm('¿Eliminar documento?')">
+                                        <i class="fas fa-trash me-2"></i>Eliminar
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-file-alt fa-3x mb-3"></i>
+                            <div class="h5">No hay documentos registrados</div>
+                            <p>Los documentos aparecerán aquí cuando los empleados los suban.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Paginación -->
+    {% if page_obj.has_other_pages %}
+    <div class="card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+                Mostrando {{ page_obj.start_index }}-{{ page_obj.end_index }} 
+                de {{ page_obj.paginator.count }} documentos
+            </div>
+            
+            <nav aria-label="Paginación">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">Primera</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Inicializar tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+// Auto-refresh cada 5 minutos para documentos pendientes
+setInterval(function() {
+    if (window.location.search.includes('estado=pendiente') || window.location.pathname.includes('documents')) {
+        // Solo hacer refresh si estamos en la vista de documentos pendientes
+        const currentUrl = new URL(window.location);
+        if (currentUrl.searchParams.get('estado') === 'pendiente') {
+            window.location.reload();
+        }
+    }
+}, 300000); // 5 minutos
+</script>
+{% endblock %}

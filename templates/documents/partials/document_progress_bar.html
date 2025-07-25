@@ -1,0 +1,38 @@
+<!-- =============================================================================
+templates/documents/partials/document_progress_bar.html - BARRA DE PROGRESO
+============================================================================= -->
+
+<div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <small class="text-muted">Progreso de Documentos</small>
+        <small class="text-muted">{{ docs_aprobados }}/{{ total_requeridos }}</small>
+    </div>
+    <div class="progress" style="height: 8px;">
+        <div class="progress-bar {% if porcentaje == 100 %}bg-success{% elif porcentaje >= 75 %}bg-info{% elif porcentaje >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+             role="progressbar" 
+             style="width: {{ porcentaje }}%"
+             aria-valuenow="{{ porcentaje }}" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+        </div>
+    </div>
+    {% if porcentaje < 100 %}
+    <div class="text-center mt-1">
+        <small class="text-muted">
+            {% if porcentaje == 0 %}
+                Sin documentos subidos
+            {% elif porcentaje < 50 %}
+                Documentos básicos pendientes
+            {% elif porcentaje < 100 %}
+                Faltan algunos documentos
+            {% endif %}
+        </small>
+    </div>
+    {% else %}
+    <div class="text-center mt-1">
+        <small class="text-success">
+            <i class="fas fa-check-circle me-1"></i>Documentos completos
+        </small>
+    </div>
+    {% endif %}
+</div>

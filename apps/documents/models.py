@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 # =============================================================================
 # apps/documents/models.py
 # =============================================================================
@@ -8,6 +7,24 @@ from django.db import models
 import uuid
 from django.db import models
 
+# Agregar esta función al inicio del archivo models.py existente:
+
+def get_upload_path(instance, filename):
+    """Generar ruta de subida personalizada para documentos"""
+    import os
+    from django.utils import timezone
+    
+    # Obtener información del empleado y tipo de documento
+    empleado_doc = instance.empleado.numero_documento
+    tipo_doc = instance.tipo_documento.codigo
+    
+    # Generar nombre único para evitar conflictos
+    timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+    name, ext = os.path.splitext(filename)
+    new_filename = f"{tipo_doc}_{timestamp}{ext}"
+    
+    # Estructura: documentos/123456789/CEDULA/CEDULA_20240101_120000.pdf
+    return f'documentos/{empleado_doc}/{tipo_doc}/{new_filename}'
 
 class TipoDocumentoEmpleado(models.Model):
     """Tipos de documentos que pueden subir los empleados"""
@@ -52,7 +69,7 @@ class DocumentoEmpleado(models.Model):
     empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)
     tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)
     nombre_archivo = models.CharField(max_length=255)
-    archivo = models.FileField(upload_to='documentos/')
+    archivo = models.FileField(upload_to=get_upload_path)
     fecha_documento = models.DateField(null=True, blank=True)
     fecha_vencimiento = models.DateField(null=True, blank=True)
     estado_aprobacion = models.CharField(max_length=20, choices=ESTADOS_APROBACION, default='pendiente')
