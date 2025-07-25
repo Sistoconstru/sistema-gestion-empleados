@@ -138,17 +138,14 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     <i class="fas fa-clipboard-check me-2"></i>Revisión del Documento
                 </h4>
             </div>
-            
             <form method="post" id="approvalForm">
                 {% csrf_token %}
-                
                 <div class="card-body">
                     {% if form.non_field_errors %}
                     <div class="alert alert-danger">
                         {{ form.non_field_errors }}
                     </div>
                     {% endif %}
-                    
                     <div class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
@@ -159,7 +156,6 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                                 {% endif %}
                             </div>
                         </div>
-                        
                         <div class="col-md-8">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Observaciones</label>
@@ -174,34 +170,32 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                             </div>
                         </div>
                     </div>
-                    
                     <!-- Plantillas de Observaciones -->
                     <div class="mb-3">
                         <label class="form-label fw-bold">Plantillas de Observaciones:</label>
                         <div class="btn-group-vertical btn-group-sm w-100" role="group">
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
-                                    data-template="Documento ilegible o con baja calidad de imagen. Por favor, suba una versión más clara.">
+                                    data-template="Documento ilegible o con baja calidad de imagen. Por favor, suba una versión más clara." {% if modo_visualizacion %}disabled{% endif %}>
                                 📷 Calidad de imagen deficiente
                             </button>
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
-                                    data-template="El documento está vencido. Por favor, suba la versión vigente.">
+                                    data-template="El documento está vencido. Por favor, suba la versión vigente." {% if modo_visualizacion %}disabled{% endif %}>
                                 ⏰ Documento vencido
                             </button>
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
-                                    data-template="Falta información requerida en el documento. Verifique que esté completo.">
+                                    data-template="Falta información requerida en el documento. Verifique que esté completo." {% if modo_visualizacion %}disabled{% endif %}>
                                 📋 Información incompleta
                             </button>
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
-                                    data-template="El tipo de documento no corresponde. Por favor, verifique y suba el documento correcto.">
+                                    data-template="El tipo de documento no corresponde. Por favor, verifique y suba el documento correcto." {% if modo_visualizacion %}disabled{% endif %}>
                                 🔄 Tipo incorrecto
                             </button>
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
-                                    data-template="El documento no pertenece al empleado indicado. Verifique los datos.">
+                                    data-template="El documento no pertenece al empleado indicado. Verifique los datos." {% if modo_visualizacion %}disabled{% endif %}>
                                 👤 Datos no coinciden
                             </button>
                         </div>
                     </div>
-                    
                     <!-- Lista de Verificación -->
                     <div class="card bg-light">
                         <div class="card-header">
@@ -211,31 +205,31 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                         <div class="card-body">
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check1">
+                                <input class="form-check-input" type="checkbox" id="check1" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check1">
                                     El documento es legible y de buena calidad
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check2">
+                                <input class="form-check-input" type="checkbox" id="check2" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check2">
                                     La información coincide con los datos del empleado
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check3">
+                                <input class="form-check-input" type="checkbox" id="check3" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check3">
                                     El documento está vigente (si aplica)
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check4">
+                                <input class="form-check-input" type="checkbox" id="check4" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check4">
                                     El tipo de documento es correcto
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check5">
+                                <input class="form-check-input" type="checkbox" id="check5" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check5">
                                     El documento contiene toda la información requerida
                                 </label>
@@ -243,14 +237,13 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                     </div>
                 </div>
-                
                 <div class="card-footer bg-light">
                     <div class="d-flex justify-content-between">
                         <a href="{% url 'documents:empleado_documentos' documento.empleado.pk %}" 
                            class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Volver sin Guardar
+                            <i class="fas fa-arrow-left me-1"></i>Volver
                         </a>
-                        
+                        {% if not modo_visualizacion %}
                         <div>
                             <button type="submit" class="btn btn-success me-2" id="approveBtn" 
                                     onclick="setDecision('aprobado')">
@@ -261,6 +254,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                                 <i class="fas fa-times me-1"></i>Rechazar Documento
                             </button>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </form>

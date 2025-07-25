@@ -87,6 +87,8 @@ def documento_empleado_detail(request, empleado_pk):
         fecha_vencimiento__lte=date.today() + timedelta(days=30)
     ).order_by('fecha_vencimiento')
     
+    total_aprobados = documentos_existentes.filter(estado_aprobacion='aprobado').count()
+    total_pendientes = documentos_existentes.filter(estado_aprobacion='pendiente').count()
     context = {
         'empleado': empleado,
         'documentos_existentes': documentos_existentes,
@@ -96,8 +98,10 @@ def documento_empleado_detail(request, empleado_pk):
         'docs_por_tipo': docs_por_tipo,
         'docs_faltantes': docs_faltantes,
         'docs_por_vencer': docs_por_vencer,
-        'puede_editar': request.user.is_staff or request.user.empleado == empleado,
-        'es_administrador': request.user.is_staff
+        'puede_editar': request.user.is_staff or getattr(request.user, 'empleado', None) == empleado,
+        'es_administrador': request.user.is_staff,
+        'total_aprobados': total_aprobados,
+        'total_pendientes': total_pendientes
     }
     
     return render(request, 'documents/empleado_documentos.html', context)
@@ -221,54 +225,57 @@ def documento_multiple_upload(request, empleado_pk):
 
 
 @login_required
+
 def documento_approve(request, documento_pk):
-    """Vista para aprobar/rechazar documento"""
-    if not request.user.is_staff:
-        raise PermissionDenied("Solo administradores pueden aprobar documentos")
-    
+    """Vista para aprobar/rechazar documento o solo visualizarlo"""
     documento = get_object_or_404(DocumentoEmpleado, pk=documento_pk)
-    
-    if request.method == 'POST':
-        form = DocumentApprovalForm(request.POST, instance=documento)
-        
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    documento = form.save(commit=False)
-                    documento.aprobado_por = request.user
-                    documento.fecha_aprobacion = timezone.now()
-                    documento.save()
-                    
-                    # Mensaje según el estado
-                    if documento.estado_aprobacion == 'aprobado':
-                        messages.success(
-                            request,
-                            f'✅ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} aprobado exitosamente.'
-                        )
-                        
-                        # Verificar si el empleado puede cambiar de estado
-                        verificar_cambio_estado_empleado(documento.empleado)
-                        
-                    else:
-                        messages.warning(
-                            request,
-                            f'⚠️ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} rechazado.'
-                        )
-                    
-                    return redirect('documents:empleado_documentos', empleado_pk=documento.empleado.pk)
-                    
-            except Exception as e:
-                logger.error(f"Error aprobando documento: {str(e)}")
-                messages.error(request, f'❌ Error: {str(e)}')
+
+    # Si el usuario es staff, puede aprobar/rechazar
+    if request.user.is_staff:
+        if request.method == 'POST':
+            form = DocumentApprovalForm(request.POST, instance=documento)
+            if form.is_valid():
+                try:
+                    with transaction.atomic():
+                        documento = form.save(commit=False)
+                        documento.aprobado_por = request.user
+                        documento.fecha_aprobacion = timezone.now()
+                        documento.save()
+                        # Mensaje según el estado
+                        if documento.estado_aprobacion == 'aprobado':
+                            messages.success(
+                                request,
+                                f'✅ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} aprobado exitosamente.'
+                            )
+                            verificar_cambio_estado_empleado(documento.empleado)
+                        else:
+                            messages.warning(
+                                request,
+                                f'⚠️ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} rechazado.'
+                            )
+                        return redirect('documents:empleado_documentos', empleado_pk=documento.empleado.pk)
+                except Exception as e:
+                    logger.error(f"Error aprobando documento: {str(e)}")
+                    messages.error(request, f'❌ Error: {str(e)}')
+        else:
+            form = DocumentApprovalForm(instance=documento)
+        modo_visualizacion = False
     else:
+        # Empleado solo puede visualizar su propio documento
+        if not hasattr(request.user, 'empleado') or request.user.empleado != documento.empleado:
+            raise PermissionDenied("No tienes permisos para ver este documento")
         form = DocumentApprovalForm(instance=documento)
-    
+        # Deshabilitar todos los campos del formulario
+        for field in form.fields.values():
+            field.disabled = True
+        modo_visualizacion = True
+
     context = {
         'form': form,
         'documento': documento,
-        'titulo': f'Revisar Documento - {documento.tipo_documento.nombre}'
+        'titulo': f'Revisar Documento - {documento.tipo_documento.nombre}',
+        'modo_visualizacion': modo_visualizacion
     }
-    
     return render(request, 'documents/documento_approval_form.html', context)
 
 

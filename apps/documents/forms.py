@@ -48,12 +48,21 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         
         # Filtrar tipos de documento disponibles para el empleado
         if self.empleado:
-            self.fields['tipo_documento'].queryset = self.get_available_document_types()
+            tipos_disponibles = self.get_available_document_types()
+            # Si es lista, convertir a queryset
+            if isinstance(tipos_disponibles, list):
+                ids = [td.id for td in tipos_disponibles]
+                self.fields['tipo_documento'].queryset = TipoDocumentoEmpleado.objects.filter(id__in=ids)
+            else:
+                self.fields['tipo_documento'].queryset = tipos_disponibles
         
         # Configurar campos obligatorios dinámicamente
-        if self.instance and self.instance.tipo_documento:
-            if self.instance.tipo_documento.tiene_vencimiento:
+        # Ocultar campo fecha_vencimiento si el tipo de documento no requiere vencimiento
+        if self.instance and hasattr(self.instance, 'tipo_documento') and self.instance.tipo_documento:
+            if hasattr(self.instance.tipo_documento, 'tiene_vencimiento') and self.instance.tipo_documento.tiene_vencimiento:
                 self.fields['fecha_vencimiento'].required = True
+            else:
+                self.fields['fecha_vencimiento'].widget = forms.HiddenInput()
     
     def get_available_document_types(self):
         """Obtener tipos de documentos disponibles para el empleado"""
@@ -69,22 +78,40 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         if historial_actual:
             cargo_actual = historial_actual.cargo
         
-        tipos_disponibles = obligatorios.union(opcionales)
-        
+        tipos_disponibles = list(obligatorios) + list(opcionales)
         if cargo_actual:
-            # Agregar documentos específicos del cargo
-            especificos = TipoDocumentoEmpleado.objects.filter(
+            especificos = list(TipoDocumentoEmpleado.objects.filter(
                 tipodocumentocargo__cargo=cargo_actual,
                 activo=True
-            )
-            tipos_disponibles = tipos_disponibles.union(especificos)
-        
+            ))
+            tipos_disponibles += especificos
         # Excluir documentos ya subidos
-        docs_existentes = DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True)
-        tipos_disponibles = tipos_disponibles.exclude(id__in=docs_existentes)
-        
-        return tipos_disponibles.distinct()
+        docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
+        tipos_disponibles = [td for td in tipos_disponibles if td.id not in docs_existentes]
+        return tipos_disponibles
     
+    def get_available_document_types(self):
+        """Obtener tipos de documentos disponibles según el usuario (admin/empleado)"""
+        # Si el usuario es admin (is_staff), mostrar todos los tipos activos excluyendo los ya subidos
+        if self.usuario and getattr(self.usuario, 'is_staff', False):
+            tipos = TipoDocumentoEmpleado.objects.filter(activo=True)
+            docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
+            tipos = tipos.exclude(pk__in=docs_existentes)
+            return tipos
+        # Si es empleado, mostrar solo los no obligatorios y los de su cargo
+        tipos_no_obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=False, activo=True)
+        tipos_cargo = TipoDocumentoEmpleado.objects.none()
+        cargo_actual = None
+        historial_actual = self.empleado.historialcargo_set.filter(activo=True).first()
+        if historial_actual:
+            cargo_actual = historial_actual.cargo
+            tipos_cargo_ids = cargo_actual and cargo_actual.tipodocumentocargo_set.values_list('tipo_documento', flat=True)
+            if tipos_cargo_ids:
+                tipos_cargo = TipoDocumentoEmpleado.objects.filter(pk__in=tipos_cargo_ids, activo=True)
+        tipos_final = tipos_no_obligatorios | tipos_cargo
+        docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
+        tipos_final = tipos_final.exclude(pk__in=docs_existentes)
+        return tipos_final.distinct()
     def clean_archivo(self):
         """Validar archivo subido"""
         archivo = self.cleaned_data.get('archivo')
@@ -122,23 +149,23 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         return cleaned_data
     
     def save(self, commit=True):
-        """Guardar documento con información adicional"""
+        """Guardar documento con información adicional y validación de tipo_documento"""
         documento = super().save(commit=False)
-        
         if self.empleado:
             documento.empleado = self.empleado
-        
         if self.usuario:
             documento.cargado_por = self.usuario
-        
-        # Generar nombre de archivo automático
-        if documento.archivo:
-            ext = documento.archivo.name.split('.')[-1]
-            documento.nombre_archivo = f"{documento.tipo_documento.codigo}_{documento.empleado.numero_documento}.{ext}"
-        
+        # Generar nombre de archivo automático solo si tipo_documento existe y no lanza excepción
+        try:
+            if documento.archivo and documento.tipo_documento:
+                ext = documento.archivo.name.split('.')[-1]
+                documento.nombre_archivo = f"{documento.tipo_documento.codigo}_{documento.empleado.numero_documento}.{ext}"
+            else:
+                documento.nombre_archivo = documento.archivo.name if documento.archivo else ''
+        except Exception:
+            documento.nombre_archivo = documento.archivo.name if documento.archivo else ''
         if commit:
             documento.save()
-        
         return documento
 
 class MultipleDocumentUploadForm(forms.Form):
@@ -187,11 +214,11 @@ class MultipleDocumentUploadForm(forms.Form):
         obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=True, activo=True)
         opcionales = TipoDocumentoEmpleado.objects.filter(obligatorio=False, activo=True)
         
-        tipos_disponibles = obligatorios.union(opcionales)
-        
+        tipos_disponibles = list(obligatorios) + list(opcionales)
         # Excluir ya existentes
-        docs_existentes = DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True)
-        return tipos_disponibles.exclude(id__in=docs_existentes).distinct()
+        docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
+        tipos_disponibles = [td for td in tipos_disponibles if td.id not in docs_existentes]
+        return tipos_disponibles
     
     def get_accept_string(self, formatos):
         """Convertir formatos a string accept de HTML"""

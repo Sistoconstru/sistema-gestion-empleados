@@ -162,9 +162,10 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
         except:
             context['evaluaciones'] = []
         
-        # Simulación de documentos (implementar cuando esté el módulo de documentos)
-        context['documentos_completos'] = 3
-        context['documentos_pendientes'] = 1
+        # Estadísticas reales de documentos
+        documentos = empleado.documentoempleado_set.all()
+        context['documentos_completos'] = documentos.filter(estado_aprobacion='aprobado').count()
+        context['documentos_pendientes'] = documentos.filter(estado_aprobacion='pendiente').count()
         
         return context
 

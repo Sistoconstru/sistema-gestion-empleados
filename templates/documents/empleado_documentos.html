@@ -43,20 +43,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
         <div class="card border-0 bg-success text-white">
             <div class="card-body text-center">
                 <h5 class="card-title">Aprobados</h5>
-                <h3 class="mb-0">
-                    {% with aprobados=0 %}
-                        {% for doc in documentos_existentes %}
-                            {% if doc.estado_aprobacion == 'aprobado' %}
-                                {% if aprobados == 0 %}1{% else %}{{ aprobados|add:1 }}{% endif %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if aprobados == 0 %}
-                            {% for doc in documentos_existentes %}
-                                {% if doc.estado_aprobacion == 'aprobado' %}{{ forloop.counter }}{% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </h3>
+                <h3 class="mb-0">{{ total_aprobados }}</h3>
             </div>
         </div>
     </div>
@@ -64,11 +51,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
         <div class="card border-0 bg-warning text-white">
             <div class="card-body text-center">
                 <h5 class="card-title">Pendientes</h5>
-                <h3 class="mb-0">
-                    {% for doc in documentos_existentes %}
-                        {% if doc.estado_aprobacion == 'pendiente' %}{{ forloop.counter }}{% endif %}
-                    {% endfor %}
-                </h3>
+                <h3 class="mb-0">{{ total_pendientes }}</h3>
             </div>
         </div>
     </div>
@@ -200,12 +183,16 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                                title="Descargar">
                                 <i class="fas fa-download"></i>
                             </a>
-                            
+                            <a href="{% url 'documents:documento_view' documento.pk %}" 
+                               class="btn btn-outline-info" 
+                               title="Ver Documento">
+                                <i class="fas fa-eye"></i>
+                            </a>
                             {% if es_administrador and documento.estado_aprobacion == 'pendiente' %}
                             <a href="{% url 'documents:documento_approve' documento.pk %}" 
                                class="btn btn-outline-warning" 
                                title="Aprobar/Rechazar">
-                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-check"></i>
                             </a>
                             {% endif %}
                         </div>

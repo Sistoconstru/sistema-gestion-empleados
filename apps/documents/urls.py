@@ -22,6 +22,8 @@ urlpatterns = [
     
     # Aprobar documentos
     path('documento/<uuid:documento_pk>/aprobar/', views.documento_approve, name='documento_approve'),
+    # Visualizar documento (solo lectura o aprobación)
+    path('documento/<uuid:documento_pk>/ver/', views.documento_approve, name='documento_view'),
     
     # Descargar documento
     path('documento/<uuid:documento_pk>/descargar/', views.documento_download, name='documento_download'),

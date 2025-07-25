@@ -8253,3 +8253,1528 @@ WARNING 2025-07-24 17:40:40,157 basehttp 16532 40252 "GET /.well-known/appspecif
 >>>>>>> ferney24-07
 INFO 2025-07-25 07:31:48,132 autoreload 17932 22100 Watching for file changes with StatReloader
 INFO 2025-07-25 07:34:17,320 autoreload 6048 2692 Watching for file changes with StatReloader
+INFO 2025-07-25 07:40:41,810 autoreload 18140 9160 Watching for file changes with StatReloader
+INFO 2025-07-25 08:04:48,304 autoreload 25704 16480 Watching for file changes with StatReloader
+INFO 2025-07-25 08:11:40,954 autoreload 16676 6344 Watching for file changes with StatReloader
+INFO 2025-07-25 08:11:52,037 basehttp 16676 8224 "GET /empleados/ HTTP/1.1" 200 94293
+ERROR 2025-07-25 08:12:12,445 log 16676 8224 Internal Server Error: /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:12:12,462 basehttp 16676 8224 "GET /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 500 337157
+INFO 2025-07-25 08:14:16,285 autoreload 1372 6364 Watching for file changes with StatReloader
+INFO 2025-07-25 08:14:23,841 basehttp 1372 11860 "GET /empleados/ HTTP/1.1" 200 94293
+ERROR 2025-07-25 08:14:26,549 log 1372 11860 Internal Server Error: /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:14:26,563 basehttp 1372 11860 "GET /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 500 337157
+ERROR 2025-07-25 08:14:45,348 log 1372 11860 Internal Server Error: /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:14:45,354 basehttp 1372 11860 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 500 337157
+INFO 2025-07-25 08:15:17,497 basehttp 1372 11860 "GET /dashboard/ HTTP/1.1" 200 15040
+INFO 2025-07-25 08:15:20,619 basehttp 1372 11860 "GET /empleados/ HTTP/1.1" 200 94293
+ERROR 2025-07-25 08:15:32,617 log 1372 11860 Internal Server Error: /empleados/3213e0ef-c09b-4208-99ac-3851f81a417b/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:15:32,623 basehttp 1372 11860 "GET /empleados/3213e0ef-c09b-4208-99ac-3851f81a417b/ HTTP/1.1" 500 337157
+INFO 2025-07-25 08:35:35,329 autoreload 11192 26168 Watching for file changes with StatReloader
+ERROR 2025-07-25 08:35:46,063 log 11192 21308 Internal Server Error: /empleados/2e9cd267-d34e-48c4-b62b-13f161a8143b/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:35:46,070 basehttp 11192 21308 "GET /empleados/2e9cd267-d34e-48c4-b62b-13f161a8143b/ HTTP/1.1" 500 337157
+INFO 2025-07-25 08:36:40,588 autoreload 9492 8112 Watching for file changes with StatReloader
+INFO 2025-07-25 08:36:47,322 basehttp 9492 23976 "GET /empleados/ HTTP/1.1" 200 94293
+ERROR 2025-07-25 08:36:50,578 log 9492 23976 Internal Server Error: /empleados/f900622e-8351-4924-84d0-1e4726c155be/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'select'
+ERROR 2025-07-25 08:36:50,585 basehttp 9492 23976 "GET /empleados/f900622e-8351-4924-84d0-1e4726c155be/ HTTP/1.1" 500 337157
+INFO 2025-07-25 09:00:52,589 autoreload 1076 16352 Watching for file changes with StatReloader
+INFO 2025-07-25 09:01:00,942 basehttp 1076 17260 "GET /empleados/f900622e-8351-4924-84d0-1e4726c155be/ HTTP/1.1" 200 34996
+INFO 2025-07-25 09:06:02,154 basehttp 1076 13108 "GET /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/ HTTP/1.1" 200 12447
+INFO 2025-07-25 09:38:34,668 basehttp 1076 4440 "GET /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/ HTTP/1.1" 200 12447
+ERROR 2025-07-25 09:38:43,543 log 1076 4440 Internal Server Error: /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 51, in __init__
+    self.fields['tipo_documento'].queryset = self.get_available_document_types()
+                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 84, in get_available_document_types
+    tipos_disponibles = tipos_disponibles.exclude(id__in=docs_existentes)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1488, in exclude
+    self._not_support_combined_queries("exclude")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 2010, in _not_support_combined_queries
+    raise NotSupportedError(
+    ...<2 lines>...
+    )
+django.db.utils.NotSupportedError: Calling QuerySet.exclude() after union() is not supported.
+ERROR 2025-07-25 09:38:43,548 basehttp 1076 4440 "GET /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/subir/ HTTP/1.1" 500 99625
+INFO 2025-07-25 09:40:33,336 autoreload 1076 16352 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 09:40:34,065 autoreload 11876 15464 Watching for file changes with StatReloader
+ERROR 2025-07-25 09:40:59,380 log 11876 3864 Internal Server Error: /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 51, in __init__
+    self.fields['tipo_documento'].queryset = self.get_available_document_types()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\forms\models.py", line 1516, in _set_queryset
+    self._queryset = None if queryset is None else queryset.all()
+                                                   ^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'all'
+ERROR 2025-07-25 09:40:59,389 basehttp 11876 3864 "GET /documentos/empleado/f900622e-8351-4924-84d0-1e4726c155be/subir/ HTTP/1.1" 500 89542
+INFO 2025-07-25 09:41:12,210 autoreload 8628 8036 Watching for file changes with StatReloader
+INFO 2025-07-25 09:41:24,348 basehttp 8628 18500 "GET /dashboard/ HTTP/1.1" 200 15040
+INFO 2025-07-25 09:41:26,554 basehttp 8628 18500 "GET /empleados/ HTTP/1.1" 200 94293
+INFO 2025-07-25 09:41:31,465 basehttp 8628 18500 "GET /empleados/515004a6-b8f6-4378-84ee-e6a8f8959b77/ HTTP/1.1" 200 35013
+INFO 2025-07-25 09:41:45,576 basehttp 8628 18500 "GET /documentos/empleado/515004a6-b8f6-4378-84ee-e6a8f8959b77/ HTTP/1.1" 200 12453
+ERROR 2025-07-25 09:41:54,917 log 8628 18500 Internal Server Error: /documentos/empleado/515004a6-b8f6-4378-84ee-e6a8f8959b77/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 51, in __init__
+    self.fields['tipo_documento'].queryset = self.get_available_document_types()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\forms\models.py", line 1516, in _set_queryset
+    self._queryset = None if queryset is None else queryset.all()
+                                                   ^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'all'
+ERROR 2025-07-25 09:41:54,921 basehttp 8628 18500 "GET /documentos/empleado/515004a6-b8f6-4378-84ee-e6a8f8959b77/subir/ HTTP/1.1" 500 89544
+INFO 2025-07-25 09:42:34,719 autoreload 8628 8036 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 09:42:35,313 autoreload 23272 20380 Watching for file changes with StatReloader
+ERROR 2025-07-25 09:42:54,233 log 23272 22816 Internal Server Error: /documentos/empleado/515004a6-b8f6-4378-84ee-e6a8f8959b77/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 09:42:54,236 basehttp 23272 22816 "GET /documentos/empleado/515004a6-b8f6-4378-84ee-e6a8f8959b77/subir/ HTTP/1.1" 500 90852
+INFO 2025-07-25 09:43:17,031 basehttp 23272 22816 "GET /admin/employees/empleado/ HTTP/1.1" 200 62145
+INFO 2025-07-25 09:43:17,064 basehttp 23272 22816 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:43:19,882 basehttp 23272 22816 "GET /admin/employees/empleado/add/ HTTP/1.1" 200 64374
+INFO 2025-07-25 09:43:19,903 basehttp 23272 22816 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:44:41,371 basehttp 23272 22816 "GET /admin/employees/empleado/ HTTP/1.1" 200 62145
+INFO 2025-07-25 09:44:41,388 basehttp 23272 22816 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:44:46,051 basehttp 23272 22816 "GET /empleados/ HTTP/1.1" 200 94293
+INFO 2025-07-25 09:44:49,982 basehttp 23272 22816 "GET /empleados/crear/ HTTP/1.1" 200 23653
+INFO 2025-07-25 09:46:55,203 basehttp 23272 22816 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-07-25 09:46:55,410 basehttp 23272 22816 "GET /empleados/ HTTP/1.1" 200 95157
+INFO 2025-07-25 09:48:47,444 basehttp 23272 22816 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/editar/ HTTP/1.1" 200 25225
+INFO 2025-07-25 09:48:57,970 basehttp 23272 22816 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35056
+ERROR 2025-07-25 09:49:04,644 log 23272 22816 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 09:49:04,648 basehttp 23272 22816 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 90851
+INFO 2025-07-25 09:49:19,180 basehttp 23272 22816 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 12480
+ERROR 2025-07-25 09:49:26,779 log 23272 22816 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 09:49:26,782 basehttp 23272 22816 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 90861
+INFO 2025-07-25 09:51:04,581 basehttp 23272 22816 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40042
+INFO 2025-07-25 09:51:04,605 basehttp 23272 22816 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:51:18,098 basehttp 23272 22816 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 42054
+INFO 2025-07-25 09:51:18,117 basehttp 23272 22816 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:56:34,071 autoreload 19608 9148 Watching for file changes with StatReloader
+INFO 2025-07-25 09:56:39,477 basehttp 19608 9852 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 49903
+INFO 2025-07-25 09:56:39,497 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:56:42,070 basehttp 19608 9852 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35056
+INFO 2025-07-25 09:56:47,121 basehttp 19608 9852 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 13913
+ERROR 2025-07-25 09:56:54,264 log 19608 9852 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 09:56:54,269 basehttp 19608 9852 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 91492
+INFO 2025-07-25 09:58:51,970 basehttp 19608 9852 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 49903
+INFO 2025-07-25 09:58:51,982 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:59:18,098 basehttp 19608 9852 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 49903
+INFO 2025-07-25 09:59:18,110 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:59:27,108 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 37805
+INFO 2025-07-25 09:59:27,129 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 09:59:47,886 basehttp 19608 9852 "GET /empleados/ HTTP/1.1" 200 94306
+INFO 2025-07-25 09:59:52,714 basehttp 19608 9852 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35056
+INFO 2025-07-25 10:00:19,588 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40653
+INFO 2025-07-25 10:00:19,608 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:00:44,347 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:00:44,372 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 38468
+INFO 2025-07-25 10:00:44,394 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:00:50,605 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40653
+INFO 2025-07-25 10:00:50,621 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:01:10,014 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:01:10,065 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 38862
+INFO 2025-07-25 10:01:10,091 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:01:16,054 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40653
+INFO 2025-07-25 10:01:16,068 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:01:34,242 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:01:34,287 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 39271
+INFO 2025-07-25 10:01:34,308 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:01:37,241 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40653
+INFO 2025-07-25 10:01:37,263 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:01:58,936 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:01:58,989 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40961
+INFO 2025-07-25 10:01:59,002 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:02:09,122 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:02:09,188 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40961
+INFO 2025-07-25 10:02:09,202 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:02:18,345 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:02:18,397 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40963
+INFO 2025-07-25 10:02:18,412 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:02:29,885 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:02:29,953 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40963
+INFO 2025-07-25 10:02:29,965 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:02:41,696 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:02:41,752 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40963
+INFO 2025-07-25 10:02:41,766 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:03:16,557 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:03:16,609 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40963
+INFO 2025-07-25 10:03:16,622 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:03:24,095 basehttp 19608 9852 "POST /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:03:24,156 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/add/ HTTP/1.1" 200 40963
+INFO 2025-07-25 10:03:24,169 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:03:37,175 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 41879
+INFO 2025-07-25 10:03:37,192 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:04:02,499 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/5/change/ HTTP/1.1" 200 40896
+INFO 2025-07-25 10:04:02,517 basehttp 19608 9852 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:04:09,029 basehttp 19608 9852 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 41879
+INFO 2025-07-25 10:04:54,667 basehttp 19608 9852 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35057
+INFO 2025-07-25 10:05:16,009 basehttp 19608 9852 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 18592
+ERROR 2025-07-25 10:06:05,712 log 19608 9852 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 10:06:05,715 basehttp 19608 9852 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 92065
+INFO 2025-07-25 10:07:51,319 basehttp 19608 18152 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 38808
+INFO 2025-07-25 10:07:51,337 basehttp 19608 18152 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:07:55,936 basehttp 19608 18152 "GET /admin/documents/documentoempleado/add/ HTTP/1.1" 200 48107
+INFO 2025-07-25 10:07:55,959 basehttp 19608 18152 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:11:58,873 basehttp 19608 18152 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 41879
+INFO 2025-07-25 10:11:58,891 basehttp 19608 18152 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:15:18,908 autoreload 19608 9148 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 10:15:19,522 autoreload 15904 1840 Watching for file changes with StatReloader
+INFO 2025-07-25 10:16:05,005 basehttp 15904 11904 "GET /admin/documents/tipodocumentocargo/ HTTP/1.1" 200 41879
+INFO 2025-07-25 10:16:05,020 basehttp 15904 11904 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:16:19,269 basehttp 15904 11904 "GET /dashboard/ HTTP/1.1" 200 15040
+INFO 2025-07-25 10:16:34,232 basehttp 15904 11904 "GET /empleados/ HTTP/1.1" 200 94323
+INFO 2025-07-25 10:16:47,871 basehttp 15904 11904 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35058
+INFO 2025-07-25 10:16:58,854 basehttp 15904 11904 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 18592
+ERROR 2025-07-25 10:17:12,691 log 15904 11904 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 10:17:12,696 basehttp 15904 11904 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 92065
+INFO 2025-07-25 10:17:45,010 autoreload 15904 1840 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 10:17:45,591 autoreload 1076 8544 Watching for file changes with StatReloader
+INFO 2025-07-25 10:24:02,192 autoreload 1076 8544 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 10:24:02,763 autoreload 25792 10756 Watching for file changes with StatReloader
+INFO 2025-07-25 10:24:25,242 basehttp 25792 24028 "GET /empleados/ HTTP/1.1" 200 94323
+INFO 2025-07-25 10:24:31,341 basehttp 25792 24028 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35058
+INFO 2025-07-25 10:24:40,318 basehttp 25792 24028 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 18592
+ERROR 2025-07-25 10:24:57,237 log 25792 24028 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 10:24:57,241 basehttp 25792 24028 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 91293
+ERROR 2025-07-25 10:30:09,866 log 25792 12908 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 138, in documento_upload
+    form = DocumentoEmpleadoForm(empleado=empleado, usuario=request.user)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py", line 60, in __init__
+    if self.instance and self.instance.tipo_documento:
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+apps.documents.models.DocumentoEmpleado.tipo_documento.RelatedObjectDoesNotExist: DocumentoEmpleado has no tipo_documento.. Did you mean: 'tipo_documento_id'?
+ERROR 2025-07-25 10:30:09,868 basehttp 25792 12908 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 500 91293
+INFO 2025-07-25 10:30:36,108 autoreload 25792 10756 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 10:30:36,676 autoreload 17944 26128 Watching for file changes with StatReloader
+INFO 2025-07-25 10:31:04,119 basehttp 17944 14704 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12881
+INFO 2025-07-25 10:33:06,399 basehttp 17944 14704 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12881
+INFO 2025-07-25 10:35:36,336 autoreload 17944 26128 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 10:35:36,920 autoreload 25496 6852 Watching for file changes with StatReloader
+INFO 2025-07-25 10:36:17,565 basehttp 25496 19200 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12881
+INFO 2025-07-25 10:36:19,391 basehttp 25496 19200 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12881
+INFO 2025-07-25 10:37:49,703 basehttp 25496 20912 "GET /admin/documents/tipodocumentocargo/4/change/ HTTP/1.1" 200 40896
+INFO 2025-07-25 10:37:49,723 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:38:04,204 basehttp 25496 20912 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 38808
+INFO 2025-07-25 10:38:04,226 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:38:10,411 basehttp 25496 20912 "GET /admin/documents/documentoempleado/ HTTP/1.1" 200 38808
+INFO 2025-07-25 10:38:10,424 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:38:18,642 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 49903
+INFO 2025-07-25 10:38:18,662 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:38:25,254 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/3/change/ HTTP/1.1" 200 42164
+INFO 2025-07-25 10:38:25,279 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:38:52,848 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/3/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:38:52,889 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50155
+INFO 2025-07-25 10:38:52,910 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:39:24,158 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/12/change/ HTTP/1.1" 200 42203
+INFO 2025-07-25 10:39:24,177 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:39:47,002 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/12/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:39:47,060 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50161
+INFO 2025-07-25 10:39:47,084 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:40:17,508 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/7/change/ HTTP/1.1" 200 42187
+INFO 2025-07-25 10:40:17,528 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:40:25,723 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/7/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:40:25,756 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50152
+INFO 2025-07-25 10:40:25,778 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:40:30,209 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/6/change/ HTTP/1.1" 200 42187
+INFO 2025-07-25 10:40:30,231 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:40:37,777 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/6/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:40:37,831 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50152
+INFO 2025-07-25 10:40:37,852 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:41:24,977 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/14/change/ HTTP/1.1" 200 42160
+INFO 2025-07-25 10:41:24,995 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:41:37,655 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/14/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:41:37,695 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50150
+INFO 2025-07-25 10:41:37,716 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:01,363 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/4/change/ HTTP/1.1" 200 42147
+INFO 2025-07-25 10:42:01,384 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:06,222 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/4/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:42:06,269 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50149
+INFO 2025-07-25 10:42:06,293 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:13,186 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/13/change/ HTTP/1.1" 200 42204
+INFO 2025-07-25 10:42:13,209 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:24,149 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/13/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:42:24,195 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50160
+INFO 2025-07-25 10:42:24,215 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:27,934 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/4/change/ HTTP/1.1" 200 42147
+INFO 2025-07-25 10:42:27,960 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:42:35,389 basehttp 25496 20912 "POST /admin/documents/tipodocumentoempleado/4/change/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:42:35,446 basehttp 25496 20912 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 50149
+INFO 2025-07-25 10:42:35,470 basehttp 25496 20912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 10:44:59,179 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 13131
+INFO 2025-07-25 10:45:38,477 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:45:38,503 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 20803
+INFO 2025-07-25 10:45:52,335 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12826
+INFO 2025-07-25 10:47:21,737 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:47:21,759 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22206
+INFO 2025-07-25 10:47:28,655 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12782
+INFO 2025-07-25 10:49:30,427 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 13032
+INFO 2025-07-25 10:50:11,408 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:50:11,433 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24528
+INFO 2025-07-25 10:50:26,558 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12728
+INFO 2025-07-25 10:51:21,440 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12978
+INFO 2025-07-25 10:52:51,296 basehttp 25496 20912 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:52:51,318 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25922
+INFO 2025-07-25 10:53:16,470 basehttp 25496 20912 "GET /documentos/documento/ec5d8cf1-af0c-4724-9d1a-e4b3d2e51848/aprobar/ HTTP/1.1" 200 20241
+INFO 2025-07-25 10:53:16,543 basehttp 25496 20912 "GET /media/documentos/71330963/EPS/EPS_20250725_155251.pdf HTTP/1.1" 200 7490
+INFO 2025-07-25 10:56:30,803 basehttp 25496 20912 "POST /documentos/documento/ec5d8cf1-af0c-4724-9d1a-e4b3d2e51848/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:56:30,831 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25803
+INFO 2025-07-25 10:56:48,146 basehttp 25496 20912 "GET /documentos/documento/772a1415-0b0e-4a36-b91a-e2f2b2013a13/aprobar/ HTTP/1.1" 200 20700
+INFO 2025-07-25 10:56:48,181 basehttp 25496 20912 "GET /media/documentos/71330963/LIC_CONDUCIR/LIC_CONDUCIR_20250725_154538.png HTTP/1.1" 200 2027900
+INFO 2025-07-25 10:58:04,429 basehttp 25496 20912 "POST /documentos/documento/772a1415-0b0e-4a36-b91a-e2f2b2013a13/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:58:04,458 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25679
+INFO 2025-07-25 10:58:35,541 basehttp 25496 20912 "GET /documentos/documento/5e38dc92-dd3c-4f07-a861-6ab3c270cb54/aprobar/ HTTP/1.1" 200 20484
+INFO 2025-07-25 10:58:35,579 basehttp 25496 20912 "GET /media/documentos/71330963/CERT_ALTURAS/CERT_ALTURAS_20250725_155011.pdf HTTP/1.1" 200 7263
+INFO 2025-07-25 10:58:59,052 basehttp 25496 20912 "POST /documentos/documento/5e38dc92-dd3c-4f07-a861-6ab3c270cb54/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-25 10:58:59,073 basehttp 25496 20912 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25546
+INFO 2025-07-25 11:08:40,400 basehttp 25496 14940 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24804
+INFO 2025-07-25 11:09:11,630 basehttp 25496 14940 "GET /documentos/documento/5e38dc92-dd3c-4f07-a861-6ab3c270cb54/aprobar/ HTTP/1.1" 200 20493
+INFO 2025-07-25 11:09:19,129 basehttp 25496 14940 "GET /empleados/ HTTP/1.1" 200 94321
+INFO 2025-07-25 11:09:28,537 basehttp 25496 14940 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35336
+INFO 2025-07-25 11:10:27,325 basehttp 25496 14940 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24804
+INFO 2025-07-25 11:11:53,035 basehttp 25496 14940 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24804
+INFO 2025-07-25 11:13:48,130 autoreload 25496 6852 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-07-25 11:13:48,779 autoreload 9616 20532 Watching for file changes with StatReloader
+INFO 2025-07-25 11:14:13,874 basehttp 9616 19556 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24804
+INFO 2025-07-25 11:14:18,888 basehttp 9616 19556 "GET /empleados/ HTTP/1.1" 200 94323
+INFO 2025-07-25 11:14:36,747 basehttp 9616 19556 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35337
+INFO 2025-07-25 11:15:27,098 basehttp 9616 19556 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24804
+WARNING 2025-07-25 11:18:26,335 log 9616 19556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:18:26,336 basehttp 9616 19556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:23:22,164 autoreload 9616 20532 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py changed, reloading.
+INFO 2025-07-25 11:23:22,843 autoreload 4060 24876 Watching for file changes with StatReloader
+INFO 2025-07-25 11:23:36,193 basehttp 4060 22112 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24071
+INFO 2025-07-25 11:23:36,207 basehttp 4060 22112 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-07-25 11:23:36,207 basehttp 4060 17292 "GET /static/js/custom.js HTTP/1.1" 304 0
+WARNING 2025-07-25 11:23:36,238 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:23:36,238 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:23:43,161 basehttp 4060 17292 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35337
+WARNING 2025-07-25 11:23:43,200 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:23:43,201 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:24:06,253 basehttp 4060 17292 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24071
+WARNING 2025-07-25 11:24:06,283 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:24:06,284 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:24:30,101 basehttp 4060 17292 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12682
+WARNING 2025-07-25 11:24:30,128 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:24:30,130 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+WARNING 2025-07-25 11:24:42,918 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:24:42,918 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:24:56,810 basehttp 4060 17292 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12682
+WARNING 2025-07-25 11:24:56,837 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:24:56,838 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:25:56,700 basehttp 4060 17292 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 11:25:56,735 basehttp 4060 17292 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25725
+WARNING 2025-07-25 11:25:56,761 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:25:56,763 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:26:07,726 basehttp 4060 17292 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:26:07,747 log 4060 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:26:07,747 basehttp 4060 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:26:07,832 basehttp 4060 17292 "GET /media/documentos/71330963/CEDULA/CEDULA_20250725_162556.pdf HTTP/1.1" 200 79219
+INFO 2025-07-25 11:30:12,795 autoreload 16660 22832 Watching for file changes with StatReloader
+INFO 2025-07-25 11:30:20,064 basehttp 16660 19264 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:30:20,103 log 16660 19264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:30:20,104 basehttp 16660 19264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:30:20,133 basehttp 16660 19264 "GET /media/documentos/71330963/CEDULA/CEDULA_20250725_162556.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 11:30:21,942 basehttp 16660 19264 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:30:21,978 log 16660 19264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:30:21,979 basehttp 16660 19264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:30:25,266 basehttp 16660 19264 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+WARNING 2025-07-25 11:30:25,301 log 16660 19264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:30:25,301 basehttp 16660 19264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:30:30,375 basehttp 16660 19264 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:30:30,410 log 16660 19264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:30:30,411 basehttp 16660 19264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:34:29,753 autoreload 11724 1452 Watching for file changes with StatReloader
+INFO 2025-07-25 11:34:37,212 basehttp 11724 6592 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:34:37,250 log 11724 6592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:34:37,251 basehttp 11724 6592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:34:37,288 basehttp 11724 6592 "GET /media/documentos/71330963/CEDULA/CEDULA_20250725_162556.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 11:34:40,350 basehttp 11724 6592 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:34:40,386 log 11724 6592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:34:40,386 basehttp 11724 6592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:37:35,737 basehttp 11724 19160 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:37:35,773 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:37:35,774 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:37:35,798 basehttp 11724 19160 "GET /media/documentos/71330963/CEDULA/CEDULA_20250725_162556.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 11:37:41,489 basehttp 11724 19160 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35476
+WARNING 2025-07-25 11:37:41,526 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:37:41,527 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:37:56,406 basehttp 11724 19160 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+WARNING 2025-07-25 11:37:56,432 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:37:56,432 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:38:13,770 basehttp 11724 19160 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+WARNING 2025-07-25 11:38:13,805 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:38:13,805 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:38:54,177 basehttp 11724 19160 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+WARNING 2025-07-25 11:38:54,206 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:38:54,207 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:38:58,873 basehttp 11724 19160 "GET /documentos/documento/802c9822-5dbd-4b3c-87bb-d8bb9e5f0d22/aprobar/ HTTP/1.1" 200 20253
+WARNING 2025-07-25 11:38:58,899 log 11724 19160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 11:38:58,899 basehttp 11724 19160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 11:38:59,002 basehttp 11724 19160 "GET /media/documentos/71330963/HOJA_VIDA/HOJA_VIDA_20250725_154721.pdf HTTP/1.1" 200 543553
+INFO 2025-07-25 11:44:15,756 basehttp 11724 26056 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+INFO 2025-07-25 11:45:01,456 basehttp 11724 26056 "GET /documentos/documento/802c9822-5dbd-4b3c-87bb-d8bb9e5f0d22/aprobar/ HTTP/1.1" 200 20253
+INFO 2025-07-25 11:45:01,489 basehttp 11724 26056 "GET /media/documentos/71330963/HOJA_VIDA/HOJA_VIDA_20250725_154721.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 11:45:48,821 basehttp 11724 26056 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+ERROR 2025-07-25 11:45:58,184 log 11724 26056 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir-multiple/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: 'form|key:venc_field'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 224, in documento_multiple_upload
+    return render(request, 'documents/documento_multiple_form.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'key'
+ERROR 2025-07-25 11:45:58,193 basehttp 11724 26056 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir-multiple/ HTTP/1.1" 500 338547
+INFO 2025-07-25 11:46:39,919 basehttp 11724 26056 "GET /documentos/documento/772a1415-0b0e-4a36-b91a-e2f2b2013a13/descargar/ HTTP/1.1" 200 2027900
+INFO 2025-07-25 11:47:19,883 basehttp 11724 26056 "GET /documentos/documento/b6e97ac8-7b47-49f2-bc29-1bf7e7e09735/aprobar/ HTTP/1.1" 200 20264
+INFO 2025-07-25 11:47:19,918 basehttp 11724 26056 "GET /media/documentos/71330963/CEDULA/CEDULA_20250725_162556.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 11:47:40,624 basehttp 11724 26056 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 25303
+ERROR 2025-07-25 11:52:57,319 log 11724 4576 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 107, in documento_empleado_detail
+    return render(request, 'documents/empleado_documentos.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'documento_view' not found. 'documento_view' is not a valid view function or pattern name.
+ERROR 2025-07-25 11:52:57,323 basehttp 11724 4576 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 255373
+INFO 2025-07-25 11:53:08,566 basehttp 11724 4576 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35476
+ERROR 2025-07-25 11:53:13,478 log 11724 4576 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 107, in documento_empleado_detail
+    return render(request, 'documents/empleado_documentos.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'documento_view' not found. 'documento_view' is not a valid view function or pattern name.
+ERROR 2025-07-25 11:53:13,483 basehttp 11724 4576 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 255217
+INFO 2025-07-25 11:55:20,896 basehttp 11724 4576 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12629
+ERROR 2025-07-25 11:55:31,027 log 11724 4576 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 107, in documento_empleado_detail
+    return render(request, 'documents/empleado_documentos.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'documento_view' not found. 'documento_view' is not a valid view function or pattern name.
+ERROR 2025-07-25 11:55:31,031 basehttp 11724 4576 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 255217
+INFO 2025-07-25 12:10:49,107 autoreload 11724 1452 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py changed, reloading.
+INFO 2025-07-25 12:10:49,779 autoreload 2452 7660 Watching for file changes with StatReloader
+ERROR 2025-07-25 12:12:57,224 log 2452 17864 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 107, in documento_empleado_detail
+    return render(request, 'documents/empleado_documentos.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'documento_view' not found. 'documento_view' is not a valid view function or pattern name.
+ERROR 2025-07-25 12:12:57,232 basehttp 2452 17864 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 255217
+ERROR 2025-07-25 12:13:08,630 log 2452 17864 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 107, in documento_empleado_detail
+    return render(request, 'documents/empleado_documentos.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'documento_view' not found. 'documento_view' is not a valid view function or pattern name.
+ERROR 2025-07-25 12:13:08,637 basehttp 2452 17864 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 255217
+INFO 2025-07-25 12:13:29,952 autoreload 2452 7660 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\urls.py changed, reloading.
+INFO 2025-07-25 12:13:30,547 autoreload 4192 24868 Watching for file changes with StatReloader
+INFO 2025-07-25 12:14:01,932 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 26712
+INFO 2025-07-25 12:14:19,176 basehttp 4192 17212 "GET /documentos/documento/ec5d8cf1-af0c-4724-9d1a-e4b3d2e51848/ver/ HTTP/1.1" 200 20499
+INFO 2025-07-25 12:14:19,201 basehttp 4192 17212 "GET /media/documentos/71330963/EPS/EPS_20250725_155251.pdf HTTP/1.1" 304 0
+INFO 2025-07-25 12:14:47,702 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12629
+INFO 2025-07-25 12:15:12,880 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12629
+INFO 2025-07-25 12:16:26,196 basehttp 4192 17212 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-07-25 12:16:26,234 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 29127
+INFO 2025-07-25 12:16:53,856 basehttp 4192 17212 "GET /documentos/documento/b3c17f40-2aa3-4ae6-9d56-c807159a5214/ver/ HTTP/1.1" 200 20014
+INFO 2025-07-25 12:16:53,928 basehttp 4192 17212 "GET /media/documentos/71330963/CONTRATO/CONTRATO_20250725_171626.pdf HTTP/1.1" 200 1007138
+INFO 2025-07-25 12:17:09,589 basehttp 4192 17212 "POST /documentos/documento/b3c17f40-2aa3-4ae6-9d56-c807159a5214/ver/ HTTP/1.1" 302 0
+INFO 2025-07-25 12:17:09,623 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 28943
+ERROR 2025-07-25 12:17:26,793 log 4192 17212 Internal Server Error: /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir-multiple/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: 'form|key:venc_field'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py", line 224, in documento_multiple_upload
+    return render(request, 'documents/documento_multiple_form.html', context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'key'
+ERROR 2025-07-25 12:17:26,811 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir-multiple/ HTTP/1.1" 500 338458
+INFO 2025-07-25 12:17:34,447 basehttp 4192 17212 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 28514
+INFO 2025-07-25 12:17:44,996 autoreload 4192 24868 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py changed, reloading.
+INFO 2025-07-25 12:17:45,617 autoreload 5728 2596 Watching for file changes with StatReloader
+INFO 2025-07-25 12:17:54,246 autoreload 5728 2596 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\urls.py changed, reloading.
+INFO 2025-07-25 12:17:54,823 autoreload 1512 9964 Watching for file changes with StatReloader
+INFO 2025-07-25 12:17:57,266 autoreload 1512 9964 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\templatetags\select_filters.py changed, reloading.
+INFO 2025-07-25 12:17:58,022 autoreload 7636 11696 Watching for file changes with StatReloader
+INFO 2025-07-25 12:17:59,399 autoreload 7636 11696 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\forms.py changed, reloading.
+INFO 2025-07-25 12:17:59,990 autoreload 24248 17740 Watching for file changes with StatReloader
+INFO 2025-07-25 12:18:17,441 basehttp 24248 8392 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 12581
+INFO 2025-07-25 12:18:19,930 basehttp 24248 8392 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35476
+INFO 2025-07-25 12:18:24,023 basehttp 24248 8392 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 28514
+WARNING 2025-07-25 13:07:35,638 log 24248 16756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-25 13:07:35,638 basehttp 24248 16756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-25 13:10:47,312 basehttp 24248 16756 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 28525
+INFO 2025-07-25 13:13:15,290 basehttp 24248 16756 "POST /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 36899
+INFO 2025-07-25 13:13:15,303 basehttp 24248 16756 "GET /static/admin/js/cancel.js HTTP/1.1" 304 0
+INFO 2025-07-25 13:13:17,697 basehttp 24248 16756 "POST /admin/documents/tipodocumentoempleado/ HTTP/1.1" 302 0
+INFO 2025-07-25 13:13:17,753 basehttp 24248 16756 "GET /admin/documents/tipodocumentoempleado/ HTTP/1.1" 200 47290
+INFO 2025-07-25 13:13:17,771 basehttp 24248 16756 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-25 13:13:27,088 basehttp 24248 16756 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 26352
+INFO 2025-07-25 13:32:05,271 basehttp 24248 21744 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-25 13:32:45,254 basehttp 24248 21744 "GET /empleados/crear/ HTTP/1.1" 200 23670
