@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="/admin/">Administración</a>
+    <a href="{% url 'core:dashboard' %}" class="btn btn-success ms-3" style="font-size:0.9em;">
+      <i class="fas fa-home me-1"></i> Dashboard
+    </a>
+  </h1>
+{% endblock %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}

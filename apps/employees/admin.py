@@ -63,11 +63,11 @@ class EmpleadoAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'id', 'fecha_creacion', 'fecha_actualizacion', 'creado_por',
-        'get_antiguedad', 'get_cargo_actual', 'get_area_actual', 'usuario'
+        'get_antiguedad', 'get_cargo_actual', 'get_area_actual',
     )
     
     # EXCLUIR el campo usuario del formulario para que no aparezca
-    exclude = ()  # Vamos a usar fieldsets en su lugar
+    exclude = ('usuario',)  # Vamos a usar fieldsets en su lugar
     
     fieldsets = (
         ('Información Básica', {
@@ -86,11 +86,11 @@ class EmpleadoAdmin(admin.ModelAdmin):
         }),
         ('Información del Sistema', {
             'fields': (
-                'id', 'usuario', 'fecha_creacion', 'fecha_actualizacion', 
+                'id', 'fecha_creacion', 'fecha_actualizacion', 
                 'creado_por', 'get_antiguedad', 'get_cargo_actual', 'get_area_actual'
             ),
             'classes': ('collapse',),
-            'description': 'El usuario se crea automáticamente al guardar el empleado con email.'
+            'description': 'El usuario se crea automáticamente al guardar el empleado .'
         }),
     )
     
@@ -175,7 +175,7 @@ class EmpleadoAdmin(admin.ModelAdmin):
             obj.creado_por = request.user
             
             # Generar usuario del sistema automáticamente
-            if obj.correo_electronico and not obj.usuario:
+            if not obj.usuario:
                 obj.usuario = self.crear_usuario_automatico(request, obj)
         
         super().save_model(request, obj, form, change)
@@ -193,54 +193,21 @@ class EmpleadoAdmin(admin.ModelAdmin):
         formset.save_m2m()
     
     def crear_usuario_automatico(self, request, empleado):
-        """Crear usuario automáticamente con nombre y documento"""
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        
-        try:
-            # Generar username: primer_nombre.primer_apellido
-            primer_nombre = empleado.nombres.split()[0].lower()
-            primer_apellido = empleado.apellidos.split()[0].lower()
-            username_base = f"{primer_nombre}.{primer_apellido}"
-            
-            # Asegurar username único
-            username = username_base
-            counter = 1
-            while User.objects.filter(username=username).exists():
-                username = f"{username_base}{counter}"
-                counter += 1
-            
-            # Generar password: Primer nombre + documento
-            password = f"{primer_nombre.capitalize()}{empleado.numero_documento}"
-            
-            # Crear usuario
-            user = User.objects.create_user(
-                username=username,
-                email=empleado.correo_electronico,
-                first_name=empleado.nombres,
-                last_name=empleado.apellidos,
-                password=password,
-                is_active=True
-            )
-            
-            # Mostrar mensaje con credenciales
-            from django.contrib import messages
+        """Mostrar mensaje si el usuario ya existe, pero no crear usuario aquí (solo lo hace el signal)."""
+        from django.contrib import messages
+        if empleado.usuario:
             messages.success(
                 request,
-                f"✅ Usuario creado automáticamente:\n"
-                f"👤 Usuario: {username}\n"
-                f"🔑 Contraseña: {password}\n"
-                f"📧 Email: {empleado.correo_electronico}\n"
+                f"✅ Usuario ya existe para el empleado:\n"
+                f"👤 Usuario: {empleado.usuario.username}\n"
+                f" Email: {empleado.usuario.email}\n"
                 f"(Comunicar estas credenciales al empleado)"
             )
-            
-            return user
-            
-        except Exception as e:
-            from django.contrib import messages
+            return empleado.usuario
+        else:
             messages.warning(
                 request,
-                f"⚠️ No se pudo crear usuario automáticamente: {e}"
+                f"⚠️ No se pudo crear usuario automáticamente."
             )
             return None
     

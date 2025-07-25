@@ -211,12 +211,12 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 # Guardar empleado primero
                 empleado = form.save()
                 
-                # Crear usuario automáticamente si tiene email
-                if empleado.numero_documento:
-                    usuario_creado = self.crear_usuario_automatico(empleado)
-                    if usuario_creado:
-                        empleado.usuario = usuario_creado
-                        empleado.save()
+                # Crear usuario automáticamente si tiene número de documento
+                # if empleado.numero_documento:
+                #     usuario_creado = self.crear_usuario_automatico(empleado)
+                #     if usuario_creado:
+                #         empleado.usuario = usuario_creado
+                #         empleado.save()
                 
                 # Crear historial de cargo si se especificó cargo
                 cargo = form.cleaned_data.get('cargo')
@@ -244,54 +244,7 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
             )
             return self.form_invalid(form)
     
-    def crear_usuario_automatico(self, empleado):
-        """Crear usuario automáticamente con nombre y documento"""
-        try:
-            # Generar username: primer_nombre.primer_apellido
-            primer_nombre = empleado.nombres.split()[0].lower()
-            primer_apellido = empleado.apellidos.split()[0].lower()
-            username_base = f"{primer_nombre}.{primer_apellido}"
-            
-            # Asegurar username único
-            username = username_base
-            counter = 1
-            while User.objects.filter(username=username).exists():
-                username = f"{username_base}{counter}"
-                counter += 1
-            
-            # Generar password: Primer nombre + documento
-            password = f"{primer_nombre.capitalize()}{empleado.numero_documento}"
-            
-            # Crear usuario
-            user = User.objects.create_user(
-                username=username,
-                email=empleado.correo_electronico,
-                first_name=empleado.nombres,
-                last_name=empleado.apellidos,
-                password=password,
-                is_active=True
-            )
-            
-            # Mostrar mensaje con credenciales
-            messages.success(
-                self.request,
-                f"✅ Usuario creado automáticamente:\n"
-                f"👤 Usuario: {username}\n"
-                f"🔑 Contraseña: {password}\n"
-                f"📧 Email: {empleado.correo_electronico}\n"
-                f"(Comunicar estas credenciales al empleado)"
-            )
-            
-            logger.info(f"Usuario creado para empleado {empleado.numero_documento}: {username}")
-            return user
-            
-        except Exception as e:
-            logger.error(f"Error creando usuario para empleado {empleado.numero_documento}: {str(e)}")
-            messages.warning(
-                self.request,
-                f"⚠️ No se pudo crear usuario automáticamente: {str(e)}"
-            )
-            return None
+    
     
     def form_invalid(self, form):
         """Manejar formulario inválido"""

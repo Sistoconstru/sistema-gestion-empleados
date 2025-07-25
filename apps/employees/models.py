@@ -7,6 +7,8 @@ from django.db import models
 
 import uuid
 from django.db import models
+from django.contrib.auth.models import Group
+
 
 
 class TipoDocumento(models.Model):
@@ -113,7 +115,7 @@ class Empleado(models.Model):
 
 class HistorialCargo(models.Model):
     """Historial de cargos de empleados"""
-    empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
+    empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)
     cargo = models.ForeignKey('organizational.Cargo', on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField(null=True, blank=True)
@@ -129,3 +131,5 @@ class HistorialCargo(models.Model):
         unique_together = ['empleado', 'activo']
         verbose_name = 'Historial de Cargo'
         verbose_name_plural = 'Historiales de Cargo'
+
+

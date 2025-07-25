@@ -243,12 +243,12 @@ class EmpleadoForm(forms.ModelForm):
                 raise ValidationError('Ingrese un email con formato válido.')
             
             # Validar que no exista en otro empleado
-            queryset = Empleado.objects.filter(correo_electronico=email)
-            if self.instance and self.instance.pk:
-                queryset = queryset.exclude(pk=self.instance.pk)
+            # queryset = Empleado.objects.filter(correo_electronico=email)
+            # if self.instance and self.instance.pk:
+            #     queryset = queryset.exclude(pk=self.instance.pk)
             
-            if queryset.exists():
-                raise ValidationError('Ya existe un empleado con este correo electrónico.')
+            # if queryset.exists():
+            #     raise ValidationError('Ya existe un empleado con este correo electrónico.')
         
         return email
 
