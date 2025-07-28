@@ -429,8 +429,8 @@
                 {% document_progress_bar empleado %}
                 
                 <!-- Obtener documentos reales del empleado -->
-{% load select_filters %}
-{% with documentos_empleado=empleado.documentoempleado_set.all %}
+                {% load select_filters %}
+                {% with documentos_empleado=empleado.documentoempleado_set.all %}
                 
                 <!-- Alertas de documentos vencidos -->
                 {% with docs_vencidos=documentos_empleado|select:"fecha_vencimiento__lt,today" %}

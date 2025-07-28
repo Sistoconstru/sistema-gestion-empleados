@@ -5,12 +5,18 @@
 
 from django.urls import path
 from django.views.generic import TemplateView
+from . import views
 
 app_name = 'training'
 
 urlpatterns = [
     # URLs básicas
     path('', TemplateView.as_view(template_name='training/index.html'), name='index'),
+    path('', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
+    path('catalogo/', views.CatalogoCapacitacionesView.as_view(), name='catalogo'),
+    path('capacitacion/<uuid:pk>/', views.CapacitacionDetailView.as_view(), name='capacitacion_detail'),
+    path('capacitacion/<uuid:pk>/inscribir/', views.inscribir_capacitacion, name='inscribir_capacitacion'),
+    path('admin/', views.CapacitacionListView.as_view(), name='capacitacion_list'),
     
     # Capacitaciones
     # path('list/', views.CapacitacionListView.as_view(), name='capacitacion_list'),

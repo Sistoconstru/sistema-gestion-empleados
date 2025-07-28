@@ -9870,3 +9870,546 @@ INFO 2025-07-25 16:13:36,265 basehttp 26320 17320 "POST /empleados/crear/ HTTP/1
 INFO 2025-07-25 16:13:36,469 basehttp 26320 17320 "GET /empleados/ HTTP/1.1" 200 95107
 INFO 2025-07-25 16:14:31,984 basehttp 26320 17320 "GET /empleados/?search=ma&estado=&area=&cargo=&sede= HTTP/1.1" 200 72797
 INFO 2025-07-25 16:14:37,681 basehttp 26320 17320 "GET /empleados/810b16de-5c15-4a73-a2ed-a2aa6366104e/ HTTP/1.1" 200 35030
+INFO 2025-07-28 06:43:55,965 autoreload 4468 1320 Watching for file changes with StatReloader
+INFO 2025-07-28 06:44:11,895 basehttp 4468 19788 "GET / HTTP/1.1" 302 0
+INFO 2025-07-28 06:44:12,017 basehttp 4468 19788 "GET /dashboard/ HTTP/1.1" 200 14917
+INFO 2025-07-28 06:44:12,083 basehttp 4468 19788 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:44:12,095 basehttp 4468 19788 "GET /static/js/custom.js HTTP/1.1" 304 0
+WARNING 2025-07-28 06:44:12,270 log 4468 24652 Not Found: /favicon.ico
+WARNING 2025-07-28 06:44:12,271 basehttp 4468 24652 "GET /favicon.ico HTTP/1.1" 404 4712
+INFO 2025-07-28 06:44:33,297 basehttp 4468 12188 "GET /dashboard/ HTTP/1.1" 200 14917
+INFO 2025-07-28 06:44:37,504 basehttp 4468 12188 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:44:37,509 basehttp 4468 12188 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 0
+INFO 2025-07-28 06:44:56,418 basehttp 4468 12188 "GET /dashboard/ HTTP/1.1" 200 14917
+INFO 2025-07-28 06:45:07,499 basehttp 4468 12188 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:45:07,655 basehttp 4468 12188 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3803
+INFO 2025-07-28 06:45:07,673 basehttp 4468 12188 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,680 basehttp 4468 12188 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,681 basehttp 4468 17328 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,682 basehttp 4468 18768 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,682 basehttp 4468 1872 "GET /static/admin/css/login.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,683 basehttp 4468 13668 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:07,685 basehttp 4468 13668 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:15,508 basehttp 4468 13668 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:45:15,625 basehttp 4468 13668 "GET /admin/ HTTP/1.1" 200 46959
+INFO 2025-07-28 06:45:15,644 basehttp 4468 13668 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:15,648 basehttp 4468 13668 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:15,648 basehttp 4468 1872 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:15,648 basehttp 4468 18768 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:45:23,221 basehttp 4468 18768 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:45:23,224 basehttp 4468 18768 "GET /auth/login/ HTTP/1.1" 200 0
+INFO 2025-07-28 06:45:36,262 basehttp 4468 18768 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:45:36,269 basehttp 4468 18768 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3803
+INFO 2025-07-28 06:46:30,888 basehttp 4468 18768 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4023
+INFO 2025-07-28 06:47:25,982 basehttp 4468 18768 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4023
+INFO 2025-07-28 06:48:23,804 basehttp 4468 18768 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4024
+INFO 2025-07-28 06:48:31,637 basehttp 4468 18768 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:48:31,693 basehttp 4468 18768 "GET /admin/ HTTP/1.1" 200 46959
+INFO 2025-07-28 06:48:38,761 basehttp 4468 18768 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 06:49:01,619 basehttp 4468 18768 "GET /empleados/ HTTP/1.1" 200 94250
+INFO 2025-07-28 06:49:25,410 basehttp 4468 18768 "GET /admin/ HTTP/1.1" 200 46959
+INFO 2025-07-28 06:49:29,508 basehttp 4468 18768 "GET /admin/employees/empleado/ HTTP/1.1" 200 62162
+INFO 2025-07-28 06:49:29,530 basehttp 4468 18768 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,530 basehttp 4468 12188 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,530 basehttp 4468 17328 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,530 basehttp 4468 13668 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,531 basehttp 4468 19324 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,536 basehttp 4468 18768 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,537 basehttp 4468 12188 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,538 basehttp 4468 18768 "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,539 basehttp 4468 17328 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,540 basehttp 4468 13668 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,551 basehttp 4468 13668 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,628 basehttp 4468 1872 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:49:29,652 basehttp 4468 1872 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:29,653 basehttp 4468 13668 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,674 basehttp 4468 13668 "GET /admin/employees/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/change/ HTTP/1.1" 200 128686
+INFO 2025-07-28 06:49:46,690 basehttp 4468 13668 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,699 basehttp 4468 19324 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,700 basehttp 4468 1872 "GET /static/admin/js/calendar.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,700 basehttp 4468 12188 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,700 basehttp 4468 18768 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,700 basehttp 4468 17328 "GET /static/admin/js/inlines.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,707 basehttp 4468 13668 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:49:46,708 basehttp 4468 17328 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,773 basehttp 4468 17328 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:49:46,782 basehttp 4468 17328 "GET /static/admin/img/inline-delete.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:50:39,426 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 38595
+INFO 2025-07-28 06:50:39,448 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:50:48,067 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 46522
+INFO 2025-07-28 06:50:48,086 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:51:27,882 basehttp 4468 17328 "POST /admin/authentication/rolpermiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:51:27,921 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39306
+INFO 2025-07-28 06:51:27,942 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:51:27,955 basehttp 4468 17328 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:51:49,700 basehttp 4468 17328 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39607
+INFO 2025-07-28 06:51:49,720 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:52:04,450 basehttp 4468 17328 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 40203
+INFO 2025-07-28 06:52:04,468 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:52:34,855 basehttp 4468 17328 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 38569
+INFO 2025-07-28 06:52:34,874 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:52:43,036 basehttp 4468 17328 "GET /admin/authentication/modulosistema/add/ HTTP/1.1" 200 38050
+INFO 2025-07-28 06:52:43,056 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:53:04,448 basehttp 4468 17328 "GET /admin/auth/group/ HTTP/1.1" 200 37801
+INFO 2025-07-28 06:53:04,468 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:53:29,584 basehttp 4468 17328 "GET /admin/authentication/rol/ HTTP/1.1" 200 41145
+INFO 2025-07-28 06:53:29,604 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:53:29,618 basehttp 4468 17328 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+INFO 2025-07-28 06:53:34,527 basehttp 4468 17328 "GET /admin/authentication/rol/10/change/ HTTP/1.1" 200 38949
+INFO 2025-07-28 06:53:34,548 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:53:46,206 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39073
+INFO 2025-07-28 06:53:46,223 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:53:57,828 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/4/change/ HTTP/1.1" 200 46760
+INFO 2025-07-28 06:53:57,854 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:54:10,630 basehttp 4468 17328 "GET /admin/authentication/permiso/add/?_to_field=id&_popup=1 HTTP/1.1" 200 8497
+INFO 2025-07-28 06:54:10,643 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:55:25,022 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39073
+INFO 2025-07-28 06:55:25,039 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:55:28,602 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/add/ HTTP/1.1" 200 46522
+INFO 2025-07-28 06:55:28,618 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:56:03,641 basehttp 4468 17328 "POST /admin/authentication/rolpermiso/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 06:56:03,664 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39792
+INFO 2025-07-28 06:56:03,688 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:56:23,676 basehttp 4468 17328 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 39001
+INFO 2025-07-28 06:56:23,693 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:56:43,937 basehttp 4468 17328 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 39431
+INFO 2025-07-28 06:56:43,958 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:56:56,991 basehttp 4468 17328 "GET /admin/organizational/cargo/ HTTP/1.1" 200 45412
+INFO 2025-07-28 06:56:57,016 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:57:06,830 basehttp 4468 17328 "GET /admin/organizational/cargo/add/ HTTP/1.1" 200 49414
+INFO 2025-07-28 06:57:06,850 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:57:49,807 basehttp 4468 17328 "GET /admin/organizational/cargo/ HTTP/1.1" 200 45412
+INFO 2025-07-28 06:57:49,833 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:58:16,832 basehttp 4468 17328 "GET /admin/authentication/rolpermiso/ HTTP/1.1" 200 39559
+INFO 2025-07-28 06:58:16,849 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:58:48,474 basehttp 4468 17328 "GET /admin/auth/group/ HTTP/1.1" 200 37801
+INFO 2025-07-28 06:58:48,492 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:58:54,661 basehttp 4468 17328 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 38569
+INFO 2025-07-28 06:58:54,681 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:59:08,030 basehttp 4468 17328 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39607
+INFO 2025-07-28 06:59:08,053 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 06:59:18,506 basehttp 4468 17328 "GET /admin/authentication/permiso/add/ HTTP/1.1" 200 40203
+INFO 2025-07-28 06:59:18,525 basehttp 4468 17328 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 07:00:05,572 basehttp 4468 17328 "GET /admin/authentication/permiso/ HTTP/1.1" 200 39607
+INFO 2025-07-28 07:00:34,694 basehttp 4468 17328 "GET /empleados/9dc4b204-b073-4e15-b335-b0328f8aea2f/ HTTP/1.1" 200 34826
+INFO 2025-07-28 07:16:30,322 basehttp 4468 8236 "GET /empleados/9dc4b204-b073-4e15-b335-b0328f8aea2f/editar/ HTTP/1.1" 200 196742
+INFO 2025-07-28 07:16:40,164 basehttp 4468 8236 "GET /empleados/ HTTP/1.1" 200 94250
+INFO 2025-07-28 07:16:46,485 basehttp 4468 8236 "GET /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 34616
+INFO 2025-07-28 07:18:36,890 basehttp 4468 8236 "GET /empleados/ HTTP/1.1" 200 94250
+INFO 2025-07-28 07:18:44,814 basehttp 4468 8236 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35309
+INFO 2025-07-28 07:24:20,502 basehttp 4468 15200 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 36095
+INFO 2025-07-28 07:24:20,522 basehttp 4468 15200 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 07:31:03,491 autoreload 9300 19776 Watching for file changes with StatReloader
+INFO 2025-07-28 07:31:11,375 basehttp 9300 26268 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 07:31:13,772 basehttp 9300 26268 "GET /empleados/ HTTP/1.1" 200 94250
+INFO 2025-07-28 07:31:29,136 basehttp 9300 26268 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 35309
+INFO 2025-07-28 08:05:49,634 autoreload 9300 19776 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-07-28 08:05:50,368 autoreload 16460 4216 Watching for file changes with StatReloader
+INFO 2025-07-28 08:06:34,107 autoreload 16460 4216 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\apps.py changed, reloading.
+INFO 2025-07-28 08:06:34,789 autoreload 20208 3604 Watching for file changes with StatReloader
+INFO 2025-07-28 08:14:14,207 autoreload 20284 22292 Watching for file changes with StatReloader
+INFO 2025-07-28 08:14:48,337 autoreload 20284 22292 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-07-28 08:14:48,932 autoreload 4468 9912 Watching for file changes with StatReloader
+INFO 2025-07-28 08:16:18,932 autoreload 12028 14320 Watching for file changes with StatReloader
+INFO 2025-07-28 08:17:15,773 autoreload 12028 14320 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-07-28 08:17:16,484 autoreload 21968 2084 Watching for file changes with StatReloader
+INFO 2025-07-28 08:17:17,856 autoreload 21968 2084 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-07-28 08:17:18,442 autoreload 19912 20068 Watching for file changes with StatReloader
+INFO 2025-07-28 08:17:21,826 autoreload 19912 20068 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-07-28 08:17:22,382 autoreload 13772 3708 Watching for file changes with StatReloader
+INFO 2025-07-28 08:17:57,406 autoreload 13772 3708 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-07-28 08:17:57,922 autoreload 23004 6292 Watching for file changes with StatReloader
+INFO 2025-07-28 08:27:33,654 autoreload 23004 6292 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-07-28 08:27:34,168 autoreload 10132 15428 Watching for file changes with StatReloader
+INFO 2025-07-28 08:27:50,040 autoreload 10132 15428 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-07-28 08:27:50,603 autoreload 14436 21204 Watching for file changes with StatReloader
+INFO 2025-07-28 08:27:55,015 autoreload 14436 21204 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-07-28 08:27:55,568 autoreload 24468 9540 Watching for file changes with StatReloader
+INFO 2025-07-28 08:28:08,197 autoreload 24468 9540 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-07-28 08:28:08,709 autoreload 21544 16564 Watching for file changes with StatReloader
+INFO 2025-07-28 08:28:16,396 basehttp 21544 24116 "GET /empleados/ HTTP/1.1" 200 94250
+ERROR 2025-07-28 08:28:25,021 log 21544 24116 Internal Server Error: /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna inscripciones_capacitacion.fecha_aprobacion
+LINE 1: ...on", "inscripciones_capacitacion"."fecha_limite", "inscripci...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna inscripciones_capacitacion.fecha_aprobacion
+LINE 1: ...on", "inscripciones_capacitacion"."fecha_limite", "inscripci...
+                                                             ^
+
+ERROR 2025-07-28 08:28:25,030 basehttp 21544 24116 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 500 243136
+ERROR 2025-07-28 08:29:02,727 log 21544 24116 Internal Server Error: /empleados/f900622e-8351-4924-84d0-1e4726c155be/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna inscripciones_capacitacion.fecha_aprobacion
+LINE 1: ...on", "inscripciones_capacitacion"."fecha_limite", "inscripci...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1935, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna inscripciones_capacitacion.fecha_aprobacion
+LINE 1: ...on", "inscripciones_capacitacion"."fecha_limite", "inscripci...
+                                                             ^
+
+ERROR 2025-07-28 08:29:02,734 basehttp 21544 24116 "GET /empleados/f900622e-8351-4924-84d0-1e4726c155be/ HTTP/1.1" 500 243136
+INFO 2025-07-28 08:43:32,396 autoreload 21612 16844 Watching for file changes with StatReloader
+INFO 2025-07-28 08:43:37,790 basehttp 21612 11296 "GET /admin/employees/empleado/ HTTP/1.1" 200 62201
+INFO 2025-07-28 08:43:37,824 basehttp 21612 11296 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:44:02,683 basehttp 21612 11296 "GET /admin/employees/empleado/?p=2 HTTP/1.1" 200 57840
+INFO 2025-07-28 08:44:02,706 basehttp 21612 11296 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:44:14,099 basehttp 21612 12312 "GET /admin/employees/empleado/?all= HTTP/1.1" 200 78635
+INFO 2025-07-28 08:44:14,116 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:44:28,270 basehttp 21612 12312 "GET /admin/employees/empleado/?q=sis&all= HTTP/1.1" 200 45131
+INFO 2025-07-28 08:44:28,293 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:44:58,633 basehttp 21612 12312 "GET /admin/employees/empleado/?q=adr&all= HTTP/1.1" 200 43304
+INFO 2025-07-28 08:44:58,655 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:45:17,563 basehttp 21612 12312 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 40081
+INFO 2025-07-28 08:45:17,584 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:45:19,392 basehttp 21612 12312 "GET /admin/authentication/usuario/ HTTP/1.1" 200 90524
+INFO 2025-07-28 08:45:19,410 basehttp 21612 6936 "GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+INFO 2025-07-28 08:45:19,412 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:45:30,886 basehttp 21612 12312 "GET /admin/authentication/usuario/?q=sis HTTP/1.1" 200 45675
+INFO 2025-07-28 08:45:30,909 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:45:34,649 basehttp 21612 12312 "GET /admin/authentication/usuario/32b0beb2-71e0-4d6d-9a08-ff36a5f793da/change/?_changelist_filters=q%3Dsis HTTP/1.1" 200 77694
+INFO 2025-07-28 08:45:34,675 basehttp 21612 6936 "GET /static/admin/js/SelectBox.js HTTP/1.1" 304 0
+INFO 2025-07-28 08:45:34,675 basehttp 21612 17724 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 304 0
+INFO 2025-07-28 08:45:34,678 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:45:34,707 basehttp 21612 12312 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 304 0
+INFO 2025-07-28 08:45:34,707 basehttp 21612 17724 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 304 0
+INFO 2025-07-28 08:46:09,022 basehttp 21612 12312 "GET /admin/authentication/usuario/?q=sis HTTP/1.1" 200 45675
+INFO 2025-07-28 08:46:35,005 basehttp 21612 12312 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/?_changelist_filters=q%3Dsis HTTP/1.1" 200 77732
+INFO 2025-07-28 08:46:35,032 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:46:43,098 basehttp 21612 12312 "POST /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/?_changelist_filters=q%3Dsis HTTP/1.1" 302 0
+INFO 2025-07-28 08:46:43,154 basehttp 21612 12312 "GET /admin/authentication/usuario/?q=sis HTTP/1.1" 200 45926
+INFO 2025-07-28 08:46:43,180 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:47:01,100 basehttp 21612 12312 "GET /admin/authentication/usuario/2e2b354d-b4d4-4a66-86bc-4ab5034fb92d/change/?_changelist_filters=q%3Dsis HTTP/1.1" 200 77740
+INFO 2025-07-28 08:47:01,121 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:47:28,258 basehttp 21612 12312 "GET /admin/authentication/usuariorol/ HTTP/1.1" 200 54450
+INFO 2025-07-28 08:47:28,281 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:48:27,161 basehttp 21612 12312 "GET /admin/authentication/usuariorol/15/change/ HTTP/1.1" 200 53490
+INFO 2025-07-28 08:48:27,184 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:48:36,730 basehttp 21612 12312 "GET /admin/authentication/rol/ HTTP/1.1" 200 41184
+INFO 2025-07-28 08:48:36,751 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:48:41,579 basehttp 21612 12312 "GET /admin/authentication/usuario/ HTTP/1.1" 200 90524
+INFO 2025-07-28 08:48:41,603 basehttp 21612 12312 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 08:51:09,318 autoreload 21612 16844 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-07-28 08:51:09,890 autoreload 24128 18016 Watching for file changes with StatReloader
+INFO 2025-07-28 08:51:21,263 autoreload 24128 18016 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-07-28 08:51:21,746 autoreload 17512 23328 Watching for file changes with StatReloader
+INFO 2025-07-28 08:51:32,103 autoreload 17512 23328 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-07-28 08:51:32,673 autoreload 16408 18332 Watching for file changes with StatReloader
+INFO 2025-07-28 08:57:50,464 autoreload 19064 4548 Watching for file changes with StatReloader
+INFO 2025-07-28 08:57:59,193 basehttp 19064 18412 "GET /empleados/d8aca477-df20-4643-b10e-62f8fac73e54/ HTTP/1.1" 200 34821
+INFO 2025-07-28 09:21:23,736 basehttp 19064 12052 "GET /empleados/ HTTP/1.1" 200 94250
+INFO 2025-07-28 09:21:28,189 basehttp 19064 12052 "GET /empleados/crear/ HTTP/1.1" 200 195209
+INFO 2025-07-28 09:23:11,399 basehttp 19064 26284 "GET /admin/training/capacitacion/ HTTP/1.1" 200 37238
+INFO 2025-07-28 09:23:11,420 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:23:48,751 basehttp 19064 26284 "GET /admin/training/capacitacion/ HTTP/1.1" 200 37238
+INFO 2025-07-28 09:23:48,767 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:23:51,050 basehttp 19064 26284 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44629
+INFO 2025-07-28 09:23:51,070 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:24:04,751 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 35787
+INFO 2025-07-28 09:24:04,768 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:24:07,125 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/add/ HTTP/1.1" 200 39347
+INFO 2025-07-28 09:24:07,142 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:25:14,281 basehttp 19064 26284 "POST /admin/training/tipocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:25:14,301 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37585
+INFO 2025-07-28 09:25:14,324 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:25:34,298 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37340
+INFO 2025-07-28 09:25:34,310 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:25:43,622 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/1/change/ HTTP/1.1" 200 39617
+INFO 2025-07-28 09:25:43,639 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:26:32,406 basehttp 19064 26284 "POST /admin/training/tipocapacitacion/1/change/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:26:32,450 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37541
+INFO 2025-07-28 09:26:32,474 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:26:37,514 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37312
+INFO 2025-07-28 09:26:37,527 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:26:39,436 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/add/ HTTP/1.1" 200 39347
+INFO 2025-07-28 09:26:39,459 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:27:10,006 basehttp 19064 26284 "POST /admin/training/tipocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:27:10,024 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37850
+INFO 2025-07-28 09:27:10,047 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:27:14,853 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37623
+INFO 2025-07-28 09:27:14,870 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:27:17,091 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/add/ HTTP/1.1" 200 39347
+INFO 2025-07-28 09:27:17,108 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:27:50,569 basehttp 19064 26284 "POST /admin/training/tipocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:27:50,601 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38163
+INFO 2025-07-28 09:27:50,625 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:28:07,721 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 36171
+INFO 2025-07-28 09:28:07,740 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:28:09,954 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/add/ HTTP/1.1" 200 42749
+INFO 2025-07-28 09:28:09,976 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:28:18,440 basehttp 19064 26284 "GET /admin/training/capacitacion/ HTTP/1.1" 200 37592
+INFO 2025-07-28 09:28:18,462 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:28:20,676 basehttp 19064 26284 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44742
+INFO 2025-07-28 09:28:20,695 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:29:28,265 basehttp 19064 26284 "GET /static/admin/img/calendar-icons.svg HTTP/1.1" 304 0
+INFO 2025-07-28 09:29:50,560 basehttp 19064 26284 "POST /admin/training/capacitacion/add/ HTTP/1.1" 200 45077
+INFO 2025-07-28 09:29:50,578 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:30:11,394 basehttp 19064 26284 "POST /admin/training/capacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:30:11,441 basehttp 19064 26284 "GET /admin/training/capacitacion/ HTTP/1.1" 200 40586
+INFO 2025-07-28 09:30:11,457 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:30:22,494 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 36171
+INFO 2025-07-28 09:30:22,513 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:30:26,011 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/add/ HTTP/1.1" 200 42838
+INFO 2025-07-28 09:30:26,033 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:30:49,164 basehttp 19064 26284 "POST /admin/training/capacitacioncargo/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:30:49,192 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 38503
+INFO 2025-07-28 09:30:49,213 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:31:24,459 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 36157
+INFO 2025-07-28 09:31:24,479 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:31:27,286 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 45042
+INFO 2025-07-28 09:31:27,305 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:32:31,452 basehttp 19064 26284 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:32:31,496 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 39585
+INFO 2025-07-28 09:32:31,519 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:32:36,281 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 45143
+INFO 2025-07-28 09:32:36,299 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:33:33,649 basehttp 19064 26284 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:33:33,687 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 40272
+INFO 2025-07-28 09:33:33,710 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:33:36,792 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 45257
+INFO 2025-07-28 09:33:36,814 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:34:45,650 basehttp 19064 26284 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:34:45,683 basehttp 19064 26284 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 40940
+INFO 2025-07-28 09:34:45,707 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:35:02,972 basehttp 19064 26284 "GET /admin/training/tipocontenido/ HTTP/1.1" 200 36467
+INFO 2025-07-28 09:35:02,994 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:35:06,040 basehttp 19064 26284 "GET /admin/training/tipocontenido/add/ HTTP/1.1" 200 42217
+INFO 2025-07-28 09:35:06,059 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:35:59,643 basehttp 19064 26284 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37935
+INFO 2025-07-28 09:35:59,662 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:20,017 basehttp 19064 26284 "GET /admin/training/capacitacion/ HTTP/1.1" 200 40318
+INFO 2025-07-28 09:36:20,039 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:26,577 basehttp 19064 26284 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 38250
+INFO 2025-07-28 09:36:26,597 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:34,810 basehttp 19064 26284 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 36161
+INFO 2025-07-28 09:36:34,831 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:37,905 basehttp 19064 26284 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 53483
+INFO 2025-07-28 09:36:37,926 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:48,425 basehttp 19064 26284 "GET /admin/training/leccion/ HTTP/1.1" 200 36071
+INFO 2025-07-28 09:36:48,446 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:36:51,111 basehttp 19064 26284 "GET /admin/training/leccion/add/ HTTP/1.1" 200 45483
+INFO 2025-07-28 09:36:51,131 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:38:14,651 basehttp 19064 26284 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:38:14,696 basehttp 19064 26284 "GET /admin/training/leccion/ HTTP/1.1" 200 39419
+INFO 2025-07-28 09:38:14,718 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:38:19,107 basehttp 19064 26284 "GET /admin/training/leccion/add/ HTTP/1.1" 200 45573
+INFO 2025-07-28 09:38:19,128 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:39:52,109 basehttp 19064 26284 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:39:52,159 basehttp 19064 26284 "GET /admin/training/leccion/ HTTP/1.1" 200 40080
+INFO 2025-07-28 09:39:52,183 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:40:08,702 basehttp 19064 26284 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 36161
+INFO 2025-07-28 09:40:08,722 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:40:11,000 basehttp 19064 26284 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 53672
+INFO 2025-07-28 09:40:11,022 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:41:39,612 basehttp 19064 26284 "GET /admin/training/tipocontenido/add/?_to_field=id&_popup=1 HTTP/1.1" 200 10458
+INFO 2025-07-28 09:41:39,626 basehttp 19064 26284 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:42:37,558 basehttp 19064 26284 "POST /admin/training/tipocontenido/add/?_to_field=id&_popup=1 HTTP/1.1" 200 345
+INFO 2025-07-28 09:42:37,568 basehttp 19064 26284 "GET /static/admin/js/popup_response.js HTTP/1.1" 304 0
+INFO 2025-07-28 09:45:07,623 basehttp 19064 15068 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:45:07,670 basehttp 19064 15068 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 39427
+INFO 2025-07-28 09:45:07,690 basehttp 19064 15068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:45:11,613 basehttp 19064 15068 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 53715
+INFO 2025-07-28 09:45:11,628 basehttp 19064 15068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:47:44,952 basehttp 19064 15068 "GET /admin/training/tipocontenido/add/?_to_field=id&_popup=1 HTTP/1.1" 200 10458
+INFO 2025-07-28 09:47:44,964 basehttp 19064 15068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:49:15,289 basehttp 19064 15068 "POST /admin/training/tipocontenido/add/?_to_field=id&_popup=1 HTTP/1.1" 200 356
+INFO 2025-07-28 09:50:11,466 basehttp 19064 15068 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 200 54206
+INFO 2025-07-28 09:50:11,518 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:51:21,087 basehttp 19064 4536 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-07-28 09:51:21,134 basehttp 19064 4536 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 40421
+INFO 2025-07-28 09:51:21,152 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:51:38,455 basehttp 19064 4536 "GET /admin/training/leccion/ HTTP/1.1" 200 39812
+INFO 2025-07-28 09:51:38,473 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:51:43,805 basehttp 19064 4536 "GET /admin/training/inscripcioncapacitacion/ HTTP/1.1" 200 38037
+INFO 2025-07-28 09:51:43,821 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:51:49,275 basehttp 19064 4536 "GET /admin/training/inscripcioncapacitacion/add/ HTTP/1.1" 200 62518
+INFO 2025-07-28 09:51:49,290 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:03,117 basehttp 19064 4536 "GET /admin/training/leccion/ HTTP/1.1" 200 39812
+INFO 2025-07-28 09:52:03,132 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:09,392 basehttp 19064 4536 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 40632
+INFO 2025-07-28 09:52:09,406 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:13,658 basehttp 19064 4536 "GET /admin/training/progresocapacitacion/ HTTP/1.1" 200 36181
+INFO 2025-07-28 09:52:13,675 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:20,885 basehttp 19064 4536 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 37935
+INFO 2025-07-28 09:52:20,901 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:24,561 basehttp 19064 4536 "GET /admin/training/tipocontenido/ HTTP/1.1" 200 39011
+INFO 2025-07-28 09:52:24,575 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:52:41,811 basehttp 19064 4536 "GET /empleados/crear/ HTTP/1.1" 200 195209
+INFO 2025-07-28 09:53:31,819 basehttp 19064 4536 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 38250
+INFO 2025-07-28 09:53:31,833 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 09:54:27,775 basehttp 19064 4536 "POST /empleados/crear/ HTTP/1.1" 200 198193
