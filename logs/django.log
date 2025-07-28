@@ -10413,3 +10413,875 @@ INFO 2025-07-28 09:52:41,811 basehttp 19064 4536 "GET /empleados/crear/ HTTP/1.1
 INFO 2025-07-28 09:53:31,819 basehttp 19064 4536 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 38250
 INFO 2025-07-28 09:53:31,833 basehttp 19064 4536 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
 INFO 2025-07-28 09:54:27,775 basehttp 19064 4536 "POST /empleados/crear/ HTTP/1.1" 200 198193
+INFO 2025-07-28 10:23:01,564 autoreload 14036 20248 Watching for file changes with StatReloader
+INFO 2025-07-28 10:23:40,397 basehttp 14036 6208 "POST /empleados/crear/ HTTP/1.1" 200 196259
+INFO 2025-07-28 10:24:16,467 basehttp 14036 6208 "GET /admin/employees/empleado/ HTTP/1.1" 200 62201
+INFO 2025-07-28 10:24:16,485 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:24:28,103 basehttp 14036 6208 "GET /admin/employees/empleado/?p=2 HTTP/1.1" 200 57840
+INFO 2025-07-28 10:24:28,119 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:24:38,387 basehttp 14036 6208 "GET /admin/employees/empleado/?p=2 HTTP/1.1" 200 57840
+INFO 2025-07-28 10:24:38,441 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:24:51,488 basehttp 14036 6208 "GET /admin/employees/empleado/?p=1 HTTP/1.1" 200 62877
+INFO 2025-07-28 10:24:51,502 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:25:03,930 basehttp 14036 6208 "GET /admin/employees/empleado/?q=sis HTTP/1.1" 200 44679
+INFO 2025-07-28 10:25:03,944 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:25:12,630 basehttp 14036 6208 "GET /admin/authentication/usuario/ HTTP/1.1" 200 90524
+INFO 2025-07-28 10:25:12,646 basehttp 14036 6208 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:25:48,294 basehttp 14036 6208 "GET /empleados/ HTTP/1.1" 200 94268
+INFO 2025-07-28 10:26:03,834 basehttp 14036 6208 "GET /empleados/?page=2 HTTP/1.1" 200 94953
+INFO 2025-07-28 10:26:15,470 basehttp 14036 6208 "GET /empleados/?page=3 HTTP/1.1" 200 30467
+INFO 2025-07-28 10:26:44,406 basehttp 14036 6208 "GET /empleados/crear/ HTTP/1.1" 200 195209
+INFO 2025-07-28 10:28:53,476 basehttp 14036 6208 "POST /empleados/crear/ HTTP/1.1" 200 196266
+INFO 2025-07-28 10:32:44,280 autoreload 14036 20248 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\signals.py changed, reloading.
+INFO 2025-07-28 10:32:44,975 autoreload 5868 1692 Watching for file changes with StatReloader
+INFO 2025-07-28 10:32:46,340 autoreload 5868 1692 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\signals.py changed, reloading.
+INFO 2025-07-28 10:32:46,960 autoreload 11528 9436 Watching for file changes with StatReloader
+INFO 2025-07-28 10:33:05,947 autoreload 11528 9436 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\signals.py changed, reloading.
+INFO 2025-07-28 10:33:06,580 autoreload 19192 18008 Watching for file changes with StatReloader
+INFO 2025-07-28 10:34:02,893 basehttp 19192 10024 "POST /empleados/crear/ HTTP/1.1" 200 196266
+INFO 2025-07-28 10:34:18,705 basehttp 19192 10024 "POST /empleados/crear/ HTTP/1.1" 200 196266
+INFO 2025-07-28 10:34:47,634 basehttp 19192 10024 "POST /empleados/crear/ HTTP/1.1" 200 196266
+INFO 2025-07-28 10:35:33,597 autoreload 19192 18008 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\signals.py changed, reloading.
+INFO 2025-07-28 10:35:34,232 autoreload 11760 13040 Watching for file changes with StatReloader
+INFO 2025-07-28 10:35:51,475 basehttp 11760 14580 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:35:51,709 basehttp 11760 14580 "GET /empleados/ HTTP/1.1" 200 95108
+INFO 2025-07-28 10:36:12,023 basehttp 11760 14580 "GET /empleados/?page=2 HTTP/1.1" 200 94953
+INFO 2025-07-28 10:36:15,182 basehttp 11760 14580 "GET /empleados/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 35562
+INFO 2025-07-28 10:37:17,755 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 12898
+INFO 2025-07-28 10:37:31,432 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12707
+INFO 2025-07-28 10:38:29,746 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:38:29,777 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 14737
+INFO 2025-07-28 10:38:34,644 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12654
+INFO 2025-07-28 10:39:06,350 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:39:06,367 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 17206
+INFO 2025-07-28 10:39:11,277 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12601
+INFO 2025-07-28 10:40:06,771 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:40:06,810 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 19675
+INFO 2025-07-28 10:40:11,141 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12548
+INFO 2025-07-28 10:41:04,338 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:41:04,361 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22147
+INFO 2025-07-28 10:41:08,679 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12491
+INFO 2025-07-28 10:41:27,360 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:41:27,394 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 24613
+INFO 2025-07-28 10:41:33,148 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12435
+INFO 2025-07-28 10:41:45,995 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:41:46,022 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 27064
+INFO 2025-07-28 10:41:48,428 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12387
+INFO 2025-07-28 10:42:08,783 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:42:08,824 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 29059
+INFO 2025-07-28 10:42:25,628 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12341
+INFO 2025-07-28 10:42:37,332 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:42:37,359 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 31055
+INFO 2025-07-28 10:42:39,539 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12295
+INFO 2025-07-28 10:43:00,395 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:43:00,418 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33056
+INFO 2025-07-28 10:43:04,972 basehttp 11760 14580 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12251
+INFO 2025-07-28 10:43:51,505 basehttp 11760 14580 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 200 12501
+INFO 2025-07-28 10:45:17,581 basehttp 11760 16492 "POST /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:45:17,619 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 34289
+INFO 2025-07-28 10:45:26,807 basehttp 11760 16492 "GET /documentos/documento/1e61a91a-407f-46e5-8418-6b5d778b436b/aprobar/ HTTP/1.1" 200 20225
+INFO 2025-07-28 10:45:26,907 basehttp 11760 16492 "GET /media/documentos/77777709/CEDULA/CEDULA_20250728_153829.png HTTP/1.1" 200 709991
+INFO 2025-07-28 10:45:34,471 basehttp 11760 16492 "POST /documentos/documento/1e61a91a-407f-46e5-8418-6b5d778b436b/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:45:34,497 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 34093
+INFO 2025-07-28 10:45:36,676 basehttp 11760 16492 "GET /documentos/documento/bd0dfde5-5bde-41de-8518-f2676fe3a437/aprobar/ HTTP/1.1" 200 20126
+INFO 2025-07-28 10:45:36,720 basehttp 11760 16492 "GET /media/documentos/77777709/EPS/EPS_20250728_154237.pdf HTTP/1.1" 200 7490
+INFO 2025-07-28 10:45:42,915 basehttp 11760 16492 "POST /documentos/documento/bd0dfde5-5bde-41de-8518-f2676fe3a437/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:45:42,949 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33889
+INFO 2025-07-28 10:45:45,729 basehttp 11760 16492 "GET /documentos/documento/005e484c-0175-4991-9468-aeb770861e96/aprobar/ HTTP/1.1" 200 20126
+INFO 2025-07-28 10:45:45,765 basehttp 11760 16492 "GET /media/documentos/77777709/AFP/AFP_20250728_154208.pdf HTTP/1.1" 200 7263
+INFO 2025-07-28 10:45:57,489 basehttp 11760 16492 "POST /documentos/documento/005e484c-0175-4991-9468-aeb770861e96/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:45:57,517 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33692
+INFO 2025-07-28 10:46:12,459 basehttp 11760 16492 "GET /documentos/documento/aabe716f-9e41-478c-aa56-bb1214624e1f/aprobar/ HTTP/1.1" 200 20011
+INFO 2025-07-28 10:46:12,498 basehttp 11760 16492 "GET /media/documentos/77777709/CONTRATO/CONTRATO_20250728_154145.pdf HTTP/1.1" 200 176439
+INFO 2025-07-28 10:46:26,519 basehttp 11760 16492 "POST /documentos/documento/aabe716f-9e41-478c-aa56-bb1214624e1f/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:46:26,564 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33496
+INFO 2025-07-28 10:46:34,397 basehttp 11760 16492 "GET /documentos/documento/7bcfde54-863e-4c9c-9689-c68a86e08cf4/aprobar/ HTTP/1.1" 200 20138
+INFO 2025-07-28 10:46:34,438 basehttp 11760 16492 "GET /media/documentos/77777709/HOJA_VIDA/HOJA_VIDA_20250728_154300.pdf HTTP/1.1" 200 10759
+INFO 2025-07-28 10:46:39,313 basehttp 11760 16492 "POST /documentos/documento/7bcfde54-863e-4c9c-9689-c68a86e08cf4/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:46:39,348 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33295
+INFO 2025-07-28 10:46:42,363 basehttp 11760 16492 "GET /documentos/documento/93413ba9-a074-4b8d-95cc-92a638a50fdd/aprobar/ HTTP/1.1" 200 20585
+INFO 2025-07-28 10:46:42,388 basehttp 11760 16492 "GET /media/documentos/77777709/LIC_CONDUCIR/LIC_CONDUCIR_20250728_154517.jpg HTTP/1.1" 200 970897
+INFO 2025-07-28 10:46:50,430 basehttp 11760 16492 "POST /documentos/documento/93413ba9-a074-4b8d-95cc-92a638a50fdd/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:46:50,466 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33109
+INFO 2025-07-28 10:46:53,219 basehttp 11760 16492 "GET /documentos/documento/0746f7d1-2500-40a0-851a-7887c4a08475/aprobar/ HTTP/1.1" 200 20027
+INFO 2025-07-28 10:46:53,264 basehttp 11760 16492 "GET /media/documentos/77777709/ESTUDIOS/ESTUDIOS_20250728_154127.pdf HTTP/1.1" 200 526954
+INFO 2025-07-28 10:46:59,137 basehttp 11760 16492 "POST /documentos/documento/0746f7d1-2500-40a0-851a-7887c4a08475/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:46:59,166 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 32913
+INFO 2025-07-28 10:47:01,587 basehttp 11760 16492 "GET /documentos/documento/1c8d64b5-45d5-424a-aaec-d8c09e08b536/aprobar/ HTTP/1.1" 200 20032
+INFO 2025-07-28 10:47:01,617 basehttp 11760 16492 "GET /media/documentos/77777709/CESANTIAS/CESANTIAS_20250728_154104.pdf HTTP/1.1" 200 78704
+INFO 2025-07-28 10:47:05,929 basehttp 11760 16492 "POST /documentos/documento/1c8d64b5-45d5-424a-aaec-d8c09e08b536/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:47:05,962 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 32717
+INFO 2025-07-28 10:47:09,099 basehttp 11760 16492 "GET /documentos/documento/f6baa13c-ac6d-4679-933f-0cbe9607d83f/aprobar/ HTTP/1.1" 200 20035
+INFO 2025-07-28 10:47:09,137 basehttp 11760 16492 "GET /media/documentos/77777709/REF_PERSONAL/REF_PERSONAL_20250728_154006.pdf HTTP/1.1" 200 218855
+INFO 2025-07-28 10:47:13,739 basehttp 11760 16492 "POST /documentos/documento/f6baa13c-ac6d-4679-933f-0cbe9607d83f/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:47:13,772 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 32517
+INFO 2025-07-28 10:47:16,339 basehttp 11760 16492 "GET /documentos/documento/0746f7d1-2500-40a0-851a-7887c4a08475/ver/ HTTP/1.1" 200 20036
+INFO 2025-07-28 10:47:22,931 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 32092
+INFO 2025-07-28 10:47:25,300 basehttp 11760 16492 "GET /documentos/documento/3626e3de-5174-4239-9dd0-11570edd17b4/aprobar/ HTTP/1.1" 200 20035
+INFO 2025-07-28 10:47:25,345 basehttp 11760 16492 "GET /media/documentos/77777709/CERT_LABORAL/CERT_LABORAL_20250728_153906.pdf HTTP/1.1" 200 46336
+INFO 2025-07-28 10:47:34,995 basehttp 11760 16492 "POST /documentos/documento/3626e3de-5174-4239-9dd0-11570edd17b4/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 10:47:35,047 basehttp 11760 16492 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 32321
+INFO 2025-07-28 10:48:13,608 basehttp 11760 16492 "GET /empleados/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 36592
+INFO 2025-07-28 10:52:13,167 basehttp 11760 16492 "GET /admin/employees/empleado/ HTTP/1.1" 200 62192
+INFO 2025-07-28 10:52:13,186 basehttp 11760 16492 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:52:36,779 basehttp 11760 16492 "GET /admin/authentication/usuario/ HTTP/1.1" 200 91974
+INFO 2025-07-28 10:52:36,797 basehttp 11760 16492 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:53:39,854 basehttp 11760 16492 "GET /admin/authentication/usuario/8ac1e92b-fff0-4660-9c91-b325dfcf67ea/change/ HTTP/1.1" 200 78544
+INFO 2025-07-28 10:53:39,871 basehttp 11760 16492 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:54:05,013 basehttp 11760 16492 "GET /admin/employees/empleado/ HTTP/1.1" 200 62192
+INFO 2025-07-28 10:54:05,031 basehttp 11760 16492 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 10:54:20,475 basehttp 11760 16492 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:06:49,693 autoreload 11760 13040 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\views.py changed, reloading.
+INFO 2025-07-28 11:06:50,339 autoreload 19004 9776 Watching for file changes with StatReloader
+INFO 2025-07-28 11:07:01,030 autoreload 19004 9776 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 11:07:01,658 autoreload 11960 7348 Watching for file changes with StatReloader
+INFO 2025-07-28 11:12:28,899 basehttp 11960 25620 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:12:31,711 basehttp 11960 25620 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:12:33,685 basehttp 11960 25620 "GET /dashboard/ HTTP/1.1" 200 15057
+WARNING 2025-07-28 11:12:38,727 base 11960 25620 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:12:38,728 log 11960 25620 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:12:38,728 basehttp 11960 25620 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 11:12:51,362 basehttp 11960 25620 "GET /auth/login/ HTTP/1.1" 200 751
+WARNING 2025-07-28 11:13:04,936 base 11960 25620 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:13:04,936 log 11960 25620 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:13:04,937 basehttp 11960 25620 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:14:17,620 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:14:17,621 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:14:17,621 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:14:18,996 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:14:18,997 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:14:18,998 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:14:19,863 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:14:19,863 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:14:19,864 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 11:14:45,826 basehttp 11960 23772 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:17:41,510 basehttp 11960 23772 "GET /dashboard/ HTTP/1.1" 200 15057
+WARNING 2025-07-28 11:17:53,750 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:17:53,751 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:17:53,751 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:17:56,831 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:17:56,831 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:17:56,832 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:17:58,045 base 11960 23772 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:17:58,047 log 11960 23772 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:17:58,047 basehttp 11960 23772 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 11:20:24,576 autoreload 11960 7348 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\development.py changed, reloading.
+INFO 2025-07-28 11:20:25,220 autoreload 16888 21304 Watching for file changes with StatReloader
+INFO 2025-07-28 11:20:26,590 autoreload 16888 21304 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\development.py changed, reloading.
+INFO 2025-07-28 11:20:27,208 autoreload 5220 3544 Watching for file changes with StatReloader
+WARNING 2025-07-28 11:20:32,071 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:20:32,071 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:20:32,072 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:20:34,096 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:20:34,096 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:20:34,097 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:20:40,681 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:20:40,682 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:20:40,682 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:21:25,961 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:21:25,962 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:21:25,962 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:23:50,050 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:23:50,051 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:23:50,051 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:23:51,093 base 5220 25280 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:23:51,094 log 5220 25280 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:23:51,094 basehttp 5220 25280 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 11:28:00,893 autoreload 5220 3544 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 11:28:01,503 autoreload 24220 21068 Watching for file changes with StatReloader
+WARNING 2025-07-28 11:28:06,400 base 24220 21544 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:28:06,401 log 24220 21544 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:28:06,402 basehttp 24220 21544 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:28:07,814 base 24220 21544 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:28:07,815 log 24220 21544 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:28:07,816 basehttp 24220 21544 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 11:28:15,367 base 24220 21544 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 11:28:15,368 log 24220 21544 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 11:28:15,368 basehttp 24220 21544 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 11:38:28,662 basehttp 24220 8744 "GET /empleados/ HTTP/1.1" 200 94268
+INFO 2025-07-28 11:39:45,238 basehttp 24220 8744 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:39:47,525 basehttp 24220 8744 "GET /dashboard/ HTTP/1.1" 200 15057
+INFO 2025-07-28 11:39:56,547 basehttp 24220 8744 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 11:39:56,554 basehttp 24220 8744 "GET /auth/login/ HTTP/1.1" 200 751
+INFO 2025-07-28 11:40:06,209 basehttp 24220 8744 "GET /dashboard/ HTTP/1.1" 200 14917
+INFO 2025-07-28 11:40:13,568 basehttp 24220 8744 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 11:40:13,584 basehttp 24220 8744 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 751
+INFO 2025-07-28 11:44:32,306 basehttp 24220 24612 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 751
+INFO 2025-07-28 11:44:35,078 basehttp 24220 24612 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 751
+INFO 2025-07-28 11:44:35,926 basehttp 24220 24612 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 751
+INFO 2025-07-28 11:44:36,596 basehttp 24220 24612 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 751
+ERROR 2025-07-28 11:48:06,865 log 24220 13484 Internal Server Error: /auth/login/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 577, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 6: 'static'. Did you forget to register or load this tag?
+ERROR 2025-07-28 11:48:06,870 basehttp 24220 13484 "GET /auth/login/?next=/empleados/ HTTP/1.1" 500 147593
+INFO 2025-07-28 11:54:04,899 basehttp 24220 8116 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 11:54:04,919 basehttp 24220 8116 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 11:55:14,269 basehttp 24220 8116 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 11:55:14,272 basehttp 24220 8116 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 11:55:16,526 basehttp 24220 8116 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 11:55:17,712 basehttp 24220 8116 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:08:37,697 autoreload 21224 652 Watching for file changes with StatReloader
+INFO 2025-07-28 12:08:49,948 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:08:51,513 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:08:52,025 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:08:52,233 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:08:52,433 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:09:02,875 basehttp 21224 22320 "GET / HTTP/1.1" 302 0
+INFO 2025-07-28 12:09:02,929 basehttp 21224 22320 "GET /dashboard/ HTTP/1.1" 200 14917
+INFO 2025-07-28 12:09:08,462 basehttp 21224 22320 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 12:09:08,467 basehttp 21224 22320 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+WARNING 2025-07-28 12:09:19,493 log 21224 22320 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 12:09:19,494 basehttp 21224 22320 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-28 12:15:47,064 basehttp 21224 6304 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+WARNING 2025-07-28 12:15:47,101 log 21224 6304 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 12:15:47,102 basehttp 21224 6304 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-28 12:18:29,334 basehttp 21224 6304 "POST /auth/login/?next=/empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 12:18:29,525 basehttp 21224 6304 "GET /empleados/ HTTP/1.1" 200 94268
+WARNING 2025-07-28 12:18:32,500 base 21224 6304 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:18:32,501 log 21224 6304 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:18:32,501 basehttp 21224 6304 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 12:18:34,779 base 21224 6304 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:18:34,780 log 21224 6304 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:18:34,780 basehttp 21224 6304 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 12:18:35,755 base 21224 6304 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:18:35,755 log 21224 6304 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:18:35,756 basehttp 21224 6304 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 12:21:30,746 autoreload 21224 652 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 12:21:31,400 autoreload 23764 12524 Watching for file changes with StatReloader
+WARNING 2025-07-28 12:40:29,212 base 23764 25356 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:40:29,213 log 23764 25356 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:40:29,214 basehttp 23764 25356 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 12:49:28,933 base 23764 12604 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:49:28,934 log 23764 12604 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:49:28,934 basehttp 23764 12604 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 12:49:31,316 base 23764 12604 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:49:31,317 log 23764 12604 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:49:31,317 basehttp 23764 12604 "GET /auth/logout/ HTTP/1.1" 405 0
+WARNING 2025-07-28 12:49:37,312 log 23764 12604 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 12:49:37,313 basehttp 23764 12604 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+WARNING 2025-07-28 12:49:48,201 base 23764 12604 Method Not Allowed (GET): /auth/logout/
+WARNING 2025-07-28 12:49:48,202 log 23764 12604 Method Not Allowed: /auth/logout/
+WARNING 2025-07-28 12:49:48,203 basehttp 23764 12604 "GET /auth/logout/ HTTP/1.1" 405 0
+INFO 2025-07-28 12:51:41,203 basehttp 23764 12604 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:51:45,693 basehttp 23764 12604 "GET /empleados/ HTTP/1.1" 200 94832
+INFO 2025-07-28 12:52:00,216 basehttp 23764 12604 "GET /dashboard/ HTTP/1.1" 200 15621
+INFO 2025-07-28 12:52:03,703 basehttp 23764 12604 "GET /empleados/ HTTP/1.1" 200 94832
+INFO 2025-07-28 12:52:59,088 basehttp 23764 12604 "GET /dashboard/ HTTP/1.1" 200 15621
+INFO 2025-07-28 12:53:07,717 basehttp 23764 12604 "GET /dashboard/ HTTP/1.1" 200 15621
+INFO 2025-07-28 12:53:11,093 basehttp 23764 12604 "GET /dashboard/ HTTP/1.1" 200 15621
+INFO 2025-07-28 12:53:30,056 basehttp 23764 12604 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 12:53:30,059 basehttp 23764 12604 "GET /auth/login/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:54:04,005 basehttp 23764 12604 "GET /dashboard/ HTTP/1.1" 200 15481
+INFO 2025-07-28 12:54:07,821 basehttp 23764 12604 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 12:54:07,833 basehttp 23764 12604 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 12:54:28,605 basehttp 23764 12604 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 12:54:28,609 basehttp 23764 12604 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 887
+INFO 2025-07-28 13:57:09,782 autoreload 15464 3064 Watching for file changes with StatReloader
+INFO 2025-07-28 13:57:20,772 basehttp 15464 21516 "GET /dashboard/ HTTP/1.1" 200 15481
+INFO 2025-07-28 13:57:24,562 basehttp 15464 21516 "GET /empleados/ HTTP/1.1" 302 0
+ERROR 2025-07-28 13:57:24,808 log 15464 21516 Internal Server Error: /auth/login/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'widget_tweaks'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+    ...<5 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: 'widget_tweaks' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+crispy_forms_field
+crispy_forms_filters
+crispy_forms_tags
+crispy_forms_utils
+document_filters
+employee_tags
+humanize
+i18n
+l10n
+log
+rest_framework
+select_filters
+static
+tz
+ERROR 2025-07-28 13:57:24,820 basehttp 15464 21516 "GET /auth/login/?next=/empleados/ HTTP/1.1" 500 168447
+INFO 2025-07-28 13:58:09,610 basehttp 15464 21516 "GET /empleados/ HTTP/1.1" 302 0
+ERROR 2025-07-28 13:58:09,637 log 15464 21516 Internal Server Error: /auth/login/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'widget_tweaks'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+    ...<5 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: 'widget_tweaks' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+crispy_forms_field
+crispy_forms_filters
+crispy_forms_tags
+crispy_forms_utils
+document_filters
+employee_tags
+humanize
+i18n
+l10n
+log
+rest_framework
+select_filters
+static
+tz
+ERROR 2025-07-28 13:58:09,641 basehttp 15464 21516 "GET /auth/login/?next=/empleados/ HTTP/1.1" 500 168447
+INFO 2025-07-28 14:06:12,331 autoreload 17596 8932 Watching for file changes with StatReloader
+INFO 2025-07-28 14:06:19,801 basehttp 17596 15916 "GET /empleados/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:19,830 basehttp 17596 15916 "GET /auth/login/?next=/empleados/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:41,012 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:41,028 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:44,415 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:44,419 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:45,966 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:45,970 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:47,500 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:47,506 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:51,266 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:51,272 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:52,269 basehttp 17596 15916 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:06:52,276 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:06:56,581 basehttp 17596 15916 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3679
+INFO 2025-07-28 14:09:45,875 autoreload 17596 8932 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 14:09:46,542 autoreload 1872 8616 Watching for file changes with StatReloader
+INFO 2025-07-28 14:09:49,993 autoreload 1872 8616 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 14:09:50,622 autoreload 12020 18784 Watching for file changes with StatReloader
+INFO 2025-07-28 14:15:19,634 autoreload 4952 13520 Watching for file changes with StatReloader
+INFO 2025-07-28 14:24:30,340 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3436
+WARNING 2025-07-28 14:24:44,714 log 4952 17224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 14:24:44,715 basehttp 4952 17224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-28 14:26:37,687 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3788
+WARNING 2025-07-28 14:26:37,709 log 4952 17224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 14:26:37,709 basehttp 4952 17224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4823
+INFO 2025-07-28 14:27:03,379 basehttp 4952 17224 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:27:03,384 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3788
+INFO 2025-07-28 14:27:04,935 basehttp 4952 17224 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:27:04,940 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3788
+INFO 2025-07-28 14:27:10,034 basehttp 4952 17224 "GET /auth/password-change/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:27:10,039 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3788
+INFO 2025-07-28 14:30:29,151 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3787
+INFO 2025-07-28 14:30:31,388 basehttp 4952 17224 "GET /auth/password-reset/ HTTP/1.1" 200 1149
+INFO 2025-07-28 14:30:38,884 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3787
+INFO 2025-07-28 14:30:59,639 basehttp 4952 17224 "GET /auth/password-reset/ HTTP/1.1" 200 1149
+INFO 2025-07-28 14:31:22,955 basehttp 4952 17224 "GET /auth/login/?next=/auth/password-change/ HTTP/1.1" 200 3787
+INFO 2025-07-28 14:32:56,077 basehttp 4952 17224 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+INFO 2025-07-28 14:33:12,682 basehttp 4952 17224 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-07-28 14:33:16,521 basehttp 4952 17224 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+INFO 2025-07-28 14:49:13,866 autoreload 10828 11272 Watching for file changes with StatReloader
+INFO 2025-07-28 14:49:18,082 basehttp 10828 20368 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+INFO 2025-07-28 14:49:21,897 basehttp 10828 20368 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-07-28 14:49:26,549 basehttp 10828 20368 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-07-28 14:49:26,586 basehttp 10828 20368 "GET /dashboard/ HTTP/1.1" 200 15621
+INFO 2025-07-28 14:49:41,618 basehttp 10828 20368 "GET /empleados/ HTTP/1.1" 200 94832
+INFO 2025-07-28 15:03:32,483 autoreload 10828 11272 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:03:33,219 autoreload 6320 15228 Watching for file changes with StatReloader
+INFO 2025-07-28 15:12:30,217 autoreload 6320 15228 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:12:30,874 autoreload 15220 660 Watching for file changes with StatReloader
+INFO 2025-07-28 15:12:35,376 autoreload 15220 660 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:12:35,977 autoreload 1756 19544 Watching for file changes with StatReloader
+INFO 2025-07-28 15:12:38,367 autoreload 1756 19544 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:12:39,009 autoreload 1712 5804 Watching for file changes with StatReloader
+INFO 2025-07-28 15:12:47,730 autoreload 1712 5804 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:12:48,399 autoreload 14380 24912 Watching for file changes with StatReloader
+INFO 2025-07-28 15:12:58,125 autoreload 14380 24912 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:12:58,734 autoreload 9956 17796 Watching for file changes with StatReloader
+INFO 2025-07-28 15:13:38,486 autoreload 9956 17796 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:13:39,215 autoreload 4064 2612 Watching for file changes with StatReloader
+INFO 2025-07-28 15:13:40,605 autoreload 4064 2612 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:13:41,218 autoreload 16276 1784 Watching for file changes with StatReloader
+INFO 2025-07-28 15:15:39,118 basehttp 16276 18660 "GET /empleados/ HTTP/1.1" 200 94832
+INFO 2025-07-28 15:15:42,329 basehttp 16276 18660 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:15:42,334 basehttp 16276 18660 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-07-28 15:16:53,653 basehttp 16276 18660 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:16:53,675 basehttp 16276 18660 "GET /dashboard/ HTTP/1.1" 200 15502
+INFO 2025-07-28 15:17:09,036 basehttp 16276 18660 "GET /empleados/ HTTP/1.1" 200 86870
+INFO 2025-07-28 15:17:16,181 basehttp 16276 18660 "GET /empleados/20b2e9a9-6046-4231-8fb4-7434e16b04be/ HTTP/1.1" 200 34068
+INFO 2025-07-28 15:17:50,110 basehttp 16276 18660 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:17:50,175 basehttp 16276 18660 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 3967
+INFO 2025-07-28 15:17:56,730 basehttp 16276 18660 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:17:56,823 basehttp 16276 18660 "GET /admin/ HTTP/1.1" 200 47454
+INFO 2025-07-28 15:18:08,805 basehttp 16276 18660 "GET /admin/employees/empleado/ HTTP/1.1" 200 62192
+INFO 2025-07-28 15:18:08,857 basehttp 16276 18660 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 15:18:22,887 basehttp 16276 18660 "GET /admin/employees/empleado/?q=manolo HTTP/1.1" 200 43000
+INFO 2025-07-28 15:18:22,907 basehttp 16276 18660 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 15:18:25,301 basehttp 16276 18660 "GET /admin/employees/empleado/810b16de-5c15-4a73-a2ed-a2aa6366104e/change/?_changelist_filters=q%3Dmanolo HTTP/1.1" 200 128794
+INFO 2025-07-28 15:18:25,324 basehttp 16276 18660 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-07-28 15:19:07,228 basehttp 16276 18660 "GET /documentos/empleado/20b2e9a9-6046-4231-8fb4-7434e16b04be/ HTTP/1.1" 200 13455
+INFO 2025-07-28 15:19:11,934 basehttp 16276 18660 "GET /documentos/empleado/20b2e9a9-6046-4231-8fb4-7434e16b04be/subir/ HTTP/1.1" 200 13268
+INFO 2025-07-28 15:19:41,628 basehttp 16276 18660 "POST /documentos/empleado/20b2e9a9-6046-4231-8fb4-7434e16b04be/subir/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:19:41,650 basehttp 16276 18660 "GET /documentos/empleado/20b2e9a9-6046-4231-8fb4-7434e16b04be/ HTTP/1.1" 200 15296
+INFO 2025-07-28 15:20:07,042 basehttp 16276 18660 "GET /documentos/documento/31a8d6e5-a1ab-44b4-95ae-0dc90ff7a5c7/aprobar/ HTTP/1.1" 200 20791
+INFO 2025-07-28 15:20:07,102 basehttp 16276 18660 "GET /media/documentos/1035236545/CEDULA/CEDULA_20250728_201941.png HTTP/1.1" 200 1122530
+INFO 2025-07-28 15:20:20,781 basehttp 16276 18660 "POST /documentos/documento/31a8d6e5-a1ab-44b4-95ae-0dc90ff7a5c7/aprobar/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:20:20,811 basehttp 16276 18660 "GET /documentos/empleado/20b2e9a9-6046-4231-8fb4-7434e16b04be/ HTTP/1.1" 200 15099
+INFO 2025-07-28 15:20:36,821 basehttp 16276 18660 "GET /empleados/ HTTP/1.1" 200 94832
+INFO 2025-07-28 15:21:18,659 basehttp 16276 18660 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:21:18,663 basehttp 16276 18660 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-07-28 15:22:03,210 basehttp 16276 18660 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:22:03,227 basehttp 16276 18660 "GET /dashboard/ HTTP/1.1" 200 15509
+INFO 2025-07-28 15:23:02,605 autoreload 16276 1784 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-07-28 15:23:03,296 autoreload 25472 17900 Watching for file changes with StatReloader
+INFO 2025-07-28 15:24:46,510 autoreload 25472 17900 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\utils.py changed, reloading.
+INFO 2025-07-28 15:24:47,157 autoreload 7016 24724 Watching for file changes with StatReloader
+INFO 2025-07-28 15:25:04,610 basehttp 7016 19080 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:25:04,635 basehttp 7016 19080 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-07-28 15:25:18,172 basehttp 7016 19080 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+ERROR 2025-07-28 15:26:00,497 log 7016 19080 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 15:26:00,508 basehttp 7016 19080 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+INFO 2025-07-28 15:35:52,472 autoreload 7016 24724 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 15:35:53,104 autoreload 21724 7420 Watching for file changes with StatReloader
+INFO 2025-07-28 15:36:15,116 autoreload 21724 7420 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 15:36:15,716 autoreload 18172 4548 Watching for file changes with StatReloader
+INFO 2025-07-28 15:36:40,847 autoreload 18172 4548 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 15:36:41,369 autoreload 18728 7356 Watching for file changes with StatReloader
+INFO 2025-07-28 15:37:04,359 autoreload 18728 7356 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 15:37:04,956 autoreload 2320 22300 Watching for file changes with StatReloader
+INFO 2025-07-28 15:37:19,895 basehttp 2320 7764 "POST /auth/password-reset/ HTTP/1.1" 302 0
+INFO 2025-07-28 15:37:19,908 basehttp 2320 7764 "GET /password-reset/done/ HTTP/1.1" 200 2801
+INFO 2025-07-28 15:37:27,042 basehttp 2320 7764 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-07-28 15:44:11,508 log 2320 20504 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-28 15:44:11,509 basehttp 2320 20504 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5918
+INFO 2025-07-28 15:47:09,260 autoreload 2320 22300 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 15:47:09,931 autoreload 4140 15948 Watching for file changes with StatReloader
+INFO 2025-07-28 15:48:22,343 basehttp 4140 10164 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+ERROR 2025-07-28 15:48:26,476 log 4140 10164 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 15:48:26,481 basehttp 4140 10164 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+INFO 2025-07-28 15:57:05,895 autoreload 16620 20640 Watching for file changes with StatReloader
+ERROR 2025-07-28 15:57:13,532 log 16620 23004 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 15:57:13,538 basehttp 16620 23004 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+INFO 2025-07-28 15:59:21,998 autoreload 16620 20640 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\views.py changed, reloading.
+INFO 2025-07-28 15:59:22,723 autoreload 21300 22176 Watching for file changes with StatReloader
+INFO 2025-07-28 16:02:07,877 autoreload 21300 22176 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:02:08,473 autoreload 5036 1784 Watching for file changes with StatReloader
+INFO 2025-07-28 16:02:09,873 autoreload 5036 1784 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:02:10,510 autoreload 19128 17372 Watching for file changes with StatReloader
+INFO 2025-07-28 16:02:11,888 autoreload 19128 17372 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:02:12,515 autoreload 11932 13880 Watching for file changes with StatReloader
+INFO 2025-07-28 16:02:24,169 autoreload 11932 13880 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:02:24,762 autoreload 9232 19448 Watching for file changes with StatReloader
+INFO 2025-07-28 16:03:17,580 autoreload 8820 26020 Watching for file changes with StatReloader
+ERROR 2025-07-28 16:03:25,036 log 8820 23116 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 16:03:25,040 basehttp 8820 23116 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+ERROR 2025-07-28 16:03:32,996 log 8820 23116 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 16:03:33,000 basehttp 8820 23116 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+INFO 2025-07-28 16:04:39,656 autoreload 8820 26020 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:04:40,455 autoreload 22924 24488 Watching for file changes with StatReloader
+INFO 2025-07-28 16:05:53,427 autoreload 22924 24488 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:05:54,063 autoreload 18780 4332 Watching for file changes with StatReloader
+INFO 2025-07-28 16:06:21,395 autoreload 18780 4332 C:\SIGHU\sighu\sistema-gestion-empleados\config\urls.py changed, reloading.
+INFO 2025-07-28 16:06:22,041 autoreload 10168 22988 Watching for file changes with StatReloader
+INFO 2025-07-28 16:07:30,861 autoreload 10168 22988 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:07:31,539 autoreload 10348 23996 Watching for file changes with StatReloader
+INFO 2025-07-28 16:08:29,062 autoreload 10348 23996 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:08:29,641 autoreload 23028 4104 Watching for file changes with StatReloader
+INFO 2025-07-28 16:08:44,579 autoreload 23028 4104 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:08:45,189 autoreload 22156 2576 Watching for file changes with StatReloader
+INFO 2025-07-28 16:09:06,299 autoreload 22156 2576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:09:07,001 autoreload 21560 19576 Watching for file changes with StatReloader
+INFO 2025-07-28 16:09:08,370 autoreload 21560 19576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:09:09,046 autoreload 25140 24108 Watching for file changes with StatReloader
+INFO 2025-07-28 16:10:35,933 basehttp 25140 10724 "GET /auth/password-reset/ HTTP/1.1" 200 3361
+ERROR 2025-07-28 16:10:41,043 log 25140 10724 Internal Server Error: /auth/password-reset/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 229, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\views.py", line 243, in form_valid
+    return super().form_valid(form)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 63, in form_valid
+    return HttpResponseRedirect(self.get_success_url())
+                                ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\edit.py", line 57, in get_success_url
+    if not self.success_url:
+           ^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\utils\functional.py", line 187, in __wrapper__
+    result = func(*self._args, **self._kw)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'password_reset_done' not found. 'password_reset_done' is not a valid view function or pattern name.
+ERROR 2025-07-28 16:10:41,051 basehttp 25140 10724 "POST /auth/password-reset/ HTTP/1.1" 500 140323
+INFO 2025-07-28 16:12:13,918 autoreload 25140 24108 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:12:14,591 autoreload 12760 14548 Watching for file changes with StatReloader
+INFO 2025-07-28 16:12:23,203 basehttp 12760 10528 "POST /auth/password-reset/ HTTP/1.1" 302 0
+INFO 2025-07-28 16:12:23,217 basehttp 12760 10528 "GET /auth/password-reset/done/ HTTP/1.1" 200 2801
+INFO 2025-07-28 16:13:39,602 autoreload 12760 14548 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\urls.py changed, reloading.
+INFO 2025-07-28 16:13:40,335 autoreload 17228 13264 Watching for file changes with StatReloader
+INFO 2025-07-28 16:13:46,938 autoreload 17228 13264 C:\SIGHU\sighu\sistema-gestion-empleados\apps\authentication\views.py changed, reloading.
+INFO 2025-07-28 16:13:47,528 autoreload 12824 18108 Watching for file changes with StatReloader

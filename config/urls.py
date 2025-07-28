@@ -19,10 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from django.contrib.auth import views as auth_views
+from apps.authentication.views import EmpleadoLoginView
+from django.urls import reverse_lazy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/dashboard/', permanent=False)),
+    path('login/', EmpleadoLoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='authentication/logout.html'), name='logout'),
     path('auth/', include('apps.authentication.urls')),
     path('dashboard/', include('apps.core.urls')),
     path('empleados/', include('apps.employees.urls')),
@@ -34,6 +39,8 @@ urlpatterns = [
     path('reconocimientos/', include('apps.recognition.urls')),
     path('notificaciones/', include('apps.notifications.urls')),
     path('reportes/', include('apps.reports.urls')),
+    
+    
     
     # API URLs
     path('api/v1/', include('config.api_urls')),

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.organizational',
     'apps.authentication',
     'apps.documents',
+    'widget_tweaks',  # Nueva línea añadida
 
 ]
 
@@ -203,3 +204,5 @@ LOGGING = {
         },
     },
 }
+
+LOGOUT_REDIRECT_URL = '/auth/login/'

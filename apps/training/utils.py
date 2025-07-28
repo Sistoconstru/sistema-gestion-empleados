@@ -1,6 +1,6 @@
 # apps/training/utils.py
 
-def asignar_capacitaciones_por_cargo(empleado):
+def asignar_capacitaciones_por_cargo(empleado, usuario):
     """Asignar automáticamente capacitaciones obligatorias según cargo"""
     from .models import CapacitacionCargo, InscripcionCapacitacion
     from datetime import date, timedelta
@@ -40,7 +40,7 @@ def asignar_capacitaciones_por_cargo(empleado):
             fecha_limite=fecha_limite,
             obligatoria=cap_cargo.obligatoria,
             aprobada_supervisor=True,
-            inscrito_por_id=1  # Sistema/Admin
+            inscrito_por=usuario  # Ahora se pasa el usuario válido
         )
         
         inscripciones_creadas += 1
