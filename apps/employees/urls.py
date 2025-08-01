@@ -20,7 +20,8 @@ urlpatterns = [
     path('<uuid:pk>/export/', views.empleado_export_individual, name='empleado_export_individual'),
     path('<uuid:pk>/print/', views.empleado_print_view, name='empleado_print'),
     path('<uuid:pk>/historial/export/', views.empleado_historial_export, name='empleado_historial_export'),
-    
+    path('mi-perfil/', views.empleado_perfil_redirect, name='empleado_perfil'),
+    path('perfil/<uuid:pk>/', views.EmpleadoPerfilView.as_view(), name='empleado_perfil_detail'),
     # APIs y exportación
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),
     path('export/', views.empleado_export, name='empleado_export'),

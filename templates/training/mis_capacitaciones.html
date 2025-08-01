@@ -1,5 +1,8 @@
- {% extends 'base.html' %}
+{% extends 'base.html' %}
+{% url 'training:mis_capacitaciones' %}
+
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}Mis Capacitaciones - RRHH Pro{% endblock %}
 
@@ -434,10 +437,9 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 <!-- templates/training/player.html -->
-{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ capacitacion.nombre }} - Reproductor - RRHH Pro{% endblock %}
+{% block player_title %}{{ capacitacion.nombre }} - Reproductor - RRHH Pro{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -545,7 +547,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 {% endblock %}
 
-{% block content %}
+{% block content_leccion %}
 <!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div class="d-flex align-items-center gap-3">
@@ -860,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 {% endblock %}
 
-{% block extra_js %}
+{% block playerextra_js %}
 <script>
 let isPlaying = false;
 let currentTime = 225; // 3:45 in seconds
@@ -1017,4 +1019,4 @@ window.addEventListener('beforeunload', function() {
     console.log(`Time spent: ${timeSpent} seconds`);
 });
 </script>
-{% endblock %} 
+{% endblock %}

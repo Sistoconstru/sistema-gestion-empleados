@@ -12,6 +12,7 @@ from apps.employees.models import Empleado, HistorialCargo
 
 logger = logging.getLogger(__name__)
 
+# Señal que se ejecuta cuando se sube un documento nuevo
 @receiver(post_save, sender=DocumentoEmpleado)
 def documento_uploaded(sender, instance, created, **kwargs):
     """Ejecutar acciones cuando se sube un documento"""
@@ -22,6 +23,7 @@ def documento_uploaded(sender, instance, created, **kwargs):
         from .views import verificar_cambio_estado_empleado
         verificar_cambio_estado_empleado(instance.empleado)
 
+# Señal que se ejecuta cuando se aprueba un documento
 @receiver(post_save, sender=DocumentoEmpleado)
 def documento_approved(sender, instance, created, **kwargs):
     """Ejecutar acciones cuando se aprueba un documento"""
@@ -32,6 +34,7 @@ def documento_approved(sender, instance, created, **kwargs):
         from .views import verificar_cambio_estado_empleado
         verificar_cambio_estado_empleado(instance.empleado)
 
+# Señal que se ejecuta cuando cambia el cargo de un empleado
 @receiver(post_save, sender=HistorialCargo)
 def cargo_changed(sender, instance, created, **kwargs):
     """Verificar documentos requeridos cuando cambia el cargo"""

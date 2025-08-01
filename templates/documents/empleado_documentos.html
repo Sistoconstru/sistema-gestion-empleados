@@ -8,7 +8,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
 {% block title %}Documentos - {{ empleado.nombre_completo }}{% endblock %}
 
 {% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+
 <li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' empleado.pk %}">{{ empleado.nombre_completo }}</a></li>
 <li class="breadcrumb-item active">Documentos</li>
 {% endblock %}
@@ -50,7 +50,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
     <div class="col-md-3">
         <div class="card border-0 bg-warning text-white">
             <div class="card-body text-center">
-                <h5 class="card-title">Pendientes</h5>
+                <h5 class="card-title">Pendientes por Aprobar</h5>
                 <h3 class="mb-0">{{ total_pendientes }}</h3>
             </div>
         </div>
@@ -216,6 +216,40 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
     </div>
 </div>
 
+<!-- Bloque unificado de información y progreso de documentos -->
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h6 class="mb-2">Información de Documentos:</h6>
+                <div class="mb-2">
+                    <span class="me-3">📄 <strong>Total documentos requeridos:</strong> {{ documentos.total }}</span>
+                    <span class="me-3">✅ <strong>Aprobados:</strong> {{ documentos.aprobados }}</span>
+                    <span class="me-3">📂 <strong>Subidos:</strong> {{ documentos_existentes|length }}</span>
+                </div>
+                <div>
+                    <span>👤 <strong>Empleado:</strong> {{ empleado.numero_documento }}</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-2">
+                    <strong>Estado:</strong>
+                    {% if docs_faltantes %}
+                        <span class="badge bg-danger">Incompleto</span>
+                    {% else %}
+                        <span class="badge bg-success">Completo</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>Progreso:</strong>
+                    <span class="badge bg-primary">{{ documentos.progreso }}%</span>
+                    <div class="small text-muted">{{ documentos.aprobados }}/{{ documentos.total }} completos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Acciones Rápidas -->
 <div class="mt-4">
     <div class="card bg-light">
@@ -243,14 +277,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                         {% endif %}
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <h6>Información:</h6>
-                    <small class="text-muted">
-                        <div>📄 Total documentos: {{ documentos_existentes|length }}</div>
-                        <div>✅ Estado: {% if docs_faltantes %}Incompleto{% else %}Completo{% endif %}</div>
-                        <div>👤 Empleado: {{ empleado.numero_documento }}</div>
-                    </small>
-                </div>
+                
             </div>
         </div>
     </div>

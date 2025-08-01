@@ -4,12 +4,14 @@
 
 from django.urls import path
 from django.views.generic import TemplateView
+from .views import dashboard_view
 
 app_name = 'core'
 
 urlpatterns = [
     # Dashboard principal
-    path('', TemplateView.as_view(template_name='core/dashboard.html'), name='dashboard'),
+    #path('', TemplateView.as_view(template_name='core/dashboard.html'), name='dashboard'),
+    path('', dashboard_view, name='dashboard'),
     #path('', login_required(TemplateView.as_view(template_name='core/dashboard.html')), name='dashboard'),
     
     # URLs para implementar después

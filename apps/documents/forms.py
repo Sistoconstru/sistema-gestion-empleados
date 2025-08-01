@@ -1,4 +1,3 @@
-
 # =============================================================================
 # apps/documents/forms.py - FORMULARIOS PARA DOCUMENTOS
 # =============================================================================
@@ -10,6 +9,7 @@ from .models import DocumentoEmpleado, TipoDocumentoEmpleado
 from .validators import DocumentValidator
 from .utils import validate_file_extension, validate_file_size
 
+# Formulario para subir documentos individuales
 class DocumentoEmpleadoForm(forms.ModelForm):
     """Formulario para subir documentos individuales"""
     
@@ -42,6 +42,7 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+        # Recibe empleado y usuario para filtrar tipos de documento y registrar quién sube el archivo
         self.empleado = kwargs.pop('empleado', None)
         self.usuario = kwargs.pop('usuario', None)
         super().__init__(*args, **kwargs)
@@ -68,16 +69,13 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         """Obtener tipos de documentos disponibles para el empleado"""
         # Documentos obligatorios para todos
         obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=True, activo=True)
-        
         # Documentos opcionales
         opcionales = TipoDocumentoEmpleado.objects.filter(obligatorio=False, activo=True)
-        
         # Documentos específicos del cargo actual
         cargo_actual = None
         historial_actual = self.empleado.historialcargo_set.filter(activo=True).first()
         if historial_actual:
             cargo_actual = historial_actual.cargo
-        
         tipos_disponibles = list(obligatorios) + list(opcionales)
         if cargo_actual:
             especificos = list(TipoDocumentoEmpleado.objects.filter(
@@ -112,6 +110,7 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
         tipos_final = tipos_final.exclude(pk__in=docs_existentes)
         return tipos_final.distinct()
+    
     def clean_archivo(self):
         """Validar archivo subido"""
         archivo = self.cleaned_data.get('archivo')
@@ -168,6 +167,7 @@ class DocumentoEmpleadoForm(forms.ModelForm):
             documento.save()
         return documento
 
+# Formulario para subir múltiples documentos a la vez
 class MultipleDocumentUploadForm(forms.Form):
     """Formulario para subir múltiples documentos a la vez"""
     
@@ -237,6 +237,7 @@ class MultipleDocumentUploadForm(forms.Form):
         
         return ','.join(accepts)
 
+# Formulario para aprobar/rechazar documentos
 class DocumentApprovalForm(forms.ModelForm):
     """Formulario para aprobar/rechazar documentos"""
     

@@ -32,6 +32,7 @@ class CapacitacionAdmin(admin.ModelAdmin):
     exclude = ('creada_por',)
     
     def save_model(self, request, obj, form, change):
+        # Asigna el usuario que crea la capacitación solo al crear
         if not change:
             obj.creada_por = request.user
         super().save_model(request, obj, form, change)
@@ -44,6 +45,7 @@ class CapacitacionCargoAdmin(admin.ModelAdmin):
     exclude = ('asignado_por',)
     
     def save_model(self, request, obj, form, change):
+        # Asigna el usuario que realiza la asignación solo al crear
         if not change:
             obj.asignado_por = request.user
         super().save_model(request, obj, form, change)
@@ -80,6 +82,7 @@ class InscripcionCapacitacionAdmin(admin.ModelAdmin):
     exclude = ('inscrito_por',)
     
     def save_model(self, request, obj, form, change):
+        # Asigna el usuario que inscribe solo al crear
         if not change:
             obj.inscrito_por = request.user
         super().save_model(request, obj, form, change)

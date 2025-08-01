@@ -73,13 +73,14 @@ def documento_empleado_detail(request, empleado_pk):
         )
     
     # Organizar documentos por estado
-    docs_por_tipo = {}
-    for doc in documentos_existentes:
-        docs_por_tipo[doc.tipo_documento.codigo] = doc
+    docs_por_tipo = {doc.tipo_documento.codigo: doc for doc in documentos_existentes}
     
-    # Documentos faltantes
+    # Documentos faltantes (obligatorios y de cargo)
     todos_requeridos = list(documentos_obligatorios) + list(documentos_cargo)
     docs_faltantes = [doc for doc in todos_requeridos if doc.codigo not in docs_por_tipo]
+    
+    # Documentos opcionales pendientes
+    docs_opcionales_pendientes = [doc for doc in documentos_opcionales if doc.codigo not in docs_por_tipo]
     
     # Documentos próximos a vencer
     docs_por_vencer = documentos_existentes.filter(
@@ -87,8 +88,19 @@ def documento_empleado_detail(request, empleado_pk):
         fecha_vencimiento__lte=date.today() + timedelta(days=30)
     ).order_by('fecha_vencimiento')
     
+    # --- NUEVO: Progreso considerando opcionales ---
+    todos_documentos = list(documentos_obligatorios) + list(documentos_cargo) + list(documentos_opcionales)
+    total_documentos = len(todos_documentos)
+    aprobados = sum(
+        1 for doc in todos_documentos
+        if doc.codigo in docs_por_tipo and docs_por_tipo[doc.codigo].estado_aprobacion == 'aprobado'
+    )
+    progreso = int((aprobados / total_documentos) * 100) if total_documentos else 0
+    # ------------------------------------------------
+    
     total_aprobados = documentos_existentes.filter(estado_aprobacion='aprobado').count()
     total_pendientes = documentos_existentes.filter(estado_aprobacion='pendiente').count()
+    
     context = {
         'empleado': empleado,
         'documentos_existentes': documentos_existentes,
@@ -101,7 +113,14 @@ def documento_empleado_detail(request, empleado_pk):
         'puede_editar': request.user.is_staff or getattr(request.user, 'empleado', None) == empleado,
         'es_administrador': request.user.is_staff,
         'total_aprobados': total_aprobados,
-        'total_pendientes': total_pendientes
+        'total_pendientes': total_pendientes,
+        'docs_opcionales_pendientes': docs_opcionales_pendientes,
+        # --- Para la barra de progreso ---
+        'documentos': {
+            'progreso': progreso,
+            'aprobados': aprobados,
+            'total': total_documentos,
+        },
     }
     
     return render(request, 'documents/empleado_documentos.html', context)

@@ -14,7 +14,7 @@ from .models import (
     Empleado, HistorialCargo
 )
 
-
+# Registro del modelo TipoDocumento en el admin de Django
 @admin.register(TipoDocumento)
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre', 'longitud_minima', 'longitud_maxima', 'activo')
@@ -22,20 +22,20 @@ class TipoDocumentoAdmin(admin.ModelAdmin):
     search_fields = ('codigo', 'nombre')
     ordering = ('codigo',)
 
-
+# Registro del modelo Escolaridad en el admin de Django
 @admin.register(Escolaridad)
 class EscolaridadAdmin(admin.ModelAdmin):
     list_display = ('orden', 'codigo', 'nivel')
     ordering = ('orden',)
 
-
+# Registro del modelo EstadoEmpleado en el admin de Django
 @admin.register(EstadoEmpleado)
 class EstadoEmpleadoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre', 'permite_acceso_sistema')
     list_filter = ('permite_acceso_sistema',)
     ordering = ('codigo',)
 
-
+# Inline para historial de cargos en el formulario de empleado
 class HistorialCargoInline(admin.TabularInline):
     model = HistorialCargo
     extra = 1
@@ -46,7 +46,7 @@ class HistorialCargoInline(admin.TabularInline):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('cargo__area')
 
-
+# Registro del modelo Empleado en el admin de Django
 @admin.register(Empleado)
 class EmpleadoAdmin(admin.ModelAdmin):
     list_display = (
@@ -65,10 +65,9 @@ class EmpleadoAdmin(admin.ModelAdmin):
         'id', 'fecha_creacion', 'fecha_actualizacion', 'creado_por',
         'get_antiguedad', 'get_cargo_actual', 'get_area_actual',
     )
+    exclude = ('usuario',)  # Excluir campo usuario del formulario
     
-    # EXCLUIR el campo usuario del formulario para que no aparezca
-    exclude = ('usuario',)  # Vamos a usar fieldsets en su lugar
-    
+    # Agrupación de campos en el formulario de edición
     fieldsets = (
         ('Información Básica', {
             'fields': (
@@ -95,14 +94,10 @@ class EmpleadoAdmin(admin.ModelAdmin):
     )
     
     inlines = [HistorialCargoInline]
-    
-    # Configuración de lista
     list_per_page = 25
     list_max_show_all = 100
     date_hierarchy = 'fecha_ingreso'
     ordering = ('apellidos', 'nombres')
-    
-    # Acciones personalizadas
     actions = ['marcar_como_activo', 'marcar_como_inactivo', 'export_to_excel']
     
     def get_queryset(self, request):
@@ -288,7 +283,7 @@ class EmpleadoAdmin(admin.ModelAdmin):
         return response
     export_to_excel.short_description = "Exportar a Excel"
 
-
+# Registro del modelo HistorialCargo en el admin de Django
 @admin.register(HistorialCargo)
 class HistorialCargoAdmin(admin.ModelAdmin):
     list_display = (
@@ -364,7 +359,6 @@ class HistorialCargoAdmin(admin.ModelAdmin):
         if not change:
             obj.creado_por = request.user
         super().save_model(request, obj, form, change)
-
 
 # Personalización del sitio admin
 admin.site.site_header = "RRHH Pro - Administración"

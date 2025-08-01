@@ -7,8 +7,7 @@ from django.db import models
 import uuid
 from django.db import models
 
-# Agregar esta función al inicio del archivo models.py existente:
-
+# Función para generar la ruta de subida personalizada para los archivos de documentos
 def get_upload_path(instance, filename):
     """Generar ruta de subida personalizada para documentos"""
     import os
@@ -26,18 +25,19 @@ def get_upload_path(instance, filename):
     # Estructura: documentos/123456789/CEDULA/CEDULA_20240101_120000.pdf
     return f'documentos/{empleado_doc}/{tipo_doc}/{new_filename}'
 
+# Modelo para los tipos de documentos que pueden subir los empleados
 class TipoDocumentoEmpleado(models.Model):
     """Tipos de documentos que pueden subir los empleados"""
-    codigo = models.CharField(max_length=20, unique=True)
-    nombre = models.CharField(max_length=100, unique=True)
-    descripcion = models.TextField(blank=True)
-    obligatorio = models.BooleanField(default=False)
-    tiene_vencimiento = models.BooleanField(default=False)
-    dias_notificacion_vencimiento = models.IntegerField(default=30)
-    formatos_permitidos = models.CharField(max_length=100, default='PDF,JPG,PNG')
-    tamaño_maximo_mb = models.IntegerField(default=5)
-    requiere_aprobacion = models.BooleanField(default=True)
-    activo = models.BooleanField(default=True)
+    codigo = models.CharField(max_length=20, unique=True)  # Código único del tipo de documento
+    nombre = models.CharField(max_length=100, unique=True)  # Nombre del tipo de documento
+    descripcion = models.TextField(blank=True)  # Descripción opcional
+    obligatorio = models.BooleanField(default=False)  # Si el documento es obligatorio
+    tiene_vencimiento = models.BooleanField(default=False)  # Si el documento tiene vencimiento
+    dias_notificacion_vencimiento = models.IntegerField(default=30)  # Días antes para notificar vencimiento
+    formatos_permitidos = models.CharField(max_length=100, default='PDF,JPG,PNG')  # Formatos permitidos
+    tamaño_maximo_mb = models.IntegerField(default=5)  # Tamaño máximo en MB
+    requiere_aprobacion = models.BooleanField(default=True)  # Si requiere aprobación
+    activo = models.BooleanField(default=True)  # Estado activo/inactivo
     
     class Meta:
         db_table = 'tipos_documento_empleado'
@@ -47,16 +47,16 @@ class TipoDocumentoEmpleado(models.Model):
     def __str__(self):
         return self.nombre
 
-
+# Modelo para la relación entre tipos de documento y cargos
 class TipoDocumentoCargo(models.Model):
     """Relación entre tipos de documento y cargos"""
-    tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)
-    cargo = models.ForeignKey('organizational.Cargo', on_delete=models.CASCADE)
+    tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)  # Tipo de documento asociado
+    cargo = models.ForeignKey('organizational.Cargo', on_delete=models.CASCADE)  # Cargo asociado
     
     class Meta:
         db_table = 'tipos_documento_cargos'
 
-
+# Modelo para los documentos subidos por empleados
 class DocumentoEmpleado(models.Model):
     """Documentos subidos por empleados"""
     ESTADOS_APROBACION = [
@@ -65,22 +65,22 @@ class DocumentoEmpleado(models.Model):
         ('rechazado', 'Rechazado'),
     ]
     
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)
-    tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)
-    nombre_archivo = models.CharField(max_length=255)
-    archivo = models.FileField(upload_to=get_upload_path)
-    fecha_documento = models.DateField(null=True, blank=True)
-    fecha_vencimiento = models.DateField(null=True, blank=True)
-    estado_aprobacion = models.CharField(max_length=20, choices=ESTADOS_APROBACION, default='pendiente')
-    observaciones = models.TextField(blank=True)
-    fecha_carga = models.DateTimeField(auto_now_add=True)
-    fecha_aprobacion = models.DateTimeField(null=True, blank=True)
-    cargado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='documentos_cargados')
-    aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='documentos_aprobados')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Identificador único
+    empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)  # Empleado asociado
+    tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)  # Tipo de documento
+    nombre_archivo = models.CharField(max_length=255)  # Nombre del archivo
+    archivo = models.FileField(upload_to=get_upload_path)  # Archivo subido
+    fecha_documento = models.DateField(null=True, blank=True)  # Fecha del documento
+    fecha_vencimiento = models.DateField(null=True, blank=True)  # Fecha de vencimiento
+    estado_aprobacion = models.CharField(max_length=20, choices=ESTADOS_APROBACION, default='pendiente')  # Estado de aprobación
+    observaciones = models.TextField(blank=True)  # Observaciones opcionales
+    fecha_carga = models.DateTimeField(auto_now_add=True)  # Fecha de carga
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True)  # Fecha de aprobación
+    cargado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='documentos_cargados')  # Usuario que cargó el documento
+    aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='documentos_aprobados')  # Usuario que aprobó el documento
     
     class Meta:
         db_table = 'documentos_empleado'
-        unique_together = ['empleado', 'tipo_documento']
+        unique_together = ['empleado', 'tipo_documento']  # Un documento por tipo y empleado
         verbose_name = 'Documento de Empleado'
         verbose_name_plural = 'Documentos de Empleado'

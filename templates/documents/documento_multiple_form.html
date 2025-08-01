@@ -1,10 +1,11 @@
-
 <!-- =============================================================================
 templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & DROP
 ============================================================================= -->
 
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
+{% load document_filters %}
 
 {% block title %}{{ titulo }}{% endblock %}
 
@@ -98,7 +99,7 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                                                     </div>
                                                 </div>
                                                 
-                                                {% with 'vencimiento_'|add:doc_code as venc_field %}
+                                                {% with venc_field='vencimiento_'|add:doc_code %}
                                                     {% if form|key:venc_field %}
                                                     <div class="col-md-4">
                                                         <div class="mb-3">

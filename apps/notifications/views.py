@@ -16,6 +16,7 @@ class NotificacionesListView(LoginRequiredMixin, ListView):
     paginate_by = 20
     
     def get_queryset(self):
+        # Filtra las notificaciones del usuario actual, ordenadas por fecha de creación descendente
         return Notificacion.objects.filter(
             usuario=self.request.user
         ).order_by('-fecha_creacion')
@@ -25,6 +26,7 @@ class NotificacionesListView(LoginRequiredMixin, ListView):
 def marcar_leida(request, notification_id):
     """Marcar notificación como leída"""
     if request.method == 'POST':
+        # Busca la notificación por ID y usuario
         notificacion = get_object_or_404(
             Notificacion, 
             id=notification_id, 
@@ -43,6 +45,7 @@ def marcar_leida(request, notification_id):
 def marcar_todas_leidas(request):
     """Marcar todas las notificaciones como leídas"""
     if request.method == 'POST':
+        # Actualiza todas las notificaciones no leídas del usuario
         Notificacion.objects.filter(
             usuario=request.user,
             leida=False

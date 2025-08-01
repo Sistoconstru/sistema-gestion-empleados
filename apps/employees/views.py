@@ -2,7 +2,6 @@
 # apps/employees/views.py - VISTAS CORREGIDAS DE EMPLEADOS
 # =============================================================================
 
-
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,7 +11,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, Count, Avg, Prefetch
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib.auth import get_user_model
@@ -26,6 +25,16 @@ from .forms import EmpleadoForm, BusquedaEmpleadoForm
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
 from apps.evaluations.models import AsignacionEvaluacion
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView
+from datetime import date, timedelta
+# Modelos necesarios
+from apps.documents.models import DocumentoEmpleado, TipoDocumentoEmpleado
+from apps.recognition.models import HistorialPuntos, InsigniaEmpleado
+
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -592,3 +601,497 @@ def export_historial_pdf(empleado, historial_cargos):
         
     except Exception as e:
         return HttpResponse(f"Error: {e}", content_type="text/plain", status=500)
+    
+
+class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
+    """Vista del perfil personal del empleado - Dashboard personal"""
+    model = Empleado
+    template_name = 'employees/empleado_perfil.html'
+    context_object_name = 'empleado'
+    
+    def get_object(self):
+        """Obtener el empleado asociado al usuario logueado o por PK"""
+        # Si se pasa pk en la URL, usar ese empleado
+        if 'pk' in self.kwargs:
+            return get_object_or_404(Empleado, pk=self.kwargs['pk'])
+        
+        # Si no hay pk, buscar empleado del usuario logueado
+        try:
+            empleado = Empleado.objects.get(usuario=self.request.user)
+            return empleado
+        except Empleado.DoesNotExist:
+            # Si no hay empleado asociado, mostrar error 404
+            raise Http404("No se encontró un perfil de empleado asociado a tu usuario.")
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Verificar permisos antes de mostrar la vista"""
+        try:
+            empleado = self.get_object()
+            
+            # Verificar si el usuario puede ver este perfil
+            if empleado.usuario != request.user and not request.user.is_staff:
+                messages.error(
+                    request, 
+                    'No tienes permisos para ver este perfil.'
+                )
+                return redirect('core:dashboard')
+            
+            return super().dispatch(request, *args, **kwargs)
+            
+        except Http404:
+            messages.error(
+                request, 
+                'No se encontró un perfil de empleado asociado a tu usuario. Contacta al administrador.'
+            )
+            return redirect('core:dashboard')
+        except Exception as e:
+            logger.error(f"Error en dispatch de EmpleadoPerfilView: {e}")
+            messages.error(request, 'Error al acceder al perfil.')
+            return redirect('core:dashboard')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empleado = self.get_object()
+        
+        # === INFORMACIÓN BÁSICA ===
+        context.update(self.get_informacion_basica(empleado))
+        
+        # === ESTADO DE DOCUMENTOS ===
+        context.update(self.get_estado_documentos(empleado))
+        
+        # === CAPACITACIONES ===
+        context.update(self.get_capacitaciones(empleado))
+        
+        # === EVALUACIONES ===
+        context.update(self.get_evaluaciones(empleado))
+        
+        # === SISTEMA DE PUNTOS ===
+        context.update(self.get_sistema_puntos(empleado))
+        
+        # === NOTIFICACIONES RECIENTES ===
+        context.update(self.get_notificaciones(empleado))
+        
+        # === ACTIVIDAD RECIENTE ===
+        context.update(self.get_actividad_reciente(empleado))
+        
+        return context
+    
+    def get_informacion_basica(self, empleado):
+        """Obtener información básica del empleado"""
+        # Cargo actual
+        cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
+        
+        # Días en la empresa
+        dias_empresa = (date.today() - empleado.fecha_ingreso).days
+        
+        # Tiempo en cargo actual
+        tiempo_cargo = None
+        if cargo_actual:
+            tiempo_cargo = (date.today() - cargo_actual.fecha_inicio).days
+        
+        return {
+            'cargo_actual': cargo_actual,
+            'dias_empresa': dias_empresa,
+            'tiempo_cargo': tiempo_cargo,
+            'anos_empresa': dias_empresa // 365,
+        }
+    
+    def get_estado_documentos(self, empleado):
+        """Obtener estado de documentos del empleado"""
+        try:
+            # Importar aquí para evitar errores si no existe el módulo
+            from apps.documents.models import DocumentoEmpleado, TipoDocumentoEmpleado
+            
+            # Documentos del empleado
+            documentos = DocumentoEmpleado.objects.filter(empleado=empleado)
+            
+            # Tipos de documentos obligatorios
+            tipos_obligatorios = TipoDocumentoEmpleado.objects.filter(
+                obligatorio=True, 
+                activo=True
+            )
+            
+            # Documentos aprobados
+            docs_aprobados = documentos.filter(estado_aprobacion='aprobado')
+            
+            # Documentos pendientes
+            docs_pendientes = documentos.filter(estado_aprobacion='pendiente')
+            
+            # Documentos próximos a vencer (30 días)
+            fecha_limite = date.today() + timedelta(days=30)
+            docs_por_vencer = docs_aprobados.filter(
+                fecha_vencimiento__isnull=False,
+                fecha_vencimiento__lte=fecha_limite,
+                fecha_vencimiento__gte=date.today()
+            )
+            
+            # Documentos vencidos
+            docs_vencidos = docs_aprobados.filter(
+                fecha_vencimiento__isnull=False,
+                fecha_vencimiento__lt=date.today()
+            )
+            
+            # Documentos faltantes (obligatorios no subidos)
+            tipos_subidos = documentos.values_list('tipo_documento_id', flat=True)
+            tipos_faltantes = tipos_obligatorios.exclude(id__in=tipos_subidos)
+            
+            # Calcular progreso de documentación
+            total_obligatorios = tipos_obligatorios.count()
+            aprobados_obligatorios = docs_aprobados.filter(
+                tipo_documento__in=tipos_obligatorios
+            ).count()
+            
+            progreso_documentos = 0
+            if total_obligatorios > 0:
+                progreso_documentos = round((aprobados_obligatorios / total_obligatorios) * 100)
+            
+            return {
+                'documentos': {
+                    'total': documentos.count(),
+                    'aprobados': docs_aprobados.count(),
+                    'pendientes': docs_pendientes.count(),
+                    'por_vencer': docs_por_vencer.count(),
+                    'vencidos': docs_vencidos.count(),
+                    'faltantes': tipos_faltantes.count(),
+                    'progreso': progreso_documentos,
+                    'lista_por_vencer': docs_por_vencer[:5],  # Primeros 5
+                    'lista_vencidos': docs_vencidos[:5],
+                    'lista_faltantes': tipos_faltantes[:5],
+                    'documentacion_completa': tipos_faltantes.count() == 0 and docs_pendientes.count() == 0
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de documentos no disponible")
+            return {
+                'documentos': {
+                    'total': 0, 'aprobados': 0, 'pendientes': 0,
+                    'por_vencer': 0, 'vencidos': 0, 'faltantes': 0,
+                    'progreso': 0, 'documentacion_completa': True,
+                    'lista_por_vencer': [], 'lista_vencidos': [], 'lista_faltantes': []
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo estado de documentos: {e}")
+            return {
+                'documentos': {
+                    'total': 0, 'aprobados': 0, 'pendientes': 0,
+                    'por_vencer': 0, 'vencidos': 0, 'faltantes': 0,
+                    'progreso': 0, 'documentacion_completa': False,
+                    'lista_por_vencer': [], 'lista_vencidos': [], 'lista_faltantes': []
+                }
+            }
+    
+    def get_capacitaciones(self, empleado):
+        """Obtener estado de capacitaciones del empleado"""
+        try:
+            from apps.training.models import InscripcionCapacitacion, Capacitacion
+            
+            # Capacitaciones asignadas
+            inscripciones = InscripcionCapacitacion.objects.filter(
+                empleado=empleado
+            ).select_related('capacitacion')
+            
+            # Estados
+            completadas = inscripciones.filter(completada=True)
+            en_progreso = inscripciones.filter(
+                completada=False,
+                fecha_inicio__isnull=False
+            )
+            pendientes = inscripciones.filter(
+                completada=False,
+                fecha_inicio__isnull=True
+            )
+            
+            # Próximas a vencer (si tienen fecha límite)
+            fecha_limite = date.today() + timedelta(days=7)
+            proximas_vencer = en_progreso.filter(
+                fecha_limite__isnull=False,
+                fecha_limite__lte=fecha_limite
+            )
+            
+            # Progreso general
+            total_capacitaciones = inscripciones.count()
+            capacitaciones_completadas = completadas.count()
+            
+            progreso_capacitaciones = 0
+            if total_capacitaciones > 0:
+                progreso_capacitaciones = round(
+                    (capacitaciones_completadas / total_capacitaciones) * 100
+                )
+            
+            return {
+                'capacitaciones': {
+                    'total': total_capacitaciones,
+                    'completadas': capacitaciones_completadas,
+                    'en_progreso': en_progreso.count(),
+                    'pendientes': pendientes.count(),
+                    'proximas_vencer': proximas_vencer.count(),
+                    'progreso': progreso_capacitaciones,
+                    'lista_pendientes': pendientes[:5],
+                    'lista_en_progreso': en_progreso[:5],
+                    'lista_proximas_vencer': proximas_vencer[:3],
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de capacitaciones no disponible")
+            return {
+                'capacitaciones': {
+                    'total': 0, 'completadas': 0, 'en_progreso': 0,
+                    'pendientes': 0, 'progreso': 100,
+                    'lista_pendientes': [], 'lista_en_progreso': [], 'lista_proximas_vencer': []
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo capacitaciones: {e}")
+            return {
+                'capacitaciones': {
+                    'total': 0, 'completadas': 0, 'en_progreso': 0,
+                    'pendientes': 0, 'progreso': 0,
+                    'lista_pendientes': [], 'lista_en_progreso': [], 'lista_proximas_vencer': []
+                }
+            }
+    
+    def get_evaluaciones(self, empleado):
+        """Obtener estado de evaluaciones del empleado"""
+        try:
+            from apps.evaluations.models import AsignacionEvaluacion
+            
+            # Evaluaciones asignadas
+            evaluaciones = AsignacionEvaluacion.objects.filter(
+                empleado_evaluado=empleado
+            ).select_related('evaluacion', 'evaluador')
+            
+            # Pendientes
+            pendientes = evaluaciones.filter(
+                completada=False,
+                fecha_limite__gte=date.today()
+            )
+            
+            # Vencidas
+            vencidas = evaluaciones.filter(
+                completada=False,
+                fecha_limite__lt=date.today()
+            )
+            
+            # Completadas este año
+            completadas_año = evaluaciones.filter(
+                completada=True,
+                fecha_completado__year=date.today().year
+            )
+            
+            # Próximas (siguientes 15 días)
+            fecha_limite = date.today() + timedelta(days=15)
+            proximas = pendientes.filter(fecha_limite__lte=fecha_limite)
+            
+            return {
+                'evaluaciones': {
+                    'pendientes': pendientes.count(),
+                    'vencidas': vencidas.count(),
+                    'completadas_año': completadas_año.count(),
+                    'proximas': proximas.count(),
+                    'lista_pendientes': pendientes[:5],
+                    'lista_proximas': proximas[:3],
+                    'ultima_evaluacion': evaluaciones.filter(completada=True).order_by('-fecha_completado').first()
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de evaluaciones no disponible")
+            return {
+                'evaluaciones': {
+                    'pendientes': 0, 'vencidas': 0, 'completadas_año': 0,
+                    'proximas': 0, 'lista_pendientes': [], 'lista_proximas': [],
+                    'ultima_evaluacion': None
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo evaluaciones: {e}")
+            return {
+                'evaluaciones': {
+                    'pendientes': 0, 'vencidas': 0, 'completadas_año': 0,
+                    'proximas': 0, 'lista_pendientes': [], 'lista_proximas': [],
+                    'ultima_evaluacion': None
+                }
+            }
+    
+    def get_sistema_puntos(self, empleado):
+        """Obtener información del sistema de puntos y reconocimientos"""
+        try:
+            from apps.recognition.models import PuntoEmpleado, InsigniaEmpleado
+            from django.db import models
+            
+            # Puntos totales
+            puntos_totales = PuntoEmpleado.objects.filter(
+                empleado=empleado
+            ).aggregate(
+                total=models.Sum('puntos')
+            )['total'] or 0
+            
+            # Puntos este mes
+            inicio_mes = date.today().replace(day=1)
+            puntos_mes = PuntoEmpleado.objects.filter(
+                empleado=empleado,
+                fecha_obtencion__gte=inicio_mes
+            ).aggregate(
+                total=models.Sum('puntos')
+            )['total'] or 0
+            
+            # Insignias obtenidas
+            insignias = InsigniaEmpleado.objects.filter(
+                empleado=empleado
+            ).select_related('insignia')
+            
+            # Posición en ranking (aproximada)
+            empleados_mas_puntos = PuntoEmpleado.objects.values('empleado').annotate(
+                total_puntos=models.Sum('puntos')
+            ).filter(
+                total_puntos__gt=puntos_totales
+            ).count()
+            
+            posicion_ranking = empleados_mas_puntos + 1 if puntos_totales > 0 else 0
+            
+            return {
+                'puntos': {
+                    'total': puntos_totales,
+                    'este_mes': puntos_mes,
+                    'insignias': insignias.count(),
+                    'lista_insignias': insignias[:10],
+                    'ranking_posicion': posicion_ranking,
+                    'puntos_disponibles': puntos_totales  # Para canje
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de reconocimientos no disponible")
+            return {
+                'puntos': {
+                    'total': 0, 'este_mes': 0, 'insignias': 0,
+                    'ranking_posicion': 0, 'lista_insignias': [],
+                    'puntos_disponibles': 0
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo sistema de puntos: {e}")
+            return {
+                'puntos': {
+                    'total': 0, 'este_mes': 0, 'insignias': 0,
+                    'ranking_posicion': 0, 'lista_insignias': [],
+                    'puntos_disponibles': 0
+                }
+            }
+    
+    def get_notificaciones(self, empleado):
+        """Obtener notificaciones recientes del empleado"""
+        try:
+            from apps.notifications.models import NotificacionEmpleado
+            
+            # Notificaciones recientes (últimos 7 días)
+            fecha_limite = timezone.now() - timedelta(days=7)
+            notificaciones = NotificacionEmpleado.objects.filter(
+                empleado=empleado,
+                fecha_creacion__gte=fecha_limite
+            ).order_by('-fecha_creacion')[:10]
+            
+            # No leídas
+            no_leidas = NotificacionEmpleado.objects.filter(
+                empleado=empleado,
+                leida=False
+            ).count()
+            
+            return {
+                'notificaciones': {
+                    'recientes': notificaciones,
+                    'no_leidas': no_leidas,
+                    'total_recientes': notificaciones.count()
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de notificaciones no disponible")
+            return {
+                'notificaciones': {
+                    'recientes': [], 'no_leidas': 0, 'total_recientes': 0
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo notificaciones: {e}")
+            return {
+                'notificaciones': {
+                    'recientes': [], 'no_leidas': 0, 'total_recientes': 0
+                }
+            }
+    
+    def get_actividad_reciente(self, empleado):
+        """Obtener actividad reciente del empleado"""
+        actividades = []
+        
+        try:
+            # Documentos subidos recientemente
+            try:
+                from apps.documents.models import DocumentoEmpleado
+                
+                docs_recientes = DocumentoEmpleado.objects.filter(
+                    empleado=empleado,
+                    fecha_subida__gte=timezone.now() - timedelta(days=15)
+                ).order_by('-fecha_subida')[:3]
+                
+                for doc in docs_recientes:
+                    actividades.append({
+                        'tipo': 'documento',
+                        'icono': 'fas fa-file-upload',
+                        'titulo': f'Documento subido: {doc.tipo_documento.nombre}',
+                        'fecha': doc.fecha_subida,
+                        'estado': doc.estado_aprobacion
+                    })
+            except ImportError:
+                pass
+            
+            # Capacitaciones completadas recientemente
+            try:
+                from apps.training.models import InscripcionCapacitacion
+                
+                caps_completadas = InscripcionCapacitacion.objects.filter(
+                    empleado=empleado,
+                    completada=True,
+                    fecha_completado__gte=timezone.now() - timedelta(days=15)
+                ).order_by('-fecha_completado')[:3]
+                
+                for cap in caps_completadas:
+                    actividades.append({
+                        'tipo': 'capacitacion',
+                        'icono': 'fas fa-graduation-cap',
+                        'titulo': f'Capacitación completada: {cap.capacitacion.titulo}',
+                        'fecha': cap.fecha_completado,
+                        'estado': 'completada'
+                    })
+            except ImportError:
+                pass
+            
+            # Ordenar por fecha
+            actividades.sort(key=lambda x: x['fecha'], reverse=True)
+            
+            return {
+                'actividades_recientes': actividades[:10]
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo actividad reciente: {e}")
+            return {
+                'actividades_recientes': []
+            }
+
+
+@login_required
+def empleado_perfil_redirect(request):
+    """Vista para redirigir al perfil del empleado logueado"""
+    try:
+        empleado = get_object_or_404(Empleado, usuario=request.user)
+        return redirect('employees:empleado_perfil_detail', pk=empleado.pk)
+    except Empleado.DoesNotExist:
+        messages.error(
+            request, 
+            'No se encontró un perfil de empleado asociado a tu usuario. Contacta al administrador.'
+        )
+        return redirect('core:dashboard')
+    except Exception as e:
+        logger.error(f"Error en empleado_perfil_redirect: {e}")
+        messages.error(request, 'Error al acceder al perfil del empleado.')
+        return redirect('core:dashboard')
+# Agregar import para agregaciones
+from django.db import models

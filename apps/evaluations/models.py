@@ -1,4 +1,3 @@
-
 # =============================================================================
 # apps/evaluations/models.py
 # =============================================================================
@@ -6,6 +5,7 @@
 import uuid
 from django.db import models
 
+# ===================== MODELOS DE PREGUNTAS Y VALORACIONES =====================
 
 class TipoPregunta(models.Model):
     """Tipos de preguntas para evaluaciones y valoraciones"""
@@ -22,7 +22,6 @@ class TipoPregunta(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class Valoracion(models.Model):
     """Valoraciones/exámenes de capacitaciones"""
@@ -47,7 +46,6 @@ class Valoracion(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class PreguntaValoracion(models.Model):
     """Preguntas de una valoración"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -66,7 +64,6 @@ class PreguntaValoracion(models.Model):
         verbose_name = 'Pregunta de Valoración'
         verbose_name_plural = 'Preguntas de Valoración'
 
-
 class OpcionRespuesta(models.Model):
     """Opciones de respuesta para preguntas"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -81,7 +78,6 @@ class OpcionRespuesta(models.Model):
         unique_together = ['pregunta', 'orden']
         verbose_name = 'Opción de Respuesta'
         verbose_name_plural = 'Opciones de Respuesta'
-
 
 class IntentoValoracion(models.Model):
     """Intentos de valoración por parte de empleados"""
@@ -103,7 +99,6 @@ class IntentoValoracion(models.Model):
         verbose_name = 'Intento de Valoración'
         verbose_name_plural = 'Intentos de Valoración'
 
-
 class RespuestaValoracion(models.Model):
     """Respuestas de empleados en valoraciones"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -121,7 +116,6 @@ class RespuestaValoracion(models.Model):
         verbose_name = 'Respuesta de Valoración'
         verbose_name_plural = 'Respuestas de Valoración'
 
-
 class CertificadoCapacitacion(models.Model):
     """Certificados de capacitación"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -137,8 +131,7 @@ class CertificadoCapacitacion(models.Model):
         verbose_name = 'Certificado de Capacitación'
         verbose_name_plural = 'Certificados de Capacitación'
 
-
-# Evaluaciones de Desempeño
+# ===================== EVALUACIONES DE DESEMPEÑO =====================
 
 class TipoEvaluacion(models.Model):
     """Tipos de evaluación de desempeño"""
@@ -157,7 +150,6 @@ class TipoEvaluacion(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class EvaluacionDesempeño(models.Model):
     """Evaluaciones de desempeño"""
@@ -181,7 +173,6 @@ class EvaluacionDesempeño(models.Model):
     def __str__(self):
         return self.nombre
 
-
 class EvaluacionCargo(models.Model):
     """Relación entre evaluaciones y cargos"""
     evaluacion = models.ForeignKey(EvaluacionDesempeño, on_delete=models.CASCADE)
@@ -192,7 +183,6 @@ class EvaluacionCargo(models.Model):
     class Meta:
         db_table = 'evaluaciones_cargos'
         unique_together = ['evaluacion', 'cargo']
-
 
 class PreguntaEvaluacion(models.Model):
     """Preguntas de evaluación de desempeño"""
@@ -213,7 +203,6 @@ class PreguntaEvaluacion(models.Model):
         verbose_name = 'Pregunta de Evaluación'
         verbose_name_plural = 'Preguntas de Evaluación'
 
-
 class OpcionEvaluacion(models.Model):
     """Opciones de respuesta para evaluaciones"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -228,7 +217,6 @@ class OpcionEvaluacion(models.Model):
         unique_together = ['pregunta', 'orden']
         verbose_name = 'Opción de Evaluación'
         verbose_name_plural = 'Opciones de Evaluación'
-
 
 class AsignacionEvaluacion(models.Model):
     """Asignaciones de evaluaciones a empleados"""
@@ -260,7 +248,6 @@ class AsignacionEvaluacion(models.Model):
         verbose_name = 'Asignación de Evaluación'
         verbose_name_plural = 'Asignaciones de Evaluación'
 
-
 class RespuestaEvaluacion(models.Model):
     """Respuestas de evaluaciones de desempeño"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -277,7 +264,6 @@ class RespuestaEvaluacion(models.Model):
         unique_together = ['asignacion', 'pregunta']
         verbose_name = 'Respuesta de Evaluación'
         verbose_name_plural = 'Respuestas de Evaluación'
-
 
 class ResultadoEvaluacion(models.Model):
     """Resultados consolidados de evaluaciones"""
@@ -306,7 +292,6 @@ class ResultadoEvaluacion(models.Model):
         db_table = 'resultados_evaluacion'
         verbose_name = 'Resultado de Evaluación'
         verbose_name_plural = 'Resultados de Evaluación'
-
 
 class PlanAccion(models.Model):
     """Planes de acción derivados de evaluaciones"""

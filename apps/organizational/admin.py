@@ -29,6 +29,7 @@ class AreaEmpresaAdmin(admin.ModelAdmin):
     search_fields = ('codigo', 'nombre')
     
     def get_queryset(self, request):
+        # Optimiza la consulta incluyendo relaciones
         return super().get_queryset(request).select_related('area_padre', 'responsable')
 
 @admin.register(Cargo)
@@ -57,5 +58,6 @@ class CargoAdmin(admin.ModelAdmin):
     )
     
     def get_queryset(self, request):
+        # Optimiza la consulta incluyendo relaciones
         return super().get_queryset(request).select_related('area', 'rol_automatico')
 

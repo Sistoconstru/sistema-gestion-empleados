@@ -22,8 +22,10 @@ from django.views.generic import RedirectView
 from django.contrib.auth import views as auth_views
 from apps.authentication.views import EmpleadoLoginView
 from django.urls import reverse_lazy
+from apps.core.views import dashboard_view
 
 urlpatterns = [
+    
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/dashboard/', permanent=False)),
     path('login/', EmpleadoLoginView.as_view(), name='login'),

@@ -1,4 +1,3 @@
-
 # =============================================================================
 # apps/training/urls.py
 # =============================================================================
@@ -6,13 +5,14 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from . import views
+from .views import MisCertificadosView
 
 app_name = 'training'
 
 urlpatterns = [
     # URLs básicas
     path('', TemplateView.as_view(template_name='training/index.html'), name='index'),
-    path('', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
+    #path('', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
     path('catalogo/', views.CatalogoCapacitacionesView.as_view(), name='catalogo'),
     path('capacitacion/<uuid:pk>/', views.CapacitacionDetailView.as_view(), name='capacitacion_detail'),
     path('capacitacion/<uuid:pk>/inscribir/', views.inscribir_capacitacion, name='inscribir_capacitacion'),
@@ -24,10 +24,14 @@ urlpatterns = [
     # path('<uuid:pk>/', views.CapacitacionDetailView.as_view(), name='capacitacion_detail'),
     
     # Inscripciones
-    # path('mis-capacitaciones/', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
+    path('mis-capacitaciones/', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
     # path('<uuid:pk>/inscribir/', views.InscribirCapacitacionView.as_view(), name='inscribir_capacitacion'),
     
     # Módulos y lecciones
     # path('<uuid:pk>/modulos/', views.ModuloListView.as_view(), name='modulo_list'),
     # path('modulo/<uuid:pk>/lecciones/', views.LeccionListView.as_view(), name='leccion_list'),
+    path('player/<uuid:pk>/', views.PlayerView.as_view(), name='player'),
+
+    # Certificados
+    path('mis-certificados/', MisCertificadosView.as_view(), name='mis_certificados'),
 ]

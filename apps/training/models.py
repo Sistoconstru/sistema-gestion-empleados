@@ -9,7 +9,6 @@ import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-
 class TipoCapacitacion(models.Model):
     """Tipos de capacitación"""
     codigo = models.CharField(max_length=20, unique=True)
@@ -25,7 +24,6 @@ class TipoCapacitacion(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class ProveedorExterno(models.Model):
     """Proveedores externos de capacitación"""
@@ -45,7 +43,6 @@ class ProveedorExterno(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class Capacitacion(models.Model):
     """Capacitaciones del sistema"""
@@ -167,7 +164,6 @@ class Capacitacion(models.Model):
         else:
             return f"${self.costo_inscripcion:,.0f} COP"
 
-
 class CapacitacionPrerequisito(models.Model):
     """Prerequisitos entre capacitaciones"""
     capacitacion = models.ForeignKey(Capacitacion, on_delete=models.CASCADE, related_name='prerequisitos')
@@ -179,7 +175,6 @@ class CapacitacionPrerequisito(models.Model):
         unique_together = ['capacitacion', 'capacitacion_prerequisito']
         verbose_name = 'Prerequisito de Capacitación'
         verbose_name_plural = 'Prerequisitos de Capacitación'
-
 
 class CapacitacionCargo(models.Model):
     """Relación entre capacitaciones y cargos - ACTUALIZADO"""
@@ -208,7 +203,6 @@ class CapacitacionCargo(models.Model):
     def get_prioridad_display(self):
         prioridades = {1: 'Alta', 2: 'Media', 3: 'Baja'}
         return prioridades.get(self.prioridad, 'Media')
-
 
 class ModuloCapacitacion(models.Model):
     """Módulos de una capacitación - MEJORADO"""
@@ -247,7 +241,6 @@ class ModuloCapacitacion(models.Model):
     
     def __str__(self):
         return f"{self.capacitacion.nombre} - {self.nombre}"
-
 
 class Leccion(models.Model):
     """Lecciones de un módulo - MEJORADO"""
@@ -289,7 +282,6 @@ class Leccion(models.Model):
     def __str__(self):
         return f"{self.modulo.nombre} - {self.nombre}"
 
-
 class TipoContenido(models.Model):
     """Tipos de contenido para lecciones - MEJORADO"""
     codigo = models.CharField(max_length=10, unique=True)
@@ -310,7 +302,6 @@ class TipoContenido(models.Model):
     
     def __str__(self):
         return self.nombre
-
 
 class ContenidoLeccion(models.Model):
     """Contenidos de una lección - MEJORADO"""
@@ -351,7 +342,6 @@ class ContenidoLeccion(models.Model):
     
     def __str__(self):
         return f"{self.leccion.nombre} - {self.nombre}"
-
 
 class InscripcionCapacitacion(models.Model):
     """Inscripciones de empleados a capacitaciones - MEJORADO"""
@@ -428,7 +418,6 @@ class InscripcionCapacitacion(models.Model):
         }
         return colores.get(self.estado, 'secondary')
 
-
 class ProgresoCapacitacion(models.Model):
     """Progreso de empleados en capacitaciones - MEJORADO"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -464,8 +453,5 @@ class ProgresoCapacitacion(models.Model):
         unique_together = ['inscripcion', 'contenido']
         verbose_name = 'Progreso de Capacitación'
         verbose_name_plural = 'Progresos de Capacitación'
-    
-    def __str__(self):
-        return f"{self.inscripcion.empleado.nombre_completo} - {self.contenido.nombre}"
 
 

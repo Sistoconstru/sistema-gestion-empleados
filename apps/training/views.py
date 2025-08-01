@@ -3,7 +3,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, Count, Avg
@@ -24,6 +24,7 @@ class CapacitacionListView(LoginRequiredMixin, ListView):
     paginate_by = 20
     
     def get_queryset(self):
+        # Lista todas las capacitaciones activas, ordenadas por fecha de creación
         return Capacitacion.objects.select_related('tipo').filter(activa=True).order_by('-fecha_creacion')
 
 class MisCapacitacionesView(LoginRequiredMixin, ListView):
@@ -34,6 +35,7 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
     paginate_by = 12
     
     def get_queryset(self):
+        # Obtiene las inscripciones del empleado actual
         try:
             empleado = Empleado.objects.get(usuario=self.request.user)
             return InscripcionCapacitacion.objects.filter(
@@ -46,7 +48,7 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         inscripciones = self.get_queryset()
         
-        # Estadísticas
+        # Estadísticas del empleado
         context.update({
             'completadas': inscripciones.filter(estado='aprobado').count(),
             'en_progreso': inscripciones.filter(estado='en_progreso').count(),
@@ -72,7 +74,7 @@ class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
             tipo__codigo__in=['INTERNA_LIBRE', 'EXTERNA_LIBRE']
         ).select_related('tipo')
         
-        # Aplicar filtros
+        # Aplicar filtros de búsqueda
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
@@ -95,7 +97,7 @@ class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Marcar capacitaciones ya inscritas
+        # Marcar capacitaciones ya inscritas del empleado
         try:
             empleado = Empleado.objects.get(usuario=self.request.user)
             inscripciones_ids = InscripcionCapacitacion.objects.filter(
@@ -177,3 +179,9 @@ def inscribir_capacitacion(request, pk):
         messages.success(request, 'Te has inscrito exitosamente. ¡Puedes comenzar cuando gustes!')
     
     return redirect('training:capacitacion_detail', pk=pk)
+
+class PlayerView(TemplateView):
+    template_name = 'training/player.html'
+
+class MisCertificadosView(TemplateView):
+    template_name = 'training/mis_certificados.html'

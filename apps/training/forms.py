@@ -45,6 +45,7 @@ class CapacitacionForm(forms.ModelForm):
         cleaned_data = super().clean()
         tipo = cleaned_data.get('tipo')
         
+        # Validación para capacitaciones externas
         if tipo and tipo.codigo == 'EXTERNA_LIBRE':
             if not cleaned_data.get('proveedor_externo'):
                 raise forms.ValidationError({
