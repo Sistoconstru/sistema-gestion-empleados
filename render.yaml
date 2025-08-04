@@ -2,7 +2,7 @@ services:
   - type: web
     name: sighu-app
     env: python
-    buildCommand: pip install -r requirements.txt && python manage.py migrate --settings=config.settings.production && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='sisto').exists() or User.objects.create_superuser('sisto', 'admin@example.com', '123456')" | python manage.py shell --settings=config.settings.production
+    buildCommand: pip install -r requirements.txt && python manage.py migrate --settings=config.settings.production && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='sisto').exists() or User.objects.create_superuser('sisto', 'admin@example.com', '123456')" | python manage.py shell --settings=config.settings.production && python manage.py collectstatic --noinput --settings=config.settings.production
     startCommand: gunicorn config.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
