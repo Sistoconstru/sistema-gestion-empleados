@@ -16154,3 +16154,23 @@ INFO 2025-08-01 15:41:08,817 autoreload 11800 16400 C:\SIGHU\sighu\sistema-gesti
 INFO 2025-08-01 15:41:09,443 autoreload 21556 16856 Watching for file changes with StatReloader
 INFO 2025-08-01 15:41:30,690 autoreload 21556 16856 C:\SIGHU\sighu\sistema-gestion-empleados\apps\documents\views.py changed, reloading.
 INFO 2025-08-01 15:41:31,419 autoreload 11304 23440 Watching for file changes with StatReloader
+INFO 2025-08-04 08:46:23,486 autoreload 1892 19240 Watching for file changes with StatReloader
+INFO 2025-08-04 08:46:30,223 basehttp 1892 19164 "GET / HTTP/1.1" 302 0
+INFO 2025-08-04 08:46:30,266 basehttp 1892 19164 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-04 08:46:30,335 basehttp 1892 19164 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-08-04 08:46:30,432 basehttp 1892 19164 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-08-04 08:46:30,495 log 1892 19164 Not Found: /favicon.ico
+WARNING 2025-08-04 08:46:30,495 basehttp 1892 19164 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-04 08:46:35,401 basehttp 1892 23488 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-04 08:46:35,462 basehttp 1892 23488 "GET /dashboard/ HTTP/1.1" 200 14401
+INFO 2025-08-04 08:46:35,485 basehttp 1892 23488 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-08-04 08:46:42,642 basehttp 1892 23488 "GET /empleados/ HTTP/1.1" 200 98991
+INFO 2025-08-04 08:47:15,297 basehttp 1892 23488 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 35612
+INFO 2025-08-04 08:47:40,557 basehttp 1892 23488 "GET /dashboard/ HTTP/1.1" 200 14401
+INFO 2025-08-04 08:47:57,568 basehttp 1892 23488 "GET /empleados/ HTTP/1.1" 200 98991
+INFO 2025-08-04 08:48:02,433 basehttp 1892 23488 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 36038
+INFO 2025-08-04 08:48:08,386 basehttp 1892 23488 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22353
+INFO 2025-08-04 08:48:18,300 basehttp 1892 23488 "GET /documentos/documento/802c9822-5dbd-4b3c-87bb-d8bb9e5f0d22/aprobar/ HTTP/1.1" 200 20663
+INFO 2025-08-04 08:48:18,340 basehttp 1892 23488 "GET /media/documentos/71330963/HOJA_VIDA/HOJA_VIDA_20250725_154721.pdf HTTP/1.1" 304 0
+INFO 2025-08-04 08:48:24,394 basehttp 1892 23488 "POST /documentos/documento/802c9822-5dbd-4b3c-87bb-d8bb9e5f0d22/aprobar/ HTTP/1.1" 302 0
+INFO 2025-08-04 08:48:24,421 basehttp 1892 23488 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22581

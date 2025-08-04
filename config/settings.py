@@ -81,12 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -127,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+#STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -149,37 +149,29 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Carpeta static en la raíz del proyecto
 ]
 
-# Directorio donde se recopilarán todos los archivos estáticos para producción
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Configuración de archivos de media (uploads de usuarios)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEBUG = 'RENDER' not in os.environ
-
 ALLOWED_HOSTS = ['*']
 
-# Static files config
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# Render database config
+DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
-# Configuración de email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Cambiar según proveedor
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tu-email@empresa.com'
 EMAIL_HOST_PASSWORD = 'tu-password'
 DEFAULT_FROM_EMAIL = 'RRHH Pro <noreply@empresa.com>'
 
-# Configuración de logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
