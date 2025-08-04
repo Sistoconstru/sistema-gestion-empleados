@@ -2,7 +2,11 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS = [
+    'sistema-gestion-empleados.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
