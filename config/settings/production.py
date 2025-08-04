@@ -24,5 +24,5 @@ CACHES = {
 }
 
 # Logging para producción
-LOGGING['handlers']['file']['filename'] = '/var/log/django/django.log'
+LOGGING['handlers']['file']['filename'] = BASE_DIR / 'logs' / 'django.log'
 LOGOUT_REDIRECT_URL = '/auth/login/'
