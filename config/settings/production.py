@@ -1,5 +1,7 @@
 from .base import *
 
+import dj_database_url
+
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -30,3 +32,7 @@ CACHES = {
 # Logging para producción
 LOGGING['handlers']['file']['filename'] = BASE_DIR / 'logs' / 'django.log'
 LOGOUT_REDIRECT_URL = '/auth/login/'
+
+DATABASES = {
+    'default': dj_database_url.config(default=config('DATABASE_URL'))
+}
