@@ -6,4 +6,4 @@ services:
     startCommand: gunicorn config.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: config.settings
+        value: config.settings.production
