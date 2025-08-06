@@ -155,13 +155,40 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             'cargo__area'
         ).order_by('-fecha_inicio')
         
-        # Capacitaciones recientes
+        # Capacitaciones con todas las relaciones necesarias
         try:
             context['capacitaciones'] = InscripcionCapacitacion.objects.filter(
                 empleado=empleado
-            ).select_related('capacitacion').order_by('-fecha_inscripcion')[:10]
-        except:
+            ).select_related(
+                'capacitacion',
+                'capacitacion__tipo',
+                'inscrito_por',
+                'aprobado_por'
+            ).prefetch_related(
+                'capacitacion__modulocapacitacion_set'
+            ).order_by('-fecha_inscripcion')
+            
+            # Calcular estadísticas de capacitaciones
+            capacitaciones = context['capacitaciones']
+            context.update({
+                'capacitaciones_obligatorias': capacitaciones.filter(
+                    capacitacion__tipo__codigo='OBLIGATORIA'
+                ).count(),
+                'capacitaciones_en_progreso': capacitaciones.filter(
+                    estado='en_progreso'
+                ).count(),
+                'capacitaciones_completadas': capacitaciones.filter(
+                    estado='completado'
+                ).count()
+            })
+            
+        except Exception as e:
             context['capacitaciones'] = []
+            context.update({
+                'capacitaciones_obligatorias': 0,
+                'capacitaciones_en_progreso': 0,
+                'capacitaciones_completadas': 0
+            })
         
         # Evaluaciones
         try:
@@ -175,6 +202,22 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
         documentos = empleado.documentoempleado_set.all()
         context['documentos_completos'] = documentos.filter(estado_aprobacion='aprobado').count()
         context['documentos_pendientes'] = documentos.filter(estado_aprobacion='pendiente').count()
+        
+        # Obtener cargo actual
+        cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
+        context['cargo_actual'] = cargo_actual
+        
+        # Obtener capacitaciones obligatorias del cargo actual
+        if cargo_actual:
+            try:
+                context['capacitaciones_cargo'] = InscripcionCapacitacion.objects.filter(
+                    cargo=cargo_actual.cargo,
+                    capacitacion__tipo__codigo='OBLIGATORIA'
+                ).exclude(
+                    empleado=empleado
+                ).select_related('capacitacion')
+            except:
+                context['capacitaciones_cargo'] = []
         
         return context
 

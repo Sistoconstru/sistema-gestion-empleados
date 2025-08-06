@@ -195,10 +195,20 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-success w-100 py-3">
+                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-success w-100 py-3 position-relative">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Capacitaciones</strong>
-                            <div class="small text-muted">Continuar formación</div>
+                            <div class="small text-muted">{{ capacitaciones.completadas }}/{{ capacitaciones.total }} completadas</div>
+                            {% if capacitaciones.en_progreso > 0 %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning">
+                                    {{ capacitaciones.en_progreso }} en curso
+                                </span>
+                            {% endif %}
+                            {% if capacitaciones.pendientes_obligatorias > 0 %}
+                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+                                    {{ capacitaciones.pendientes_obligatorias }} obligatorias
+                                </span>
+                            {% endif %}
                         </a>
                     </div>
                     
@@ -296,7 +306,10 @@
                         {% endif %}
                     </div>
                     <div class="flex-shrink-0">
-                        <a href="#" class="btn btn-sm btn-outline-primary">Continuar</a>
+                        <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-sm btn-outline-primary">
+        <i class="fas fa-play me-1"></i>
+        Continuar
+    </a>
                     </div>
                 </div>
                 {% endfor %}

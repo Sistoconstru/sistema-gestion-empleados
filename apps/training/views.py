@@ -10,11 +10,14 @@ from django.db.models import Q, Count, Avg
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import date, timedelta
+import logging
 
 from .models import (Capacitacion, InscripcionCapacitacion, TipoCapacitacion, 
                      CapacitacionCargo, ModuloCapacitacion, ProgresoCapacitacion)
 from .forms import CapacitacionForm #InscripcionCapacitacionForm
 from apps.employees.models import Empleado
+
+logger = logging.getLogger(__name__)
 
 class CapacitacionListView(LoginRequiredMixin, ListView):
     """Vista para administradores - gestión de capacitaciones"""
@@ -57,6 +60,24 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
                 for i in inscripciones.filter(estado='aprobado')
             ])
         })
+        
+        # Capacitaciones recientes
+        try:
+            empleado = Empleado.objects.get(usuario=self.request.user)
+            context['capacitaciones'] = InscripcionCapacitacion.objects.filter(
+                empleado=empleado
+            ).select_related(
+                'capacitacion',
+                'inscrito_por',
+                'aprobado_por'
+            ).prefetch_related(
+                'capacitacion__modulocapacitacion_set'
+            ).order_by(
+                '-fecha_inscripcion'
+            )
+        except Exception as e:
+            logger.error(f"Error obteniendo capacitaciones: {e}")
+            context['capacitaciones'] = []
         
         return context
 

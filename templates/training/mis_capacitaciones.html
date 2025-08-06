@@ -3,6 +3,7 @@
 
 {% load static %}
 {% load custom_filters %}
+{% load training_filters %}
 
 {% block title %}Mis Capacitaciones - RRHH Pro{% endblock %}
 
@@ -158,10 +159,17 @@
                             <div>
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <h5 class="mb-0">
-                                        {% if inscripcion.capacitacion.tipo.codigo == 'OBLIGATORIA' %}🛡️{% elif inscripcion.capacitacion.tipo.codigo == 'LIBRE' %}💻{% else %}📚{% endif %}
+                                        {% if inscripcion.capacitacion.tipo.codigo == 'OBLIGATORIA' %}
+                                            <span class="text-danger" title="Capacitación obligatoria para tu cargo">🛡️</span>
+                                        {% elif inscripcion.capacitacion.tipo.codigo == 'LIBRE' %}
+                                            <span class="text-info" title="Capacitación libre">💻</span>
+                                        {% else %}
+                                            <span class="text-primary" title="Capacitación opcional">📚</span>
+                                        {% endif %}
                                         {{ inscripcion.capacitacion.nombre }}
                                     </h5>
                                     
+                                    <!-- Estado de la capacitación -->
                                     {% if inscripcion.estado == 'en_progreso' %}
                                         <span class="badge bg-warning">En Progreso</span>
                                     {% elif inscripcion.estado == 'aprobado' %}
@@ -172,19 +180,56 @@
                                         <span class="badge bg-danger">Vencida</span>
                                     {% endif %}
                                     
-                                    {% if inscripcion.obligatoria %}
-                                        <span class="badge bg-danger">Obligatoria</span>
-                                    {% else %}
-                                        <span class="badge bg-info">Opcional</span>
+                                    <!-- Tipo de capacitación -->
+                                    {% if inscripcion.capacitacion.tipo.codigo == 'OBLIGATORIA' %}
+                                        <span class="badge bg-danger d-flex align-items-center gap-1">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            Obligatoria para tu cargo
+                                        </span>
+                                    {% elif inscripcion.capacitacion.tipo.codigo == 'LIBRE' %}
+                                        <span class="badge bg-info d-flex align-items-center gap-1">
+                                            <i class="fas fa-globe"></i>
+                                            Capacitación Libre
+                                        </span>
+                                    {% endif %}
+                                    
+                                    <!-- Fecha de vigencia -->
+                                    {% if inscripcion.capacitacion.fecha_vigencia %}
+                                        {% if inscripcion.capacitacion.fecha_vigencia|is_fecha_vencida %}
+                                            <span class="badge bg-danger d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-times"></i>
+                                                Vigencia expirada
+                                            </span>
+                                        {% elif inscripcion.capacitacion.fecha_vigencia|dias_desde_ahora <= 30 %}
+                                            <span class="badge bg-warning d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                Expira pronto
+                                            </span>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
+                                
+                                <!-- Información adicional -->
                                 <p class="text-muted mb-2">{{ inscripcion.capacitacion.descripcion|truncatewords:20 }}</p>
                                 <div class="d-flex gap-4 small text-muted">
-                                    <span><i class="fas fa-building"></i> Proveedor Interno</span>
+                                    <!-- Proveedor -->
+                                    <span><i class="fas fa-building"></i> {{ inscripcion.capacitacion.proveedor|default:"Proveedor Interno" }}</span>
+                                    
+                                    <!-- Duración -->
                                     <span><i class="fas fa-clock"></i> {{ inscripcion.capacitacion.duracion_estimada_horas }} horas</span>
+                                    
+                                    <!-- Fecha límite personalizada -->
                                     {% if inscripcion.fecha_limite %}
-                                    <span><i class="fas fa-calendar"></i> Vence: {{ inscripcion.fecha_limite|date:"d M Y" }}</span>
+                                    <span class="{% if inscripcion.fecha_limite|dias_desde_ahora <= 7 %}text-danger{% endif %}">
+                                        <i class="fas fa-calendar"></i> 
+                                        Vence: {{ inscripcion.fecha_limite|date:"d M Y" }}
+                                        {% if inscripcion.fecha_limite|dias_desde_ahora <= 7 %}
+                                            ({{ inscripcion.fecha_limite|timeuntil }})
+                                        {% endif %}
+                                    </span>
                                     {% endif %}
+                                    
+                                    <!-- Puntos -->
                                     <span><i class="fas fa-star"></i> {{ inscripcion.capacitacion.duracion_estimada_horas|mul:10 }} puntos</span>
                                 </div>
                             </div>
