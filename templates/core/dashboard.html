@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Dashboard Administrativo - SIGHU{% endblock %}
+{% block title %}SIGHU{% endblock %}
 
-{% block breadcrumb_items %}
+{% comment %} {% block breadcrumb_items %}
 <li class="breadcrumb-item active">Dashboard</li>
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block content %}
 <div class="row">
@@ -122,7 +122,7 @@
                         </a>
                     </div>
                     
-                    <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="col-md-4 col-sm-6 mb-3">
                         <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-success w-100 py-3">
                             <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                             <strong>Nuevo Empleado</strong>
@@ -130,15 +130,7 @@
                         </a>
                     </div>
                     
-                    <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-warning w-100 py-3">
-                            <i class="fas fa-file-alt fa-2x d-block mb-2"></i>
-                            <strong>Documentos</strong>
-                            <div class="small text-muted">Aprobar y gestionar</div>
-                        </a>
-                    </div>
-                    
-                    <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="col-md-4 col-sm-6 mb-3">
                         <a href="#" class="btn btn-outline-info w-100 py-3">
                             <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
                             <strong>Reportes</strong>

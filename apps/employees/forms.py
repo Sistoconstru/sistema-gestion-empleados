@@ -86,7 +86,8 @@ class EmpleadoForm(forms.ModelForm):
             'fecha_ingreso': forms.DateInput(attrs={
                 'class': 'form-control',
                 'type': 'date',
-                'required': True
+                'required': True,
+                'data-date-format': 'YYYY-MM-DD'
             }),
             'sede': forms.Select(attrs={
                 'class': 'form-control',
@@ -94,7 +95,8 @@ class EmpleadoForm(forms.ModelForm):
             }),
             'fecha_nacimiento': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'date'
+                'type': 'date',
+                'data-date-format': 'YYYY-MM-DD'
             }),
             'ciudad_nacimiento': forms.Select(attrs={
                 'class': 'form-control',

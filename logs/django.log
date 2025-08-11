@@ -17915,3 +17915,206 @@ INFO 2025-08-06 15:07:33,689 basehttp 18252 15156 "GET /media/documentos/123569/
 INFO 2025-08-06 15:07:38,519 basehttp 18252 15156 "POST /documentos/documento/2221f733-80ec-40cd-a834-dd98e7c3848b/aprobar/ HTTP/1.1" 302 0
 INFO 2025-08-06 15:07:38,562 basehttp 18252 15156 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 24198
 INFO 2025-08-06 15:07:56,597 basehttp 18252 15156 "GET /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 38494
+INFO 2025-08-06 15:14:40,390 autoreload 1724 5224 Watching for file changes with StatReloader
+INFO 2025-08-06 15:14:50,253 basehttp 1724 12428 "GET /dashboard/ HTTP/1.1" 200 14401
+INFO 2025-08-06 15:15:02,399 basehttp 1724 12428 "GET /empleados/crear/ HTTP/1.1" 200 199650
+INFO 2025-08-06 15:15:35,209 basehttp 1724 12428 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 15:20:26,001 basehttp 1724 12428 "GET /dashboard/ HTTP/1.1" 200 13968
+INFO 2025-08-06 15:20:40,978 basehttp 1724 12428 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 15:20:54,168 basehttp 1724 12428 "GET /empleados/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 38831
+INFO 2025-08-06 15:21:24,902 basehttp 1724 12428 "GET /documentos/empleado/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 26680
+INFO 2025-08-06 15:21:36,539 basehttp 1724 12428 "GET /documentos/documento/56e27533-6732-482b-ab13-e51e2e2851ed/aprobar/ HTTP/1.1" 200 20550
+INFO 2025-08-06 15:21:36,562 basehttp 1724 12428 "GET /media/documentos/54225451/REF_PERSONAL/REF_PERSONAL_20250801_194900.pdf HTTP/1.1" 304 0
+INFO 2025-08-06 15:21:47,855 basehttp 1724 12428 "POST /documentos/documento/56e27533-6732-482b-ab13-e51e2e2851ed/aprobar/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:21:47,891 basehttp 1724 12428 "GET /documentos/empleado/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 26908
+INFO 2025-08-06 15:22:04,135 basehttp 1724 12428 "GET /documentos/empleado/c348161d-a1cd-40bb-9ad2-70737b2ced0c/subir/ HTTP/1.1" 200 12859
+INFO 2025-08-06 15:22:16,447 basehttp 1724 12428 "GET /documentos/empleado/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 26483
+INFO 2025-08-06 15:22:36,160 basehttp 1724 12428 "GET /empleados/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 38831
+INFO 2025-08-06 15:22:43,043 basehttp 1724 12428 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:22:43,050 basehttp 1724 12428 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-06 15:22:59,880 basehttp 1724 12428 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:22:59,890 basehttp 1724 12428 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:22:59,938 basehttp 1724 12428 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 19952
+INFO 2025-08-06 15:23:06,033 basehttp 1724 12428 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 22486
+INFO 2025-08-06 15:23:18,983 basehttp 1724 12428 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/subir/ HTTP/1.1" 200 12913
+INFO 2025-08-06 15:23:32,265 basehttp 1724 12428 "POST /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/subir/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:23:32,289 basehttp 1724 12428 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 25032
+INFO 2025-08-06 15:23:38,310 basehttp 1724 12428 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/subir/ HTTP/1.1" 200 12857
+INFO 2025-08-06 15:23:45,378 basehttp 1724 12428 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 24608
+INFO 2025-08-06 15:24:13,725 basehttp 1724 12428 "GET /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 37413
+INFO 2025-08-06 15:24:33,737 basehttp 1724 12428 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:24:33,761 basehttp 1724 12428 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 19557
+INFO 2025-08-06 15:24:39,819 basehttp 1724 12428 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20411
+INFO 2025-08-06 15:25:39,702 basehttp 1724 9448 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:25:39,746 basehttp 1724 9448 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 19557
+INFO 2025-08-06 15:26:52,660 basehttp 1724 9448 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:26:52,702 basehttp 1724 9448 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 19557
+INFO 2025-08-06 15:26:57,349 basehttp 1724 9448 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:26:57,352 basehttp 1724 9448 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-06 15:26:59,963 basehttp 1724 9448 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-06 15:26:59,974 basehttp 1724 9448 "GET /dashboard/ HTTP/1.1" 200 13968
+INFO 2025-08-06 15:27:03,717 basehttp 1724 9448 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 15:27:08,652 basehttp 1724 9448 "GET /empleados/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 38831
+INFO 2025-08-06 15:27:23,878 basehttp 1724 9448 "GET /dashboard/ HTTP/1.1" 200 13968
+INFO 2025-08-06 15:42:56,688 basehttp 1724 25204 "GET /dashboard/ HTTP/1.1" 200 13968
+INFO 2025-08-06 15:43:05,628 basehttp 1724 25204 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 15:43:12,809 basehttp 1724 25204 "GET /dashboard/ HTTP/1.1" 200 13968
+INFO 2025-08-06 15:45:27,881 autoreload 1724 5224 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:45:28,656 autoreload 4224 15332 Watching for file changes with StatReloader
+INFO 2025-08-06 15:46:05,450 autoreload 4224 15332 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:46:06,108 autoreload 3128 11868 Watching for file changes with StatReloader
+INFO 2025-08-06 15:47:37,536 autoreload 3128 11868 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:47:38,134 autoreload 1784 7276 Watching for file changes with StatReloader
+INFO 2025-08-06 15:48:29,177 autoreload 1784 7276 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:48:29,692 autoreload 25828 15644 Watching for file changes with StatReloader
+INFO 2025-08-06 15:48:34,933 basehttp 25828 10124 "GET /dashboard/ HTTP/1.1" 200 13336
+INFO 2025-08-06 15:48:36,670 basehttp 25828 10124 "GET /dashboard/ HTTP/1.1" 200 13336
+INFO 2025-08-06 15:49:24,450 basehttp 25828 10124 "GET /dashboard/ HTTP/1.1" 200 13336
+INFO 2025-08-06 15:49:52,617 autoreload 19300 19404 Watching for file changes with StatReloader
+INFO 2025-08-06 15:50:01,452 basehttp 19300 19924 "GET /empleados/crear/ HTTP/1.1" 200 199650
+INFO 2025-08-06 15:50:05,185 basehttp 19300 19924 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 15:50:20,894 autoreload 19300 19404 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-06 15:50:21,576 autoreload 5084 7172 Watching for file changes with StatReloader
+INFO 2025-08-06 15:50:27,748 basehttp 5084 4864 "GET /dashboard/ HTTP/1.1" 200 13336
+INFO 2025-08-06 15:50:39,229 basehttp 5084 4864 "GET /dashboard/ HTTP/1.1" 200 13336
+INFO 2025-08-06 15:51:16,858 basehttp 5084 4864 "GET /admin/ HTTP/1.1" 200 47116
+INFO 2025-08-06 15:51:20,901 basehttp 5084 4864 "GET /admin/employees/empleado/ HTTP/1.1" 200 62790
+INFO 2025-08-06 15:51:20,964 basehttp 5084 4864 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-06 15:51:46,689 basehttp 5084 4864 "GET /admin/employees/empleado/?p=2 HTTP/1.1" 200 62566
+INFO 2025-08-06 15:51:46,705 basehttp 5084 4864 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-06 15:52:07,306 basehttp 5084 4864 "GET /admin/employees/empleado/ HTTP/1.1" 200 62790
+INFO 2025-08-06 15:52:15,727 basehttp 5084 4864 "GET /admin/ HTTP/1.1" 200 47116
+INFO 2025-08-06 15:55:23,893 autoreload 5084 7172 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:55:24,500 autoreload 26356 11756 Watching for file changes with StatReloader
+INFO 2025-08-06 15:55:41,424 autoreload 26356 11756 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 15:55:41,993 autoreload 9844 7956 Watching for file changes with StatReloader
+INFO 2025-08-06 15:57:59,018 autoreload 16784 3108 Watching for file changes with StatReloader
+INFO 2025-08-06 15:58:18,466 basehttp 9844 24492 "GET /admin/ HTTP/1.1" 200 47116
+INFO 2025-08-06 15:58:28,864 basehttp 9844 24492 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 39521
+INFO 2025-08-06 15:58:28,881 basehttp 9844 24492 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-06 15:58:28,908 basehttp 9844 24492 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+INFO 2025-08-06 16:02:34,082 autoreload 9844 7956 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 16:02:34,680 autoreload 17180 11332 Watching for file changes with StatReloader
+INFO 2025-08-06 16:03:21,819 autoreload 17180 11332 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-06 16:03:22,428 autoreload 16288 22364 Watching for file changes with StatReloader
+INFO 2025-08-06 16:03:57,951 basehttp 16288 19564 "GET /dashboard/ HTTP/1.1" 200 13484
+INFO 2025-08-06 16:04:29,483 autoreload 16288 22364 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-06 16:04:30,198 autoreload 21716 20064 Watching for file changes with StatReloader
+INFO 2025-08-06 16:04:31,550 autoreload 21716 20064 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\templatetags\training_filters.py changed, reloading.
+INFO 2025-08-06 16:04:32,287 autoreload 14400 12472 Watching for file changes with StatReloader
+INFO 2025-08-06 16:04:40,666 basehttp 14400 6896 "GET /empleados/ HTTP/1.1" 200 98921
+INFO 2025-08-06 16:05:27,715 basehttp 14400 6896 "GET /empleados/crear/ HTTP/1.1" 200 199650
+INFO 2025-08-06 16:07:47,421 basehttp 14400 6896 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-08-06 16:07:47,658 basehttp 14400 6896 "GET /empleados/ HTTP/1.1" 200 99777
+INFO 2025-08-06 16:08:36,181 basehttp 14400 6896 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-06 16:08:36,215 basehttp 14400 6896 "GET /dashboard/ HTTP/1.1" 200 13869
+INFO 2025-08-06 16:08:42,359 basehttp 14400 6896 "GET /dashboard/ HTTP/1.1" 200 13484
+INFO 2025-08-06 16:11:31,477 basehttp 14400 6896 "GET /empleados/ HTTP/1.1" 200 98932
+INFO 2025-08-06 16:13:00,324 basehttp 14400 6896 "GET /dashboard/ HTTP/1.1" 200 13457
+INFO 2025-08-06 16:18:49,947 autoreload 20380 4820 Watching for file changes with StatReloader
+INFO 2025-08-06 16:18:55,430 basehttp 14400 20096 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-06 16:18:57,972 basehttp 14400 20096 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-06 16:19:31,027 basehttp 14400 20096 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-06 16:19:31,045 basehttp 14400 20096 "GET /dashboard/ HTTP/1.1" 200 13791
+INFO 2025-08-06 16:19:34,988 basehttp 14400 20096 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:45:23,332 autoreload 15092 6212 Watching for file changes with StatReloader
+INFO 2025-08-11 06:45:31,798 basehttp 15092 16108 "GET / HTTP/1.1" 302 0
+INFO 2025-08-11 06:45:31,836 basehttp 15092 16108 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-11 06:45:31,900 basehttp 15092 16108 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-08-11 06:45:31,940 basehttp 15092 16108 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-08-11 06:45:32,010 log 15092 16108 Not Found: /favicon.ico
+WARNING 2025-08-11 06:45:32,011 basehttp 15092 16108 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-11 06:45:36,336 basehttp 15092 7668 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-11 06:45:36,410 basehttp 15092 7668 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:45:36,426 basehttp 15092 7668 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-08-11 06:46:02,771 basehttp 15092 7668 "GET /empleados/ HTTP/1.1" 200 99017
+INFO 2025-08-11 06:46:11,132 basehttp 15092 7668 "GET /empleados/5ad6f828-9c87-46cb-bf84-ea3ac7e90a6a/ HTTP/1.1" 200 36282
+INFO 2025-08-11 06:47:37,510 basehttp 15092 7668 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:47:51,855 basehttp 15092 7668 "GET /empleados/ HTTP/1.1" 200 99017
+INFO 2025-08-11 06:48:21,109 basehttp 15092 7668 "GET /empleados/?page=2 HTTP/1.1" 200 99618
+INFO 2025-08-11 06:48:30,533 basehttp 15092 7668 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 36551
+INFO 2025-08-11 06:48:35,900 basehttp 15092 7668 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/editar/ HTTP/1.1" 200 201178
+INFO 2025-08-11 06:53:40,660 basehttp 15092 1848 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:53:45,450 basehttp 15092 1848 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:53:57,891 basehttp 15092 1848 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-11 06:58:14,990 basehttp 15092 1848 "GET /empleados/ HTTP/1.1" 200 99017
+INFO 2025-08-11 06:58:24,672 basehttp 15092 1848 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 36561
+INFO 2025-08-11 07:01:23,363 basehttp 15092 1848 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201184
+INFO 2025-08-11 07:03:53,068 autoreload 15092 6212 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\forms.py changed, reloading.
+INFO 2025-08-11 07:03:53,833 autoreload 7276 15928 Watching for file changes with StatReloader
+INFO 2025-08-11 07:04:33,623 autoreload 7276 15928 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-11 07:04:34,259 autoreload 4952 22976 Watching for file changes with StatReloader
+INFO 2025-08-11 07:06:32,602 basehttp 4952 10612 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201244
+INFO 2025-08-11 07:12:16,061 basehttp 4952 22980 "POST /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:12:16,156 basehttp 4952 22980 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 37292
+INFO 2025-08-11 07:20:01,410 basehttp 4952 15488 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201244
+INFO 2025-08-11 07:20:50,379 basehttp 4952 15488 "POST /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:20:50,512 basehttp 4952 15488 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 37634
+WARNING 2025-08-11 07:20:58,727 log 4952 15488 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:20:58,728 basehttp 4952 15488 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+WARNING 2025-08-11 07:34:52,091 log 4952 15516 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:34:52,092 basehttp 4952 15516 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:41:44,730 basehttp 4952 16232 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 35323
+WARNING 2025-08-11 07:41:44,813 log 4952 16232 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:41:44,814 basehttp 4952 16232 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:41:57,380 basehttp 4952 16232 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201244
+INFO 2025-08-11 07:42:20,526 basehttp 4952 16232 "POST /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:42:20,570 basehttp 4952 16232 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 36051
+WARNING 2025-08-11 07:42:29,487 log 4952 16232 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:42:29,487 basehttp 4952 16232 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:44:02,408 autoreload 4952 22976 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-11 07:44:03,060 autoreload 21628 13836 Watching for file changes with StatReloader
+INFO 2025-08-11 07:45:24,877 autoreload 17928 1336 Watching for file changes with StatReloader
+INFO 2025-08-11 07:45:30,621 basehttp 17928 10276 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 35311
+WARNING 2025-08-11 07:45:30,649 log 17928 10276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:45:30,650 basehttp 17928 10276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:46:32,890 basehttp 17928 3220 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 35012
+WARNING 2025-08-11 07:46:32,946 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:46:32,946 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:46:37,773 basehttp 17928 3220 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201244
+WARNING 2025-08-11 07:46:37,799 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:46:37,799 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:46:43,020 basehttp 17928 3220 "GET /empleados/ HTTP/1.1" 200 99017
+WARNING 2025-08-11 07:46:43,050 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:46:43,051 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:46:46,594 basehttp 17928 3220 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 34751
+WARNING 2025-08-11 07:46:46,625 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:46:46,627 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:46:49,970 basehttp 17928 3220 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 200 201229
+WARNING 2025-08-11 07:46:49,997 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:46:49,998 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:47:37,144 basehttp 17928 3220 "POST /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:47:37,236 basehttp 17928 3220 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 35706
+WARNING 2025-08-11 07:47:37,278 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:47:37,279 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:50:06,234 basehttp 17928 3220 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 200 201237
+WARNING 2025-08-11 07:50:06,265 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:50:06,265 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:50:23,424 basehttp 17928 3220 "POST /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:50:23,536 basehttp 17928 3220 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 35705
+WARNING 2025-08-11 07:50:23,564 log 17928 3220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:50:23,566 basehttp 17928 3220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:52:01,505 autoreload 17928 1336 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-11 07:52:02,141 autoreload 22928 19700 Watching for file changes with StatReloader
+INFO 2025-08-11 07:53:22,330 basehttp 22928 2448 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 34973
+WARNING 2025-08-11 07:53:22,361 log 22928 2448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:53:22,362 basehttp 22928 2448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:53:25,916 basehttp 22928 2448 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 200 201237
+WARNING 2025-08-11 07:53:25,943 log 22928 2448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:53:25,944 basehttp 22928 2448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:53:49,665 basehttp 22928 2448 "POST /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/editar/ HTTP/1.1" 302 0
+INFO 2025-08-11 07:53:49,714 basehttp 22928 2448 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 35367
+WARNING 2025-08-11 07:53:49,744 log 22928 2448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 07:53:49,744 basehttp 22928 2448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 07:54:18,317 autoreload 22928 19700 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-11 07:54:18,959 autoreload 25188 4764 Watching for file changes with StatReloader
+INFO 2025-08-11 14:27:41,576 autoreload 15636 17372 Watching for file changes with StatReloader
+INFO 2025-08-11 14:27:49,450 basehttp 15636 4752 "GET /dashboard/ HTTP/1.1" 200 13406
+WARNING 2025-08-11 14:27:49,490 log 15636 4752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 14:27:49,491 basehttp 15636 4752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 14:27:54,800 basehttp 15636 4752 "GET /dashboard/ HTTP/1.1" 200 13406
+WARNING 2025-08-11 14:27:54,820 log 15636 4752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 14:27:54,821 basehttp 15636 4752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-11 14:27:57,233 basehttp 15636 4752 "GET /empleados/ HTTP/1.1" 200 99018
+WARNING 2025-08-11 14:27:57,260 log 15636 4752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-11 14:27:57,260 basehttp 15636 4752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151

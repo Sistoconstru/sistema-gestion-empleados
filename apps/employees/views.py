@@ -247,18 +247,18 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 
                 if dias_desde_ingreso <= 60:  # Período de prueba
                     try:
-                        estado_prueba = EstadoEmpleado.objects.get(codigo='PRUEBA')
+                        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
                         form.instance.estado = estado_prueba
                     except EstadoEmpleado.DoesNotExist:
-                        logger.warning("Estado PRUEBA no encontrado")
+                        logger.warning("Estado código 'p-prue' (Periodo de prueba) no encontrado")
                         # Usar el primer estado disponible
                         form.instance.estado = EstadoEmpleado.objects.first()
                 else:
                     try:
-                        estado_activo = EstadoEmpleado.objects.get(codigo='ACTIVO')
+                        estado_activo = EstadoEmpleado.objects.get(codigo='999')
                         form.instance.estado = estado_activo
                     except EstadoEmpleado.DoesNotExist:
-                        logger.warning("Estado ACTIVO no encontrado")
+                        logger.warning("Estado código '999' (Activo) no encontrado")
                         form.instance.estado = EstadoEmpleado.objects.first()
                 
                 # Guardar empleado primero
@@ -370,17 +370,35 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         context['titulo'] = f'Editar Empleado - {self.object.nombre_completo}'
         return context
     
+    def get_initial(self):
+        """Preparar datos iniciales del formulario"""
+        initial = super().get_initial()
+        # Formatear las fechas en el formato correcto para el input type="date"
+        if self.object.fecha_ingreso:
+            initial['fecha_ingreso'] = self.object.fecha_ingreso.strftime('%Y-%m-%d')
+        if self.object.fecha_nacimiento:
+            initial['fecha_nacimiento'] = self.object.fecha_nacimiento.strftime('%Y-%m-%d')
+        
+        # Obtener el cargo actual si existe
+        cargo_actual = self.object.historialcargo_set.filter(activo=True).first()
+        if cargo_actual:
+            initial['cargo'] = cargo_actual.cargo
+        
+        return initial
+    
     def get_success_url(self):
-        messages.success(
-            self.request, 
-            f'Empleado {self.object.nombre_completo} actualizado exitosamente.'
-        )
         return reverse_lazy('employees:empleado_detail', kwargs={'pk': self.object.pk})
     
     def form_valid(self, form):
         """Procesar cambios en el formulario"""
         try:
             with transaction.atomic():
+                response = super().form_valid(form)
+                messages.success(
+                    self.request, 
+                    f'Empleado {self.object.nombre_completo} actualizado exitosamente.'
+                )
+                return response
                 # Verificar si cambió el cargo
                 cargo_nuevo = form.cleaned_data.get('cargo')
                 cargo_actual = None

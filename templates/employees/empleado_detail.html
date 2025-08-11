@@ -794,53 +794,11 @@
 <script>
 function copiarUrlPerfil() {
     const url = window.location.href;
-    
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(function() {
-            // Mostrar notificación de éxito
-            mostrarNotificacion('URL copiada al portapapeles', 'success');
-        }).catch(function(err) {
-            console.error('Error al copiar: ', err);
-            mostrarNotificacion('Error al copiar URL', 'danger');
-        });
-    } else {
-        // Fallback para navegadores antiguos
-        const textArea = document.createElement('textarea');
-        textArea.value = url;
-        document.body.appendChild(textArea);
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            mostrarNotificacion('URL copiada al portapapeles', 'success');
-        } catch (err) {
-            mostrarNotificacion('Error al copiar URL', 'danger');
-        }
-        
-        document.body.removeChild(textArea);
-    }
+    RRHHPro.copyToClipboard(url); // Usar la función global de copyToClipboard
 }
 
-function mostrarNotificacion(mensaje, tipo) {
-    // Crear elemento de notificación
-    const notificacion = document.createElement('div');
-    notificacion.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
-    notificacion.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notificacion.innerHTML = `
-        ${mensaje}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    // Agregar al documento
-    document.body.appendChild(notificacion);
-    
-    // Auto-remover después de 3 segundos
-    setTimeout(() => {
-        if (notificacion.parentNode) {
-            notificacion.remove();
-        }
-    }, 3000);
-}
+
+
 // Mejorar tooltips para el dropdown
 document.addEventListener('DOMContentLoaded', function() {
     // Agregar tooltips a los elementos del dropdown
