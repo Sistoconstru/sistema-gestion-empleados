@@ -18410,3 +18410,32 @@ INFO 2025-08-13 12:48:38,249 basehttp 22400 10060 "GET /documentos/documento/997
 INFO 2025-08-13 12:48:38,273 basehttp 22400 10060 "GET /media/documentos/71330990/CEDULA/CEDULA_20250813_172241.png HTTP/1.1" 304 0
 WARNING 2025-08-13 12:48:38,283 log 22400 10060 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2025-08-13 12:48:38,284 basehttp 22400 10060 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:01:16,597 autoreload 25008 13384 Watching for file changes with StatReloader
+INFO 2025-08-13 13:01:26,440 basehttp 25008 18076 "GET / HTTP/1.1" 302 0
+INFO 2025-08-13 13:01:26,547 basehttp 25008 18076 "GET /dashboard/ HTTP/1.1" 200 13406
+WARNING 2025-08-13 13:01:26,704 log 25008 18076 Not Found: /favicon.ico
+WARNING 2025-08-13 13:01:26,705 basehttp 25008 18076 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-13 13:01:39,485 basehttp 25008 11312 "GET /empleados/ HTTP/1.1" 200 99084
+WARNING 2025-08-13 13:01:47,365 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:01:47,366 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:01:54,262 basehttp 25008 10328 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 35568
+WARNING 2025-08-13 13:01:54,297 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:01:54,298 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:01:57,492 basehttp 25008 10328 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/editar/ HTTP/1.1" 200 201765
+WARNING 2025-08-13 13:01:57,529 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:01:57,530 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:02:01,153 basehttp 25008 10328 "GET /empleados/ HTTP/1.1" 200 99084
+WARNING 2025-08-13 13:02:01,188 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:02:01,189 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:02:05,729 basehttp 25008 10328 "GET /empleados/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 37817
+WARNING 2025-08-13 13:02:05,758 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:02:05,758 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:02:09,716 basehttp 25008 10328 "GET /documentos/empleado/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 28960
+WARNING 2025-08-13 13:02:09,754 log 25008 10328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-13 13:02:09,756 basehttp 25008 10328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-13 13:49:23,379 basehttp 25008 18264 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-13 13:49:25,484 basehttp 25008 18264 "GET /empleados/ HTTP/1.1" 200 99084
+INFO 2025-08-13 13:49:30,155 basehttp 25008 18264 "GET /empleados/crear/ HTTP/1.1" 200 200098
+INFO 2025-08-13 13:51:23,602 basehttp 25008 18264 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-08-13 13:51:23,850 basehttp 25008 18264 "GET /empleados/ HTTP/1.1" 200 99943
+INFO 2025-08-13 13:51:56,799 basehttp 25008 18264 "GET /empleados/a893de5c-b047-4b23-b376-ec10d08e158f/ HTTP/1.1" 200 36834
