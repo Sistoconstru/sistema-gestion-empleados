@@ -149,7 +149,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     <div class="row">
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Decisión</label>
+                                <label class="form-label fw-bold" for="{{ form.estado_aprobacion.id_for_label }}">Decisión</label>
                                 {{ form.estado_aprobacion }}
                                 {% if form.estado_aprobacion.errors %}
                                     <div class="invalid-feedback d-block">{{ form.estado_aprobacion.errors.0 }}</div>
@@ -158,7 +158,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                         <div class="col-md-8">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Observaciones</label>
+                                <label class="form-label fw-bold" for="{{ form.observaciones.id_for_label }}">Observaciones</label>
                                 {{ form.observaciones }}
                                 {% if form.observaciones.errors %}
                                     <div class="invalid-feedback d-block">{{ form.observaciones.errors.0 }}</div>
@@ -172,8 +172,8 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     </div>
                     <!-- Plantillas de Observaciones -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Plantillas de Observaciones:</label>
-                        <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                        <label class="form-label fw-bold" id="plantillas-label">Plantillas de Observaciones:</label>
+                        <div class="btn-group-vertical btn-group-sm w-100" role="group" aria-labelledby="plantillas-label">
                             <button type="button" class="btn btn-outline-secondary text-start template-btn" 
                                     data-template="Documento ilegible o con baja calidad de imagen. Por favor, suba una versión más clara." {% if modo_visualizacion %}disabled{% endif %}>
                                 📷 Calidad de imagen deficiente
@@ -205,31 +205,31 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                         <div class="card-body">
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check1" {% if modo_visualizacion %}disabled{% endif %}>
+                                <input class="form-check-input" type="checkbox" id="check1" name="check1" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check1">
                                     El documento es legible y de buena calidad
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check2" {% if modo_visualizacion %}disabled{% endif %}>
+                                <input class="form-check-input" type="checkbox" id="check2" name="check2" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check2">
                                     La información coincide con los datos del empleado
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check3" {% if modo_visualizacion %}disabled{% endif %}>
+                                <input class="form-check-input" type="checkbox" id="check3" name="check3" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check3">
                                     El documento está vigente (si aplica)
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check4" {% if modo_visualizacion %}disabled{% endif %}>
+                                <input class="form-check-input" type="checkbox" id="check4" name="check4" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check4">
                                     El tipo de documento es correcto
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check5" {% if modo_visualizacion %}disabled{% endif %}>
+                                <input class="form-check-input" type="checkbox" id="check5" name="check5" {% if modo_visualizacion %}disabled{% endif %}>
                                 <label class="form-check-label" for="check5">
                                     El documento contiene toda la información requerida
                                 </label>

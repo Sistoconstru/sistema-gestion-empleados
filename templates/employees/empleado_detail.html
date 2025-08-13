@@ -124,8 +124,8 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="text-muted small">Email</label>
-                    <div class="fw-bold">
+                    <label class="text-muted small" for="email-display">Email</label>
+                    <div class="fw-bold" id="email-display">
                         {% if empleado.correo_electronico %}
                             <a href="mailto:{{ empleado.correo_electronico }}">
                                 {{ empleado.correo_electronico }}
@@ -136,22 +136,22 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted small">Teléfono</label>
-                    <div class="fw-bold">
+                    <label class="text-muted small" for="telefono-display">Teléfono</label>
+                    <div class="fw-bold" id="telefono-display">
                         <a href="tel:{{ empleado.telefono_contacto }}">
                             {{ empleado.telefono_contacto }}
                         </a>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted small">Documento</label>
-                    <div class="fw-bold">
+                    <label class="text-muted small" for="documento-display">Documento</label>
+                    <div class="fw-bold" id="documento-display">
                         {{ empleado.tipo_documento.nombre }}: {{ empleado.numero_documento }}
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="text-muted small">Sede</label>
-                    <div class="fw-bold">{{ empleado.sede.nombre }}</div>
+                    <label class="text-muted small" for="sede-display">Sede</label>
+                    <div class="fw-bold" id="sede-display">{{ empleado.sede.nombre }}</div>
                     {% if empleado.sede.ciudad %}
                     <div class="text-muted small">{{ empleado.sede.ciudad }}{% if empleado.sede.departamento %}, {{ empleado.sede.departamento }}{% endif %}</div>
                     {% endif %}
@@ -170,8 +170,8 @@
             <div class="card-body">
                 {% if empleado.fecha_nacimiento %}
                 <div class="mb-3">
-                    <label class="text-muted small">Fecha de Nacimiento</label>
-                    <div class="fw-bold">
+                    <label class="text-muted small" for="fecha-nacimiento-display">Fecha de Nacimiento</label>
+                    <div class="fw-bold" id="fecha-nacimiento-display">
                         {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
                         <span class="text-muted">
                             ({{ empleado.fecha_nacimiento|timesince }} de edad)
@@ -182,22 +182,22 @@
                 
                 {% if empleado.ciudad_nacimiento %}
                 <div class="mb-3">
-                    <label class="text-muted small">Ciudad de Nacimiento</label>
-                    <div class="fw-bold">{{ empleado.ciudad_nacimiento }}</div>
+                    <label class="text-muted small" for="ciudad-nacimiento-display">Ciudad de Nacimiento</label>
+                    <div class="fw-bold" id="ciudad-nacimiento-display">{{ empleado.ciudad_nacimiento }}</div>
                 </div>
                 {% endif %}
                 
                 {% if empleado.escolaridad %}
                 <div class="mb-3">
-                    <label class="text-muted small">Escolaridad</label>
-                    <div class="fw-bold">{{ empleado.escolaridad.nivel }}</div>
+                    <label class="text-muted small" for="escolaridad-display">Escolaridad</label>
+                    <div class="fw-bold" id="escolaridad-display">{{ empleado.escolaridad.nivel }}</div>
                 </div>
                 {% endif %}
                 
                 {% if empleado.contacto_emergencia_nombre %}
                 <div class="mb-3">
-                    <label class="text-muted small">Contacto de Emergencia</label>
-                    <div class="fw-bold">{{ empleado.contacto_emergencia_nombre }}</div>
+                    <label class="text-muted small" for="contacto-emergencia-display">Contacto de Emergencia</label>
+                    <div class="fw-bold" id="contacto-emergencia-display">{{ empleado.contacto_emergencia_nombre }}</div>
                     {% if empleado.contacto_emergencia_telefono %}
                     <div class="text-muted">
                         <a href="tel:{{ empleado.contacto_emergencia_telefono }}">

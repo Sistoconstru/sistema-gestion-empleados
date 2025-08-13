@@ -61,7 +61,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.tipo_documento.label }}</label>
+                                <label class="form-label" for="{{ form.tipo_documento.id_for_label }}">{{ form.tipo_documento.label }}</label>
                                 {{ form.tipo_documento }}
                                 {% if form.tipo_documento.errors %}
                                     <div class="invalid-feedback d-block">
@@ -73,7 +73,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.numero_documento.label }}</label>
+                                <label class="form-label" for="{{ form.numero_documento.id_for_label }}">{{ form.numero_documento.label }}</label>
                                 {{ form.numero_documento }}
                                 {% if form.numero_documento.errors %}
                                     <div class="invalid-feedback d-block">
@@ -86,7 +86,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.nombres.label }}</label>
+                                <label class="form-label" for="{{ form.nombres.id_for_label }}">{{ form.nombres.label }}</label>
                                 {{ form.nombres }}
                                 {% if form.nombres.errors %}
                                     <div class="invalid-feedback d-block">
@@ -98,7 +98,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.apellidos.label }}</label>
+                                <label class="form-label" for="{{ form.apellidos.id_for_label }}">{{ form.apellidos.label }}</label>
                                 {{ form.apellidos }}
                                 {% if form.apellidos.errors %}
                                     <div class="invalid-feedback d-block">
@@ -110,7 +110,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.telefono_contacto.label }}</label>
+                                <label class="form-label" for="{{ form.telefono_contacto.id_for_label }}">{{ form.telefono_contacto.label }}</label>
                                 {{ form.telefono_contacto }}
                                 {% if form.telefono_contacto.errors %}
                                     <div class="invalid-feedback d-block">
@@ -123,7 +123,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.fecha_ingreso.label }}</label>
+                                <label class="form-label" for="{{ form.fecha_ingreso.id_for_label }}">{{ form.fecha_ingreso.label }}</label>
                                 {{ form.fecha_ingreso }}
                                 {% if form.fecha_ingreso.errors %}
                                     <div class="invalid-feedback d-block">
@@ -135,7 +135,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.sede.label }}</label>
+                                <label class="form-label" for="{{ form.sede.id_for_label }}">{{ form.sede.label }}</label>
                                 {{ form.sede }}
                                 {% if form.sede.errors %}
                                     <div class="invalid-feedback d-block">
@@ -147,7 +147,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.cargo.label }}</label>
+                                <label class="form-label" for="{{ form.cargo.id_for_label }}">{{ form.cargo.label }}</label>
                                 {{ form.cargo }}
                                 {% if form.cargo.errors %}
                                     <div class="invalid-feedback d-block">
@@ -172,7 +172,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.fecha_nacimiento.label }}</label>
+                                <label class="form-label" for="{{ form.fecha_nacimiento.id_for_label }}">{{ form.fecha_nacimiento.label }}</label>
                                 {{ form.fecha_nacimiento }}
                                 {% if form.fecha_nacimiento.errors %}
                                     <div class="invalid-feedback d-block">
@@ -185,7 +185,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.departamento.label }}</label>
+                                <label class="form-label" for="{{ form.departamento.id_for_label }}">{{ form.departamento.label }}</label>
                                 {{ form.departamento }}
                                 {% if form.departamento.errors %}
                                     <div class="invalid-feedback d-block">
@@ -196,7 +196,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.ciudad_nacimiento.label }}</label>
+                                <label class="form-label" for="id_ciudad_nacimiento">{{ form.ciudad_nacimiento.label }}</label>
                                 <select name="ciudad_nacimiento" class="form-control" id="id_ciudad_nacimiento">
                                     <option value="">---------</option>
                                     {% for ciudad in form.fields.ciudad_nacimiento.queryset %}
@@ -213,7 +213,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.escolaridad.label }}</label>
+                                <label class="form-label" for="{{ form.escolaridad.id_for_label }}">{{ form.escolaridad.label }}</label>
                                 {{ form.escolaridad }}
                                 {% if form.escolaridad.errors %}
                                     <div class="invalid-feedback d-block">
@@ -225,7 +225,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.correo_electronico.label }}</label>
+                                <label class="form-label" for="{{ form.correo_electronico.id_for_label }}">{{ form.correo_electronico.label }}</label>
                                 {{ form.correo_electronico }}
                                 {% if form.correo_electronico.errors %}
                                     <div class="invalid-feedback d-block">
@@ -239,7 +239,7 @@
                         {% if not object %}
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.confirmar_email.label }}</label>
+                                <label class="form-label" for="{{ form.confirmar_email.id_for_label }}">{{ form.confirmar_email.label }}</label>
                                 {{ form.confirmar_email }}
                                 {% if form.confirmar_email.errors %}
                                     <div class="invalid-feedback d-block">
@@ -262,7 +262,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.contacto_emergencia_nombre.label }}</label>
+                                <label class="form-label" for="{{ form.contacto_emergencia_nombre.id_for_label }}">{{ form.contacto_emergencia_nombre.label }}</label>
                                 {{ form.contacto_emergencia_nombre }}
                                 {% if form.contacto_emergencia_nombre.errors %}
                                     <div class="invalid-feedback d-block">
@@ -274,7 +274,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">{{ form.contacto_emergencia_telefono.label }}</label>
+                                <label class="form-label" for="{{ form.contacto_emergencia_telefono.id_for_label }}">{{ form.contacto_emergencia_telefono.label }}</label>
                                 {{ form.contacto_emergencia_telefono }}
                                 {% if form.contacto_emergencia_telefono.errors %}
                                     <div class="invalid-feedback d-block">
@@ -298,29 +298,29 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Fecha de Registro</label>
-                                <input type="text" class="form-control" value="{{ object.fecha_creacion|date:'d/m/Y H:i' }}" readonly>
+                                <label class="form-label" for="id_fecha_registro">Fecha de Registro</label>
+                                <input type="text" class="form-control" id="id_fecha_registro" value="{{ object.fecha_creacion|date:'d/m/Y H:i' }}" readonly>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Creado por</label>
-                                <input type="text" class="form-control" value="{{ object.creado_por.get_full_name|default:object.creado_por.username }}" readonly>
+                                <label class="form-label" for="id_creado_por">Creado por</label>
+                                <input type="text" class="form-control" id="id_creado_por" value="{{ object.creado_por.get_full_name|default:object.creado_por.username }}" readonly>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Estado Actual</label>
-                                <input type="text" class="form-control" value="{{ object.estado.nombre }}" readonly>
+                                <label class="form-label" for="id_estado_actual">Estado Actual</label>
+                                <input type="text" class="form-control" id="id_estado_actual" value="{{ object.estado.nombre }}" readonly>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">ID Único</label>
-                                <input type="text" class="form-control" value="{{ object.id }}" readonly>
+                                <label class="form-label" for="id_uuid">ID Único</label>
+                                <input type="text" class="form-control" id="id_uuid" value="{{ object.id }}" readonly>
                                 <div class="form-text">Identificador único en el sistema</div>
                             </div>
                         </div>
