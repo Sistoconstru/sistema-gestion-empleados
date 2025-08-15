@@ -130,45 +130,50 @@ class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
     paginate_by = 15
     
     def get_queryset(self):
-        # Solo capacitaciones libres activas
-        queryset = Capacitacion.objects.filter(
+        try:
+            empleado = Empleado.objects.get(usuario=self.request.user)
+            # Obtener IDs de capacitaciones ya asignadas o inscritas
+            capacitaciones_asignadas = InscripcionCapacitacion.objects.filter(
+                empleado=empleado
+            ).values_list('capacitacion_id', flat=True)
+        except Empleado.DoesNotExist:
+            capacitaciones_asignadas = []
+
+        # Solo capacitaciones libres y externas activas, excluyendo las ya asignadas
+        queryset = Capacitacion.objects.select_related(
+            'tipo', 'proveedor_externo'
+        ).filter(
             activa=True,
-            tipo__codigo__in=['INTERNA_LIBRE', 'EXTERNA_LIBRE']
-        ).select_related('tipo')
+            tipo__permite_inscripcion_libre=True
+        ).exclude(
+            id__in=capacitaciones_asignadas
+        )
         
-        # Aplicar filtros de búsqueda
-        search = self.request.GET.get('search')
-        if search:
-            queryset = queryset.filter(
-                Q(nombre__icontains=search) | 
-                Q(descripcion__icontains=search)
-            )
-        
+        # Filtrar por tipo (interna/externa)
         tipo = self.request.GET.get('tipo')
-        if tipo:
-            queryset = queryset.filter(tipo__codigo=tipo)
-        
-        proveedor = self.request.GET.get('proveedor')
-        if proveedor == 'interno':
-            queryset = queryset.filter(proveedor_externo='')
-        elif proveedor and proveedor != 'interno':
-            queryset = queryset.filter(proveedor_externo__icontains=proveedor)
+        if tipo == 'interno':
+            queryset = queryset.filter(proveedor_externo__isnull=True)
+        elif tipo == 'externo':
+            queryset = queryset.filter(proveedor_externo__isnull=False)
+            
+        # Filtrar por nivel
+        nivel = self.request.GET.get('nivel')
+        if nivel:
+            queryset = queryset.filter(nivel_dificultad=nivel)
+            
+        # Filtrar por duración
+        duracion = self.request.GET.get('duracion')
+        if duracion == 'corta':
+            queryset = queryset.filter(duracion_estimada_horas__lt=4)
+        elif duracion == 'media':
+            queryset = queryset.filter(duracion_estimada_horas__range=(4, 8))
+        elif duracion == 'larga':
+            queryset = queryset.filter(duracion_estimada_horas__gt=8)
         
         return queryset.order_by('-fecha_creacion')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Marcar capacitaciones ya inscritas del empleado
-        try:
-            empleado = Empleado.objects.get(usuario=self.request.user)
-            inscripciones_ids = InscripcionCapacitacion.objects.filter(
-                empleado=empleado
-            ).values_list('capacitacion_id', flat=True)
-            context['inscripciones_ids'] = list(inscripciones_ids)
-        except Empleado.DoesNotExist:
-            context['inscripciones_ids'] = []
-        
         return context
 
 class CapacitacionDetailView(LoginRequiredMixin, DetailView):

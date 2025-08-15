@@ -19023,3 +19023,366 @@ Traceback (most recent call last):
     raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
 django.template.exceptions.TemplateDoesNotExist: training/player.html
 ERROR 2025-08-15 08:30:19,154 basehttp 14392 23796 "GET /capacitaciones/player/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 500 91686
+INFO 2025-08-15 08:35:26,493 basehttp 14392 13276 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 16248
+INFO 2025-08-15 08:35:40,647 basehttp 14392 13276 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:41:25,967 basehttp 14392 10984 "GET /capacitaciones/capacitacion/7c04b5da-44d2-4169-b11c-e88135078fcb/ HTTP/1.1" 200 10628
+INFO 2025-08-15 08:43:25,431 basehttp 14392 10984 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:45:49,154 basehttp 14392 10984 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:45:49,191 basehttp 14392 10984 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 08:46:25,098 basehttp 14392 10984 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:46:25,118 basehttp 14392 10984 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:46:25,282 basehttp 14392 10984 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 08:47:02,536 basehttp 14392 10984 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 08:47:24,112 basehttp 14392 10984 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 08:47:57,551 basehttp 14392 10984 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 08:48:22,228 basehttp 14392 10984 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 08:48:48,614 basehttp 14392 10984 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 08:48:59,836 basehttp 14392 10984 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:48:59,875 basehttp 14392 10984 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 08:49:06,645 basehttp 14392 10984 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:49:06,649 basehttp 14392 10984 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 08:49:12,789 basehttp 14392 10984 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:49:12,814 basehttp 14392 10984 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 08:49:16,050 basehttp 14392 10984 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:49:23,539 basehttp 14392 10984 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44835
+INFO 2025-08-15 08:49:23,562 basehttp 14392 10984 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:51:57,571 basehttp 14392 10984 "GET /static/admin/img/calendar-icons.svg HTTP/1.1" 200 2455
+INFO 2025-08-15 08:52:07,630 basehttp 14392 10984 "POST /admin/training/capacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:52:07,770 basehttp 14392 10984 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43344
+INFO 2025-08-15 08:52:07,800 basehttp 14392 10984 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-08-15 08:52:07,803 basehttp 14392 17656 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-08-15 08:52:07,803 basehttp 14392 16292 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-08-15 08:52:07,820 basehttp 14392 16292 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-08-15 08:52:07,837 basehttp 14392 10516 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:52:07,858 basehttp 14392 16292 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-08-15 08:52:07,859 basehttp 14392 10516 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-08-15 08:52:26,217 basehttp 14392 10516 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 42143
+INFO 2025-08-15 08:52:26,237 basehttp 14392 10516 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:52:29,633 basehttp 14392 10516 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 45882
+INFO 2025-08-15 08:52:29,654 basehttp 14392 10516 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:52:29,660 basehttp 14392 16292 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-08-15 08:53:34,536 basehttp 14392 16292 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:53:34,582 basehttp 14392 16292 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 43099
+INFO 2025-08-15 08:53:34,602 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:53:37,095 basehttp 14392 16292 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 45986
+INFO 2025-08-15 08:53:37,111 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:54:44,018 basehttp 14392 16292 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:54:44,062 basehttp 14392 16292 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 43755
+INFO 2025-08-15 08:54:44,080 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:54:47,244 basehttp 14392 16292 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 46090
+INFO 2025-08-15 08:54:47,260 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:55:47,362 basehttp 14392 16292 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:55:47,411 basehttp 14392 16292 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 44413
+INFO 2025-08-15 08:55:47,429 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:56:00,566 basehttp 14392 16292 "GET /admin/training/leccion/ HTTP/1.1" 200 42122
+INFO 2025-08-15 08:56:00,582 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:56:03,910 basehttp 14392 16292 "GET /admin/training/leccion/add/ HTTP/1.1" 200 46406
+INFO 2025-08-15 08:56:03,926 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:57:45,754 basehttp 14392 16292 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 08:57:45,798 basehttp 14392 16292 "GET /admin/training/leccion/ HTTP/1.1" 200 42998
+INFO 2025-08-15 08:57:45,818 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:57:50,198 basehttp 14392 16292 "GET /admin/training/leccion/add/ HTTP/1.1" 200 46488
+INFO 2025-08-15 08:57:50,214 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:02:11,604 basehttp 14392 16292 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:02:11,642 basehttp 14392 16292 "GET /admin/training/leccion/ HTTP/1.1" 200 43701
+INFO 2025-08-15 09:02:11,661 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:03:38,109 basehttp 14392 16292 "GET /admin/training/leccion/add/ HTTP/1.1" 200 46596
+INFO 2025-08-15 09:03:38,126 basehttp 14392 16292 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:05:34,773 basehttp 14392 14944 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:05:34,826 basehttp 14392 14944 "GET /admin/training/leccion/ HTTP/1.1" 200 44348
+INFO 2025-08-15 09:05:34,844 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:05:37,878 basehttp 14392 14944 "GET /admin/training/leccion/add/ HTTP/1.1" 200 46694
+INFO 2025-08-15 09:05:37,894 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:07:25,285 basehttp 14392 14944 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:07:25,337 basehttp 14392 14944 "GET /admin/training/leccion/ HTTP/1.1" 200 45014
+INFO 2025-08-15 09:07:25,358 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:07:36,000 basehttp 14392 14944 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 41735
+INFO 2025-08-15 09:07:36,015 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:07:40,875 basehttp 14392 14944 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 56055
+INFO 2025-08-15 09:07:40,894 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:11:07,749 basehttp 14392 14944 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:11:07,800 basehttp 14392 14944 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 42580
+INFO 2025-08-15 09:11:07,817 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:11:23,144 basehttp 14392 14944 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 56055
+INFO 2025-08-15 09:11:23,160 basehttp 14392 14944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:16:29,958 basehttp 14392 25680 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:16:30,002 basehttp 14392 25680 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 43274
+INFO 2025-08-15 09:16:30,021 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:16:51,291 basehttp 14392 25680 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 56055
+INFO 2025-08-15 09:16:51,305 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:19:14,058 basehttp 14392 25680 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:19:14,121 basehttp 14392 25680 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 43909
+INFO 2025-08-15 09:19:14,140 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:19:28,446 basehttp 14392 25680 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43072
+INFO 2025-08-15 09:19:28,460 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:19:36,309 basehttp 14392 25680 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:19:38,592 basehttp 14392 25680 "GET /capacitaciones/admin/ HTTP/1.1" 200 21953
+INFO 2025-08-15 09:19:54,310 basehttp 14392 25680 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:20:02,830 basehttp 14392 25680 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:20:02,836 basehttp 14392 25680 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 09:20:10,847 basehttp 14392 25680 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:20:10,858 basehttp 14392 25680 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:20:10,917 basehttp 14392 25680 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 09:20:27,488 basehttp 14392 25680 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 09:20:35,767 basehttp 14392 25680 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:20:35,826 basehttp 14392 25680 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:20:50,396 basehttp 14392 25680 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 09:20:55,999 basehttp 14392 25680 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 09:21:02,407 basehttp 14392 25680 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 09:21:25,677 basehttp 14392 25680 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:21:25,680 basehttp 14392 25680 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 09:21:38,304 basehttp 14392 25680 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:21:38,326 basehttp 14392 25680 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:21:46,162 basehttp 14392 25680 "GET /capacitaciones/admin/ HTTP/1.1" 200 21953
+INFO 2025-08-15 09:21:55,415 basehttp 14392 25680 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 14483
+INFO 2025-08-15 09:22:52,331 basehttp 14392 25680 "GET /admin/training/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/change/ HTTP/1.1" 200 45273
+INFO 2025-08-15 09:22:52,347 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:23:12,695 basehttp 14392 25680 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43072
+INFO 2025-08-15 09:23:12,709 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:23:20,012 basehttp 14392 25680 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44835
+INFO 2025-08-15 09:23:20,024 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:25:02,814 basehttp 14392 25680 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38311
+INFO 2025-08-15 09:25:02,832 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:25:13,492 basehttp 14392 25680 "GET /admin/training/tipocapacitacion/add/ HTTP/1.1" 200 39398
+INFO 2025-08-15 09:25:13,503 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:26:03,306 basehttp 14392 25680 "POST /admin/training/tipocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:26:03,322 basehttp 14392 25680 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38855
+INFO 2025-08-15 09:26:03,336 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:26:21,730 basehttp 14392 25680 "GET /admin/training/tipocapacitacion/2/change/ HTTP/1.1" 200 39630
+INFO 2025-08-15 09:26:21,743 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:26:38,271 basehttp 14392 25680 "POST /admin/training/tipocapacitacion/2/change/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:26:38,286 basehttp 14392 25680 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38851
+INFO 2025-08-15 09:26:38,301 basehttp 14392 25680 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:26:51,293 basehttp 14392 25680 "GET /admin/training/tipocontenido/ HTTP/1.1" 200 40059
+INFO 2025-08-15 09:26:51,315 basehttp 14392 25680 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-08-15 09:26:51,342 basehttp 14392 9124 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:27:22,202 basehttp 14392 9124 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43134
+INFO 2025-08-15 09:27:22,216 basehttp 14392 9124 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:27:26,211 basehttp 14392 9124 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44873
+INFO 2025-08-15 09:27:26,224 basehttp 14392 9124 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:28:37,925 basehttp 14392 9124 "POST /admin/training/capacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:28:37,945 basehttp 14392 9124 "GET /admin/training/capacitacion/ HTTP/1.1" 200 44033
+INFO 2025-08-15 09:28:37,960 basehttp 14392 9124 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:28:51,008 basehttp 14392 9124 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:28:54,013 basehttp 14392 9124 "GET /capacitaciones/admin/ HTTP/1.1" 200 24188
+INFO 2025-08-15 09:29:06,556 basehttp 14392 9124 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 14483
+INFO 2025-08-15 09:29:14,529 basehttp 14392 9124 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 10440
+INFO 2025-08-15 09:29:24,566 basehttp 14392 9124 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:29:24,570 basehttp 14392 9124 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 09:29:33,540 basehttp 14392 9124 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:29:33,548 basehttp 14392 9124 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:29:33,579 basehttp 14392 9124 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 09:29:39,244 basehttp 14392 9124 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 09:29:56,688 basehttp 14392 9124 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 09:30:05,432 basehttp 14392 9124 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:30:05,523 basehttp 14392 9124 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:30:07,824 basehttp 14392 9124 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11001
+INFO 2025-08-15 09:41:03,435 autoreload 14392 7688 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 09:41:05,219 autoreload 21536 20592 Watching for file changes with StatReloader
+INFO 2025-08-15 09:42:42,478 basehttp 21536 9468 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 13564
+INFO 2025-08-15 09:42:58,898 basehttp 21536 9468 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:42:58,950 basehttp 21536 9468 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:43:06,193 basehttp 21536 9468 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 13564
+ERROR 2025-08-15 09:43:29,609 log 21536 9468 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 09:43:29,615 basehttp 21536 9468 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82185
+ERROR 2025-08-15 09:44:05,573 log 21536 9468 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 09:44:05,576 basehttp 21536 9468 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 500 82200
+INFO 2025-08-15 09:44:32,995 basehttp 21536 9468 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:44:33,040 basehttp 21536 9468 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:44:34,875 basehttp 21536 9468 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 09:44:52,594 basehttp 21536 9468 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:44:52,627 basehttp 21536 9468 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:44:54,646 basehttp 21536 9468 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 13564
+INFO 2025-08-15 09:47:26,480 autoreload 21536 20592 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 09:47:27,042 autoreload 13184 13720 Watching for file changes with StatReloader
+INFO 2025-08-15 09:48:01,724 autoreload 13184 13720 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 09:48:02,269 autoreload 1816 7196 Watching for file changes with StatReloader
+INFO 2025-08-15 09:48:52,160 basehttp 1816 2932 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+INFO 2025-08-15 09:48:56,033 basehttp 1816 2932 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:48:56,098 basehttp 1816 2932 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:48:57,902 basehttp 1816 2932 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 09:49:03,716 basehttp 1816 2932 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:49:03,745 basehttp 1816 2932 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:49:07,962 basehttp 1816 2932 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+ERROR 2025-08-15 09:49:14,399 log 1816 2932 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 09:49:14,402 basehttp 1816 2932 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 500 82200
+INFO 2025-08-15 09:49:30,390 autoreload 1816 7196 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 09:49:31,174 autoreload 13664 22668 Watching for file changes with StatReloader
+INFO 2025-08-15 09:49:35,542 basehttp 13664 16472 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+INFO 2025-08-15 09:49:38,848 basehttp 13664 16472 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:49:38,915 basehttp 13664 16472 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:49:42,429 basehttp 13664 16472 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 09:49:46,474 basehttp 13664 16472 "GET /capacitaciones/mis-capacitaciones/?search=&estado=&tipo=&proveedor= HTTP/1.1" 200 20481
+INFO 2025-08-15 09:50:26,144 basehttp 13664 16472 "GET /capacitaciones/mis-capacitaciones/?search=&estado=&tipo=opcional&proveedor= HTTP/1.1" 200 20489
+INFO 2025-08-15 09:51:02,757 basehttp 13664 16472 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:51:02,819 basehttp 13664 16472 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 09:51:15,042 basehttp 13664 16472 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+ERROR 2025-08-15 09:51:18,434 log 13664 16472 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 09:51:18,436 basehttp 13664 16472 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82185
+INFO 2025-08-15 09:51:26,682 basehttp 13664 16472 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:51:26,718 basehttp 13664 16472 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 09:51:34,222 basehttp 13664 16472 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:51:34,250 basehttp 13664 16472 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:51:40,166 basehttp 13664 16472 "GET /empleados/ HTTP/1.1" 200 96920
+INFO 2025-08-15 09:51:49,963 basehttp 13664 16472 "GET /capacitaciones/admin/ HTTP/1.1" 200 24188
+INFO 2025-08-15 09:53:01,053 basehttp 13664 16472 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 10440
+INFO 2025-08-15 09:53:37,769 basehttp 13664 16472 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:53:39,885 basehttp 13664 16472 "GET /admin/ HTTP/1.1" 200 47409
+INFO 2025-08-15 09:53:39,938 basehttp 13664 16472 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-08-15 09:53:49,111 basehttp 13664 16472 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 44223
+INFO 2025-08-15 09:53:49,130 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:53:53,490 basehttp 13664 16472 "GET /admin/training/modulocapacitacion/add/ HTTP/1.1" 200 46272
+INFO 2025-08-15 09:53:53,505 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:56:40,946 basehttp 13664 16472 "POST /admin/training/modulocapacitacion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:56:40,995 basehttp 13664 16472 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 45126
+INFO 2025-08-15 09:56:41,010 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:56:54,101 basehttp 13664 16472 "GET /admin/training/leccion/ HTTP/1.1" 200 44862
+INFO 2025-08-15 09:56:54,116 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:56:58,323 basehttp 13664 16472 "GET /admin/training/leccion/add/ HTTP/1.1" 200 46882
+INFO 2025-08-15 09:56:58,338 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:57:53,171 basehttp 13664 16472 "POST /admin/training/leccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:57:53,223 basehttp 13664 16472 "GET /admin/training/leccion/ HTTP/1.1" 200 45721
+INFO 2025-08-15 09:57:53,237 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:58:10,703 basehttp 13664 16472 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 43607
+INFO 2025-08-15 09:58:10,719 basehttp 13664 16472 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:58:13,555 basehttp 13664 16472 "GET /admin/training/contenidoleccion/add/ HTTP/1.1" 200 56137
+INFO 2025-08-15 09:58:13,611 basehttp 13664 11348 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:59:43,139 basehttp 13664 11348 "POST /admin/training/contenidoleccion/add/ HTTP/1.1" 302 0
+INFO 2025-08-15 09:59:43,204 basehttp 13664 11348 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 44467
+INFO 2025-08-15 09:59:43,219 basehttp 13664 11348 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 09:59:50,416 basehttp 13664 11348 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 09:59:52,402 basehttp 13664 11348 "GET /capacitaciones/admin/ HTTP/1.1" 200 24188
+INFO 2025-08-15 10:00:08,451 basehttp 13664 11348 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11397
+INFO 2025-08-15 10:00:20,308 basehttp 13664 11348 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:00:20,313 basehttp 13664 11348 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 10:00:27,591 basehttp 13664 11348 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:00:27,605 basehttp 13664 11348 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:00:27,661 basehttp 13664 11348 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 10:00:30,192 basehttp 13664 11348 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 10:00:34,515 basehttp 13664 11348 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:00:34,539 basehttp 13664 11348 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 10:00:39,356 basehttp 13664 11348 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+ERROR 2025-08-15 10:00:55,966 log 13664 11348 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 10:00:55,967 basehttp 13664 11348 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82185
+INFO 2025-08-15 10:04:02,998 basehttp 13664 11348 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:04:03,001 basehttp 13664 11348 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 10:04:07,799 basehttp 13664 11348 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:04:07,829 basehttp 13664 11348 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 10:04:10,845 basehttp 13664 11348 "GET /capacitaciones/admin/ HTTP/1.1" 200 24188
+INFO 2025-08-15 10:04:13,222 basehttp 13664 11348 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11397
+INFO 2025-08-15 10:05:07,820 basehttp 13664 8268 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 10:05:09,842 basehttp 13664 8268 "GET /admin/ HTTP/1.1" 200 47420
+INFO 2025-08-15 10:05:20,545 basehttp 13664 8268 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43776
+INFO 2025-08-15 10:05:20,558 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:05:25,566 basehttp 13664 8268 "GET /admin/training/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/change/ HTTP/1.1" 200 45253
+INFO 2025-08-15 10:05:25,582 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:05:49,303 basehttp 13664 8268 "GET /admin/training/inscripcioncapacitacion/ HTTP/1.1" 200 44471
+INFO 2025-08-15 10:05:49,318 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:06:13,528 basehttp 13664 8268 "GET /admin/training/capacitacion/ HTTP/1.1" 200 43776
+INFO 2025-08-15 10:06:13,543 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:06:25,436 basehttp 13664 8268 "GET /admin/training/modulocapacitacion/ HTTP/1.1" 200 44843
+INFO 2025-08-15 10:06:25,452 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:06:31,072 basehttp 13664 8268 "GET /admin/training/modulocapacitacion/a02cf314-18e1-4ee4-a6a1-9f0377df9a8b/change/ HTTP/1.1" 200 46700
+INFO 2025-08-15 10:06:31,086 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:07:04,056 basehttp 13664 8268 "GET /admin/training/leccion/ HTTP/1.1" 200 45470
+INFO 2025-08-15 10:07:04,069 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:07:06,338 basehttp 13664 8268 "GET /admin/training/leccion/b5230f5c-abdc-41d7-bcb7-1f1aeaeea710/change/ HTTP/1.1" 200 47296
+INFO 2025-08-15 10:07:06,351 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:07:44,039 basehttp 13664 8268 "GET /admin/training/tipocontenido/ HTTP/1.1" 200 40059
+INFO 2025-08-15 10:07:44,054 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:07:47,089 basehttp 13664 8268 "GET /admin/training/tipocontenido/4/change/ HTTP/1.1" 200 42525
+INFO 2025-08-15 10:07:47,103 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:08:57,563 basehttp 13664 8268 "POST /admin/training/tipocontenido/4/change/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:08:57,591 basehttp 13664 8268 "GET /admin/training/tipocontenido/ HTTP/1.1" 200 40262
+INFO 2025-08-15 10:08:57,604 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:09:09,945 basehttp 13664 8268 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38626
+INFO 2025-08-15 10:09:09,959 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:09:25,348 basehttp 13664 8268 "GET /admin/training/tipocapacitacion/5/change/ HTTP/1.1" 200 39648
+INFO 2025-08-15 10:09:25,362 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:09:49,121 basehttp 13664 8268 "POST /admin/training/tipocapacitacion/5/change/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:09:49,139 basehttp 13664 8268 "GET /admin/training/tipocapacitacion/ HTTP/1.1" 200 38853
+INFO 2025-08-15 10:09:49,154 basehttp 13664 8268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 10:09:54,651 basehttp 13664 8268 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 10:09:56,709 basehttp 13664 8268 "GET /capacitaciones/admin/ HTTP/1.1" 200 24188
+INFO 2025-08-15 10:09:59,773 basehttp 13664 8268 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11397
+INFO 2025-08-15 10:10:10,859 basehttp 13664 8268 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:10:10,864 basehttp 13664 8268 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 10:10:15,242 basehttp 13664 8268 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:10:15,250 basehttp 13664 8268 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:10:15,308 basehttp 13664 8268 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 10:10:21,326 basehttp 13664 8268 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 10:10:31,821 basehttp 13664 8268 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 200 13139
+INFO 2025-08-15 10:10:36,539 basehttp 13664 8268 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:10:36,563 basehttp 13664 8268 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 10:10:37,821 basehttp 13664 8268 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+ERROR 2025-08-15 10:10:41,852 log 13664 8268 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 234, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 10:10:41,853 basehttp 13664 8268 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82185
+INFO 2025-08-15 10:22:52,486 basehttp 13664 8784 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
+INFO 2025-08-15 10:22:58,492 basehttp 13664 8784 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 10:22:58,536 basehttp 13664 8784 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
