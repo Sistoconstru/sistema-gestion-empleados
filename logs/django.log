@@ -18491,3 +18491,535 @@ INFO 2025-08-15 07:16:57,028 basehttp 15140 5236 "GET /dashboard/ HTTP/1.1" 200 
 INFO 2025-08-15 07:17:05,082 basehttp 15140 5236 "GET /empleados/ HTTP/1.1" 200 96920
 INFO 2025-08-15 07:17:14,648 basehttp 15140 5236 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36894
 INFO 2025-08-15 07:17:57,047 basehttp 15140 5236 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-15 07:21:17,031 basehttp 15140 5236 "GET /empleados/ HTTP/1.1" 200 96920
+INFO 2025-08-15 07:21:19,281 basehttp 15140 5236 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36894
+INFO 2025-08-15 07:21:23,053 basehttp 15140 5236 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13815
+INFO 2025-08-15 07:22:08,593 basehttp 15140 5236 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36894
+INFO 2025-08-15 07:30:27,841 basehttp 15140 23636 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13815
+INFO 2025-08-15 07:32:58,099 basehttp 15140 23636 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36894
+INFO 2025-08-15 07:33:16,193 basehttp 15140 23636 "GET /dashboard/ HTTP/1.1" 200 13406
+INFO 2025-08-15 07:47:51,198 autoreload 15140 4724 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:47:51,824 autoreload 1792 26400 Watching for file changes with StatReloader
+INFO 2025-08-15 07:50:06,069 autoreload 26120 13044 Watching for file changes with StatReloader
+INFO 2025-08-15 07:50:13,770 basehttp 1792 7976 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 07:50:14,101 basehttp 1792 7976 "GET /dashboard/ HTTP/1.1" 200 13853
+ERROR 2025-08-15 07:50:29,264 log 1792 7976 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.InvalidColumnReference: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 60, in get_context_data
+    ).distinct('empleado').count()
+                           ~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+ERROR 2025-08-15 07:50:29,271 basehttp 1792 7976 "GET /capacitaciones/admin/ HTTP/1.1" 500 170243
+ERROR 2025-08-15 07:51:55,624 log 1792 7976 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.InvalidColumnReference: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 60, in get_context_data
+    ).distinct('empleado').count()
+                           ~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+ERROR 2025-08-15 07:51:55,627 basehttp 1792 7976 "GET /capacitaciones/admin/ HTTP/1.1" 500 170243
+INFO 2025-08-15 07:52:16,802 basehttp 1792 7976 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 07:52:26,727 autoreload 1792 26400 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:52:27,048 autoreload 26120 13044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:52:27,396 autoreload 14492 2364 Watching for file changes with StatReloader
+INFO 2025-08-15 07:52:27,719 autoreload 20948 12728 Watching for file changes with StatReloader
+INFO 2025-08-15 07:52:40,615 basehttp 14492 444 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 07:52:43,151 basehttp 14492 444 "GET /dashboard/ HTTP/1.1" 200 13853
+ERROR 2025-08-15 07:52:45,165 log 14492 444 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.InvalidColumnReference: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 60, in get_context_data
+    ).distinct('empleado').count()
+                           ~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1622, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: las expresiones de SELECT DISTINCT ON deben coincidir con las expresiones iniciales de ORDER BY
+LINE 1: SELECT COUNT(*) FROM (SELECT DISTINCT ON ("inscripciones_cap...
+                                                  ^
+
+ERROR 2025-08-15 07:52:45,172 basehttp 14492 444 "GET /capacitaciones/admin/ HTTP/1.1" 500 170243
+INFO 2025-08-15 07:53:15,550 autoreload 20948 12728 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:53:15,553 autoreload 14492 2364 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:53:16,176 autoreload 22032 19888 Watching for file changes with StatReloader
+INFO 2025-08-15 07:53:16,188 autoreload 26164 3920 Watching for file changes with StatReloader
+INFO 2025-08-15 07:53:23,959 autoreload 22032 19888 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:53:23,961 autoreload 26164 3920 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:53:24,688 autoreload 19368 12460 Watching for file changes with StatReloader
+INFO 2025-08-15 07:53:24,688 autoreload 14356 22364 Watching for file changes with StatReloader
+ERROR 2025-08-15 07:54:14,485 log 19368 22668 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 64, in get_context_data
+    context['completadas_mes'] = InscripcionCapacitacion.objects.filter(
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        estado='completado',
+        ^^^^^^^^^^^^^^^^^^^^
+        fecha_completado__gte=inicio_mes
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).count()
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'fecha_completado' into field. Choices are: aprobada_supervisor, aprobado_por, aprobado_por_id, capacitacion, capacitacion_id, certificado_externo, certificadocapacitacion, empleado, empleado_id, estado, fecha_aprobacion, fecha_certificado_externo, fecha_finalizacion, fecha_inicio, fecha_inscripcion, fecha_limite, id, inscrito_por, inscrito_por_id, intentos_realizados, intentovaloracion, obligatoria, observaciones_admin, observaciones_empleado, observaciones_supervisor, porcentaje_completado, progresocapacitacion, puntaje_final, tiempo_total_minutos, validado_por_admin
+ERROR 2025-08-15 07:54:14,490 basehttp 19368 22668 "GET /capacitaciones/admin/ HTTP/1.1" 500 146315
+INFO 2025-08-15 07:55:03,984 autoreload 19368 12460 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:55:03,995 autoreload 14356 22364 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:55:04,683 autoreload 1664 5396 Watching for file changes with StatReloader
+INFO 2025-08-15 07:55:04,683 autoreload 7404 5372 Watching for file changes with StatReloader
+ERROR 2025-08-15 07:55:21,882 log 7404 13072 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 64, in get_context_data
+    context['completadas_mes'] = InscripcionCapacitacion.objects.filter(
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        estado='completado',
+        ^^^^^^^^^^^^^^^^^^^^
+        fecha_completado__gte=inicio_mes
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).count()
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'fecha_completado' into field. Choices are: aprobada_supervisor, aprobado_por, aprobado_por_id, capacitacion, capacitacion_id, certificado_externo, certificadocapacitacion, empleado, empleado_id, estado, fecha_aprobacion, fecha_certificado_externo, fecha_finalizacion, fecha_inicio, fecha_inscripcion, fecha_limite, id, inscrito_por, inscrito_por_id, intentos_realizados, intentovaloracion, obligatoria, observaciones_admin, observaciones_empleado, observaciones_supervisor, porcentaje_completado, progresocapacitacion, puntaje_final, tiempo_total_minutos, validado_por_admin
+ERROR 2025-08-15 07:55:21,893 basehttp 7404 13072 "GET /capacitaciones/admin/ HTTP/1.1" 500 146193
+ERROR 2025-08-15 07:55:29,985 log 7404 13072 Internal Server Error: /capacitaciones/admin/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\list.py", line 178, in get
+    context = self.get_context_data()
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 64, in get_context_data
+    context['completadas_mes'] = InscripcionCapacitacion.objects.filter(
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        estado='completado',
+        ^^^^^^^^^^^^^^^^^^^^
+        fecha_completado__gte=inicio_mes
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).count()
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'fecha_completado' into field. Choices are: aprobada_supervisor, aprobado_por, aprobado_por_id, capacitacion, capacitacion_id, certificado_externo, certificadocapacitacion, empleado, empleado_id, estado, fecha_aprobacion, fecha_certificado_externo, fecha_finalizacion, fecha_inicio, fecha_inscripcion, fecha_limite, id, inscrito_por, inscrito_por_id, intentos_realizados, intentovaloracion, obligatoria, observaciones_admin, observaciones_empleado, observaciones_supervisor, porcentaje_completado, progresocapacitacion, puntaje_final, tiempo_total_minutos, validado_por_admin
+ERROR 2025-08-15 07:55:29,989 basehttp 7404 13072 "GET /capacitaciones/admin/ HTTP/1.1" 500 146193
+INFO 2025-08-15 07:57:08,311 autoreload 1664 5396 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:57:08,581 autoreload 7404 5372 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 07:57:08,983 autoreload 14140 17164 Watching for file changes with StatReloader
+INFO 2025-08-15 07:57:09,248 autoreload 23192 11468 Watching for file changes with StatReloader
+INFO 2025-08-15 07:57:27,362 basehttp 14140 20260 "GET /capacitaciones/admin/ HTTP/1.1" 200 18908
+INFO 2025-08-15 07:58:21,759 basehttp 14140 20260 "GET /admin/training/capacitacion/0cf7b5ab-6627-41cb-8fb9-f16bc83cfb82/change/ HTTP/1.1" 200 45250
+INFO 2025-08-15 07:58:21,867 basehttp 14140 4864 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 07:58:21,888 basehttp 14140 11064 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-08-15 07:58:21,890 basehttp 14140 20920 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-08-15 07:58:21,891 basehttp 14140 20260 "GET /static/admin/css/base.css HTTP/1.1" 200 22154
+INFO 2025-08-15 07:58:21,893 basehttp 14140 22312 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-08-15 07:58:21,898 basehttp 14140 11220 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-08-15 07:58:21,906 basehttp 14140 20260 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-08-15 07:58:21,913 basehttp 14140 20920 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-08-15 07:58:21,916 basehttp 14140 22312 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-08-15 07:58:21,919 basehttp 14140 20260 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-08-15 07:58:21,921 basehttp 14140 11220 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-08-15 07:58:21,921 basehttp 14140 4864 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16632
+INFO 2025-08-15 07:58:21,935 basehttp 14140 20920 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-08-15 07:58:21,938 basehttp 14140 22312 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-08-15 07:58:21,940 basehttp 14140 4864 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-08-15 07:58:21,941 basehttp 14140 20260 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-08-15 07:58:21,948 basehttp 14140 20920 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-08-15 07:58:21,954 basehttp 14140 11064 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-08-15 07:58:21,973 basehttp 14140 11064 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-08-15 07:58:21,982 basehttp 14140 11064 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-08-15 07:58:21,990 basehttp 14140 11064 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-08-15 07:58:22,004 basehttp 14140 11220 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-08-15 07:58:22,007 basehttp 14140 11064 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-08-15 07:58:22,022 basehttp 14140 11220 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-08-15 07:58:22,066 basehttp 14140 11220 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+ERROR 2025-08-15 07:58:43,482 log 14140 11220 Internal Server Error: /capacitaciones/capacitacion/0cf7b5ab-6627-41cb-8fb9-f16bc83cfb82/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/capacitacion_detail.html
+ERROR 2025-08-15 07:58:43,485 basehttp 14140 11220 "GET /capacitaciones/capacitacion/0cf7b5ab-6627-41cb-8fb9-f16bc83cfb82/ HTTP/1.1" 500 91968
+INFO 2025-08-15 07:59:37,223 basehttp 14140 11220 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44835
+INFO 2025-08-15 07:59:37,239 basehttp 14140 11220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:07:38,627 basehttp 14140 15256 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 08:07:42,935 basehttp 14140 15256 "GET /empleados/ HTTP/1.1" 200 96920
+INFO 2025-08-15 08:08:24,887 basehttp 14140 15256 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 08:11:37,694 basehttp 14140 15256 "GET /capacitaciones/admin/ HTTP/1.1" 200 18908
+INFO 2025-08-15 08:14:15,330 basehttp 14140 15256 "GET /capacitaciones/admin/ HTTP/1.1" 200 18908
+INFO 2025-08-15 08:14:46,414 autoreload 17780 17676 Watching for file changes with StatReloader
+INFO 2025-08-15 08:14:50,893 basehttp 14140 15256 "GET /capacitaciones/admin/ HTTP/1.1" 200 19376
+INFO 2025-08-15 08:15:57,794 basehttp 14140 15256 "GET /capacitaciones/admin/ HTTP/1.1" 200 19376
+INFO 2025-08-15 08:16:11,819 autoreload 17780 17676 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-08-15 08:16:12,089 autoreload 14140 17164 C:\SIGHU\sighu\sistema-gestion-empleados\config\settings\base.py changed, reloading.
+INFO 2025-08-15 08:16:12,477 autoreload 10360 13808 Watching for file changes with StatReloader
+INFO 2025-08-15 08:16:12,775 autoreload 18764 14872 Watching for file changes with StatReloader
+INFO 2025-08-15 08:16:22,724 basehttp 10360 11632 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:16:35,663 basehttp 10360 11632 "GET /admin/training/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/change/ HTTP/1.1" 200 45290
+INFO 2025-08-15 08:16:35,685 basehttp 10360 11632 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+ERROR 2025-08-15 08:16:48,318 log 10360 11632 Internal Server Error: /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/capacitacion_detail.html
+ERROR 2025-08-15 08:16:48,320 basehttp 10360 11632 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 500 91846
+INFO 2025-08-15 08:18:19,447 autoreload 10360 13808 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 08:18:19,450 autoreload 18764 14872 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 08:18:20,137 autoreload 25536 15044 Watching for file changes with StatReloader
+INFO 2025-08-15 08:28:05,072 basehttp 25536 10104 "GET /capacitaciones/capacitacion/7c04b5da-44d2-4169-b11c-e88135078fcb/ HTTP/1.1" 200 10628
+INFO 2025-08-15 08:28:54,251 basehttp 25536 10104 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:28:58,551 basehttp 25536 10104 "GET /admin/training/capacitacion/7c04b5da-44d2-4169-b11c-e88135078fcb/change/ HTTP/1.1" 200 45382
+INFO 2025-08-15 08:28:58,578 basehttp 25536 10104 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:29:12,144 basehttp 25536 10104 "GET /admin/training/capacitacion/add/ HTTP/1.1" 200 44835
+INFO 2025-08-15 08:29:12,160 basehttp 25536 10104 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:29:33,269 autoreload 25536 15044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 08:29:33,274 autoreload 19992 20968 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 08:29:33,985 autoreload 18548 24784 Watching for file changes with StatReloader
+INFO 2025-08-15 08:29:42,660 basehttp 14392 23796 "GET /capacitaciones/admin/ HTTP/1.1" 200 19796
+INFO 2025-08-15 08:29:45,326 basehttp 14392 23796 "GET /admin/training/capacitacion/7c04b5da-44d2-4169-b11c-e88135078fcb/change/ HTTP/1.1" 200 45382
+INFO 2025-08-15 08:29:45,342 basehttp 14392 23796 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 08:29:50,919 basehttp 14392 23796 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 16248
+INFO 2025-08-15 08:30:12,588 basehttp 14392 23796 "GET /admin/training/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/change/ HTTP/1.1" 200 45290
+INFO 2025-08-15 08:30:12,605 basehttp 14392 23796 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+ERROR 2025-08-15 08:30:19,151 log 14392 23796 Internal Server Error: /capacitaciones/player/81260677-674f-4cd3-80f4-a54d69b0c7fe/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 08:30:19,154 basehttp 14392 23796 "GET /capacitaciones/player/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 500 91686

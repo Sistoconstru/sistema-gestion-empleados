@@ -100,6 +100,7 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
+        'CONN_MAX_AGE': 0,
         'OPTIONS': {
             'client_encoding': 'UTF8',
             # Quitar la línea problemática de transaction_isolation

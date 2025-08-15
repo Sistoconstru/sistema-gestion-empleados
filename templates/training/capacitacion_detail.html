@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ capacitacion.nombre }} - Detalles{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'training:capacitacion_list' %}">Capacitaciones</a></li>
+<li class="breadcrumb-item active">{{ capacitacion.nombre }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Información Principal -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">
+                    <i class="fas {% if capacitacion.es_externa %}fa-external-link-alt{% else %}fa-graduation-cap{% endif %} me-2"></i>
+                    {{ capacitacion.nombre }}
+                </h4>
+                <span class="badge {% if capacitacion.activa %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ capacitacion.activa|yesno:"Activa,Inactiva" }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1">Código</p>
+                        <p class="h6 mb-3">{{ capacitacion.codigo }}</p>
+                        
+                        <p class="text-muted mb-1">Tipo</p>
+                        <p class="h6 mb-3">{{ capacitacion.tipo.nombre }}</p>
+                        
+                        <p class="text-muted mb-1">Duración Estimada</p>
+                        <p class="h6 mb-3">{{ capacitacion.get_duracion_display }}</p>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1">Nivel de Dificultad</p>
+                        <p class="h6 mb-3">{{ capacitacion.get_nivel_dificultad_display }}</p>
+                        
+                        <p class="text-muted mb-1">Puntaje Mínimo Aprobación</p>
+                        <p class="h6 mb-3">{{ capacitacion.puntaje_aprobacion }}%</p>
+                        
+                        <p class="text-muted mb-1">Intentos Máximos</p>
+                        <p class="h6 mb-3">{{ capacitacion.intentos_maximos }}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h5 class="mb-3">Descripción</h5>
+                <p class="mb-0">{{ capacitacion.descripcion|linebreaks }}</p>
+                
+                {% if capacitacion.es_externa %}
+                <hr>
+                <div class="alert alert-info mb-0">
+                    <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Capacitación Externa</h6>
+                    <p class="mb-1">Proveedor: {{ capacitacion.proveedor_externo.nombre }}</p>
+                    {% if capacitacion.url_inscripcion_externa %}
+                    <a href="{{ capacitacion.url_inscripcion_externa }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="fas fa-external-link-alt me-1"></i>Ir al sitio del proveedor
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Módulos -->
+        {% if not capacitacion.es_externa %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-book me-2"></i>Módulos
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for modulo in modulos %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-bookmark text-primary me-2"></i>
+                            {{ modulo.nombre }}
+                        </h6>
+                        <span class="badge bg-secondary">{{ modulo.duracion_estimada_minutos }} minutos</span>
+                    </div>
+                    <p class="text-muted small mb-2">{{ modulo.descripcion }}</p>
+                    
+                    <!-- Lecciones -->
+                    <div class="list-group list-group-flush">
+                        {% for leccion in modulo.leccion_set.all %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-file-alt text-muted me-2"></i>
+                                    {{ leccion.nombre }}
+                                </div>
+                                <small class="text-muted">{{ leccion.duracion_estimada_minutos }} min.</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-4">
+                    <i class="fas fa-info-circle text-muted fa-2x mb-2"></i>
+                    <p class="text-muted mb-0">No hay módulos configurados</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Estadísticas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Estadísticas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Total Inscritos</span>
+                        <span class="fw-bold">{{ total_inscritos }}</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-primary" style="width: 100%;"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">En Progreso</span>
+                        <span class="fw-bold">{{ en_progreso }}</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-warning" style="width: {{ porcentaje_progreso }}%;"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Completados</span>
+                        <span class="fw-bold">{{ completados }}</span>
+                    </div>
+                    <div class="progress" style="height: 5px;">
+                        <div class="progress-bar bg-success" style="width: {{ porcentaje_completados }}%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cargos Asignados -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Cargos Asignados
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for asignacion in cargos_asignados %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">{{ asignacion.cargo.nombre }}</h6>
+                            <small class="text-muted d-block">{{ asignacion.cargo.area.nombre }}</small>
+                        </div>
+                        <span class="badge {% if asignacion.obligatoria %}bg-warning{% else %}bg-info{% endif %}">
+                            {{ asignacion.obligatoria|yesno:"Obligatoria,Opcional" }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted mb-0">No hay cargos asignados</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Acciones -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {% if perms.training.change_capacitacion %}
+                    <a href="{% url 'admin:training_capacitacion_change' capacitacion.id %}" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i>Editar Capacitación
+                    </a>
+                    {% endif %}
+                    
+                    {% if not capacitacion.es_externa %}
+                    <a href="{% url 'training:player' capacitacion.id %}" class="btn btn-success">
+                        <i class="fas fa-play me-1"></i>Iniciar Vista Previa
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

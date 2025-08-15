@@ -27,8 +27,49 @@ class CapacitacionListView(LoginRequiredMixin, ListView):
     paginate_by = 20
     
     def get_queryset(self):
-        # Lista todas las capacitaciones activas, ordenadas por fecha de creación
-        return Capacitacion.objects.select_related('tipo').filter(activa=True).order_by('-fecha_creacion')
+        queryset = Capacitacion.objects.select_related('tipo').order_by('-fecha_creacion')
+        
+        # Aplicar filtros
+        estado = self.request.GET.get('estado')
+        tipo = self.request.GET.get('tipo')
+        
+        if estado:
+            if estado == 'activa':
+                queryset = queryset.filter(activa=True)
+            elif estado == 'inactiva':
+                queryset = queryset.filter(activa=False)
+        
+        if tipo:
+            queryset = queryset.filter(tipo_id=tipo)
+            
+        return queryset
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Estadísticas
+        context['total_capacitaciones'] = Capacitacion.objects.filter(activa=True).count()
+        context['total_obligatorias'] = CapacitacionCargo.objects.filter(
+            capacitacion__activa=True,
+            obligatoria=True
+        ).values('capacitacion').distinct().count()
+        
+        # Capacitaciones en progreso - usando values y distinct
+        context['en_progreso'] = InscripcionCapacitacion.objects.filter(
+            estado='en_progreso'
+        ).values('empleado').distinct().count()
+        
+        # Completadas este mes
+        inicio_mes = timezone.now().replace(day=1, hour=0, minute=0, second=0)
+        context['completadas_mes'] = InscripcionCapacitacion.objects.filter(
+            estado__in=['completado', 'aprobado'],
+            fecha_finalizacion__gte=inicio_mes
+        ).count()
+        
+        # Tipos para filtros
+        context['tipos_capacitacion'] = TipoCapacitacion.objects.all()
+        
+        return context
 
 class MisCapacitacionesView(LoginRequiredMixin, ListView):
     """Vista para empleados - sus capacitaciones"""
@@ -140,6 +181,26 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         capacitacion = self.get_object()
         
+        # Estadísticas de inscripciones
+        inscripciones = InscripcionCapacitacion.objects.filter(capacitacion=capacitacion)
+        context['total_inscritos'] = inscripciones.count()
+        context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
+        context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
+        
+        # Calcular porcentajes para las barras de progreso
+        if context['total_inscritos'] > 0:
+            context['porcentaje_progreso'] = (context['en_progreso'] / context['total_inscritos']) * 100
+            context['porcentaje_completados'] = (context['completados'] / context['total_inscritos']) * 100
+        else:
+            context['porcentaje_progreso'] = 0
+            context['porcentaje_completados'] = 0
+        
+        # Cargos asignados
+        context['cargos_asignados'] = CapacitacionCargo.objects.filter(
+            capacitacion=capacitacion,
+            activa=True
+        ).select_related('cargo', 'cargo__area').order_by('cargo__nombre')
+        
         # Verificar si el usuario está inscrito
         try:
             empleado = Empleado.objects.get(usuario=self.request.user)
@@ -155,7 +216,7 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
         if capacitacion.requiere_modulos():
             context['modulos'] = capacitacion.modulocapacitacion_set.filter(
                 activo=True
-            ).order_by('orden')
+            ).prefetch_related('leccion_set').order_by('orden')
         
         return context
 
