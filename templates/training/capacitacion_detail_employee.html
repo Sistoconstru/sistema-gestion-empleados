@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ capacitacion.nombre }} - Detalles{% endblock %}
+
+{% block breadcrumb_items %}
+
+
+<li class="breadcrumb-item active">{{ capacitacion.nombre }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Información Principal -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">
+                    <i class="fas {% if capacitacion.es_externa %}fa-external-link-alt{% else %}fa-graduation-cap{% endif %} me-2"></i>
+                    {{ capacitacion.nombre }}
+                </h4>
+                <span class="badge bg-{{ inscripcion.get_estado_badge }}">
+                    {{ inscripcion.get_estado_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1">Código</p>
+                        <p class="h6 mb-3">{{ capacitacion.codigo }}</p>
+                        
+                        <p class="text-muted mb-1">Tipo</p>
+                        <p class="h6 mb-3">{{ capacitacion.tipo.nombre }}</p>
+                        
+                        <p class="text-muted mb-1">Duración Estimada</p>
+                        <p class="h6 mb-3">{{ capacitacion.get_duracion_display }}</p>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <p class="text-muted mb-1">Nivel de Dificultad</p>
+                        <p class="h6 mb-3">{{ capacitacion.get_nivel_dificultad_display }}</p>
+                        
+                        <p class="text-muted mb-1">Puntaje Mínimo Aprobación</p>
+                        <p class="h6 mb-3">{{ capacitacion.puntaje_aprobacion }}%</p>
+                        
+                        <p class="text-muted mb-1">Intentos Máximos</p>
+                        <p class="h6 mb-3">{{ capacitacion.intentos_maximos }}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h5 class="mb-3">Descripción</h5>
+                <p class="mb-4">{{ capacitacion.descripcion|linebreaks }}</p>
+
+                {% if capacitacion.es_externa %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Esta es una capacitación externa proporcionada por {{ capacitacion.proveedor_externo.nombre }}.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if modulos %}
+        <!-- Módulos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list-ul me-2"></i>Módulos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for modulo in modulos %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h6 class="mb-1">{{ modulo.nombre }}</h6>
+                            {% with progreso=modulo.get_progreso_empleado %}
+                            {% if progreso %}
+                            <span class="badge bg-{{ progreso.get_estado_badge }}">
+                                {{ progreso.get_estado_display }}
+                            </span>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <p class="mb-1 text-muted small">{{ modulo.descripcion }}</p>
+                        <small>Duración: {{ modulo.duracion_minutos }} minutos</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <!-- Estado y Progreso -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Mi Progreso
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <p class="text-muted mb-1">Estado</p>
+                    <h5><span class="badge bg-{{ inscripcion.get_estado_badge }}">{{ inscripcion.get_estado_display }}</span></h5>
+                </div>
+
+                {% if inscripcion.fecha_inscripcion %}
+                <div class="mb-3">
+                    <p class="text-muted mb-1">Fecha de Inscripción</p>
+                    <p class="h6">{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</p>
+                </div>
+                {% endif %}
+
+                {% if inscripcion.fecha_finalizacion %}
+                <div class="mb-3">
+                    <p class="text-muted mb-1">Fecha de Finalización</p>
+                    <p class="h6">{{ inscripcion.fecha_finalizacion|date:"d/m/Y" }}</p>
+                </div>
+                {% endif %}
+
+                {% if inscripcion.puntaje_final %}
+                <div class="mb-3">
+                    <p class="text-muted mb-1">Puntaje Final</p>
+                    <p class="h6">{{ inscripcion.puntaje_final }}%</p>
+                </div>
+                {% endif %}
+
+                {% if capacitacion.es_externa %}
+                <div class="d-grid">
+                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt me-2"></i>Ir al sitio del curso
+                    </a>
+                </div>
+                {% else %}
+                <div class="d-grid">
+                    <button class="btn btn-primary" {% if not inscripcion.puede_iniciar %}disabled{% endif %}>
+                        <i class="fas fa-play me-2"></i>Iniciar Módulo
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Aquí puedes agregar JavaScript adicional si es necesario
+</script>
+{% endblock %}

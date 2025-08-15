@@ -9,8 +9,6 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
 
 {% block breadcrumb_items %}
 
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' empleado.pk %}">{{ empleado.nombre_completo }}</a></li>
-<li class="breadcrumb-item active">Documentos</li>
 {% endblock %}
 
 {% block content %}

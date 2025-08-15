@@ -19386,3 +19386,603 @@ ERROR 2025-08-15 10:10:41,853 basehttp 13664 8268 "GET /capacitaciones/capacitac
 INFO 2025-08-15 10:22:52,486 basehttp 13664 8784 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 11732
 INFO 2025-08-15 10:22:58,492 basehttp 13664 8784 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
 INFO 2025-08-15 10:22:58,536 basehttp 13664 8784 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:07:27,225 autoreload 13664 22668 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:07:27,946 autoreload 4876 18992 Watching for file changes with StatReloader
+INFO 2025-08-15 11:10:30,057 autoreload 8656 24624 Watching for file changes with StatReloader
+INFO 2025-08-15 11:10:38,862 basehttp 4876 4412 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:10:38,922 basehttp 4876 4412 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:10:46,659 basehttp 4876 4412 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20481
+INFO 2025-08-15 11:11:08,796 basehttp 4876 4412 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 16126
+ERROR 2025-08-15 11:11:48,670 log 4876 4412 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 11:11:48,673 basehttp 4876 4412 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82883
+ERROR 2025-08-15 11:15:03,942 log 4876 4412 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 11:15:03,946 basehttp 4876 4412 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82883
+INFO 2025-08-15 11:15:49,872 autoreload 4876 18992 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:15:50,407 autoreload 8656 24624 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:15:50,585 autoreload 7000 22264 Watching for file changes with StatReloader
+INFO 2025-08-15 11:15:51,200 autoreload 7992 26168 Watching for file changes with StatReloader
+INFO 2025-08-15 11:15:57,245 basehttp 7000 22756 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 16126
+ERROR 2025-08-15 11:16:05,553 log 7000 22756 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in inscribir_capacitacion
+    if capacitacion.es_obligatoria():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Capacitacion' object has no attribute 'es_obligatoria'
+ERROR 2025-08-15 11:16:05,555 basehttp 7000 22756 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 500 82883
+INFO 2025-08-15 11:16:22,604 basehttp 7000 22756 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:16:22,614 basehttp 7000 22756 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 11:16:27,639 basehttp 7000 22756 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:16:27,668 basehttp 7000 22756 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:16:35,168 basehttp 7000 22756 "GET /capacitaciones/admin/ HTTP/1.1" 200 23725
+INFO 2025-08-15 11:16:42,831 basehttp 7000 22756 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11397
+INFO 2025-08-15 11:17:03,160 basehttp 7000 22756 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:17:03,184 basehttp 7000 22756 "GET /dashboard/ HTTP/1.1" 200 14238
+INFO 2025-08-15 11:17:03,974 basehttp 7000 22756 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:17:07,192 basehttp 7000 22756 "GET /admin/ HTTP/1.1" 200 47340
+INFO 2025-08-15 11:17:25,390 basehttp 7000 22756 "GET /admin/training/contenidoleccion/ HTTP/1.1" 200 44163
+INFO 2025-08-15 11:17:25,408 basehttp 7000 22756 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 11:17:28,581 basehttp 7000 22756 "GET /admin/training/contenidoleccion/3a3a9e26-4c37-4d00-a148-092c2564001f/change/ HTTP/1.1" 200 56646
+INFO 2025-08-15 11:17:28,596 basehttp 7000 22756 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 11:17:42,694 basehttp 7000 22756 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:18:45,352 autoreload 7000 22264 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:18:45,638 autoreload 7992 26168 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:18:46,073 autoreload 2160 16476 Watching for file changes with StatReloader
+INFO 2025-08-15 11:18:46,316 autoreload 19240 25588 Watching for file changes with StatReloader
+INFO 2025-08-15 11:20:05,613 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:20:10,131 basehttp 2160 11404 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:20:10,144 basehttp 2160 11404 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 11:20:14,063 basehttp 2160 11404 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:20:14,074 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:20:14,142 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 11:20:31,200 basehttp 2160 11404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 16126
+INFO 2025-08-15 11:20:56,073 basehttp 2160 11404 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:20:56,129 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11568
+ERROR 2025-08-15 11:21:46,680 log 2160 11404 Internal Server Error: /capacitaciones/player/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 11:21:46,682 basehttp 2160 11404 "GET /capacitaciones/player/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 91690
+INFO 2025-08-15 11:21:48,454 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11159
+INFO 2025-08-15 11:22:03,220 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23558
+INFO 2025-08-15 11:22:31,742 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11159
+INFO 2025-08-15 11:22:37,553 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23558
+INFO 2025-08-15 11:22:48,399 basehttp 2160 11404 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:22:48,402 basehttp 2160 11404 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 11:22:53,191 basehttp 2160 11404 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:22:53,224 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:22:55,165 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 11:23:06,786 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11401
+INFO 2025-08-15 11:23:29,018 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:23:30,070 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 11:23:42,518 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 11:23:51,713 basehttp 2160 11404 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:23:51,716 basehttp 2160 11404 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 11:23:57,561 basehttp 2160 11404 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:23:57,572 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:23:57,633 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 11:24:01,709 basehttp 2160 11404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 11:24:07,533 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:24:07,557 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:24:10,114 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+ERROR 2025-08-15 11:24:16,999 log 2160 11404 Internal Server Error: /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 11:24:17,001 basehttp 2160 11404 "GET /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/ HTTP/1.1" 500 91659
+ERROR 2025-08-15 11:24:34,470 log 2160 11404 Internal Server Error: /capacitaciones/player/be342c60-4da1-4e85-ac78-9280f6895232/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 11:24:34,472 basehttp 2160 11404 "GET /capacitaciones/player/be342c60-4da1-4e85-ac78-9280f6895232/ HTTP/1.1" 500 91659
+INFO 2025-08-15 11:24:56,363 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:24:56,421 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:25:01,245 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:25:04,846 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:25:04,867 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:25:08,340 basehttp 2160 11404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 11:25:19,246 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:25:19,268 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:25:54,948 basehttp 2160 11404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 11:26:06,118 basehttp 2160 11404 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:26:06,167 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:27:45,592 basehttp 2160 11404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 11:28:07,374 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:28:07,422 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:28:09,422 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:28:33,885 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11159
+INFO 2025-08-15 11:30:26,051 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23558
+INFO 2025-08-15 11:30:34,467 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:30:34,508 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:30:36,763 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:30:42,207 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11159
+INFO 2025-08-15 11:31:43,261 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:31:43,295 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:31:44,770 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:32:17,379 basehttp 2160 11404 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 16006
+INFO 2025-08-15 11:32:21,046 basehttp 2160 11404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23558
+INFO 2025-08-15 11:32:50,762 basehttp 2160 11404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:32:50,802 basehttp 2160 11404 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:32:51,932 basehttp 2160 11404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:33:53,932 basehttp 2160 11404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11159
+INFO 2025-08-15 11:38:41,025 autoreload 2160 16476 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:38:41,181 autoreload 19240 25588 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:38:41,713 autoreload 21404 17044 Watching for file changes with StatReloader
+INFO 2025-08-15 11:38:41,852 autoreload 24884 9484 Watching for file changes with StatReloader
+INFO 2025-08-15 11:46:56,889 basehttp 21404 19936 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:46:56,993 basehttp 21404 19936 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:46:58,888 basehttp 21404 19936 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:47:01,605 basehttp 21404 19936 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 11:47:48,806 basehttp 21404 19936 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:47:48,834 basehttp 21404 19936 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:47:51,354 basehttp 21404 19936 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+ERROR 2025-08-15 11:47:54,513 log 21404 19936 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'mi_perfil' not found. 'mi_perfil' is not a valid view function or pattern name.
+ERROR 2025-08-15 11:47:54,525 basehttp 21404 19936 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 191338
+ERROR 2025-08-15 11:48:01,886 log 21404 19936 Internal Server Error: /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'mi_perfil' not found. 'mi_perfil' is not a valid view function or pattern name.
+ERROR 2025-08-15 11:48:01,890 basehttp 21404 19936 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 500 199753
+ERROR 2025-08-15 11:52:39,212 log 21404 19936 Internal Server Error: /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'mi_perfil' not found. 'mi_perfil' is not a valid view function or pattern name.
+ERROR 2025-08-15 11:52:39,216 basehttp 21404 19936 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 500 199753
+ERROR 2025-08-15 11:52:43,054 log 21404 19936 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'mi_perfil' not found. 'mi_perfil' is not a valid view function or pattern name.
+ERROR 2025-08-15 11:52:43,059 basehttp 21404 19936 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 191338
+INFO 2025-08-15 11:53:04,637 autoreload 21404 17044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:53:04,874 autoreload 24884 9484 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 11:53:05,352 autoreload 3868 20296 Watching for file changes with StatReloader
+INFO 2025-08-15 11:53:05,542 autoreload 15036 18608 Watching for file changes with StatReloader
+INFO 2025-08-15 11:53:13,048 basehttp 3868 12964 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+ERROR 2025-08-15 11:53:14,896 log 3868 12964 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'mi_perfil' not found. 'mi_perfil' is not a valid view function or pattern name.
+ERROR 2025-08-15 11:53:14,900 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 191338
+INFO 2025-08-15 11:54:02,250 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9000
+INFO 2025-08-15 11:54:43,213 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:54:43,288 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:54:45,043 basehttp 3868 12964 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+ERROR 2025-08-15 11:54:47,833 log 3868 12964 Internal Server Error: /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 11:54:47,835 basehttp 3868 12964 "GET /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/ HTTP/1.1" 500 91659
+ERROR 2025-08-15 11:54:50,936 log 3868 12964 Internal Server Error: /capacitaciones/player/be342c60-4da1-4e85-ac78-9280f6895232/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-15 11:54:50,937 basehttp 3868 12964 "GET /capacitaciones/player/be342c60-4da1-4e85-ac78-9280f6895232/ HTTP/1.1" 500 91659
+INFO 2025-08-15 11:54:56,053 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9000
+INFO 2025-08-15 11:56:51,343 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9069
+INFO 2025-08-15 11:56:52,576 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9069
+INFO 2025-08-15 11:57:01,193 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9069
+INFO 2025-08-15 11:57:47,630 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9004
+INFO 2025-08-15 11:57:57,653 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9004
+INFO 2025-08-15 11:57:59,975 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 11:58:00,027 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 11:58:05,319 basehttp 3868 12964 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 11:58:07,824 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9004
+INFO 2025-08-15 11:58:20,613 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 9069
+INFO 2025-08-15 11:59:15,415 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8968
+INFO 2025-08-15 11:59:59,042 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8903
+INFO 2025-08-15 12:00:50,288 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8900
+INFO 2025-08-15 12:01:11,332 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8835
+INFO 2025-08-15 12:01:17,440 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:01:17,489 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:01:19,065 basehttp 3868 12964 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 12:01:20,923 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8835
+INFO 2025-08-15 12:01:22,791 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:01:22,816 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:01:25,758 basehttp 3868 12964 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 12:01:27,354 basehttp 3868 12964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8835
+INFO 2025-08-15 12:01:30,223 basehttp 3868 12964 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:01:30,247 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:01:53,762 basehttp 3868 12964 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 12:02:05,448 basehttp 3868 12964 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36880
+INFO 2025-08-15 12:02:16,655 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:02:16,682 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:02:21,680 basehttp 3868 12964 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 12:02:33,152 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:02:33,179 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:02:47,111 basehttp 3868 12964 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 12:02:49,174 basehttp 3868 12964 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36880
+INFO 2025-08-15 12:02:56,640 basehttp 3868 12964 "GET /empleados/ HTTP/1.1" 200 89096
+INFO 2025-08-15 12:03:01,791 basehttp 3868 12964 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:03:01,819 basehttp 3868 12964 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:03:03,994 basehttp 3868 12964 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13581
+INFO 2025-08-15 12:04:35,855 basehttp 3868 12964 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13531
+INFO 2025-08-15 12:04:59,168 basehttp 3868 7712 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13420
+INFO 2025-08-15 12:05:02,911 basehttp 3868 7712 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:05:02,950 basehttp 3868 7712 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:05:04,609 basehttp 3868 7712 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13420
+INFO 2025-08-15 12:05:48,967 basehttp 3868 7712 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:05:48,993 basehttp 3868 7712 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:05:58,050 basehttp 3868 7712 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 12:06:02,797 basehttp 3868 7712 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:06:02,841 basehttp 3868 7712 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:06:03,664 basehttp 3868 7712 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824

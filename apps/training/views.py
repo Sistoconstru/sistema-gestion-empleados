@@ -46,6 +46,86 @@ class CapacitacionListView(LoginRequiredMixin, ListView):
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Agregar tipos de capacitación para filtros
+        context['tipos'] = TipoCapacitacion.objects.all()
+        return context
+
+class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
+    """Vista del catálogo de capacitaciones para empleados"""
+    model = Capacitacion
+    template_name = 'training/catalogo.html'
+    context_object_name = 'capacitaciones'
+    paginate_by = 12
+
+    def get_queryset(self):
+        # Obtener solo capacitaciones activas
+        queryset = Capacitacion.objects.filter(activa=True)
+        
+        # Excluir capacitaciones en las que ya está inscrito
+        empleado = get_object_or_404(Empleado, usuario=self.request.user)
+        inscripciones = InscripcionCapacitacion.objects.filter(empleado=empleado)
+        queryset = queryset.exclude(inscripciones__in=inscripciones)
+        
+        # Aplicar filtros
+        tipo = self.request.GET.get('tipo')
+        nivel = self.request.GET.get('nivel')
+        duracion = self.request.GET.get('duracion')
+        
+        if tipo:
+            if tipo == 'interno':
+                queryset = queryset.filter(es_externa=False)
+            elif tipo == 'externo':
+                queryset = queryset.filter(es_externa=True)
+                
+        if nivel:
+            queryset = queryset.filter(nivel_dificultad=nivel)
+            
+        if duracion:
+            queryset = queryset.filter(duracion=duracion)
+            
+        return queryset.select_related('tipo').order_by('nombre')
+
+@login_required
+def inscribir_capacitacion(request, capacitacion_id):
+    """Vista para procesar la inscripción a una capacitación"""
+    capacitacion = get_object_or_404(Capacitacion, id=capacitacion_id, activa=True)
+    empleado = get_object_or_404(Empleado, usuario=request.user)
+    
+    # Verificar si ya está inscrito
+    if InscripcionCapacitacion.objects.filter(empleado=empleado, capacitacion=capacitacion).exists():
+        messages.warning(request, 'Ya estás inscrito en esta capacitación.')
+        return redirect('training:catalogo')
+        
+    if request.method == 'POST':
+        try:
+            # Crear la inscripción
+            inscripcion = InscripcionCapacitacion.objects.create(
+                empleado=empleado,
+                capacitacion=capacitacion,
+                fecha_inscripcion=timezone.now()
+            )
+            
+            # Crear registros de progreso para cada módulo
+            for modulo in capacitacion.modulos.all():
+                ProgresoCapacitacion.objects.create(
+                    inscripcion=inscripcion,
+                    modulo=modulo
+                )
+                
+            messages.success(request, f'Te has inscrito exitosamente en la capacitación: {capacitacion.nombre}')
+            
+            # Si es externa, redirigir a la URL externa
+            if capacitacion.es_externa and capacitacion.url_externa:
+                return redirect(capacitacion.url_externa)
+                
+        except Exception as e:
+            logger.error(f'Error al inscribir empleado {empleado.id} en capacitación {capacitacion_id}: {str(e)}')
+            messages.error(request, 'Ocurrió un error al procesar tu inscripción. Por favor intenta nuevamente.')
+            
+    return redirect('training:catalogo')
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         
         # Estadísticas
         context['total_capacitaciones'] = Capacitacion.objects.filter(activa=True).count()
@@ -179,14 +259,32 @@ class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
 class CapacitacionDetailView(LoginRequiredMixin, DetailView):
     """Detalle de una capacitación"""
     model = Capacitacion
-    template_name = 'training/capacitacion_detail.html'
     context_object_name = 'capacitacion'
+    
+    def get_template_names(self):
+        # Si el usuario viene de mis capacitaciones o del catálogo, usar vista de empleado
+        referer = self.request.META.get('HTTP_REFERER', '')
+        if 'mis-capacitaciones' in referer or 'catalogo' in referer or not (self.request.user.is_staff or self.request.user.is_superuser):
+            return ['training/capacitacion_detail_employee.html']
+        # Para administradores y superusuarios, mostrar vista administrativa
+        return ['training/capacitacion_detail.html']
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         capacitacion = self.get_object()
         
-        # Estadísticas de inscripciones
+        # Obtener la inscripción del empleado si existe
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            try:
+                empleado = Empleado.objects.get(usuario=self.request.user)
+                context['inscripcion'] = InscripcionCapacitacion.objects.get(
+                    empleado=empleado,
+                    capacitacion=capacitacion
+                )
+            except (Empleado.DoesNotExist, InscripcionCapacitacion.DoesNotExist):
+                context['inscripcion'] = None
+        
+        # Estadísticas de inscripciones (solo para admin)
         inscripciones = InscripcionCapacitacion.objects.filter(capacitacion=capacitacion)
         context['total_inscritos'] = inscripciones.count()
         context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
@@ -228,11 +326,11 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
 @login_required
 def inscribir_capacitacion(request, pk):
     """Inscribir empleado a capacitación libre"""
-    capacitacion = get_object_or_404(Capacitacion, pk=pk)
+    capacitacion = get_object_or_404(Capacitacion.objects.select_related('tipo'), pk=pk)
     
     # Verificar que sea capacitación libre
-    if capacitacion.es_obligatoria():
-        messages.error(request, 'No puedes inscribirte a capacitaciones obligatorias')
+    if not capacitacion.tipo.permite_inscripcion_libre:
+        messages.error(request, 'Esta capacitación no permite inscripción libre')
         return redirect('training:catalogo')
     
     try:

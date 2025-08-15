@@ -71,14 +71,16 @@
                     {% endif %}
                 </div>
 
-                <a href="{% url 'training:inscribir_capacitacion' capacitacion.id %}" 
-                   class="btn btn-primary w-100">
+                <button type="button" 
+                   class="btn btn-primary w-100"
+                   data-bs-toggle="modal" 
+                   data-bs-target="#{% if capacitacion.es_externa %}modalExterno{% else %}modalInterno{% endif %}{{ capacitacion.id }}">
                     {% if capacitacion.es_externa %}
-                    <i class="fas fa-external-link-alt me-1"></i>Ir al sitio externo
+                    <i class="fas fa-external-link-alt me-1"></i>Ver detalles
                     {% else %}
                     <i class="fas fa-user-plus me-1"></i>Inscribirme
                     {% endif %}
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -172,6 +174,92 @@
         </div>
     </div>
 </div>
+<!-- Modales de Confirmación -->
+{% for capacitacion in capacitaciones %}
+    {% if capacitacion.es_externa %}
+    <!-- Modal para capacitación externa -->
+    <div class="modal fade" id="modalExterno{{ capacitacion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Capacitación Externa: {{ capacitacion.nombre }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Esta es una capacitación externa. Serás redirigido al sitio del proveedor.
+                    </div>
+                    
+                    <h6 class="fw-bold mb-3">Detalles de la capacitación</h6>
+                    <div class="mb-3">
+                        {{ capacitacion.descripcion }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Información importante:</h6>
+                        <ul class="mb-0">
+                            <li>Duración: {{ capacitacion.get_duracion_display }}</li>
+                            <li>Nivel: {{ capacitacion.get_nivel_dificultad_display }}</li>
+                            {% if capacitacion.puntos_gamificacion %}
+                            <li>Puntos a obtener: {{ capacitacion.puntos_gamificacion }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt me-1"></i>
+                        Ir al sitio externo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Modal para capacitación interna -->
+    <div class="modal fade" id="modalInterno{{ capacitacion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Inscripción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold mb-3">{{ capacitacion.nombre }}</h6>
+                    <p class="mb-4">{{ capacitacion.descripcion }}</p>
+                    
+                    <div class="alert alert-info mb-4">
+                        <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Información importante:</h6>
+                        <ul class="mb-0">
+                            <li>Duración: {{ capacitacion.get_duracion_display }}</li>
+                            <li>Nivel: {{ capacitacion.get_nivel_dificultad_display }}</li>
+                            {% if capacitacion.puntos_gamificacion %}
+                            <li>Puntos a obtener: {{ capacitacion.puntos_gamificacion }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Al inscribirte, te comprometes a completar la capacitación en el tiempo establecido.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form method="post" action="{% url 'training:inscribir_capacitacion' capacitacion.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
 {% endblock %}
 
 {% block extra_css %}
