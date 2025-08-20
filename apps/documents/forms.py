@@ -168,6 +168,70 @@ class DocumentoEmpleadoForm(forms.ModelForm):
         return documento
 
 # Formulario para subir múltiples documentos a la vez
+class DocumentoReemplazoForm(forms.ModelForm):
+    """Formulario para reemplazar documentos rechazados"""
+    
+    class Meta:
+        model = DocumentoEmpleado
+        fields = ['archivo', 'fecha_documento', 'fecha_vencimiento', 'observaciones']
+        widgets = {
+            'archivo': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.jpg,.jpeg,.png',
+                'required': True
+            }),
+            'fecha_documento': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+            'fecha_vencimiento': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+            'observaciones': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Observaciones adicionales (opcional)'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        self.usuario = kwargs.pop('usuario', None)
+        super().__init__(*args, **kwargs)
+        
+        # Configurar campos según el tipo de documento
+        if self.instance and self.instance.tipo_documento:
+            if not self.instance.tipo_documento.tiene_vencimiento:
+                self.fields['fecha_vencimiento'].widget = forms.HiddenInput()
+            else:
+                self.fields['fecha_vencimiento'].required = True
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.instance and self.instance.estado_aprobacion != 'rechazado':
+            raise ValidationError("Solo se pueden reemplazar documentos que han sido rechazados.")
+        
+        # Validar fechas
+        fecha_documento = cleaned_data.get('fecha_documento')
+        fecha_vencimiento = cleaned_data.get('fecha_vencimiento')
+        if fecha_documento and fecha_vencimiento and fecha_vencimiento <= fecha_documento:
+            raise ValidationError({
+                'fecha_vencimiento': 'La fecha de vencimiento debe ser posterior a la fecha del documento'
+            })
+        
+        return cleaned_data
+    
+    def clean_archivo(self):
+        archivo = self.cleaned_data.get('archivo')
+        if archivo and self.instance and self.instance.tipo_documento:
+            # Aplicar validador específico del tipo de documento
+            validator = DocumentValidator(self.instance.tipo_documento)
+            try:
+                validator(archivo)
+            except ValidationError as e:
+                raise forms.ValidationError(str(e))
+        return archivo
+
 class MultipleDocumentUploadForm(forms.Form):
     """Formulario para subir múltiples documentos a la vez"""
     

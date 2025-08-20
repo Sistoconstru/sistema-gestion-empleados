@@ -76,8 +76,13 @@ class DocumentoEmpleado(models.Model):
     observaciones = models.TextField(blank=True)  # Observaciones opcionales
     fecha_carga = models.DateTimeField(auto_now_add=True)  # Fecha de carga
     fecha_aprobacion = models.DateTimeField(null=True, blank=True)  # Fecha de aprobación
+    fecha_rechazo = models.DateTimeField(null=True, blank=True)  # Fecha de rechazo
     cargado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='documentos_cargados')  # Usuario que cargó el documento
     aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='documentos_aprobados')  # Usuario que aprobó el documento
+    rechazado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='documentos_rechazados')  # Usuario que rechazó el documento
+    fecha_ultima_actualizacion = models.DateTimeField(auto_now=True)  # Fecha de última actualización
+    motivo_rechazo = models.TextField(blank=True)  # Motivo del rechazo
+    version = models.IntegerField(default=1)  # Número de versión del documento
     
     class Meta:
         db_table = 'documentos_empleado'

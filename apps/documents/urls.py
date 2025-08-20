@@ -28,6 +28,9 @@ urlpatterns = [
     # Descargar documento
     path('documento/<uuid:documento_pk>/descargar/', views.documento_download, name='documento_download'),
     
+    # Reemplazar documento rechazado
+    path('documento/<uuid:documento_id>/reemplazar/', views.documento_replace, name='documento_replace'),
+    
     # APIs
     path('api/pendientes/', views.documentos_pendientes_api, name='documentos_pendientes_api'),
     

@@ -7,9 +7,73 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
 
 {% block title %}{{ titulo }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .document-container {
+        position: relative;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+    
+    .pdf-viewer {
+        display: block;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .pdf-fallback {
+        display: none;
+        padding: 2rem;
+    }
+    
+    /* Estilos para pantalla completa */
+    .document-container:fullscreen {
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        background: white;
+    }
+    
+    .document-container:fullscreen .pdf-viewer {
+        height: 100vh !important;
+    }
+    
+    .document-container:fullscreen img {
+        max-height: 100vh !important;
+    }
+
+    #motivo_rechazo_container {
+        display: none;
+    }
+
+    #estado_aprobacion[value="rechazado"] ~ #motivo_rechazo_container {
+        display: block;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const estadoSelect = document.getElementById('id_estado_aprobacion');
+        const motivoContainer = document.getElementById('motivo_rechazo_container');
+
+        estadoSelect.addEventListener('change', function() {
+            if (this.value === 'rechazado') {
+                motivoContainer.style.display = 'block';
+                document.getElementById('id_motivo_rechazo').required = true;
+            } else {
+                motivoContainer.style.display = 'none';
+                document.getElementById('id_motivo_rechazo').required = false;
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' documento.empleado.pk %}">{{ documento.empleado.nombre_completo }}</a></li>
+
 <li class="breadcrumb-item"><a href="{% url 'documents:empleado_documentos' documento.empleado.pk %}">Documentos</a></li>
 <li class="breadcrumb-item active">Revisar</li>
 {% endblock %}
@@ -90,6 +154,26 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     <p class="mb-0">{{ documento.observaciones }}</p>
                 </div>
                 {% endif %}
+
+                {% if documento.estado_aprobacion == 'rechazado' %}
+                <div class="alert alert-danger mt-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6><i class="fas fa-times-circle me-2"></i>Documento Rechazado</h6>
+                            <p class="mb-2"><strong>Motivo del rechazo:</strong></p>
+                            <p class="mb-2">{{ documento.motivo_rechazo }}</p>
+                            {% if documento.rechazado_por %}
+                                <p class="mb-0"><small>Rechazado por: {{ documento.rechazado_por.get_full_name|default:documento.rechazado_por.username }} - {{ documento.fecha_rechazo|date:"d/m/Y H:i" }}</small></p>
+                            {% endif %}
+                        </div>
+                        {% if user == documento.empleado.usuario or user.is_staff %}
+                        <a href="{% url 'documents:documento_replace' documento_id=documento.pk %}" class="btn btn-warning">
+                            <i class="fas fa-sync-alt me-1"></i>Reemplazar Documento
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
         
@@ -112,18 +196,38 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                 </div>
             </div>
             <div class="card-body p-0">
-                <div id="documentViewer" style="min-height: 500px; background: #f8f9fa;">
+                <div id="documentViewer" class="document-container" style="min-height: 500px; background: #f8f9fa;">
                     {% if documento.archivo.name|lower|slice:"-4:" == ".pdf" %}
-                        <embed src="{{ documento.archivo.url }}" 
-                               type="application/pdf" 
-                               width="100%" 
-                               height="500px"
-                               style="border: none;">
+                        <object data="{{ documento.archivo.url }}#toolbar=1&navpanes=1&scrollbar=1&view=FitH"
+                                type="application/pdf" 
+                                width="100%" 
+                                height="600px"
+                                class="pdf-viewer">
+                            <div class="pdf-fallback text-center p-4">
+                                <div class="alert alert-warning">
+                                    <h5><i class="fas fa-exclamation-triangle me-2"></i>No se puede mostrar el PDF directamente</h5>
+                                    <p class="mb-3">Su navegador no puede mostrar el PDF integrado. Puede:</p>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ documento.archivo.url }}" 
+                                           class="btn btn-primary" 
+                                           target="_blank">
+                                            <i class="fas fa-external-link-alt me-1"></i>
+                                            Abrir en nueva pestaña
+                                        </a>
+                                        <a href="{% url 'documents:documento_download' documento.pk %}" 
+                                           class="btn btn-secondary">
+                                            <i class="fas fa-download me-1"></i>
+                                            Descargar PDF
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </object>
                     {% else %}
                         <div class="text-center p-4">
                             <img src="{{ documento.archivo.url }}" 
                                  class="img-fluid" 
-                                 style="max-height: 500px; max-width: 100%;"
+                                 style="max-height: 600px; max-width: 100%; object-fit: contain;"
                                  alt="{{ documento.nombre_archivo }}">
                         </div>
                     {% endif %}
@@ -265,7 +369,61 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
 
 {% block extra_js %}
 <script>
+function toggleFullscreen() {
+    const viewer = document.getElementById('documentViewer');
+    const isPDF = viewer.querySelector('object.pdf-viewer') !== null;
+    
+    if (!document.fullscreenElement) {
+        if (isPDF) {
+            // Para PDFs, intentamos primero el visor nativo del PDF
+            const pdfViewer = viewer.querySelector('object.pdf-viewer');
+            if (pdfViewer) {
+                pdfViewer.requestFullscreen().catch(err => {
+                    // Si falla, intentamos con el contenedor
+                    viewer.requestFullscreen().catch(err2 => {
+                        console.log(`Error al habilitar pantalla completa: ${err2.message}`);
+                    });
+                });
+            }
+        } else {
+            // Para imágenes, usamos el contenedor
+            viewer.requestFullscreen().catch(err => {
+                console.log(`Error al habilitar pantalla completa: ${err.message}`);
+            });
+        }
+    } else {
+        document.exitFullscreen();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Manejo del PDF
+    const pdfObject = document.querySelector('object.pdf-viewer');
+    if (pdfObject) {
+        pdfObject.addEventListener('load', function() {
+            console.log('PDF cargado correctamente');
+        });
+        
+        pdfObject.addEventListener('error', function() {
+            console.log('Error al cargar el PDF');
+            const fallback = document.querySelector('.pdf-fallback');
+            if (fallback) {
+                fallback.style.display = 'block';
+            }
+        });
+    }
+    
+    // Ajustar altura del visor en pantalla completa
+    document.addEventListener('fullscreenchange', function() {
+        const viewer = document.getElementById('documentViewer');
+        if (document.fullscreenElement) {
+            viewer.style.height = '100vh';
+        } else {
+            viewer.style.height = '600px';
+        }
+    });
+
+    // Manejo del formulario
     const form = document.getElementById('approvalForm');
     const estadoSelect = document.querySelector('[name="estado_aprobacion"]');
     const observacionesTextarea = document.querySelector('[name="observaciones"]');

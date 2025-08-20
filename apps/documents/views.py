@@ -3,7 +3,7 @@
 # =============================================================================
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -12,12 +12,14 @@ from django.http import JsonResponse, HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.utils import timezone
+from django.core.files.storage import default_storage
+import os
 from datetime import date, timedelta
 import json
 import logging
 
 from .models import DocumentoEmpleado, TipoDocumentoEmpleado, TipoDocumentoCargo
-from .forms import DocumentoEmpleadoForm, MultipleDocumentUploadForm, DocumentApprovalForm
+from .forms import DocumentoEmpleadoForm, MultipleDocumentUploadForm, DocumentApprovalForm, DocumentoReemplazoForm
 from apps.employees.models import Empleado
 
 logger = logging.getLogger(__name__)
@@ -46,6 +48,49 @@ class DocumentoEmpleadoListView(LoginRequiredMixin, ListView):
             except Empleado.DoesNotExist:
                 return DocumentoEmpleado.objects.none()
 
+
+@login_required
+def documento_replace(request, documento_id):
+    """Vista para reemplazar un documento rechazado"""
+    documento = get_object_or_404(DocumentoEmpleado, id=documento_id)
+    
+    # Verificar permisos
+    if not request.user.is_staff and documento.empleado.usuario != request.user:
+        raise PermissionDenied
+    
+    # Verificar que el documento esté rechazado
+    if documento.estado_aprobacion != 'rechazado':
+        messages.error(request, 'Solo se pueden reemplazar documentos que han sido rechazados.')
+        return redirect('documents:documento_view', documento_pk=documento_id)
+    
+    if request.method == 'POST':
+        form = DocumentoReemplazoForm(request.POST, request.FILES, instance=documento, usuario=request.user)
+        if form.is_valid():
+            with transaction.atomic():
+                # Guardar la ruta del archivo anterior
+                old_file = documento.archivo.path if documento.archivo else None
+                
+                # Actualizar el documento
+                documento = form.save(commit=False)
+                documento.estado_aprobacion = 'pendiente'
+                documento.aprobado_por = None
+                documento.fecha_aprobacion = None
+                documento.version += 1
+                documento.save()
+                
+                # Eliminar el archivo anterior si existe
+                if old_file and os.path.exists(old_file):
+                    default_storage.delete(old_file)
+                
+                messages.success(request, 'Documento reemplazado correctamente.')
+                return redirect('documents:documento_view', documento_pk=documento_id)
+    else:
+        form = DocumentoReemplazoForm(instance=documento, usuario=request.user)
+    
+    return render(request, 'documents/documento_replace.html', {
+        'form': form,
+        'documento': documento,
+    })
 
 @login_required
 def documento_empleado_detail(request, empleado_pk):
@@ -257,21 +302,29 @@ def documento_approve(request, documento_pk):
                 try:
                     with transaction.atomic():
                         documento = form.save(commit=False)
-                        documento.aprobado_por = request.user
-                        documento.fecha_aprobacion = timezone.now()
-                        documento.save()
-                        # Mensaje según el estado
+                        
                         if documento.estado_aprobacion == 'aprobado':
+                            documento.aprobado_por = request.user
+                            documento.fecha_aprobacion = timezone.now()
+                            documento.rechazado_por = None
+                            documento.fecha_rechazo = None
+                            documento.motivo_rechazo = ''
                             messages.success(
                                 request,
                                 f'✅ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} aprobado exitosamente.'
                             )
                             verificar_cambio_estado_empleado(documento.empleado)
                         else:
+                            documento.rechazado_por = request.user
+                            documento.fecha_rechazo = timezone.now()
+                            documento.aprobado_por = None
+                            documento.fecha_aprobacion = None
                             messages.warning(
                                 request,
                                 f'⚠️ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} rechazado.'
                             )
+                        
+                        documento.save()
                         return redirect('documents:empleado_documentos', empleado_pk=documento.empleado.pk)
                 except Exception as e:
                     logger.error(f"Error aprobando documento: {str(e)}")
@@ -293,7 +346,8 @@ def documento_approve(request, documento_pk):
         'form': form,
         'documento': documento,
         'titulo': f'Revisar Documento - {documento.tipo_documento.nombre}',
-        'modo_visualizacion': modo_visualizacion
+        'modo_visualizacion': modo_visualizacion,
+        'today': timezone.now().date()
     }
     return render(request, 'documents/documento_approval_form.html', context)
 
