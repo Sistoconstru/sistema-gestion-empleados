@@ -15,7 +15,7 @@ urlpatterns = [
     #path('', views.MisCapacitacionesView.as_view(), name='mis_capacitaciones'),
     path('catalogo/', views.CatalogoCapacitacionesView.as_view(), name='catalogo'),
     path('capacitacion/<uuid:pk>/', views.CapacitacionDetailView.as_view(), name='capacitacion_detail'),
-    path('capacitacion/<uuid:pk>/inscribir/', views.inscribir_capacitacion, name='inscribir_capacitacion'),
+    path('capacitacion/<uuid:pk>/inscribir/', views.inscribir_capacitacion, name='inscribir_capacitacion'),  # pk en lugar de capacitacion_id
     path('admin/', views.CapacitacionListView.as_view(), name='capacitacion_list'),
     
     # Capacitaciones
@@ -34,4 +34,8 @@ urlpatterns = [
 
     # Certificados
     path('mis-certificados/', MisCertificadosView.as_view(), name='mis_certificados'),
+    
+    # Validación de inscripciones
+    path('inscripcion/<uuid:pk>/validar/', views.validar_inscripcion, name='validar_inscripcion'),
+    path('inscripcion/<uuid:pk>/rechazar/', views.rechazar_inscripcion, name='rechazar_inscripcion'),
 ]

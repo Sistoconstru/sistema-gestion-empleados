@@ -46,6 +46,7 @@ class ProveedorExterno(models.Model):
 
 class Capacitacion(models.Model):
     """Capacitaciones del sistema"""
+    
     NIVELES_DIFICULTAD = [
         ('basico', 'Básico'),
         ('intermedio', 'Intermedio'),
@@ -98,9 +99,15 @@ class Capacitacion(models.Model):
         help_text="Costo en pesos colombianos"
     )
     puntos_gamificacion = models.IntegerField(
-        default=0, 
+        default=0,
         help_text="Puntos que otorga al completar",
         validators=[MinValueValidator(0)]
+    )
+    
+    # Estado
+    activa = models.BooleanField(
+        default=True, 
+        help_text="Indica si la capacitación está disponible para inscripción"
     )
     
     # Configuración avanzada (NUEVOS CAMPOS)
@@ -115,7 +122,6 @@ class Capacitacion(models.Model):
     )
     
     # Metadatos
-    activa = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     creada_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
@@ -347,6 +353,7 @@ class InscripcionCapacitacion(models.Model):
     """Inscripciones de empleados a capacitaciones - MEJORADO"""
     ESTADOS = [
         ('no_iniciado', 'No Iniciado'),
+        ('pendiente_validacion', 'Pendiente de Validación'),
         ('en_progreso', 'En Progreso'),
         ('completado', 'Completado'),
         ('aprobado', 'Aprobado'),
@@ -368,7 +375,7 @@ class InscripcionCapacitacion(models.Model):
     
     # Estado y configuración
     estado = models.CharField(max_length=25, choices=ESTADOS, default='no_iniciado')
-    obligatoria = models.BooleanField()
+    obligatoria = models.BooleanField(default=False)
     aprobada_supervisor = models.BooleanField(default=True)
     
     # Resultados

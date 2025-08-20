@@ -360,6 +360,16 @@
                                         <span class="badge bg-{{ capacitacion.get_estado_color }}">
                                             {{ capacitacion.get_estado_display }}
                                         </span>
+                                        {% if capacitacion.estado == 'pendiente_validacion' and capacitacion.capacitacion.es_externa %}
+                                            <div class="mt-2">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-success" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#confirmarInscripcionModal{{ capacitacion.id }}">
+                                                    <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                                                </button>
+                                            </div>
+                                        {% endif %}
                                         {% if capacitacion.puntaje_final %}
                                         <div class="mt-1">
                                             <span class="badge bg-light text-dark">
@@ -790,6 +800,45 @@
         </div>
     </div>
 </div>
+
+<!-- Modales de Confirmación de Inscripción -->
+{% for capacitacion in capacitaciones %}
+    {% if capacitacion.estado == 'pendiente_validacion' and capacitacion.capacitacion.es_externa %}
+    <div class="modal fade" id="confirmarInscripcionModal{{ capacitacion.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Inscripción Externa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'training:validar_inscripcion' capacitacion.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>Confirmar inscripción en: <strong>{{ capacitacion.capacitacion.nombre }}</strong></p>
+                        
+                        <div class="mb-3">
+                            <label for="certificado" class="form-label">Certificado del Proveedor</label>
+                            <input type="file" class="form-control" id="certificado" name="certificado" required>
+                            <div class="form-text">Por favor adjunte el certificado o comprobante del proveedor externo.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
 
 <script>
 function copiarUrlPerfil() {

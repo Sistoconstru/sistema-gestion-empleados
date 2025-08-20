@@ -154,6 +154,47 @@
             </div>
         </div>
         
+        {% if capacitacion.es_externa and user.is_staff %}
+        <!-- Inscripciones Pendientes de Validación -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning bg-opacity-10">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock text-warning me-2"></i>Pendientes de Validación
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for inscripcion in inscripciones_pendientes %}
+                <div class="mb-3 border-bottom pb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="mb-1">{{ inscripcion.empleado.nombre_completo }}</h6>
+                            <small class="text-muted d-block">
+                                Inscrito el: {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}
+                            </small>
+                        </div>
+                        <span class="badge bg-warning">Pendiente</span>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-success" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalValidarInscripcion{{ inscripcion.id }}">
+                            <i class="fas fa-check me-1"></i>Validar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalRechazarInscripcion{{ inscripcion.id }}">
+                            <i class="fas fa-times me-1"></i>Rechazar
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted mb-0">No hay inscripciones pendientes de validación</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Cargos Asignados -->
         <div class="card mb-4">
             <div class="card-header">
@@ -184,6 +225,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-grid gap-2">
+                    {% if user.is_staff %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInscribirEmpleado">
+                        <i class="fas fa-user-plus me-1"></i>Inscribir Empleado
+                    </button>
+                    {% endif %}
+
                     {% if perms.training.change_capacitacion %}
                     <a href="{% url 'admin:training_capacitacion_change' capacitacion.id %}" class="btn btn-primary">
                         <i class="fas fa-edit me-1"></i>Editar Capacitación
@@ -200,4 +247,118 @@
         </div>
     </div>
 </div>
+
+{% if user.is_staff %}
+<!-- Modal de Inscripción de Empleado -->
+<div class="modal fade" id="modalInscribirEmpleado" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Inscribir Empleado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'training:inscribir_capacitacion' capacitacion.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar Empleado</label>
+                        <select name="empleado_id" class="form-select" required>
+                            <option value="">Seleccione un empleado...</option>
+                            {% for empleado in empleados_disponibles %}
+                            <option value="{{ empleado.id }}">{{ empleado.nombre_completo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    {% if capacitacion.proveedor_externo %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Esta es una capacitación externa. La inscripción quedará pendiente hasta que se valide 
+                        el certificado del proveedor.
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-1"></i>Inscribir Empleado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if capacitacion.es_externa and user.is_staff %}
+    {% for inscripcion in inscripciones_pendientes %}
+    <!-- Modal Validar Inscripción -->
+    <div class="modal fade" id="modalValidarInscripcion{{ inscripcion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Validar Inscripción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{% url 'training:validar_inscripcion' inscripcion.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>¿Confirmas que el empleado <strong>{{ inscripcion.empleado.nombre_completo }}</strong> 
+                           ha presentado el certificado de inscripción del proveedor externo?</p>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Certificado de Inscripción</label>
+                            <input type="file" class="form-control" name="certificado" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <small class="text-muted">Formatos aceptados: PDF, JPG, PNG</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <textarea class="form-control" name="observaciones" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>Validar Inscripción
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rechazar Inscripción -->
+    <div class="modal fade" id="modalRechazarInscripcion{{ inscripcion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rechazar Inscripción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{% url 'training:rechazar_inscripcion' inscripcion.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Esta acción cancelará la inscripción del empleado.
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Motivo del Rechazo <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="motivo" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times me-1"></i>Rechazar Inscripción
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
 {% endblock %}

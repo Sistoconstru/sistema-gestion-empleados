@@ -136,8 +136,8 @@
             <div class="modal-body">
                 <form method="get">
                     <div class="mb-3">
-                        <label class="form-label">Tipo</label>
-                        <select name="tipo" class="form-select">
+                        <label class="form-label" for="id_tipo">Tipo</label>
+                        <select name="tipo" id="id_tipo" class="form-select">
                             <option value="">Todos los tipos</option>
                             <option value="interno" {% if request.GET.tipo == 'interno' %}selected{% endif %}>Internas</option>
                             <option value="externo" {% if request.GET.tipo == 'externo' %}selected{% endif %}>Externas</option>
@@ -145,8 +145,8 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Nivel</label>
-                        <select name="nivel" class="form-select">
+                        <label class="form-label" for="id_nivel">Nivel</label>
+                        <select name="nivel" id="id_nivel" class="form-select">
                             <option value="">Todos los niveles</option>
                             <option value="basico" {% if request.GET.nivel == 'basico' %}selected{% endif %}>Básico</option>
                             <option value="intermedio" {% if request.GET.nivel == 'intermedio' %}selected{% endif %}>Intermedio</option>
@@ -155,8 +155,8 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Duración</label>
-                        <select name="duracion" class="form-select">
+                        <label class="form-label" for="id_duracion">Duración</label>
+                        <select name="duracion" id="id_duracion" class="form-select">
                             <option value="">Cualquier duración</option>
                             <option value="corta" {% if request.GET.duracion == 'corta' %}selected{% endif %}>Menos de 4 horas</option>
                             <option value="media" {% if request.GET.duracion == 'media' %}selected{% endif %}>4-8 horas</option>

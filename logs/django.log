@@ -19986,3 +19986,1916 @@ INFO 2025-08-15 12:05:58,050 basehttp 3868 7712 "GET /capacitaciones/catalogo/ H
 INFO 2025-08-15 12:06:02,797 basehttp 3868 7712 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
 INFO 2025-08-15 12:06:02,841 basehttp 3868 7712 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
 INFO 2025-08-15 12:06:03,664 basehttp 3868 7712 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 12:11:05,241 basehttp 3868 10600 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:11:05,252 basehttp 3868 10600 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 12:11:10,305 basehttp 3868 10600 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:11:10,339 basehttp 3868 10600 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:11:12,656 basehttp 3868 10600 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:11:13,888 basehttp 3868 10600 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:11:13,901 basehttp 3868 10600 "GET /dashboard/ HTTP/1.1" 200 14238
+INFO 2025-08-15 12:11:18,753 basehttp 3868 10600 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 12:11:51,786 basehttp 3868 10600 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38075
+INFO 2025-08-15 12:12:20,632 basehttp 3868 10600 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:12:23,678 basehttp 3868 10600 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 12:12:35,733 basehttp 3868 10600 "GET /admin/training/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/change/ HTTP/1.1" 200 45253
+INFO 2025-08-15 12:12:35,753 basehttp 3868 10600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 12:12:41,534 basehttp 3868 10600 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 11401
+INFO 2025-08-15 12:19:32,072 autoreload 3868 20296 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 12:19:32,804 autoreload 9236 24028 Watching for file changes with StatReloader
+INFO 2025-08-15 12:19:52,894 autoreload 9236 24028 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:19:53,528 autoreload 14496 26316 Watching for file changes with StatReloader
+INFO 2025-08-15 12:20:09,611 autoreload 14496 26316 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:20:10,280 autoreload 14532 16376 Watching for file changes with StatReloader
+INFO 2025-08-15 12:20:24,182 autoreload 14532 16376 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:20:24,796 autoreload 11380 25920 Watching for file changes with StatReloader
+INFO 2025-08-15 12:22:10,370 autoreload 11380 25920 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:22:10,955 autoreload 24572 21152 Watching for file changes with StatReloader
+INFO 2025-08-15 12:25:27,524 basehttp 24572 9424 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:25:35,356 basehttp 24572 9424 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:25:35,370 basehttp 24572 9424 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 12:25:39,575 basehttp 24572 9424 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:25:39,587 basehttp 24572 9424 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:25:39,654 basehttp 24572 9424 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 12:25:43,017 basehttp 24572 9424 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 12:25:44,974 basehttp 24572 9424 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 12:25:46,189 basehttp 24572 9424 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 12:26:13,830 basehttp 24572 9424 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:26:13,835 basehttp 24572 9424 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 12:26:57,511 basehttp 24572 9424 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:26:57,533 basehttp 24572 9424 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:26:57,590 basehttp 24572 9424 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 20122
+INFO 2025-08-15 12:27:03,822 basehttp 24572 9424 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20229
+INFO 2025-08-15 12:27:18,416 basehttp 24572 9424 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+ERROR 2025-08-15 12:27:18,479 log 24572 9424 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in get_context_data
+    context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
+                             ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'inscripciones' where it is not associated with a value
+ERROR 2025-08-15 12:27:18,482 basehttp 24572 9424 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 97502
+INFO 2025-08-15 12:27:22,795 basehttp 24572 9424 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 16709
+INFO 2025-08-15 12:27:38,288 basehttp 24572 9424 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:27:38,309 basehttp 24572 9424 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:27:39,509 basehttp 24572 9424 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20104
+ERROR 2025-08-15 12:27:50,173 log 24572 9424 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in get_context_data
+    context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
+                             ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'inscripciones' where it is not associated with a value
+ERROR 2025-08-15 12:27:50,175 basehttp 24572 9424 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 97066
+ERROR 2025-08-15 12:27:53,270 log 24572 9424 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in get_context_data
+    context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
+                             ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'inscripciones' where it is not associated with a value
+ERROR 2025-08-15 12:27:53,272 basehttp 24572 9424 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 97066
+INFO 2025-08-15 12:28:02,854 basehttp 24572 9424 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:28:02,911 basehttp 24572 9424 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:28:04,887 basehttp 24572 9424 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 21408
+INFO 2025-08-15 12:28:18,428 basehttp 24572 9424 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 200 13111
+INFO 2025-08-15 12:28:46,484 basehttp 24572 9424 "POST /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/subir/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:28:46,510 basehttp 24572 9424 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23968
+INFO 2025-08-15 12:29:03,629 basehttp 24572 24220 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:29:03,677 basehttp 24572 24220 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:29:27,323 basehttp 24572 24220 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20104
+INFO 2025-08-15 12:29:33,424 basehttp 24572 24220 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 16300
+INFO 2025-08-15 12:29:56,166 basehttp 24572 24220 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+ERROR 2025-08-15 12:29:56,201 log 24572 24220 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 314, in get_context_data
+    context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
+                             ^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'inscripciones' where it is not associated with a value
+ERROR 2025-08-15 12:29:56,203 basehttp 24572 24220 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 97577
+INFO 2025-08-15 12:30:03,125 basehttp 24572 24220 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12688
+INFO 2025-08-15 12:30:19,865 basehttp 24572 24220 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:30:19,917 basehttp 24572 24220 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:30:22,452 basehttp 24572 24220 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26492
+INFO 2025-08-15 12:30:29,264 basehttp 24572 24220 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:30:29,287 basehttp 24572 24220 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:30:31,047 basehttp 24572 24220 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:34:28,037 autoreload 24572 21152 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:34:28,633 autoreload 6020 24028 Watching for file changes with StatReloader
+INFO 2025-08-15 12:35:11,719 autoreload 6020 24028 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:35:12,265 autoreload 26324 15980 Watching for file changes with StatReloader
+INFO 2025-08-15 12:35:28,168 autoreload 26324 15980 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:35:28,706 autoreload 452 22716 Watching for file changes with StatReloader
+INFO 2025-08-15 12:36:08,627 autoreload 452 22716 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:36:09,174 autoreload 12712 21552 Watching for file changes with StatReloader
+INFO 2025-08-15 12:36:31,210 autoreload 12712 21552 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:36:31,773 autoreload 23624 16340 Watching for file changes with StatReloader
+INFO 2025-08-15 12:36:47,708 autoreload 23624 16340 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:36:48,420 autoreload 13536 14308 Watching for file changes with StatReloader
+INFO 2025-08-15 12:37:17,589 basehttp 13536 14944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:37:18,475 basehttp 13536 14944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:37:19,057 basehttp 13536 14944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:37:19,475 basehttp 13536 14944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:37:19,691 basehttp 13536 14944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:37:22,377 basehttp 13536 14944 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:37:22,426 basehttp 13536 14944 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:37:31,695 autoreload 26204 10648 Watching for file changes with StatReloader
+INFO 2025-08-15 12:37:48,665 basehttp 13536 13252 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 12:37:48,715 basehttp 13536 13252 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:37:48,752 basehttp 13536 13252 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+WARNING 2025-08-15 12:37:48,950 log 13536 18128 Not Found: /favicon.ico
+WARNING 2025-08-15 12:37:48,951 basehttp 13536 18128 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 12:38:00,275 basehttp 13536 21420 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:38:04,769 basehttp 13536 20460 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26492
+ERROR 2025-08-15 12:38:07,093 log 13536 20460 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 327, in get_context_data
+    if context['total_inscritos'] > 0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'total_inscritos'
+ERROR 2025-08-15 12:38:07,097 basehttp 13536 20460 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 96959
+ERROR 2025-08-15 12:38:12,240 log 13536 20460 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 327, in get_context_data
+    if context['total_inscritos'] > 0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'total_inscritos'
+ERROR 2025-08-15 12:38:12,242 basehttp 13536 20460 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 96934
+INFO 2025-08-15 12:38:42,866 basehttp 13536 20460 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:38:42,938 basehttp 13536 20460 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:38:44,979 basehttp 13536 20460 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12279
+INFO 2025-08-15 12:39:02,628 basehttp 13536 20460 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:39:02,650 basehttp 13536 20460 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 19718
+INFO 2025-08-15 12:39:08,824 basehttp 13536 20460 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:39:08,833 basehttp 13536 20460 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 12:39:13,558 basehttp 13536 20460 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:39:13,583 basehttp 13536 20460 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:39:18,917 basehttp 13536 20460 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:39:42,331 log 13536 20460 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:39:42,337 basehttp 13536 20460 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 142658
+ERROR 2025-08-15 12:39:48,812 log 13536 20460 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:39:48,814 basehttp 13536 20460 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 142743
+INFO 2025-08-15 12:40:08,459 autoreload 26204 10648 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 12:40:09,158 autoreload 10928 13876 Watching for file changes with StatReloader
+INFO 2025-08-15 12:40:09,349 autoreload 13536 14308 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:40:10,098 autoreload 3632 25524 Watching for file changes with StatReloader
+INFO 2025-08-15 12:40:23,503 basehttp 10928 9328 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:40:23,544 basehttp 10928 9328 "GET /dashboard/ HTTP/1.1" 200 14238
+INFO 2025-08-15 12:40:25,312 basehttp 10928 9328 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:40:28,436 log 10928 9328 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:40:28,441 basehttp 10928 9328 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 142621
+INFO 2025-08-15 12:41:49,373 basehttp 10928 9328 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 12:41:49,393 basehttp 10928 9328 "GET /dashboard/ HTTP/1.1" 200 14238
+INFO 2025-08-15 12:41:51,808 basehttp 10928 9328 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 12:42:10,117 basehttp 10928 9328 "GET /empleados/?search=sandra&estado=&area=&cargo=&sede= HTTP/1.1" 200 19334
+INFO 2025-08-15 12:42:14,419 basehttp 10928 9328 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 37823
+INFO 2025-08-15 12:42:55,002 autoreload 10928 13876 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:42:55,589 autoreload 3632 25524 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:42:55,673 autoreload 15808 9156 Watching for file changes with StatReloader
+INFO 2025-08-15 12:42:56,264 autoreload 13532 21564 Watching for file changes with StatReloader
+INFO 2025-08-15 12:43:18,543 autoreload 13532 21564 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:43:18,968 autoreload 15808 9156 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:43:19,177 autoreload 7936 10864 Watching for file changes with StatReloader
+INFO 2025-08-15 12:43:19,596 autoreload 20764 17536 Watching for file changes with StatReloader
+INFO 2025-08-15 12:44:07,347 autoreload 7936 10864 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 12:44:07,837 autoreload 20764 17536 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 12:44:08,037 autoreload 3528 9860 Watching for file changes with StatReloader
+INFO 2025-08-15 12:44:08,470 autoreload 16136 26444 Watching for file changes with StatReloader
+INFO 2025-08-15 12:45:29,458 autoreload 10376 11224 Watching for file changes with StatReloader
+INFO 2025-08-15 12:45:38,614 basehttp 3528 21492 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 37823
+INFO 2025-08-15 12:45:41,631 basehttp 3528 21492 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:45:52,150 basehttp 3528 21492 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:46:05,878 log 3528 21492 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:46:05,885 basehttp 3528 21492 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 142743
+ERROR 2025-08-15 12:46:10,066 log 3528 21492 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:46:10,070 basehttp 3528 21492 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 142789
+INFO 2025-08-15 12:46:19,463 basehttp 3528 21492 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:46:31,361 basehttp 3528 21492 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 12:46:41,176 basehttp 3528 21492 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 37823
+INFO 2025-08-15 12:48:17,761 basehttp 3528 21492 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:48:20,649 basehttp 3528 21492 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:48:24,263 log 3528 21492 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        activo=True
+        ^^^^^^^^^^^
+    ).order_by('nombre', 'apellido')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1802, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'activo' into field. Choices are: apellidos, areaempresa, canjeobeneficio, ciudad_nacimiento, ciudad_nacimiento_id, contacto_emergencia_nombre, contacto_emergencia_telefono, correo_electronico, creado_por, creado_por_id, documentoempleado, escolaridad, escolaridad_id, estado, estado_id, evaluaciones_realizadas, evaluaciones_recibidas, fecha_actualizacion, fecha_creacion, fecha_ingreso, fecha_nacimiento, historialcargo, historialpuntos, id, inscripcioncapacitacion, insigniaempleado, nombres, numero_documento, participacionencuesta, planes_responsable, planes_supervisor, reconocimiento, sede, sede_id, telefono_contacto, tipo_documento, tipo_documento_id, usuario, usuario_id
+ERROR 2025-08-15 12:48:24,268 basehttp 3528 21492 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 142789
+INFO 2025-08-15 12:49:05,732 autoreload 3528 9860 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:49:05,741 autoreload 10376 11224 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:49:06,489 autoreload 21520 12944 Watching for file changes with StatReloader
+INFO 2025-08-15 12:49:06,497 autoreload 25452 16960 Watching for file changes with StatReloader
+ERROR 2025-08-15 12:49:34,916 log 25452 15056 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).order_by('apellidos', 'nombres')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:49:34,922 basehttp 25452 15056 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 153585
+INFO 2025-08-15 12:49:43,510 basehttp 25452 15056 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:49:48,258 log 25452 15056 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).order_by('apellidos', 'nombres')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:49:48,262 basehttp 25452 15056 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 153585
+INFO 2025-08-15 12:49:57,317 autoreload 16760 21284 Watching for file changes with StatReloader
+INFO 2025-08-15 12:50:01,030 basehttp 25452 15056 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 12:50:01,959 basehttp 25452 15056 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 12:50:02,893 basehttp 25452 15056 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:50:05,912 log 25452 15056 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).order_by('apellidos', 'nombres')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:50:05,915 basehttp 25452 15056 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 153585
+INFO 2025-08-15 12:50:13,801 basehttp 25452 15772 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 12:50:13,853 basehttp 25452 15772 "GET /dashboard/ HTTP/1.1" 200 13853
+WARNING 2025-08-15 12:50:14,069 log 25452 15772 Not Found: /favicon.ico
+WARNING 2025-08-15 12:50:14,070 basehttp 25452 15772 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 12:50:18,493 basehttp 25452 12860 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:50:21,736 log 25452 3920 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).order_by('apellidos', 'nombres')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:50:21,740 basehttp 25452 3920 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 153539
+INFO 2025-08-15 12:50:32,893 autoreload 16760 21284 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 12:50:33,189 autoreload 25452 16960 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:50:33,740 autoreload 21748 988 Watching for file changes with StatReloader
+INFO 2025-08-15 12:50:33,960 autoreload 19132 12252 Watching for file changes with StatReloader
+INFO 2025-08-15 12:50:48,491 basehttp 21748 15992 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 12:50:48,669 basehttp 21748 15992 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:50:52,240 basehttp 21748 15992 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:50:54,082 log 21748 15992 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    ).filter(
+      ~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).order_by('apellidos', 'nombres')
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:50:54,096 basehttp 21748 15992 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 153463
+INFO 2025-08-15 12:51:24,074 autoreload 19132 12252 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:51:24,082 autoreload 21748 988 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:51:24,768 autoreload 7868 14856 Watching for file changes with StatReloader
+INFO 2025-08-15 12:51:24,790 autoreload 20200 4540 Watching for file changes with StatReloader
+INFO 2025-08-15 12:52:19,141 autoreload 4156 18508 Watching for file changes with StatReloader
+INFO 2025-08-15 12:52:26,065 basehttp 7868 21636 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:52:28,065 basehttp 7868 21636 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:52:35,912 basehttp 7868 21636 "GET /empleados/crear/ HTTP/1.1" 200 200098
+INFO 2025-08-15 12:52:39,568 basehttp 7868 21636 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 12:52:42,066 basehttp 7868 21636 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38075
+INFO 2025-08-15 12:52:50,605 basehttp 7868 21636 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:52:53,697 log 7868 21636 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    context['empleados_disponibles'] = Empleado.objects.filter(
+                                       ~~~~~~~~~~~~~~~~~~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).exclude(
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:52:53,704 basehttp 7868 21636 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 157888
+INFO 2025-08-15 12:53:07,782 autoreload 4156 18508 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:53:07,993 autoreload 7868 14856 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:53:08,477 autoreload 25536 24436 Watching for file changes with StatReloader
+INFO 2025-08-15 12:53:08,696 autoreload 22432 1556 Watching for file changes with StatReloader
+INFO 2025-08-15 12:53:16,881 basehttp 25536 2856 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+ERROR 2025-08-15 12:53:18,999 log 25536 2856 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2128, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'activo'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 300, in get_context_data
+    context['empleados_disponibles'] = Empleado.objects.filter(
+                                       ~~~~~~~~~~~~~~~~~~~~~~~^
+        estado='activo'
+        ^^^^^^^^^^^^^^^
+    ).exclude(
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1481, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1499, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\query.py", line 1506, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\sql\query.py", line 1412, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\lookups.py", line 38, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+ValueError: Field 'id' expected a number but got 'activo'.
+ERROR 2025-08-15 12:53:19,004 basehttp 25536 2856 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 157813
+INFO 2025-08-15 12:54:08,288 autoreload 25536 24436 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:54:08,291 autoreload 22432 1556 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 12:54:09,120 autoreload 11160 21160 Watching for file changes with StatReloader
+INFO 2025-08-15 12:54:16,702 basehttp 20184 22404 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 13227
+INFO 2025-08-15 12:54:37,583 basehttp 20184 22404 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 12:54:39,695 basehttp 20184 22404 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 12:54:42,940 basehttp 20184 22404 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 16313
+INFO 2025-08-15 13:51:36,524 basehttp 20184 7212 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 13:51:36,539 basehttp 20184 7212 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-08-15 13:51:40,911 basehttp 20184 7212 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 13:51:45,059 basehttp 20184 7212 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38075
+INFO 2025-08-15 13:58:41,782 basehttp 20184 23920 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 13:59:09,622 basehttp 20184 23920 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 13:59:19,487 basehttp 20184 23920 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 13:59:19,493 basehttp 20184 23920 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 13:59:26,460 basehttp 20184 23920 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 13:59:26,472 basehttp 20184 23920 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 13:59:26,520 basehttp 20184 23920 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 20122
+INFO 2025-08-15 13:59:32,829 basehttp 20184 23920 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26492
+ERROR 2025-08-15 13:59:39,578 log 20184 23920 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 335, in get_context_data
+    if context['total_inscritos'] > 0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'total_inscritos'
+ERROR 2025-08-15 13:59:39,581 basehttp 20184 23920 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 96959
+ERROR 2025-08-15 13:59:52,725 log 20184 23920 Internal Server Error: /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 335, in get_context_data
+    if context['total_inscritos'] > 0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'total_inscritos'
+ERROR 2025-08-15 13:59:52,728 basehttp 20184 23920 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 500 96934
+ERROR 2025-08-15 14:00:07,414 log 20184 23920 Internal Server Error: /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 335, in get_context_data
+    if context['total_inscritos'] > 0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'total_inscritos'
+ERROR 2025-08-15 14:00:07,418 basehttp 20184 23920 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 96959
+INFO 2025-08-15 14:00:56,791 autoreload 20184 23032 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:00:56,802 autoreload 11160 21160 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:00:57,486 autoreload 16920 15656 Watching for file changes with StatReloader
+INFO 2025-08-15 14:00:57,486 autoreload 14364 18336 Watching for file changes with StatReloader
+INFO 2025-08-15 14:04:12,896 basehttp 16920 1088 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 9940
+INFO 2025-08-15 14:04:25,104 basehttp 16920 1088 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:04:25,112 basehttp 16920 1088 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 14:04:34,552 basehttp 16920 1088 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:04:34,562 basehttp 16920 1088 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:04:34,641 basehttp 16920 1088 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 14:04:36,729 basehttp 16920 1088 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12197
+INFO 2025-08-15 14:04:40,454 basehttp 16920 1088 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:04:40,475 basehttp 16920 1088 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20253
+INFO 2025-08-15 14:04:41,644 basehttp 16920 1088 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+INFO 2025-08-15 14:05:10,370 basehttp 16920 1088 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:05:10,373 basehttp 16920 1088 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 14:05:23,160 basehttp 16920 1088 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:05:23,176 basehttp 16920 1088 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:05:23,237 basehttp 16920 1088 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20406
+INFO 2025-08-15 14:05:26,194 basehttp 16920 1088 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20411
+INFO 2025-08-15 14:05:31,797 basehttp 16920 1088 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:05:58,641 basehttp 16920 1088 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:05:58,656 basehttp 16920 1088 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:06:13,281 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:06:13,283 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:06:23,941 basehttp 16920 1088 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:06:23,955 basehttp 16920 1088 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:06:23,979 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:06:23,980 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:07:41,848 basehttp 16920 1088 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:07:41,884 basehttp 16920 1088 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:07:41,923 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:07:41,923 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:07:49,913 basehttp 16920 1088 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+WARNING 2025-08-15 14:07:49,944 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:07:49,947 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+WARNING 2025-08-15 14:07:55,501 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:07:55,502 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+WARNING 2025-08-15 14:07:55,523 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:07:55,526 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:07:58,471 basehttp 16920 1088 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 24447
+WARNING 2025-08-15 14:07:58,496 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:07:58,497 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:08:21,379 basehttp 16920 1088 "GET /documentos/empleado/0e881b6d-bdcc-41b9-8012-829947d0855c/subir/ HTTP/1.1" 200 12973
+WARNING 2025-08-15 14:08:21,405 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:08:21,406 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:08:30,054 basehttp 16920 1088 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:08:30,080 basehttp 16920 1088 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:08:30,106 log 16920 1088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:08:30,107 basehttp 16920 1088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:09:05,513 autoreload 17772 424 Watching for file changes with StatReloader
+INFO 2025-08-15 14:09:15,227 basehttp 14364 15996 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+WARNING 2025-08-15 14:09:15,264 log 14364 15996 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:09:15,265 basehttp 14364 15996 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:09:23,872 basehttp 14364 15996 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:09:23,884 basehttp 14364 15996 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:09:23,907 log 14364 15996 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:09:23,908 basehttp 14364 15996 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:10:01,602 basehttp 14364 15996 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:10:01,612 basehttp 14364 15996 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:10:01,636 log 14364 15996 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:10:01,637 basehttp 14364 15996 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:11:43,309 autoreload 14364 18336 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:11:43,590 autoreload 17772 424 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:11:44,029 autoreload 10192 11380 Watching for file changes with StatReloader
+INFO 2025-08-15 14:11:44,206 autoreload 21520 4412 Watching for file changes with StatReloader
+INFO 2025-08-15 14:11:54,806 autoreload 10192 11380 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 14:11:54,949 autoreload 21520 4412 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 14:11:55,509 autoreload 16520 11736 Watching for file changes with StatReloader
+INFO 2025-08-15 14:11:55,611 autoreload 2240 2204 Watching for file changes with StatReloader
+INFO 2025-08-15 14:12:19,070 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+WARNING 2025-08-15 14:12:19,092 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:12:19,092 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:12:23,358 basehttp 16520 16404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:12:23,397 basehttp 16520 16404 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:12:23,420 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:12:23,421 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:12:24,705 basehttp 16520 16404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20411
+WARNING 2025-08-15 14:12:24,731 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:12:24,732 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:12:28,759 basehttp 16520 16404 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:12:28,782 basehttp 16520 16404 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:12:28,805 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:12:28,806 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:12:31,580 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+WARNING 2025-08-15 14:12:31,603 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:12:31,604 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:13:39,900 basehttp 16520 16404 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:13:39,911 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:13:39,935 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:13:39,936 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:17:16,573 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+WARNING 2025-08-15 14:17:16,598 log 16520 16404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:17:16,600 basehttp 16520 16404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:17:24,097 autoreload 17652 13660 Watching for file changes with StatReloader
+INFO 2025-08-15 14:17:26,725 basehttp 16520 16404 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 14:17:26,739 basehttp 16520 16404 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:17:26,780 basehttp 16520 16404 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:17:30,876 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:17:34,935 basehttp 16520 16404 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:17:34,945 basehttp 16520 16404 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:19:56,722 autoreload 17652 13660 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:19:57,132 autoreload 16520 11736 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:19:57,429 autoreload 8576 6532 Watching for file changes with StatReloader
+INFO 2025-08-15 14:19:57,768 autoreload 24236 20568 Watching for file changes with StatReloader
+INFO 2025-08-15 14:20:50,621 autoreload 8576 6532 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:20:50,991 autoreload 24236 20568 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:20:51,351 autoreload 6676 5940 Watching for file changes with StatReloader
+INFO 2025-08-15 14:20:51,604 autoreload 17024 3396 Watching for file changes with StatReloader
+INFO 2025-08-15 14:21:03,061 autoreload 6676 5940 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:21:03,372 autoreload 17024 3396 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:21:03,653 autoreload 16668 25708 Watching for file changes with StatReloader
+INFO 2025-08-15 14:21:03,879 autoreload 21076 12372 Watching for file changes with StatReloader
+INFO 2025-08-15 14:22:33,470 autoreload 16668 25708 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:22:33,747 autoreload 21076 12372 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:22:33,985 autoreload 25844 11620 Watching for file changes with StatReloader
+INFO 2025-08-15 14:22:34,255 autoreload 12588 15516 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:26,201 autoreload 25844 11620 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:26,399 autoreload 12588 15516 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:26,740 autoreload 1356 14436 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:26,911 autoreload 13040 8352 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:34,080 autoreload 1356 14436 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:34,236 autoreload 13040 8352 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:34,639 autoreload 12712 18484 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:34,754 autoreload 26560 21772 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:45,315 autoreload 12712 18484 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:45,403 autoreload 26560 21772 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:23:45,878 autoreload 15260 15784 Watching for file changes with StatReloader
+INFO 2025-08-15 14:23:45,936 autoreload 25480 26372 Watching for file changes with StatReloader
+INFO 2025-08-15 14:24:10,205 autoreload 15260 15784 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:24:10,206 autoreload 25480 26372 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:24:10,855 autoreload 24028 12016 Watching for file changes with StatReloader
+INFO 2025-08-15 14:24:47,797 basehttp 24028 3916 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:24:47,860 basehttp 24028 3916 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:24:49,771 basehttp 24028 3916 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:24:54,344 basehttp 24028 3916 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:24:54,356 basehttp 24028 3916 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:25:16,180 autoreload 17720 12860 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:25:16,216 autoreload 24028 12016 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:25:16,970 autoreload 13144 20720 Watching for file changes with StatReloader
+INFO 2025-08-15 14:25:16,974 autoreload 3932 24492 Watching for file changes with StatReloader
+INFO 2025-08-15 14:25:18,427 autoreload 13144 20720 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 14:25:18,431 autoreload 3932 24492 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-15 14:25:19,127 autoreload 26164 3964 Watching for file changes with StatReloader
+INFO 2025-08-15 14:25:19,127 autoreload 9932 22844 Watching for file changes with StatReloader
+INFO 2025-08-15 14:25:33,686 autoreload 21472 23192 Watching for file changes with StatReloader
+INFO 2025-08-15 14:25:38,563 basehttp 26164 6488 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:25:39,922 basehttp 26164 6488 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:25:41,127 basehttp 26164 6488 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:25:41,172 basehttp 26164 6488 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:25:42,693 basehttp 26164 6488 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:25:45,906 basehttp 26164 6488 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:25:45,927 basehttp 26164 6488 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:25:59,968 basehttp 26164 6488 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:25:59,977 basehttp 26164 6488 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:27:03,439 autoreload 9932 22844 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:03,454 autoreload 26164 3964 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:03,570 autoreload 21472 23192 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:04,272 autoreload 5048 8972 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:04,304 autoreload 9160 25472 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:04,332 autoreload 19420 18256 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:19,237 autoreload 9160 25472 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:19,242 autoreload 19420 18256 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:19,249 autoreload 5048 8972 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:19,854 autoreload 25488 11592 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:19,860 autoreload 24652 14656 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:19,872 autoreload 8784 4368 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:55,811 autoreload 24652 14656 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:55,814 autoreload 8784 4368 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:55,819 autoreload 25488 11592 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:27:56,533 autoreload 5768 3144 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:56,536 autoreload 19968 6320 Watching for file changes with StatReloader
+INFO 2025-08-15 14:27:56,536 autoreload 22732 20852 Watching for file changes with StatReloader
+INFO 2025-08-15 14:28:59,024 autoreload 7348 25620 Watching for file changes with StatReloader
+INFO 2025-08-15 14:29:42,311 autoreload 5768 3144 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:29:42,319 autoreload 22732 20852 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:29:42,795 autoreload 7348 25620 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:29:42,964 autoreload 11168 8596 Watching for file changes with StatReloader
+INFO 2025-08-15 14:29:42,964 autoreload 17648 15924 Watching for file changes with StatReloader
+INFO 2025-08-15 14:29:43,433 autoreload 16424 14972 Watching for file changes with StatReloader
+INFO 2025-08-15 14:29:59,293 autoreload 16424 14972 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:29:59,893 autoreload 12200 4972 Watching for file changes with StatReloader
+INFO 2025-08-15 14:29:59,977 autoreload 11168 8596 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:29:59,980 autoreload 17648 15924 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:30:00,584 autoreload 8932 15044 Watching for file changes with StatReloader
+
+INFO 2025-08-15 14:30:27,227 autoreload 12200 4972 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:30:27,911 autoreload 17260 20968 Watching for file changes with StatReloader
+INFO 2025-08-15 14:30:28,021 autoreload 8932 15044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:30:28,030 autoreload 22384 17044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:30:28,625 autoreload 11436 2576 Watching for file changes with StatReloader
+INFO 2025-08-15 14:30:28,639 autoreload 16284 564 Watching for file changes with StatReloader
+INFO 2025-08-15 14:31:07,634 autoreload 11436 2576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:31:07,646 autoreload 16284 564 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:31:07,919 autoreload 17260 20968 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:31:08,253 autoreload 13388 22896 Watching for file changes with StatReloader
+INFO 2025-08-15 14:31:08,261 autoreload 18496 9044 Watching for file changes with StatReloader
+INFO 2025-08-15 14:31:08,575 autoreload 21024 19152 Watching for file changes with StatReloader
+INFO 2025-08-15 14:31:54,054 autoreload 5112 26580 Watching for file changes with StatReloader
+INFO 2025-08-15 14:31:57,445 basehttp 18496 13824 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:31:57,508 basehttp 18496 13824 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:31:58,786 basehttp 18496 13824 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:32:03,485 basehttp 18496 13824 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:32:03,495 basehttp 18496 13824 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:33:00,579 autoreload 5112 26580 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:01,245 autoreload 13388 22896 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:01,258 autoreload 18496 9044 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:01,363 autoreload 13464 26364 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:01,993 autoreload 20900 5040 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:02,028 autoreload 16408 26552 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:17,431 autoreload 13464 26364 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:18,039 autoreload 16408 26552 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:18,048 autoreload 20900 5040 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:18,202 autoreload 7992 21148 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:18,732 autoreload 2712 10224 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:18,736 autoreload 26504 12756 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:29,551 autoreload 2712 10224 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:29,563 autoreload 26504 12756 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:29,941 autoreload 7992 21148 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:30,188 autoreload 16584 17836 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:30,195 autoreload 10392 15124 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:30,631 autoreload 8732 24676 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:47,692 autoreload 8732 24676 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:48,312 autoreload 23172 10320 Watching for file changes with StatReloader
+INFO 2025-08-15 14:33:48,407 autoreload 10392 15124 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:48,414 autoreload 16584 17836 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:33:49,118 autoreload 24652 22196 Watching for file changes with StatReloader
+INFO 2025-08-15 14:35:16,258 basehttp 23172 24136 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:35:16,355 basehttp 23172 24136 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:35:18,424 basehttp 23172 24136 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:35:21,304 basehttp 23172 24136 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:35:21,318 basehttp 23172 24136 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:36:20,810 autoreload 24652 22196 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:20,813 autoreload 13928 25488 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:20,850 autoreload 23172 10320 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:21,561 autoreload 23920 4628 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:21,564 autoreload 17836 15124 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:21,627 autoreload 21748 22792 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:42,055 autoreload 17836 15124 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:42,067 autoreload 23920 4628 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:42,078 autoreload 21748 22792 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:42,782 autoreload 16784 6732 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:42,789 autoreload 1724 19680 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:52,773 autoreload 1724 19680 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:52,779 autoreload 16784 6732 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:52,783 autoreload 5828 6444 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:36:53,595 autoreload 19992 16440 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:53,596 autoreload 12616 15884 Watching for file changes with StatReloader
+INFO 2025-08-15 14:36:53,596 autoreload 17652 14392 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:03,577 autoreload 19992 16440 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:03,577 autoreload 17652 14392 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:03,587 autoreload 12616 15884 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:04,312 autoreload 2708 8512 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:04,315 autoreload 6608 7420 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:04,315 autoreload 15908 26308 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:23,682 basehttp 2708 8060 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:37:23,753 basehttp 2708 8060 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:37:25,640 basehttp 2708 8060 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:37:27,620 basehttp 2708 8060 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:37:27,629 basehttp 2708 8060 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:37:40,370 autoreload 22432 13096 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:41,926 autoreload 6608 7420 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:41,950 autoreload 2708 8512 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:42,591 autoreload 2552 15476 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:42,607 autoreload 16584 22792 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:42,814 autoreload 22432 13096 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:37:43,507 autoreload 6136 9208 Watching for file changes with StatReloader
+INFO 2025-08-15 14:37:52,530 basehttp 2552 16900 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:37:52,589 basehttp 2552 16900 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:37:54,191 basehttp 2552 16900 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:37:56,656 basehttp 2552 16900 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:37:56,667 basehttp 2552 16900 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:39:19,162 basehttp 2552 16900 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:39:19,181 basehttp 2552 16900 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:41:12,862 autoreload 2552 15476 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:41:12,868 autoreload 6136 9208 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:41:12,886 autoreload 16584 22792 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:41:13,611 autoreload 5932 12908 Watching for file changes with StatReloader
+INFO 2025-08-15 14:41:13,611 autoreload 16500 13388 Watching for file changes with StatReloader
+INFO 2025-08-15 14:41:13,625 autoreload 2888 12832 Watching for file changes with StatReloader
+INFO 2025-08-15 14:42:52,463 autoreload 16500 13388 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:42:52,464 autoreload 2888 12832 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:42:52,469 autoreload 5932 12908 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:42:53,352 autoreload 10644 22596 Watching for file changes with StatReloader
+INFO 2025-08-15 14:42:53,360 autoreload 24540 11480 Watching for file changes with StatReloader
+INFO 2025-08-15 14:42:53,370 autoreload 19904 3920 Watching for file changes with StatReloader
+INFO 2025-08-15 14:42:57,247 basehttp 10644 22000 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:42:57,305 basehttp 10644 22000 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:42:58,877 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20217
+INFO 2025-08-15 14:43:04,437 basehttp 10644 22000 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:43:04,450 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+INFO 2025-08-15 14:43:09,217 basehttp 10644 22000 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:43:09,228 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:43:19,268 log 10644 22000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:43:19,268 basehttp 10644 22000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:43:26,668 basehttp 10644 22000 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:43:26,678 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20638
+WARNING 2025-08-15 14:43:26,709 log 10644 22000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:43:26,710 basehttp 10644 22000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:45:47,708 basehttp 10644 22000 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:45:47,742 basehttp 10644 22000 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:45:47,774 log 10644 22000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:45:47,775 basehttp 10644 22000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:45:49,804 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 14:45:49,828 log 10644 22000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:45:49,829 basehttp 10644 22000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:45:52,460 basehttp 10644 22000 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:45:52,472 basehttp 10644 22000 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 14:45:52,492 log 10644 22000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:45:52,493 basehttp 10644 22000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:46:31,438 autoreload 11168 16536 Watching for file changes with StatReloader
+INFO 2025-08-15 14:46:42,016 basehttp 10644 15200 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 14:46:42,061 basehttp 10644 15200 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:46:42,092 basehttp 10644 15200 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:46:42,298 log 10644 15200 Not Found: /favicon.ico
+WARNING 2025-08-15 14:46:42,299 basehttp 10644 15200 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 14:46:57,974 basehttp 10644 2100 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 14:47:01,246 basehttp 10644 21256 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:01,259 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+INFO 2025-08-15 14:47:07,087 basehttp 10644 21256 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:07,092 basehttp 10644 21256 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 14:47:12,769 basehttp 10644 21256 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:12,775 basehttp 10644 21256 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:12,823 basehttp 10644 21256 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20651
+INFO 2025-08-15 14:47:25,794 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12288
+INFO 2025-08-15 14:47:31,183 basehttp 10644 21256 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:31,193 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12709
+INFO 2025-08-15 14:47:39,278 basehttp 10644 21256 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:39,283 basehttp 10644 21256 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 14:47:58,095 basehttp 10644 21256 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:58,104 basehttp 10644 21256 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:47:58,131 basehttp 10644 21256 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20406
+INFO 2025-08-15 14:48:06,445 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 14:48:08,769 basehttp 10644 21256 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:48:08,778 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 14:48:14,473 log 10644 21256 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:48:14,474 basehttp 10644 21256 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:48:22,139 basehttp 10644 21256 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:48:22,153 basehttp 10644 21256 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 14:48:22,187 log 10644 21256 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 14:48:22,188 basehttp 10644 21256 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 14:49:47,801 autoreload 10644 22596 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:49:47,806 autoreload 19904 3920 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:49:47,823 autoreload 11168 16536 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:49:48,570 autoreload 19772 23748 Watching for file changes with StatReloader
+INFO 2025-08-15 14:49:48,571 autoreload 14552 9452 Watching for file changes with StatReloader
+INFO 2025-08-15 14:49:48,573 autoreload 4476 11048 Watching for file changes with StatReloader
+INFO 2025-08-15 14:50:51,978 autoreload 14552 9452 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:50:51,979 autoreload 19772 23748 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:50:51,986 autoreload 4476 11048 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\models.py changed, reloading.
+INFO 2025-08-15 14:50:52,741 autoreload 13492 13576 Watching for file changes with StatReloader
+INFO 2025-08-15 14:50:52,743 autoreload 16340 26348 Watching for file changes with StatReloader
+INFO 2025-08-15 14:50:52,743 autoreload 24268 23356 Watching for file changes with StatReloader
+INFO 2025-08-15 14:51:51,772 autoreload 16340 26348 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:51:51,812 autoreload 24268 23356 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:51:51,831 autoreload 13492 13576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:51:52,457 autoreload 9864 1316 Watching for file changes with StatReloader
+INFO 2025-08-15 14:51:52,488 autoreload 24168 12564 Watching for file changes with StatReloader
+INFO 2025-08-15 14:51:52,502 autoreload 15064 21328 Watching for file changes with StatReloader
+INFO 2025-08-15 14:53:17,813 autoreload 17352 14460 Watching for file changes with StatReloader
+INFO 2025-08-15 14:53:23,208 basehttp 9864 100 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 14:53:23,287 basehttp 9864 100 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:53:23,348 basehttp 9864 100 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 14:53:23,468 log 9864 100 Not Found: /favicon.ico
+WARNING 2025-08-15 14:53:23,469 basehttp 9864 100 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 14:53:47,639 basehttp 9864 25292 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20411
+INFO 2025-08-15 14:53:53,821 basehttp 9864 25292 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 14:53:57,584 basehttp 9864 25292 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:53:57,602 basehttp 9864 25292 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+INFO 2025-08-15 14:57:15,926 autoreload 15064 21328 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:15,956 autoreload 17352 14460 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:15,958 autoreload 9864 1316 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:15,959 autoreload 24168 12564 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:16,790 autoreload 24740 4092 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:16,811 autoreload 2364 18656 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:16,811 autoreload 5852 21684 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:16,852 autoreload 22136 13864 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:34,265 autoreload 22136 13864 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:34,266 autoreload 5852 21684 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:34,273 autoreload 24740 4092 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:34,288 autoreload 2364 18656 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 14:57:35,094 autoreload 16136 4944 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:35,104 autoreload 13916 22804 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:35,109 autoreload 22436 11304 Watching for file changes with StatReloader
+INFO 2025-08-15 14:57:35,117 autoreload 18896 17148 Watching for file changes with StatReloader
+INFO 2025-08-15 14:58:51,115 autoreload 13920 5040 Watching for file changes with StatReloader
+INFO 2025-08-15 14:58:56,561 basehttp 16136 25872 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 14:58:58,337 basehttp 16136 25872 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:58:58,380 basehttp 16136 25872 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+INFO 2025-08-15 14:58:59,845 basehttp 16136 25872 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 14:59:02,386 basehttp 16136 25872 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 14:59:02,396 basehttp 16136 25872 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+INFO 2025-08-15 15:00:10,737 basehttp 16136 25872 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:00:10,753 basehttp 16136 25872 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 15:00:14,875 basehttp 16136 25872 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:00:14,917 basehttp 16136 25872 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 15:00:17,528 basehttp 16136 25872 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:00:20,390 basehttp 16136 25872 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 13227
+INFO 2025-08-15 15:00:32,146 basehttp 16136 25872 "GET /admin/training/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/change/ HTTP/1.1" 200 45511
+INFO 2025-08-15 15:00:32,173 basehttp 16136 25872 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-15 15:00:33,963 basehttp 16136 25872 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 15:00:35,759 basehttp 16136 25872 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:00:41,390 basehttp 16136 25872 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 16313
+INFO 2025-08-15 15:05:05,117 basehttp 16136 25872 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:05:10,502 basehttp 16136 25872 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 16313
+INFO 2025-08-15 15:05:24,771 autoreload 16136 4944 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:05:24,793 autoreload 13920 5040 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:05:24,794 autoreload 22436 11304 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:05:24,804 autoreload 13916 22804 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:05:25,776 autoreload 8716 18876 Watching for file changes with StatReloader
+INFO 2025-08-15 15:05:25,781 autoreload 14448 2728 Watching for file changes with StatReloader
+INFO 2025-08-15 15:05:25,792 autoreload 9824 21856 Watching for file changes with StatReloader
+INFO 2025-08-15 15:05:25,805 autoreload 12712 26204 Watching for file changes with StatReloader
+INFO 2025-08-15 15:07:47,610 autoreload 14808 4628 Watching for file changes with StatReloader
+INFO 2025-08-15 15:07:52,729 basehttp 14808 13592 "GET / HTTP/1.1" 302 0
+INFO 2025-08-15 15:07:52,829 basehttp 14808 13592 "GET /dashboard/ HTTP/1.1" 200 13853
+WARNING 2025-08-15 15:07:53,025 log 14808 13592 Not Found: /favicon.ico
+WARNING 2025-08-15 15:07:53,025 basehttp 14808 13592 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 15:08:10,210 basehttp 14808 17920 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:08:13,531 basehttp 14808 5476 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 13227
+INFO 2025-08-15 15:08:33,351 basehttp 14808 5476 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 16313
+INFO 2025-08-15 15:08:37,481 basehttp 14808 5476 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:08:58,315 basehttp 14808 5476 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:08:58,323 basehttp 14808 5476 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 15:09:16,819 basehttp 14808 5476 "POST /auth/login/ HTTP/1.1" 200 3898
+INFO 2025-08-15 15:09:24,128 basehttp 14808 5476 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:09:24,145 basehttp 14808 5476 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:09:24,212 basehttp 14808 5476 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20406
+INFO 2025-08-15 15:09:31,967 basehttp 14808 5476 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+INFO 2025-08-15 15:09:34,739 basehttp 14808 5476 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:09:34,758 basehttp 14808 5476 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:09:45,175 log 14808 5476 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:09:45,175 basehttp 14808 5476 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:21:53,216 autoreload 14808 4628 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:21:53,947 autoreload 17744 16036 Watching for file changes with StatReloader
+INFO 2025-08-15 15:23:22,097 basehttp 17744 22140 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:23:22,134 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:22,135 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:22,725 basehttp 17744 22140 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:23:22,744 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:22,745 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:23,460 basehttp 17744 22140 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:23:23,482 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:23,494 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:24,865 basehttp 17744 22140 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:23:24,923 basehttp 17744 22140 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 15:23:24,954 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:24,955 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:26,765 basehttp 17744 22140 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 20411
+WARNING 2025-08-15 15:23:26,793 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:26,795 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:29,015 basehttp 17744 22140 "GET /capacitaciones/capacitacion/0cf7b5ab-6627-41cb-8fb9-f16bc83cfb82/ HTTP/1.1" 200 9928
+WARNING 2025-08-15 15:23:29,043 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:29,044 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:31,626 basehttp 17744 22140 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:23:31,648 basehttp 17744 22140 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 15:23:31,678 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:31,679 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:33,608 basehttp 17744 22140 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:23:33,647 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:33,648 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:23:37,301 basehttp 17744 22140 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:23:37,312 basehttp 17744 22140 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:23:37,339 log 17744 22140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:23:37,340 basehttp 17744 22140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:24:02,897 autoreload 17744 16036 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:24:03,572 autoreload 9300 20328 Watching for file changes with StatReloader
+INFO 2025-08-15 15:24:16,903 basehttp 9300 22876 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:24:16,932 log 9300 2452 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:24:16,933 basehttp 9300 2452 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:24:16,977 basehttp 9300 22876 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-15 15:24:16,979 basehttp 9300 26316 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-15 15:24:17,904 log 9300 26316 Not Found: /favicon.ico
+WARNING 2025-08-15 15:24:17,905 basehttp 9300 26316 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 15:24:28,870 basehttp 9300 26316 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:24:28,881 basehttp 9300 26316 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:24:28,903 log 9300 26316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:24:28,905 basehttp 9300 26316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:24:42,871 basehttp 9300 26316 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:24:42,882 basehttp 9300 26316 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:24:42,914 log 9300 26316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:24:42,915 basehttp 9300 26316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:32:59,576 autoreload 9300 20328 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:33:00,261 autoreload 14436 18240 Watching for file changes with StatReloader
+INFO 2025-08-15 15:34:20,549 autoreload 1692 21892 Watching for file changes with StatReloader
+INFO 2025-08-15 15:34:25,722 basehttp 1692 12584 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:34:25,759 log 1692 12584 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:34:25,759 basehttp 1692 12584 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:34:26,734 basehttp 1692 12584 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:34:26,761 log 1692 12584 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:34:26,762 basehttp 1692 12584 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:34:32,452 basehttp 1692 12584 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:34:32,471 log 1692 12584 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:34:32,473 basehttp 1692 12584 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:34:32,522 basehttp 1692 17456 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-15 15:34:32,522 basehttp 1692 19136 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-08-15 15:34:33,019 log 1692 19136 Not Found: /favicon.ico
+WARNING 2025-08-15 15:34:33,020 basehttp 1692 19136 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-15 15:34:50,382 basehttp 1692 19136 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:34:50,391 basehttp 1692 19136 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:34:50,415 log 1692 19136 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:34:50,415 basehttp 1692 19136 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:35:57,223 autoreload 1692 21892 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:35:57,869 autoreload 1240 15412 Watching for file changes with StatReloader
+INFO 2025-08-15 15:37:14,776 autoreload 14324 8948 Watching for file changes with StatReloader
+INFO 2025-08-15 15:37:17,741 basehttp 14324 21944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:37:17,769 log 14324 21944 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:37:17,778 basehttp 14324 21944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:37:21,873 basehttp 14324 21944 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:37:21,882 basehttp 14324 21944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:37:21,905 log 14324 21944 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:37:21,906 basehttp 14324 21944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:37:28,236 basehttp 14324 21944 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:37:28,246 basehttp 14324 21944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:37:28,279 log 14324 21944 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:37:28,280 basehttp 14324 21944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:37:35,951 basehttp 14324 21944 "POST /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:37:35,963 basehttp 14324 21944 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:37:35,988 log 14324 21944 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:37:35,988 basehttp 14324 21944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:38:54,155 autoreload 14324 8948 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:38:54,765 autoreload 26488 21404 Watching for file changes with StatReloader
+INFO 2025-08-15 15:39:10,688 autoreload 26488 21404 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:39:11,283 autoreload 22304 14672 Watching for file changes with StatReloader
+INFO 2025-08-15 15:40:36,570 basehttp 22304 17580 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:40:36,599 log 22304 17580 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:40:36,599 basehttp 22304 17580 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:40:47,511 autoreload 25984 12584 Watching for file changes with StatReloader
+INFO 2025-08-15 15:40:51,038 basehttp 25984 11624 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:40:51,069 log 25984 11624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:40:51,069 basehttp 25984 11624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:40:54,443 basehttp 25984 11624 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:40:54,452 basehttp 25984 11624 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:40:54,473 log 25984 11624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:40:54,473 basehttp 25984 11624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:41:12,790 basehttp 25984 11624 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:41:12,801 basehttp 25984 11624 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:41:12,826 log 25984 11624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:41:12,827 basehttp 25984 11624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:43:48,575 basehttp 25984 11624 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:43:48,642 basehttp 25984 11624 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 15:43:48,667 log 25984 11624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:43:48,667 basehttp 25984 11624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:52:26,746 autoreload 25984 12584 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:52:27,419 autoreload 18404 9352 Watching for file changes with StatReloader
+INFO 2025-08-15 15:52:46,504 autoreload 18404 9352 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:52:47,135 autoreload 12392 10420 Watching for file changes with StatReloader
+INFO 2025-08-15 15:53:22,164 autoreload 20160 16192 Watching for file changes with StatReloader
+INFO 2025-08-15 15:53:26,407 basehttp 20160 10168 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 15:53:26,442 log 20160 10168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:53:26,442 basehttp 20160 10168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:53:27,631 basehttp 20160 10168 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:53:27,654 basehttp 20160 10168 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 20011
+WARNING 2025-08-15 15:53:27,677 log 20160 10168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:53:27,677 basehttp 20160 10168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:53:29,140 basehttp 20160 10168 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20308
+WARNING 2025-08-15 15:53:29,167 log 20160 10168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:53:29,168 basehttp 20160 10168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:53:33,203 basehttp 20160 10168 "POST /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:53:33,224 basehttp 20160 10168 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 20729
+WARNING 2025-08-15 15:53:33,251 log 20160 10168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:53:33,252 basehttp 20160 10168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:54:45,992 autoreload 20160 16192 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-15 15:54:46,716 autoreload 7992 18316 Watching for file changes with StatReloader
+INFO 2025-08-15 15:55:01,425 basehttp 7992 22344 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:55:01,438 basehttp 7992 22344 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-08-15 15:55:01,462 log 7992 22344 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:55:01,463 basehttp 7992 22344 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:55:04,195 basehttp 7992 22344 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:55:04,238 basehttp 7992 22344 "GET /dashboard/ HTTP/1.1" 200 13853
+WARNING 2025-08-15 15:55:04,265 log 7992 22344 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-15 15:55:04,266 basehttp 7992 22344 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5151
+INFO 2025-08-15 15:55:10,581 basehttp 7992 22344 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 15:55:15,282 basehttp 7992 22344 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 15:55:29,170 autoreload 7992 18316 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-15 15:55:29,826 autoreload 5552 13388 Watching for file changes with StatReloader
+INFO 2025-08-15 15:56:12,837 autoreload 5552 13388 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:56:13,427 autoreload 19448 18780 Watching for file changes with StatReloader
+INFO 2025-08-15 15:56:32,575 autoreload 19448 18780 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-15 15:56:33,226 autoreload 25196 9156 Watching for file changes with StatReloader
+INFO 2025-08-15 15:56:34,663 autoreload 25196 9156 C:\SIGHU\sighu\sistema-gestion-empleados\apps\employees\views.py changed, reloading.
+INFO 2025-08-15 15:56:35,294 autoreload 23624 7244 Watching for file changes with StatReloader
+INFO 2025-08-15 15:56:39,357 basehttp 23624 16752 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 15:56:40,422 basehttp 23624 16752 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 15:56:42,740 basehttp 23624 16752 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 15:57:00,017 basehttp 23624 16752 "GET /empleados/crear/ HTTP/1.1" 200 200098
+INFO 2025-08-15 15:57:04,454 basehttp 23624 16752 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 15:57:07,136 basehttp 23624 16752 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 15:57:42,283 basehttp 23624 16752 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 15:57:53,433 basehttp 23624 16752 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 38180
+INFO 2025-08-15 15:58:55,185 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 13652
+INFO 2025-08-15 15:59:12,078 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 200 13324
+INFO 2025-08-15 15:59:33,986 basehttp 23624 16752 "POST /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 302 0
+INFO 2025-08-15 15:59:34,001 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 15487
+INFO 2025-08-15 15:59:45,033 basehttp 23624 16752 "GET /documentos/documento/fece13c7-9215-4f0c-95a6-bf8752fc4473/aprobar/ HTTP/1.1" 200 20820
+INFO 2025-08-15 15:59:45,116 basehttp 23624 16752 "GET /media/documentos/10352125/HOJA_VIDA/HOJA_VIDA_20250815_205933.pdf HTTP/1.1" 200 1007138
+INFO 2025-08-15 16:00:06,503 basehttp 23624 16752 "POST /documentos/documento/fece13c7-9215-4f0c-95a6-bf8752fc4473/aprobar/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:00:06,535 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 15293
+INFO 2025-08-15 16:00:29,269 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 200 13280
+INFO 2025-08-15 16:00:44,073 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 14878
+INFO 2025-08-15 16:00:49,375 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir-multiple/ HTTP/1.1" 200 68265
+INFO 2025-08-15 16:00:54,499 basehttp 23624 16752 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 14878
+INFO 2025-08-15 16:01:02,819 basehttp 23624 16752 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 16:01:05,835 basehttp 23624 16752 "GET /empleados/ HTTP/1.1" 200 96921
+INFO 2025-08-15 16:01:18,430 basehttp 23624 16752 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 16:01:21,883 basehttp 23624 16752 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 16:01:59,873 basehttp 23624 16752 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 13227
+INFO 2025-08-15 16:02:45,985 basehttp 23624 16752 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-15 16:02:49,432 basehttp 23624 16752 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 16313
+INFO 2025-08-15 16:14:06,550 autoreload 432 22768 Watching for file changes with StatReloader
+INFO 2025-08-15 16:14:12,412 basehttp 432 17788 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:12,454 basehttp 432 17788 "GET /dashboard/ HTTP/1.1" 200 14238
+INFO 2025-08-15 16:14:14,195 basehttp 432 17788 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-15 16:14:16,949 basehttp 432 17788 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:16,961 basehttp 432 17788 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-15 16:14:29,229 basehttp 432 17788 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:29,237 basehttp 432 17788 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:29,314 basehttp 432 17788 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20582
+INFO 2025-08-15 16:14:31,649 basehttp 432 17788 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12288
+INFO 2025-08-15 16:14:53,301 basehttp 432 17788 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:53,312 basehttp 432 17788 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12709
+INFO 2025-08-15 16:14:57,649 basehttp 432 17788 "POST /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/inscribir/ HTTP/1.1" 302 0
+INFO 2025-08-15 16:14:57,661 basehttp 432 17788 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 12709
+INFO 2025-08-20 06:38:37,996 autoreload 15180 23356 Watching for file changes with StatReloader
+INFO 2025-08-20 06:39:04,220 basehttp 15180 6336 "GET / HTTP/1.1" 302 0
+INFO 2025-08-20 06:39:04,258 basehttp 15180 6336 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:39:04,274 basehttp 15180 6336 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-08-20 06:39:04,386 basehttp 15180 6336 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-08-20 06:39:04,439 log 15180 6336 Not Found: /favicon.ico
+WARNING 2025-08-20 06:39:04,440 basehttp 15180 6336 "GET /favicon.ico HTTP/1.1" 404 5040
+INFO 2025-08-20 06:39:14,409 basehttp 15180 2864 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:39:14,500 basehttp 15180 2864 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-20 06:39:14,518 basehttp 15180 2864 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-08-20 06:39:30,468 basehttp 15180 2864 "GET /empleados/ HTTP/1.1" 200 96864
+INFO 2025-08-20 06:39:50,074 basehttp 15180 2864 "GET /empleados/70c02329-5575-42ac-b634-cf224bca1fb5/ HTTP/1.1" 200 34937
+INFO 2025-08-20 06:40:17,167 basehttp 15180 2864 "GET /empleados/crear/ HTTP/1.1" 200 200098
+INFO 2025-08-20 06:41:50,791 basehttp 15180 2864 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-20 06:42:01,618 basehttp 15180 2864 "GET /capacitaciones/admin/ HTTP/1.1" 200 23724
+INFO 2025-08-20 06:42:25,337 basehttp 15180 2864 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-20 06:42:30,827 basehttp 15180 2864 "GET /empleados/ HTTP/1.1" 200 96864
+INFO 2025-08-20 06:42:50,883 basehttp 15180 2864 "GET /empleados/export/?export=excel HTTP/1.1" 200 8962
+INFO 2025-08-20 06:45:00,119 basehttp 15180 2864 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-20 06:45:09,005 basehttp 15180 2864 "GET /admin/ HTTP/1.1" 200 47340
+INFO 2025-08-20 06:45:09,027 basehttp 15180 21292 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-08-20 06:45:09,029 basehttp 15180 8436 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-08-20 06:45:09,036 basehttp 15180 2864 "GET /static/admin/css/base.css HTTP/1.1" 200 22154
+INFO 2025-08-20 06:45:09,037 basehttp 15180 4644 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-08-20 06:45:09,037 basehttp 15180 21912 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-08-20 06:45:09,044 basehttp 15180 4644 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-08-20 06:45:09,044 basehttp 15180 18288 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16632
+INFO 2025-08-20 06:45:09,051 basehttp 15180 4644 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-08-20 06:45:09,058 basehttp 15180 18288 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-08-20 06:45:15,357 basehttp 15180 18288 "GET /admin/employees/empleado/ HTTP/1.1" 200 62872
+INFO 2025-08-20 06:45:15,380 basehttp 15180 18288 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-08-20 06:45:15,381 basehttp 15180 2864 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-08-20 06:45:15,381 basehttp 15180 8436 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-08-20 06:45:15,388 basehttp 15180 2864 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-08-20 06:45:15,393 basehttp 15180 8436 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-08-20 06:45:15,394 basehttp 15180 18288 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-08-20 06:45:15,400 basehttp 15180 8436 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-08-20 06:45:15,409 basehttp 15180 21292 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-08-20 06:45:15,437 basehttp 15180 4644 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-20 06:45:15,440 basehttp 15180 21912 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-08-20 06:45:15,447 basehttp 15180 21912 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-08-20 06:45:15,520 basehttp 15180 2864 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-08-20 06:45:15,537 basehttp 15180 2864 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-08-20 06:45:15,539 basehttp 15180 21912 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-08-20 06:45:35,683 basehttp 15180 21912 "POST /admin/employees/empleado/ HTTP/1.1" 200 35838
+INFO 2025-08-20 06:45:35,718 basehttp 15180 21912 "GET /static/admin/js/cancel.js HTTP/1.1" 200 884
+INFO 2025-08-20 06:45:47,128 basehttp 15180 21912 "POST /admin/employees/empleado/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:45:47,353 basehttp 15180 21912 "GET /admin/employees/empleado/ HTTP/1.1" 200 63006
+INFO 2025-08-20 06:45:47,389 basehttp 15180 21912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-20 06:45:47,412 basehttp 15180 21912 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-08-20 06:47:11,152 basehttp 15180 21912 "POST /admin/employees/empleado/ HTTP/1.1" 200 36537
+INFO 2025-08-20 06:47:23,663 basehttp 15180 21912 "POST /admin/employees/empleado/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:47:23,893 basehttp 15180 21912 "GET /admin/employees/empleado/ HTTP/1.1" 200 62999
+INFO 2025-08-20 06:47:23,911 basehttp 15180 21912 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-20 06:47:36,512 basehttp 15180 21912 "GET /dashboard/ HTTP/1.1" 200 13853
+INFO 2025-08-20 06:47:40,660 basehttp 15180 21912 "GET /empleados/ HTTP/1.1" 200 96870
+INFO 2025-08-20 06:48:44,302 basehttp 15180 21912 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:48:44,307 basehttp 15180 21912 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-20 06:48:51,708 basehttp 15180 21912 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:48:51,721 basehttp 15180 21912 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:48:51,840 basehttp 15180 21912 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 20584
+INFO 2025-08-20 06:49:46,891 basehttp 15180 21912 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 36987
+INFO 2025-08-20 06:49:56,814 basehttp 15180 21912 "GET /empleados/ HTTP/1.1" 200 89045
+INFO 2025-08-20 06:52:59,583 basehttp 15180 21912 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 19949
+INFO 2025-08-20 06:53:35,843 basehttp 15180 21912 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 26824
+ERROR 2025-08-20 06:53:48,483 log 15180 21912 Internal Server Error: /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 47, in select_template
+    raise TemplateDoesNotExist(", ".join(template_name_list), chain=chain)
+django.template.exceptions.TemplateDoesNotExist: training/player.html
+ERROR 2025-08-20 06:53:48,486 basehttp 15180 21912 "GET /capacitaciones/player/3221563d-b2b2-4435-875c-238820e42810/ HTTP/1.1" 500 91328
+INFO 2025-08-20 06:54:17,409 basehttp 15180 21912 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 8834
+INFO 2025-08-20 06:55:09,412 basehttp 15180 21912 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 8948
+INFO 2025-08-20 06:57:03,419 basehttp 15180 21912 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-20 06:57:03,486 basehttp 15180 21912 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 19949
+INFO 2025-08-20 06:57:05,724 basehttp 15180 21912 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 14644
+INFO 2025-08-20 06:57:26,400 basehttp 15180 21912 "GET /documentos/documento/fece13c7-9215-4f0c-95a6-bf8752fc4473/ver/ HTTP/1.1" 200 20280
+INFO 2025-08-20 06:57:26,436 basehttp 15180 21912 "GET /media/documentos/10352125/HOJA_VIDA/HOJA_VIDA_20250815_205933.pdf HTTP/1.1" 304 0

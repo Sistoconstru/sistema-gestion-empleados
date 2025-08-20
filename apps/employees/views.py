@@ -853,14 +853,10 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             ).select_related('capacitacion')
             
             # Estados
-            completadas = inscripciones.filter(completada=True)
-            en_progreso = inscripciones.filter(
-                completada=False,
-                fecha_inicio__isnull=False
-            )
+            completadas = inscripciones.filter(estado='completado')
+            en_progreso = inscripciones.filter(estado='en_progreso')
             pendientes = inscripciones.filter(
-                completada=False,
-                fecha_inicio__isnull=True
+                estado='no_iniciado'
             )
             
             # Próximas a vencer (si tienen fecha límite)
@@ -1090,15 +1086,15 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 
                 docs_recientes = DocumentoEmpleado.objects.filter(
                     empleado=empleado,
-                    fecha_subida__gte=timezone.now() - timedelta(days=15)
-                ).order_by('-fecha_subida')[:3]
+                    fecha_carga__gte=timezone.now() - timedelta(days=15)
+                ).order_by('-fecha_carga')[:3]
                 
                 for doc in docs_recientes:
                     actividades.append({
                         'tipo': 'documento',
                         'icono': 'fas fa-file-upload',
                         'titulo': f'Documento subido: {doc.tipo_documento.nombre}',
-                        'fecha': doc.fecha_subida,
+                        'fecha': doc.fecha_carga,
                         'estado': doc.estado_aprobacion
                     })
             except ImportError:
