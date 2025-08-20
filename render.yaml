@@ -5,7 +5,8 @@ services:
     buildCommand: |
       apt-get update && apt-get install -y libmagic1 && 
       pip install -r requirements.txt && 
-      python manage.py migrate --settings=config.settings.production && 
+      python manage.py makemigrations --settings=config.settings.production &&
+      python manage.py migrate --settings=config.settings.production --noinput && 
       echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='sisto').exists() or User.objects.create_superuser('sisto', 'admin@example.com', '123456')" | python manage.py shell --settings=config.settings.production && 
       python manage.py collectstatic --noinput --settings=config.settings.production
     startCommand: gunicorn -c gunicorn_config.py config.wsgi:application
