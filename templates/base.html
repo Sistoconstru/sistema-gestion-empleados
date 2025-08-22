@@ -23,7 +23,7 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-primary border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary border-bottom" id="mainHeader">
         <div class="container">
             <!-- Logo o nombre del sistema -->
             <a class="navbar-brand" href="{% url 'core:dashboard' %}">SIGHU</a>
@@ -80,7 +80,7 @@
 
     <!-- Breadcrumb fuera del navbar -->
     {% block breadcrumb %}
-    <nav aria-label="breadcrumb" class="bg-light py-2">
+    <nav aria-label="breadcrumb" class="bg-light py-2" id="mainBreadcrumb">
         <div class="container">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Inicio</a></li>
@@ -123,7 +123,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-light text-center py-3 mt-5">
+    <footer class="bg-light text-center py-3 mt-5" id="mainFooter">
         <div class="container">
             <span class="text-muted">
                 © {% now "Y" %} Sisto Ferney Guarin - Sistema de Gestión de Empleados
@@ -141,5 +141,23 @@
     <script src="{% static 'js/custom.js' %}"></script>
     
     {% block extra_js %}{% endblock %}
+    <script>
+    // Oculta header, breadcrumb y footer al entrar en pantalla completa
+    document.addEventListener('fullscreenchange', function() {
+        var isFull = document.fullscreenElement !== null;
+        var header = document.getElementById('mainHeader');
+        var breadcrumb = document.getElementById('mainBreadcrumb');
+        var footer = document.getElementById('mainFooter');
+        if (isFull) {
+            if(header) header.style.display = 'none';
+            if(breadcrumb) breadcrumb.style.display = 'none';
+            if(footer) footer.style.display = 'none';
+        } else {
+            if(header) header.style.display = '';
+            if(breadcrumb) breadcrumb.style.display = '';
+            if(footer) footer.style.display = '';
+        }
+    });
+    </script>
 </body>
 </html>

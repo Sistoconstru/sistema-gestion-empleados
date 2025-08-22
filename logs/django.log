@@ -28405,3 +28405,834 @@ INFO 2025-08-22 08:42:07,422 basehttp 17196 15876 "POST /capacitaciones/contenid
 INFO 2025-08-22 08:42:37,378 basehttp 17196 15876 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 189
 INFO 2025-08-22 08:43:07,419 basehttp 17196 19480 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 189
 INFO 2025-08-22 08:44:00,377 basehttp 17196 19480 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 189
+INFO 2025-08-22 08:50:03,493 autoreload 10072 10892 Watching for file changes with StatReloader
+INFO 2025-08-22 08:50:08,078 basehttp 10072 20948 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+WARNING 2025-08-22 08:50:10,112 log 10072 8908 Not Found: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/undefined
+WARNING 2025-08-22 08:50:10,112 basehttp 10072 8908 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/undefined HTTP/1.1" 404 9693
+INFO 2025-08-22 08:50:10,141 basehttp 10072 20948 - Broken pipe from ('127.0.0.1', 60023)
+INFO 2025-08-22 08:50:23,768 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:50:23,805 basehttp 10072 8908 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:50:23,903 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+INFO 2025-08-22 08:50:23,923 basehttp 10072 17540 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-08-22 08:50:27,666 basehttp 10072 17540 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 08:50:33,267 basehttp 10072 17540 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32315
+WARNING 2025-08-22 08:50:56,942 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:50:56,943 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:52:23,809 basehttp 10072 8908 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:52:23,837 basehttp 10072 17540 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:52:23,888 basehttp 10072 8908 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:52:23,914 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:52:23,915 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:52:27,542 basehttp 10072 8908 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:52:27,568 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:52:27,569 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:52:30,575 basehttp 10072 8908 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32410
+WARNING 2025-08-22 08:52:30,605 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:52:30,605 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:10,762 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:53:10,786 basehttp 10072 8908 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:53:10,834 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:53:10,858 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:10,859 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:17,088 basehttp 10072 17540 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:53:17,115 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:17,116 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:22,400 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:53:22,443 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:53:22,471 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:22,472 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:25,875 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:53:25,965 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:53:25,986 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:25,987 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:31,233 basehttp 10072 17540 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:53:31,272 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:31,273 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:34,029 basehttp 10072 17540 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32410
+WARNING 2025-08-22 08:53:34,058 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:34,058 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:37,077 basehttp 10072 17540 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+WARNING 2025-08-22 08:53:37,085 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:37,086 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 08:53:37,101 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:37,103 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:40,957 basehttp 10072 8908 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32410
+WARNING 2025-08-22 08:53:40,986 log 10072 8908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:40,987 basehttp 10072 8908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:53:48,658 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:53:48,687 basehttp 10072 8908 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:53:48,708 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:53:48,734 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:53:48,736 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:54:53,239 basehttp 10072 17540 "GET /documentos/empleado/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 26387
+WARNING 2025-08-22 08:54:53,266 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:54:53,266 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:54:58,462 basehttp 10072 17540 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:54:58,535 basehttp 10072 17540 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:54:58,572 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:54:58,573 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:55:00,039 basehttp 10072 17540 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:55:00,069 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:55:00,069 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:55:03,655 basehttp 10072 17540 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32452
+WARNING 2025-08-22 08:55:03,686 log 10072 17540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:55:03,687 basehttp 10072 17540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:56:27,795 autoreload 15288 18932 Watching for file changes with StatReloader
+INFO 2025-08-22 08:56:32,102 basehttp 15288 4428 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:56:32,146 basehttp 15288 17432 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:56:32,204 basehttp 15288 4428 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:56:32,230 log 15288 4428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:56:32,231 basehttp 15288 4428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:56:36,234 basehttp 15288 4428 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:56:36,257 log 15288 4428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:56:36,260 basehttp 15288 4428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:56:36,330 basehttp 15288 20064 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 08:56:36,331 basehttp 15288 17432 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 08:56:36,332 basehttp 15288 17084 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 08:56:36,753 log 15288 17084 Not Found: /favicon.ico
+WARNING 2025-08-22 08:56:36,754 basehttp 15288 17084 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 08:56:38,553 basehttp 15288 17084 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:56:38,600 log 15288 17084 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:56:38,601 basehttp 15288 17084 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:56:40,040 basehttp 15288 17084 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32435
+WARNING 2025-08-22 08:56:40,069 log 15288 17084 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:56:40,070 basehttp 15288 17084 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:58:05,033 basehttp 15288 17432 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 08:58:05,063 basehttp 15288 17084 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 08:58:05,106 basehttp 15288 17432 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:58:05,130 log 15288 17432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:58:05,131 basehttp 15288 17432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:58:08,191 basehttp 15288 17432 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 08:58:08,215 log 15288 17432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-08-22 08:58:08,216 basehttp 15288 20064 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 08:58:08,216 basehttp 15288 17084 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 08:58:08,216 basehttp 15288 4428 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 08:58:08,216 basehttp 15288 17432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 08:58:08,840 log 15288 17432 Not Found: /favicon.ico
+WARNING 2025-08-22 08:58:08,840 basehttp 15288 17432 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 08:58:10,267 basehttp 15288 17432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 08:58:10,293 log 15288 17432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:58:10,293 basehttp 15288 17432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 08:58:11,849 basehttp 15288 17432 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32875
+WARNING 2025-08-22 08:58:11,875 log 15288 17432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 08:58:11,876 basehttp 15288 17432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:00:17,894 basehttp 15288 17084 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:00:17,926 basehttp 15288 17432 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:00:17,976 basehttp 15288 17084 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:00:18,000 log 15288 17084 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:00:18,001 basehttp 15288 17084 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:00:20,662 basehttp 15288 17084 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:00:20,687 log 15288 4428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-08-22 09:00:20,689 basehttp 15288 17432 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+WARNING 2025-08-22 09:00:20,689 basehttp 15288 4428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:00:20,690 basehttp 15288 20064 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 09:00:20,690 basehttp 15288 17084 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-08-22 09:00:21,388 log 15288 17084 Not Found: /favicon.ico
+WARNING 2025-08-22 09:00:21,389 basehttp 15288 17084 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 09:00:22,345 basehttp 15288 17084 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:00:22,372 log 15288 17084 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:00:22,374 basehttp 15288 17084 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:00:24,068 basehttp 15288 17084 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 34962
+WARNING 2025-08-22 09:00:24,092 log 15288 17084 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:00:24,092 basehttp 15288 17084 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:06:02,598 autoreload 23396 24192 Watching for file changes with StatReloader
+INFO 2025-08-22 09:06:08,556 basehttp 23396 11032 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:06:08,593 basehttp 23396 3104 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:06:08,655 basehttp 23396 11032 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:06:08,683 log 23396 11032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:06:08,684 basehttp 23396 11032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:06:11,104 basehttp 23396 11032 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:06:11,128 log 23396 11032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:06:11,131 basehttp 23396 11032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:06:11,191 basehttp 23396 17280 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 09:06:11,197 basehttp 23396 3104 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 09:06:11,198 basehttp 23396 17216 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 09:06:11,616 log 23396 17216 Not Found: /favicon.ico
+WARNING 2025-08-22 09:06:11,617 basehttp 23396 17216 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 09:06:17,674 basehttp 23396 17216 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:06:17,697 log 23396 17216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:06:17,698 basehttp 23396 17216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:06:24,250 basehttp 23396 17216 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 34962
+WARNING 2025-08-22 09:06:24,275 log 23396 17216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:06:24,276 basehttp 23396 17216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:06:44,806 basehttp 23396 17216 - Broken pipe from ('127.0.0.1', 58565)
+INFO 2025-08-22 09:07:05,316 basehttp 23396 3104 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 09:07:05,325 basehttp 23396 3104 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:07:05,387 basehttp 23396 3104 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+INFO 2025-08-22 09:07:15,795 basehttp 23396 3104 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+INFO 2025-08-22 09:07:19,896 basehttp 23396 3104 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 09:07:21,524 basehttp 23396 3104 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 34962
+WARNING 2025-08-22 09:07:28,367 log 23396 3104 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:07:28,367 basehttp 23396 3104 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:10:54,576 basehttp 23396 3104 "GET /media/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 1007138
+INFO 2025-08-22 09:11:25,716 basehttp 23396 3104 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:11:25,766 basehttp 23396 6752 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37868
+WARNING 2025-08-22 09:11:25,794 log 23396 6752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:11:25,794 basehttp 23396 6752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:11:32,024 basehttp 23396 6752 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:11:32,029 basehttp 23396 3104 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37868
+WARNING 2025-08-22 09:11:32,051 log 23396 3104 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:11:32,051 basehttp 23396 3104 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:12:03,933 basehttp 23396 6752 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:12:03,957 basehttp 23396 3104 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:12:04,006 basehttp 23396 6752 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:12:04,028 log 23396 6752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:12:04,028 basehttp 23396 6752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:12:04,983 basehttp 23396 6752 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:12:05,008 log 23396 6752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:12:05,009 basehttp 23396 6752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:12:07,571 basehttp 23396 6752 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37868
+WARNING 2025-08-22 09:12:07,606 log 23396 6752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:12:07,607 basehttp 23396 6752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:18:19,485 autoreload 23396 24192 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 09:18:20,110 autoreload 15100 10120 Watching for file changes with StatReloader
+INFO 2025-08-22 09:18:33,828 autoreload 15100 10120 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 09:18:34,336 autoreload 1088 1448 Watching for file changes with StatReloader
+INFO 2025-08-22 09:18:43,837 autoreload 1088 1448 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 09:18:44,354 autoreload 16888 23536 Watching for file changes with StatReloader
+INFO 2025-08-22 09:20:10,652 autoreload 3932 14288 Watching for file changes with StatReloader
+INFO 2025-08-22 09:20:14,500 basehttp 3932 21864 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:20:14,546 basehttp 3932 9820 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:20:14,604 basehttp 3932 21864 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+INFO 2025-08-22 09:20:14,634 basehttp 3932 9820 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 09:20:14,635 log 3932 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:14,636 basehttp 3932 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:16,418 basehttp 3932 21864 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:20:16,439 log 3932 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:16,440 basehttp 3932 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:18,515 basehttp 3932 21864 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:20:18,547 log 3932 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:18,549 basehttp 3932 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:40,590 basehttp 3932 21864 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:20:40,640 basehttp 3932 21864 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:20:40,671 log 3932 2788 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:40,672 basehttp 3932 2788 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:40,714 basehttp 3932 9820 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 09:20:40,716 basehttp 3932 21864 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 09:20:40,718 basehttp 3932 25088 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 09:20:41,753 log 3932 25088 Not Found: /favicon.ico
+WARNING 2025-08-22 09:20:41,754 basehttp 3932 25088 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 09:20:44,786 basehttp 3932 21864 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:20:44,829 basehttp 3932 21864 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:20:44,858 log 3932 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:44,861 basehttp 3932 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:44,885 basehttp 3932 25088 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:20:47,344 basehttp 3932 25088 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:20:47,368 log 3932 25088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:47,368 basehttp 3932 25088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:49,301 basehttp 3932 25088 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:20:49,330 log 3932 25088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:49,331 basehttp 3932 25088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:55,246 basehttp 3932 25088 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:20:55,286 basehttp 3932 21864 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:20:55,304 log 3932 21864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:20:55,306 basehttp 3932 21864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:20:55,308 basehttp 3932 9820 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 09:20:55,309 basehttp 3932 2788 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 09:20:55,309 basehttp 3932 25088 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-08-22 09:20:56,088 log 3932 25088 Not Found: /favicon.ico
+WARNING 2025-08-22 09:20:56,089 basehttp 3932 25088 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 09:21:06,270 basehttp 3932 25088 - Broken pipe from ('127.0.0.1', 62463)
+INFO 2025-08-22 09:21:17,464 autoreload 15448 22304 Watching for file changes with StatReloader
+INFO 2025-08-22 09:21:21,783 basehttp 15448 14792 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 09:21:21,865 basehttp 15448 14792 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:21:21,959 basehttp 15448 14792 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+INFO 2025-08-22 09:21:24,704 basehttp 15448 14792 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 09:21:26,288 basehttp 15448 14792 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:21:30,400 log 15448 14792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:21:30,401 basehttp 15448 14792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:21:41,211 basehttp 15448 14792 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:21:41,244 basehttp 15448 8372 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:21:41,331 basehttp 15448 8372 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:21:41,362 log 15448 8372 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:21:41,363 basehttp 15448 8372 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:21:44,799 basehttp 15448 8372 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:21:44,826 log 15448 8372 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:21:44,828 basehttp 15448 8372 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:21:46,442 basehttp 15448 8372 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37881
+WARNING 2025-08-22 09:21:46,473 log 15448 8372 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:21:46,473 basehttp 15448 8372 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:24:59,890 autoreload 15448 22304 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 09:25:00,548 autoreload 24072 18540 Watching for file changes with StatReloader
+INFO 2025-08-22 09:25:01,952 autoreload 24072 18540 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 09:25:02,595 autoreload 4212 23632 Watching for file changes with StatReloader
+INFO 2025-08-22 09:25:09,650 basehttp 4212 22556 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:25:09,684 basehttp 4212 17056 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:25:09,748 basehttp 4212 22556 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:25:09,800 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:25:09,823 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:25:10,855 basehttp 4212 22556 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:25:10,880 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:25:10,881 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:25:12,160 basehttp 4212 22556 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:25:12,185 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:25:12,186 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:25:49,516 basehttp 4212 22556 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:25:49,576 basehttp 4212 22556 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:25:49,609 log 4212 7264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:25:49,610 basehttp 4212 7264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:25:49,678 basehttp 4212 17056 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 09:25:49,680 basehttp 4212 22508 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 09:25:49,684 basehttp 4212 22556 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-08-22 09:25:50,458 log 4212 22556 Not Found: /favicon.ico
+WARNING 2025-08-22 09:25:50,459 basehttp 4212 22556 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 09:29:44,994 basehttp 4212 22508 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:29:45,078 basehttp 4212 22508 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:29:45,107 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:29:45,108 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:29:45,134 basehttp 4212 22556 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:29:47,790 basehttp 4212 22556 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:29:47,810 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:29:47,811 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:29:49,276 basehttp 4212 22556 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:29:49,303 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:29:49,304 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:29:52,944 basehttp 4212 22508 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:29:52,971 basehttp 4212 22556 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:29:53,004 basehttp 4212 22508 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:29:53,034 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:29:53,035 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:12,578 basehttp 4212 22508 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:33:12,612 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:12,613 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:15,881 basehttp 4212 22508 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:33:15,907 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:15,908 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:21,725 basehttp 4212 22508 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:33:21,759 basehttp 4212 22556 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:33:21,836 basehttp 4212 22556 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:33:21,865 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:21,865 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:26,631 basehttp 4212 22556 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:33:26,662 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:26,676 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:28,671 basehttp 4212 22556 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:33:28,700 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:28,703 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:32,766 basehttp 4212 22508 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:33:32,789 basehttp 4212 22556 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:33:32,839 basehttp 4212 22508 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:33:32,867 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:32,868 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:39,517 basehttp 4212 22508 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:33:39,552 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:39,554 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:33:41,534 basehttp 4212 22508 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:33:41,567 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:33:41,567 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:34:15,358 basehttp 4212 22556 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:34:15,404 basehttp 4212 22556 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:34:15,436 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:34:15,438 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:34:15,463 basehttp 4212 22508 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:35:13,530 basehttp 4212 22508 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:35:13,557 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:35:13,558 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:35:15,008 basehttp 4212 22508 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 37870
+WARNING 2025-08-22 09:35:15,040 log 4212 22508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:35:15,040 basehttp 4212 22508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:35:27,694 basehttp 4212 22556 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:35:27,738 basehttp 4212 22508 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:35:27,791 basehttp 4212 22556 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:35:27,818 log 4212 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:35:27,818 basehttp 4212 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:54:10,137 basehttp 4212 22264 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:54:10,171 log 4212 22264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-08-22 09:54:10,172 basehttp 4212 13756 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 09:54:10,173 basehttp 4212 22264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:54:14,301 basehttp 4212 22264 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 39495
+WARNING 2025-08-22 09:54:14,326 log 4212 22264 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:54:14,327 basehttp 4212 22264 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:56:42,636 basehttp 4212 13756 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 09:56:42,671 basehttp 4212 22264 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 09:56:42,720 basehttp 4212 13756 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22940
+WARNING 2025-08-22 09:56:42,746 log 4212 13756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:56:42,746 basehttp 4212 13756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:56:45,314 basehttp 4212 13756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 09:56:45,337 log 4212 13756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:56:45,338 basehttp 4212 13756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:56:48,360 basehttp 4212 13756 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29282
+WARNING 2025-08-22 09:56:48,385 log 4212 13756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 09:56:48,386 basehttp 4212 13756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 09:56:49,148 basehttp 4212 15228 "OPTIONS /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 0
+WARNING 2025-08-22 09:56:49,156 log 4212 15228 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 09:56:49,156 basehttp 4212 15228 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 10:33:04,767 autoreload 10684 16284 Watching for file changes with StatReloader
+INFO 2025-08-22 10:33:10,077 basehttp 10684 9432 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 10:33:10,112 basehttp 10684 9100 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 10:33:10,171 basehttp 10684 9432 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 10:33:10,193 basehttp 10684 9432 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 10:33:10,221 log 10684 9432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 10:33:10,222 basehttp 10684 9432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 10:33:12,149 basehttp 10684 9432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 10:33:12,175 log 10684 9432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 10:33:12,176 basehttp 10684 9432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 10:33:13,722 basehttp 10684 9432 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 10:33:13,748 log 10684 9432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 10:33:13,748 basehttp 10684 9432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 10:33:13,820 basehttp 10684 9100 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 406
+INFO 2025-08-22 11:15:24,332 autoreload 9844 13784 Watching for file changes with StatReloader
+INFO 2025-08-22 11:15:29,100 basehttp 9844 14612 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:15:29,138 basehttp 9844 21728 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:15:29,208 basehttp 9844 14612 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 11:15:29,240 basehttp 9844 14612 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 11:15:29,243 log 9844 21728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:15:29,244 basehttp 9844 21728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:15:30,581 basehttp 9844 21728 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:15:30,606 log 9844 21728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:15:30,607 basehttp 9844 21728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:15:32,135 basehttp 9844 21728 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:15:32,163 log 9844 21728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:15:32,164 basehttp 9844 21728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:15:32,168 basehttp 9844 21728 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 304 0
+INFO 2025-08-22 11:15:41,434 basehttp 9844 21728 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:15:41,499 basehttp 9844 21728 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:15:41,529 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:15:41,530 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:15:41,592 basehttp 9844 14612 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 11:15:41,593 basehttp 9844 21728 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 11:15:41,595 basehttp 9844 10516 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 11:15:41,727 basehttp 9844 10516 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 11:15:41,770 basehttp 9844 21728 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 11:15:41,775 basehttp 9844 14612 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 11:15:41,788 basehttp 9844 21728 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 11:15:41,803 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 11:15:41,805 basehttp 9844 14612 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 11:15:41,806 basehttp 9844 10516 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 11:15:41,812 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 11:15:41,820 basehttp 9844 24128 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 11:15:41,824 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 11:15:41,825 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 11:15:41,832 basehttp 9844 14612 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 11:15:41,833 basehttp 9844 10516 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 11:15:41,835 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 11:15:41,835 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 11:15:41,837 basehttp 9844 24128 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 11:15:41,839 basehttp 9844 14612 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 11:15:41,839 basehttp 9844 10516 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 11:15:41,841 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 11:15:41,841 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 11:15:41,850 basehttp 9844 21728 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-22 11:15:41,864 basehttp 9844 21728 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 11:15:41,869 basehttp 9844 21728 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 11:15:41,871 basehttp 9844 24128 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-22 11:15:41,885 basehttp 9844 21728 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+INFO 2025-08-22 11:15:41,902 basehttp 9844 24128 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+WARNING 2025-08-22 11:15:42,025 log 9844 24128 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:15:42,026 basehttp 9844 24128 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:15:42,045 basehttp 9844 21728 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+WARNING 2025-08-22 11:15:42,590 log 9844 21728 Not Found: /favicon.ico
+WARNING 2025-08-22 11:15:42,591 basehttp 9844 21728 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 11:20:33,913 basehttp 9844 21728 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:20:34,018 basehttp 9844 24128 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:20:34,116 basehttp 9844 24128 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+WARNING 2025-08-22 11:20:34,147 log 9844 24128 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:20:34,147 basehttp 9844 24128 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:20:37,773 basehttp 9844 24128 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+WARNING 2025-08-22 11:20:37,795 log 9844 23164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-08-22 11:20:37,797 basehttp 9844 21728 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 11:20:37,797 basehttp 9844 24128 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 11:20:37,797 basehttp 9844 3692 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 11:20:37,797 basehttp 9844 23164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 11:20:38,293 log 9844 3692 Not Found: /favicon.ico
+WARNING 2025-08-22 11:20:38,294 basehttp 9844 3692 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 11:20:40,750 basehttp 9844 3692 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:20:40,773 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:20:40,774 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:20:42,106 basehttp 9844 3692 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:20:42,132 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:20:42,134 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:20:42,135 basehttp 9844 23164 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 11:20:42,197 basehttp 9844 3692 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 11:20:42,201 basehttp 9844 23164 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 11:20:42,205 basehttp 9844 24128 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 11:20:42,231 basehttp 9844 23164 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-22 11:20:42,249 basehttp 9844 23164 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 11:20:42,250 basehttp 9844 24128 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-22 11:20:42,261 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 11:20:42,261 basehttp 9844 21728 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 11:20:42,261 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 11:20:42,261 basehttp 9844 24128 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 11:20:42,262 basehttp 9844 19844 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 11:20:42,262 basehttp 9844 16704 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 11:20:42,266 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 11:20:42,266 basehttp 9844 24128 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 11:20:42,267 basehttp 9844 21728 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 11:20:42,267 basehttp 9844 19844 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 11:20:42,268 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 11:20:42,270 basehttp 9844 16704 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 11:20:42,273 basehttp 9844 23164 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 11:20:42,273 basehttp 9844 24128 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 11:20:42,274 basehttp 9844 21728 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 11:20:42,275 basehttp 9844 19844 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 11:20:42,278 basehttp 9844 3692 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 11:20:42,292 basehttp 9844 16704 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+INFO 2025-08-22 11:20:42,309 basehttp 9844 3692 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+WARNING 2025-08-22 11:20:42,379 log 9844 3692 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:20:42,380 basehttp 9844 3692 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:20:42,417 basehttp 9844 16704 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-08-22 11:21:01,334 basehttp 9844 3692 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:21:01,402 basehttp 9844 3692 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+WARNING 2025-08-22 11:21:01,437 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-08-22 11:21:01,438 basehttp 9844 16704 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+WARNING 2025-08-22 11:21:01,440 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:21:04,823 basehttp 9844 3692 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:21:04,852 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:21:04,853 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:21:09,821 basehttp 9844 3692 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:21:09,851 log 9844 3692 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:21:09,852 basehttp 9844 3692 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 11:21:10,087 log 9844 3692 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:21:10,088 basehttp 9844 3692 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+WARNING 2025-08-22 11:25:55,478 log 9844 3692 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:25:55,479 basehttp 9844 3692 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:26:49,012 basehttp 9844 3692 "GET /admin/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 302 0
+INFO 2025-08-22 11:26:49,088 basehttp 9844 3692 "GET /admin/login/?next=/admin/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 4126
+INFO 2025-08-22 11:26:49,104 basehttp 9844 16100 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-08-22 11:26:49,105 basehttp 9844 11316 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-08-22 11:26:49,105 basehttp 9844 3692 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-08-22 11:26:49,106 basehttp 9844 24996 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-08-22 11:26:49,107 basehttp 9844 15364 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-08-22 11:26:49,107 basehttp 9844 22928 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-08-22 11:26:49,111 basehttp 9844 22928 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-08-22 11:27:03,032 basehttp 9844 22928 "POST /admin/login/?next=/admin/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 302 0
+WARNING 2025-08-22 11:27:03,057 log 9844 22928 Not Found: /admin/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:27:03,058 basehttp 9844 22928 "GET /admin/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 18918
+WARNING 2025-08-22 11:27:46,507 log 9844 22928 Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/
+WARNING 2025-08-22 11:27:46,508 basehttp 9844 22928 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 403 2543
+INFO 2025-08-22 11:27:46,671 basehttp 9844 15364 "GET /dashboard/ HTTP/1.1" 200 14116
+WARNING 2025-08-22 11:27:46,700 log 9844 15364 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:27:46,701 basehttp 9844 15364 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:27:51,178 basehttp 9844 15364 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:27:51,183 basehttp 9844 15364 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-08-22 11:27:51,209 log 9844 15364 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:27:51,210 basehttp 9844 15364 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:27:54,272 basehttp 9844 15364 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:27:54,280 basehttp 9844 15364 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:27:54,361 basehttp 9844 15364 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23335
+WARNING 2025-08-22 11:27:54,391 log 9844 15364 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:27:54,392 basehttp 9844 15364 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:27:55,858 basehttp 9844 15364 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:27:55,889 log 9844 15364 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:27:55,890 basehttp 9844 15364 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:27:57,211 basehttp 9844 15364 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:27:57,242 log 9844 15364 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:27:57,243 basehttp 9844 15364 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 11:27:57,453 log 9844 15364 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:27:57,453 basehttp 9844 15364 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:39:04,408 autoreload 9844 13784 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 11:39:05,099 autoreload 8992 20764 Watching for file changes with StatReloader
+INFO 2025-08-22 11:39:17,827 basehttp 8992 21872 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:39:17,871 basehttp 8992 24076 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:39:17,932 basehttp 8992 21872 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+WARNING 2025-08-22 11:39:17,972 log 8992 21872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:39:17,973 basehttp 8992 21872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:39:25,584 basehttp 8992 21872 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:39:25,608 log 8992 21872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:39:25,608 basehttp 8992 21872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:39:46,826 basehttp 8992 21872 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:39:46,860 log 8992 21872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:39:46,860 basehttp 8992 21872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 11:39:47,107 log 8992 21872 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:39:47,108 basehttp 8992 21872 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:47:17,676 autoreload 8992 20764 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 11:47:18,368 autoreload 21048 12020 Watching for file changes with StatReloader
+INFO 2025-08-22 11:47:30,222 basehttp 21048 19444 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:47:30,256 basehttp 21048 12324 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:47:30,327 basehttp 21048 19444 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 11:47:30,359 basehttp 21048 19444 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 11:47:30,370 log 21048 19444 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:47:30,371 basehttp 21048 19444 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:47:44,441 basehttp 21048 19444 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:47:44,482 log 21048 19444 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:47:44,483 basehttp 21048 19444 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:47:50,780 basehttp 21048 19444 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 11:47:50,820 log 21048 16872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:47:50,821 basehttp 21048 16872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:47:50,886 basehttp 21048 19444 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 11:47:50,888 basehttp 21048 12324 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 11:47:50,889 basehttp 21048 2052 "GET /static/js/custom.js HTTP/1.1" 200 14028
+WARNING 2025-08-22 11:47:51,375 log 21048 12324 Not Found: /favicon.ico
+WARNING 2025-08-22 11:47:51,376 basehttp 21048 12324 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 11:47:55,019 basehttp 21048 12324 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:47:55,045 log 21048 12324 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 11:47:55,046 basehttp 21048 12324 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 11:47:55,054 basehttp 21048 12324 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 11:47:55,103 basehttp 21048 2052 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 11:47:55,106 basehttp 21048 19444 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 11:47:55,107 basehttp 21048 12324 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 11:47:55,127 basehttp 21048 2052 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 11:47:55,128 basehttp 21048 12324 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 11:47:55,129 basehttp 21048 16872 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 11:47:55,129 basehttp 21048 19444 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 11:47:55,132 basehttp 21048 14376 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 11:47:55,133 basehttp 21048 2052 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 11:47:55,134 basehttp 21048 12324 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 11:47:55,134 basehttp 21048 2656 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 11:47:55,140 basehttp 21048 19444 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 11:47:55,141 basehttp 21048 16872 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 11:47:55,144 basehttp 21048 14376 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 11:47:55,145 basehttp 21048 12324 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 11:47:55,154 basehttp 21048 2052 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 11:47:55,155 basehttp 21048 2656 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 11:47:55,183 basehttp 21048 16872 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 11:47:55,183 basehttp 21048 19444 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 11:47:55,196 basehttp 21048 16872 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 11:47:55,204 basehttp 21048 2052 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-22 11:47:55,209 basehttp 21048 2656 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-22 11:47:55,211 basehttp 21048 2052 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 11:47:55,240 basehttp 21048 2656 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-08-22 11:47:55,246 basehttp 21048 2052 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+WARNING 2025-08-22 11:47:55,341 log 21048 2656 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:47:55,342 basehttp 21048 2656 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:47:55,375 basehttp 21048 2052 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-08-22 11:48:45,704 autoreload 4624 15612 Watching for file changes with StatReloader
+INFO 2025-08-22 11:48:49,578 basehttp 4624 5260 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 11:48:49,653 basehttp 4624 5260 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:48:49,745 basehttp 4624 5260 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 11:48:59,473 basehttp 4624 5260 - Broken pipe from ('127.0.0.1', 60236)
+INFO 2025-08-22 11:49:02,176 basehttp 4624 15608 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 11:49:04,895 basehttp 4624 15608 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:49:05,027 log 4624 15608 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:49:05,028 basehttp 4624 15608 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 11:50:21,386 autoreload 4624 15612 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 11:50:22,028 autoreload 24368 16576 Watching for file changes with StatReloader
+INFO 2025-08-22 11:50:28,381 basehttp 24368 15096 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 11:50:28,414 basehttp 24368 2784 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 11:50:28,480 basehttp 24368 15096 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 11:50:29,926 basehttp 24368 15096 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 11:50:31,501 basehttp 24368 15096 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 11:50:31,595 log 24368 15096 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 11:50:31,596 basehttp 24368 15096 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 12:07:40,319 autoreload 24368 16576 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 12:07:41,077 autoreload 9304 5132 Watching for file changes with StatReloader
+INFO 2025-08-22 12:07:59,099 autoreload 9304 5132 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views_pdf.py changed, reloading.
+INFO 2025-08-22 12:07:59,791 autoreload 23772 3552 Watching for file changes with StatReloader
+INFO 2025-08-22 12:08:06,342 basehttp 23772 13888 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:08:06,374 basehttp 23772 12300 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:08:06,437 basehttp 23772 13888 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 12:08:13,364 basehttp 23772 13888 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 12:08:16,813 basehttp 23772 13888 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 12:15:09,616 basehttp 23772 11680 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 12:15:09,743 log 23772 11680 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 12:15:09,746 basehttp 23772 11680 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+WARNING 2025-08-22 12:15:20,631 log 23772 11680 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:15:20,632 basehttp 23772 11680 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:22:53,535 autoreload 17712 24548 Watching for file changes with StatReloader
+INFO 2025-08-22 12:23:00,150 basehttp 17712 21920 - Broken pipe from ('127.0.0.1', 64512)
+INFO 2025-08-22 12:23:10,827 basehttp 17712 17476 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 12:23:10,897 basehttp 17712 17476 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:23:10,969 basehttp 17712 17476 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+INFO 2025-08-22 12:23:10,996 basehttp 17712 17476 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 12:23:11,172 log 17712 9692 Not Found: /favicon.ico
+WARNING 2025-08-22 12:23:11,172 basehttp 17712 9692 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 12:23:17,896 basehttp 17712 9692 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 12:23:19,220 basehttp 17712 9692 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 12:23:19,356 log 17712 9692 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 12:23:19,357 basehttp 17712 9692 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+WARNING 2025-08-22 12:23:54,837 log 17712 21276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:23:54,838 basehttp 17712 21276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:27:19,690 autoreload 17712 24548 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 12:27:20,384 autoreload 5560 13484 Watching for file changes with StatReloader
+INFO 2025-08-22 12:27:24,946 autoreload 5560 13484 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 12:27:25,591 autoreload 7064 1816 Watching for file changes with StatReloader
+INFO 2025-08-22 12:27:28,074 autoreload 7064 1816 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 12:27:28,684 autoreload 21136 24756 Watching for file changes with StatReloader
+INFO 2025-08-22 12:27:44,969 autoreload 12156 19912 Watching for file changes with StatReloader
+INFO 2025-08-22 12:27:51,011 basehttp 12156 19756 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:27:51,051 basehttp 12156 6436 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:27:51,113 basehttp 12156 19756 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22939
+WARNING 2025-08-22 12:27:51,159 log 12156 19756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:27:51,160 basehttp 12156 19756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:27:52,395 basehttp 12156 19756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 12:27:52,421 log 12156 19756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:27:52,422 basehttp 12156 19756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:27:54,455 basehttp 12156 19756 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 12:27:54,482 log 12156 19756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:27:54,482 basehttp 12156 19756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 12:27:54,697 log 12156 19756 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 12:27:54,697 basehttp 12156 19756 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 12:28:11,841 autoreload 12156 19912 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\urls.py changed, reloading.
+INFO 2025-08-22 12:28:12,565 autoreload 4640 1088 Watching for file changes with StatReloader
+INFO 2025-08-22 12:28:21,003 basehttp 4640 12188 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:28:21,100 basehttp 4640 18720 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 12:28:21,139 log 4640 15584 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:28:21,140 basehttp 4640 15584 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:28:21,180 basehttp 4640 13564 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 12:28:21,181 basehttp 4640 12188 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 12:28:21,182 basehttp 4640 18720 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 12:28:21,293 basehttp 4640 18720 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 12:28:21,365 basehttp 4640 12188 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 12:28:21,369 basehttp 4640 13564 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 12:28:21,370 basehttp 4640 18720 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 12:28:21,381 basehttp 4640 18720 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 12:28:21,385 basehttp 4640 12188 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 12:28:21,386 basehttp 4640 13564 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 12:28:21,386 basehttp 4640 15584 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 12:28:21,387 basehttp 4640 22072 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 12:28:21,387 basehttp 4640 16488 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 12:28:21,392 basehttp 4640 18720 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 12:28:21,397 basehttp 4640 12188 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 12:28:21,398 basehttp 4640 13564 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 12:28:21,399 basehttp 4640 22072 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 12:28:21,399 basehttp 4640 15584 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 12:28:21,400 basehttp 4640 18720 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 12:28:21,401 basehttp 4640 16488 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 12:28:21,403 basehttp 4640 12188 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 12:28:21,404 basehttp 4640 13564 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 12:28:21,404 basehttp 4640 15584 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 12:28:21,414 basehttp 4640 22072 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-22 12:28:21,445 basehttp 4640 22072 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-22 12:28:21,451 basehttp 4640 22072 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 12:28:21,463 basehttp 4640 22072 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 12:28:21,486 basehttp 4640 22072 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+INFO 2025-08-22 12:28:21,489 basehttp 4640 15584 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+WARNING 2025-08-22 12:28:21,683 log 4640 15584 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 12:28:21,684 basehttp 4640 15584 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 12:28:21,709 basehttp 4640 22072 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+WARNING 2025-08-22 12:28:21,993 log 4640 22072 Not Found: /favicon.ico
+WARNING 2025-08-22 12:28:21,993 basehttp 4640 22072 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 12:30:17,722 autoreload 18156 22984 Watching for file changes with StatReloader
+INFO 2025-08-22 12:30:29,805 basehttp 18156 21088 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:30:29,898 basehttp 18156 21088 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22930
+WARNING 2025-08-22 12:30:29,929 log 18156 21088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:30:29,931 basehttp 18156 21088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:30:29,946 basehttp 18156 25024 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:30:31,060 basehttp 18156 25024 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 12:30:31,082 log 18156 25024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:30:31,083 basehttp 18156 25024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:30:32,730 basehttp 18156 25024 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29263
+WARNING 2025-08-22 12:30:32,760 log 18156 25024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:30:32,760 basehttp 18156 25024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-08-22 12:30:32,969 log 18156 25024 Not Found: /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf
+WARNING 2025-08-22 12:30:32,970 basehttp 18156 25024 "GET /training/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 404 5350
+INFO 2025-08-22 12:38:27,648 autoreload 23416 2336 Watching for file changes with StatReloader
+INFO 2025-08-22 12:38:32,060 basehttp 23416 13564 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:38:32,158 basehttp 23416 13564 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 12:38:32,196 basehttp 23416 20852 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+WARNING 2025-08-22 12:38:32,210 log 23416 20852 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:38:32,211 basehttp 23416 20852 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:38:33,006 basehttp 23416 20852 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+WARNING 2025-08-22 12:38:33,032 log 23416 20852 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:38:33,033 basehttp 23416 20852 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:38:35,299 basehttp 23416 20852 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+WARNING 2025-08-22 12:38:35,327 log 23416 11756 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:38:35,328 basehttp 23416 11756 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:38:35,390 basehttp 23416 20852 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-08-22 12:38:35,396 basehttp 23416 9596 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 12:38:35,396 basehttp 23416 13564 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+WARNING 2025-08-22 12:38:36,547 log 23416 13564 Not Found: /favicon.ico
+WARNING 2025-08-22 12:38:36,548 basehttp 23416 13564 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 12:38:37,256 basehttp 23416 13564 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+WARNING 2025-08-22 12:38:37,281 log 23416 13564 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:38:37,284 basehttp 23416 13564 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:38:38,577 basehttp 23416 13564 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29269
+WARNING 2025-08-22 12:38:38,606 log 23416 13564 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 12:38:38,608 basehttp 23416 13564 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 12:38:38,609 basehttp 23416 9596 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 12:38:38,626 basehttp 23416 13564 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 12:38:38,629 basehttp 23416 20852 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 12:38:38,630 basehttp 23416 9596 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 12:38:38,664 basehttp 23416 20852 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 12:38:38,666 basehttp 23416 9596 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 12:38:38,670 basehttp 23416 13564 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 12:38:38,670 basehttp 23416 11756 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 12:38:38,671 basehttp 23416 4368 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 12:38:38,671 basehttp 23416 20852 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 12:38:38,675 basehttp 23416 23268 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 12:38:38,675 basehttp 23416 9596 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 12:38:38,678 basehttp 23416 13564 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 12:38:38,680 basehttp 23416 11756 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 12:38:38,682 basehttp 23416 20852 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 12:38:38,682 basehttp 23416 4368 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 12:38:38,683 basehttp 23416 23268 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 12:38:38,683 basehttp 23416 9596 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 12:38:38,683 basehttp 23416 13564 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 12:38:38,684 basehttp 23416 11756 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 12:38:38,703 basehttp 23416 11756 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-22 12:38:38,711 basehttp 23416 9596 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-22 12:38:38,728 basehttp 23416 9596 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 12:38:38,738 basehttp 23416 9596 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 12:38:38,748 basehttp 23416 11756 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+INFO 2025-08-22 12:38:38,762 basehttp 23416 9596 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-08-22 12:38:38,845 basehttp 23416 9596 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 301 0
+INFO 2025-08-22 12:38:38,860 basehttp 23416 13564 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:38:38,893 basehttp 23416 23268 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-08-22 12:38:38,893 basehttp 23416 13564 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-08-22 12:38:38,895 basehttp 23416 11756 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-08-22 12:39:12,928 basehttp 23416 11756 "GET /static/pdfjs/web/images/findbarButton-previous.svg HTTP/1.1" 200 578
+INFO 2025-08-22 12:39:12,928 basehttp 23416 13564 "GET /static/pdfjs/web/images/findbarButton-next.svg HTTP/1.1" 200 578
+INFO 2025-08-22 12:39:33,037 basehttp 23416 13564 "GET /static/pdfjs/web/images/toolbarButton-openFile.svg HTTP/1.1" 200 1400
+INFO 2025-08-22 12:39:33,037 basehttp 23416 11756 "GET /static/pdfjs/web/images/toolbarButton-presentationMode.svg HTTP/1.1" 200 681
+INFO 2025-08-22 12:39:33,037 basehttp 23416 20852 "GET /static/pdfjs/web/images/secondaryToolbarButton-firstPage.svg HTTP/1.1" 200 260
+INFO 2025-08-22 12:39:33,037 basehttp 23416 23268 "GET /static/pdfjs/web/images/toolbarButton-bookmark.svg HTTP/1.1" 200 861
+INFO 2025-08-22 12:39:33,037 basehttp 23416 4368 "GET /static/pdfjs/web/images/secondaryToolbarButton-lastPage.svg HTTP/1.1" 200 257
+INFO 2025-08-22 12:39:33,048 basehttp 23416 13388 "GET /static/pdfjs/web/images/secondaryToolbarButton-rotateCw.svg HTTP/1.1" 200 576
+INFO 2025-08-22 12:39:33,048 basehttp 23416 13564 "GET /static/pdfjs/web/images/secondaryToolbarButton-spreadEven.svg HTTP/1.1" 200 775
+INFO 2025-08-22 12:39:33,049 basehttp 23416 4368 "GET /static/pdfjs/web/images/secondaryToolbarButton-scrollWrapped.svg HTTP/1.1" 200 1228
+INFO 2025-08-22 12:39:33,049 basehttp 23416 11756 "GET /static/pdfjs/web/images/secondaryToolbarButton-spreadOdd.svg HTTP/1.1" 200 711
+INFO 2025-08-22 12:39:33,049 basehttp 23416 23268 "GET /static/pdfjs/web/images/secondaryToolbarButton-rotateCcw.svg HTTP/1.1" 200 596
+INFO 2025-08-22 12:39:33,050 basehttp 23416 20852 "GET /static/pdfjs/web/images/secondaryToolbarButton-selectTool.svg HTTP/1.1" 200 1085
+INFO 2025-08-22 12:39:33,063 basehttp 23416 20852 "GET /static/pdfjs/web/images/secondaryToolbarButton-documentProperties.svg HTTP/1.1" 200 417
+INFO 2025-08-22 12:39:33,063 basehttp 23416 23268 "GET /static/pdfjs/web/images/secondaryToolbarButton-scrollHorizontal.svg HTTP/1.1" 200 971
+INFO 2025-08-22 12:39:33,064 basehttp 23416 13564 "GET /static/pdfjs/web/images/secondaryToolbarButton-scrollPage.svg HTTP/1.1" 200 731
+INFO 2025-08-22 12:39:33,064 basehttp 23416 11756 "GET /static/pdfjs/web/images/secondaryToolbarButton-handTool.svg HTTP/1.1" 200 1344
+INFO 2025-08-22 12:39:33,064 basehttp 23416 4368 "GET /static/pdfjs/web/images/secondaryToolbarButton-spreadNone.svg HTTP/1.1" 200 395
+INFO 2025-08-22 12:39:33,065 basehttp 23416 13388 "GET /static/pdfjs/web/images/secondaryToolbarButton-scrollVertical.svg HTTP/1.1" 200 969
+INFO 2025-08-22 12:43:37,341 basehttp 23416 11756 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:43:37,379 basehttp 23416 13388 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:43:37,425 basehttp 23416 11756 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 12:43:39,897 basehttp 23416 11756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 12:43:41,430 basehttp 23416 11756 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:43:41,556 basehttp 23416 11756 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:43:55,147 basehttp 23416 11756 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:43:58,756 basehttp 23416 11756 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:43:58,849 basehttp 23416 11756 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:44:48,763 autoreload 8044 23292 Watching for file changes with StatReloader
+INFO 2025-08-22 12:44:54,389 basehttp 8044 8828 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:44:54,426 basehttp 8044 21872 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:44:54,538 basehttp 8044 21872 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:47:06,433 basehttp 8044 21872 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:47:06,492 basehttp 8044 8828 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:47:06,653 basehttp 8044 8828 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:47:41,789 autoreload 25176 20988 Watching for file changes with StatReloader
+INFO 2025-08-22 12:47:56,030 basehttp 25176 15632 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:47:56,254 basehttp 25176 8780 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:47:56,343 basehttp 25176 8780 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:48:03,663 basehttp 25176 15632 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:48:03,695 basehttp 25176 8780 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:48:03,762 basehttp 25176 15632 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 12:48:04,875 basehttp 25176 15632 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 12:48:06,343 basehttp 25176 15632 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 29267
+INFO 2025-08-22 12:48:06,455 basehttp 25176 15632 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:48:51,136 basehttp 25176 15632 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:48:51,178 basehttp 25176 8780 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 28879
+INFO 2025-08-22 12:48:51,289 basehttp 25176 8780 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:53:21,280 basehttp 25176 20092 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:53:21,324 basehttp 25176 15608 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 28894
+INFO 2025-08-22 12:53:21,420 basehttp 25176 15608 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:53:47,103 autoreload 5828 23784 Watching for file changes with StatReloader
+INFO 2025-08-22 12:53:49,494 basehttp 5828 16584 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 12:53:49,704 basehttp 5828 16584 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 12:53:49,806 basehttp 5828 16584 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 22931
+INFO 2025-08-22 12:53:55,039 basehttp 5828 16584 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:53:56,305 basehttp 5828 16584 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27204
+INFO 2025-08-22 12:53:58,808 basehttp 5828 16584 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 28894
+INFO 2025-08-22 12:53:58,943 basehttp 5828 16584 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:57:15,122 basehttp 5828 16584 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:57:15,182 basehttp 5828 19252 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30022
+INFO 2025-08-22 12:57:15,313 basehttp 5828 19252 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 12:58:08,932 autoreload 15988 16988 Watching for file changes with StatReloader
+INFO 2025-08-22 12:58:17,137 basehttp 15988 9884 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 12:58:17,198 basehttp 15988 23668 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30022
+INFO 2025-08-22 12:58:17,294 basehttp 15988 23668 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 13:51:52,678 basehttp 15988 23468 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 13:51:52,740 basehttp 15988 11904 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30868
+INFO 2025-08-22 13:51:52,755 basehttp 15988 11904 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-08-22 13:51:52,857 basehttp 15988 11904 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 13:52:11,537 basehttp 15988 11904 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 13:52:11,545 basehttp 15988 23468 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30868
+INFO 2025-08-22 13:52:11,649 basehttp 15988 23468 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 13:56:41,760 basehttp 15988 7272 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-22 13:56:41,814 basehttp 15988 13696 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30917
+INFO 2025-08-22 13:56:41,944 basehttp 15988 13696 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138

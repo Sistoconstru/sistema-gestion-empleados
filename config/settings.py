@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',  # Nueva línea añadida
 ]
 
+# Middleware para CORS en media
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.core.middleware.MediaCORSMiddleware',
 ]
 # Permitir que el sitio se muestre en iframes
 X_FRAME_OPTIONS = 'SAMEORIGIN'
