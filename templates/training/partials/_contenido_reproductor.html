@@ -1,0 +1,95 @@
+{% if contenido_actual.tipo_contenido.codigo == 'VIDEO' %}
+    <div class="video-container mb-4">
+        <video id="videoPlayer" 
+               class="rounded w-100" 
+               controls 
+               preload="metadata"
+               data-contenido-id="{{ contenido_actual.id }}"
+               data-tiempo-visto="{{ progreso_actual.tiempo_dedicado_segundos }}"
+               data-porcentaje-visto="{{ progreso_actual.porcentaje_visto }}">
+            <source src="{{ contenido_actual.archivo.url }}" type="video/mp4">
+            Tu navegador no soporta el elemento video.
+        </video>
+        <div class="progress-info">
+            <span id="tiempoVisto">0:00</span> / <span id="tiempoTotal">0:00</span>
+        </div>
+    </div>
+{% else %}
+    {% if contenido_actual.tipo_contenido.codigo == 'DOCUMENTO' or contenido_actual.tipo_contenido.codigo == 'pdfrrrr' %}
+        <div class="document-container" style="height: 800px; overflow: hidden;">
+            {% if contenido_actual.archivo %}
+                <!-- Debug info -->
+                <div class="debug-info" style="background: #f8f9fa; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                    <h5>Información de Depuración</h5>
+                    <p><strong>Tipo de contenido:</strong> {{ contenido_actual.tipo_contenido.codigo }}</p>
+                    <p><strong>Nombre del archivo:</strong> {{ contenido_actual.archivo.name }}</p>
+                    <p><strong>URL del archivo:</strong> {{ contenido_actual.archivo.url }}</p>
+                    <p><strong>¿Existe archivo?:</strong> {% if contenido_actual.archivo %}Sí{% else %}No{% endif %}</p>
+                </div>
+                {% with url_lower=contenido_actual.archivo.url|lower %}
+                    {% if '.pdf' in url_lower or contenido_actual.tipo_contenido.codigo == 'pdfrrrr' %}
+                        <div class="pdf-container">
+                            <iframe src="{{ contenido_actual.archivo.url }}#toolbar=1&navpanes=1&scrollbar=1" 
+                                    width="100%" 
+                                    height="800px" 
+                                    class="rounded"
+                                    id="pdfViewer"
+                                    data-contenido-id="{{ contenido_actual.id }}"
+                                    data-tiempo-minimo="{{ contenido_actual.tiempo_minimo_visualizacion }}"
+                                    style="border: 1px solid #ddd;">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-file-pdf fa-4x text-danger mb-3"></i>
+                                    <h4>No se puede visualizar el PDF</h4>
+                                    <p class="text-muted mb-4">Tu navegador no soporta la visualización de PDFs o el archivo no se ha cargado correctamente.</p>
+                                    <a href="{{ contenido_actual.archivo.url }}" target="_blank" class="btn btn-primary">
+                                        <i class="fas fa-download me-2"></i>
+                                        Descargar PDF
+                                    </a>
+                                </div>
+                            </iframe>
+                    {% else %}
+                        {% if '.pptx' in url_lower or '.ppt' in url_lower %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-file-powerpoint fa-4x text-danger mb-3"></i>
+                                <h4>Presentación de PowerPoint</h4>
+                                <p class="text-muted mb-4">Esta presentación debe ser descargada para su visualización</p>
+                                <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-danger">
+                                    <i class="fas fa-download me-2"></i>
+                                    Descargar Presentación
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-file-alt fa-4x text-primary mb-3"></i>
+                                <h4>Documento</h4>
+                                <p class="text-muted mb-4">Este documento debe ser descargado para su visualización</p>
+                                <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-primary">
+                                    <i class="fas fa-download me-2"></i>
+                                    Descargar Documento
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+    {% else %}
+        {% if contenido_actual.tipo_contenido.codigo == 'YOUTUBE' %}
+            <div class="video-container mb-4">
+                <iframe id="youtubePlayer"
+                        src="{{ contenido_actual.url_externa }}?enablejsapi=1" 
+                        title="{{ contenido_actual.titulo }}"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        class="rounded"
+                        data-contenido-id="{{ contenido_actual.id }}">
+                </iframe>
+            </div>
+        {% else %}
+            <div class="text-content">
+                {{ contenido_actual.contenido_texto|safe }}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}

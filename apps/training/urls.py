@@ -31,6 +31,7 @@ urlpatterns = [
     # path('<uuid:pk>/modulos/', views.ModuloListView.as_view(), name='modulo_list'),
     # path('modulo/<uuid:pk>/lecciones/', views.LeccionListView.as_view(), name='leccion_list'),
     path('player/<uuid:pk>/', views.PlayerView.as_view(), name='player'),
+    path('contenido/<uuid:pk>/completar/', views.completar_contenido, name='completar_contenido'),
 
     # Certificados
     path('mis-certificados/', MisCertificadosView.as_view(), name='mis_certificados'),
@@ -38,4 +39,10 @@ urlpatterns = [
     # Validación de inscripciones
     path('inscripcion/<uuid:pk>/validar/', views.validar_inscripcion, name='validar_inscripcion'),
     path('inscripcion/<uuid:pk>/rechazar/', views.rechazar_inscripcion, name='rechazar_inscripcion'),
+    
+    # Quizzes y valoraciones
+    path('quiz/<int:pk>/', views.QuizView.as_view(), name='quiz'),
+    path('quiz/<int:pk>/resultado/', views.QuizResultadoView.as_view(), name='quiz_resultado'),
+    path('quiz/intento/<int:intento_id>/respuesta/', views.guardar_respuesta_quiz, name='guardar_respuesta_quiz'),
+    path('quiz/intento/<int:intento_id>/finalizar/', views.finalizar_quiz, name='finalizar_quiz'),
 ]

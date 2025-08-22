@@ -918,27 +918,26 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 empleado_evaluado=empleado
             ).select_related('evaluacion', 'evaluador')
             
-            # Pendientes
+            # Pendientes (no completadas y no vencidas)
             pendientes = evaluaciones.filter(
-                completada=False,
-                fecha_limite__gte=date.today()
+                fecha_completada__isnull=True,
+                fecha_vencimiento__gte=date.today()
             )
             
-            # Vencidas
+            # Vencidas (no completadas y vencidas)
             vencidas = evaluaciones.filter(
-                completada=False,
-                fecha_limite__lt=date.today()
+                fecha_completada__isnull=True,
+                fecha_vencimiento__lt=date.today()
             )
             
             # Completadas este año
             completadas_año = evaluaciones.filter(
-                completada=True,
-                fecha_completado__year=date.today().year
+                fecha_completada__year=date.today().year
             )
             
             # Próximas (siguientes 15 días)
             fecha_limite = date.today() + timedelta(days=15)
-            proximas = pendientes.filter(fecha_limite__lte=fecha_limite)
+            proximas = pendientes.filter(fecha_vencimiento__lte=fecha_limite)
             
             return {
                 'evaluaciones': {
@@ -948,7 +947,7 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     'proximas': proximas.count(),
                     'lista_pendientes': pendientes[:5],
                     'lista_proximas': proximas[:3],
-                    'ultima_evaluacion': evaluaciones.filter(completada=True).order_by('-fecha_completado').first()
+                    'ultima_evaluacion': evaluaciones.filter(fecha_completada__isnull=False).order_by('-fecha_completada').first()
                 }
             }
         except ImportError:
@@ -1106,17 +1105,17 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 
                 caps_completadas = InscripcionCapacitacion.objects.filter(
                     empleado=empleado,
-                    completada=True,
-                    fecha_completado__gte=timezone.now() - timedelta(days=15)
-                ).order_by('-fecha_completado')[:3]
+                    estado='completado',
+                    fecha_finalizacion__gte=timezone.now() - timedelta(days=15)
+                ).order_by('-fecha_finalizacion')[:3]
                 
                 for cap in caps_completadas:
                     actividades.append({
                         'tipo': 'capacitacion',
                         'icono': 'fas fa-graduation-cap',
-                        'titulo': f'Capacitación completada: {cap.capacitacion.titulo}',
-                        'fecha': cap.fecha_completado,
-                        'estado': 'completada'
+                        'titulo': f'Capacitación completada: {cap.capacitacion.nombre}',
+                        'fecha': cap.fecha_finalizacion,
+                        'estado': 'completado'
                     })
             except ImportError:
                 pass

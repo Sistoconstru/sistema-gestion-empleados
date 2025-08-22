@@ -1,0 +1,6 @@
+{% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito.esta_completado %}
+<span class="badge bg-warning me-2" title="Completa el módulo {{ modulo.modulo_prerequisito.nombre }} primero">
+    <i class="fas fa-lock"></i>
+</span>
+{% endif %}
+<small class="text-muted">{{ modulo.duracion_estimada_minutos }} min</small>

@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'apps.organizational',
     'apps.authentication',
     'apps.documents',
+    'apps.training',  # Módulo de capacitaciones
     'widget_tweaks',  # Nueva línea añadida
-
 ]
 
 MIDDLEWARE = [
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 # Permitir que el sitio se muestre en iframes
 X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -63,13 +63,16 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',  # Directorio global de templates
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # Para acceder a MEDIA_URL en templates
             ],
         },
     },

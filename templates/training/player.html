@@ -1,0 +1,581 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load training_extras %}
+
+{% block title %}{{ object.capacitacion.nombre }} - Reproductor - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.player-container {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+}
+.course-outline {
+    height: calc(100vh - 160px);
+    overflow-y: auto;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.content-player {
+    height: calc(100vh - 160px);
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.lesson-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.lesson-item:hover {
+    background: #e9ecef;
+}
+.lesson-item.active {
+    background: #007bff;
+    color: white;
+}
+.lesson-item.completed {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.lesson-item.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.lesson-progress {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+.content-area {
+    position: relative;
+    min-height: 400px;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+.video-container iframe,
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    z-index: 10;
+}
+.document-container {
+    height: 600px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+.text-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.progress-info {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+}
+.module-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+.module-progress {
+    height: 4px;
+    background: #e9ecef;
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.module-progress-bar {
+    height: 100%;
+    background: #28a745;
+    transition: width 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 player-container">
+    {% csrf_token %}
+    <div class="row flex-grow-1">
+        <!-- Sidebar con el índice del curso -->
+        <div class="col-lg-3 d-flex flex-column">
+            <div class="course-outline p-3">
+                {% if object %}
+                    <h5 class="mb-4">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        {{ object.capacitacion.nombre }}
+                    </h5>
+                    
+                    {% for modulo in object.capacitacion.modulocapacitacion_set.all %}
+                        {% with modulo_info=modulos_evaluacion|get_item:modulo.id modulo_completado=modulo.esta_completado %}
+                            <div class="module-header {% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito.esta_completado %}locked{% endif %}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas {% include 'training/partials/_modulo_header.html' %} me-2"></i>
+                                        {{ modulo.nombre }}
+                                    </h6>
+                                    <div class="d-flex align-items-center">
+                                        {% include 'training/partials/_modulo_time.html' %}
+                                    </div>
+                                </div>
+                                <div class="module-progress">
+                                    <div class="module-progress-bar" style="width: {{ modulo.get_progreso_porcentaje }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                {% for leccion in modulo.leccion_set.all %}
+                                    {% for contenido in leccion.contenidoleccion_set.all %}
+                                        {% include 'training/partials/_leccion_item.html' %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-circle fa-4x mb-3 text-warning"></i>
+                        <h3>No hay contenido disponible</h3>
+                        <p class="text-muted">No se ha encontrado la capacitación</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Área de contenido -->
+        <div class="col-lg-9">
+            <div class="content-player">
+                {% if not object %}
+                    <!-- Mensaje de acceso no autorizado -->
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-circle fa-4x mb-3 text-warning"></i>
+                        <h3>Acceso no autorizado</h3>
+                        <p class="text-muted">No tienes acceso a este contenido o la capacitación no existe</p>
+                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-primary mt-3">
+                            Volver a mis capacitaciones
+                        </a>
+                    </div>
+                {% else %}
+                    {% if not contenido_actual %}
+                        <!-- Mensaje de bienvenida -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-book-reader fa-4x mb-3 text-primary"></i>
+                            <h3>Bienvenido al curso</h3>
+                            <p class="text-muted">Selecciona una lección del menú para comenzar</p>
+                        </div>
+                    {% else %}
+                    <!-- Encabezado del contenido -->
+                    <div class="mb-4">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <i class="fas fa-folder me-1"></i>
+                                    {{ contenido_actual.leccion.modulo.nombre }}
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    {{ contenido_actual.leccion.nombre }}
+                                </li>
+                            </ol>
+                        </nav>
+                        <h3>{{ contenido_actual.nombre }}</h3>
+                        <p class="text-muted">{{ contenido_actual.descripcion }}</p>
+                    </div>
+                    
+                    <!-- Área de contenido -->
+                    <div class="content-area">
+                        {% if not progreso_actual.puede_ver %}
+                            <div class="alert alert-warning text-center">
+                                <i class="fas fa-lock fa-3x mb-3"></i>
+                                {% if evaluacion_pendiente %}
+                                    <h4>Evaluación Pendiente</h4>
+                                    <p>Debes completar la evaluación de la lección anterior antes de continuar.</p>
+                                    <a href="{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}" class="btn btn-warning mt-3">
+                                        <i class="fas fa-tasks me-2"></i>
+                                        Realizar Evaluación
+                                    </a>
+                                {% else %}
+                                    <h4>Contenido Bloqueado</h4>
+                                    <p>Debes completar el contenido anterior primero.</p>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {% include 'training/partials/_contenido_reproductor.html' %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Controles de navegación -->
+                    <div class="mt-4 d-flex justify-content-between align-items-center py-3 border-top">
+                        <!-- Botón Anterior -->
+                        {% if contenido_anterior %}
+                            <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_anterior.pk }}" 
+                               class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-chevron-left me-2"></i>
+                                Anterior
+                            </a>
+                        {% else %}
+                            <div class="btn btn-outline-primary btn-lg invisible">
+                                <i class="fas fa-chevron-left me-2"></i>
+                                Anterior
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Botón de Acción Principal -->
+                        <div class="d-flex gap-2">
+                            {% if not progreso_actual.completado %}
+                                <button class="btn btn-success btn-lg" id="marcarCompletada">
+                                    <i class="fas fa-check me-2"></i>
+                                    Marcar como Visto
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Botón Siguiente -->
+                        <div>
+                            {% if contenido_siguiente and not evaluacion_pendiente %}
+                                <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_siguiente.pk }}" 
+                                   class="btn btn-primary">
+                                    Siguiente
+                                    <i class="fas fa-chevron-right ms-2"></i>
+                                </a>
+                            {% else %}
+                                {% if not progreso_actual.completado and contenido_actual.leccion.modulo.evaluacion %}
+                                    <a href="{% url 'training:quiz' contenido_actual.leccion.modulo.evaluacion.pk %}" 
+                                       class="btn btn-warning">
+                                        <i class="fas fa-tasks me-2"></i>
+                                        Realizar Evaluación
+                                    </a>
+                                {% else %}
+                                    {% if not contenido_siguiente %}
+                                        <a href="{% url 'training:mis_capacitaciones' %}" 
+                                           class="btn btn-success">
+                                            Finalizar curso
+                                            <i class="fas fa-check ms-2"></i>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+// Variables globales para tracking
+let startTime = Date.now();
+let videoPlayer = null;
+let youtubePlayer = null;
+let pdfViewer = null;
+let tiempoTotal = 0;
+let intervalId = null;
+let lastProgress = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar reproductor de video
+    videoPlayer = document.getElementById('videoPlayer');
+    if (videoPlayer) {
+        initVideoPlayer();
+    }
+
+    // Inicializar visor de PDF
+    pdfViewer = document.getElementById('pdfViewer');
+    if (pdfViewer) {
+        initPDFViewer();
+    }
+
+    // Marcar contenido como completado
+    const btnMarcarCompletada = document.getElementById('marcarCompletada');
+    if (btnMarcarCompletada) {
+        btnMarcarCompletada.addEventListener('click', function() {
+            const contenidoId = document.querySelector('.lesson-item.active').dataset.contenidoId;
+            registrarProgreso(contenidoId, true);
+        });
+    }
+
+    // Registrar tiempo al salir de la página
+    window.addEventListener('beforeunload', function() {
+        const contenidoId = document.querySelector('.lesson-item.active')?.dataset.contenidoId;
+        if (contenidoId) {
+            registrarProgreso(contenidoId, false);
+        }
+    });
+    
+    // Animación de carga de lecciones
+    const lessons = document.querySelectorAll('.lesson-item');
+    lessons.forEach((lesson, index) => {
+        lesson.style.opacity = '0';
+        lesson.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            lesson.style.transition = 'all 0.3s ease';
+            lesson.style.opacity = '1';
+            lesson.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
+
+    // Prevenir navegación a contenidos bloqueados
+    lessons.forEach(lesson => {
+        if (lesson.classList.contains('locked')) {
+            lesson.addEventListener('click', (e) => {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contenido bloqueado',
+                    text: 'Debes completar el contenido anterior primero'
+                });
+            });
+        }
+    });
+});
+
+function initVideoPlayer() {
+    // Restaurar progreso anterior
+    const tiempoVisto = parseInt(videoPlayer.dataset.tiempoVisto) || 0;
+    videoPlayer.currentTime = tiempoVisto;
+
+    // Actualizar tiempo total
+    videoPlayer.addEventListener('loadedmetadata', function() {
+        tiempoTotal = videoPlayer.duration;
+        updateTiempoDisplay();
+    });
+
+    // Tracking de progreso
+    videoPlayer.addEventListener('timeupdate', function() {
+        updateTiempoDisplay();
+        const porcentaje = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+        if (porcentaje - lastProgress >= 5) { // Registrar cada 5%
+            lastProgress = porcentaje;
+            registrarProgreso(videoPlayer.dataset.contenidoId, false);
+        }
+    });
+
+    // No permitir adelantar
+    videoPlayer.addEventListener('seeking', function() {
+        if (videoPlayer.currentTime > tiempoVisto + 5) { // 5 segundos de margen
+            videoPlayer.currentTime = tiempoVisto;
+        }
+    });
+}
+
+function initPDFViewer() {
+    // Tracking de tiempo en PDF
+    startPDFTracking();
+}
+
+// YouTube Player API
+function onYouTubeIframeAPIReady() {
+    const youtubeFrame = document.getElementById('youtubePlayer');
+    if (youtubeFrame) {
+        youtubePlayer = new YT.Player('youtubePlayer', {
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+}
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING) {
+        startYouTubeTracking();
+    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+        stopTracking();
+        registrarProgreso(event.target.getIframe().dataset.contenidoId, false);
+    }
+}
+
+function startYouTubeTracking() {
+    startTime = Date.now();
+    intervalId = setInterval(() => {
+        const contenidoId = document.getElementById('youtubePlayer').dataset.contenidoId;
+        registrarProgreso(contenidoId, false);
+    }, 30000); // Registrar cada 30 segundos
+}
+
+function startPDFTracking() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    const tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo) || 60; // Usar tiempo configurado o 60s por defecto
+    startTime = Date.now();
+    let tiempoTranscurrido = 0;
+    
+    // Mostrar mensaje al usuario con el tiempo específico
+    const minutos = Math.ceil(tiempoMinimo / 60);
+    Swal.fire({
+        icon: 'info',
+        title: 'Visualización del documento',
+        text: `Por favor, dedica al menos ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'} a revisar el documento. Se marcará como completado automáticamente.`,
+        timer: 5000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+    
+    intervalId = setInterval(() => {
+        const contenidoId = pdfViewer.dataset.contenidoId;
+        tiempoTranscurrido = Math.floor((Date.now() - startTime) / 1000);
+        // Marcar como completado si ha pasado el tiempo mínimo configurado
+        const completado = tiempoTranscurrido >= tiempoMinimo;
+        registrarProgreso(contenidoId, completado);
+    }, 30000); // Registrar cada 30 segundos
+}
+
+function stopTracking() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
+function updateTiempoDisplay() {
+    if (videoPlayer) {
+        document.getElementById('tiempoVisto').textContent = formatTime(videoPlayer.currentTime);
+        document.getElementById('tiempoTotal').textContent = formatTime(videoPlayer.duration);
+    }
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function registrarProgreso(contenidoId, completado) {
+    const tiempoDedicado = Math.floor((Date.now() - startTime) / 1000);
+    let porcentajeVisto = 0;
+
+    if (videoPlayer) {
+        porcentajeVisto = Math.floor((videoPlayer.currentTime / videoPlayer.duration) * 100);
+    } else if (youtubePlayer) {
+        porcentajeVisto = Math.floor((youtubePlayer.getCurrentTime() / youtubePlayer.getDuration()) * 100);
+    } else {
+        porcentajeVisto = 100; // Para documentos y texto
+    }
+
+    fetch(`/capacitaciones/contenido/${contenidoId}/completar/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify({
+            tiempo_dedicado: tiempoDedicado,
+            porcentaje_visto: porcentajeVisto,
+            completado: completado
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar UI
+            const lessonItem = document.querySelector('.lesson-item.active');
+            if (data.completado) {
+                lessonItem.classList.add('completed');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Contenido visto',
+                    text: 'Has completado este contenido. ¡Sigue adelante!',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    if (data.evaluacion_pendiente) {
+                        window.location.href = data.url_evaluacion;
+                    } else if (data.siguiente_contenido) {
+                        window.location.href = data.siguiente_contenido;
+                    }
+                });
+            }
+            
+            // Actualizar progreso del módulo
+            const moduleHeader = lessonItem.closest('.mb-4').previousElementSibling;
+            const progressBar = moduleHeader.querySelector('.module-progress-bar');
+            progressBar.style.width = `${data.progreso_modulo}%`;
+
+            // Si hay evaluación pendiente, mostrar botón
+            if (data.evaluacion_pendiente) {
+                const evaluacionBtn = document.querySelector('.btn-warning[href*="quiz"]');
+                if (evaluacionBtn) {
+                    evaluacionBtn.style.display = 'inline-block';
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Evaluación Requerida',
+                        text: 'Debes realizar la evaluación para continuar con el siguiente módulo.',
+                        confirmButtonText: 'Ir a la Evaluación'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = evaluacionBtn.href;
+                        }
+                    });
+                }
+            }
+            
+            // Si puede continuar, desbloquear siguiente contenido
+            if (data.puede_continuar) {
+                const nextItem = lessonItem.nextElementSibling;
+                if (nextItem) {
+                    nextItem.classList.remove('locked');
+                    nextItem.classList.remove('disabled');
+                }
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Ocurrió un error al registrar el progreso'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al registrar el progreso'
+        });
+    });
+}
+</script>
+{% endblock %}

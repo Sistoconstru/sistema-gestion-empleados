@@ -4,7 +4,8 @@
 
 from django.contrib import admin
 from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion, 
-                     Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion)
+                     Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion,
+                     QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz)
 
 @admin.register(TipoCapacitacion)
 class TipoCapacitacionAdmin(admin.ModelAdmin):
@@ -48,13 +49,74 @@ class CapacitacionCargoAdmin(admin.ModelAdmin):
         # Asigna el usuario que realiza la asignación solo al crear
         if not change:
             obj.asignado_por = request.user
-        super().save_model(request, obj, form, change)
+
+class OpcionPreguntaQuizInline(admin.TabularInline):
+    model = OpcionPreguntaQuiz
+    extra = 4  # Número de opciones vacías a mostrar
+    fields = ('texto', 'es_correcta', 'retroalimentacion', 'orden')
+
+class PreguntaQuizInline(admin.StackedInline):
+    model = PreguntaQuiz
+    extra = 1
+    fields = ('texto', 'tipo', 'puntaje', 'imagen', 'explicacion', 'orden')
+    
+@admin.register(QuizLeccion)
+class QuizLeccionAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'leccion', 'porcentaje_aprobacion', 'intentos_maximos', 'fecha_creacion')
+    list_filter = ('fecha_creacion', 'porcentaje_aprobacion')
+    search_fields = ('titulo', 'descripcion', 'leccion__nombre')
+    inlines = [PreguntaQuizInline]
+    
+    fieldsets = (
+        ('Información General', {
+            'fields': ('leccion', 'titulo', 'descripcion')
+        }),
+        ('Configuración', {
+            'fields': ('porcentaje_aprobacion', 'tiempo_limite', 'intentos_maximos')
+        }),
+    )
+
+@admin.register(PreguntaQuiz)
+class PreguntaQuizAdmin(admin.ModelAdmin):
+    list_display = ('texto_corto', 'quiz', 'tipo', 'puntaje', 'orden')
+    list_filter = ('tipo', 'quiz')
+    search_fields = ('texto', 'explicacion')
+    inlines = [OpcionPreguntaQuizInline]
+    
+    def texto_corto(self, obj):
+        return obj.texto[:50] + '...' if len(obj.texto) > 50 else obj.texto
+    texto_corto.short_description = 'Pregunta'
+
+@admin.register(IntentoQuiz)
+class IntentoQuizAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'quiz', 'fecha_inicio', 'puntaje_obtenido', 'aprobado')
+    list_filter = ('aprobado', 'fecha_inicio')
+    search_fields = ('usuario__username', 'quiz__titulo')
+    readonly_fields = ('fecha_inicio', 'fecha_fin', 'puntaje_obtenido', 'tiempo_utilizado', 'aprobado')
+
+@admin.register(RespuestaQuiz)
+class RespuestaQuizAdmin(admin.ModelAdmin):
+    list_display = ('intento', 'pregunta', 'es_correcta', 'fecha_respuesta')
+    list_filter = ('es_correcta', 'fecha_respuesta')
+    search_fields = ('intento__usuario__username', 'pregunta__texto')
+    readonly_fields = ('intento', 'pregunta', 'opcion_seleccionada', 'es_correcta', 'fecha_respuesta')
 
 @admin.register(ModuloCapacitacion)
 class ModuloCapacitacionAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'capacitacion', 'orden', 'duracion_estimada_minutos', 'activo')
+    list_display = ('codigo', 'nombre', 'capacitacion', 'orden', 'duracion_estimada_minutos', 'activo', 'modulo_prerequisito')
     list_filter = ('activo', 'capacitacion')
     ordering = ('capacitacion', 'orden')
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "modulo_prerequisito":
+            # Excluir el módulo actual de la lista de prerequisitos
+            if request.resolver_match.kwargs.get('object_id'):
+                kwargs["queryset"] = ModuloCapacitacion.objects.exclude(
+                    id=request.resolver_match.kwargs['object_id']
+                )
+            # Añadir "--------" como opción para indicar "sin prerequisito"
+            kwargs["empty_label"] = "--------"
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(Leccion)
 class LeccionAdmin(admin.ModelAdmin):

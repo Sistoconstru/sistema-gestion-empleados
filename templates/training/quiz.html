@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ quiz.titulo }} - Valoración de Aprendizaje - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .pregunta {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .opcion {
+        display: block;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .opcion:hover {
+        background-color: #f8f9fa;
+    }
+    .opcion.selected {
+        background-color: #cfe2ff;
+        border-color: #9ec5fe;
+    }
+    .timer {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .quiz-header {
+        margin-bottom: 2rem;
+    }
+    .quiz-footer {
+        margin-top: 2rem;
+        text-align: center;
+    }
+    .quiz-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+    .pregunta-imagen {
+        max-width: 100%;
+        margin: 1rem 0;
+        border-radius: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    {% if not puede_tomar_quiz %}
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">No puedes tomar esta valoración aún</h4>
+            <p>Debes completar los contenidos anteriores primero.</p>
+        </div>
+    {% elif ya_aprobo %}
+        <div class="alert alert-success">
+            <h4 class="alert-heading">¡Ya has aprobado esta valoración!</h4>
+            <p>Puedes ver tus resultados anteriores:</p>
+            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-success">
+                Ver Resultados
+            </a>
+        </div>
+    {% elif intentos_restantes == 0 %}
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">Has agotado todos tus intentos</h4>
+            <p>Ya no puedes tomar esta valoración. Contacta a tu supervisor.</p>
+            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-primary">
+                Ver Intentos Anteriores
+            </a>
+        </div>
+    {% else %}
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2>{{ quiz.titulo }}</h2>
+                <p class="text-muted">{{ quiz.descripcion }}</p>
+                
+                {% if quiz.tiempo_limite %}
+                <div class="timer" id="timer">
+                    Tiempo restante: <span id="countdown"></span>
+                </div>
+                {% endif %}
+                
+                <div class="alert alert-info">
+                    <ul class="mb-0">
+                        <li>Porcentaje mínimo para aprobar: {{ quiz.porcentaje_aprobacion }}%</li>
+                        {% if intentos_restantes %}
+                            <li>Intentos restantes: {{ intentos_restantes }}</li>
+                        {% endif %}
+                        {% if quiz.tiempo_limite %}
+                            <li>Tiempo límite: {{ quiz.tiempo_limite }} minutos</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <form id="quizForm" data-quiz-id="{{ quiz.id }}">
+                {% csrf_token %}
+                
+                {% for pregunta in preguntas %}
+                <div class="pregunta" data-pregunta-id="{{ pregunta.id }}">
+                    <h5>{{ forloop.counter }}. {{ pregunta.texto }}</h5>
+                    
+                    {% if pregunta.imagen %}
+                        <img src="{{ pregunta.imagen.url }}" alt="Imagen de la pregunta" class="pregunta-imagen">
+                    {% endif %}
+                    
+                    <div class="opciones">
+                        {% for opcion in pregunta.opciones.all %}
+                        <label class="opcion">
+                            <input type="radio" 
+                                   name="pregunta_{{ pregunta.id }}" 
+                                   value="{{ opcion.id }}"
+                                   {% if pregunta.tipo == 'verdadero_falso' %}
+                                   data-es-verdadero="{{ opcion.es_correcta|lower }}"
+                                   {% endif %}
+                                   required>
+                            {{ opcion.texto }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="quiz-footer">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitQuiz">
+                        Finalizar Valoración
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let intentoId = null;
+let tiempoRestante = {% if quiz.tiempo_limite %}{{ quiz.tiempo_limite }} * 60{% else %}null{% endif %};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Iniciar el quiz
+    fetch("{% url 'training:quiz' quiz.pk %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            intentoId = data.intento_id;
+            if (tiempoRestante) {
+                iniciarContador();
+            }
+        }
+    });
+
+    // Manejar selección de opciones
+    document.querySelectorAll('.opcion input').forEach(input => {
+        input.addEventListener('change', function() {
+            const preguntaId = this.closest('.pregunta').dataset.preguntaId;
+            const opcionId = this.value;
+            
+            guardarRespuesta(preguntaId, opcionId);
+            
+            // Actualizar UI
+            document.querySelectorAll(`[name="${this.name}"]`).forEach(radio => {
+                radio.closest('.opcion').classList.remove('selected');
+            });
+            this.closest('.opcion').classList.add('selected');
+        });
+    });
+
+    // Manejar envío del formulario
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        finalizarQuiz();
+    });
+});
+
+function guardarRespuesta(preguntaId, opcionId) {
+    fetch(`/training/quiz/intento/${intentoId}/respuesta/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify({
+            pregunta_id: preguntaId,
+            opcion_id: opcionId
+        })
+    });
+}
+
+function finalizarQuiz() {
+    fetch(`/training/quiz/intento/${intentoId}/finalizar/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            window.location.href = data.redirect_url;
+        }
+    });
+}
+
+function iniciarContador() {
+    const timerElement = document.getElementById('countdown');
+    
+    function actualizarTimer() {
+        if (tiempoRestante <= 0) {
+            clearInterval(intervalId);
+            finalizarQuiz();
+            return;
+        }
+        
+        const minutos = Math.floor(tiempoRestante / 60);
+        const segundos = tiempoRestante % 60;
+        timerElement.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        tiempoRestante--;
+    }
+    
+    actualizarTimer();
+    const intervalId = setInterval(actualizarTimer, 1000);
+}
+</script>
+{% endblock %}

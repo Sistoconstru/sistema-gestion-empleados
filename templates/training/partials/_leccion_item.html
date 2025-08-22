@@ -1,0 +1,104 @@
+{% with leccion_completada=leccion.esta_completada prev_contenido=contenido.get_contenido_anterior %}
+<div class="lesson-item d-flex align-items-center {% spaceless %}
+    {% if contenido == contenido_actual %}
+        active
+    {% endif %}
+    {% if contenido.id in contenidos_completados %}
+        {% if modulo_info.tiene_evaluacion and modulo_info.evaluacion_aprobada %}
+            completed bg-success
+        {% else %}
+            completed bg-warning
+        {% endif %}
+    {% endif %}
+    {% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito.esta_completado %}
+        locked disabled
+    {% else %}
+        {% if leccion_bloqueada and leccion.leccion_prerequisito and not leccion.leccion_prerequisito.esta_completada %}
+            locked disabled
+        {% else %}
+            {% if prev_contenido and prev_contenido.id not in contenidos_completados and not forloop.first %}
+                locked disabled
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endspaceless %}"
+     data-contenido-id="{{ contenido.id }}"
+     data-modulo-id="{{ modulo.id }}"
+     data-leccion-id="{{ leccion.id }}"
+     title="{% if modulo_bloqueado and modulo.modulo_prerequisito %}
+            Debes completar el módulo {{ modulo.modulo_prerequisito.nombre }} primero
+          {% else %}
+            {% if leccion_bloqueada and leccion.leccion_prerequisito %}
+              Debes completar la lección prerequisito primero
+            {% else %}
+              {% if prev_contenido and prev_contenido.id not in contenidos_completados and not forloop.first and not forloop.parentloop.parentloop.first %}
+                Debes completar el contenido anterior primero
+              {% endif %}
+            {% endif %}
+          {% endif %}">
+    
+    <div class="lesson-progress">
+        {% if contenido.id in contenidos_completados %}
+            {% if modulo_info.tiene_evaluacion %}
+                {% if modulo_info.evaluacion_aprobada %}
+                    <i class="fas fa-check text-success"></i>
+                {% else %}
+                    <i class="fas fa-clock text-warning"></i>
+                {% endif %}
+            {% else %}
+                <i class="fas fa-check text-success"></i>
+            {% endif %}
+        {% else %}
+            {% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito.esta_completado %}
+                <i class="fas fa-lock text-muted" title="Módulo bloqueado"></i>
+            {% elif leccion_bloqueada and leccion.leccion_prerequisito and not leccion.leccion_prerequisito.esta_completada %}
+                <i class="fas fa-lock text-muted" title="Lección bloqueada"></i>
+            {% elif prev_contenido and prev_contenido.id not in contenidos_completados %}
+                <i class="fas fa-lock text-muted" title="Completa el contenido anterior"></i>
+            {% else %}
+                <i class="fas fa-circle text-muted"></i>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="flex-grow-1">
+        <div class="fw-medium">
+            {% if contenido.tipo_contenido.codigo == 'VIDEO' %}
+                <i class="fas fa-play-circle me-1"></i>
+            {% else %}
+                {% if contenido.tipo_contenido.codigo == 'DOCUMENTO' %}
+                    <i class="fas fa-file-pdf me-1"></i>
+                {% else %}
+                    {% if contenido.tipo_contenido.codigo == 'YOUTUBE' %}
+                        <i class="fab fa-youtube me-1"></i>
+                    {% else %}
+                        <i class="fas fa-file-alt me-1"></i>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            {{ contenido.nombre }}
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                {{ contenido.tiempo_minimo_visualizacion }} min
+                {% if modulo_bloqueado %}
+                    <span class="badge bg-warning ms-1" title="Módulo bloqueado">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                {% else %}
+                    {% if leccion_bloqueada %}
+                        <span class="badge bg-warning ms-1" title="Lección bloqueada">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    {% endif %}
+                {% endif %}
+            </small>
+            {% if contenido.id in contenidos_completados %}
+            <small class="text-success">
+                <i class="fas fa-check-circle"></i> Completado
+            </small>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endwith %}

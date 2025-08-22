@@ -8,8 +8,8 @@ templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' empleado.pk %}">{{ empleado.nombre_completo }}</a></li>
+
+
 <li class="breadcrumb-item"><a href="{% url 'documents:empleado_documentos' empleado.pk %}">Documentos</a></li>
 <li class="breadcrumb-item active">Subir</li>
 {% endblock %}

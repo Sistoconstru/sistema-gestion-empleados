@@ -8,6 +8,158 @@ from django.db import models
 import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class TipoPreguntaQuiz(models.TextChoices):
+    MULTIPLE = 'multiple', 'Selección Múltiple'
+    VERDADERO_FALSO = 'verdadero_falso', 'Verdadero/Falso'
+
+class QuizLeccion(models.Model):
+    """Evaluación de una lección"""
+    leccion = models.OneToOneField('Leccion', on_delete=models.CASCADE, related_name='evaluacion')
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True)
+    porcentaje_aprobacion = models.PositiveIntegerField(
+        default=70,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        help_text="Porcentaje mínimo para aprobar"
+    )
+    tiempo_limite = models.PositiveIntegerField(
+        null=True, 
+        blank=True,
+        help_text="Tiempo límite en minutos. Dejar en blanco si no hay límite"
+    )
+    intentos_maximos = models.PositiveIntegerField(
+        default=3,
+        help_text="Número máximo de intentos permitidos. 0 para intentos ilimitados"
+    )
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'training_evaluaciones'
+        verbose_name = 'Evaluación'
+        verbose_name_plural = 'Evaluaciones'
+
+    def __str__(self):
+        return f"Evaluación: {self.titulo}"
+        
+    def esta_aprobada(self, usuario=None):
+        """Verifica si el usuario ha aprobado esta evaluación"""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        logger.info(f'Verificando aprobación de evaluación {self.titulo} para usuario {usuario}')
+        if not usuario:
+            logger.info('No se proporcionó usuario, retornando False')
+            return False
+            
+        aprobado = IntentoQuiz.objects.filter(
+            quiz=self,
+            usuario=usuario,
+            aprobado=True
+        ).exists()
+        
+        logger.info(f'Evaluación {self.titulo}: {"aprobada" if aprobado else "no aprobada"} por usuario {usuario}')
+        return aprobado
+
+class PreguntaQuiz(models.Model):
+    """Pregunta de un quiz de lección"""
+    quiz = models.ForeignKey(QuizLeccion, on_delete=models.CASCADE, related_name='preguntas')
+    texto = models.TextField()
+    tipo = models.CharField(
+        max_length=20,
+        choices=TipoPreguntaQuiz.choices,
+        default=TipoPreguntaQuiz.MULTIPLE
+    )
+    puntaje = models.PositiveIntegerField(default=1)
+    imagen = models.ImageField(
+        upload_to='evaluaciones/preguntas/',
+        null=True,
+        blank=True
+    )
+    explicacion = models.TextField(
+        blank=True,
+        help_text="Explicación que se mostrará después de responder"
+    )
+    orden = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = 'training_preguntas_quiz'
+        verbose_name = 'Pregunta de Quiz'
+        verbose_name_plural = 'Preguntas de Quiz'
+        ordering = ['orden']
+
+    def __str__(self):
+        return f"Pregunta {self.orden}: {self.texto[:50]}..."
+
+class OpcionPreguntaQuiz(models.Model):
+    """Opción para una pregunta de quiz"""
+    pregunta = models.ForeignKey(PreguntaQuiz, on_delete=models.CASCADE, related_name='opciones')
+    texto = models.TextField()
+    es_correcta = models.BooleanField(default=False)
+    retroalimentacion = models.TextField(
+        blank=True,
+        help_text="Retroalimentación específica para esta opción"
+    )
+    orden = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = 'training_opciones_quiz'
+        verbose_name = 'Opción de Quiz'
+        verbose_name_plural = 'Opciones de Quiz'
+        ordering = ['orden']
+
+    def __str__(self):
+        return f"Opción {self.orden}: {self.texto[:50]}..."
+
+class IntentoQuiz(models.Model):
+    """Registro de un intento de quiz por parte de un usuario"""
+    quiz = models.ForeignKey(QuizLeccion, on_delete=models.CASCADE, related_name='intentos')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='intentos_quiz')
+    fecha_inicio = models.DateTimeField(auto_now_add=True)
+    fecha_fin = models.DateTimeField(null=True, blank=True)
+    puntaje_obtenido = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True
+    )
+    tiempo_utilizado = models.PositiveIntegerField(
+        null=True,
+        help_text="Tiempo utilizado en segundos"
+    )
+    aprobado = models.BooleanField(null=True)
+
+    class Meta:
+        db_table = 'training_intentos_quiz'
+        verbose_name = 'Intento de Quiz'
+        verbose_name_plural = 'Intentos de Quiz'
+
+    def __str__(self):
+        return f"Intento de {self.usuario.username} - {self.fecha_inicio}"
+
+class RespuestaQuiz(models.Model):
+    """Respuesta del usuario a una pregunta del quiz"""
+    intento = models.ForeignKey(IntentoQuiz, on_delete=models.CASCADE, related_name='respuestas')
+    pregunta = models.ForeignKey(PreguntaQuiz, on_delete=models.CASCADE)
+    opcion_seleccionada = models.ForeignKey(
+        OpcionPreguntaQuiz,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    es_correcta = models.BooleanField(null=True)
+    fecha_respuesta = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'training_respuestas_quiz'
+        verbose_name = 'Respuesta de Quiz'
+        verbose_name_plural = 'Respuestas de Quiz'
+
+    def __str__(self):
+        return f"Respuesta de {self.intento.usuario.username} a {self.pregunta}"
 
 class TipoCapacitacion(models.Model):
     """Tipos de capacitación"""
@@ -237,6 +389,29 @@ class ModuloCapacitacion(models.Model):
     # Estado
     activo = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def esta_bloqueado_por_prerequisito(self):
+        """Verifica si el módulo está bloqueado por su prerrequisito"""
+        # Si no tiene prerequisito (es None o está vacío), no está bloqueado
+        if self.modulo_prerequisito is None:
+            return False
+        
+        # Verificar si el módulo prerrequisito está completado
+        contenidos_prerequisito = self.modulo_prerequisito.leccion_set.values_list(
+            'contenidoleccion__id', flat=True
+        ).filter(activa=True)
+        
+        # Si el prerequisito no tiene contenidos, no está bloqueado
+        if not contenidos_prerequisito.exists():
+            return False
+            
+        contenidos_completados = ProgresoCapacitacion.objects.filter(
+            contenido_id__in=contenidos_prerequisito,
+            completado=True
+        ).count()
+        
+        # Está bloqueado si no se han completado todos los contenidos del prerequisito
+        return contenidos_completados < contenidos_prerequisito.count()
     
     class Meta:
         db_table = 'modulos_capacitacion'
@@ -257,14 +432,60 @@ class Leccion(models.Model):
     descripcion = models.TextField(blank=True)
     orden = models.IntegerField()
     duracion_estimada_minutos = models.IntegerField()
+    activa = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     
-    # Configuración (NUEVOS CAMPOS)
+    # Prerrequisitos
     leccion_prerequisito = models.ForeignKey(
         'self', 
         on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True
+        null=True,
+        blank=True,
+        help_text="Lección que debe completarse antes de esta"
     )
+
+    def esta_bloqueada_por_prerequisito(self):
+        """Verifica si la lección está bloqueada por su prerrequisito"""
+        # Si el módulo está bloqueado, la lección también lo está
+        if self.modulo.esta_bloqueado_por_prerequisito():
+            return True
+            
+        if not self.leccion_prerequisito:
+            return False
+            
+        # Verificar si la lección prerequisito está completada y su evaluación aprobada
+        if not self.leccion_prerequisito.esta_completada(None):
+            return True
+            
+        return False
+
+    def esta_completada(self, inscripcion=None):
+        """Verifica si la lección está completada incluyendo su evaluación"""
+        if not inscripcion:
+            return False
+            
+        # Verificar si todos los contenidos están completados
+        contenidos_totales = self.contenidoleccion_set.count()
+        contenidos_completados = ProgresoCapacitacion.objects.filter(
+            inscripcion=inscripcion,
+            contenido__leccion=self,
+            completado=True
+        ).count()
+        
+        if contenidos_totales != contenidos_completados:
+            return False
+            
+        # Verificar si hay evaluación pendiente
+        if hasattr(self, 'evaluacion'):
+            return IntentoQuiz.objects.filter(
+                quiz=self.evaluacion,
+                usuario=inscripcion.empleado.usuario,
+                aprobado=True
+            ).exists()
+            
+        return contenidos_totales == contenidos_completados  # Si no hay evaluación, solo verifica contenidos completados
+        blank=True
+    
     tiempo_minimo_visualizacion = models.IntegerField(
         default=0,
         help_text="Tiempo mínimo en segundos que debe ver la lección"
@@ -290,7 +511,7 @@ class Leccion(models.Model):
 
 class TipoContenido(models.Model):
     """Tipos de contenido para lecciones - MEJORADO"""
-    codigo = models.CharField(max_length=10, unique=True)
+    codigo = models.CharField(max_length=12, unique=True)
     nombre = models.CharField(max_length=50, unique=True)
     descripcion = models.TextField(blank=True)
     extensiones_permitidas = models.CharField(max_length=100, blank=True)

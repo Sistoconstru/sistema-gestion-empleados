@@ -1,0 +1,15 @@
+{% if modulo_completado and modulo_info.evaluacion_aprobada %}
+    fa-check-circle text-success
+{% else %}
+    {% if modulo_completado %}
+        fa-clock text-warning
+    {% else %}
+        fa-book
+    {% endif %}
+{% endif %}
+
+{% if modulo_completado and not modulo_info.evaluacion_aprobada and modulo_info.tiene_evaluacion %}
+<span class="badge bg-warning ms-2">
+    <i class="fas fa-tasks"></i> Pendiente Evaluación
+</span>
+{% endif %}
