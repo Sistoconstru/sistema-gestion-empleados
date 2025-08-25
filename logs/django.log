@@ -29236,3 +29236,1712 @@ INFO 2025-08-22 13:52:11,649 basehttp 15988 23468 "GET /capacitaciones/media-pdf
 INFO 2025-08-22 13:56:41,760 basehttp 15988 7272 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
 INFO 2025-08-22 13:56:41,814 basehttp 15988 13696 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30917
 INFO 2025-08-22 13:56:41,944 basehttp 15988 13696 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 14:04:14,416 autoreload 12828 8980 Watching for file changes with StatReloader
+INFO 2025-08-22 14:04:19,221 basehttp 12828 3704 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:04:19,311 basehttp 12828 3704 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23777
+INFO 2025-08-22 14:04:46,332 basehttp 12828 3704 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:04:46,341 basehttp 12828 3704 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-22 14:04:51,876 basehttp 12828 3704 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:04:51,910 basehttp 12828 3704 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:04:58,750 basehttp 12828 3704 "GET /empleados/ HTTP/1.1" 200 98021
+INFO 2025-08-22 14:05:01,928 basehttp 12828 3704 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 39300
+INFO 2025-08-22 14:05:07,384 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 18425
+INFO 2025-08-22 14:05:21,967 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 18425
+INFO 2025-08-22 14:05:28,628 basehttp 12828 3704 "GET /documentos/documento/fece13c7-9215-4f0c-95a6-bf8752fc4473/ver/ HTTP/1.1" 200 26826
+INFO 2025-08-22 14:05:28,720 basehttp 12828 3704 "GET /media/documentos/10352125/HOJA_VIDA/HOJA_VIDA_20250815_205933.pdf HTTP/1.1" 200 1007138
+INFO 2025-08-22 14:05:57,634 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 18425
+INFO 2025-08-22 14:06:02,981 basehttp 12828 3704 "GET /documentos/documento/bff46885-15d4-4008-aaf7-0f029c3f04d1/aprobar/ HTTP/1.1" 200 25656
+INFO 2025-08-22 14:06:02,999 basehttp 12828 3704 "GET /media/documentos/10352125/LC--001/LC--001_20250820_123045.png HTTP/1.1" 200 1122530
+INFO 2025-08-22 14:06:09,591 basehttp 12828 3704 "POST /documentos/documento/bff46885-15d4-4008-aaf7-0f029c3f04d1/aprobar/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:06:09,617 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 18655
+INFO 2025-08-22 14:06:16,950 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir-multiple/ HTTP/1.1" 200 64190
+INFO 2025-08-22 14:08:36,223 basehttp 12828 3704 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 18229
+INFO 2025-08-22 14:08:42,834 basehttp 12828 3704 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:08:58,549 basehttp 12828 3704 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:14:02,075 basehttp 12828 13248 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:14:12,033 basehttp 12828 13248 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:14:22,358 basehttp 12828 13248 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:14:22,363 basehttp 12828 13248 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-22 14:14:27,683 basehttp 12828 13248 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:14:27,692 basehttp 12828 13248 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:14:27,787 basehttp 12828 13248 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24181
+INFO 2025-08-22 14:14:30,932 basehttp 12828 13248 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+INFO 2025-08-22 14:14:35,168 basehttp 12828 13248 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:14:35,215 basehttp 12828 13248 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23777
+INFO 2025-08-22 14:14:37,515 basehttp 12828 13248 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 13479
+INFO 2025-08-22 14:14:48,592 basehttp 12828 13248 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:14:48,639 basehttp 12828 13248 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23777
+INFO 2025-08-22 14:15:55,614 autoreload 12828 8980 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:15:56,341 autoreload 23476 23748 Watching for file changes with StatReloader
+INFO 2025-08-22 14:16:01,974 autoreload 23476 23748 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:16:02,693 autoreload 2772 16844 Watching for file changes with StatReloader
+INFO 2025-08-22 14:16:19,392 basehttp 2772 16872 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:16:19,411 basehttp 2772 16872 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-22 14:16:25,834 basehttp 2772 16872 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-22 14:16:25,894 basehttp 2772 16872 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:16:28,710 basehttp 2772 16872 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:17:37,752 autoreload 2772 16844 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:17:38,577 autoreload 21088 12744 Watching for file changes with StatReloader
+INFO 2025-08-22 14:18:49,284 basehttp 21088 13780 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:18:50,611 basehttp 21088 13780 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:19:08,460 basehttp 21088 13780 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:19:12,723 basehttp 21088 13780 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17424
+INFO 2025-08-22 14:19:47,631 basehttp 21088 13780 "GET /capacitaciones/player/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 19655
+INFO 2025-08-22 14:20:51,951 basehttp 21088 13780 "GET /admin/training/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/change/ HTTP/1.1" 200 47609
+INFO 2025-08-22 14:20:52,021 basehttp 21088 9448 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 14:20:52,082 basehttp 21088 20276 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-08-22 14:20:52,085 basehttp 21088 4368 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-08-22 14:20:52,086 basehttp 21088 14344 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-08-22 14:20:52,088 basehttp 21088 4368 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-08-22 14:20:52,088 basehttp 21088 13780 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-08-22 14:20:52,090 basehttp 21088 14344 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-08-22 14:20:52,090 basehttp 21088 20276 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-08-22 14:20:52,092 basehttp 21088 2064 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-08-22 14:20:52,093 basehttp 21088 4368 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-08-22 14:20:52,094 basehttp 21088 14344 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-08-22 14:20:52,094 basehttp 21088 20276 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-08-22 14:20:52,095 basehttp 21088 13780 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-08-22 14:20:52,096 basehttp 21088 2064 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-08-22 14:20:52,097 basehttp 21088 4368 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-08-22 14:20:52,100 basehttp 21088 13780 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-08-22 14:20:52,102 basehttp 21088 14344 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-08-22 14:20:52,103 basehttp 21088 9448 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-08-22 14:20:52,104 basehttp 21088 20276 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-08-22 14:20:52,110 basehttp 21088 9448 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-08-22 14:20:52,110 basehttp 21088 20276 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-08-22 14:20:52,122 basehttp 21088 14344 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-08-22 14:20:52,122 basehttp 21088 9448 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-08-22 14:20:52,122 basehttp 21088 20276 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-08-22 14:20:52,158 basehttp 21088 20276 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-08-22 14:21:06,859 basehttp 21088 20276 "GET /capacitaciones/player/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 19655
+INFO 2025-08-22 14:23:56,106 basehttp 21088 7156 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 14336
+INFO 2025-08-22 14:30:18,588 autoreload 21088 12744 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:30:19,326 autoreload 11964 16736 Watching for file changes with StatReloader
+INFO 2025-08-22 14:33:02,138 autoreload 9260 10056 Watching for file changes with StatReloader
+INFO 2025-08-22 14:33:36,218 autoreload 15920 15104 Watching for file changes with StatReloader
+INFO 2025-08-22 14:34:37,552 autoreload 15920 15104 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:34:38,244 autoreload 25288 19972 Watching for file changes with StatReloader
+INFO 2025-08-22 14:35:04,771 autoreload 19012 24572 Watching for file changes with StatReloader
+INFO 2025-08-22 14:35:50,484 autoreload 19012 24572 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:35:51,130 autoreload 12168 21724 Watching for file changes with StatReloader
+INFO 2025-08-22 14:36:53,652 autoreload 11096 23432 Watching for file changes with StatReloader
+INFO 2025-08-22 14:37:40,491 autoreload 11096 23432 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:37:41,142 autoreload 1204 18816 Watching for file changes with StatReloader
+INFO 2025-08-22 14:38:35,162 autoreload 7528 13168 Watching for file changes with StatReloader
+INFO 2025-08-22 14:39:49,229 autoreload 7528 13168 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 14:39:49,906 autoreload 9464 14972 Watching for file changes with StatReloader
+INFO 2025-08-22 14:41:37,013 basehttp 9464 24456 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:41:37,046 basehttp 9464 24456 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-08-22 14:41:42,741 basehttp 9464 24456 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:41:57,067 log 9464 24456 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'else'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 208, in select_template
+    return self.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 33: 'else', expected 'endwith'. Did you forget to register or load this tag?
+ERROR 2025-08-22 14:41:57,082 basehttp 9464 24456 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 342284
+INFO 2025-08-22 14:42:05,134 basehttp 9464 24456 "GET /capacitaciones/player/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 19655
+INFO 2025-08-22 14:46:12,485 autoreload 8584 1376 Watching for file changes with StatReloader
+INFO 2025-08-22 14:46:20,918 basehttp 8584 25064 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:46:23,537 log 8584 25064 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endwith'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 208, in select_template
+    return self.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 577, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 149: 'endwith'. Did you forget to register or load this tag?
+ERROR 2025-08-22 14:46:23,549 basehttp 8584 25064 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 297500
+INFO 2025-08-22 14:49:04,838 basehttp 8584 25064 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:49:06,801 log 8584 25064 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endwith'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 208, in select_template
+    return self.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 577, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 149: 'endwith'. Did you forget to register or load this tag?
+ERROR 2025-08-22 14:49:06,811 basehttp 8584 25064 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 297540
+INFO 2025-08-22 14:49:30,784 autoreload 9652 21920 Watching for file changes with StatReloader
+INFO 2025-08-22 14:49:39,533 basehttp 9652 10472 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:49:46,467 log 9652 10472 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endwith'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 208, in select_template
+    return self.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 577, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 149: 'endwith'. Did you forget to register or load this tag?
+ERROR 2025-08-22 14:49:46,483 basehttp 9652 10472 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 297540
+INFO 2025-08-22 14:51:58,926 autoreload 7944 25208 Watching for file changes with StatReloader
+INFO 2025-08-22 14:52:02,296 basehttp 7944 10072 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 14:52:02,416 basehttp 7944 10072 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:52:10,071 basehttp 7944 10072 "GET /empleados/ HTTP/1.1" 200 98021
+INFO 2025-08-22 14:52:13,547 basehttp 7944 10072 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 39034
+INFO 2025-08-22 14:52:22,738 basehttp 7944 10072 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 14:52:43,174 basehttp 7944 10072 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:52:46,774 basehttp 7944 10072 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:52:49,586 log 7944 10072 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: ',' from 'modulos_evaluacion|get_item:modulo.id,'
+ERROR 2025-08-22 14:52:49,593 basehttp 7944 10072 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 355749
+INFO 2025-08-22 14:53:01,762 basehttp 7944 10072 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 14:56:44,059 basehttp 7944 15444 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+ERROR 2025-08-22 14:56:45,840 log 7944 15444 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 1531, in do_with
+    extra_context = token_kwargs(remaining_bits, parser, support_legacy=True)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1127, in token_kwargs
+    kwargs[key] = parser.compile_filter(value)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: ',' from 'modulos_evaluacion|get_item:modulo.id,'
+ERROR 2025-08-22 14:56:45,844 basehttp 7944 15444 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 355749
+INFO 2025-08-22 14:58:35,902 autoreload 13688 14936 Watching for file changes with StatReloader
+ERROR 2025-08-22 14:58:44,369 log 13688 8588 Internal Server Error: /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endwith'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 550, in render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 208, in select_template
+    return self.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 577, in invalid_block_tag
+    raise self.error(
+    ...<3 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 149: 'endwith'. Did you forget to register or load this tag?
+ERROR 2025-08-22 14:58:44,381 basehttp 13688 8588 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 500 297540
+INFO 2025-08-22 15:00:16,417 autoreload 13688 14936 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 15:00:17,133 autoreload 10764 4668 Watching for file changes with StatReloader
+INFO 2025-08-22 15:00:23,880 basehttp 10764 17984 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+INFO 2025-08-22 15:00:24,852 basehttp 10764 17984 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17861
+INFO 2025-08-22 15:00:26,567 basehttp 10764 17984 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 31540
+INFO 2025-08-22 15:00:26,753 basehttp 10764 17984 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+WARNING 2025-08-22 15:00:50,345 log 10764 17984 Bad Request: /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/
+WARNING 2025-08-22 15:00:50,345 basehttp 10764 17984 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 400 117
+INFO 2025-08-22 15:03:48,051 basehttp 10764 17984 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17622
+INFO 2025-08-22 15:10:53,359 basehttp 10764 25312 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:13:55,170 autoreload 10764 4668 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 15:13:55,882 autoreload 16544 11544 Watching for file changes with StatReloader
+INFO 2025-08-22 15:14:03,819 basehttp 16544 21024 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:14:04,939 basehttp 16544 21024 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:14:06,630 basehttp 16544 21024 "GET /empleados/ HTTP/1.1" 200 98021
+INFO 2025-08-22 15:14:10,448 basehttp 16544 21024 "GET /empleados/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 39034
+INFO 2025-08-22 15:14:31,005 basehttp 16544 21024 "GET /empleados/ HTTP/1.1" 200 98021
+INFO 2025-08-22 15:14:33,789 basehttp 16544 21024 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:14:35,073 basehttp 16544 21024 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 15:14:48,647 basehttp 16544 21024 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17622
+INFO 2025-08-22 15:14:53,925 basehttp 16544 21024 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:15:06,889 basehttp 16544 21024 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 15:15:19,089 basehttp 16544 21024 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 17622
+WARNING 2025-08-22 15:15:41,883 log 16544 21024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:15:41,884 basehttp 16544 21024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:21:31,236 autoreload 15616 18916 Watching for file changes with StatReloader
+INFO 2025-08-22 15:21:31,974 basehttp 15616 3972 "GET /dashboard/ HTTP/1.1" 200 14962
+WARNING 2025-08-22 15:21:32,013 log 15616 3972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:21:32,014 basehttp 15616 3972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:21:36,462 basehttp 15616 3972 "GET /admin/ HTTP/1.1" 200 50006
+WARNING 2025-08-22 15:21:36,495 log 15616 2092 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:21:36,495 basehttp 15616 2092 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:21:36,511 basehttp 15616 3972 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-08-22 15:21:36,518 basehttp 15616 3972 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-08-22 15:21:50,486 basehttp 15616 3972 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 41609
+WARNING 2025-08-22 15:21:50,523 log 15616 2092 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:21:50,526 basehttp 15616 2092 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:21:50,526 basehttp 15616 3972 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-08-22 15:21:50,530 basehttp 15616 6436 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-08-22 15:21:50,535 basehttp 15616 6436 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-08-22 15:21:50,594 basehttp 15616 9012 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 15:21:50,642 basehttp 15616 6436 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-08-22 15:21:50,642 basehttp 15616 9012 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-08-22 15:22:01,156 basehttp 15616 9012 "GET /admin/employees/estadoempleado/1/change/ HTTP/1.1" 200 40470
+WARNING 2025-08-22 15:22:01,183 log 15616 9012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:22:01,185 basehttp 15616 9012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:22:01,237 basehttp 15616 6436 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 15:22:31,306 basehttp 15616 6436 "POST /admin/employees/estadoempleado/1/change/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:22:31,338 basehttp 15616 6436 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 41834
+WARNING 2025-08-22 15:22:31,367 log 15616 9012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:22:31,369 basehttp 15616 9012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:22:31,371 basehttp 15616 6436 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 15:22:42,028 basehttp 15616 6436 "GET /admin/employees/estadoempleado/4/change/ HTTP/1.1" 200 40469
+WARNING 2025-08-22 15:22:42,056 log 15616 6436 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:22:42,057 basehttp 15616 6436 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:22:42,059 basehttp 15616 9012 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 15:23:19,555 basehttp 15616 4636 "POST /admin/employees/estadoempleado/4/change/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:23:19,581 basehttp 15616 4636 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 41847
+WARNING 2025-08-22 15:23:19,614 log 15616 23064 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:23:19,615 basehttp 15616 23064 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:23:19,617 basehttp 15616 4636 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-08-22 15:23:23,688 basehttp 15616 4636 "GET /dashboard/ HTTP/1.1" 200 14960
+WARNING 2025-08-22 15:23:23,717 log 15616 4636 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:23:23,719 basehttp 15616 4636 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:23:30,665 basehttp 15616 4636 "GET /dashboard/ HTTP/1.1" 200 14960
+WARNING 2025-08-22 15:23:30,706 log 15616 4636 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:23:30,707 basehttp 15616 4636 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:24:24,778 autoreload 6172 24876 Watching for file changes with StatReloader
+INFO 2025-08-22 15:24:29,213 basehttp 6172 22556 "GET /empleados/ HTTP/1.1" 200 98021
+WARNING 2025-08-22 15:24:29,256 log 6172 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:24:29,256 basehttp 6172 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:24:32,075 basehttp 6172 22556 "GET /dashboard/ HTTP/1.1" 200 14960
+WARNING 2025-08-22 15:24:32,104 log 6172 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:24:32,105 basehttp 6172 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:24:33,586 basehttp 6172 22556 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+WARNING 2025-08-22 15:24:33,623 log 6172 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:24:33,624 basehttp 6172 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:24:38,951 basehttp 6172 22556 "GET /capacitaciones/capacitacion/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 23938
+WARNING 2025-08-22 15:24:38,983 log 6172 22556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:24:38,983 basehttp 6172 22556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:25:38,009 autoreload 6172 24876 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 15:25:38,688 autoreload 21852 17016 Watching for file changes with StatReloader
+INFO 2025-08-22 15:26:18,279 autoreload 21852 17016 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 15:26:18,869 autoreload 16876 12656 Watching for file changes with StatReloader
+INFO 2025-08-22 15:26:39,380 autoreload 19936 16504 Watching for file changes with StatReloader
+INFO 2025-08-22 15:27:25,170 autoreload 19936 16504 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-22 15:27:25,781 autoreload 15024 18716 Watching for file changes with StatReloader
+INFO 2025-08-22 15:27:35,727 basehttp 15024 20892 "GET /capacitaciones/player-preview/abbb2d7b-be98-4e7e-bb02-8e178a8ada44/ HTTP/1.1" 200 31540
+INFO 2025-08-22 15:27:35,768 basehttp 15024 20892 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-08-22 15:27:35,931 basehttp 15024 20892 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+WARNING 2025-08-22 15:27:38,335 log 15024 20892 Bad Request: /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/
+WARNING 2025-08-22 15:27:38,335 basehttp 15024 20892 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 400 117
+INFO 2025-08-22 15:27:52,810 basehttp 15024 20892 "GET /dashboard/ HTTP/1.1" 200 14960
+INFO 2025-08-22 15:27:52,832 basehttp 15024 20892 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+WARNING 2025-08-22 15:27:52,845 log 15024 20892 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:27:52,847 basehttp 15024 20892 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:29:40,485 autoreload 15024 18716 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-22 15:29:41,146 autoreload 24572 12144 Watching for file changes with StatReloader
+INFO 2025-08-22 15:30:05,644 basehttp 24572 8492 "GET /dashboard/ HTTP/1.1" 200 14962
+WARNING 2025-08-22 15:30:05,690 log 24572 8684 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:30:05,691 basehttp 24572 8684 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:30:05,726 basehttp 24572 4720 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-08-22 15:30:05,727 basehttp 24572 22144 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-08-22 15:30:05,728 basehttp 24572 8492 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-08-22 15:30:06,202 log 24572 8492 Not Found: /favicon.ico
+WARNING 2025-08-22 15:30:06,202 basehttp 24572 8492 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-22 15:38:26,787 basehttp 24572 13964 "GET /dashboard/ HTTP/1.1" 200 14962
+WARNING 2025-08-22 15:38:26,829 log 24572 13964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:38:26,830 basehttp 24572 13964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:38:36,627 basehttp 24572 13964 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+WARNING 2025-08-22 15:38:36,658 log 24572 13964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:38:36,659 basehttp 24572 13964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:38:46,470 basehttp 24572 13964 "GET /dashboard/ HTTP/1.1" 200 14962
+WARNING 2025-08-22 15:38:46,500 log 24572 13964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-22 15:38:46,501 basehttp 24572 13964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-22 15:41:20,282 basehttp 24572 13964 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 15:41:28,366 basehttp 24572 13964 "GET /capacitaciones/capacitacion/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 20850
+INFO 2025-08-22 15:41:30,437 basehttp 24572 13964 "GET /capacitaciones/player-preview/9872b178-f7b9-4103-afba-3b388b572d70/ HTTP/1.1" 200 22998
+WARNING 2025-08-22 15:41:44,280 log 24572 13964 Bad Request: /capacitaciones/contenido/3a3a9e26-4c37-4d00-a148-092c2564001f/completar/
+WARNING 2025-08-22 15:41:44,281 basehttp 24572 13964 "POST /capacitaciones/contenido/3a3a9e26-4c37-4d00-a148-092c2564001f/completar/ HTTP/1.1" 400 117
+INFO 2025-08-22 15:42:05,421 basehttp 24572 13964 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:42:07,217 basehttp 24572 13964 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 15:42:13,727 basehttp 24572 13964 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 25432
+INFO 2025-08-22 15:42:24,607 basehttp 24572 13964 "GET /capacitaciones/player-preview/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 26999
+WARNING 2025-08-22 15:43:00,796 log 24572 13964 Bad Request: /capacitaciones/contenido/73092ec5-5978-4c55-a24a-095824fc7719/completar/
+WARNING 2025-08-22 15:43:00,796 basehttp 24572 13964 "POST /capacitaciones/contenido/73092ec5-5978-4c55-a24a-095824fc7719/completar/ HTTP/1.1" 400 117
+INFO 2025-08-22 15:43:00,960 basehttp 24572 24708 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:43:05,783 basehttp 24572 24708 "GET /capacitaciones/admin/ HTTP/1.1" 200 24833
+INFO 2025-08-22 15:43:13,732 basehttp 24572 24708 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 25432
+INFO 2025-08-22 15:43:25,815 basehttp 24572 24708 "GET /capacitaciones/player-preview/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 26999
+WARNING 2025-08-22 15:43:30,236 log 24572 24708 Bad Request: /capacitaciones/contenido/73092ec5-5978-4c55-a24a-095824fc7719/completar/
+WARNING 2025-08-22 15:43:30,236 basehttp 24572 24708 "POST /capacitaciones/contenido/73092ec5-5978-4c55-a24a-095824fc7719/completar/ HTTP/1.1" 400 117
+INFO 2025-08-22 15:43:46,799 basehttp 24572 24708 "GET /dashboard/ HTTP/1.1" 200 14962
+INFO 2025-08-22 15:44:23,521 basehttp 24572 24708 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:44:23,531 basehttp 24572 24708 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-08-22 15:44:29,677 basehttp 24572 24708 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:44:29,694 basehttp 24572 24708 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:44:29,774 basehttp 24572 24708 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24181
+INFO 2025-08-22 15:45:02,343 autoreload 24572 12144 C:\SIGHU\sighu\sistema-gestion-empleados\apps\core\views.py changed, reloading.
+INFO 2025-08-22 15:45:03,135 autoreload 12536 15368 Watching for file changes with StatReloader
+INFO 2025-08-22 15:54:53,296 basehttp 12536 11544 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23845
+INFO 2025-08-22 15:54:57,637 basehttp 12536 11544 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23845
+INFO 2025-08-22 15:55:06,640 autoreload 20836 8640 Watching for file changes with StatReloader
+INFO 2025-08-22 15:55:10,480 basehttp 20836 16804 "GET / HTTP/1.1" 302 0
+INFO 2025-08-22 15:55:10,563 basehttp 20836 16804 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 15:55:10,655 basehttp 20836 16804 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23845
+INFO 2025-08-22 15:55:12,981 basehttp 20836 16804 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23845
+INFO 2025-08-22 15:55:25,114 basehttp 20836 16804 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23845
+INFO 2025-08-22 16:00:26,624 basehttp 20836 15516 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 23962
+INFO 2025-08-22 16:06:17,408 basehttp 20836 25384 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24040
+INFO 2025-08-22 16:07:56,381 basehttp 20836 25384 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24177
+INFO 2025-08-22 16:08:30,245 basehttp 20836 25384 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 16:08:30,316 basehttp 20836 25384 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24177
+INFO 2025-08-22 16:08:51,489 basehttp 20836 25384 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 13479
+INFO 2025-08-22 16:08:56,500 basehttp 20836 25384 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-22 16:08:56,577 basehttp 20836 25384 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24177
+INFO 2025-08-22 16:09:01,282 basehttp 20836 25384 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+INFO 2025-08-22 16:09:11,198 basehttp 20836 25384 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32677
+INFO 2025-08-22 16:09:11,255 basehttp 20836 25384 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 200 31788
+INFO 2025-08-22 16:09:11,265 basehttp 20836 20724 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-08-22 16:09:11,271 basehttp 20836 8884 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-08-22 16:09:11,274 basehttp 20836 25384 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 645115
+INFO 2025-08-22 16:09:11,276 basehttp 20836 20724 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-08-22 16:09:11,279 basehttp 20836 8048 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-08-22 16:09:11,280 basehttp 20836 25384 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-08-22 16:09:11,281 basehttp 20836 8884 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-08-22 16:09:11,289 basehttp 20836 8048 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-08-22 16:09:11,293 basehttp 20836 16752 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-08-22 16:09:11,293 basehttp 20836 20724 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-08-22 16:09:11,296 basehttp 20836 8884 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-08-22 16:09:11,296 basehttp 20836 25384 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-08-22 16:09:11,296 basehttp 20836 12572 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-08-22 16:09:11,298 basehttp 20836 8048 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-08-22 16:09:11,299 basehttp 20836 16752 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-08-22 16:09:11,301 basehttp 20836 8884 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-08-22 16:09:11,301 basehttp 20836 20724 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-08-22 16:09:11,302 basehttp 20836 25384 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-08-22 16:09:11,308 basehttp 20836 12572 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-08-22 16:09:11,327 basehttp 20836 12572 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-08-22 16:09:11,334 basehttp 20836 12572 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-08-22 16:09:11,351 basehttp 20836 25384 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-08-22 16:09:11,356 basehttp 20836 12572 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2161910
+INFO 2025-08-22 16:09:11,410 basehttp 20836 12572 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf HTTP/1.1" 301 0
+INFO 2025-08-22 16:09:11,420 basehttp 20836 25384 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-22 16:09:11,443 basehttp 20836 25384 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-08-22 16:09:11,449 basehttp 20836 25384 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-08-25 06:45:32,413 autoreload 12680 7160 Watching for file changes with StatReloader
+INFO 2025-08-25 06:45:38,144 basehttp 12680 8028 "GET / HTTP/1.1" 302 0
+INFO 2025-08-25 06:45:38,198 basehttp 12680 8028 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-25 06:45:38,230 basehttp 12680 8028 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-08-25 06:45:38,338 basehttp 12680 8028 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-08-25 06:45:38,448 log 12680 8028 Not Found: /favicon.ico
+WARNING 2025-08-25 06:45:38,448 basehttp 12680 8028 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-25 06:45:48,918 basehttp 12680 11776 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-25 06:45:48,939 basehttp 12680 11776 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-25 06:45:49,077 basehttp 12680 11776 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24591
+INFO 2025-08-25 06:45:49,095 basehttp 12680 11776 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-08-25 06:45:58,305 basehttp 12680 11776 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+ERROR 2025-08-25 06:46:11,991 log 12680 11776 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 06:46:12,000 basehttp 12680 11776 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319547
+ERROR 2025-08-25 06:46:18,492 log 12680 11776 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 06:46:18,497 basehttp 12680 11776 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319547
+ERROR 2025-08-25 06:46:39,564 log 12680 11776 Internal Server Error: /capacitaciones/player/5976a880-8d6a-42b3-87df-996c16d284f1/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\views\generic\base.py", line 228, in get
+    context = self.get_context_data(**kwargs)
+  File "C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py", line 1044, in get_context_data
+    if leccion_actual.evaluacion:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+    ...<2 lines>...
+    )
+apps.training.models.Leccion.evaluacion.RelatedObjectDoesNotExist: Leccion has no evaluacion.
+ERROR 2025-08-25 06:46:39,569 basehttp 12680 11776 "GET /capacitaciones/player/5976a880-8d6a-42b3-87df-996c16d284f1/ HTTP/1.1" 500 103961
+ERROR 2025-08-25 06:46:42,990 log 12680 11776 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 06:46:42,999 basehttp 12680 11776 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319547
+INFO 2025-08-25 06:53:58,274 autoreload 656 15436 Watching for file changes with StatReloader
+INFO 2025-08-25 06:54:06,318 basehttp 656 20408 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+INFO 2025-08-25 06:54:08,251 basehttp 656 20408 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 23786
+INFO 2025-08-25 06:54:08,423 basehttp 656 20408 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+ERROR 2025-08-25 07:07:00,557 log 656 24456 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 07:07:00,564 basehttp 656 24456 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319775
+ERROR 2025-08-25 07:08:54,355 log 656 24456 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 07:08:54,359 basehttp 656 24456 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319638
+INFO 2025-08-25 07:09:14,137 autoreload 6596 22032 Watching for file changes with StatReloader
+ERROR 2025-08-25 07:09:19,399 log 6596 21592 Internal Server Error: /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SIGHU\sighu\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+    ...<8 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 139: 'endblock', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+ERROR 2025-08-25 07:09:19,405 basehttp 6596 21592 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 500 319638
+INFO 2025-08-25 07:10:41,766 basehttp 6596 21592 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 23714
+INFO 2025-08-25 07:10:41,883 basehttp 6596 21592 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:13:12,444 autoreload 6596 22032 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-25 07:13:13,167 autoreload 19664 17784 Watching for file changes with StatReloader
+INFO 2025-08-25 07:14:13,315 basehttp 19664 23812 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32917
+INFO 2025-08-25 07:14:13,439 basehttp 19664 23812 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:19:29,659 autoreload 19664 17784 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-25 07:19:30,310 autoreload 13532 22436 Watching for file changes with StatReloader
+INFO 2025-08-25 07:20:36,809 basehttp 13532 6416 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:20:36,903 basehttp 13532 24632 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:20:37,030 basehttp 13532 24632 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:20:39,899 basehttp 13532 24632 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:20:39,921 basehttp 13532 6416 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:20:40,019 basehttp 13532 6416 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:20:58,825 basehttp 13532 6416 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:20:58,841 basehttp 13532 24632 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:20:58,928 basehttp 13532 24632 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:21:04,056 basehttp 13532 24632 - Broken pipe from ('127.0.0.1', 49235)
+INFO 2025-08-25 07:21:11,115 autoreload 10548 11208 Watching for file changes with StatReloader
+INFO 2025-08-25 07:21:14,011 basehttp 10548 24176 "GET / HTTP/1.1" 302 0
+INFO 2025-08-25 07:21:14,121 basehttp 10548 24176 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-25 07:21:14,222 basehttp 10548 24176 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24187
+WARNING 2025-08-25 07:21:14,448 log 10548 11104 Not Found: /favicon.ico
+WARNING 2025-08-25 07:21:14,448 basehttp 10548 11104 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-25 07:21:22,529 basehttp 10548 11104 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+INFO 2025-08-25 07:21:24,948 basehttp 10548 20528 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:21:25,080 basehttp 10548 8540 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:30:22,186 autoreload 10548 11208 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-25 07:30:22,842 autoreload 19584 24700 Watching for file changes with StatReloader
+INFO 2025-08-25 07:30:49,546 basehttp 19584 12184 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:30:49,609 basehttp 19584 22608 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:30:49,737 basehttp 19584 22608 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:30:51,047 basehttp 19584 22608 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:30:51,051 basehttp 19584 12184 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:30:51,145 basehttp 19584 12184 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+INFO 2025-08-25 07:30:53,943 basehttp 19584 12184 - Broken pipe from ('127.0.0.1', 55233)
+INFO 2025-08-25 07:31:17,410 autoreload 8124 22732 Watching for file changes with StatReloader
+INFO 2025-08-25 07:31:20,847 basehttp 8124 23076 "GET / HTTP/1.1" 302 0
+INFO 2025-08-25 07:31:20,920 basehttp 8124 23076 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-08-25 07:31:20,992 basehttp 8124 23076 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24187
+WARNING 2025-08-25 07:31:21,198 log 8124 23356 Not Found: /favicon.ico
+WARNING 2025-08-25 07:31:21,199 basehttp 8124 23356 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-08-25 07:31:24,248 basehttp 8124 14396 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 28050
+INFO 2025-08-25 07:31:26,178 basehttp 8124 14396 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+INFO 2025-08-25 07:31:26,309 basehttp 8124 14396 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+WARNING 2025-08-25 07:31:46,061 log 8124 14396 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-25 07:31:46,062 basehttp 8124 14396 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-25 07:31:46,212 basehttp 8124 14396 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-08-25 07:31:46,217 basehttp 8124 20472 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-08-25 07:31:46,305 basehttp 8124 20472 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-08-25 07:34:06,547 autoreload 8124 22732 C:\SIGHU\sighu\sistema-gestion-empleados\apps\training\views.py changed, reloading.
+INFO 2025-08-25 07:34:07,193 autoreload 23596 24516 Watching for file changes with StatReloader
+INFO 2025-08-25 07:34:15,096 basehttp 23596 22496 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:34:15,297 basehttp 23596 13552 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 32767
+WARNING 2025-08-25 07:34:15,346 log 23596 13552 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-25 07:34:15,347 basehttp 23596 13552 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-25 07:34:15,617 basehttp 23596 13552 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138
+WARNING 2025-08-25 07:53:07,957 log 23596 19060 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-25 07:53:07,957 basehttp 23596 19060 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-25 07:58:15,033 basehttp 23596 7380 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:58:15,075 basehttp 23596 7380 "POST /capacitaciones/contenido/411e94be-4fb2-4278-81d5-1c37ae43018d/completar/ HTTP/1.1" 200 193
+INFO 2025-08-25 07:58:15,116 basehttp 23596 6452 "GET /capacitaciones/player/ae1a339b-272b-4fe9-a789-e5356168e16a/ HTTP/1.1" 200 30661
+INFO 2025-08-25 07:58:15,148 basehttp 23596 7380 - Broken pipe from ('127.0.0.1', 53662)
+WARNING 2025-08-25 07:58:15,200 log 23596 6452 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-25 07:58:15,200 basehttp 23596 6452 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-08-25 07:58:15,430 basehttp 23596 6452 "GET /capacitaciones/media-pdf/capacitaciones/contenido/Bitacora_1.pdf/ HTTP/1.1" 200 1007138

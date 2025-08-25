@@ -54,7 +54,7 @@
                         <h3 class="mb-0">{{ empleados_activos|default:0 }}</h3>
                         <small class="opacity-75">
                             {% if total_empleados > 0 %}
-                                {{ empleados_activos|default:0|floatformat:0 }}% del total
+                                {{ porcentaje_activos|default:0 }}% del total
                             {% else %}
                                 0% del total
                             {% endif %}

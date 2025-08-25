@@ -5,7 +5,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 from . import views
-from .views import MisCertificadosView
+from .views import MisCertificadosView, PlayerPreviewView
 from .views_pdf import PDFMediaView
  # PDF seguro con CORS
 
@@ -20,6 +20,9 @@ urlpatterns = [
     path('capacitacion/<uuid:pk>/', views.CapacitacionDetailView.as_view(), name='capacitacion_detail'),
     path('capacitacion/<uuid:pk>/inscribir/', views.inscribir_capacitacion, name='inscribir_capacitacion'),  # pk en lugar de capacitacion_id
     path('admin/', views.CapacitacionListView.as_view(), name='capacitacion_list'),
+
+    # Vista previa solo lectura para admin
+    path('player-preview/<uuid:pk>/', PlayerPreviewView.as_view(), name='player_preview'),
     
     # Capacitaciones
     # path('list/', views.CapacitacionListView.as_view(), name='capacitacion_list'),

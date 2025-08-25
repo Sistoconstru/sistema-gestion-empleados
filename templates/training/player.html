@@ -66,7 +66,6 @@
 }
 .video-container {
     position: relative;
-    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
 }
@@ -85,8 +84,6 @@
     right: 0;
     bottom: 0;
     background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
     justify-content: center;
     color: white;
     font-size: 1.2rem;
@@ -146,29 +143,29 @@
                         <i class="fas fa-graduation-cap me-2"></i>
                         {{ object.capacitacion.nombre }}
                     </h5>
-                    
-                    {% for modulo in object.capacitacion.modulocapacitacion_set.all %}
-                        {% with modulo_info=modulos_evaluacion|get_item:modulo.id modulo_completado=modulo.esta_completado %}
-                            <div class="module-header {% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito.esta_completado %}locked{% endif %}">
+                    {% for modulo in modulos_limpios %}
+                        {% with modulo_info=modulos_evaluacion|get_item:modulo.obj.id modulo_completado=modulo.obj.esta_completado %}
+                            <div class="module-header {% if not modulo_completado and modulo.obj.modulo_prerequisito and not modulo.obj.modulo_prerequisito.esta_completado %}locked{% endif %}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0">
-                                        <i class="fas {% include 'training/partials/_modulo_header.html' %} me-2"></i>
-                                        {{ modulo.nombre }}
+                                        <i class="fas {% include 'training/partials/_modulo_header.html' with modulo=modulo.obj %} me-2"></i>
+                                        {{ modulo.obj.nombre }}
                                     </h6>
                                     <div class="d-flex align-items-center">
-                                        {% include 'training/partials/_modulo_time.html' %}
+                                        {% include 'training/partials/_modulo_time.html' with modulo=modulo.obj %}
                                     </div>
                                 </div>
                                 <div class="module-progress">
-                                    <div class="module-progress-bar" style="width: {{ modulo.get_progreso_porcentaje }}%"></div>
+                                    <div class="module-progress-bar" style="width: {{ modulo.obj.get_progreso_porcentaje }}%"></div>
                                 </div>
                             </div>
-                            
                             <div class="mb-4">
-                                {% for leccion in modulo.leccion_set.all %}
-                                    {% for contenido in leccion.contenidoleccion_set.all %}
-                                        {% include 'training/partials/_leccion_item.html' %}
-                                    {% endfor %}
+                                {% for leccion in modulo.lecciones %}
+                                    {% with leccion_obj=leccion.obj %}
+                                        {% for contenido in leccion.contenidos %}
+                                            {% include 'training/partials/_leccion_item.html' with modulo=modulo.obj leccion=leccion_obj contenido=contenido %}
+                                        {% endfor %}
+                                    {% endwith %}
                                 {% endfor %}
                             </div>
                         {% endwith %}
@@ -244,7 +241,8 @@
                         {% endif %}
                     </div>
                     
-                    <!-- Controles de navegación -->
+                    <!-- Controles de navegación (ocultos en solo_lectura) -->
+                    {% if not solo_lectura %}
                     <div class="mt-4 d-flex justify-content-between align-items-center py-3 border-top">
                         <!-- Botón Anterior -->
                         {% if contenido_anterior %}
@@ -259,7 +257,6 @@
                                 Anterior
                             </div>
                         {% endif %}
-                        
                         <!-- Botón de Acción Principal -->
                         <div class="d-flex gap-2">
                             {% if not progreso_actual.completado %}
@@ -269,7 +266,6 @@
                                 </button>
                             {% endif %}
                         </div>
-                        
                         <!-- Botón Siguiente -->
                         <div>
                             {% if contenido_siguiente and not evaluacion_pendiente %}
@@ -297,6 +293,7 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                     {% endif %}
                 {% endif %}
             </div>

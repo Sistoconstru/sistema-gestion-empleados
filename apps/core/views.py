@@ -57,24 +57,24 @@ def dashboard_view(request):
         # Total real de empleados (incluyendo todos los estados)
         context['total_empleados'] = Empleado.objects.count()
         
-        # Empleados activos - verificar si existe el estado
+        # Empleados activos - ahora usando el código correcto 'activo'
         try:
-            estado_activo = EstadoEmpleado.objects.get(codigo='999')  # Activo
+            estado_activo = EstadoEmpleado.objects.get(codigo__iexact='activo')  # Activo
             context['empleados_activos'] = Empleado.objects.filter(
                 estado=estado_activo
             ).count()
         except EstadoEmpleado.DoesNotExist:
-            logger.warning("Estado código '999' (Activo) no encontrado en la base de datos")
+            logger.warning("Estado código 'activo' no encontrado en la base de datos")
             context['empleados_activos'] = 0
-        
-        # Empleados en período de prueba - verificar si existe el estado
+
+        # Empleados en período de prueba - ahora usando el código correcto 'periodo_prueba'
         try:
-            estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')  # Periodo de prueba
+            estado_prueba = EstadoEmpleado.objects.get(codigo__iexact='periodo_prueba')  # Periodo de prueba
             context['empleados_prueba'] = Empleado.objects.filter(
                 estado=estado_prueba
             ).count()
         except EstadoEmpleado.DoesNotExist:
-            logger.warning("Estado código 'p-prue' (Periodo de prueba) no encontrado en la base de datos")
+            logger.warning("Estado código 'periodo_prueba' no encontrado en la base de datos")
             context['empleados_prueba'] = 0
         
         # Nuevos empleados este mes

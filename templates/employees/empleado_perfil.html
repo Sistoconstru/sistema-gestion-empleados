@@ -64,7 +64,7 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
-                <div class="circular-progress mb-2" data-percentage="{{ documentos.progreso }}">
+                <div class="circular-progress mb-2" data-percentage="{{ documentos.progreso }}" style="--circle-bg:#f3f4f6;">
                     <div class="fs-4 fw-bold text-{% if documentos.progreso >= 80 %}success{% elif documentos.progreso >= 50 %}warning{% else %}danger{% endif %}">
                         {{ documentos.progreso }}%
                     </div>
@@ -558,6 +558,14 @@
     background: #f8f9fa;
 }
 
+.circular-progress .fs-4 {
+    font-size: 1.1rem !important;
+    padding: 0.2em 0.4em;
+    background: transparent;
+    z-index: 2;
+}
+}
+
 .info-item {
     display: flex;
     justify-content: space-between;
@@ -584,27 +592,29 @@ $(document).ready(function() {
     $('.circular-progress').each(function() {
         var $this = $(this);
         var percentage = $this.data('percentage');
-        
+        var circleBg = $this.css('--circle-bg') || '#e9ecef';
+        // Color de progreso más suave según porcentaje
+        var progressColor = '#22c55e'; // verde por defecto
+        if (percentage < 50) progressColor = '#ef4444'; // rojo
+        else if (percentage < 80) progressColor = '#facc15'; // amarillo
         // Crear círculo SVG
         var size = 60;
         var strokeWidth = 4;
         var radius = (size - strokeWidth) / 2;
         var circumference = radius * 2 * Math.PI;
-        
         var svg = `
             <svg width="${size}" height="${size}" style="position: absolute; top: 0; left: 0;">
-                <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
-                        stroke="#e9ecef" stroke-width="${strokeWidth}" 
-                        fill="transparent" />
-                <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
-                        stroke="currentColor" stroke-width="${strokeWidth}" 
-                        fill="transparent" stroke-dasharray="${circumference}" 
-                        stroke-dashoffset="${circumference - (percentage / 100) * circumference}"
-                        stroke-linecap="round"
-                        transform="rotate(-90 ${size/2} ${size/2})" />
+            <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
+                stroke="${circleBg}" stroke-width="${strokeWidth}" 
+                fill="transparent" />
+            <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
+                stroke="${progressColor}" stroke-width="${strokeWidth}" 
+                fill="transparent" stroke-dasharray="${circumference}" 
+                stroke-dashoffset="${circumference - (percentage / 100) * circumference}"
+                stroke-linecap="round"
+                transform="rotate(-90 ${size/2} ${size/2})" />
             </svg>
         `;
-        
         $this.prepend(svg);
     });
     

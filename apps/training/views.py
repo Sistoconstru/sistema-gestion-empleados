@@ -1,3 +1,5 @@
+# ...imports...
+
 # apps/training/views.py
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -10,7 +12,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
 from django.db import transaction
 from django.utils.safestring import mark_safe
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg, Sum
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import date, timedelta
@@ -25,6 +27,47 @@ from .forms import CapacitacionForm #InscripcionCapacitacionForm
 from apps.employees.models import Empleado
 
 logger = logging.getLogger(__name__)
+
+class PlayerPreviewView(LoginRequiredMixin, TemplateView):
+    template_name = 'training/player.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Solo admins/staff pueden acceder
+        if not self.request.user.is_staff:
+            context['object'] = None
+            context['mensaje_error'] = 'No autorizado'
+            return context
+
+        # Obtener la capacitación y simular inscripción
+        from .models import Capacitacion, ContenidoLeccion
+        capacitacion = get_object_or_404(Capacitacion, id=self.kwargs['pk'])
+        # Simular un objeto de inscripción solo para mostrar la estructura
+        class FakeInscripcion:
+            def __init__(self, capacitacion):
+                self.capacitacion = capacitacion
+                self.pk = capacitacion.pk
+        inscripcion = FakeInscripcion(capacitacion)
+        context['object'] = inscripcion
+
+        # Buscar el primer contenido disponible
+        contenido_actual = ContenidoLeccion.objects.filter(
+            leccion__modulo__capacitacion=capacitacion,
+            leccion__modulo__activo=True
+        ).select_related(
+            'leccion', 'leccion__modulo', 'tipo_contenido'
+        ).first()
+        context['contenido_actual'] = contenido_actual
+
+        # Simular progreso y navegación
+        context['progreso_actual'] = type('FakeProgreso', (), {'puede_ver': True, 'completado': False})()
+        context['contenido_anterior'] = None
+        context['contenido_siguiente'] = None
+        context['contenidos_completados'] = []
+        context['evaluacion_pendiente'] = False
+        context['modulos_evaluacion'] = {}
+        context['solo_lectura'] = True
+        return context
 
 class CapacitacionListView(LoginRequiredMixin, ListView):
     """Vista para administradores - gestión de capacitaciones"""
@@ -55,6 +98,14 @@ class CapacitacionListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Agregar tipos de capacitación para filtros
         context['tipos'] = TipoCapacitacion.objects.all()
+
+        # Estadísticas rápidas
+        context['total_capacitaciones'] = Capacitacion.objects.count()
+        context['total_obligatorias'] = Capacitacion.objects.filter(tipo__codigo='OBLIGATORIA').count()
+        from apps.employees.models import Empleado
+        context['total_empleados'] = Empleado.objects.count()
+        context['total_horas'] = Capacitacion.objects.aggregate(total_horas=Sum('duracion_estimada_horas'))['total_horas'] or 0
+
         return context
 
 class CatalogoCapacitacionesView(LoginRequiredMixin, ListView):
@@ -887,6 +938,31 @@ class PlayerView(LoginRequiredMixin, TemplateView):
             return context
         
         context['object'] = inscripcion
+        # Asegurar que el contexto tenga los módulos filtrados y ordenados para el sidebar
+        # Estructura limpia de módulos, lecciones activas y contenidos únicos y ordenados
+        modulos_limpios = []
+        modulos_queryset = inscripcion.capacitacion.modulocapacitacion_set.filter(activo=True).order_by('orden')
+        for modulo in modulos_queryset:
+            lecciones_limpias = []
+            lecciones_queryset = modulo.leccion_set.filter(activa=True).order_by('orden')
+            for leccion in lecciones_queryset:
+                contenidos_queryset = leccion.contenidoleccion_set.all().order_by('orden')
+                contenidos_unicos = []
+                vistos = set()
+                for c in contenidos_queryset:
+                    clave = (c.nombre, c.orden)
+                    if clave not in vistos:
+                        contenidos_unicos.append(c)
+                        vistos.add(clave)
+                lecciones_limpias.append({
+                    'obj': leccion,
+                    'contenidos': contenidos_unicos
+                })
+            modulos_limpios.append({
+                'obj': modulo,
+                'lecciones': lecciones_limpias
+            })
+        context['modulos_limpios'] = modulos_limpios
         
         try:
             # Obtener el contenido actual o el primero disponible
