@@ -1,0 +1,44 @@
+:root {
+  --color-verde: #1b4d3e;      /* Verde corporativo */
+  --color-amarillo: #ffd600;   /* Amarillo corporativo */
+  --color-blanco: #ffffff;     /* Blanco */
+  --color-gris-claro: #f8fafc; /* Gris claro de fondo */
+  --color-negro: #222222;      /* Negro/gris oscuro */
+
+  /* Bootstrap override */
+  --bs-primary: var(--color-verde);
+  --bs-success: var(--color-verde);
+  --bs-warning: var(--color-amarillo);
+  --bs-light: var(--color-gris-claro);
+  --bs-dark: var(--color-negro);
+}
+
+.bg-corporativo {
+  background: var(--color-verde) !important;
+  color: var(--color-blanco) !important;
+}
+
+.btn-corporativo {
+  background: var(--color-verde) !important;
+  color: var(--color-blanco) !important;
+  border-color: var(--color-verde) !important;
+}
+
+.btn-corporativo:hover {
+  background: var(--color-amarillo) !important;
+  color: var(--color-verde) !important;
+  border-color: var(--color-amarillo) !important;
+}
+
+.text-corporativo {
+  color: var(--color-verde) !important;
+}
+
+.text-amarillo {
+  color: var(--color-amarillo) !important;
+}
+
+.bg-amarillo {
+  background: var(--color-amarillo) !important;
+  color: var(--color-verde) !important;
+}
