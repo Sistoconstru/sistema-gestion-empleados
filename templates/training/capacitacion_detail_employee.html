@@ -14,7 +14,7 @@
     <div class="col-md-8">
         <!-- Información Principal -->
         <div class="card mb-4">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card-header bg-corporativo text-white d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0">
                     <i class="fas {% if capacitacion.es_externa %}fa-external-link-alt{% else %}fa-graduation-cap{% endif %} me-2"></i>
                     {{ capacitacion.nombre }}
@@ -131,13 +131,13 @@
 
                 {% if capacitacion.es_externa %}
                 <div class="d-grid">
-                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-primary">
+                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-corporativo">
                         <i class="fas fa-external-link-alt me-2"></i>Ir al sitio del curso
                     </a>
                 </div>
                 {% else %}
                 <div class="d-grid">
-                    <button class="btn btn-primary" {% if not inscripcion.puede_iniciar %}disabled{% endif %}>
+                    <button class="btn btn-corporativo" {% if not inscripcion.puede_iniciar %}disabled{% endif %}>
                         <i class="fas fa-play me-2"></i>Iniciar Módulo
                     </button>
                 </div>

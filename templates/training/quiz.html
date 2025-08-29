@@ -73,7 +73,7 @@
         <div class="alert alert-success">
             <h4 class="alert-heading">¡Ya has aprobado esta valoración!</h4>
             <p>Puedes ver tus resultados anteriores:</p>
-            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-success">
+            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-corporativo">
                 Ver Resultados
             </a>
         </div>
@@ -81,7 +81,7 @@
         <div class="alert alert-danger">
             <h4 class="alert-heading">Has agotado todos tus intentos</h4>
             <p>Ya no puedes tomar esta valoración. Contacta a tu supervisor.</p>
-            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-primary">
+            <a href="{% url 'training:quiz_resultado' pk=quiz.pk %}" class="btn btn-corporativo">
                 Ver Intentos Anteriores
             </a>
         </div>
@@ -139,7 +139,7 @@
                 {% endfor %}
                 
                 <div class="quiz-footer">
-                    <button type="submit" class="btn btn-primary btn-lg" id="submitQuiz">
+                    <button type="submit" class="btn btn-corporativo btn-lg" id="submitQuiz">
                         Finalizar Valoración
                     </button>
                 </div>
@@ -162,13 +162,26 @@ document.addEventListener('DOMContentLoaded', function() {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
+    .then(async response => {
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            data = {};
+        }
+        if (response.ok && data.status === 'success') {
             intentoId = data.intento_id;
             if (tiempoRestante) {
                 iniciarContador();
             }
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'No puedes realizar la valoración',
+                text: data.message || 'Debes completar la lección antes de realizar la evaluación.'
+            }).then(() => {
+                window.location.href = document.referrer || '/capacitaciones/';
+            });
         }
     });
 
@@ -196,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function guardarRespuesta(preguntaId, opcionId) {
-    fetch(`/training/quiz/intento/${intentoId}/respuesta/`, {
+    fetch(`/capacitaciones/quiz/intento/${intentoId}/respuesta/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -210,7 +223,7 @@ function guardarRespuesta(preguntaId, opcionId) {
 }
 
 function finalizarQuiz() {
-    fetch(`/training/quiz/intento/${intentoId}/finalizar/`, {
+    fetch(`/capacitaciones/quiz/intento/${intentoId}/finalizar/`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -220,7 +233,20 @@ function finalizarQuiz() {
     .then(data => {
         if (data.status === 'success') {
             window.location.href = data.redirect_url;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No se pudo finalizar la valoración',
+                text: data.message || 'Ocurrió un error inesperado. Intenta nuevamente.'
+            });
         }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo conectar con el servidor. Intenta nuevamente.'
+        });
     });
 }
 

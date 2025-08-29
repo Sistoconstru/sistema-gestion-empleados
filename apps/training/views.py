@@ -233,47 +233,89 @@ class QuizView(LoginRequiredMixin, DetailView):
         quiz = self.get_object()
         usuario = self.request.user
 
-        # Verificar si el usuario puede tomar el quiz
-        context['puede_tomar_quiz'] = True  # Implementar lógica de prerequisitos aquí
-        
+        # Lógica de prerequisito: solo permitir tomar el quiz si todos los contenidos de la lección asociada al quiz están completados
+        leccion = quiz.leccion
+        contenidos_leccion = ContenidoLeccion.objects.filter(
+            leccion=leccion,
+            leccion__activa=True
+        )
+        total_contenidos = contenidos_leccion.count()
+        empleado = getattr(usuario, 'empleado', None)
+        puede_tomar_quiz = False
+        mensaje_prerrequisito = ''
+        if not empleado:
+            mensaje_prerrequisito = 'No se encontró el empleado asociado a este usuario.'
+        else:
+            inscripcion = InscripcionCapacitacion.objects.filter(empleado=empleado, capacitacion=leccion.modulo.capacitacion).first()
+            if not inscripcion:
+                mensaje_prerrequisito = 'No tienes inscripción activa en esta capacitación.'
+            else:
+                completados = ProgresoCapacitacion.objects.filter(
+                    inscripcion=inscripcion,
+                    contenido__leccion=leccion,
+                    completado=True
+                ).count()
+                puede_tomar_quiz = (completados == total_contenidos and total_contenidos > 0)
+                if not puede_tomar_quiz:
+                    mensaje_prerrequisito = 'Debes completar todos los contenidos de la lección antes de realizar la evaluación.'
+        context['puede_tomar_quiz'] = puede_tomar_quiz
+        context['mensaje_prerrequisito'] = mensaje_prerrequisito
+
         # Obtener intentos previos
         context['intentos_previos'] = IntentoQuiz.objects.filter(
             quiz=quiz,
             usuario=usuario
         ).order_by('-fecha_inicio')
-        
+
         # Verificar si quedan intentos disponibles
         intentos_realizados = context['intentos_previos'].count()
         context['intentos_restantes'] = quiz.intentos_maximos - intentos_realizados if quiz.intentos_maximos > 0 else None
-        
+
         # Verificar si ya aprobó
         context['ya_aprobo'] = context['intentos_previos'].filter(aprobado=True).exists()
-        
+
         # Obtener todas las preguntas con sus opciones
         context['preguntas'] = quiz.preguntas.prefetch_related('opciones').all()
-        
+
         return context
 
     def post(self, request, *args, **kwargs):
         """Procesar inicio de intento de quiz"""
         quiz = self.get_object()
-        
+        usuario = request.user
+        leccion = quiz.leccion
+        empleado = getattr(usuario, 'empleado', None)
+        puede_tomar = False
+        if empleado:
+            inscripcion = InscripcionCapacitacion.objects.filter(empleado=empleado, capacitacion=leccion.modulo.capacitacion).first()
+            if inscripcion:
+                # Solo verificar que los contenidos estén completados, no la evaluación
+                contenidos_leccion = ContenidoLeccion.objects.filter(leccion=leccion, leccion__activa=True)
+                total_contenidos = contenidos_leccion.count()
+                completados = ProgresoCapacitacion.objects.filter(
+                    inscripcion=inscripcion,
+                    contenido__leccion=leccion,
+                    completado=True
+                ).count()
+                puede_tomar = (completados == total_contenidos and total_contenidos > 0)
+        if not puede_tomar:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Debes completar todos los contenidos de la lección antes de realizar la evaluación.'
+            }, status=403)
         # Verificar si puede iniciar un nuevo intento
         intentos_previos = IntentoQuiz.objects.filter(
             quiz=quiz,
-            usuario=request.user
+            usuario=usuario
         ).count()
-        
         if quiz.intentos_maximos > 0 and intentos_previos >= quiz.intentos_maximos:
             messages.error(request, 'Has alcanzado el número máximo de intentos permitidos.')
             return redirect('training:quiz_resultado', pk=quiz.pk)
-        
         # Crear nuevo intento
         intento = IntentoQuiz.objects.create(
             quiz=quiz,
-            usuario=request.user
+            usuario=usuario
         )
-        
         return JsonResponse({
             'status': 'success',
             'intento_id': intento.id
@@ -350,7 +392,30 @@ def finalizar_quiz(request, intento_id):
             intento.tiempo_utilizado = (intento.fecha_fin - intento.fecha_inicio).seconds
             intento.aprobado = puntaje >= intento.quiz.porcentaje_aprobacion
             intento.save()
-            
+
+            # Si el quiz fue aprobado, marcar la lección como completada en ProgresoCapacitacion
+            if intento.aprobado:
+                leccion = intento.quiz.leccion
+                empleado = getattr(request.user, 'empleado', None)
+                if empleado:
+                    inscripcion = InscripcionCapacitacion.objects.filter(empleado=empleado, capacitacion=leccion.modulo.capacitacion).first()
+                    if inscripcion:
+                        # Marcar todos los contenidos de la lección como completados
+                        contenidos = ContenidoLeccion.objects.filter(leccion=leccion)
+                        for contenido in contenidos:
+                            progreso, _ = ProgresoCapacitacion.objects.get_or_create(inscripcion=inscripcion, contenido=contenido)
+                            if not progreso.completado:
+                                progreso.completado = True
+                                progreso.fecha_completado = timezone.now()
+                                progreso.save()
+                        # Si la lección es la única del módulo y está aprobada, marcar el módulo como completado
+                        modulo = leccion.modulo
+                        lecciones_modulo = modulo.leccion_set.filter(activa=True)
+                        todas_completadas = all(l.esta_completada(inscripcion) for l in lecciones_modulo)
+                        if todas_completadas:
+                            # Aquí podrías actualizar un campo de progreso de módulo si existe, o simplemente permitir el acceso inmediato al siguiente módulo
+                            pass  # Si tienes un modelo de progreso de módulo, actualízalo aquí
+
             return JsonResponse({
                 'status': 'success',
                 'redirect_url': reverse_lazy('training:quiz_resultado', kwargs={'pk': intento.quiz.pk})
@@ -373,24 +438,38 @@ class QuizResultadoView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         quiz = self.get_object()
         usuario = self.request.user
-        
+
         # Obtener todos los intentos del usuario
         intentos = IntentoQuiz.objects.filter(
             quiz=quiz,
             usuario=usuario
         ).order_by('-fecha_inicio')
-        
+
         context['intentos'] = intentos
-        
+
+        mejor_intento = None
         if intentos.exists():
-            ultimo_intento = intentos.first()
-            context['ultimo_intento'] = ultimo_intento
-            
-            # Obtener detalles de respuestas del último intento
+            # Buscar el intento con mayor puntaje
+            mejor_intento = max(intentos, key=lambda i: i.puntaje_obtenido or 0)
+            context['mejor_intento'] = mejor_intento
+            # Obtener detalles de respuestas del mejor intento
             context['respuestas'] = RespuestaQuiz.objects.filter(
-                intento=ultimo_intento
+                intento=mejor_intento
             ).select_related('pregunta', 'opcion_seleccionada')
-        
+
+        # Agregar la inscripción del usuario para la capacitación de la lección
+        from apps.employees.models import Empleado
+        from .models import InscripcionCapacitacion
+        try:
+            empleado = Empleado.objects.get(usuario=usuario)
+            inscripcion = InscripcionCapacitacion.objects.get(
+                empleado=empleado,
+                capacitacion=quiz.leccion.modulo.capacitacion
+            )
+            context['inscripcion'] = inscripcion
+        except Exception:
+            context['inscripcion'] = None
+
         return context
         
         if not capacitacion.activa:
@@ -954,9 +1033,12 @@ class PlayerView(LoginRequiredMixin, TemplateView):
                     if clave not in vistos:
                         contenidos_unicos.append(c)
                         vistos.add(clave)
+                # Determinar si la lección está bloqueada para esta inscripción
+                bloqueada = leccion.esta_bloqueada_por_prerequisito(inscripcion)
                 lecciones_limpias.append({
                     'obj': leccion,
-                    'contenidos': contenidos_unicos
+                    'contenidos': contenidos_unicos,
+                    'bloqueada': bloqueada
                 })
             modulos_limpios.append({
                 'obj': modulo,
@@ -1211,62 +1293,99 @@ def completar_contenido(request, pk):
                 aprobado=True
             ).exists()
         
-        # Contar contenidos y completados en el módulo
+
+        # Contar contenidos y completados en el módulo (incluye caso de solo una lección)
         total_contenidos = ContenidoLeccion.objects.filter(
-            leccion__modulo=modulo_actual
+            leccion__modulo=modulo_actual,
+            leccion__activa=True
         ).count()
-        
         contenidos_completados = ProgresoCapacitacion.objects.filter(
             inscripcion=inscripcion,
             contenido__leccion__modulo=modulo_actual,
             completado=True
         ).count()
-        
-        # Actualizar estado de inscripción
+
+
+        # Refuerzo: Verificar y actualizar estado de inscripción y progreso
         if inscripcion.estado == 'no_iniciado':
             inscripcion.estado = 'en_progreso'
             inscripcion.fecha_inicio = timezone.now()
-            
+
         # Verificar si el módulo y la lección están activos antes de marcar como completado
         if not contenido.leccion.activa:
             return JsonResponse({
                 'success': False,
                 'message': 'La lección no está activa actualmente'
             }, status=400)
-            
+
         if not contenido.leccion.modulo.activo:
             return JsonResponse({
                 'success': False,
                 'message': 'El módulo no está activo actualmente'
             }, status=400)
-        
+
+        # Marcar progreso como completado si no lo está
+        if not progreso.completado:
+            progreso.completado = True
+            progreso.save()
+
         # Calcular porcentaje total completado
         total_contenidos_capacitacion = ContenidoLeccion.objects.filter(
             leccion__modulo__capacitacion=inscripcion.capacitacion,
             leccion__modulo__activo=True,
             leccion__activa=True
         ).count()
-        
         contenidos_completados_capacitacion = ProgresoCapacitacion.objects.filter(
             inscripcion=inscripcion,
             completado=True
         ).count()
-        
+
         inscripcion.porcentaje_completado = (contenidos_completados_capacitacion * 100) // total_contenidos_capacitacion
+
+        # Si es la última lección (o única) y todos los contenidos están completos, pasar a 'aprobado'
+        if contenidos_completados_capacitacion == total_contenidos_capacitacion and total_contenidos_capacitacion > 0:
+            inscripcion.estado = 'aprobado'
         inscripcion.save()
-        
+
+        # Si es la última lección (o única) y todos los contenidos están completos, habilitar evaluación
+        puede_valorar_modulo = (contenidos_completados == total_contenidos and total_contenidos > 0)
+
+        # Determinar la URL del siguiente contenido (si existe)
+        siguiente_contenido = None
+        # Buscar el siguiente contenido de la lección actual en el módulo
+        contenidos_modulo = list(ContenidoLeccion.objects.filter(
+            leccion__modulo=modulo_actual,
+            leccion__activa=True
+        ).select_related('leccion').order_by('leccion__orden', 'orden'))
+        try:
+            idx = contenidos_modulo.index(contenido)
+            if idx < len(contenidos_modulo) - 1:
+                siguiente_contenido = contenidos_modulo[idx + 1]
+        except ValueError:
+            siguiente_contenido = None
+
+        siguiente_contenido_url = None
+        if siguiente_contenido and getattr(siguiente_contenido, 'pk', None):
+            from django.urls import reverse
+            siguiente_contenido_url = reverse('training:player', kwargs={'pk': str(inscripcion.pk)}) + f'?contenido={siguiente_contenido.pk}'
+        # Si no hay siguiente contenido, asegurar que sea None
+        if not siguiente_contenido_url:
+            siguiente_contenido_url = None
+
         # Preparar respuesta
         response_data = {
             'success': True,
             'completado': progreso.completado,
             'progreso_leccion': (contenidos_completados_leccion * 100) // total_contenidos_leccion,
-            'progreso_modulo': (contenidos_completados * 100) // total_contenidos,
+            'progreso_modulo': (contenidos_completados * 100) // total_contenidos if total_contenidos > 0 else 100,
             'progreso_total': inscripcion.porcentaje_completado,
             'leccion_completada': leccion_completada,
             'evaluacion_pendiente': necesita_evaluacion and not evaluacion_aprobada,
-            'puede_continuar': leccion_completada
+            'puede_continuar': leccion_completada,
+            'puede_valorar_modulo': puede_valorar_modulo,
+            'siguiente_contenido': siguiente_contenido_url
         }
-        
+
         return JsonResponse(response_data)
         
     except Exception as e:

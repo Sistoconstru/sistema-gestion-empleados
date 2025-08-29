@@ -19,7 +19,7 @@
     </div>
     <div>
         {% if perms.training.add_capacitacion %}
-        <a href="{% url 'admin:training_capacitacion_add' %}" class="btn btn-primary">
+    <a href="{% url 'admin:training_capacitacion_add' %}" class="btn btn-corporativo">
             <i class="fas fa-plus me-1"></i>
             Nueva Capacitación
         </a>
@@ -30,7 +30,7 @@
 <!-- Estadísticas Rápidas -->
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card bg-primary text-white">
+    <div class="card bg-corporativo text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -47,7 +47,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-success text-white">
+    <div class="card bg-corporativo text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -64,7 +64,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-warning text-white">
+    <div class="card bg-amarillo text-corporativo">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -147,7 +147,7 @@
                         <td>{{ capacitacion.get_duracion_display }}</td>
                         <td>
                             {% if capacitacion.activa %}
-                            <span class="badge bg-success">Activa</span>
+                            <span class="badge bg-corporativo">Activa</span>
                             {% else %}
                             <span class="badge bg-danger">Inactiva</span>
                             {% endif %}
@@ -161,7 +161,7 @@
                         <td>
                             <div class="btn-group">
                                 <a href="{% url 'admin:training_capacitacion_change' capacitacion.id %}" 
-                                   class="btn btn-sm btn-outline-primary"
+                                   class="btn btn-sm btn-outline-corporativo"
                                    data-bs-toggle="tooltip" 
                                     title="Editar">
                                     <i class="fas fa-edit"></i>
@@ -249,7 +249,7 @@
                     </div>
                     
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-corporativo">
                             <i class="fas fa-filter me-1"></i>Aplicar Filtros
                         </button>
                     </div>

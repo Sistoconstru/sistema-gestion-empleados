@@ -67,39 +67,39 @@
         <div class="resultado-header">
             <h2>{{ quiz.titulo }}</h2>
             
-            {% if ultimo_intento %}
-                {% if ultimo_intento.aprobado %}
+            {% if mejor_intento %}
+                {% if mejor_intento.aprobado %}
                     <div class="alert alert-success">
                         <h4>¡Felicitaciones! Has aprobado la valoración</h4>
-                        <p class="mb-0">Puntaje obtenido: {{ ultimo_intento.puntaje_obtenido|floatformat:1 }}%</p>
+                        <p class="mb-0">Puntaje obtenido: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</p>
                     </div>
                 {% else %}
                     <div class="alert alert-warning">
                         <h4>No has alcanzado el puntaje mínimo requerido</h4>
-                        <p>Puntaje obtenido: {{ ultimo_intento.puntaje_obtenido|floatformat:1 }}%</p>
+                        <p>Puntaje obtenido: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</p>
                         <p class="mb-0">Puntaje mínimo requerido: {{ quiz.porcentaje_aprobacion }}%</p>
                     </div>
                 {% endif %}
-                
+
                 <div class="resultado-card">
-                    <h4>Detalles del último intento</h4>
+                    <h4>Detalles del mejor intento</h4>
                     <ul class="list-unstyled">
-                        <li>Fecha: {{ ultimo_intento.fecha_inicio|date:"d/m/Y H:i" }}</li>
-                        <li>Duración: {{ ultimo_intento.tiempo_utilizado|default:0|divmod:60|first }} minutos</li>
-                        <li>Respuestas correctas: {{ respuestas|dictsortreversed:"es_correcta"|first }} de {{ respuestas|length }}</li>
+                        <li>Fecha: {{ mejor_intento.fecha_inicio|date:"d/m/Y H:i" }}</li>
+                        <li>Duración: {{ mejor_intento.tiempo_utilizado|default:0 }} segundos</li>
+                        <li>Puntaje: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</li>
                     </ul>
                 </div>
-                
+
                 {% for respuesta in respuestas %}
                 <div class="pregunta-resultado">
                     <h5>{{ forloop.counter }}. {{ respuesta.pregunta.texto }}</h5>
-                    
+
                     {% if respuesta.pregunta.imagen %}
                         <img src="{{ respuesta.pregunta.imagen.url }}" 
                              alt="Imagen de la pregunta" 
                              class="img-fluid mb-3">
                     {% endif %}
-                    
+
                     {% for opcion in respuesta.pregunta.opciones.all %}
                         <div class="opcion-resultado 
                             {% if opcion == respuesta.opcion_seleccionada %}
@@ -113,7 +113,7 @@
                             {% else %}
                                 opcion-neutral
                             {% endif %}">
-                            
+
                             {% if opcion == respuesta.opcion_seleccionada %}
                                 <i class="fas fa-check-circle me-2"></i>
                             {% elif opcion.es_correcta %}
@@ -121,11 +121,11 @@
                             {% else %}
                                 <i class="far fa-circle me-2"></i>
                             {% endif %}
-                            
+
                             {{ opcion.texto }}
                         </div>
                     {% endfor %}
-                    
+
                     {% if respuesta.pregunta.explicacion %}
                         <div class="retroalimentacion">
                             <h6>Explicación:</h6>
@@ -134,7 +134,7 @@
                     {% endif %}
                 </div>
                 {% endfor %}
-                
+
             {% endif %}
             
             {% if intentos|length > 1 %}
@@ -149,12 +149,12 @@
                                     {{ intento.fecha_inicio|date:"d/m/Y H:i" }}
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge {% if intento.aprobado %}bg-success{% else %}bg-danger{% endif %}">
+                                    <span class="badge {% if intento.aprobado %}bg-corporativo{% else %}bg-danger{% endif %}">
                                         {{ intento.puntaje_obtenido|floatformat:1 }}%
                                     </span>
                                     <br>
                                     <small class="text-muted">
-                                        {{ intento.tiempo_utilizado|default:0|divmod:60|first }} minutos
+                                        {{ intento.tiempo_utilizado|default:0 }} segundos
                                     </small>
                                 </div>
                             </div>
@@ -165,14 +165,18 @@
             
             <div class="mt-4">
                 {% if not ultimo_intento.aprobado and quiz.intentos_maximos > intentos|length %}
-                    <a href="{% url 'training:quiz' quiz.pk %}" class="btn btn-primary">
+                    <a href="{% url 'training:quiz' quiz.pk %}" class="btn btn-corporativo">
                         Intentar nuevamente
                     </a>
                 {% endif %}
                 
-                <a href="{% url 'training:player' pk=quiz.leccion.id %}" class="btn btn-secondary">
-                    Volver a la lección
-                </a>
+                {% if inscripcion %}
+                    <a href="{% url 'training:player' pk=inscripcion.id %}" class="btn btn-secondary">
+                        Volver a la capacitación
+                    </a>
+                {% else %}
+                    <a href="#" class="btn btn-secondary disabled">Inscripción no encontrada</a>
+                {% endif %}
             </div>
         </div>
     </div>

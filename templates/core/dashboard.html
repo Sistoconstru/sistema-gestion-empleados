@@ -29,7 +29,7 @@
 <!-- Estadísticas Rápidas -->
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card bg-primary text-white">
+    <div class="card bg-corporativo text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -46,7 +46,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-success text-white">
+    <div class="card bg-corporativo text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -69,7 +69,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-warning text-white">
+    <div class="card bg-amarillo text-corporativo">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -86,7 +86,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-info text-white">
+    <div class="card bg-corporativo text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -115,7 +115,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-primary w-100 py-3">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-corporativo w-100 py-3">
                             <i class="fas fa-users fa-2x d-block mb-2"></i>
                             <strong>Gestionar Empleados</strong>
                             <div class="small text-muted">Ver y administrar</div>
@@ -123,7 +123,7 @@
                     </div>
                     
                     <div class="col-md-4 col-sm-6 mb-3">
-                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-success w-100 py-3">
+                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-corporativo w-100 py-3">
                             <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                             <strong>Nuevo Empleado</strong>
                             <div class="small text-muted">Registrar personal</div>
@@ -131,7 +131,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-info w-100 py-3">
+                        <a href="#" class="btn btn-outline-corporativo w-100 py-3">
                             <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
                             <strong>Reportes</strong>
                             <div class="small text-muted">Análisis y estadísticas</div>
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="col-md-2 col-sm-6 mb-3">
-                        <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-warning w-100 py-3">
+                        <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Capacitaciones</strong>
                             <div class="small text-muted">Gestión y seguimiento</div>
@@ -221,23 +221,23 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span>Base de Datos</span>
-                    <span class="badge bg-success">Conectado</span>
+                        <span class="badge bg-corporativo">Conectado</span>
                 </div>
                 
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span>Empleados Registrados</span>
-                    <span class="badge bg-primary">{{ total_empleados|default:0 }}</span>
+                        <span class="badge bg-corporativo">{{ total_empleados|default:0 }}</span>
                 </div>
                 
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span>Sistema de Archivos</span>
-                    <span class="badge bg-success">Operativo</span>
+                        <span class="badge bg-corporativo">Operativo</span>
                 </div>
                 
                 {% if is_admin_dashboard %}
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span>Permisos Admin</span>
-                    <span class="badge bg-success">Activos</span>
+                        <span class="badge bg-corporativo">Activos</span>
                 </div>
                 {% endif %}
                 
@@ -250,7 +250,7 @@
                 </div>
                 
                 <div class="d-grid mt-3">
-                    <a href="/admin/" class="btn btn-outline-primary btn-sm">
+                    <a href="/admin/" class="btn btn-outline-corporativo btn-sm">
                         <i class="fas fa-cog me-1"></i>
                         Panel de Administración
                     </a>

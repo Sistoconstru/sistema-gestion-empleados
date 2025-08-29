@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Motivo del Rechazo:</strong></p>
-                            <div class="alert alert-warning">
+                            <div class="alert alert-amarillo text-corporativo">
                                 {{ documento.motivo_rechazo }}
                             </div>
                         </div>
@@ -74,8 +74,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end">
-                            <a href="{% url 'documents:documento_view' documento_pk=documento.id %}" class="btn btn-secondary me-2">Cancelar</a>
-                            <button type="submit" class="btn btn-primary">Reemplazar Documento</button>
+                            <a href="{% url 'documents:documento_view' documento_pk=documento.id %}" class="btn btn-outline-gris me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-corporativo">Reemplazar Documento</button>
                         </div>
                     </form>
                 </div>

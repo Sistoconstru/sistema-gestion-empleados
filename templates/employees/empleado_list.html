@@ -12,20 +12,20 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1">
-            <i class="fas fa-users text-primary me-2"></i>
+            <i class="fas fa-users text-corporativo me-2"></i>
             Gestión de Empleados
         </h1>
         <p class="text-muted mb-0">Administra toda la información de los empleados</p>
     </div>
     <div>
         {% if perms.employees.add_empleado %}
-        <a href="{% url 'employees:empleado_create' %}" class="btn btn-primary">
+        <a href="{% url 'employees:empleado_create' %}" class="btn btn-corporativo">
             <i class="fas fa-plus me-1"></i>
             Nuevo Empleado
         </a>
         {% endif %}
         <div class="btn-group ms-2">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+            <button type="button" class="btn btn-outline-corporativo dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="fas fa-download me-1"></i>Exportar
             </button>
             <ul class="dropdown-menu">
@@ -46,13 +46,13 @@
 
 
 <!-- Filtros de Búsqueda -->
-<div class="card mb-4">
-    <div class="card-header">
+<div class="card mb-4 border-corporativo">
+    <div class="card-header bg-corporativo text-white">
         <h5 class="card-title mb-0">
             <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
         </h5>
     </div>
-    <div class="card-body">
+    <div class="card-body bg-gris-claro">
         <form method="GET" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label" for="{{ form.search.id_for_label }}">Buscar</label>

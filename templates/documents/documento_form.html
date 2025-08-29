@@ -18,7 +18,7 @@ templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-corporativo text-white">
                 <h4 class="card-title mb-0">
                     <i class="fas fa-upload me-2"></i>{{ titulo }}
                 </h4>
@@ -29,7 +29,7 @@ templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
                 
                 <div class="card-body">
                     {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
+                    <div class="alert alert-rojo">
                         {{ form.non_field_errors }}
                     </div>
                     {% endif %}
@@ -89,7 +89,7 @@ templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
                     </div>
                     
                     <!-- Información del tipo de documento -->
-                    <div id="document-info" class="alert alert-info" style="display: none;">
+                    <div id="document-info" class="alert alert-azul" style="display: none;">
                         <h6><i class="fas fa-info-circle me-1"></i>Información del Documento</h6>
                         <div id="document-description"></div>
                         <div id="document-formats"></div>
@@ -97,12 +97,12 @@ templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
                     </div>
                 </div>
                 
-                <div class="card-footer bg-light">
+                <div class="card-footer bg-gris-claro">
                     <div class="d-flex justify-content-between">
-                        <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-secondary">
+                        <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-gris">
                             <i class="fas fa-arrow-left me-1"></i>Cancelar
                         </a>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <button type="submit" class="btn btn-corporativo" id="submitBtn">
                             <i class="fas fa-upload me-1"></i>Subir Documento
                         </button>
                     </div>

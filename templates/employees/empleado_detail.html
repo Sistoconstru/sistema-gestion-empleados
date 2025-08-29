@@ -13,12 +13,12 @@
 <!-- Header del Perfil -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="card border-corporativo">
+            <div class="card-body bg-corporativo bg-opacity-75 text-white">
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <div class="d-flex align-items-center">
-                            <div class="avatar-large bg-primary text-white me-4">
+                            <div class="avatar-large bg-corporativo text-white me-4">
                                 {{ empleado.nombres|first }}{{ empleado.apellidos|first }}
                             </div>
                             <div>
@@ -27,9 +27,9 @@
                                     {% with empleado.historialcargo_set.all|first as cargo_actual %}
                                         {% if cargo_actual %}
                                             <span class="fw-bold">{{ cargo_actual.cargo.nombre }}</span>
-                                            <span class="text-muted">• {{ cargo_actual.cargo.area.nombre }}</span>
+                                            <span class="text-white-50">• {{ cargo_actual.cargo.area.nombre }}</span>
                                         {% else %}
-                                            <span class="text-muted">Sin cargo asignado</span>
+                                            <span class="text-white-50">Sin cargo asignado</span>
                                         {% endif %}
                                     {% endwith %}
                                 </p>
@@ -43,12 +43,11 @@
                                     {% else %}
                                         <span class="badge bg-secondary fs-6">{{ empleado.estado.nombre }}</span>
                                     {% endif %}
-                                    
-                                    <span class="text-muted">
+                                    <span class="text-white-50">
                                         <i class="fas fa-calendar me-1"></i>
                                         Ingresó {{ empleado.fecha_ingreso|date:"d/m/Y" }}
                                     </span>
-                                    <span class="text-muted">
+                                    <span class="text-white-50">
                                         <i class="fas fa-clock me-1"></i>
                                         {{ empleado.fecha_ingreso|timesince }} en la empresa
                                     </span>
@@ -58,13 +57,13 @@
                     </div>
                     <div class="col-md-4 text-end">
                         {% if perms.employees.change_empleado %}
-                        <a href="{% url 'employees:empleado_edit' empleado.pk %}" class="btn btn-primary">
+                        <a href="{% url 'employees:empleado_edit' empleado.pk %}" class="btn btn-corporativo">
                             <i class="fas fa-edit me-1"></i>
                             Editar Perfil
                         </a>
                         {% endif %}
                         <div class="btn-group ms-2">
-                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-outline-corporativo dropdown-toggle" data-bs-toggle="dropdown">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -115,8 +114,8 @@
     <!-- Columna Izquierda -->
     <div class="col-md-4">
         <!-- Información de Contacto -->
-        <div class="card mb-4">
-            <div class="card-header">
+        <div class="card mb-4 border-corporativo">
+            <div class="card-header bg-corporativo text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-address-card me-2"></i>
                     Información de Contacto
@@ -160,8 +159,8 @@
         </div>
 
         <!-- Información Personal -->
-        <div class="card mb-4">
-            <div class="card-header">
+        <div class="card mb-4 border-corporativo">
+            <div class="card-header bg-corporativo text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-user me-2"></i>
                     Información Personal
@@ -219,8 +218,8 @@
         </div>
 
         <!-- Estadísticas Rápidas -->
-        <div class="card mb-4">
-            <div class="card-header">
+        <div class="card mb-4 border-corporativo">
+            <div class="card-header bg-corporativo text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-chart-pie me-2"></i>
                     Resumen de Actividad

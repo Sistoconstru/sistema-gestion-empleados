@@ -12,7 +12,7 @@
 <!-- Header del Perfil -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card bg-primary text-white">
+    <div class="card bg-corporativo text-white border-corporativo">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-2 text-center">
@@ -25,9 +25,9 @@
                         <h5 class="mb-2 opacity-75">
                             {% if cargo_actual %}
                                 {{ cargo_actual.cargo.nombre }}
-                                <span class="badge bg-white bg-opacity-25 ms-2">{{ cargo_actual.cargo.area.nombre }}</span>
+                                <span class="badge bg-amarillo bg-opacity-25 ms-2 text-corporativo">{{ cargo_actual.cargo.area.nombre }}</span>
                             {% else %}
-                                <span class="badge bg-warning">Sin cargo asignado</span>
+                                <span class="badge bg-amarillo text-corporativo">Sin cargo asignado</span>
                             {% endif %}
                         </h5>
                         <div class="row text-sm">
@@ -62,10 +62,10 @@
 <!-- Resumen de Estado -->
 <div class="row mb-4">
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
+    <div class="card border-corporativo shadow-sm">
             <div class="card-body text-center">
                 <div class="circular-progress mb-2" data-percentage="{{ documentos.progreso }}" style="--circle-bg:#f3f4f6;">
-                    <div class="fs-4 fw-bold text-{% if documentos.progreso >= 80 %}success{% elif documentos.progreso >= 50 %}warning{% else %}danger{% endif %}">
+                    <div class="fs-4 fw-bold text-{% if documentos.progreso >= 80 %}corporativo{% elif documentos.progreso >= 50 %}amarillo{% else %}rojo{% endif %}">
                         {{ documentos.progreso }}%
                     </div>
                 </div>
@@ -76,10 +76,10 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
+    <div class="card border-corporativo shadow-sm">
             <div class="card-body text-center">
                 <div class="circular-progress mb-2" data-percentage="{{ capacitaciones.progreso }}">
-                    <div class="fs-4 fw-bold text-{% if capacitaciones.progreso >= 80 %}success{% elif capacitaciones.progreso >= 50 %}warning{% else %}danger{% endif %}">
+                    <div class="fs-4 fw-bold text-{% if capacitaciones.progreso >= 80 %}corporativo{% elif capacitaciones.progreso >= 50 %}amarillo{% else %}rojo{% endif %}">
                         {{ capacitaciones.progreso }}%
                     </div>
                 </div>
@@ -90,10 +90,10 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
+    <div class="card border-corporativo shadow-sm">
             <div class="card-body text-center">
                 <div class="mb-2">
-                    <i class="fas fa-clipboard-check fa-3x text-{% if evaluaciones.pendientes == 0 %}success{% elif evaluaciones.vencidas > 0 %}danger{% else %}warning{% endif %}"></i>
+                    <i class="fas fa-clipboard-check fa-3x text-{% if evaluaciones.pendientes == 0 %}corporativo{% elif evaluaciones.vencidas > 0 %}rojo{% else %}amarillo{% endif %}"></i>
                 </div>
                 <h6 class="mb-0">Evaluaciones</h6>
                 <small class="text-muted">
@@ -108,10 +108,10 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
+    <div class="card border-corporativo shadow-sm">
             <div class="card-body text-center">
                 <div class="mb-2">
-                    <i class="fas fa-trophy fa-3x text-warning"></i>
+                    <i class="fas fa-trophy fa-3x text-amarillo"></i>
                 </div>
                 <h6 class="mb-0">Reconocimientos</h6>
                 <small class="text-muted">{{ puntos.insignias }} insignia{{ puntos.insignias|pluralize }}</small>
@@ -124,8 +124,8 @@
 {% if documentos.vencidos > 0 or documentos.por_vencer > 0 or evaluaciones.vencidas > 0 or evaluaciones.proximas > 0 %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-warning">
-            <div class="card-header bg-warning text-dark">
+    <div class="card border-amarillo">
+            <div class="card-header bg-amarillo text-corporativo">
                 <h5 class="mb-0">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     Atención Requerida
@@ -135,7 +135,7 @@
                 <div class="row">
                     {% if documentos.vencidos > 0 %}
                     <div class="col-md-6 mb-2">
-                        <div class="alert alert-danger alert-sm mb-0">
+                        <div class="alert alert-rojo alert-sm mb-0">
                             <i class="fas fa-file-times me-2"></i>
                             <strong>{{ documentos.vencidos }} documento{{ documentos.vencidos|pluralize }}</strong> vencido{{ documentos.vencidos|pluralize }}
                         </div>
@@ -144,7 +144,7 @@
                     
                     {% if documentos.por_vencer > 0 %}
                     <div class="col-md-6 mb-2">
-                        <div class="alert alert-warning alert-sm mb-0">
+                        <div class="alert alert-amarillo alert-sm mb-0 text-corporativo">
                             <i class="fas fa-file-clock me-2"></i>
                             <strong>{{ documentos.por_vencer }} documento{{ documentos.por_vencer|pluralize }}</strong> por vencer
                         </div>
@@ -153,7 +153,7 @@
                     
                     {% if evaluaciones.vencidas > 0 %}
                     <div class="col-md-6 mb-2">
-                        <div class="alert alert-danger alert-sm mb-0">
+                        <div class="alert alert-rojo alert-sm mb-0">
                             <i class="fas fa-clipboard-times me-2"></i>
                             <strong>{{ evaluaciones.vencidas }} evaluación{{ evaluaciones.vencidas|pluralize }}</strong> vencida{{ evaluaciones.vencidas|pluralize }}
                         </div>
@@ -162,7 +162,7 @@
                     
                     {% if evaluaciones.proximas > 0 %}
                     <div class="col-md-6 mb-2">
-                        <div class="alert alert-info alert-sm mb-0">
+                        <div class="alert alert-azul alert-sm mb-0">
                             <i class="fas fa-clipboard-check me-2"></i>
                             <strong>{{ evaluaciones.proximas }} evaluación{{ evaluaciones.proximas|pluralize }}</strong> próxima{{ evaluaciones.proximas|pluralize }}
                         </div>
@@ -187,7 +187,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-outline-primary w-100 py-3">
+                        <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-outline-corporativo w-100 py-3">
                             <i class="fas fa-file-upload fa-2x d-block mb-2"></i>
                             <strong>Mis Documentos</strong>
                             <div class="small text-muted">Subir y gestionar</div>
@@ -195,17 +195,17 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-success w-100 py-3 position-relative">
+                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Mis Capacitaciones</strong>
                             <div class="small text-muted">{{ capacitaciones.completadas }}/{{ capacitaciones.total }} completadas</div>
                             {% if capacitaciones.en_progreso > 0 %}
-                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning">
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-amarillo text-corporativo">
                                     {{ capacitaciones.en_progreso }} en curso
                                 </span>
                             {% endif %}
                             {% if capacitaciones.pendientes_obligatorias > 0 %}
-                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-rojo">
                                     {{ capacitaciones.pendientes_obligatorias }} obligatorias
                                 </span>
                             {% endif %}
@@ -213,7 +213,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:catalogo' %}" class="btn btn-outline-info w-100 py-3">
+                        <a href="{% url 'training:catalogo' %}" class="btn btn-outline-azul w-100 py-3">
                             <i class="fas fa-chalkboard-teacher fa-2x d-block mb-2"></i>
                             <strong>Catálogo</strong>
                             <div class="small text-muted">Capacitaciones disponibles</div>
@@ -221,7 +221,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-warning w-100 py-3">
+                        <a href="#" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
                             <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>
                             <div class="small text-muted">Pendientes y resultados</div>
@@ -229,7 +229,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-info w-100 py-3">
+                        <a href="#" class="btn btn-outline-azul w-100 py-3">
                             <i class="fas fa-trophy fa-2x d-block mb-2"></i>
                             <strong>Mis Logros</strong>
                             <div class="small text-muted">Puntos e insignias</div>
@@ -258,14 +258,14 @@
                 <div class="timeline">
                     {% for actividad in actividades_recientes %}
                     <div class="timeline-item">
-                        <div class="timeline-marker bg-{% if actividad.tipo == 'documento' %}primary{% elif actividad.tipo == 'capacitacion' %}success{% else %}info{% endif %}"></div>
+                        <div class="timeline-marker bg-{% if actividad.tipo == 'documento' %}corporativo{% elif actividad.tipo == 'capacitacion' %}corporativo{% else %}azul{% endif %}"></div>
                         <div class="timeline-content">
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <i class="{{ actividad.icono }} me-2"></i>
                                     <strong>{{ actividad.titulo }}</strong>
                                     {% if actividad.estado %}
-                                        <span class="badge bg-{% if actividad.estado == 'aprobado' or actividad.estado == 'completada' %}success{% elif actividad.estado == 'pendiente' %}warning{% else %}secondary{% endif %} ms-2">
+                                        <span class="badge bg-{% if actividad.estado == 'aprobado' or actividad.estado == 'completada' %}corporativo{% elif actividad.estado == 'pendiente' %}amarillo{% else %}gris{% endif %} ms-2 text-{% if actividad.estado == 'pendiente' %}corporativo{% else %}white{% endif %}">
                                             {{ actividad.estado|capfirst }}
                                         </span>
                                     {% endif %}
@@ -297,7 +297,7 @@
                 {% for inscripcion in capacitaciones.lista_en_progreso %}
                 <div class="d-flex align-items-center border-bottom py-2">
                     <div class="flex-shrink-0">
-                        <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+                        <i class="fas fa-graduation-cap fa-2x text-corporativo"></i>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         <h6 class="mb-1">{{ inscripcion.capacitacion.titulo }}</h6>
@@ -340,15 +340,15 @@
             <div class="card-body">
                 <div class="row text-center mb-3">
                     <div class="col-4">
-                        <div class="text-success fs-5 fw-bold">{{ documentos.aprobados }}</div>
+                        <div class="text-corporativo fs-5 fw-bold">{{ documentos.aprobados }}</div>
                         <small class="text-muted">Aprobados</small>
                     </div>
                     <div class="col-4">
-                        <div class="text-warning fs-5 fw-bold">{{ documentos.pendientes }}</div>
+                        <div class="text-amarillo fs-5 fw-bold">{{ documentos.pendientes }}</div>
                         <small class="text-muted">Pendientes</small>
                     </div>
                     <div class="col-4">
-                        <div class="text-danger fs-5 fw-bold">{{ documentos.faltantes }}</div>
+                        <div class="text-rojo fs-5 fw-bold">{{ documentos.faltantes }}</div>
                         <small class="text-muted">Faltantes</small>
                     </div>
                 </div>
@@ -365,7 +365,7 @@
                 {% endif %}
                 
                 <div class="d-grid">
-                    <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-primary btn-sm">
+                    <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-corporativo btn-sm">
                         Gestionar Documentos
                     </a>
                 </div>
@@ -390,7 +390,7 @@
                         </small>
                     </div>
                     <div class="flex-shrink-0">
-                        <span class="badge bg-warning">{{ evaluacion.fecha_limite|timeuntil }}</span>
+                        <span class="badge bg-amarillo text-corporativo">{{ evaluacion.fecha_limite|timeuntil }}</span>
                     </div>
                 </div>
                 {% endfor %}
@@ -407,30 +407,30 @@
             </div>
             <div class="card-body text-center">
                 <div class="mb-3">
-                    <div class="fs-3 fw-bold text-warning">{{ puntos.total }}</div>
+                    <div class="fs-3 fw-bold text-amarillo">{{ puntos.total }}</div>
                     <div class="text-muted">Puntos totales</div>
                 </div>
                 
                 <div class="row text-center mb-3">
                     <div class="col-6">
-                        <div class="fs-6 fw-bold text-info">{{ puntos.este_mes }}</div>
+                        <div class="fs-6 fw-bold text-azul">{{ puntos.este_mes }}</div>
                         <small class="text-muted">Este mes</small>
                     </div>
                     <div class="col-6">
-                        <div class="fs-6 fw-bold text-success">{{ puntos.insignias }}</div>
+                        <div class="fs-6 fw-bold text-corporativo">{{ puntos.insignias }}</div>
                         <small class="text-muted">Insignias</small>
                     </div>
                 </div>
                 
                 {% if puntos.ranking_posicion %}
-                <div class="alert alert-info alert-sm">
+                <div class="alert alert-azul alert-sm">
                     <i class="fas fa-medal me-1"></i>
                     Posición #{{ puntos.ranking_posicion }} en el ranking
                 </div>
                 {% endif %}
                 
                 <div class="d-grid">
-                    <a href="#" class="btn btn-warning btn-sm">Ver Todos los Logros</a>
+                    <a href="#" class="btn btn-amarillo text-corporativo btn-sm">Ver Todos los Logros</a>
                 </div>
             </div>
         </div>
@@ -457,7 +457,7 @@
                 </div>
                 <div class="info-item">
                     <strong>Estado:</strong>
-                    <span class="badge bg-{% if empleado.estado.codigo == 'ACTIVO' %}success{% elif empleado.estado.codigo == 'PRUEBA' %}warning{% else %}secondary{% endif %}">
+                    <span class="badge bg-{% if empleado.estado.codigo == 'ACTIVO' %}corporativo{% elif empleado.estado.codigo == 'PRUEBA' %}amarillo{% else %}gris{% endif %} text-{% if empleado.estado.codigo == 'PRUEBA' %}corporativo{% else %}white{% endif %}">
                         {{ empleado.estado.nombre }}
                     </span>
                 </div>
@@ -476,7 +476,7 @@
 </div>
 
 {% if docs_faltantes %}
-<div class="alert alert-warning alert-sm">
+<div class="alert alert-amarillo alert-sm text-corporativo">
     <strong>Documentos obligatorios faltantes por subir:</strong>
     <ul class="mb-0 mt-1">
         {% for doc in docs_faltantes %}
@@ -487,7 +487,7 @@
 {% endif %}
 
 {% if docs_opcionales_pendientes %}
-<div class="alert alert-info alert-sm mt-2">
+<div class="alert alert-azul alert-sm mt-2">
     <strong>Documentos opcionales pendientes por subir:</strong>
     <ul class="mb-0 mt-1">
         {% for doc in docs_opcionales_pendientes %}
@@ -581,6 +581,25 @@
 
 .profile-avatar {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+<style>
+/* Mejorar visibilidad de los bordes de botones outline corporativos */
+.btn-outline-corporativo, .btn-outline-amarillo, .btn-outline-azul, .btn-outline-rojo {
+    border-width: 2px !important;
+    box-shadow: none !important;
+}
+.btn-outline-corporativo {
+    border-color: var(--color-corporativo, #004b5e) !important;
+}
+.btn-outline-amarillo {
+    border-color: var(--color-amarillo, #ffd600) !important;
+}
+.btn-outline-azul {
+    border-color: var(--color-azul, #009fe3) !important;
+}
+.btn-outline-rojo {
+    border-color: var(--color-rojo, #e53935) !important;
 }
 </style>
 {% endblock %}

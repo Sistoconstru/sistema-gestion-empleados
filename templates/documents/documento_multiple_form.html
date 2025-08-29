@@ -10,9 +10,7 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
-<li class="breadcrumb-item"><a href="{% url 'employees:empleado_detail' empleado.pk %}">{{ empleado.nombre_completo }}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'documents:empleado_documentos' empleado.pk %}">Documentos</a></li>
+
 <li class="breadcrumb-item active">Subida Múltiple</li>
 {% endblock %}
 
@@ -20,7 +18,7 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
 <div class="row justify-content-center">
     <div class="col-md-10">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-corporativo text-white">
                 <h4 class="card-title mb-0">
                     <i class="fas fa-cloud-upload-alt me-2"></i>{{ titulo }}
                 </h4>
@@ -39,15 +37,15 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                     
                     <!-- Zona de Drag & Drop -->
                     <div class="mb-4">
-                        <div id="dropZone" class="border-2 border-dashed border-primary rounded p-5 text-center mb-3" 
-                             style="min-height: 200px; transition: all 0.3s ease;">
+                    <div id="dropZone" class="border-2 border-dashed border-corporativo rounded p-5 text-center mb-3" 
+                        style="min-height: 200px; transition: all 0.3s ease;">
                             <div id="dropZoneContent">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                <i class="fas fa-cloud-upload-alt fa-3x text-corporativo mb-3"></i>
                                 <h5>Arrastra archivos aquí o haz clic para seleccionar</h5>
                                 <p class="text-muted">Formatos permitidos: PDF, JPG, PNG | Máximo: 5MB por archivo</p>
                                 <input type="file" id="multipleFileInput" multiple style="display: none;" 
                                        accept=".pdf,.jpg,.jpeg,.png">
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('multipleFileInput').click()">
+                                <button type="button" class="btn btn-outline-corporativo" onclick="document.getElementById('multipleFileInput').click()">
                                     <i class="fas fa-folder-open me-1"></i>Seleccionar Archivos
                                 </button>
                             </div>
@@ -77,7 +75,7 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                                                     <strong>{{ field.label }}</strong>
                                                     <div class="text-muted small">{{ field.help_text|slice:":100" }}...</div>
                                                 </div>
-                                                <span class="badge bg-secondary document-status" id="status_{{ doc_code }}">
+                                                <span class="badge bg-gris document-status" id="status_{{ doc_code }}">
                                                     Pendiente
                                                 </span>
                                             </div>
@@ -116,16 +114,16 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                                             
                                             <!-- Preview del archivo -->
                                             <div class="file-preview mt-3" id="preview_{{ doc_code }}" style="display: none;">
-                                                <h6 class="text-success">
+                                                <h6 class="text-corporativo">
                                                     <i class="fas fa-check-circle me-1"></i>Archivo Seleccionado:
                                                 </h6>
-                                                <div class="d-flex align-items-center p-2 bg-light rounded">
-                                                    <i class="fas fa-file fa-2x text-primary me-3"></i>
+                                                <div class="d-flex align-items-center p-2 bg-gris-claro rounded">
+                                                    <i class="fas fa-file fa-2x text-corporativo me-3"></i>
                                                     <div class="flex-grow-1">
                                                         <div class="fw-bold filename"></div>
                                                         <div class="text-muted small filesize"></div>
                                                     </div>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger remove-file">
+                                                    <button type="button" class="btn btn-sm btn-outline-rojo remove-file">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </div>
@@ -151,19 +149,19 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                     </div>
                 </div>
                 
-                <div class="card-footer bg-light">
+                <div class="card-footer bg-gris-claro">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-secondary">
+                            <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-gris">
                                 <i class="fas fa-arrow-left me-1"></i>Cancelar
                             </a>
                         </div>
                         
                         <div class="d-flex align-items-center">
                             <div class="me-3">
-                                <span class="badge bg-info" id="fileCount">0 archivos seleccionados</span>
+                                <span class="badge bg-azul" id="fileCount">0 archivos seleccionados</span>
                             </div>
-                            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                            <button type="submit" class="btn btn-corporativo" id="submitBtn" disabled>
                                 <i class="fas fa-cloud-upload-alt me-1"></i>Subir Todos los Documentos
                             </button>
                         </div>
@@ -174,15 +172,15 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
         
         <!-- Tarjeta de ayuda -->
         <div class="card mt-4">
-            <div class="card-header">
+            <div class="card-header bg-corporativo text-white">
                 <h6 class="card-title mb-0">
                     <i class="fas fa-info-circle me-2"></i>Instrucciones de Uso
                 </h6>
             </div>
-            <div class="card-body">
+            <div class="card-body bg-gris-claro">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="text-primary">📁 Subida de Archivos:</h6>
+                        <h6 class="text-corporativo">📁 Subida de Archivos:</h6>
                         <ul class="small">
                             <li>Arrastra archivos a la zona azul o haz clic para seleccionar</li>
                             <li>Se asignarán automáticamente por nombre (ej: cedula.pdf → Cédula)</li>
@@ -190,7 +188,7 @@ templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & D
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="text-success">✅ Formatos Válidos:</h6>
+                        <h6 class="text-corporativo">✅ Formatos Válidos:</h6>
                         <ul class="small">
                             <li><strong>PDF:</strong> Documentos oficiales, certificados</li>
                             <li><strong>JPG/PNG:</strong> Fotos de documentos, cédulas</li>

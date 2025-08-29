@@ -363,6 +363,24 @@ class CapacitacionCargo(models.Model):
         return prioridades.get(self.prioridad, 'Media')
 
 class ModuloCapacitacion(models.Model):
+    def esta_completado(self, inscripcion=None):
+        """Verifica si el módulo está completado: todas las lecciones obligatorias completadas para la inscripción dada."""
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[Modulo.esta_completado] Módulo: {self.nombre} | Inscripción: {inscripcion}")
+        if not inscripcion:
+            logger.info("[Modulo.esta_completado] Sin inscripción, retorna False")
+            return False
+
+        lecciones = self.leccion_set.filter(activa=True)
+        for leccion in lecciones:
+            completada = leccion.esta_completada(inscripcion=inscripcion)
+            logger.info(f"[Modulo.esta_completado] Lección: {leccion.nombre} | Completada: {completada}")
+            if not completada:
+                logger.info(f"[Modulo.esta_completado] Falta completar lección: {leccion.nombre}")
+                return False
+        logger.info(f"[Modulo.esta_completado] Módulo COMPLETADO: {self.nombre}")
+        return True
     """Módulos de una capacitación - MEJORADO"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     capacitacion = models.ForeignKey(Capacitacion, on_delete=models.CASCADE)
@@ -390,26 +408,30 @@ class ModuloCapacitacion(models.Model):
     activo = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-    def esta_bloqueado_por_prerequisito(self):
-        """Verifica si el módulo está bloqueado por su prerrequisito"""
+    def esta_bloqueado_por_prerequisito(self, inscripcion=None):
+        """Verifica si el módulo está bloqueado por su prerrequisito para una inscripción dada"""
         # Si no tiene prerequisito (es None o está vacío), no está bloqueado
         if self.modulo_prerequisito is None:
             return False
-        
-        # Verificar si el módulo prerrequisito está completado
+
+        # Verificar si el módulo prerequisito está completado para la inscripción
         contenidos_prerequisito = self.modulo_prerequisito.leccion_set.values_list(
             'contenidoleccion__id', flat=True
         ).filter(activa=True)
-        
+
         # Si el prerequisito no tiene contenidos, no está bloqueado
         if not contenidos_prerequisito.exists():
             return False
-            
+
+        if not inscripcion:
+            return True  # Si no se pasa inscripción, se asume bloqueado
+
         contenidos_completados = ProgresoCapacitacion.objects.filter(
+            inscripcion=inscripcion,
             contenido_id__in=contenidos_prerequisito,
             completado=True
         ).count()
-        
+
         # Está bloqueado si no se han completado todos los contenidos del prerequisito
         return contenidos_completados < contenidos_prerequisito.count()
     
@@ -444,47 +466,72 @@ class Leccion(models.Model):
         help_text="Lección que debe completarse antes de esta"
     )
 
-    def esta_bloqueada_por_prerequisito(self):
-        """Verifica si la lección está bloqueada por su prerrequisito"""
+    def esta_bloqueada_por_prerequisito(self, inscripcion=None):
+        """Verifica si la lección está bloqueada por su prerrequisito para una inscripción dada"""
         # Si el módulo está bloqueado, la lección también lo está
-        if self.modulo.esta_bloqueado_por_prerequisito():
+        if self.modulo.esta_bloqueado_por_prerequisito(inscripcion):
             return True
-            
+
         if not self.leccion_prerequisito:
             return False
-            
-        # Verificar si la lección prerequisito está completada y su evaluación aprobada
-        if not self.leccion_prerequisito.esta_completada(None):
+
+        # Verificar si la lección prerequisito está completada y su evaluación aprobada para la inscripción
+        if not self.leccion_prerequisito.esta_completada(inscripcion):
             return True
-            
+
         return False
 
     def esta_completada(self, inscripcion=None):
-        """Verifica si la lección está completada incluyendo su evaluación"""
+        """Verifica si la lección está completada: todos los contenidos obligatorios vistos y todas las valoraciones de los temas aprobadas (si existen)."""
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[esta_completada] Lección: {self.nombre} | Inscripción: {inscripcion}")
         if not inscripcion:
+            logger.info("[esta_completada] Sin inscripción, retorna False")
             return False
-            
-        # Verificar si todos los contenidos están completados
-        contenidos_totales = self.contenidoleccion_set.count()
-        contenidos_completados = ProgresoCapacitacion.objects.filter(
-            inscripcion=inscripcion,
-            contenido__leccion=self,
-            completado=True
-        ).count()
-        
-        if contenidos_totales != contenidos_completados:
-            return False
-            
-        # Verificar si hay evaluación pendiente
-        if hasattr(self, 'evaluacion'):
-            return IntentoQuiz.objects.filter(
-                quiz=self.evaluacion,
-                usuario=inscripcion.empleado.usuario,
-                aprobado=True
+
+        contenidos = self.contenidoleccion_set.filter(obligatorio=True)
+        for contenido in contenidos:
+            progreso = ProgresoCapacitacion.objects.filter(
+                inscripcion=inscripcion,
+                contenido=contenido,
+                completado=True
             ).exists()
-            
-        return contenidos_totales == contenidos_completados  # Si no hay evaluación, solo verifica contenidos completados
-        blank=True
+            logger.info(f"[esta_completada] Contenido: {contenido.nombre} | Completado: {progreso}")
+            if not progreso:
+                logger.info(f"[esta_completada] Falta completar contenido obligatorio: {contenido.nombre}")
+                return False
+
+            # Si el contenido tiene evaluación (quiz), verificar que esté aprobada
+            if hasattr(contenido, 'evaluacion'):
+                quiz = getattr(contenido, 'evaluacion', None)
+                if quiz:
+                    aprobado = IntentoQuiz.objects.filter(
+                        quiz=quiz,
+                        usuario=inscripcion.empleado.usuario,
+                        aprobado=True
+                    ).exists()
+                    logger.info(f"[esta_completada] Contenido: {contenido.nombre} | Quiz: {quiz} | Aprobado: {aprobado}")
+                    if not aprobado:
+                        logger.info(f"[esta_completada] Falta aprobar quiz de contenido: {contenido.nombre}")
+                        return False
+
+        # Si la lección tiene evaluación directa, también debe estar aprobada
+        if hasattr(self, 'evaluacion'):
+            quiz = getattr(self, 'evaluacion', None)
+            if quiz:
+                aprobado = IntentoQuiz.objects.filter(
+                    quiz=quiz,
+                    usuario=inscripcion.empleado.usuario,
+                    aprobado=True
+                ).exists()
+                logger.info(f"[esta_completada] Evaluación directa de lección: {quiz} | Aprobado: {aprobado}")
+                if not aprobado:
+                    logger.info(f"[esta_completada] Falta aprobar evaluación directa de la lección")
+                    return False
+
+        logger.info(f"[esta_completada] Lección COMPLETADA: {self.nombre}")
+        return True
     
     tiempo_minimo_visualizacion = models.IntegerField(
         default=0,
@@ -531,6 +578,9 @@ class TipoContenido(models.Model):
         return self.nombre
 
 class ContenidoLeccion(models.Model):
+    def get_contenido_anterior(self):
+        """Devuelve el contenido anterior en la lección según el campo orden, o None si es el primero."""
+        return self.leccion.contenidoleccion_set.filter(orden__lt=self.orden).order_by('-orden').first()
     """Contenidos de una lección - MEJORADO"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     leccion = models.ForeignKey(Leccion, on_delete=models.CASCADE)

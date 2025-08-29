@@ -129,6 +129,17 @@
     transition: width 0.3s ease;
 }
 </style>
+<style>
+/* Resalta el botón de evaluación si está habilitado */
+.btn-glow {
+    box-shadow: 0 0 10px 2px #ffc107, 0 0 20px 4px #fff3cd;
+    animation: glow 1s infinite alternate;
+}
+@keyframes glow {
+    from { box-shadow: 0 0 10px 2px #ffc107, 0 0 20px 4px #fff3cd; }
+    to { box-shadow: 0 0 20px 6px #ffc107, 0 0 30px 8px #fff3cd; }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -144,8 +155,8 @@
                         {{ object.capacitacion.nombre }}
                     </h5>
                     {% for modulo in modulos_limpios %}
-                        {% with modulo_info=modulos_evaluacion|get_item:modulo.obj.id modulo_completado=modulo.obj.esta_completado %}
-                            <div class="module-header {% if not modulo_completado and modulo.obj.modulo_prerequisito and not modulo.obj.modulo_prerequisito.esta_completado %}locked{% endif %}">
+                        {% with modulo_info=modulos_evaluacion|get_item:modulo.obj.id modulo_completado=modulo.obj|modulo_completado:object %}
+                            <div class="module-header {% if not modulo_completado and modulo.obj.modulo_prerequisito and not modulo.obj.modulo_prerequisito|modulo_completado:object %}locked{% endif %}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0">
                                         <i class="fas {% include 'training/partials/_modulo_header.html' with modulo=modulo.obj %} me-2"></i>
@@ -162,8 +173,9 @@
                             <div class="mb-4">
                                 {% for leccion in modulo.lecciones %}
                                     {% with leccion_obj=leccion.obj %}
+                                        {% include 'training/partials/_sidebar_leccion_header.html' with leccion=leccion leccion_obj=leccion_obj %}
                                         {% for contenido in leccion.contenidos %}
-                                            {% include 'training/partials/_leccion_item.html' with modulo=modulo.obj leccion=leccion_obj contenido=contenido %}
+                                            {% include 'training/partials/_leccion_item.html' with modulo=modulo.obj leccion=leccion_obj contenido=contenido inscripcion=object contenido_actual=contenido_actual %}
                                         {% endfor %}
                                     {% endwith %}
                                 {% endfor %}
@@ -189,9 +201,9 @@
                         <i class="fas fa-exclamation-circle fa-4x mb-3 text-warning"></i>
                         <h3>Acceso no autorizado</h3>
                         <p class="text-muted">No tienes acceso a este contenido o la capacitación no existe</p>
-                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-primary mt-3">
-                            Volver a mis capacitaciones
-                        </a>
+                            <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-corporativo mt-3">
+                                Volver a mis capacitaciones
+                            </a>
                     </div>
                 {% else %}
                     {% if not contenido_actual %}
@@ -203,9 +215,9 @@
                         </div>
                     {% else %}
                     <!-- Encabezado del contenido -->
-                    <div class="mb-4">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
+                    <div class="mb-2" style="padding-bottom: 0.2rem;">
+                        <nav aria-label="breadcrumb" style="margin-bottom: 0.2rem;">
+                            <ol class="breadcrumb" style="margin-bottom: 0.2rem; font-size: 0.95rem;">
                                 <li class="breadcrumb-item">
                                     <i class="fas fa-folder me-1"></i>
                                     {{ contenido_actual.leccion.modulo.nombre }}
@@ -215,21 +227,29 @@
                                 </li>
                             </ol>
                         </nav>
-                        <h3>{{ contenido_actual.nombre }}</h3>
-                        <p class="text-muted">{{ contenido_actual.descripcion }}</p>
+                        <h4 style="margin-bottom: 0.2rem; font-size: 1.15rem;">{{ contenido_actual.nombre }}</h4>
+                        <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.98rem;">{{ contenido_actual.descripcion }}</p>
+                        <!-- Botón SIEMPRE visible, solo se habilita cuando se puede evaluar -->
+                        <div class="mb-2 d-flex justify-content-end">
+                            <a href="{% if contenido_actual.leccion.evaluacion %}{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}{% else %}#{% endif %}"
+                               class="btn btn-amarillo btn-lg fw-bold shadow text-corporativo" id="btnValoracion" style="min-width:180px; opacity:1; pointer-events:auto; font-size:1rem; padding:0.5rem 1.2rem; border-width:2px; border-color:#ffd600;">
+                                <i class="fas fa-tasks me-2"></i>
+                                Realizar Valoración
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Área de contenido -->
                     <div class="content-area">
                         {% if not progreso_actual.puede_ver %}
-                            <div class="alert alert-warning text-center">
+                            <div class="alert alert-amarillo text-corporativo text-center">
                                 <i class="fas fa-lock fa-3x mb-3"></i>
                                 {% if evaluacion_pendiente %}
-                                    <h4>Evaluación Pendiente</h4>
-                                    <p>Debes completar la evaluación de la lección anterior antes de continuar.</p>
-                                    <a href="{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}" class="btn btn-warning mt-3">
+                                    <h4>Valoración Pendiente</h4>
+                                    <p>Debes completar la Valoración de la lección anterior antes de continuar.</p>
+                                    <a href="{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}" class="btn btn-amarillo text-corporativo mt-3" style="border-width:2px;">
                                         <i class="fas fa-tasks me-2"></i>
-                                        Realizar Evaluación
+                                        Realizar Valoración
                                     </a>
                                 {% else %}
                                     <h4>Contenido Bloqueado</h4>
@@ -238,68 +258,81 @@
                             </div>
                         {% else %}
                             {% include 'training/partials/_contenido_reproductor.html' %}
+                            {% if contenido_actual.contenido_texto or not progreso_actual.completado %}
+                            <div class="mt-4">
+                                {% if contenido_actual.contenido_texto %}
+                                    <div class="text-content p-3 bg-gris-claro rounded border mb-3">
+                                        {{ contenido_actual.contenido_texto|safe }}
+                                    </div>
+                                {% endif %}
+                                {% if not progreso_actual.completado %}
+                                    <button class="btn btn-corporativo btn-lg w-100" id="marcarCompletada">
+                                        <i class="fas fa-check me-2"></i>
+                                        Marcar como Visto
+                                    </button>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         {% endif %}
                     </div>
                     
                     <!-- Controles de navegación (ocultos en solo_lectura) -->
                     {% if not solo_lectura %}
-                    <div class="mt-4 d-flex justify-content-between align-items-center py-3 border-top">
-                        <!-- Botón Anterior -->
-                        {% if contenido_anterior %}
-                            <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_anterior.pk }}" 
-                               class="btn btn-outline-primary btn-lg">
-                                <i class="fas fa-chevron-left me-2"></i>
-                                Anterior
-                            </a>
-                        {% else %}
-                            <div class="btn btn-outline-primary btn-lg invisible">
-                                <i class="fas fa-chevron-left me-2"></i>
-                                Anterior
-                            </div>
-                        {% endif %}
-                        <!-- Botón de Acción Principal -->
-                        <div class="d-flex gap-2">
-                            {% if not progreso_actual.completado %}
-                                <button class="btn btn-success btn-lg" id="marcarCompletada">
-                                    <i class="fas fa-check me-2"></i>
-                                    Marcar como Visto
-                                </button>
-                            {% endif %}
-                        </div>
-                        <!-- Botón Siguiente -->
-                        <div>
-                            {% if contenido_siguiente and not evaluacion_pendiente %}
-                                <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_siguiente.pk }}" 
-                                   class="btn btn-primary">
-                                    Siguiente
-                                    <i class="fas fa-chevron-right ms-2"></i>
+                    <div class="mt-4 py-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <!-- Botón Anterior -->
+                            {% if contenido_anterior %}
+                                <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_anterior.pk }}" 
+                                   class="btn btn-outline-corporativo btn-lg mb-2 mb-lg-0">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    Anterior
                                 </a>
                             {% else %}
-                                {% if not progreso_actual.completado and contenido_actual.leccion.modulo.evaluacion %}
-                                    <a href="{% url 'training:quiz' contenido_actual.leccion.modulo.evaluacion.pk %}" 
-                                       class="btn btn-warning">
-                                        <i class="fas fa-tasks me-2"></i>
-                                        Realizar Evaluación
-                                    </a>
-                                {% else %}
-                                    {% if not contenido_siguiente %}
-                                        <a href="{% url 'training:mis_capacitaciones' %}" 
-                                           class="btn btn-success">
-                                            Finalizar curso
-                                            <i class="fas fa-check ms-2"></i>
-                                        </a>
-                                    {% endif %}
-                                {% endif %}
+                                <div class="btn btn-outline-gris btn-lg invisible mb-2 mb-lg-0">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    Anterior
+                                </div>
                             {% endif %}
+                            <!-- Texto de contenido (si existe) y botón principal -->
+                            <div class="flex-grow-1 mx-3">
+                                {# Eliminado para evitar duplicidad de botón 'Marcar como Visto' #}
+                            </div>
+                            <!-- Botón Siguiente -->
+                            <div>
+                                {% if contenido_siguiente and not evaluacion_pendiente %}
+                                    <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_siguiente.pk }}" 
+                                       class="btn btn-corporativo">
+                                        Siguiente
+                                        <i class="fas fa-chevron-right ms-2"></i>
+                                    </a>
+                                {% elif not contenido_siguiente %}
+                                    <a href="{% url 'training:mis_capacitaciones' %}" 
+                                       class="btn btn-corporativo">
+                                        Finalizar curso
+                                        <i class="fas fa-check ms-2"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endif %}
                     {% endif %}
                 {% endif %}
+                <style>
+                    #contenidoReproductor iframe,
+                    #contenidoReproductor embed,
+                    #contenidoReproductor object {
+                        margin-bottom: 20px !important;
+                    }
+                </style>
             </div>
         </div>
     </div>
-</div>
+
+{% endblock %}
+
+{% block footer %}
+    {{ block.super }}
 {% endblock %}
 
 {% block extra_js %}
@@ -327,22 +360,50 @@ document.addEventListener('DOMContentLoaded', function() {
         initPDFViewer();
     }
 
-    // Marcar contenido como completado
+    // Marcar contenido como completado solo después de tiempo mínimo
     const btnMarcarCompletada = document.getElementById('marcarCompletada');
     if (btnMarcarCompletada) {
+        btnMarcarCompletada.disabled = true;
+        let tiempoMinimo = 0;
+        // Detectar tiempo mínimo desde el dataset del contenido activo
+        const activeLesson = document.querySelector('.lesson-item.active');
+        if (activeLesson && activeLesson.dataset.tiempoMinimo) {
+            tiempoMinimo = parseInt(activeLesson.dataset.tiempoMinimo);
+        } else {
+            // Fallback: buscar en el reproductor si es PDF o video
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer && pdfViewer.dataset.tiempoMinimo) {
+                tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo);
+            }
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer && videoPlayer.dataset.tiempoMinimo) {
+                tiempoMinimo = parseInt(videoPlayer.dataset.tiempoMinimo);
+            }
+        }
+        if (!tiempoMinimo || tiempoMinimo < 10) tiempoMinimo = 30; // Por defecto 30s mínimo
+
+        let tiempoTranscurrido = 0;
+        let intervaloMinimo = setInterval(() => {
+            tiempoTranscurrido++;
+            if (tiempoTranscurrido >= tiempoMinimo) {
+                btnMarcarCompletada.disabled = false;
+                clearInterval(intervaloMinimo);
+            }
+        }, 1000);
+
         btnMarcarCompletada.addEventListener('click', function() {
             const contenidoId = document.querySelector('.lesson-item.active').dataset.contenidoId;
-            registrarProgreso(contenidoId, true);
+            // Deshabilitar solo visualmente para evitar doble click, pero NO ocultar ni marcar como completado aún
+            btnMarcarCompletada.disabled = true;
+            registrarProgreso(contenidoId, true, btnMarcarCompletada);
         });
     }
 
-    // Registrar tiempo al salir de la página
-    window.addEventListener('beforeunload', function() {
-        const contenidoId = document.querySelector('.lesson-item.active')?.dataset.contenidoId;
-        if (contenidoId) {
-            registrarProgreso(contenidoId, false);
-        }
-    });
+    // Lógica para el botón de evaluación
+    const btnValoracion = document.getElementById('btnValoracion');
+    // El botón de valoración siempre está habilitado. La validación se hace en backend y en el JS del quiz.
+
+    // Eliminado: No registrar progreso automáticamente al salir de la página
     
     // Animación de carga de lecciones
     const lessons = document.querySelectorAll('.lesson-item');
@@ -434,12 +495,15 @@ function startYouTubeTracking() {
     }, 30000); // Registrar cada 30 segundos
 }
 
+// Tracking de tiempo en PDF solo cuando la pestaña está activa
 function startPDFTracking() {
     const pdfViewer = document.getElementById('pdfViewer');
     const tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo) || 60; // Usar tiempo configurado o 60s por defecto
-    startTime = Date.now();
     let tiempoTranscurrido = 0;
-    
+    let tiempoActivo = 0;
+    let lastTimestamp = Date.now();
+    let running = true;
+
     // Mostrar mensaje al usuario con el tiempo específico
     const minutos = Math.ceil(tiempoMinimo / 60);
     Swal.fire({
@@ -450,14 +514,35 @@ function startPDFTracking() {
         timerProgressBar: true,
         showConfirmButton: false
     });
-    
-    intervalId = setInterval(() => {
+
+    function tick() {
+        if (!running) return;
+        const now = Date.now();
+        tiempoActivo += Math.floor((now - lastTimestamp) / 1000);
+        lastTimestamp = now;
         const contenidoId = pdfViewer.dataset.contenidoId;
-        tiempoTranscurrido = Math.floor((Date.now() - startTime) / 1000);
-        // Marcar como completado si ha pasado el tiempo mínimo configurado
-        const completado = tiempoTranscurrido >= tiempoMinimo;
-        registrarProgreso(contenidoId, completado);
-    }, 30000); // Registrar cada 30 segundos
+        if (tiempoActivo >= tiempoMinimo) {
+            registrarProgreso(contenidoId, true);
+            clearInterval(intervalId);
+            intervalId = null;
+            document.removeEventListener('visibilitychange', handleVisibility);
+        } else {
+            registrarProgreso(contenidoId, false);
+        }
+    }
+
+    function handleVisibility() {
+        if (document.visibilityState === 'hidden') {
+            running = false;
+        } else {
+            running = true;
+            lastTimestamp = Date.now();
+        }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    lastTimestamp = Date.now();
+    intervalId = setInterval(tick, 30000); // Registrar cada 30 segundos
 }
 
 function stopTracking() {
@@ -480,17 +565,10 @@ function formatTime(seconds) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-function registrarProgreso(contenidoId, completado) {
+function registrarProgreso(contenidoId, completado, btnMarcarCompletadaRef) {
+    // Solo permitir marcar como completado desde el botón, y solo si se cumplió el tiempo mínimo
     const tiempoDedicado = Math.floor((Date.now() - startTime) / 1000);
-    let porcentajeVisto = 0;
-
-    if (videoPlayer) {
-        porcentajeVisto = Math.floor((videoPlayer.currentTime / videoPlayer.duration) * 100);
-    } else if (youtubePlayer) {
-        porcentajeVisto = Math.floor((youtubePlayer.getCurrentTime() / youtubePlayer.getDuration()) * 100);
-    } else {
-        porcentajeVisto = 100; // Para documentos y texto
-    }
+    let porcentajeVisto = 100; // Para documentos y texto, o puedes ajustar según tipo
 
     fetch(`/capacitaciones/contenido/${contenidoId}/completar/`, {
         method: 'POST',
@@ -510,7 +588,48 @@ function registrarProgreso(contenidoId, completado) {
             // Actualizar UI
             const lessonItem = document.querySelector('.lesson-item.active');
             if (data.completado) {
-                lessonItem.classList.add('completed');
+                // Marcar todos los lesson-item con el mismo contenido-id como completados y actualizar ícono
+                const allLessonItems = document.querySelectorAll('.lesson-item[data-contenido-id="' + contenidoId + '"]');
+                allLessonItems.forEach(item => {
+                    item.classList.add('completed');
+                    // Cambiar ícono a check verde
+                    const icon = item.querySelector('.lesson-progress i');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-success';
+                    }
+                    // Cambiar fondo si corresponde
+                    item.classList.remove('bg-warning');
+                    item.classList.add('bg-success');
+                });
+                // Deshabilitar y ocultar el botón "Marcar como Visto" SOLO después de éxito
+                if (btnMarcarCompletadaRef) {
+                    btnMarcarCompletadaRef.disabled = true;
+                    btnMarcarCompletadaRef.classList.add('disabled');
+                    btnMarcarCompletadaRef.style.display = 'none';
+                }
+                // Mostrar visualmente el estado completado en la interfaz principal (área de texto o donde estaba el botón)
+                // Buscar el contenedor principal donde está el botón
+                let mainBtn = document.getElementById('marcarCompletada');
+                if (mainBtn) {
+                    // Buscar el contenedor padre que tiene la clase mt-4 (donde está el botón y el texto)
+                    let mainContainer = mainBtn.closest('.mt-4');
+                    if (mainContainer && !document.getElementById('mensajeCompletado')) {
+                        // Eliminar el botón si aún existe
+                        mainBtn.remove();
+                        // Insertar mensaje de completado
+                        const msg = document.createElement('div');
+                        msg.id = 'mensajeCompletado';
+                        msg.className = 'alert alert-success mt-3';
+                        msg.innerHTML = '<i class="fas fa-check-circle me-2"></i>Contenido completado';
+                        mainContainer.appendChild(msg);
+                    }
+                }
+                // Habilitar el botón de evaluación tras completar la lección
+                const btnValoracion = document.getElementById('btnValoracion');
+                if (btnValoracion) {
+                    btnValoracion.removeAttribute('disabled');
+                    btnValoracion.classList.add('btn-glow');
+                }
                 Swal.fire({
                     icon: 'success',
                     title: 'Contenido visto',
@@ -518,19 +637,41 @@ function registrarProgreso(contenidoId, completado) {
                     timer: 2000,
                     showConfirmButton: false
                 }).then(() => {
-                    if (data.evaluacion_pendiente) {
-                        window.location.href = data.url_evaluacion;
-                    } else if (data.siguiente_contenido) {
-                        window.location.href = data.siguiente_contenido;
+                    // Recargar la página tras mostrar el mensaje de éxito
+                    window.location.reload();
+                    function isValidNextContentUrl(url) {
+                        if (!url || typeof url !== 'string') return false;
+                        if (url === 'undefined' || url === 'null') return false;
+                        if (url.trim() === '') return false;
+                        if (url.includes('undefined') || url.includes('null')) return false;
+                        try {
+                            new URL(url, window.location.origin);
+                        } catch (e) {
+                            return false;
+                        }
+                        return true;
                     }
+                        // Solo marcar como completado y actualizar UI, sin redirigir
+                        const btnValoracion = document.getElementById('btnValoracion');
+                        if (btnValoracion) {
+                            btnValoracion.removeAttribute('disabled');
+                            btnValoracion.classList.add('btn-glow');
+                        }
                 });
             }
-            
             // Actualizar progreso del módulo
             const moduleHeader = lessonItem.closest('.mb-4').previousElementSibling;
             const progressBar = moduleHeader.querySelector('.module-progress-bar');
             progressBar.style.width = `${data.progreso_modulo}%`;
 
+            // Si la lección actual está completada, activar el botón de valoración (evaluación por lección)
+            if (data.completado) {
+                const btnValoracion = document.getElementById('btnValoracion');
+                if (btnValoracion) {
+                    btnValoracion.removeAttribute('disabled');
+                    btnValoracion.classList.add('btn-glow');
+                }
+            }
             // Si hay evaluación pendiente, mostrar botón
             if (data.evaluacion_pendiente) {
                 const evaluacionBtn = document.querySelector('.btn-warning[href*="quiz"]');
@@ -548,7 +689,6 @@ function registrarProgreso(contenidoId, completado) {
                     });
                 }
             }
-            
             // Si puede continuar, desbloquear siguiente contenido
             if (data.puede_continuar) {
                 const nextItem = lessonItem.nextElementSibling;

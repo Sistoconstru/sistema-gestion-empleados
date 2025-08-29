@@ -83,8 +83,8 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
     <div class="col-md-10">
         <!-- Información del Documento -->
         <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h4 class="card-title mb-0">
+            <div class="card-header bg-corporativo text-white">
+                <h4 class="card-title mb-0 fw-bold" style="font-size:1.35rem;">
                     <i class="fas fa-file-alt me-2"></i>Información del Documento
                 </h4>
             </div>
@@ -105,7 +105,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                                 <td>
                                     {{ documento.tipo_documento.nombre }}
                                     {% if documento.tipo_documento.obligatorio %}
-                                        <span class="badge bg-warning ms-2">Obligatorio</span>
+                                        <span class="badge bg-amarillo text-corporativo ms-2">Obligatorio</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -137,9 +137,9 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                                 <td class="{% if documento.fecha_vencimiento < today %}text-danger{% elif documento.fecha_vencimiento <= today|add:'30' %}text-warning{% endif %}">
                                     {{ documento.fecha_vencimiento|date:"d/m/Y" }}
                                     {% if documento.fecha_vencimiento < today %}
-                                        <span class="badge bg-danger ms-2">VENCIDO</span>
+                                        <span class="badge bg-rojo ms-2">VENCIDO</span>
                                     {% elif documento.fecha_vencimiento <= today|add:'7' %}
-                                        <span class="badge bg-warning ms-2">PRÓXIMO A VENCER</span>
+                                        <span class="badge bg-amarillo text-corporativo ms-2">PRÓXIMO A VENCER</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -149,14 +149,14 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                 </div>
                 
                 {% if documento.observaciones %}
-                <div class="alert alert-info mt-3">
+                <div class="alert alert-azul mt-3">
                     <h6><i class="fas fa-comment me-2"></i>Observaciones del Empleado:</h6>
                     <p class="mb-0">{{ documento.observaciones }}</p>
                 </div>
                 {% endif %}
 
                 {% if documento.estado_aprobacion == 'rechazado' %}
-                <div class="alert alert-danger mt-3">
+                <div class="alert alert-rojo mt-3">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6><i class="fas fa-times-circle me-2"></i>Documento Rechazado</h6>
@@ -167,7 +167,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                             {% endif %}
                         </div>
                         {% if user == documento.empleado.usuario or user.is_staff %}
-                        <a href="{% url 'documents:documento_replace' documento_id=documento.pk %}" class="btn btn-warning">
+                        <a href="{% url 'documents:documento_replace' documento_id=documento.pk %}" class="btn btn-amarillo text-corporativo">
                             <i class="fas fa-sync-alt me-1"></i>Reemplazar Documento
                         </a>
                         {% endif %}
@@ -179,24 +179,24 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
         
         <!-- Visualizador del Documento -->
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header bg-corporativo text-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-eye me-2"></i>Vista Previa del Documento
                     </h5>
                     <div>
-                        <a href="{% url 'documents:documento_download' documento.pk %}" 
-                           class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'documents:documento_download' documento.pk %}" 
+                                    class="btn btn-outline-corporativo btn-sm">
                             <i class="fas fa-download me-1"></i>Descargar
                         </a>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleFullscreen()">
+                        <button type="button" class="btn btn-outline-gris btn-sm" onclick="toggleFullscreen()">
                             <i class="fas fa-expand me-1"></i>Pantalla Completa
                         </button>
                     </div>
                 </div>
             </div>
             <div class="card-body p-0">
-                <div id="documentViewer" class="document-container" style="min-height: 500px; background: #f8f9fa;">
+                <div id="documentViewer" class="document-container" style="min-height: 500px; background: #f3f4f6;">
                     {% if documento.archivo.name|lower|slice:"-4:" == ".pdf" %}
                         <object data="{{ documento.archivo.url }}#toolbar=1&navpanes=1&scrollbar=1&view=FitH"
                                 type="application/pdf" 
@@ -204,18 +204,18 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                                 height="600px"
                                 class="pdf-viewer">
                             <div class="pdf-fallback text-center p-4">
-                                <div class="alert alert-warning">
+                                <div class="alert alert-amarillo text-corporativo">
                                     <h5><i class="fas fa-exclamation-triangle me-2"></i>No se puede mostrar el PDF directamente</h5>
                                     <p class="mb-3">Su navegador no puede mostrar el PDF integrado. Puede:</p>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ documento.archivo.url }}" 
-                                           class="btn btn-primary" 
-                                           target="_blank">
+                                                     <a href="{{ documento.archivo.url }}" 
+                                                         class="btn btn-corporativo" 
+                                                         target="_blank">
                                             <i class="fas fa-external-link-alt me-1"></i>
                                             Abrir en nueva pestaña
                                         </a>
-                                        <a href="{% url 'documents:documento_download' documento.pk %}" 
-                                           class="btn btn-secondary">
+                                                     <a href="{% url 'documents:documento_download' documento.pk %}" 
+                                                         class="btn btn-outline-gris">
                                             <i class="fas fa-download me-1"></i>
                                             Descargar PDF
                                         </a>
@@ -237,7 +237,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
         
         <!-- Formulario de Aprobación -->
         <div class="card">
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-amarillo text-corporativo">
                 <h4 class="card-title mb-0">
                     <i class="fas fa-clipboard-check me-2"></i>Revisión del Documento
                 </h4>
@@ -246,7 +246,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                 {% csrf_token %}
                 <div class="card-body">
                     {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
+                    <div class="alert alert-rojo">
                         {{ form.non_field_errors }}
                     </div>
                     {% endif %}
@@ -278,7 +278,7 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     <div class="mb-3">
                         <label class="form-label fw-bold" id="plantillas-label">Plantillas de Observaciones:</label>
                         <div class="btn-group-vertical btn-group-sm w-100" role="group" aria-labelledby="plantillas-label">
-                            <button type="button" class="btn btn-outline-secondary text-start template-btn" 
+                            <button type="button" class="btn btn-outline-gris text-start template-btn" 
                                     data-template="Documento ilegible o con baja calidad de imagen. Por favor, suba una versión más clara." {% if modo_visualizacion %}disabled{% endif %}>
                                 📷 Calidad de imagen deficiente
                             </button>
@@ -301,8 +301,8 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                     </div>
                     <!-- Lista de Verificación -->
-                    <div class="card bg-light">
-                        <div class="card-header">
+                    <div class="card bg-gris-claro">
+                        <div class="card-header bg-corporativo text-white">
                             <h6 class="mb-0">
                                 <i class="fas fa-list-check me-2"></i>Lista de Verificación
                             </h6>
@@ -341,19 +341,19 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light">
+                <div class="card-footer bg-gris-claro">
                     <div class="d-flex justify-content-between">
                         <a href="{% url 'documents:empleado_documentos' documento.empleado.pk %}" 
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-gris">
                             <i class="fas fa-arrow-left me-1"></i>Volver
                         </a>
                         {% if not modo_visualizacion %}
                         <div>
-                            <button type="submit" class="btn btn-success me-2" id="approveBtn" 
+                            <button type="submit" class="btn btn-corporativo me-2" id="approveBtn" 
                                     onclick="setDecision('aprobado')">
                                 <i class="fas fa-check me-1"></i>Aprobar Documento
                             </button>
-                            <button type="submit" class="btn btn-danger" id="rejectBtn" 
+                            <button type="submit" class="btn btn-rojo" id="rejectBtn" 
                                     onclick="setDecision('rechazado')">
                                 <i class="fas fa-times me-1"></i>Rechazar Documento
                             </button>
