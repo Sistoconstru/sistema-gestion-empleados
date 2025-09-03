@@ -154,6 +154,18 @@
                     {% if empleado.sede.ciudad %}
                     <div class="text-muted small">{{ empleado.sede.ciudad }}{% if empleado.sede.departamento %}, {{ empleado.sede.departamento }}{% endif %}</div>
                     {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small" for="direccion-display">Dirección de residencia</label>
+                        <div class="fw-bold" id="direccion-display">{{ empleado.direccion }}</div>
+                            {% if empleado.direccion and empleado.direccion != "SIN DIRECCIÓN" %}
+                                <div class="mt-1">
+                                    <a href="https://www.google.com/maps/search/{{ empleado.direccion|urlencode }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-map-marker-alt me-1"></i> Ver en Google Maps
+                                    </a>
+                                </div>
+                            {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

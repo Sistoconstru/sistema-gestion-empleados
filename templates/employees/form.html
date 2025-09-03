@@ -39,6 +39,10 @@
             <label for="cargo">Cargo *</label>
             {{ form.cargo }}
             {% if form.cargo.errors %}<div class="text-danger">{{ form.cargo.errors }}</div>{% endif %}
+                <label for="direccion">Dirección de residencia *</label>
+                <input type="text" name="direccion" id="direccion" class="form-control" value="{{ form.direccion.value|default_if_none:'' }}" required placeholder="Ejemplo: Calle 93 # 15-20, Barrio, Ciudad">
+                <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
+                {% if form.direccion.errors %}<div class="text-danger">{{ form.direccion.errors }}</div>{% endif %}
         </div>
         <div class="col-md-6">
             <label for="fecha_nacimiento">Fecha de Nacimiento *</label>

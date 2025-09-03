@@ -154,6 +154,18 @@
                                         {{ form.cargo.errors.0 }}
                                     </div>
                                 {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="{{ form.direccion.id_for_label }}">{{ form.direccion.label }}</label>
+                                    {{ form.direccion }}
+                                    <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
+                                    {% if form.direccion.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.direccion.errors.0 }}
+                                        </div>
+                                    {% endif %}
                             </div>
                         </div>
                     </div>

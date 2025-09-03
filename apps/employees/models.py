@@ -113,6 +113,7 @@ class Empleado(models.Model):
     contacto_emergencia_nombre = models.CharField(max_length=100, blank=True)  # Nombre contacto emergencia
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)  # Teléfono contacto emergencia
     correo_electronico = models.EmailField(blank=True)  # Email
+    direccion = models.CharField(max_length=200, blank=False, help_text="Dirección de residencia (debe iniciar con el tipo de vía completo)")  # Dirección de residencia
     fecha_creacion = models.DateTimeField(auto_now_add=True)  # Fecha de creación
     fecha_actualizacion = models.DateTimeField(auto_now=True)  # Fecha de última actualización
     creado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='empleados_creados')  # Usuario que creó el registro

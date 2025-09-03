@@ -46,6 +46,15 @@ class EmpleadoForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Seleccione departamento'}),
         help_text="Filtra las ciudades por departamento"
     )
+    direccion = forms.CharField(
+        label="Dirección de residencia",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ejemplo: Calle 93 # 15-20, Barrio, Ciudad',
+        }),
+        help_text="Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)"
+    )
 
     class Meta:
         model = Empleado
@@ -54,7 +63,8 @@ class EmpleadoForm(forms.ModelForm):
             'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo',
             'fecha_nacimiento', 'departamento', 'ciudad_nacimiento', 'escolaridad',
             'contacto_emergencia_nombre', 'contacto_emergencia_telefono',
-            'correo_electronico'
+            'correo_electronico',
+            'direccion',
         ]
         widgets = {
             'tipo_documento': forms.Select(attrs={
@@ -156,6 +166,27 @@ class EmpleadoForm(forms.ModelForm):
                 # Agregar asterisco visual
                 if not self.fields[field_name].label.endswith('*'):
                     self.fields[field_name].label += ' *'
+
+    def clean_direccion(self):
+        value = self.cleaned_data.get('direccion', '').strip()
+        # Solo permite palabras completas al inicio, case-insensitive y sin abreviaturas
+        tipos_via = ["Calle", "Carrera", "Avenida", "Vereda", "Transversal", "Diagonal", "Autopista"]
+        import re
+        pattern = r"^(%s)\b" % "|".join(tipos_via)
+        if not re.match(pattern, value, re.IGNORECASE):
+            raise forms.ValidationError(
+                "La dirección debe iniciar con el tipo de vía completo (ejemplo: Calle, Carrera, Avenida, Vereda, etc.) y no se permiten abreviaturas."
+            )
+        # Validar que no se usen abreviaturas conocidas
+        abreviaturas = [
+            r"^C\b", r"^Cl\b", r"^Cll\b", r"^Ca\b", r"^Cra\b", r"^Cr\b", r"^V\b", r"^Ve\b", r"^Ver\b", r"^Vda\b"
+        ]
+        for abbr in abreviaturas:
+            if re.match(abbr, value, re.IGNORECASE):
+                raise forms.ValidationError(
+                    "No se permiten abreviaturas al inicio de la dirección. Escriba la palabra completa."
+                )
+        return value
 
     def clean_numero_documento(self):
         """Validar número de documento"""
