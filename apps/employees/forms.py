@@ -170,7 +170,7 @@ class EmpleadoForm(forms.ModelForm):
     def clean_direccion(self):
         value = self.cleaned_data.get('direccion', '').strip()
         # Solo permite palabras completas al inicio, case-insensitive y sin abreviaturas
-        tipos_via = ["Calle", "Carrera", "Avenida", "Vereda", "Transversal", "Diagonal", "Autopista"]
+        tipos_via = ["Calle", "Carrera", "Avenida", "Vereda", "Transversal", "Diagonal", "Autopista", "SIN DIRECCIÓN", "Manzana", "Lote", "Pasaje", "Circular", "Circunvalar"]
         import re
         pattern = r"^(%s)\b" % "|".join(tipos_via)
         if not re.match(pattern, value, re.IGNORECASE):
