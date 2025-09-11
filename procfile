@@ -1,1 +1,1 @@
-web: gunicorn config.wsgi
+web: sh start.sh
