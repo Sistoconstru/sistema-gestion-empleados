@@ -1,1 +1,1 @@
-web: gunicorn SIGHU.wsgi
+web: gunicorn config.wsgi

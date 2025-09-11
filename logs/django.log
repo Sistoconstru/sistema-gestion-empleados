@@ -50390,3 +50390,27 @@ INFO 2025-09-10 15:15:28,493 basehttp 10432 11972 code 400, message Bad HTTP/0.9
 ERROR 2025-09-10 15:15:28,493 basehttp 10432 11972 You're accessing the development server over HTTPS, but it only supports HTTP.
 INFO 2025-09-10 15:15:28,494 basehttp 10432 8476 code 400, message Bad request version ('ôa\x18\x00û6Í')
 ERROR 2025-09-10 15:15:28,495 basehttp 10432 8476 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2025-09-11 06:36:05,048 autoreload 21312 17596 Watching for file changes with StatReloader
+INFO 2025-09-11 06:36:09,951 basehttp 21312 17744 "GET / HTTP/1.1" 302 0
+INFO 2025-09-11 06:36:10,039 basehttp 21312 17744 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-11 06:36:10,112 basehttp 21312 17744 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-09-11 06:36:10,189 basehttp 21312 17744 "GET /static/css/custom.css HTTP/1.1" 200 10957
+WARNING 2025-09-11 06:36:10,503 log 21312 17744 Not Found: /favicon.ico
+WARNING 2025-09-11 06:36:10,503 basehttp 21312 17744 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-09-11 06:36:21,241 basehttp 21312 17744 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-11 06:36:21,268 basehttp 21312 17744 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-11 06:36:21,515 basehttp 21312 17744 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24618
+INFO 2025-09-11 06:36:21,538 basehttp 21312 17744 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-09-11 06:36:21,539 basehttp 21312 15568 "GET /static/css/corporativo.css HTTP/1.1" 200 1194
+INFO 2025-09-11 06:36:21,554 basehttp 21312 10272 "GET /static/js/custom.js HTTP/1.1" 200 14028
+INFO 2025-09-11 11:11:06,998 autoreload 21312 17596 C:\SIGHU\sighu\sistema-gestion-empleados\config\wsgi.py changed, reloading.
+INFO 2025-09-11 11:11:08,759 autoreload 11160 18068 Watching for file changes with StatReloader
+INFO 2025-09-11 11:11:15,621 autoreload 11160 18068 C:\SIGHU\sighu\sistema-gestion-empleados\config\wsgi.py changed, reloading.
+INFO 2025-09-11 11:11:16,265 autoreload 9440 8368 Watching for file changes with StatReloader
+INFO 2025-09-11 11:13:38,985 basehttp 9440 12816 "GET / HTTP/1.1" 302 0
+INFO 2025-09-11 11:13:39,131 basehttp 9440 12816 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-11 11:13:39,349 basehttp 9440 12816 "GET /empleados/perfil/cd36dbaa-8c6c-48d2-a29d-f55a85533ba8/ HTTP/1.1" 200 24214
+INFO 2025-09-11 11:13:39,457 basehttp 9440 18148 "GET /static/css/document-viewer.css HTTP/1.1" 200 497
+INFO 2025-09-11 11:13:39,465 basehttp 9440 3328 "GET /static/css/corporativo.css HTTP/1.1" 200 1194
+INFO 2025-09-11 11:13:39,469 basehttp 9440 12816 "GET /static/css/custom.css HTTP/1.1" 200 10957
+INFO 2025-09-11 11:13:39,486 basehttp 9440 20956 "GET /static/js/custom.js HTTP/1.1" 200 14028
