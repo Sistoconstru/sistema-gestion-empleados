@@ -50492,3 +50492,21 @@ INFO 2025-09-11 12:35:39,354 basehttp 7900 17544 "GET /media/documentos/71330990
 INFO 2025-09-11 12:36:13,647 basehttp 7900 17544 "POST /documentos/documento/f0f886a4-eeef-4409-9acb-70471ee3d357/ver/ HTTP/1.1" 302 0
 INFO 2025-09-11 12:36:13,689 basehttp 7900 17544 "GET /documentos/empleado/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 19303
 INFO 2025-09-11 12:36:58,631 basehttp 7900 17544 "GET /dashboard/ HTTP/1.1" 200 15260
+INFO 2025-09-11 14:47:43,258 autoreload 13064 9680 Watching for file changes with StatReloader
+INFO 2025-09-11 14:47:43,954 basehttp 13064 10868 "GET /empleados/ HTTP/1.1" 200 98299
+INFO 2025-09-11 14:47:54,950 basehttp 13064 10868 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 40546
+INFO 2025-09-11 14:48:11,952 basehttp 13064 10868 "GET /dashboard/ HTTP/1.1" 200 15260
+INFO 2025-09-11 14:48:14,601 basehttp 13064 10868 "GET /capacitaciones/admin/ HTTP/1.1" 200 25111
+INFO 2025-09-11 14:48:26,531 basehttp 13064 10868 "GET /empleados/crear/ HTTP/1.1" 200 202157
+INFO 2025-09-11 14:48:37,149 basehttp 13064 10868 "GET /empleados/ HTTP/1.1" 200 98299
+INFO 2025-09-11 14:48:48,717 basehttp 13064 10868 "GET /dashboard/ HTTP/1.1" 200 15260
+INFO 2025-09-11 14:49:16,328 basehttp 13064 10868 "GET /admin/ HTTP/1.1" 200 50548
+INFO 2025-09-11 14:49:16,495 basehttp 13064 2428 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-09-11 14:49:16,495 basehttp 13064 10868 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-09-11 14:49:16,498 basehttp 13064 6528 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-09-11 14:49:16,498 basehttp 13064 8096 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-09-11 14:49:16,499 basehttp 13064 7244 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-09-11 14:49:16,508 basehttp 13064 5596 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-09-11 14:49:16,523 basehttp 13064 7244 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-09-11 14:49:16,525 basehttp 13064 5596 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-09-11 14:49:16,526 basehttp 13064 6528 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
