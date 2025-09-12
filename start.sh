@@ -1,11 +1,8 @@
 #!/bin/sh
 set -e
 
-# Instala libmagic para python-magic
-apt-get update && apt-get install -y libmagic1
-
 # Ejecuta migraciones
 python manage.py migrate
 
-# Inicia Gunicorn
-exec gunicorn config.wsgi
+# Inicia Gunicorn en modo producción
+exec gunicorn config.wsgi:application --bind 0.0.0.0:8000
