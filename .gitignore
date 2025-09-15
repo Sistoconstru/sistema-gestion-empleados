@@ -1,3 +1,8 @@
+# Ignorar archivos de base de datos y backups
+db.sqlite3
+backup_gestion_empleados.sql
+backup_gestion_empleados_utf8.sql
+evaluaciones_desempeno.sql
 # Created by venv; see https://docs.python.org/3/library/venv.html
 
 # .gitignore
