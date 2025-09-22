@@ -5,7 +5,7 @@ set -e
 # Ejecuta migraciones
 python manage.py migrate
 
-
+# Crea un superusuario si no existe
 
 
 # Inicia Gunicorn en modo producción
