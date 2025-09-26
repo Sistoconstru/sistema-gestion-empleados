@@ -2,6 +2,11 @@ from .base import *
 
 import dj_database_url
 
+# Prueba de logging manual
+import logging
+logging.getLogger('storages').debug('Prueba de logging storages desde Railway')
+logging.getLogger('django').info('Prueba de logging django desde Railway')
+
 DEBUG = False
 
 ALLOWED_HOSTS = [
