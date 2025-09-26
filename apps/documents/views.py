@@ -187,6 +187,9 @@ def documento_upload(request, empleado_pk):
             try:
                 with transaction.atomic():
                     documento = form.save()
+                    import logging
+                    logger = logging.getLogger('storages')
+                    logger.debug(f'Documento subido: {documento.archivo.name}')
                     
                     messages.success(
                         request,
