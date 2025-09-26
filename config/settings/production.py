@@ -44,6 +44,24 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'storages': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'boto3': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'botocore': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
 }
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
