@@ -50750,3 +50750,25 @@ INFO 2025-09-19 07:19:48,547 basehttp 9428 2676 "GET /admin/organizational/cargo
 INFO 2025-09-19 07:19:48,597 basehttp 9428 2676 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
 INFO 2025-09-19 07:20:29,489 basehttp 9428 2676 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 46335
 INFO 2025-09-19 07:20:29,503 basehttp 9428 2676 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-09-25 09:27:24,634 autoreload 22060 976 Watching for file changes with StatReloader
+INFO 2025-09-25 09:27:36,415 basehttp 22060 15832 "GET / HTTP/1.1" 302 0
+INFO 2025-09-25 09:27:36,503 basehttp 22060 15832 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-25 09:27:36,619 basehttp 22060 15832 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-09-25 09:27:36,636 basehttp 22060 15832 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-09-25 09:27:37,046 log 22060 15832 Not Found: /favicon.ico
+WARNING 2025-09-25 09:27:37,046 basehttp 22060 15832 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-09-25 09:27:40,332 basehttp 22060 15832 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-09-25 09:27:40,430 basehttp 22060 15832 "GET /dashboard/ HTTP/1.1" 200 15260
+INFO 2025-09-25 09:27:40,441 basehttp 22060 15832 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-09-25 09:27:40,441 basehttp 22060 21772 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-09-25 09:27:40,441 basehttp 22060 22464 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-09-25 09:27:50,311 basehttp 22060 22464 "GET /empleados/ HTTP/1.1" 200 98245
+INFO 2025-09-26 07:50:14,379 autoreload 11528 11896 Watching for file changes with StatReloader
+INFO 2025-09-26 07:50:20,295 basehttp 11528 7752 "GET / HTTP/1.1" 302 0
+INFO 2025-09-26 07:50:20,499 basehttp 11528 7752 "GET /dashboard/ HTTP/1.1" 200 15260
+WARNING 2025-09-26 07:50:20,771 log 11528 7752 Not Found: /favicon.ico
+WARNING 2025-09-26 07:50:20,772 basehttp 11528 7752 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-09-26 07:50:32,197 basehttp 11528 7752 "GET /empleados/ HTTP/1.1" 200 98245
+INFO 2025-09-26 07:50:36,422 basehttp 11528 7752 "GET /empleados/236f38c4-5dab-48b3-ae67-0963c95d3ba7/ HTTP/1.1" 200 38861
+WARNING 2025-09-26 07:50:58,940 log 11528 7752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-09-26 07:50:58,941 basehttp 11528 7752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
