@@ -1,0 +1,1 @@
+# Archivo para que el directorio raíz sea tratado como paquete Python
