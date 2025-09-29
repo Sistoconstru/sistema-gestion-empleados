@@ -3,15 +3,14 @@ from .base import *
 # Configuración de AWS S3 y backend de almacenamiento
 DEFAULT_FILE_STORAGE = 'custom_storage.MediaStorage'
 
-# Log para verificar el settings activo y el backend de almacenamiento
+
+# Log para verificar el settings activo
 import os
 import logging
 from django.conf import settings
-from django.core.files.storage import default_storage
 
 logging.getLogger('django').info(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
 logging.getLogger('django').info(f"DEFAULT_FILE_STORAGE: {getattr(settings, 'DEFAULT_FILE_STORAGE', None)}")
-logging.getLogger('django').info(f"Backend de almacenamiento activo: {default_storage.__class__}")
 
 import dj_database_url
 
