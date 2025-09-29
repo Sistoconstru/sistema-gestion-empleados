@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
-import sys
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), 'apps'))
+import os
 import sys
 
+if __name__ == '__main__':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')  # ← Cambiado a producción
+    # ...existing code...
 
 def main():
     """Run administrative tasks."""
