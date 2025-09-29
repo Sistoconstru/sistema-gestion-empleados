@@ -58,6 +58,12 @@ class TipoDocumentoCargo(models.Model):
 
 # Modelo para los documentos subidos por empleados
 class DocumentoEmpleado(models.Model):
+    def save(self, *args, **kwargs):
+        import logging
+        logger = logging.getLogger('storages')
+        backend = type(self.archivo.storage).__name__ if hasattr(self.archivo, 'storage') else 'NoStorage'
+        logger.info(f"[DocumentoEmpleado.save] Backend de almacenamiento usado: {backend}")
+        super().save(*args, **kwargs)
     """Documentos subidos por empleados"""
     ESTADOS_APROBACION = [
         ('pendiente', 'Pendiente'),
