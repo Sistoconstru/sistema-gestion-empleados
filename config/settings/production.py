@@ -1,14 +1,18 @@
 from .base import *
 
-# Log para verificar el settings activo
+# Log para verificar el settings activo y el backend de almacenamiento
 import os
 import logging
+from django.conf import settings
+from django.core.files.storage import default_storage
+
 logging.getLogger('django').info(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+logging.getLogger('django').info(f"DEFAULT_FILE_STORAGE: {getattr(settings, 'DEFAULT_FILE_STORAGE', None)}")
+logging.getLogger('django').info(f"Backend de almacenamiento activo: {default_storage.__class__}")
 
 import dj_database_url
 
 # Prueba de logging manual
-import logging
 logging.getLogger('storages').debug('Prueba de logging storages desde Railway')
 logging.getLogger('django').info('Prueba de logging django desde Railway')
 
