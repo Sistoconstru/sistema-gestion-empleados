@@ -91,5 +91,5 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.sa-east-1.amazonaws.com'
 
 AWS_QUERYSTRING_AUTH = True
 
-DEFAULT_FILE_STORAGE = 'apps.storages_backends.MediaStorage'
+DEFAULT_FILE_STORAGE = 'storages_backends.MediaStorage'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
