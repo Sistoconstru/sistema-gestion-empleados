@@ -190,6 +190,8 @@ def documento_upload(request, empleado_pk):
                     import logging
                     logger = logging.getLogger('storages')
                     logger.debug(f'Documento subido: {documento.archivo.name}')
+                        # Log de la URL firmada generada
+                        logger.debug(f'URL firmada: {documento.archivo.url}')
                     
                     messages.success(
                         request,
