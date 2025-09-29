@@ -13,6 +13,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logging.info(f"WSGI DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
 
+# Agregar el directorio raíz al sys.path
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 # Agregar carpeta apps al Python path
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../apps'))
