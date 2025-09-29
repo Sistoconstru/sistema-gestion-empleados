@@ -1,5 +1,10 @@
 from .base import *
 
+# Log para verificar el settings activo
+import os
+import logging
+logging.getLogger('django').info(f"DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+
 import dj_database_url
 
 # Prueba de logging manual
