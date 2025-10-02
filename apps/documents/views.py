@@ -79,8 +79,12 @@ def documento_replace(request, documento_id):
                 documento.save()
                 
                 # Eliminar el archivo anterior si existe
-                if old_file and os.path.exists(old_file):
-                    storages["default"].delete(old_file)
+                if old_file:
+                    try:
+                        storages["default"].delete(old_file)
+                    except Exception:
+                        # El archivo no existe en el backend, continuar sin error
+                        pass
                 
                 messages.success(request, 'Documento reemplazado correctamente.')
                 return redirect('documents:documento_view', documento_pk=documento_id)
