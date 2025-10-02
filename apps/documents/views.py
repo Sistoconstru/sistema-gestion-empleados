@@ -68,7 +68,7 @@ def documento_replace(request, documento_id):
         if form.is_valid():
             with transaction.atomic():
                 # Guardar la ruta del archivo anterior
-                old_file = documento.archivo.path if documento.archivo else None
+                old_file = documento.archivo.name if documento.archivo else None
                 
                 # Actualizar el documento
                 documento = form.save(commit=False)
@@ -82,8 +82,8 @@ def documento_replace(request, documento_id):
                 if old_file:
                     try:
                         storages["default"].delete(old_file)
-                    except Exception:
-                        # El archivo no existe en el backend, continuar sin error
+                    except Exception as e:
+                        logger.warning(f"No se pudo eliminar el archivo anterior: {old_file}. Motivo: {str(e)}")
                         pass
                 
                 messages.success(request, 'Documento reemplazado correctamente.')
