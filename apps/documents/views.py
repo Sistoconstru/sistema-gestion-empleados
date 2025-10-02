@@ -12,7 +12,7 @@ from django.http import JsonResponse, HttpResponse, Http404
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.utils import timezone
-from django.core.files.storage import default_storage
+from django.core.files.storage import storages
 import os
 from datetime import date, timedelta
 import json
@@ -80,7 +80,7 @@ def documento_replace(request, documento_id):
                 
                 # Eliminar el archivo anterior si existe
                 if old_file and os.path.exists(old_file):
-                    default_storage.delete(old_file)
+                    storages["default"].delete(old_file)
                 
                 messages.success(request, 'Documento reemplazado correctamente.')
                 return redirect('documents:documento_view', documento_pk=documento_id)
