@@ -75,7 +75,11 @@ class DocumentoEmpleado(models.Model):
     empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)  # Empleado asociado
     tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)  # Tipo de documento
     nombre_archivo = models.CharField(max_length=255)  # Nombre del archivo
-    archivo = models.FileField(upload_to=get_upload_path)  # Archivo subido
+    from custom_storage.media import MediaStorage
+    archivo = models.FileField(
+        upload_to=get_upload_path,
+        storage=MediaStorage()
+    )  # Archivo subido
     fecha_documento = models.DateField(null=True, blank=True)  # Fecha del documento
     fecha_vencimiento = models.DateField(null=True, blank=True)  # Fecha de vencimiento
     estado_aprobacion = models.CharField(max_length=20, choices=ESTADOS_APROBACION, default='pendiente')  # Estado de aprobación
