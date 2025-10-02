@@ -1,4 +1,4 @@
-DEFAULT_FILE_STORAGE = 'custom_storage.MediaStorage'
+DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'
 from .base import *
 
 
