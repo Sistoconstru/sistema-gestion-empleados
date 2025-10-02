@@ -1,7 +1,5 @@
-from .base import *
-
-# Configuración de AWS S3 y backend de almacenamiento
 DEFAULT_FILE_STORAGE = 'custom_storage.MediaStorage'
+from .base import *
 
 
 # Log para verificar el settings activo
