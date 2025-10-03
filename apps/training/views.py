@@ -765,7 +765,8 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
             
             # Primero filtrar por estado y luego excluir los ya inscritos
             context['empleados_disponibles'] = Empleado.objects.filter(
-                estado__codigo__iexact='activo'  # Filtrar por el código del estado, insensible a mayúsculas/minúsculas
+                estado__codigo__iexact='activo',  # Filtrar por el código del estado, insensible a mayúsculas/minúsculas
+                activo=True  # Solo empleados realmente activos
             ).exclude(
                 id__in=empleados_inscritos if empleados_inscritos else []
             ).select_related('estado').order_by('apellidos', 'nombres')
