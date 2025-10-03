@@ -289,7 +289,7 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                         {% endif %}
 
                         <!-- Botón para volver al perfil del empleado -->
-                        <a href="{% url 'employees:empleado_perfil_detail' pk=empleado.pk %}" class="btn btn-outline-corporativo">
+                        <a href="{% url 'employees:empleado_detail' empleado.pk %}" class="btn btn-outline-corporativo">
                             <i class="fas fa-user me-1"></i>Volver al Perfil
                         </a>
                     </div>
