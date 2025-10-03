@@ -947,11 +947,12 @@ def inscribir_capacitacion(request, pk):
             # Si es interna, crear registros de progreso
             if not capacitacion.es_externa():
                 for modulo in capacitacion.modulocapacitacion_set.filter(activo=True):
-                    for contenido in modulo.contenidoleccion_set.all():
-                        ProgresoCapacitacion.objects.create(
-                            inscripcion=inscripcion,
-                            contenido=contenido
-                        )
+                    for leccion in modulo.leccion_set.filter(activa=True):
+                        for contenido in leccion.contenidoleccion_set.all():
+                            ProgresoCapacitacion.objects.create(
+                                inscripcion=inscripcion,
+                                contenido=contenido
+                            )
             
             # Preparar mensaje y redirección según el tipo de capacitación
             if capacitacion.es_externa():
