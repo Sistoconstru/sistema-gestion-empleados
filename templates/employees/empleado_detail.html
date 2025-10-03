@@ -552,8 +552,9 @@
                         {% comment "Obtener tipos de documentos obligatorios" %}
                         {% endcomment %}
                         <div class="list-group list-group-flush">
+
                             <!-- Cédula de Ciudadanía -->
-                            {% with doc_cedula=documentos_empleado|select:"tipo_documento__codigo,CEDULA"|first %}
+                            {% with doc_cedula=documentos_empleado|select:"tipo_documento__codigo,CED"|first %}
                             <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-id-card me-2 text-primary"></i>
@@ -569,6 +570,58 @@
                                 <div>
                                     {% if doc_cedula %}
                                         {{ doc_cedula|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            <!-- Contrato laboral -->
+                            {% with doc_contrato=documentos_empleado|select:"tipo_documento__codigo,DCLAB"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-file-contract me-2 text-info"></i>
+                                    <div>
+                                        <div class="fw-bold">Contrato laboral</div>
+                                        {% if doc_contrato %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_contrato.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_contrato %}
+                                        {{ doc_contrato|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            <!-- Hoja de vida -->
+                            {% with doc_hoja_vida=documentos_empleado|select:"tipo_documento__codigo,DHVID"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user me-2 text-secondary"></i>
+                                    <div>
+                                        <div class="fw-bold">Hoja de vida</div>
+                                        {% if doc_hoja_vida %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_hoja_vida.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_hoja_vida %}
+                                        {{ doc_hoja_vida|document_status_badge }}
                                     {% else %}
                                         <span class="badge bg-danger">
                                             <i class="fas fa-times me-1"></i>Faltante
