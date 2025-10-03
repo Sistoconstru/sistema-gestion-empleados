@@ -75,8 +75,10 @@ class PreguntaQuiz(models.Model):
         default=TipoPreguntaQuiz.MULTIPLE
     )
     puntaje = models.PositiveIntegerField(default=1)
+    from custom_storage.media import MediaStorage
     imagen = models.ImageField(
         upload_to='evaluaciones/preguntas/',
+        storage=MediaStorage(),
         null=True,
         blank=True
     )
@@ -589,7 +591,12 @@ class ContenidoLeccion(models.Model):
     tipo_contenido = models.ForeignKey(TipoContenido, on_delete=models.CASCADE)
     
     # Archivos y URLs
-    archivo = models.FileField(upload_to='capacitaciones/contenido/', blank=True)
+    from custom_storage.media import MediaStorage
+    archivo = models.FileField(
+        upload_to='capacitaciones/contenido/',
+        storage=MediaStorage(),
+        blank=True
+    )
     url_externa = models.URLField(blank=True)
     contenido_texto = models.TextField(blank=True, help_text="Para contenido de texto directo")
     
