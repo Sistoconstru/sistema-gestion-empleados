@@ -411,6 +411,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Lógica para el botón de evaluación
     const btnValoracion = document.getElementById('btnValoracion');
     // El botón de valoración siempre está habilitado. La validación se hace en backend y en el JS del quiz.
+    if (btnValoracion) {
+        btnValoracion.addEventListener('click', function(e) {
+            // Si el botón está habilitado (no tiene disabled)
+            if (!btnValoracion.hasAttribute('disabled')) {
+                Swal.fire({
+                    icon: 'info',
+                    title: '¡Listo para valorar!',
+                    text: 'Desplazando a la sección de valoraciones...'
+                }).then(() => {
+                    // Buscar la sección de valoraciones por id o clase
+                    const valoracionesSection = document.getElementById('valoraciones') || document.querySelector('.valoraciones');
+                    if (valoracionesSection) {
+                        valoracionesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        // Si no existe, hacer scroll al top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            }
+        });
+    }
 
     // Eliminado: No registrar progreso automáticamente al salir de la página
     
