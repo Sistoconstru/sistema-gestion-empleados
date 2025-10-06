@@ -392,7 +392,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
 
         btnMarcarCompletada.addEventListener('click', function() {
-            const contenidoId = document.querySelector('.lesson-item.active').dataset.contenidoId;
+            const activeLesson = document.querySelector('.lesson-item.active');
+            const contenidoId = activeLesson ? activeLesson.dataset.contenidoId : undefined;
+            if (!contenidoId || contenidoId === 'undefined' || contenidoId === 'null') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de contenido',
+                    text: 'No se pudo identificar el contenido actual. Por favor, recarga la página o contacta soporte.'
+                });
+                return;
+            }
             // Deshabilitar solo visualmente para evitar doble click, pero NO ocultar ni marcar como completado aún
             btnMarcarCompletada.disabled = true;
             registrarProgreso(contenidoId, true, btnMarcarCompletada);
