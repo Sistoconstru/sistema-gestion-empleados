@@ -35,6 +35,7 @@ urlpatterns = [
     path('empleados/', include('apps.employees.urls')),
     path('organizacional/', include('apps.organizational.urls')),
     path('documentos/', include('apps.documents.urls')),
+    path('documents/', include('apps.documents.urls', namespace='documents')),
     path('capacitaciones/', include('apps.training.urls')),
     path('evaluaciones/', include('apps.evaluations.urls')),
     path('encuestas/', include('apps.surveys.urls')),
