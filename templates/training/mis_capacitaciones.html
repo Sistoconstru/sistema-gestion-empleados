@@ -282,10 +282,7 @@
                                     Ver Progreso
                                 </a>
                             {% elif inscripcion.estado == 'aprobado' %}
-                                {# <a href="{% url 'training:certificado' inscripcion.pk %}" class="btn btn-corporativo">
-                                    <i class="fas fa-certificate"></i>
-                                    Ver Certificado
-                                </a> #}
+                                {# Enlace a certificado eliminado temporalmente porque la vista no existe #}
                                 <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-outline-secondary">
                                     <i class="fas fa-redo"></i>
                                     Repetir Curso
