@@ -237,7 +237,7 @@
                                 {% if inscripcion.estado == 'aprobado' and inscripcion.puntaje_final %}
                                     <div class="h4 text-success mb-1">{{ inscripcion.puntaje_final }}%</div>
                                     <small class="text-muted">Calificación</small>
-                                {% if inscripcion.estado == 'en_progreso' %}
+                                {% elif inscripcion.estado == 'en_progreso' %}
                                     <div class="h4 text-warning mb-1">{{ inscripcion.porcentaje_completado|default_if_none:0 }}%</div>
                                     <small class="text-muted">Completado</small>
                                 {% else %}
