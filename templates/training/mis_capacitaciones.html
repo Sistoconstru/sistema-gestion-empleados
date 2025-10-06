@@ -237,8 +237,8 @@
                                 {% if inscripcion.estado == 'aprobado' and inscripcion.puntaje_final %}
                                     <div class="h4 text-success mb-1">{{ inscripcion.puntaje_final }}%</div>
                                     <small class="text-muted">Calificación</small>
-                                {% elif inscripcion.estado == 'en_progreso' %}
-                                    <div class="h4 text-warning mb-1">{{ progreso_actual|default:65 }}%</div>
+                                {% if inscripcion.estado == 'en_progreso' %}
+                                    <div class="h4 text-warning mb-1">{{ inscripcion.porcentaje_completado|default:0 }}%</div>
                                     <small class="text-muted">Completado</small>
                                 {% else %}
                                     <div class="h4 text-muted mb-1">0%</div>
@@ -252,10 +252,10 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between small mb-1">
                                 <span>Progreso General</span>
-                                <span>{{ progreso_actual|default:65 }}%</span>
+                                <span>{{ inscripcion.porcentaje_completado|default:0 }}%</span>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-amarillo" style="width: {{ progreso_actual|default:65 }}%"></div>
+                                <div class="progress-bar bg-amarillo" style="width: {{ inscripcion.porcentaje_completado|default:0 }}%"></div>
                             </div>
                         </div>
                         {% elif inscripcion.estado == 'aprobado' %}
