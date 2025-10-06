@@ -658,10 +658,10 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
         context.update({
             'completadas': inscripciones.filter(estado='aprobado').count(),
             'en_progreso': inscripciones.filter(estado='en_progreso').count(),
-            'horas_acumuladas': sum([
-                i.capacitacion.duracion_estimada_horas 
-                for i in inscripciones.filter(estado='aprobado')
-            ])
+                'horas_acumuladas': sum([
+                    getattr(i.capacitacion, 'duracion_estimada_horas', 0) or 0
+                    for i in inscripciones.filter(estado='aprobado')
+                ])
         })
         
         # Capacitaciones recientes
@@ -678,6 +678,10 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
             ).order_by(
                 '-fecha_inscripcion'
             )
+            # Inicializar porcentaje_completado en 0 si es None
+            for insc in context['capacitaciones']:
+                if insc.porcentaje_completado is None:
+                    insc.porcentaje_completado = 0
         except Exception as e:
             logger.error(f"Error obteniendo capacitaciones: {e}")
             context['capacitaciones'] = []
