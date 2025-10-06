@@ -86,7 +86,7 @@
                         <div class="pdf-container" style="position:relative; background:#222; border-radius:8px; padding:0 10px 10px 10px; overflow:visible;">
                             <iframe 
                                 id="visorPDF"
-                                src="/static/pdfjs/web/viewer.html?file={{ contenido_actual.archivo.url|urlencode }}"
+                                src="/static/pdfjs/web/viewer.html?file={{ request.scheme }}://{{ request.get_host }}/documents/proxy-pdf/?file={{ contenido_actual.archivo.url|urlencode }}"
                                 width="100%" 
                                 style="height:55vh; min-height:300px; max-height:60vh; border-radius:8px; border:1px solid #333; background:#fff; display:block; margin-bottom:0;"
                                 allowfullscreen

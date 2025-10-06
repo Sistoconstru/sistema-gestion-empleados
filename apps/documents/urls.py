@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 from django.urls import path
 from . import views
+from . import views_proxy
 
 app_name = 'documents'
 
@@ -36,4 +37,5 @@ urlpatterns = [
     
     # Lista general (para administradores)
     path('', views.DocumentoEmpleadoListView.as_view(), name='documento_list'),
+    path('proxy-pdf/', views_proxy.proxy_pdf, name='proxy_pdf'),
 ]
