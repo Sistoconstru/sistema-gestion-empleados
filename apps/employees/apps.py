@@ -6,3 +6,4 @@ class EmployeesConfig(AppConfig):
 
     def ready(self):
         import apps.employees.signals  # Importa las señales
+        import apps.employees.signals_evaluaciones  # Importa el signal de evaluaciones por cargo

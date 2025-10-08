@@ -1,7 +1,9 @@
 # =============================================================================
 # apps/organizational/admin.py
 # =============================================================================
+
 from django.contrib import admin
+from apps.evaluations.models import EvaluacionCargo
 from .models import Sede, AreaEmpresa, Cargo
 
 @admin.register(Sede)
@@ -33,8 +35,16 @@ class AreaEmpresaAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('area_padre', 'responsable')
 
 @admin.register(Cargo)
+class EvaluacionCargoInline(admin.TabularInline):
+    model = EvaluacionCargo
+    extra = 1
+    autocomplete_fields = ['evaluacion', 'asignado_por']
+
+
+@admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'nivel_jerarquico', 'activo')
+    inlines = [EvaluacionCargoInline]
     list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico')
     search_fields = ('codigo', 'nombre', 'area__nombre')
     
