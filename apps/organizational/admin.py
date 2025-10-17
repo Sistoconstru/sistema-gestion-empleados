@@ -34,7 +34,6 @@ class AreaEmpresaAdmin(admin.ModelAdmin):
         # Optimiza la consulta incluyendo relaciones
         return super().get_queryset(request).select_related('area_padre', 'responsable')
 
-@admin.register(Cargo)
 class EvaluacionCargoInline(admin.TabularInline):
     model = EvaluacionCargo
     extra = 1
