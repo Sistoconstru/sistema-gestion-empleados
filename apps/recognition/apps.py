@@ -4,3 +4,6 @@ from django.apps import AppConfig
 class RecognitionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.recognition'
+    
+    def ready(self):
+        import apps.recognition.signals

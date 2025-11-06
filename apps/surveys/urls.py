@@ -3,19 +3,19 @@
 # =============================================================================
 
 from django.urls import path
-from django.views.generic import TemplateView
+from . import views
 
 app_name = 'surveys'
 
 urlpatterns = [
-    # URLs básicas
-    path('', TemplateView.as_view(template_name='surveys/index.html'), name='index'),
+    # Dashboard principal
+    path('', views.DashboardView.as_view(), name='index'),
     
     # Encuestas
-    # path('list/', views.EncuestaListView.as_view(), name='encuesta_list'),
-    # path('<uuid:pk>/', views.ResponderEncuestaView.as_view(), name='responder_encuesta'),
-    # path('mis-encuestas/', views.MisEncuestasView.as_view(), name='mis_encuestas'),
+    path('lista/', views.EncuestaListView.as_view(), name='encuesta_list'),
+    path('responder/<uuid:pk>/', views.ResponderEncuestaView.as_view(), name='responder_encuesta'),
+    path('mis-encuestas/', views.MisEncuestasView.as_view(), name='mis_encuestas'),
     
-    # Resultados
+    # Resultados (para implementar después)
     # path('resultados/<uuid:pk>/', views.ResultadosEncuestaView.as_view(), name='resultados_encuesta'),
 ]

@@ -1,0 +1,222 @@
+<!-- templates/recognition/mis_insignias.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Insignias - Reconocimientos{% endblock %}
+
+{% block extra_css %}
+<style>
+.insignia-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    height: 180px;
+}
+
+.insignia-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.insignia-obtenida {
+    border-color: #28a745;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+}
+
+.insignia-no-obtenida {
+    border-color: #e9ecef;
+    background: #f8f9fa;
+    opacity: 0.6;
+}
+
+.insignia-oro {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #8b5a00;
+}
+
+.insignia-plata {
+    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+    color: #4a4a4a;
+}
+
+.insignia-bronce {
+    background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%);
+    color: #5c3a1a;
+}
+
+.insignia-platino {
+    background: linear-gradient(135deg, #b4b4b4 0%, #e0e0e0 100%);
+    color: #2c2c2c;
+}
+
+.insignia-diamante {
+    background: linear-gradient(135deg, #9d9dd6 0%, #c1c1e8 100%);
+    color: #3e3e8a;
+}
+
+.stats-overview {
+    background: linear-gradient(135deg, rgba(67, 97, 138, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-corporativo mb-1">
+                        <i class="fas fa-medal me-2"></i>Mis Insignias
+                    </h2>
+                    <p class="text-muted mb-0">Logros y medallas conseguidas</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'recognition:index' %}" class="btn btn-outline-corporativo">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="stats-overview p-4">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h3 class="text-corporativo">{{ total_insignias_obtenidas|default:0 }}</h3>
+                        <p class="text-muted mb-0">Insignias Obtenidas</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-warning">{{ total_insignias_disponibles|default:0 }}</h3>
+                        <p class="text-muted mb-0">Total Disponibles</p>
+                    </div>
+                    <div class="col-md-3">
+                        {% widthratio total_insignias_obtenidas total_insignias_disponibles 100 as porcentaje %}
+                        <h3 class="text-success">{{ porcentaje|default:0 }}%</h3>
+                        <p class="text-muted mb-0">Completitud</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-info">{{ total_insignias_disponibles|add:total_insignias_obtenidas|default:0 }}</h3>
+                        <p class="text-muted mb-0">Por Conseguir</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis Insignias Obtenidas -->
+    {% if mis_insignias %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-success text-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>Insignias Conseguidas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for insignia in mis_insignias %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card insignia-card insignia-obtenida h-100">
+                                <div class="card-body text-center">
+                                    <div class="insignia-nivel-badge mb-2 
+                                        {% if insignia.tipo_insignia.nivel == 'oro' %}insignia-oro
+                                        {% elif insignia.tipo_insignia.nivel == 'plata' %}insignia-plata
+                                        {% elif insignia.tipo_insignia.nivel == 'bronce' %}insignia-bronce
+                                        {% elif insignia.tipo_insignia.nivel == 'platino' %}insignia-platino
+                                        {% else %}insignia-diamante{% endif %} p-2 rounded">
+                                        <i class="fas fa-award fa-3x"></i>
+                                    </div>
+                                    <h6 class="card-title text-corporativo">{{ insignia.tipo_insignia.nombre }}</h6>
+                                    <p class="card-text text-muted small">{{ insignia.tipo_insignia.descripcion|truncatewords:8 }}</p>
+                                    <div class="mt-auto">
+                                        <small class="text-success">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ insignia.fecha_otorgamiento|date:"d/m/Y" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Todas las Insignias Disponibles -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-list me-2"></i>Todas las Insignias Disponibles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if insignias_disponibles %}
+                        <div class="row">
+                            {% for insignia in insignias_disponibles %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card insignia-card h-100 
+                                    {% if insignia.id in insignias_obtenidas_ids %}insignia-obtenida{% else %}insignia-no-obtenida{% endif %}">
+                                    <div class="card-body text-center">
+                                        <div class="insignia-nivel-badge mb-2 
+                                            {% if insignia.nivel == 'oro' %}insignia-oro
+                                            {% elif insignia.nivel == 'plata' %}insignia-plata
+                                            {% elif insignia.nivel == 'bronce' %}insignia-bronce
+                                            {% elif insignia.nivel == 'platino' %}insignia-platino
+                                            {% else %}insignia-diamante{% endif %} p-2 rounded">
+                                            <i class="fas fa-award fa-3x"></i>
+                                        </div>
+                                        <h6 class="card-title text-corporativo">{{ insignia.nombre }}</h6>
+                                        <p class="card-text text-muted small">{{ insignia.descripcion|truncatewords:8 }}</p>
+                                        
+                                        <div class="mt-auto">
+                                            {% if insignia.id in insignias_obtenidas_ids %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Conseguida
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    {% if insignia.puntos_requeridos %}
+                                                        {{ insignia.puntos_requeridos }} pts requeridos
+                                                    {% else %}
+                                                        Criterios especiales
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                Nivel: {{ insignia.get_nivel_display }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-medal fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No hay insignias disponibles</h4>
+                            <p class="text-muted">Las insignias se configurarán pronto.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

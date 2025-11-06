@@ -17,6 +17,9 @@ def get_item(dictionary, key):
     """Obtiene un elemento de un diccionario usando una clave"""
     if dictionary is None:
         return None
+    # Verificar que sea un diccionario antes de usar .get()
+    if not isinstance(dictionary, dict):
+        return None
     return dictionary.get(key)
 
 

@@ -1,5 +1,7 @@
-DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'
 from .base import *
+
+# Configuración de storage para producción
+DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'
 
 
 # Log para verificar el settings activo

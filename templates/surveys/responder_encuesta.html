@@ -1,0 +1,486 @@
+<!-- templates/surveys/responder_encuesta.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ encuesta.nombre }} - Responder Encuesta{% endblock %}
+
+{% block extra_css %}
+<style>
+.survey-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.question-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.question-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.question-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.form-check-input:checked {
+    background-color: #43618a;
+    border-color: #43618a;
+}
+
+.form-check-input:focus {
+    border-color: #43618a;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 138, 0.25);
+}
+
+.btn-survey-submit {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-survey-submit:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ba085 100%);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.progress-survey {
+    height: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.progress-bar-survey {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+}
+
+.survey-header {
+    background: linear-gradient(135deg, rgba(67, 97, 138, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.required-asterisk {
+    color: #dc3545;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #43618a;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 138, 0.25);
+}
+
+.question-category {
+    background-color: rgba(67, 97, 138, 0.1);
+    color: #43618a;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="survey-container">
+        <!-- Header de la encuesta -->
+        <div class="survey-header text-center">
+            <h1 class="text-corporativo mb-2">{{ encuesta.nombre }}</h1>
+            <p class="text-muted mb-3">{{ encuesta.descripcion }}</p>
+            
+            {% if encuesta.instrucciones %}
+            <div class="alert alert-info mx-auto" style="max-width: 600px;">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Instrucciones:</strong> {{ encuesta.instrucciones }}
+            </div>
+            {% endif %}
+            
+            <!-- Barra de progreso -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">Progreso de la encuesta</small>
+                        <small class="text-muted">{{ participacion.porcentaje_completado }}% completado</small>
+                    </div>
+                    <div class="progress progress-survey">
+                        <div class="progress-bar progress-bar-survey" 
+                             role="progressbar" 
+                             style="width: {{ participacion.porcentaje_completado }}%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de la encuesta -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-tag text-corporativo me-2"></i>
+                            <div>
+                                <small class="text-muted d-block">Tipo de Encuesta</small>
+                                <strong class="text-corporativo">{{ encuesta.tipo_encuesta.nombre }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-calendar-alt text-warning me-2"></i>
+                            <div>
+                                <small class="text-muted d-block">Fecha límite</small>
+                                <strong class="text-warning">{{ encuesta.fecha_fin|date:"d/m/Y" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de la encuesta -->
+        <form method="post" id="surveyForm">
+            {% csrf_token %}
+            
+            {% if preguntas %}
+                {% for pregunta in preguntas %}
+                <div class="question-card">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <div class="d-flex align-items-start">
+                            <div class="question-number me-3">{{ forloop.counter }}</div>
+                            <div class="flex-grow-1">
+                                <h5 class="text-corporativo mb-2">
+                                    {{ pregunta.pregunta }}
+                                    {% if pregunta.obligatoria %}
+                                        <span class="required-asterisk">*</span>
+                                    {% endif %}
+                                </h5>
+                                
+                                {% if pregunta.categoria %}
+                                <span class="question-category">{{ pregunta.categoria }}</span>
+                                {% endif %}
+                                
+                                {% if pregunta.descripcion %}
+                                <p class="text-muted small mt-2 mb-0">{{ pregunta.descripcion }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body pt-3">
+                        {% if pregunta.tipo_pregunta.codigo == 'multiple_choice' %}
+                            <!-- Pregunta de opción múltiple -->
+                            {% for opcion in pregunta.opcionencuesta_set.all %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" 
+                                       type="radio" 
+                                       name="pregunta_{{ pregunta.id }}" 
+                                       id="opcion_{{ opcion.id }}"
+                                       value="{{ opcion.id }}"
+                                       {% if pregunta.obligatoria %}required{% endif %}>
+                                <label class="form-check-label" for="opcion_{{ opcion.id }}">
+                                    {{ opcion.opcion }}
+                                    {% if opcion.valor_numerico %}
+                                        <small class="text-muted">({{ opcion.valor_numerico }})</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            
+                        {% elif pregunta.tipo_pregunta.codigo == 'checkbox' %}
+                            <!-- Pregunta de múltiples selecciones -->
+                            {% for opcion in pregunta.opcionencuesta_set.all %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       name="pregunta_{{ pregunta.id }}[]" 
+                                       id="opcion_{{ opcion.id }}"
+                                       value="{{ opcion.id }}">
+                                <label class="form-check-label" for="opcion_{{ opcion.id }}">
+                                    {{ opcion.opcion }}
+                                    {% if opcion.valor_numerico %}
+                                        <small class="text-muted">({{ opcion.valor_numerico }})</small>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            
+                        {% elif pregunta.tipo_pregunta.codigo == 'text' %}
+                            <!-- Pregunta de texto libre -->
+                            <div class="mb-3">
+                                <textarea class="form-control" 
+                                          name="pregunta_{{ pregunta.id }}"
+                                          rows="4"
+                                          placeholder="Escribe tu respuesta aquí..."
+                                          {% if pregunta.obligatoria %}required{% endif %}></textarea>
+                            </div>
+                            
+                        {% elif pregunta.tipo_pregunta.codigo == 'short_text' %}
+                            <!-- Pregunta de texto corto -->
+                            <div class="mb-3">
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="pregunta_{{ pregunta.id }}"
+                                       placeholder="Escribe tu respuesta..."
+                                       {% if pregunta.obligatoria %}required{% endif %}>
+                            </div>
+                            
+                        {% elif pregunta.tipo_pregunta.codigo == 'rating' %}
+                            <!-- Pregunta de calificación -->
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Selecciona una calificación del 1 al 5</label>
+                                <div class="d-flex gap-3">
+                                    {% for i in "12345" %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="pregunta_{{ pregunta.id }}" 
+                                               id="rating_{{ pregunta.id }}_{{ i }}"
+                                               value="{{ i }}"
+                                               {% if pregunta.obligatoria %}required{% endif %}>
+                                        <label class="form-check-label" for="rating_{{ pregunta.id }}_{{ i }}">
+                                            {{ i }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small class="text-muted">Muy malo</small>
+                                    <small class="text-muted">Excelente</small>
+                                </div>
+                            </div>
+                            
+                        {% elif pregunta.tipo_pregunta.codigo == 'select' %}
+                            <!-- Pregunta de selección -->
+                            <div class="mb-3">
+                                <select class="form-select" 
+                                        name="pregunta_{{ pregunta.id }}"
+                                        {% if pregunta.obligatoria %}required{% endif %}>
+                                    <option value="">Selecciona una opción...</option>
+                                    {% for opcion in pregunta.opcionencuesta_set.all %}
+                                    <option value="{{ opcion.id }}">
+                                        {{ opcion.opcion }}
+                                        {% if opcion.valor_numerico %}({{ opcion.valor_numerico }}){% endif %}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                        {% else %}
+                            <!-- Tipo de pregunta no reconocido -->
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Tipo de pregunta no soportado: {{ pregunta.tipo_pregunta.codigo }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Botones de acción -->
+                <div class="text-center mt-4 mb-5">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'surveys:index' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Volver
+                        </a>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-corporativo" onclick="guardarBorrador()">
+                                <i class="fas fa-save me-1"></i>Guardar Borrador
+                            </button>
+                            <button type="submit" class="btn btn-survey-submit">
+                                <i class="fas fa-check me-1"></i>Finalizar Encuesta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            {% else %}
+                <!-- No hay preguntas -->
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-circle fa-3x text-warning mb-3"></i>
+                    <h4 class="text-muted">Esta encuesta no tiene preguntas configuradas</h4>
+                    <p class="text-muted">Contacta al administrador para resolver este problema.</p>
+                    <a href="{% url 'surveys:index' %}" class="btn btn-corporativo">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-corporativo">
+                    <i class="fas fa-check-circle me-2"></i>Confirmar envío
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres finalizar esta encuesta?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Importante:</strong> Una vez enviada, no podrás modificar tus respuestas.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="enviarEncuesta()">
+                    <i class="fas fa-paper-plane me-1"></i>Enviar Encuesta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('surveyForm');
+    
+    // Interceptar el envío del formulario
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Mostrar modal de confirmación
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        modal.show();
+    });
+    
+    // Guardar progreso automáticamente cada 2 minutos
+    setInterval(guardarProgreso, 120000);
+});
+
+function guardarBorrador() {
+    guardarProgreso();
+    
+    // Mostrar mensaje de confirmación
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alert.style.top = '20px';
+    alert.style.right = '20px';
+    alert.style.zIndex = '9999';
+    alert.innerHTML = `
+        <i class="fas fa-check me-2"></i>Borrador guardado correctamente
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 3000);
+}
+
+function guardarProgreso() {
+    const formData = new FormData(document.getElementById('surveyForm'));
+    formData.append('guardar_borrador', 'true');
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Progreso guardado automáticamente');
+        }
+    })
+    .catch(error => {
+        console.error('Error guardando progreso:', error);
+    });
+}
+
+function enviarEncuesta() {
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+    modal.hide();
+    
+    // Mostrar indicador de carga
+    const submitBtn = document.querySelector('.btn-survey-submit');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enviando...';
+    submitBtn.disabled = true;
+    
+    // Enviar formulario
+    const formData = new FormData(document.getElementById('surveyForm'));
+    formData.append('finalizar_encuesta', 'true');
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Redirigir a página de éxito
+            window.location.href = "{% url 'surveys:index' %}?mensaje=encuesta_completada";
+        } else {
+            throw new Error('Error en el envío');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        // Mostrar error
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        alert.style.top = '20px';
+        alert.style.right = '20px';
+        alert.style.zIndex = '9999';
+        alert.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-2"></i>Error al enviar la encuesta. Inténtalo de nuevo.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alert);
+    });
+}
+
+// Validación en tiempo real
+document.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(field) {
+    field.addEventListener('change', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+{% endblock %}

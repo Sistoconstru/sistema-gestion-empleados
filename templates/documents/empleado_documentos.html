@@ -13,8 +13,11 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
 
 {% block content %}
 <!-- Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
+<div class="d-flex justify-content-between align-items-center mb-4 position-relative">
+    <a href="{% url 'employees:empleado_perfil' %}" class="btn btn-outline-secondary position-absolute" style="left: 0; top: 0;">
+        <i class="fas fa-arrow-left me-2"></i>Volver a mi perfil
+    </a>
+    <div class="w-100 text-center">
         <h1 class="h3 mb-1">
             <i class="fas fa-file-alt text-corporativo me-2"></i>
             Documentos de {{ empleado.nombre_completo }}
@@ -287,11 +290,6 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                             <i class="fas fa-list me-1"></i>Ver Todos los Documentos
                         </a>
                         {% endif %}
-
-                        <!-- Botón para volver al perfil del empleado -->
-                        <a href="{% url 'employees:empleado_detail' empleado.pk %}" class="btn btn-outline-corporativo">
-                            <i class="fas fa-user me-1"></i>Volver al Perfil
-                        </a>
                     </div>
                 </div>
                 

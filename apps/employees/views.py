@@ -2,36 +2,33 @@
 # apps/employees/views.py - VISTAS CORREGIDAS DE EMPLEADOS
 # =============================================================================
 
-from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
+# Importaciones estándar
+import json
+import logging
+from datetime import timedelta, date
+
+# Importaciones de Django
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from django.contrib import messages
 from django.db.models import Q, Count, Avg, Prefetch
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.contrib.auth import get_user_model
 from django.db import transaction
-from datetime import timedelta, date
-import json
-import logging
 
+# Importaciones locales
+from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo
 from .forms import EmpleadoForm, BusquedaEmpleadoForm
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
 from apps.evaluations.models import AsignacionEvaluacion
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView
-from datetime import date, timedelta
-# Modelos necesarios
 from apps.documents.models import DocumentoEmpleado, TipoDocumentoEmpleado
 from apps.recognition.models import HistorialPuntos, InsigniaEmpleado
 
@@ -218,6 +215,100 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
                 ).select_related('capacitacion')
             except:
                 context['capacitaciones_cargo'] = []
+        
+        # Datos de reconocimientos (solo para administradores)
+        if self.request.user.is_staff:
+            try:
+                from django.db.models import Sum, Count, Q
+                from django.db.models.functions import Coalesce
+                
+                # Calcular puntos totales
+                puntos_totales = HistorialPuntos.objects.filter(
+                    empleado=empleado,
+                    validado=True
+                ).aggregate(total=Sum('puntos'))['total'] or 0
+                
+                # Puntos del mes actual
+                inicio_mes = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                puntos_mes = HistorialPuntos.objects.filter(
+                    empleado=empleado,
+                    validado=True,
+                    fecha_obtencion__gte=inicio_mes
+                ).aggregate(total=Sum('puntos'))['total'] or 0
+                
+                # Posición en ranking
+                from apps.employees.models import Empleado
+                empleados_ranking = Empleado.objects.exclude(estado__codigo='inactivo').annotate(
+                    puntos_totales=Coalesce(
+                        Sum('historialpuntos__puntos', filter=Q(historialpuntos__validado=True)), 
+                        0
+                    )
+                ).order_by('-puntos_totales')
+                
+                ranking_posicion = None
+                for i, emp in enumerate(empleados_ranking, 1):
+                    if emp.id == empleado.id:
+                        ranking_posicion = i
+                        break
+                
+                # Número de actividades
+                actividades_count = HistorialPuntos.objects.filter(
+                    empleado=empleado,
+                    validado=True
+                ).count()
+                
+                # Historial reciente de puntos (últimos 30 días)
+                hace_30_dias = timezone.now() - timedelta(days=30)
+                historial_puntos = HistorialPuntos.objects.filter(
+                    empleado=empleado,
+                    fecha_obtencion__gte=hace_30_dias
+                ).select_related('tipo_actividad', 'validado_por').order_by('-fecha_obtencion')[:10]
+                
+                # Datos de insignias
+                insignias_empleado = InsigniaEmpleado.objects.filter(
+                    empleado=empleado
+                ).select_related('tipo_insignia', 'otorgado_por').order_by('-fecha_otorgamiento')
+                
+                insignias_count = insignias_empleado.count()
+                
+                # Insignias del mes
+                insignias_mes = insignias_empleado.filter(
+                    fecha_otorgamiento__gte=inicio_mes
+                ).count()
+                
+                # Insignias especiales (manualmente otorgadas)
+                insignias_especiales = insignias_empleado.filter(
+                    otorgado_automaticamente=False
+                ).count()
+                
+                # Agregar al contexto
+                context.update({
+                    'puntos_totales': puntos_totales,
+                    'puntos_mes': puntos_mes,
+                    'ranking_posicion': ranking_posicion,
+                    'actividades_count': actividades_count,
+                    'historial_puntos': historial_puntos,
+                    'insignias_empleado': insignias_empleado,
+                    'insignias_count': insignias_count,
+                    'insignias_mes': insignias_mes,
+                    'insignias_especiales': insignias_especiales,
+                })
+                
+                # Agregar datos al empleado para uso en template
+                empleado.puntos_totales = puntos_totales
+                empleado.puntos_mes = puntos_mes
+                empleado.ranking_posicion = ranking_posicion
+                empleado.actividades_count = actividades_count
+                empleado.insignias_count = insignias_count
+                empleado.insignias_mes = insignias_mes
+                empleado.insignias_especiales = insignias_especiales
+                
+            except ImportError:
+                # Módulo de reconocimientos no disponible
+                pass
+            except Exception as e:
+                # Error al obtener datos de reconocimientos
+                pass
         
         return context
 

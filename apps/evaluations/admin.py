@@ -34,6 +34,7 @@ class TipoEvaluacionAdmin(admin.ModelAdmin):
 class EvaluacionDesempeñoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre', 'tipo_evaluacion', 'activa', 'fecha_creacion')
     list_filter = ('activa', 'tipo_evaluacion')
+    search_fields = ('codigo', 'nombre')
 
 # Registro del modelo AsignacionEvaluacion en el admin de Django
 @admin.register(AsignacionEvaluacion)

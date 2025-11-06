@@ -135,6 +135,37 @@ class Empleado(models.Model):
     def nombre_completo(self):
         """Retorna el nombre completo del empleado"""
         return f"{self.nombres} {self.apellidos}"
+    
+    @property
+    def cargo_actual(self):
+        """Retorna el historial de cargo actual del empleado"""
+        try:
+            historial = self.historialcargo_set.filter(activo=True).first()
+            return historial
+        except:
+            return None
+    
+    @property
+    def nombre_cargo_actual(self):
+        """Retorna el nombre del cargo actual del empleado"""
+        try:
+            historial = self.historialcargo_set.filter(activo=True).first()
+            if historial:
+                return historial.cargo.nombre
+            return None
+        except:
+            return None
+    
+    @property
+    def area_actual(self):
+        """Retorna el área actual del empleado basada en su cargo"""
+        try:
+            historial = self.historialcargo_set.filter(activo=True).first()
+            if historial:
+                return historial.cargo.area
+            return None
+        except:
+            return None
 
 class HistorialCargo(models.Model):
     """Historial de cargos de empleados"""

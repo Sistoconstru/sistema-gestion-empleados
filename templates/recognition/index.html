@@ -1,0 +1,493 @@
+<!-- templates/recognition/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reconocimientos y Gamificación - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+.metric-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.points-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.ranking-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.insignia-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.insignia-card:hover {
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+.insignia-nivel-oro {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #8b5a00;
+}
+
+.insignia-nivel-plata {
+    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+    color: #4a4a4a;
+}
+
+.insignia-nivel-bronce {
+    background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%);
+    color: #5c3a1a;
+}
+
+.ranking-item {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.ranking-item:hover {
+    background-color: rgba(67, 97, 138, 0.05);
+    transform: translateX(5px);
+}
+
+.ranking-position {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+}
+
+.ranking-1 { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); }
+.ranking-2 { background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%); }
+.ranking-3 { background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%); }
+.ranking-other { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
+
+.points-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.beneficio-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.beneficio-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.btn-action {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ba085 100%);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.activity-timeline {
+    position: relative;
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+}
+
+.activity-item {
+    position: relative;
+    padding-left: 50px;
+    margin-bottom: 1rem;
+}
+
+.activity-icon {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    background: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.stats-overview {
+    background: linear-gradient(135deg, rgba(67, 97, 138, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header Principal -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="stats-overview p-4 text-center position-relative">
+                <a href="{% url 'employees:empleado_perfil' %}" class="btn btn-outline-secondary position-absolute" style="left: 20px; top: 20px;">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a mi perfil
+                </a>
+                <h1 class="text-corporativo mb-2">
+                    <i class="fas fa-trophy me-2"></i>Centro de Reconocimientos
+                </h1>
+                <p class="text-muted mb-0">Sistema de gamificación, puntos e insignias</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métricas Personales -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card metric-card points-card h-100 border-0 shadow">
+                <div class="card-body text-center">
+                    <div class="points-display">{{ mis_puntos_totales|default:0 }}</div>
+                    <h5 class="mt-2 mb-1">Mis Puntos Totales</h5>
+                    <small class="opacity-75">
+                        <i class="fas fa-calendar me-1"></i>
+                        Este mes: +{{ mis_puntos_mes|default:0 }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                <div class="card-body text-center">
+                    <div class="points-display">{{ mis_puntos_disponibles|default:0 }}</div>
+                    <h5 class="mt-2 mb-1">Puntos Disponibles</h5>
+                    <small class="opacity-75">
+                        <i class="fas fa-coins me-1"></i>
+                        Para canjear por beneficios
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card metric-card ranking-card h-100 border-0 shadow">
+                <div class="card-body text-center">
+                    <div class="points-display">
+                        {% if mi_posicion_ranking %}#{{ mi_posicion_ranking }}{% else %}--{% endif %}
+                    </div>
+                    <h5 class="mt-2 mb-1">Mi Posición</h5>
+                    <small class="opacity-75">
+                        <i class="fas fa-users me-1"></i>
+                        De {{ empleados_activos }} empleados
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-medal fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Mis Insignias</div>
+                            <div class="h3 text-warning mb-0">{{ mis_insignias|length }}</div>
+                            <div class="text-success small">
+                                <i class="fas fa-award me-1"></i>Conseguidas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-gift fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Beneficios</div>
+                            <div class="h3 text-info mb-0">{{ beneficios_disponibles }}</div>
+                            <div class="text-success small">
+                                <i class="fas fa-shopping-cart me-1"></i>Disponibles
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación Rápida -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <a href="{% url 'recognition:mis_logros' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="fas fa-trophy fa-2x d-block mb-2"></i>
+                                <strong>Mis Logros</strong>
+                                <div class="small text-muted">Resumen completo</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <a href="{% url 'recognition:mis_puntos' %}" class="btn btn-outline-info w-100 py-3">
+                                <i class="fas fa-coins fa-2x d-block mb-2"></i>
+                                <strong>Mis Puntos</strong>
+                                <div class="small text-muted">Historial detallado</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <a href="{% url 'recognition:ranking' %}" class="btn btn-outline-danger w-100 py-3">
+                                <i class="fas fa-chart-line fa-2x d-block mb-2"></i>
+                                <strong>Ranking</strong>
+                                <div class="small text-muted">Clasificación general</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-warning w-100 py-3">
+                                <i class="fas fa-medal fa-2x d-block mb-2"></i>
+                                <strong>Insignias</strong>
+                                <div class="small text-muted">Logros y medallas</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                            <a href="{% url 'recognition:beneficios' %}" class="btn btn-outline-success w-100 py-3">
+                                <i class="fas fa-gift fa-2x d-block mb-2"></i>
+                                <strong>Beneficios</strong>
+                                <div class="small text-muted">Canjear puntos</div>
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Mis Insignias Recientes -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-medal me-2"></i>Mis Insignias Recientes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if mis_insignias %}
+                        <div class="row">
+                            {% for insignia in mis_insignias %}
+                            <div class="col-6 mb-3">
+                                <div class="insignia-card p-2 text-center 
+                                    {% if insignia.tipo_insignia.nivel == 'oro' %}insignia-nivel-oro
+                                    {% elif insignia.tipo_insignia.nivel == 'plata' %}insignia-nivel-plata
+                                    {% else %}insignia-nivel-bronce{% endif %}">
+                                    <i class="fas fa-award fa-2x mb-1"></i>
+                                    <div class="small fw-bold">{{ insignia.tipo_insignia.nombre|truncatewords:2 }}</div>
+                                    <div class="small">{{ insignia.fecha_otorgamiento|date:"d/m" }}</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-warning btn-sm">
+                                Ver Todas mis Insignias
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-medal fa-3x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">Aún no tienes insignias</p>
+                            <small class="text-muted">¡Completa actividades para conseguir tus primeras medallas!</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Actividad Reciente -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-history me-2"></i>Actividad Reciente
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="activity-timeline">
+                        {% if reconocimientos_recientes %}
+                            {% for reconocimiento in reconocimientos_recientes %}
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-corporativo small">
+                                        {{ reconocimiento.empleado.nombres|truncatewords:2 }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        {{ reconocimiento.tipo_reconocimiento.nombre|truncatewords:3 }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        {{ reconocimiento.fecha_otorgamiento|timesince }} ago
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        {% if insignias_recientes %}
+                            {% for insignia in insignias_recientes %}
+                            <div class="activity-item">
+                                <div class="activity-icon" style="background: #ffc107;">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-warning small">
+                                        {{ insignia.empleado.nombres|truncatewords:2 }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        Nueva insignia: {{ insignia.tipo_insignia.nombre|truncatewords:2 }}
+                                    </div>
+                                    <div class="text-muted small">
+                                        {{ insignia.fecha_otorgamiento|timesince }} ago
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beneficios Destacados -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-gift me-2"></i>Beneficios Destacados
+                    </h5>
+                    <a href="{% url 'recognition:beneficios' %}" class="btn btn-outline-success btn-sm">
+                        Ver Todos
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if beneficios_populares %}
+                        <div class="row">
+                            {% for beneficio in beneficios_populares %}
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="beneficio-card h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-gift fa-3x text-success mb-3"></i>
+                                        <h6 class="card-title text-corporativo">{{ beneficio.nombre|truncatewords:3 }}</h6>
+                                        <div class="text-success fw-bold mb-2">{{ beneficio.costo_puntos }} puntos</div>
+                                        <p class="card-text text-muted small">{{ beneficio.descripcion|truncatewords:8 }}</p>
+                                        <button class="btn btn-action btn-sm">
+                                            <i class="fas fa-shopping-cart me-1"></i>Canjear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-gift fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay beneficios disponibles</h5>
+                            <p class="text-muted">Los beneficios se actualizarán pronto.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas del Sistema -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Estadísticas del Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h4 class="text-corporativo">{{ total_reconocimientos }}</h4>
+                                <small class="text-muted">Reconocimientos Otorgados</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h4 class="text-warning">{{ total_insignias_otorgadas }}</h4>
+                                <small class="text-muted">Insignias Conseguidas</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h4 class="text-success">{{ stats_participacion.empleados_con_puntos }}</h4>
+                                <small class="text-muted">Empleados Participando</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 class="text-info">{{ stats_participacion.porcentaje_participacion }}%</h4>
+                            <small class="text-muted">Tasa de Participación</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

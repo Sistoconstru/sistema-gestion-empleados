@@ -1,0 +1,291 @@
+<!-- templates/surveys/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Encuestas y Evaluaciones - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+.metric-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.survey-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.survey-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.btn-survey {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-survey:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.bg-corporativo-light {
+    background-color: rgba(67, 97, 138, 0.1);
+}
+
+.text-corporativo-dark {
+    color: #2c3e50;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="row">
+        <!-- Header -->
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-corporativo mb-1">
+                        <i class="fas fa-poll-h me-2"></i>Encuestas y Evaluaciones
+                    </h2>
+                    <p class="text-muted mb-0">Gestión y seguimiento de encuestas organizacionales</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'surveys:encuesta_list' %}" class="btn btn-outline-corporativo">
+                        <i class="fas fa-list me-1"></i>Ver Todas
+                    </a>
+                    <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-corporativo">
+                        <i class="fas fa-user-check me-1"></i>Mis Encuestas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métricas principales -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-corporativo text-white rounded-circle p-3">
+                                <i class="fas fa-poll fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Total Encuestas</div>
+                            <div class="h3 text-corporativo mb-0">{{ total_encuestas }}</div>
+                            <div class="text-success small">
+                                <i class="fas fa-check-circle me-1"></i>Activas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning text-white rounded-circle p-3">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Pendientes</div>
+                            <div class="h3 text-warning mb-0">{{ encuestas_pendientes }}</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-hourglass-half me-1"></i>Por completar
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success text-white rounded-circle p-3">
+                                <i class="fas fa-check-double fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Completadas</div>
+                            <div class="h3 text-success mb-0">{{ encuestas_completadas }}</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-user-check me-1"></i>Por mí
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card metric-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info text-white rounded-circle p-3">
+                                <i class="fas fa-percentage fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="text-muted small">Participación</div>
+                            <div class="h3 text-info mb-0">{{ participacion_stats.porcentaje_completado }}%</div>
+                            <div class="text-muted small">
+                                <i class="fas fa-chart-line me-1"></i>General
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Encuestas Disponibles -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-corporativo-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-clipboard-list me-2"></i>Encuestas Disponibles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if encuestas_disponibles %}
+                        <div class="row">
+                            {% for encuesta in encuestas_disponibles %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card survey-card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="card-title text-corporativo mb-0">{{ encuesta.nombre }}</h6>
+                                            <span class="badge bg-success status-badge">Disponible</span>
+                                        </div>
+                                        <p class="card-text text-muted small mb-3">{{ encuesta.descripcion|truncatewords:15 }}</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                Hasta: {{ encuesta.fecha_fin }}
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="fas fa-tag me-1"></i>
+                                                {{ encuesta.tipo_encuesta.nombre }}
+                                            </small>
+                                        </div>
+                                        
+                                        <a href="{% url 'surveys:responder_encuesta' encuesta.pk %}" 
+                                           class="btn btn-survey w-100">
+                                            <i class="fas fa-play me-1"></i>Responder Encuesta
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay encuestas disponibles</h5>
+                            <p class="text-muted">No tienes encuestas pendientes por responder en este momento.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Lateral -->
+        <div class="col-lg-4">
+            <!-- Estadísticas de Participación -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-corporativo-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Estadísticas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar bg-corporativo" role="progressbar" 
+                                 style="width: {{ participacion_stats.porcentaje_completado }}%"></div>
+                        </div>
+                        <small class="text-muted">
+                            {{ participacion_stats.participaciones_completadas }} de {{ participacion_stats.total_participaciones }} participaciones completadas
+                        </small>
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h6 class="text-corporativo">{{ tipos_encuesta }}</h6>
+                                <small class="text-muted">Tipos</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-success">{{ encuestas_completadas }}</h6>
+                            <small class="text-muted">Completadas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encuestas Recientes -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-corporativo-light border-0">
+                    <h5 class="text-corporativo mb-0">
+                        <i class="fas fa-history me-2"></i>Recientes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if encuestas_recientes %}
+                        <div class="list-group list-group-flush">
+                            {% for encuesta in encuestas_recientes %}
+                            <div class="list-group-item px-0 py-2 border-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-corporativo-dark">{{ encuesta.nombre|truncatewords:4 }}</h6>
+                                        <small class="text-muted">{{ encuesta.tipo_encuesta.nombre }}</small>
+                                    </div>
+                                    <small class="text-muted">{{ encuesta.fecha_creacion|date:"d/m" }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center mb-0">No hay encuestas recientes</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

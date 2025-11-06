@@ -290,6 +290,51 @@
     border-bottom-color: white;
 }
 
+/* Pestañas de administrador siempre en línea */
+.nav-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.nav-tabs .nav-item {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.nav-tabs .nav-item.admin-tabs {
+    display: inline-block !important;
+}
+
+.nav-tabs .nav-item .nav-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.7rem;
+}
+
+@media (max-width: 992px) {
+    .nav-tabs .nav-item .nav-link {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .nav-tabs .nav-item .nav-link i {
+        display: none;
+    }
+}
+
+/* Estilos para insignias */
+.insignia-icon {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.insignia-icon:hover {
+    transform: scale(1.05);
+}
+
 /* Dropdown mejorados */
 .dropdown-menu {
     border-radius: var(--border-radius);

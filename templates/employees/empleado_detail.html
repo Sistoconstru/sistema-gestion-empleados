@@ -268,15 +268,13 @@
         </div>
     </div>
 
-    <!-- Columna Derecha -->
-    <div class="col-md-8">
-        <!-- Pestañas de Contenido -->
-        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" role="tab">
-                    <i class="fas fa-history me-1"></i>Historial de Cargos
-                </button>
-            </li>
+<!-- Pestañas de Contenido -->
+<ul class="nav nav-tabs" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" role="tab">
+            <i class="fas fa-history me-1"></i>Historial de Cargos
+        </button>
+    </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="capacitaciones-tab" data-bs-toggle="tab" data-bs-target="#capacitaciones" type="button" role="tab">
                     <i class="fas fa-graduation-cap me-1"></i>Capacitaciones
@@ -292,6 +290,18 @@
                     <i class="fas fa-file-alt me-1"></i>Documentos
                 </button>
             </li>
+            {% if user.is_staff %}
+            <li class="nav-item admin-tabs" role="presentation">
+                <button class="nav-link" id="puntuacion-tab" data-bs-toggle="tab" data-bs-target="#puntuacion" type="button" role="tab">
+                    <i class="fas fa-star me-1"></i>Puntuación
+                </button>
+            </li>
+            <li class="nav-item admin-tabs" role="presentation">
+                <button class="nav-link" id="insignias-tab" data-bs-toggle="tab" data-bs-target="#insignias" type="button" role="tab">
+                    <i class="fas fa-medal me-1"></i>Insignias
+                </button>
+            </li>
+            {% endif %}
         </ul>
 
         <div class="tab-content border border-top-0 p-4" id="profileTabsContent">
@@ -862,9 +872,237 @@
                 
                 {% endwith %}
             </div>
+
+            <!-- Pestaña Puntuación -->
+            {% if user.is_staff %}
+            <div class="tab-pane fade" id="puntuacion" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Historial de Puntuación</h6>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success btn-sm" onclick="otorgarPuntos('{{ empleado.id }}')">
+                            <i class="fas fa-plus me-1"></i>Otorgar Puntos
+                        </button>
+                        <a href="{% url 'recognition:historial_empleado' empleado.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-history me-1"></i>Ver Historial Completo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Resumen de Puntos -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center border-success">
+                            <div class="card-body">
+                                <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                <h4 class="text-success">{{ empleado.puntos_totales|default:0 }}</h4>
+                                <small class="text-muted">Puntos Totales</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-info">
+                            <div class="card-body">
+                                <i class="fas fa-calendar-month fa-2x text-info mb-2"></i>
+                                <h4 class="text-info">{{ empleado.puntos_mes|default:0 }}</h4>
+                                <small class="text-muted">Este Mes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-warning">
+                            <div class="card-body">
+                                <i class="fas fa-trophy fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">#{{ empleado.ranking_posicion|default:"-" }}</h4>
+                                <small class="text-muted">Posición Ranking</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-primary">
+                            <div class="card-body">
+                                <i class="fas fa-tasks fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">{{ empleado.actividades_count|default:0 }}</h4>
+                                <small class="text-muted">Actividades</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Últimas Actividades de Puntos -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Últimas Actividades (Últimos 30 días)</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if historial_puntos %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Actividad</th>
+                                        <th>Descripción</th>
+                                        <th>Puntos</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for historial in historial_puntos %}
+                                    <tr>
+                                        <td>{{ historial.fecha_obtencion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ historial.tipo_actividad.nombre }}</span>
+                                        </td>
+                                        <td>{{ historial.descripcion|truncatechars:50 }}</td>
+                                        <td>
+                                            <span class="badge bg-success">+{{ historial.puntos }}</span>
+                                        </td>
+                                        <td>
+                                            {% if historial.validado %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Validado
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>Pendiente
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-star fa-3x mb-3"></i>
+                            <p>No hay actividades de puntos registradas en los últimos 30 días</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Insignias -->
+            <div class="tab-pane fade" id="insignias" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Insignias y Reconocimientos</h6>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-warning btn-sm" onclick="asignarInsignia('{{ empleado.id }}')">
+                            <i class="fas fa-medal me-1"></i>Asignar Insignia
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumen de Insignias -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-center border-warning">
+                            <div class="card-body">
+                                <i class="fas fa-medal fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">{{ insignias_count|default:0 }}</h4>
+                                <small class="text-muted">Total Insignias</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center border-success">
+                            <div class="card-body">
+                                <i class="fas fa-trophy fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">{{ empleado.insignias_mes|default:0 }}</h4>
+                                <small class="text-muted">Este Mes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center border-info">
+                            <div class="card-body">
+                                <i class="fas fa-crown fa-2x text-info mb-2"></i>
+                                <h4 class="text-info">{{ empleado.insignias_especiales|default:0 }}</h4>
+                                <small class="text-muted">Especiales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Insignias -->
+                {% if insignias_empleado %}
+                <div class="row">
+                    {% for insignia in insignias_empleado %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        {% if insignia.tipo_insignia.icono %}
+                                            <img src="{{ insignia.tipo_insignia.icono.url }}" 
+                                                 alt="{{ insignia.tipo_insignia.nombre }}" 
+                                                 class="insignia-icon"
+                                                 style="width: 50px; height: 50px; object-fit: contain;">
+                                        {% else %}
+                                            <i class="fas fa-medal fa-2x" 
+                                               style="color: {{ insignia.tipo_insignia.color_hex|default:'#ffc107' }}"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h6 class="mb-1">{{ insignia.tipo_insignia.nombre }}</h6>
+                                            <span class="badge" style="background-color: {{ insignia.tipo_insignia.color_hex|default:'#6c757d' }}">
+                                                {{ insignia.tipo_insignia.get_nivel_display }}
+                                            </span>
+                                        </div>
+                                        <p class="text-muted small mb-1">{{ insignia.tipo_insignia.descripcion }}</p>
+                                        {% if insignia.tipo_insignia.criterios %}
+                                        <div class="small text-info mb-2">
+                                            <strong>Criterios:</strong> {{ insignia.tipo_insignia.criterios|truncatewords:15 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ insignia.fecha_otorgamiento|date:"d/m/Y" }}
+                                            </small>
+                                            {% if insignia.otorgado_automaticamente %}
+                                                <span class="badge bg-info">Automática</span>
+                                            {% else %}
+                                                <span class="badge bg-primary">Manual</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if insignia.justificacion %}
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <strong>Justificación:</strong> {{ insignia.justificacion }}
+                                            </small>
+                                        </div>
+                                        {% endif %}
+                                        {% if insignia.otorgado_por %}
+                                        <div class="mt-1">
+                                            <small class="text-muted">
+                                                <strong>Otorgado por:</strong> {{ insignia.otorgado_por.get_full_name }}
+                                            </small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-medal fa-3x mb-3"></i>
+                    <h5>Sin insignias aún</h5>
+                    <p>Este empleado no ha recibido insignias todavía.</p>
+                    <button class="btn btn-outline-warning" onclick="asignarInsignia('{{ empleado.id }}')">
+                        <i class="fas fa-medal me-1"></i>Asignar Primera Insignia
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
-</div>
 
 <!-- Modales de Confirmación de Inscripción -->
 {% for capacitacion in capacitaciones %}
@@ -1001,4 +1239,26 @@ document.addEventListener('DOMContentLoaded', function() {
     border-left-color: #198754;
 }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Función para otorgar puntos
+function otorgarPuntos(empleadoId) {
+    window.location.href = '{% url "recognition:index" %}?empleado=' + empleadoId + '#otorgar-puntos';
+}
+
+// Función para asignar insignia
+function asignarInsignia(empleadoId) {
+    window.location.href = '{% url "recognition:index" %}?empleado=' + empleadoId + '#asignar-insignia';
+}
+
+// Activar tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}

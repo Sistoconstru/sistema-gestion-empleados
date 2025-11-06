@@ -12,11 +12,11 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='gestion_empleados'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': 'gestion_empleados',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432',
         'CONN_MAX_AGE': 60,
         'OPTIONS': {
             'client_encoding': 'UTF8',

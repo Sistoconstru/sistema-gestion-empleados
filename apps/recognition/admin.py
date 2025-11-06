@@ -14,6 +14,31 @@ from .models import (TipoActividad, HistorialPuntos, TipoReconocimiento, Reconoc
 class TipoActividadAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'nombre', 'puntos_base', 'multiplicador_complejidad', 'activo')
     list_filter = ('activo',)
+    search_fields = ('codigo', 'nombre', 'descripcion')
+    list_editable = ('puntos_base', 'multiplicador_complejidad', 'activo')
+    ordering = ('nombre',)
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('codigo', 'nombre', 'descripcion')
+        }),
+        ('Configuración de Puntos', {
+            'fields': ('puntos_base', 'multiplicador_complejidad'),
+            'description': 'Configure los puntos base y multiplicador. Para asignación manual, deje puntos_base en 0.'
+        }),
+        ('Estado', {
+            'fields': ('activo',),
+        }),
+    )
+    
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.codigo in ['MANUAL_ADMIN']:  # Proteger tipos críticos
+            return ('codigo',)
+        return ()
+    
+    class Meta:
+        verbose_name = 'Tipo de Actividad'
+        verbose_name_plural = 'Tipos de Actividad'
 
 @admin.register(HistorialPuntos)
 class HistorialPuntosAdmin(admin.ModelAdmin):

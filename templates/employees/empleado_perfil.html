@@ -229,10 +229,10 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-azul w-100 py-3">
+                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-azul w-100 py-3">
                             <i class="fas fa-trophy fa-2x d-block mb-2"></i>
-                            <strong>Mis Logros</strong>
-                            <div class="small text-muted">Puntos e insignias</div>
+                            <strong>Centro de Reconocimientos</strong>
+                            <div class="small text-muted">Puntos, ranking e insignias</div>
                         </a>
                     </div>
                 </div>
@@ -428,10 +428,6 @@
                     Posición #{{ puntos.ranking_posicion }} en el ranking
                 </div>
                 {% endif %}
-                
-                <div class="d-grid">
-                    <a href="#" class="btn btn-amarillo text-corporativo btn-sm">Ver Todos los Logros</a>
-                </div>
             </div>
         </div>
         
