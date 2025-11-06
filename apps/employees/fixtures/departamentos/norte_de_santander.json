@@ -1,0 +1,330 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 18,
+    "fields": {
+      "nombre": "Norte De Santander",
+      "codigo": "54"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 778,
+    "fields": {
+      "nombre": "Cucuta",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 779,
+    "fields": {
+      "nombre": "Abrego",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 780,
+    "fields": {
+      "nombre": "Arboledas",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 781,
+    "fields": {
+      "nombre": "Bochalema",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 782,
+    "fields": {
+      "nombre": "Bucarasica",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 783,
+    "fields": {
+      "nombre": "Cacota",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 784,
+    "fields": {
+      "nombre": "Cachira",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 785,
+    "fields": {
+      "nombre": "Chinacota",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 786,
+    "fields": {
+      "nombre": "Chitaga",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 787,
+    "fields": {
+      "nombre": "Convencion",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 788,
+    "fields": {
+      "nombre": "Cucutilla",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 789,
+    "fields": {
+      "nombre": "Durania",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 790,
+    "fields": {
+      "nombre": "El Carmen",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 791,
+    "fields": {
+      "nombre": "El Tarra",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 792,
+    "fields": {
+      "nombre": "El Zulia",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 793,
+    "fields": {
+      "nombre": "Gramalote",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 794,
+    "fields": {
+      "nombre": "Hacari",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 795,
+    "fields": {
+      "nombre": "Herran",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 796,
+    "fields": {
+      "nombre": "Labateca",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 797,
+    "fields": {
+      "nombre": "La Esperanza",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 798,
+    "fields": {
+      "nombre": "La Playa",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 799,
+    "fields": {
+      "nombre": "Los Patios",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 800,
+    "fields": {
+      "nombre": "Lourdes",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 801,
+    "fields": {
+      "nombre": "Mutiscua",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 802,
+    "fields": {
+      "nombre": "Ocaña",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 803,
+    "fields": {
+      "nombre": "Pamplona",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 804,
+    "fields": {
+      "nombre": "Pamplonita",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 805,
+    "fields": {
+      "nombre": "Puerto Santander",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 806,
+    "fields": {
+      "nombre": "Ragonvalia",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 807,
+    "fields": {
+      "nombre": "Salazar",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 808,
+    "fields": {
+      "nombre": "San Calixto",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 809,
+    "fields": {
+      "nombre": "San Cayetano",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 810,
+    "fields": {
+      "nombre": "Santiago",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 811,
+    "fields": {
+      "nombre": "Sardinata",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 812,
+    "fields": {
+      "nombre": "Silos",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 813,
+    "fields": {
+      "nombre": "Teorama",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 814,
+    "fields": {
+      "nombre": "Tibu",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 815,
+    "fields": {
+      "nombre": "Toledo",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 816,
+    "fields": {
+      "nombre": "Villa Caro",
+      "departamento": 18
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 817,
+    "fields": {
+      "nombre": "Villa Del Rosario",
+      "departamento": 18
+    }
+  }
+]

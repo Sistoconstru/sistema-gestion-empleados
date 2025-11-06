@@ -1,0 +1,268 @@
+<div class="container-fluid">
+    <!-- Información del empleado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary bg-gradient text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>{{ empleado.nombre_completo }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-user fa-2x text-primary"></i>
+                                </div>
+                                <p class="mt-2 mb-0 small text-muted">{{ empleado.documento_identidad }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1">
+                                        <strong><i class="fas fa-building me-1 text-primary"></i>Área:</strong>
+                                        {% if empleado.area_actual %}
+                                            {{ empleado.area_actual.nombre }}
+                                        {% else %}
+                                            <span class="text-muted">No asignada</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong><i class="fas fa-briefcase me-1 text-primary"></i>Cargo:</strong>
+                                        {% if empleado.cargo_actual %}
+                                            {{ empleado.cargo_actual }}
+                                        {% else %}
+                                            <span class="text-muted">No asignado</span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong><i class="fas fa-envelope me-1 text-primary"></i>Email:</strong>
+                                        {{ empleado.correo_electronico|default:"No registrado" }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <div class="card bg-warning bg-gradient text-white">
+                                                <div class="card-body py-2">
+                                                    <h4 class="mb-0">{{ total_puntos }}</h4>
+                                                    <small>Puntos Totales</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="card bg-success bg-gradient text-white">
+                                                <div class="card-body py-2">
+                                                    <h4 class="mb-0">{{ total_insignias }}</h4>
+                                                    <small>Insignias</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs de historial -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="historialTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="puntos-tab" data-bs-toggle="tab" data-bs-target="#puntos" 
+                            type="button" role="tab" aria-controls="puntos" aria-selected="true">
+                        <i class="fas fa-star me-1"></i>Historial de Puntos ({{ historial_puntos|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="insignias-tab" data-bs-toggle="tab" data-bs-target="#insignias" 
+                            type="button" role="tab" aria-controls="insignias" aria-selected="false">
+                        <i class="fas fa-award me-1"></i>Insignias Obtenidas ({{ historial_insignias|length }})
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="historialTabsContent">
+                <!-- Tab de Puntos -->
+                <div class="tab-pane fade show active" id="puntos" role="tabpanel" aria-labelledby="puntos-tab">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            {% if historial_puntos %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th width="15%"><i class="fas fa-calendar me-1"></i>Fecha</th>
+                                                <th width="25%"><i class="fas fa-tasks me-1"></i>Actividad</th>
+                                                <th width="10%" class="text-center"><i class="fas fa-star me-1"></i>Puntos</th>
+                                                <th width="30%"><i class="fas fa-comment me-1"></i>Motivo</th>
+                                                <th width="20%"><i class="fas fa-user-tie me-1"></i>Asignado por</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for punto in historial_puntos %}
+                                            <tr>
+                                                <td>
+                                                    <small class="text-primary fw-bold">
+                                                        {{ punto.fecha_obtencion|date:"d M Y" }}
+                                                    </small>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        {{ punto.fecha_obtencion|time:"H:i" }}
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-primary">
+                                                        {{ punto.tipo_actividad.nombre }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-warning text-dark fs-6">
+                                                        +{{ punto.puntos }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {% if punto.descripcion %}
+                                                        <small>{{ punto.descripcion }}</small>
+                                                    {% else %}
+                                                        <small class="text-muted fst-italic">Sin motivo especificado</small>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center me-2" 
+                                                             style="width: 30px; height: 30px;">
+                                                            <i class="fas fa-user fa-sm text-primary"></i>
+                                                        </div>
+                                                        <div>
+                                                            <small class="fw-bold">
+                                                                {% if punto.validado_por %}
+                                                                    {{ punto.validado_por.get_full_name|default:punto.validado_por.username }}
+                                                                {% else %}
+                                                                    Sistema
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay puntos registrados</h5>
+                                    <p class="text-muted">Este empleado aún no ha recibido puntos de reconocimiento.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab de Insignias -->
+                <div class="tab-pane fade" id="insignias" role="tabpanel" aria-labelledby="insignias-tab">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            {% if historial_insignias %}
+                                <div class="row">
+                                    {% for insignia_emp in historial_insignias %}
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card h-100 border-warning">
+                                            <div class="card-header bg-warning bg-gradient text-white text-center">
+                                                <i class="fas fa-award fa-2x mb-2"></i>
+                                                <h6 class="mb-0">{{ insignia_emp.tipo_insignia.nombre }}</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="text-muted small mb-2">
+                                                    {{ insignia_emp.tipo_insignia.descripcion|default:"Sin descripción" }}
+                                                </p>
+                                                <div class="border-top pt-2">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-calendar me-1"></i>
+                                                        <strong>Obtenida:</strong> {{ insignia_emp.fecha_otorgamiento|date:"d M Y" }}
+                                                    </small>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-user-tie me-1"></i>
+                                                        <strong>Asignada por:</strong> 
+                                                        {% if insignia_emp.otorgado_por %}
+                                                            {{ insignia_emp.otorgado_por.get_full_name|default:insignia_emp.otorgado_por.username }}
+                                                        {% else %}
+                                                            Sistema
+                                                        {% endif %}
+                                                    </small>
+                                                    {% if insignia_emp.justificacion %}
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-comment me-1"></i>
+                                                        <strong>Motivo:</strong> {{ insignia_emp.justificacion }}
+                                                    </small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-award fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay insignias obtenidas</h5>
+                                    <p class="text-muted">Este empleado aún no ha recibido insignias de reconocimiento.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.nav-tabs .nav-link {
+    color: #43618a;
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #43618a;
+    color: white;
+    border-color: #43618a;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: rgba(67, 97, 138, 0.1);
+    border-color: transparent;
+}
+
+.table-primary th {
+    background-color: #43618a !important;
+    color: white;
+    border-color: #43618a;
+}
+
+.badge.bg-primary {
+    background-color: #43618a !important;
+}
+
+.text-primary {
+    color: #43618a !important;
+}
+
+.card.border-primary {
+    border-color: #43618a !important;
+}
+
+.card.border-warning {
+    border-color: #ffc107 !important;
+}
+</style>

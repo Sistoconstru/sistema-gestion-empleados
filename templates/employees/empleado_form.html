@@ -1,0 +1,548 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if object %}
+    Editar Empleado - {{ object.nombre_completo }}
+{% else %}
+    Nuevo Empleado
+{% endif %}
+- RRHH Pro
+{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">
+    {% if object %}Editar{% else %}Nuevo{% endif %}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card border-corporativo">
+            <div class="card-header bg-corporativo text-white">
+                <h4 class="card-title mb-0 fw-bold">
+                    <i class="fas fa-user-plus me-2"></i>
+                    {% if object %}
+                        Editar Empleado - {{ object.nombre_completo }}
+                    {% else %}
+                        Registrar Nuevo Empleado
+                    {% endif %}
+                </h4>
+            </div>
+            
+            <form method="post" novalidate id="empleadoForm">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    <!-- Mostrar errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-rojo">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Errores en el formulario:</strong>
+                        <ul class="mb-0 mt-2">
+                            {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Información Básica -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-id-card text-corporativo me-2"></i>
+                                Información Básica
+                                <small class="text-muted">(Campos obligatorios)</small>
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.tipo_documento.id_for_label }}">{{ form.tipo_documento.label }}</label>
+                                {{ form.tipo_documento }}
+                                {% if form.tipo_documento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.tipo_documento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.numero_documento.id_for_label }}">{{ form.numero_documento.label }}</label>
+                                {{ form.numero_documento }}
+                                {% if form.numero_documento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.numero_documento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Solo números, sin espacios ni puntos</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.nombres.id_for_label }}">{{ form.nombres.label }}</label>
+                                {{ form.nombres }}
+                                {% if form.nombres.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.nombres.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.apellidos.id_for_label }}">{{ form.apellidos.label }}</label>
+                                {{ form.apellidos }}
+                                {% if form.apellidos.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.apellidos.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.telefono_contacto.id_for_label }}">{{ form.telefono_contacto.label }}</label>
+                                {{ form.telefono_contacto }}
+                                {% if form.telefono_contacto.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.telefono_contacto.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Formato: +57 300 123 4567 o 300 123 4567</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.fecha_ingreso.id_for_label }}">{{ form.fecha_ingreso.label }}</label>
+                                {{ form.fecha_ingreso }}
+                                {% if form.fecha_ingreso.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.fecha_ingreso.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.sede.id_for_label }}">{{ form.sede.label }}</label>
+                                {{ form.sede }}
+                                {% if form.sede.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.sede.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.cargo.id_for_label }}">{{ form.cargo.label }}</label>
+                                {{ form.cargo }}
+                                {% if form.cargo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.cargo.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="{{ form.direccion.id_for_label }}">{{ form.direccion.label }}</label>
+                                    {{ form.direccion }}
+                                    <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
+                                    {% if form.direccion.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.direccion.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información Personal -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-user text-success me-2"></i>
+                                Información Personal
+                                {% if not object %}
+                                <small class="text-muted">(Opcional en creación)</small>
+                                {% endif %}
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.fecha_nacimiento.id_for_label }}">{{ form.fecha_nacimiento.label }}</label>
+                                {{ form.fecha_nacimiento }}
+                                {% if form.fecha_nacimiento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.fecha_nacimiento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Debe ser mayor de 16 años</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.departamento.id_for_label }}">{{ form.departamento.label }}</label>
+                                {{ form.departamento }}
+                                {% if form.departamento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.departamento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_ciudad_nacimiento">{{ form.ciudad_nacimiento.label }}</label>
+                                <select name="ciudad_nacimiento" class="form-control" id="id_ciudad_nacimiento">
+                                    <option value="">---------</option>
+                                    {% for ciudad in form.fields.ciudad_nacimiento.queryset %}
+                                        <option value="{{ ciudad.pk }}" data-departamento="{{ ciudad.departamento.pk }}" {% if form.initial.ciudad_nacimiento == ciudad.pk or form.data.ciudad_nacimiento == ciudad.pk %}selected{% endif %}>{{ ciudad.nombre }} ({{ ciudad.departamento.nombre }})</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.ciudad_nacimiento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.ciudad_nacimiento.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.escolaridad.id_for_label }}">{{ form.escolaridad.label }}</label>
+                                {{ form.escolaridad }}
+                                {% if form.escolaridad.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.escolaridad.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.correo_electronico.id_for_label }}">{{ form.correo_electronico.label }}</label>
+                                {{ form.correo_electronico }}
+                                {% if form.correo_electronico.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.correo_electronico.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Se usará para el acceso al sistema</div>
+                            </div>
+                        </div>
+                        
+                        {% if not object %}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.confirmar_email.id_for_label }}">{{ form.confirmar_email.label }}</label>
+                                {{ form.confirmar_email }}
+                                {% if form.confirmar_email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.confirmar_email.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Contacto de Emergencia -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-phone text-warning me-2"></i>
+                                Contacto de Emergencia
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.contacto_emergencia_nombre.id_for_label }}">{{ form.contacto_emergencia_nombre.label }}</label>
+                                {{ form.contacto_emergencia_nombre }}
+                                {% if form.contacto_emergencia_nombre.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contacto_emergencia_nombre.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.contacto_emergencia_telefono.id_for_label }}">{{ form.contacto_emergencia_telefono.label }}</label>
+                                {{ form.contacto_emergencia_telefono }}
+                                {% if form.contacto_emergencia_telefono.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contacto_emergencia_telefono.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Debe ser diferente al teléfono principal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información Adicional para Edición -->
+                    {% if object %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                Información del Sistema
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_fecha_registro">Fecha de Registro</label>
+                                <input type="text" class="form-control" id="id_fecha_registro" value="{{ object.fecha_creacion|date:'d/m/Y H:i' }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_creado_por">Creado por</label>
+                                <input type="text" class="form-control" id="id_creado_por" value="{{ object.creado_por.get_full_name|default:object.creado_por.username }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_estado_actual">Estado Actual</label>
+                                <input type="text" class="form-control" id="id_estado_actual" value="{{ object.estado.nombre }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_uuid">ID Único</label>
+                                <input type="text" class="form-control" id="id_uuid" value="{{ object.id }}" readonly>
+                                <div class="form-text">Identificador único en el sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Cancelar
+                        </a>
+                        
+                        <div>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save me-1"></i>
+                                {% if object %}Actualizar{% else %}Crear{% endif %} Empleado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Ayuda e Información -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Información Importante
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Campos Obligatorios:</h6>
+                        <ul class="small">
+                            <li>Tipo y número de documento</li>
+                            <li>Nombres y apellidos completos</li>
+                            <li>Teléfono de contacto</li>
+                            <li>Fecha de ingreso</li>
+                            <li>Sede y cargo</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-success">Proceso de Registro:</h6>
+                        <ul class="small">
+                            <li>El administrador crea el empleado</li>
+                            <li>Se genera usuario automáticamente si tiene doc. identidad</li>
+                            <li>Contraseña: Nombre + Número de documento</li>
+                            <li>Se asigna el cargo especificado</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('empleadoForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Validación del formulario
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        const requiredFields = ['tipo_documento', 'numero_documento', 'nombres', 'apellidos', 'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo'];
+        
+        // Verificar campos requeridos
+        requiredFields.forEach(fieldName => {
+            const field = document.querySelector(`[name="${fieldName}"]`);
+            if (field && !field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+                
+                // Agregar mensaje de error si no existe
+                let errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'invalid-feedback d-block';
+                    errorDiv.textContent = 'Este campo es requerido';
+                    field.parentNode.appendChild(errorDiv);
+                }
+            } else if (field) {
+                field.classList.remove('is-invalid');
+                const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                if (errorDiv && errorDiv.textContent === 'Este campo es requerido') {
+                    errorDiv.remove();
+                }
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor complete todos los campos obligatorios marcados con asterisco (*)');
+            return false;
+        }
+        
+        // Mostrar indicador de carga
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+    });
+    
+    // Formatear número de documento
+    const docInput = document.querySelector('[name="numero_documento"]');
+    if (docInput) {
+        docInput.addEventListener('input', function() {
+            // Remover caracteres no numéricos
+            this.value = this.value.replace(/\D/g, '');
+            this.classList.remove('is-invalid');
+        });
+    }
+    
+    // Formatear teléfonos
+    const phoneInputs = document.querySelectorAll('[name="telefono_contacto"], [name="contacto_emergencia_telefono"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                // Aplicar formato básico
+                if (value.startsWith('57')) {
+                    value = '+' + value;
+                } else if (value.length === 10) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+                }
+                this.value = value;
+            }
+            this.classList.remove('is-invalid');
+        });
+    });
+    
+    // Validación de confirmación de email
+    const emailInput = document.querySelector('[name="correo_electronico"]');
+    const confirmEmailInput = document.querySelector('[name="confirmar_email"]');
+    
+    if (emailInput && confirmEmailInput) {
+        function validateEmails() {
+            if (confirmEmailInput.value && emailInput.value !== confirmEmailInput.value) {
+                confirmEmailInput.setCustomValidity('Los correos electrónicos no coinciden');
+                confirmEmailInput.classList.add('is-invalid');
+            } else {
+                confirmEmailInput.setCustomValidity('');
+                confirmEmailInput.classList.remove('is-invalid');
+            }
+        }
+        
+        emailInput.addEventListener('input', validateEmails);
+        confirmEmailInput.addEventListener('input', validateEmails);
+    }
+    
+    // Formatear nombres y apellidos
+    const nameInputs = document.querySelectorAll('[name="nombres"], [name="apellidos"]');
+    nameInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value) {
+                // Capitalizar primera letra de cada palabra
+                this.value = this.value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Validar fecha de nacimiento
+    const fechaNacInput = document.querySelector('[name="fecha_nacimiento"]');
+    if (fechaNacInput) {
+        fechaNacInput.addEventListener('change', function() {
+            if (this.value) {
+                const fechaNac = new Date(this.value);
+                const hoy = new Date();
+                const edad = hoy.getFullYear() - fechaNac.getFullYear();
+                
+                if (edad < 16) {
+                    this.setCustomValidity('Debe ser mayor de 16 años');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                }
+            }
+        });
+    }
+    
+    // Filtro dinámico de ciudades por departamento
+    const departamentoSelect = document.querySelector('[name="departamento"]');
+    const ciudadSelect = document.querySelector('[name="ciudad_nacimiento"]');
+    if (departamentoSelect && ciudadSelect) {
+        departamentoSelect.addEventListener('change', function() {
+            const deptoId = this.value;
+            // Ocultar todas las opciones de ciudad excepto las del departamento seleccionado
+            Array.from(ciudadSelect.options).forEach(option => {
+                if (!deptoId || option.value === "") {
+                    option.style.display = '';
+                } else {
+                    const dataDepto = option.getAttribute('data-departamento');
+                    option.style.display = (dataDepto === deptoId) ? '' : 'none';
+                }
+            });
+            // Si la ciudad seleccionada no pertenece al departamento, limpiar selección
+            const selectedOption = ciudadSelect.options[ciudadSelect.selectedIndex];
+            if (selectedOption && selectedOption.getAttribute('data-departamento') !== deptoId) {
+                ciudadSelect.selectedIndex = 0;
+            }
+        });
+        // Inicializar filtro al cargar
+        departamentoSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 31,
+    "fields": {
+      "nombre": "Guaviare",
+      "codigo": "95"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1107,
+    "fields": {
+      "nombre": "San Jose Del Guaviare",
+      "departamento": 31
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1108,
+    "fields": {
+      "nombre": "Calamar",
+      "departamento": 31
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1109,
+    "fields": {
+      "nombre": "El Retorno",
+      "departamento": 31
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1110,
+    "fields": {
+      "nombre": "Miraflores",
+      "departamento": 31
+    }
+  }
+]

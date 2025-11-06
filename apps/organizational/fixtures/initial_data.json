@@ -1,0 +1,221 @@
+[
+  {
+    "model": "organizational.sede",
+    "pk": 1,
+    "fields": {
+      "codigo": "PRINCIPAL",
+      "nombre": "Sede Principal",
+      "direccion": "Calle 123 # 45-67",
+      "ciudad": "Bogotá",
+      "departamento": "Cundinamarca",
+      "telefono": "+57 1 234 5678",
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.sede",
+    "pk": 2,
+    "fields": {
+      "codigo": "MEDELLIN",
+      "nombre": "Sede Medellín",
+      "direccion": "Carrera 70 # 52-21",
+      "ciudad": "Medellín",
+      "departamento": "Antioquia",
+      "telefono": "+57 4 567 8901",
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.areaempresa",
+    "pk": 1,
+    "fields": {
+      "codigo": "ADMIN",
+      "nombre": "Administración",
+      "descripcion": "Área administrativa y financiera",
+      "area_padre": null,
+      "responsable": null,
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.areaempresa",
+    "pk": 2,
+    "fields": {
+      "codigo": "RRHH",
+      "nombre": "Recursos Humanos",
+      "descripcion": "Gestión del talento humano",
+      "area_padre": 1,
+      "responsable": null,
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.areaempresa",
+    "pk": 3,
+    "fields": {
+      "codigo": "PROD",
+      "nombre": "Producción",
+      "descripcion": "Área de producción y operaciones",
+      "area_padre": null,
+      "responsable": null,
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.areaempresa",
+    "pk": 4,
+    "fields": {
+      "codigo": "VENTAS",
+      "nombre": "Ventas y Marketing",
+      "descripcion": "Área comercial y mercadeo",
+      "area_padre": null,
+      "responsable": null,
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.areaempresa",
+    "pk": 5,
+    "fields": {
+      "codigo": "TI",
+      "nombre": "Tecnología",
+      "descripcion": "Tecnología e innovación",
+      "area_padre": 1,
+      "responsable": null,
+      "activa": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 1,
+    "fields": {
+      "codigo": "ADMIN-SYS",
+      "nombre": "Administrador del Sistema",
+      "descripcion": "Administrador general del sistema RRHH",
+      "area": 2,
+      "cargo_jefe": null,
+      "nivel_jerarquico": 1,
+      "salario_minimo": 5000000.00,
+      "salario_maximo": 8000000.00,
+      "requiere_licencia_conducir": false,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 2,
+    "fields": {
+      "codigo": "COORD-RRHH",
+      "nombre": "Coordinador de RRHH",
+      "descripcion": "Coordinador del área de recursos humanos",
+      "area": 2,
+      "cargo_jefe": 1,
+      "nivel_jerarquico": 2,
+      "salario_minimo": 3500000.00,
+      "salario_maximo": 5000000.00,
+      "requiere_licencia_conducir": false,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 3,
+    "fields": {
+      "codigo": "DIR-PROD",
+      "nombre": "Director de Producción",
+      "descripcion": "Director del área de producción",
+      "area": 3,
+      "cargo_jefe": 1,
+      "nivel_jerarquico": 2,
+      "salario_minimo": 4000000.00,
+      "salario_maximo": 6000000.00,
+      "requiere_licencia_conducir": true,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 4,
+    "fields": {
+      "codigo": "OP-PROD",
+      "nombre": "Operario de Producción",
+      "descripcion": "Operario encargado de la producción",
+      "area": 3,
+      "cargo_jefe": 3,
+      "nivel_jerarquico": 4,
+      "salario_minimo": 1300000.00,
+      "salario_maximo": 2000000.00,
+      "requiere_licencia_conducir": false,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 5,
+    "fields": {
+      "codigo": "AUX-PROD",
+      "nombre": "Auxiliar de Producción",
+      "descripcion": "Auxiliar de apoyo en producción",
+      "area": 3,
+      "cargo_jefe": 4,
+      "nivel_jerarquico": 5,
+      "salario_minimo": 1160000.00,
+      "salario_maximo": 1500000.00,
+      "requiere_licencia_conducir": false,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 6,
+    "fields": {
+      "codigo": "VENDEDOR",
+      "nombre": "Vendedor",
+      "descripcion": "Ejecutivo de ventas",
+      "area": 4,
+      "cargo_jefe": null,
+      "nivel_jerarquico": 3,
+      "salario_minimo": 1500000.00,
+      "salario_maximo": 3000000.00,
+      "requiere_licencia_conducir": true,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "organizational.cargo",
+    "pk": 7,
+    "fields": {
+      "codigo": "DEV",
+      "nombre": "Desarrollador",
+      "descripcion": "Desarrollador de software",
+      "area": 5,
+      "cargo_jefe": null,
+      "nivel_jerarquico": 3,
+      "salario_minimo": 2500000.00,
+      "salario_maximo": 4500000.00,
+      "requiere_licencia_conducir": false,
+      "requiere_certificado_alturas": false,
+      "activo": true,
+      "fecha_creacion": "2024-01-01T00:00:00Z"
+    }
+  }
+]

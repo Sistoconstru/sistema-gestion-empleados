@@ -1,0 +1,496 @@
+<!-- =============================================================================
+templates/documents/documento_multiple_form.html - FORMULARIO MÚLTIPLE DRAG & DROP
+============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+{% load document_custom_filters %}
+{% load document_filters %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block breadcrumb_items %}
+
+<li class="breadcrumb-item active">Subida Múltiple</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-corporativo text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>{{ titulo }}
+                </h4>
+                <p class="mb-0 opacity-75">Suba múltiples documentos a la vez</p>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" id="multipleDocumentForm">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Zona de Drag & Drop -->
+                    <div class="mb-4">
+                    <div id="dropZone" class="border-2 border-dashed border-corporativo rounded p-5 text-center mb-3" 
+                        style="min-height: 200px; transition: all 0.3s ease;">
+                            <div id="dropZoneContent">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-corporativo mb-3"></i>
+                                <h5>Arrastra archivos aquí o haz clic para seleccionar</h5>
+                                <p class="text-muted">Formatos permitidos: PDF, JPG, PNG | Máximo: 5MB por archivo</p>
+                                <input type="file" id="multipleFileInput" multiple style="display: none;" 
+                                       accept=".pdf,.jpg,.jpeg,.png">
+                                <button type="button" class="btn btn-outline-corporativo" onclick="document.getElementById('multipleFileInput').click()">
+                                    <i class="fas fa-folder-open me-1"></i>Seleccionar Archivos
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Lista de archivos seleccionados -->
+                        <div id="selectedFiles" style="display: none;">
+                            <h6 class="border-bottom pb-2">📁 Archivos Seleccionados:</h6>
+                            <div id="filesList"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formularios individuales para cada tipo de documento -->
+                    <div class="accordion" id="documentAccordion">
+                        {% for field in form %}
+                            {% if 'documento_' in field.name %}
+                                {% with field.name|slice:"10:" as doc_code %}
+                                <div class="accordion-item mb-2" data-doc-code="{{ doc_code }}">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#collapse{{ doc_code }}"
+                                                aria-expanded="false">
+                                            <div class="d-flex align-items-center w-100">
+                                                <i class="fas fa-file-alt me-2"></i>
+                                                <div class="flex-grow-1">
+                                                    <strong>{{ field.label }}</strong>
+                                                    <div class="text-muted small">{{ field.help_text|slice:":100" }}...</div>
+                                                </div>
+                                                <span class="badge bg-gris document-status" id="status_{{ doc_code }}">
+                                                    Pendiente
+                                                </span>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ doc_code }}" 
+                                         class="accordion-collapse collapse" 
+                                         data-bs-parent="#documentAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">{{ field.label }}</label>
+                                                        {{ field }}
+                                                        {% if field.errors %}
+                                                            <div class="invalid-feedback d-block">{{ field.errors.0 }}</div>
+                                                        {% endif %}
+                                                        <div class="form-text">{{ field.help_text }}</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {% with venc_field='vencimiento_'|add:doc_code %}
+                                                    {% if form|key:venc_field %}
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Fecha de Vencimiento</label>
+                                                            {{ form|key:venc_field }}
+                                                            {% if form|key:venc_field.errors %}
+                                                                <div class="invalid-feedback d-block">{{ form|key:venc_field.errors.0 }}</div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            
+                                            <!-- Preview del archivo -->
+                                            <div class="file-preview mt-3" id="preview_{{ doc_code }}" style="display: none;">
+                                                <h6 class="text-corporativo">
+                                                    <i class="fas fa-check-circle me-1"></i>Archivo Seleccionado:
+                                                </h6>
+                                                <div class="d-flex align-items-center p-2 bg-gris-claro rounded">
+                                                    <i class="fas fa-file fa-2x text-corporativo me-3"></i>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold filename"></div>
+                                                        <div class="text-muted small filesize"></div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-rojo remove-file">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Progreso de subida -->
+                    <div id="uploadProgress" style="display: none;" class="mt-4">
+                        <h6>📤 Subiendo Documentos...</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%">
+                                <span id="progressText">0%</span>
+                            </div>
+                        </div>
+                        <div id="uploadStatus" class="mt-2"></div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-gris-claro">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-gris">
+                                <i class="fas fa-arrow-left me-1"></i>Cancelar
+                            </a>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="badge bg-azul" id="fileCount">0 archivos seleccionados</span>
+                            </div>
+                            <button type="submit" class="btn btn-corporativo" id="submitBtn" disabled>
+                                <i class="fas fa-cloud-upload-alt me-1"></i>Subir Todos los Documentos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Tarjeta de ayuda -->
+        <div class="card mt-4">
+            <div class="card-header bg-corporativo text-white">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Instrucciones de Uso
+                </h6>
+            </div>
+            <div class="card-body bg-gris-claro">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-corporativo">📁 Subida de Archivos:</h6>
+                        <ul class="small">
+                            <li>Arrastra archivos a la zona azul o haz clic para seleccionar</li>
+                            <li>Se asignarán automáticamente por nombre (ej: cedula.pdf → Cédula)</li>
+                            <li>También puedes seleccionar manualmente en cada sección</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-corporativo">✅ Formatos Válidos:</h6>
+                        <ul class="small">
+                            <li><strong>PDF:</strong> Documentos oficiales, certificados</li>
+                            <li><strong>JPG/PNG:</strong> Fotos de documentos, cédulas</li>
+                            <li><strong>Tamaño máximo:</strong> 5MB por archivo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('multipleFileInput');
+    const form = document.getElementById('multipleDocumentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const fileCount = document.getElementById('fileCount');
+    
+    let selectedFiles = {};
+    let totalFiles = 0;
+    
+    // Configurar drag & drop
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('border-success', 'bg-light');
+        dropZone.style.borderColor = '#198754';
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-success', 'bg-light');
+        dropZone.style.borderColor = '';
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('border-success', 'bg-light');
+        dropZone.style.borderColor = '';
+        
+        const files = e.dataTransfer.files;
+        processFiles(files);
+    });
+    
+    // Click en zona de drop
+    dropZone.addEventListener('click', function() {
+        fileInput.click();
+    });
+    
+    // Selección manual de archivos
+    fileInput.addEventListener('change', function(e) {
+        processFiles(e.target.files);
+    });
+    
+    function processFiles(files) {
+        Array.from(files).forEach(file => {
+            if (validateFile(file)) {
+                assignFileToDocument(file);
+            }
+        });
+        updateUI();
+    }
+    
+    function validateFile(file) {
+        // Validar tamaño
+        if (file.size > 5 * 1024 * 1024) {
+            alert(`${file.name}: Archivo muy grande (máx. 5MB)`);
+            return false;
+        }
+        
+        // Validar extensión
+        const validExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+        const extension = file.name.split('.').pop().toLowerCase();
+        if (!validExtensions.includes(extension)) {
+            alert(`${file.name}: Formato no válido. Use PDF, JPG o PNG`);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function assignFileToDocument(file) {
+        const fileName = file.name.toLowerCase();
+        let docCode = null;
+        
+        // Detectar tipo de documento por nombre
+        if (fileName.includes('cedula') || fileName.includes('cc')) {
+            docCode = 'CEDULA';
+        } else if (fileName.includes('eps') || fileName.includes('salud')) {
+            docCode = 'EPS';
+        } else if (fileName.includes('afp') || fileName.includes('pension')) {
+            docCode = 'AFP';
+        } else if (fileName.includes('licencia') || fileName.includes('conducir')) {
+            docCode = 'LIC_CONDUCIR';
+        } else if (fileName.includes('alturas')) {
+            docCode = 'CERT_ALTURAS';
+        } else if (fileName.includes('laboral') || fileName.includes('trabajo')) {
+            docCode = 'CERT_LABORAL';
+        } else if (fileName.includes('estudio') || fileName.includes('diploma')) {
+            docCode = 'ESTUDIOS';
+        }
+        
+        if (docCode) {
+            assignFileToField(docCode, file);
+        } else {
+            // Mostrar opciones disponibles
+            showDocumentSelector(file);
+        }
+    }
+    
+    function assignFileToField(docCode, file) {
+        const fileInput = document.querySelector(`[data-doc-code="${docCode}"] input[type="file"]`);
+        if (fileInput) {
+            // Crear nuevo FileList con el archivo
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+            
+            // Actualizar preview
+            showFilePreview(docCode, file);
+            selectedFiles[docCode] = file;
+            totalFiles++;
+            
+            // Actualizar estado visual
+            const status = document.getElementById(`status_${docCode}`);
+            if (status) {
+                status.textContent = 'Completado';
+                status.className = 'badge bg-success';
+            }
+        }
+    }
+    
+    function showFilePreview(docCode, file) {
+        const preview = document.getElementById(`preview_${docCode}`);
+        if (preview) {
+            preview.style.display = 'block';
+            preview.querySelector('.filename').textContent = file.name;
+            preview.querySelector('.filesize').textContent = formatFileSize(file.size);
+            
+            // Configurar botón de remover
+            const removeBtn = preview.querySelector('.remove-file');
+            removeBtn.onclick = function() {
+                removeFile(docCode);
+            };
+        }
+    }
+    
+    function removeFile(docCode) {
+        const fileInput = document.querySelector(`[data-doc-code="${docCode}"] input[type="file"]`);
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        const preview = document.getElementById(`preview_${docCode}`);
+        if (preview) {
+            preview.style.display = 'none';
+        }
+        
+        const status = document.getElementById(`status_${docCode}`);
+        if (status) {
+            status.textContent = 'Pendiente';
+            status.className = 'badge bg-secondary';
+        }
+        
+        delete selectedFiles[docCode];
+        totalFiles--;
+        updateUI();
+    }
+    
+    function showDocumentSelector(file) {
+        // Crear modal simple para seleccionar tipo de documento
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Seleccionar Tipo de Documento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿A qué tipo de documento corresponde <strong>${file.name}</strong>?</p>
+                        <div class="list-group document-types"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        
+        // Agregar opciones disponibles
+        const typesList = modal.querySelector('.document-types');
+        document.querySelectorAll('[data-doc-code]').forEach(element => {
+            const docCode = element.dataset.docCode;
+            const label = element.querySelector('.accordion-button strong').textContent;
+            
+            const option = document.createElement('button');
+            option.className = 'list-group-item list-group-item-action';
+            option.textContent = label;
+            option.onclick = function() {
+                assignFileToField(docCode, file);
+                bsModal.hide();
+                modal.remove();
+                updateUI();
+            };
+            typesList.appendChild(option);
+        });
+        
+        bsModal.show();
+        
+        // Limpiar modal al cerrar
+        modal.addEventListener('hidden.bs.modal', function() {
+            modal.remove();
+        });
+    }
+    
+    function updateUI() {
+        fileCount.textContent = `${totalFiles} archivo${totalFiles !== 1 ? 's' : ''} seleccionado${totalFiles !== 1 ? 's' : ''}`;
+        submitBtn.disabled = totalFiles === 0;
+        
+        if (totalFiles > 0) {
+            fileCount.className = 'badge bg-success';
+        } else {
+            fileCount.className = 'badge bg-info';
+        }
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Manejar envío del formulario
+    form.addEventListener('submit', function(e) {
+        if (totalFiles === 0) {
+            e.preventDefault();
+            alert('Debe seleccionar al menos un archivo');
+            return;
+        }
+        
+        // Mostrar progreso
+        document.getElementById('uploadProgress').style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Subiendo...';
+        
+        // Simular progreso (en implementación real, usar XMLHttpRequest)
+        let progress = 0;
+        const progressBar = document.querySelector('.progress-bar');
+        const progressText = document.getElementById('progressText');
+        
+        const interval = setInterval(function() {
+            progress += Math.random() * 20;
+            if (progress > 90) progress = 90;
+            
+            progressBar.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        }, 200);
+        
+        // Al completar (esto sería manejado por el servidor)
+        setTimeout(function() {
+            clearInterval(interval);
+            progressBar.style.width = '100%';
+            progressText.textContent = '100%';
+        }, 3000);
+    });
+    
+    // Configurar campos individuales de archivo
+    document.querySelectorAll('[data-doc-code] input[type="file"]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const docCode = this.closest('[data-doc-code]').dataset.docCode;
+            const file = e.target.files[0];
+            
+            if (file) {
+                if (validateFile(file)) {
+                    showFilePreview(docCode, file);
+                    selectedFiles[docCode] = file;
+                    if (!Object.values(selectedFiles).includes(file)) {
+                        totalFiles++;
+                    }
+                    
+                    const status = document.getElementById(`status_${docCode}`);
+                    if (status) {
+                        status.textContent = 'Completado';
+                        status.className = 'badge bg-success';
+                    }
+                } else {
+                    this.value = '';
+                }
+            } else {
+                removeFile(docCode);
+            }
+            
+            updateUI();
+        });
+    });
+});
+</script>
+{% endblock %}

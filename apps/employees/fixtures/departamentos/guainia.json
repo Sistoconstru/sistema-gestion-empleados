@@ -1,0 +1,82 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 30,
+    "fields": {
+      "nombre": "Guainia",
+      "codigo": "94"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1098,
+    "fields": {
+      "nombre": "Inirida",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1099,
+    "fields": {
+      "nombre": "Barranco Minas",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1100,
+    "fields": {
+      "nombre": "Mapiripana",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1101,
+    "fields": {
+      "nombre": "San Felipe",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1102,
+    "fields": {
+      "nombre": "Puerto Colombia",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1103,
+    "fields": {
+      "nombre": "La Guadalupe",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1104,
+    "fields": {
+      "nombre": "Cacahual",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1105,
+    "fields": {
+      "nombre": "Pana Pana",
+      "departamento": 30
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1106,
+    "fields": {
+      "nombre": "Morichal",
+      "departamento": 30
+    }
+  }
+]

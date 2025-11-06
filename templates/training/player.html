@@ -1,0 +1,750 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load training_extras %}
+
+{% block title %}{{ object.capacitacion.nombre }} - Reproductor - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.player-container {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+}
+.course-outline {
+    height: calc(100vh - 160px);
+    overflow-y: auto;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.content-player {
+    height: calc(100vh - 160px);
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.lesson-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.lesson-item:hover {
+    background: #e9ecef;
+}
+.lesson-item.active {
+    background: #007bff;
+    color: white;
+}
+.lesson-item.completed {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.lesson-item.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.lesson-progress {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+.content-area {
+    position: relative;
+    min-height: 400px;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+.video-container {
+    position: relative;
+    min-height: 450px;
+    height: auto;
+    overflow: visible;
+}
+.video-container iframe,
+.video-container video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    max-height: 70vh;
+    display: block;
+}
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    z-index: 10;
+}
+.document-container {
+    height: 600px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+.text-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.progress-info {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+}
+.module-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+.module-progress {
+    height: 4px;
+    background: #e9ecef;
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.module-progress-bar {
+    height: 100%;
+    background: #28a745;
+    transition: width 0.3s ease;
+}
+</style>
+<style>
+/* Resalta el botón de evaluación si está habilitado */
+.btn-glow {
+    box-shadow: 0 0 10px 2px #ffc107, 0 0 20px 4px #fff3cd;
+    animation: glow 1s infinite alternate;
+}
+@keyframes glow {
+    from { box-shadow: 0 0 10px 2px #ffc107, 0 0 20px 4px #fff3cd; }
+    to { box-shadow: 0 0 20px 6px #ffc107, 0 0 30px 8px #fff3cd; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 player-container">
+    {% csrf_token %}
+    <div class="row flex-grow-1">
+        <!-- Sidebar con el índice del curso -->
+        <div class="col-lg-3 d-flex flex-column">
+            <div class="course-outline p-3">
+                {% if object %}
+                    <h5 class="mb-4">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        {{ object.capacitacion.nombre }}
+                    </h5>
+                    {% for modulo in modulos_limpios %}
+                        {% with modulo_info=modulos_evaluacion|get_item:modulo.obj.id modulo_completado=modulo.obj|modulo_completado:object %}
+                            <div class="module-header {% if not modulo_completado and modulo.obj.modulo_prerequisito and not modulo.obj.modulo_prerequisito|modulo_completado:object %}locked{% endif %}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas {% include 'training/partials/_modulo_header.html' with modulo=modulo.obj %} me-2"></i>
+                                        {{ modulo.obj.nombre }}
+                                    </h6>
+                                    <div class="d-flex align-items-center">
+                                        {% include 'training/partials/_modulo_time.html' with modulo=modulo.obj %}
+                                    </div>
+                                </div>
+                                <div class="module-progress">
+                                    <div class="module-progress-bar" style="width: {{ modulo.obj.get_progreso_porcentaje }}%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                {% for leccion in modulo.lecciones %}
+                                    {% with leccion_obj=leccion.obj %}
+                                        {% include 'training/partials/_sidebar_leccion_header.html' with leccion=leccion leccion_obj=leccion_obj %}
+                                        {% for contenido in leccion.contenidos %}
+                                            {% include 'training/partials/_leccion_item.html' with modulo=modulo.obj leccion=leccion_obj contenido=contenido inscripcion=object contenido_actual=contenido_actual %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-circle fa-4x mb-3 text-warning"></i>
+                        <h3>No hay contenido disponible</h3>
+                        <p class="text-muted">No se ha encontrado la capacitación</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Área de contenido -->
+        <div class="col-lg-9">
+            <div class="content-player">
+                {% if not object %}
+                    <!-- Mensaje de acceso no autorizado -->
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-circle fa-4x mb-3 text-warning"></i>
+                        <h3>Acceso no autorizado</h3>
+                        <p class="text-muted">No tienes acceso a este contenido o la capacitación no existe</p>
+                            <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-corporativo mt-3">
+                                Volver a mis capacitaciones
+                            </a>
+                    </div>
+                {% else %}
+                    {% if not contenido_actual %}
+                        <!-- Mensaje de bienvenida -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-book-reader fa-4x mb-3 text-primary"></i>
+                            <h3>Bienvenido al curso</h3>
+                            <p class="text-muted">Selecciona una lección del menú para comenzar</p>
+                        </div>
+                    {% else %}
+                    <!-- Encabezado del contenido -->
+                    <div class="mb-2" style="padding-bottom: 0.2rem;">
+                        <nav aria-label="breadcrumb" style="margin-bottom: 0.2rem;">
+                            <ol class="breadcrumb" style="margin-bottom: 0.2rem; font-size: 0.95rem;">
+                                <li class="breadcrumb-item">
+                                    <i class="fas fa-folder me-1"></i>
+                                    {{ contenido_actual.leccion.modulo.nombre }}
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    {{ contenido_actual.leccion.nombre }}
+                                </li>
+                            </ol>
+                        </nav>
+                        <h4 style="margin-bottom: 0.2rem; font-size: 1.15rem;">{{ contenido_actual.nombre }}</h4>
+                        <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.98rem;">{{ contenido_actual.descripcion }}</p>
+                        <!-- Botón SIEMPRE visible, solo se habilita cuando se puede evaluar -->
+                        <div class="mb-2 d-flex justify-content-end">
+                            <a href="{% if contenido_actual.leccion.evaluacion %}{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}{% else %}#{% endif %}"
+                               class="btn btn-amarillo btn-lg fw-bold shadow text-corporativo" id="btnValoracion" style="min-width:180px; opacity:1; pointer-events:auto; font-size:1rem; padding:0.5rem 1.2rem; border-width:2px; border-color:#ffd600;">
+                                <i class="fas fa-tasks me-2"></i>
+                                Realizar Valoración
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Área de contenido -->
+                    <div class="content-area">
+                        {% if not progreso_actual.puede_ver %}
+                            <div class="alert alert-amarillo text-corporativo text-center">
+                                <i class="fas fa-lock fa-3x mb-3"></i>
+                                {% if evaluacion_pendiente %}
+                                    <h4>Valoración Pendiente</h4>
+                                    <p>Debes completar la Valoración de la lección anterior antes de continuar.</p>
+                                    <a href="{% url 'training:quiz' contenido_actual.leccion.evaluacion.pk %}" class="btn btn-amarillo text-corporativo mt-3" style="border-width:2px;">
+                                        <i class="fas fa-tasks me-2"></i>
+                                        Realizar Valoración
+                                    </a>
+                                {% else %}
+                                    <h4>Contenido Bloqueado</h4>
+                                    <p>Debes completar el contenido anterior primero.</p>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {% include 'training/partials/_contenido_reproductor.html' %}
+                            {% if contenido_actual.contenido_texto or not progreso_actual.completado %}
+                            <div class="mt-4">
+                                {% if contenido_actual.contenido_texto %}
+                                    <div class="text-content p-3 bg-gris-claro rounded border mb-3">
+                                        {{ contenido_actual.contenido_texto|safe }}
+                                    </div>
+                                {% endif %}
+                                {% if not progreso_actual.completado %}
+                                    <button class="btn btn-corporativo btn-lg w-100" id="marcarCompletada">
+                                        <i class="fas fa-check me-2"></i>
+                                        Marcar como Visto
+                                    </button>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Controles de navegación (ocultos en solo_lectura) -->
+                    {% if not solo_lectura %}
+                    <div class="mt-4 py-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <!-- Botón Anterior -->
+                            {% if contenido_anterior %}
+                                <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_anterior.pk }}" 
+                                   class="btn btn-outline-corporativo btn-lg mb-2 mb-lg-0">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    Anterior
+                                </a>
+                            {% else %}
+                                <div class="btn btn-outline-gris btn-lg invisible mb-2 mb-lg-0">
+                                    <i class="fas fa-chevron-left me-2"></i>
+                                    Anterior
+                                </div>
+                            {% endif %}
+                            <!-- Texto de contenido (si existe) y botón principal -->
+                            <div class="flex-grow-1 mx-3">
+                                {# Eliminado para evitar duplicidad de botón 'Marcar como Visto' #}
+                            </div>
+                            <!-- Botón Siguiente -->
+                            <div>
+                                {% if contenido_siguiente and not evaluacion_pendiente %}
+                                    <a href="{% url 'training:player' pk=object.pk %}?contenido={{ contenido_siguiente.pk }}" 
+                                       class="btn btn-corporativo">
+                                        Siguiente
+                                        <i class="fas fa-chevron-right ms-2"></i>
+                                    </a>
+                                {% elif not contenido_siguiente %}
+                                    <a href="{% url 'training:mis_capacitaciones' %}" 
+                                       class="btn btn-corporativo">
+                                        Finalizar curso
+                                        <i class="fas fa-check ms-2"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                {% endif %}
+                <style>
+                    #contenidoReproductor iframe,
+                    #contenidoReproductor embed,
+                    #contenidoReproductor object {
+                        margin-bottom: 20px !important;
+                    }
+                </style>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    {{ block.super }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+// Variables globales para tracking
+let startTime = Date.now();
+let videoPlayer = null;
+let youtubePlayer = null;
+let pdfViewer = null;
+let tiempoTotal = 0;
+let intervalId = null;
+let lastProgress = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar reproductor de video
+    videoPlayer = document.getElementById('videoPlayer');
+    if (videoPlayer) {
+        initVideoPlayer();
+    }
+
+    // Inicializar visor de PDF
+    pdfViewer = document.getElementById('pdfViewer');
+    if (pdfViewer) {
+        initPDFViewer();
+    }
+
+    // Marcar contenido como completado solo después de tiempo mínimo
+    const btnMarcarCompletada = document.getElementById('marcarCompletada');
+    if (btnMarcarCompletada) {
+        btnMarcarCompletada.disabled = true;
+        let tiempoMinimo = 0;
+        // Detectar tiempo mínimo desde el dataset del contenido activo
+        const activeLesson = document.querySelector('.lesson-item.active');
+        if (activeLesson && activeLesson.dataset.tiempoMinimo) {
+            tiempoMinimo = parseInt(activeLesson.dataset.tiempoMinimo);
+        } else {
+            // Fallback: buscar en el reproductor si es PDF o video
+            const pdfViewer = document.getElementById('pdfViewer');
+            if (pdfViewer && pdfViewer.dataset.tiempoMinimo) {
+                tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo);
+            }
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer && videoPlayer.dataset.tiempoMinimo) {
+                tiempoMinimo = parseInt(videoPlayer.dataset.tiempoMinimo);
+            }
+        }
+        if (!tiempoMinimo || tiempoMinimo < 10) tiempoMinimo = 30; // Por defecto 30s mínimo
+
+        let tiempoTranscurrido = 0;
+        let intervaloMinimo = setInterval(() => {
+            tiempoTranscurrido++;
+            if (tiempoTranscurrido >= tiempoMinimo) {
+                btnMarcarCompletada.disabled = false;
+                clearInterval(intervaloMinimo);
+            }
+        }, 1000);
+
+        btnMarcarCompletada.addEventListener('click', function() {
+            const activeLesson = document.querySelector('.lesson-item.active');
+            const contenidoId = activeLesson ? activeLesson.dataset.contenidoId : undefined;
+            if (!contenidoId || contenidoId === 'undefined' || contenidoId === 'null') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de contenido',
+                    text: 'No se pudo identificar el contenido actual. Por favor, recarga la página o contacta soporte.'
+                });
+                return;
+            }
+            // Deshabilitar solo visualmente para evitar doble click, pero NO ocultar ni marcar como completado aún
+            btnMarcarCompletada.disabled = true;
+            registrarProgreso(contenidoId, true, btnMarcarCompletada);
+        });
+    }
+
+    // Lógica para el botón de evaluación
+    const btnValoracion = document.getElementById('btnValoracion');
+    // El botón de valoración siempre está habilitado. La validación se hace en backend y en el JS del quiz.
+    if (btnValoracion) {
+        btnValoracion.addEventListener('click', function(e) {
+            // Si el botón está habilitado (no tiene disabled)
+            if (!btnValoracion.hasAttribute('disabled')) {
+                Swal.fire({
+                    icon: 'info',
+                    title: '¡Listo para valorar!',
+                    text: 'Desplazando a la sección de valoraciones...'
+                }).then(() => {
+                    // Buscar la sección de valoraciones por id o clase
+                    const valoracionesSection = document.getElementById('valoraciones') || document.querySelector('.valoraciones');
+                    if (valoracionesSection) {
+                        valoracionesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        // Si no existe, hacer scroll al top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            }
+        });
+    }
+
+    // Eliminado: No registrar progreso automáticamente al salir de la página
+    
+    // Animación de carga de lecciones
+    const lessons = document.querySelectorAll('.lesson-item');
+    lessons.forEach((lesson, index) => {
+        lesson.style.opacity = '0';
+        lesson.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            lesson.style.transition = 'all 0.3s ease';
+            lesson.style.opacity = '1';
+            lesson.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
+
+    // Prevenir navegación a contenidos bloqueados
+    lessons.forEach(lesson => {
+        if (lesson.classList.contains('locked')) {
+            lesson.addEventListener('click', (e) => {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contenido bloqueado',
+                    text: 'Debes completar el contenido anterior primero'
+                });
+            });
+        }
+    });
+});
+
+function initVideoPlayer() {
+    // Restaurar progreso anterior
+    const tiempoVisto = parseInt(videoPlayer.dataset.tiempoVisto) || 0;
+    videoPlayer.currentTime = tiempoVisto;
+
+    // Actualizar tiempo total
+    videoPlayer.addEventListener('loadedmetadata', function() {
+        tiempoTotal = videoPlayer.duration;
+        updateTiempoDisplay();
+    });
+
+    // Tracking de progreso
+    videoPlayer.addEventListener('timeupdate', function() {
+        updateTiempoDisplay();
+        const porcentaje = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+        if (porcentaje - lastProgress >= 5) { // Registrar cada 5%
+            lastProgress = porcentaje;
+            registrarProgreso(videoPlayer.dataset.contenidoId, false);
+        }
+    });
+
+    // No permitir adelantar
+    videoPlayer.addEventListener('seeking', function() {
+        if (videoPlayer.currentTime > tiempoVisto + 5) { // 5 segundos de margen
+            videoPlayer.currentTime = tiempoVisto;
+        }
+    });
+}
+
+function initPDFViewer() {
+    // Tracking de tiempo en PDF
+    startPDFTracking();
+}
+
+// YouTube Player API
+function onYouTubeIframeAPIReady() {
+    const youtubeFrame = document.getElementById('youtubePlayer');
+    if (youtubeFrame) {
+        youtubePlayer = new YT.Player('youtubePlayer', {
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+}
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING) {
+        startYouTubeTracking();
+    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+        stopTracking();
+        registrarProgreso(event.target.getIframe().dataset.contenidoId, false);
+    }
+}
+
+function startYouTubeTracking() {
+    startTime = Date.now();
+    intervalId = setInterval(() => {
+        const contenidoId = document.getElementById('youtubePlayer').dataset.contenidoId;
+        registrarProgreso(contenidoId, false);
+    }, 30000); // Registrar cada 30 segundos
+}
+
+// Tracking de tiempo en PDF solo cuando la pestaña está activa
+function startPDFTracking() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    const tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo) || 60; // Usar tiempo configurado o 60s por defecto
+    let tiempoTranscurrido = 0;
+    let tiempoActivo = 0;
+    let lastTimestamp = Date.now();
+    let running = true;
+
+    // Mostrar mensaje al usuario con el tiempo específico
+    const minutos = Math.ceil(tiempoMinimo / 60);
+    Swal.fire({
+        icon: 'info',
+        title: 'Visualización del documento',
+        text: `Por favor, dedica al menos ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'} a revisar el documento. Se marcará como completado automáticamente.`,
+        timer: 5000,
+        timerProgressBar: true,
+        showConfirmButton: false
+    });
+
+    function tick() {
+        if (!running) return;
+        const now = Date.now();
+        tiempoActivo += Math.floor((now - lastTimestamp) / 1000);
+        lastTimestamp = now;
+        const contenidoId = pdfViewer.dataset.contenidoId;
+        if (tiempoActivo >= tiempoMinimo) {
+            registrarProgreso(contenidoId, true);
+            clearInterval(intervalId);
+            intervalId = null;
+            document.removeEventListener('visibilitychange', handleVisibility);
+        } else {
+            registrarProgreso(contenidoId, false);
+        }
+    }
+
+    function handleVisibility() {
+        if (document.visibilityState === 'hidden') {
+            running = false;
+        } else {
+            running = true;
+            lastTimestamp = Date.now();
+        }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    lastTimestamp = Date.now();
+    intervalId = setInterval(tick, 30000); // Registrar cada 30 segundos
+}
+
+function stopTracking() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
+function updateTiempoDisplay() {
+    if (videoPlayer) {
+        document.getElementById('tiempoVisto').textContent = formatTime(videoPlayer.currentTime);
+        document.getElementById('tiempoTotal').textContent = formatTime(videoPlayer.duration);
+    }
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function registrarProgreso(contenidoId, completado, btnMarcarCompletadaRef) {
+    // Solo permitir marcar como completado desde el botón, y solo si se cumplió el tiempo mínimo
+    const tiempoDedicado = Math.floor((Date.now() - startTime) / 1000);
+    let porcentajeVisto = 100; // Para documentos y texto, o puedes ajustar según tipo
+
+    fetch(`/capacitaciones/contenido/${contenidoId}/completar/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify({
+            tiempo_dedicado: tiempoDedicado,
+            porcentaje_visto: porcentajeVisto,
+            completado: completado
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar UI
+            const lessonItem = document.querySelector('.lesson-item.active');
+            if (data.completado) {
+                // Marcar todos los lesson-item con el mismo contenido-id como completados y actualizar ícono
+                const allLessonItems = document.querySelectorAll('.lesson-item[data-contenido-id="' + contenidoId + '"]');
+                allLessonItems.forEach(item => {
+                    item.classList.add('completed');
+                    // Cambiar ícono a check verde
+                    const icon = item.querySelector('.lesson-progress i');
+                    if (icon) {
+                        icon.className = 'fas fa-check text-success';
+                    }
+                    // Cambiar fondo si corresponde
+                    item.classList.remove('bg-warning');
+                    item.classList.add('bg-success');
+                });
+                // Deshabilitar y ocultar el botón "Marcar como Visto" SOLO después de éxito
+                if (btnMarcarCompletadaRef) {
+                    btnMarcarCompletadaRef.disabled = true;
+                    btnMarcarCompletadaRef.classList.add('disabled');
+                    btnMarcarCompletadaRef.style.display = 'none';
+                }
+                // Mostrar visualmente el estado completado en la interfaz principal (área de texto o donde estaba el botón)
+                // Buscar el contenedor principal donde está el botón
+                let mainBtn = document.getElementById('marcarCompletada');
+                if (mainBtn) {
+                    // Buscar el contenedor padre que tiene la clase mt-4 (donde está el botón y el texto)
+                    let mainContainer = mainBtn.closest('.mt-4');
+                    if (mainContainer && !document.getElementById('mensajeCompletado')) {
+                        // Eliminar el botón si aún existe
+                        mainBtn.remove();
+                        // Insertar mensaje de completado
+                        const msg = document.createElement('div');
+                        msg.id = 'mensajeCompletado';
+                        msg.className = 'alert alert-success mt-3';
+                        msg.innerHTML = '<i class="fas fa-check-circle me-2"></i>Contenido completado';
+                        mainContainer.appendChild(msg);
+                    }
+                }
+                // Habilitar el botón de evaluación tras completar la lección
+                const btnValoracion = document.getElementById('btnValoracion');
+                if (btnValoracion) {
+                    btnValoracion.removeAttribute('disabled');
+                    btnValoracion.classList.add('btn-glow');
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Contenido visto',
+                    text: 'Has completado este contenido. ¡Sigue adelante!',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Recargar la página tras mostrar el mensaje de éxito
+                    window.location.reload();
+                    function isValidNextContentUrl(url) {
+                        if (!url || typeof url !== 'string') return false;
+                        if (url === 'undefined' || url === 'null') return false;
+                        if (url.trim() === '') return false;
+                        if (url.includes('undefined') || url.includes('null')) return false;
+                        try {
+                            new URL(url, window.location.origin);
+                        } catch (e) {
+                            return false;
+                        }
+                        return true;
+                    }
+                        // Solo marcar como completado y actualizar UI, sin redirigir
+                        const btnValoracion = document.getElementById('btnValoracion');
+                        if (btnValoracion) {
+                            btnValoracion.removeAttribute('disabled');
+                            btnValoracion.classList.add('btn-glow');
+                        }
+                });
+            }
+            // Actualizar progreso del módulo
+            const moduleHeader = lessonItem.closest('.mb-4').previousElementSibling;
+            const progressBar = moduleHeader.querySelector('.module-progress-bar');
+            progressBar.style.width = `${data.progreso_modulo}%`;
+
+            // Si la lección actual está completada, activar el botón de valoración (evaluación por lección)
+            if (data.completado) {
+                const btnValoracion = document.getElementById('btnValoracion');
+                if (btnValoracion) {
+                    btnValoracion.removeAttribute('disabled');
+                    btnValoracion.classList.add('btn-glow');
+                }
+            }
+            // Si hay evaluación pendiente, mostrar botón
+            if (data.evaluacion_pendiente) {
+                const evaluacionBtn = document.querySelector('.btn-warning[href*="quiz"]');
+                if (evaluacionBtn) {
+                    evaluacionBtn.style.display = 'inline-block';
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Evaluación Requerida',
+                        text: 'Debes realizar la evaluación para continuar con el siguiente módulo.',
+                        confirmButtonText: 'Ir a la Evaluación'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = evaluacionBtn.href;
+                        }
+                    });
+                }
+            }
+            // Si puede continuar, desbloquear siguiente contenido
+            if (data.puede_continuar) {
+                const nextItem = lessonItem.nextElementSibling;
+                if (nextItem) {
+                    nextItem.classList.remove('locked');
+                    nextItem.classList.remove('disabled');
+                }
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Ocurrió un error al registrar el progreso'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al registrar el progreso'
+        });
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo de Capacitaciones{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item">Capacitaciones</li>
+<li class="breadcrumb-item active">Catálogo</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-chalkboard-teacher text-primary me-2"></i>
+            Catálogo de Capacitaciones
+        </h1>
+        <p class="text-muted mb-0">Explora y únete a las capacitaciones disponibles</p>
+    </div>
+    <div>
+    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="fas fa-filter me-1"></i>Filtros
+        </button>
+    </div>
+</div>
+
+<!-- Lista de Capacitaciones -->
+<div class="row">
+    {% for capacitacion in capacitaciones %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-shrink-0 me-3">
+                        {% if capacitacion.es_externa %}
+                        <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                            <i class="fas fa-external-link-alt text-info fa-lg"></i>
+                        </div>
+                        {% else %}
+                        <div class="rounded-circle bg-corporativo bg-opacity-10 p-3">
+                            <i class="fas fa-book text-primary fa-lg"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-1">{{ capacitacion.nombre }}</h5>
+                        <span class="badge {% if capacitacion.es_externa %}bg-info{% else %}bg-corporativo{% endif %}">
+                            {{ capacitacion.tipo.nombre }}
+                        </span>
+                    </div>
+                </div>
+
+                <p class="card-text text-muted small mb-3">
+                    {{ capacitacion.descripcion|truncatewords:30 }}
+                </p>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span><i class="fas fa-clock me-1"></i>Duración</span>
+                        <span>{{ capacitacion.get_duracion_display }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span><i class="fas fa-signal me-1"></i>Nivel</span>
+                        <span>{{ capacitacion.get_nivel_dificultad_display }}</span>
+                    </div>
+                    {% if capacitacion.puntos_gamificacion > 0 %}
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span><i class="fas fa-star me-1"></i>Puntos</span>
+                        <span>{{ capacitacion.puntos_gamificacion }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <button type="button" 
+                   class="btn btn-corporativo w-100"
+                   data-bs-toggle="modal" 
+                   data-bs-target="#{% if capacitacion.es_externa %}modalExterno{% else %}modalInterno{% endif %}{{ capacitacion.id }}">
+                    {% if capacitacion.es_externa %}
+                    <i class="fas fa-external-link-alt me-1"></i>Ver detalles
+                    {% else %}
+                    <i class="fas fa-user-plus me-1"></i>Inscribirme
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-info-circle text-muted fa-3x mb-3"></i>
+                <h5 class="text-muted">No hay capacitaciones disponibles</h5>
+                <p class="text-muted mb-0">Intenta ajustar los filtros de búsqueda</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        {% endif %}
+        
+        <li class="page-item active">
+            <span class="page-link">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+        </li>
+        
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.tipo %}&tipo={{ request.GET.tipo }}{% endif %}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Modal de Filtros -->
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrar Capacitaciones</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get">
+                    <div class="mb-3">
+                        <label class="form-label" for="id_tipo">Tipo</label>
+                        <select name="tipo" id="id_tipo" class="form-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="interno" {% if request.GET.tipo == 'interno' %}selected{% endif %}>Internas</option>
+                            <option value="externo" {% if request.GET.tipo == 'externo' %}selected{% endif %}>Externas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="id_nivel">Nivel</label>
+                        <select name="nivel" id="id_nivel" class="form-select">
+                            <option value="">Todos los niveles</option>
+                            <option value="basico" {% if request.GET.nivel == 'basico' %}selected{% endif %}>Básico</option>
+                            <option value="intermedio" {% if request.GET.nivel == 'intermedio' %}selected{% endif %}>Intermedio</option>
+                            <option value="avanzado" {% if request.GET.nivel == 'avanzado' %}selected{% endif %}>Avanzado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="id_duracion">Duración</label>
+                        <select name="duracion" id="id_duracion" class="form-select">
+                            <option value="">Cualquier duración</option>
+                            <option value="corta" {% if request.GET.duracion == 'corta' %}selected{% endif %}>Menos de 4 horas</option>
+                            <option value="media" {% if request.GET.duracion == 'media' %}selected{% endif %}>4-8 horas</option>
+                            <option value="larga" {% if request.GET.duracion == 'larga' %}selected{% endif %}>Más de 8 horas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-corporativo">
+                            <i class="fas fa-filter me-1"></i>Aplicar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modales de Confirmación -->
+{% for capacitacion in capacitaciones %}
+    {% if capacitacion.es_externa %}
+    <!-- Modal para capacitación externa -->
+    <div class="modal fade" id="modalExterno{{ capacitacion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Capacitación Externa: {{ capacitacion.nombre }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Esta es una capacitación externa. Serás redirigido al sitio del proveedor.
+                    </div>
+                    
+                    <h6 class="fw-bold mb-3">Detalles de la capacitación</h6>
+                    <div class="mb-3">
+                        {{ capacitacion.descripcion }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Información importante:</h6>
+                        <ul class="mb-0">
+                            <li>Duración: {{ capacitacion.get_duracion_display }}</li>
+                            <li>Nivel: {{ capacitacion.get_nivel_dificultad_display }}</li>
+                            {% if capacitacion.puntos_gamificacion %}
+                            <li>Puntos a obtener: {{ capacitacion.puntos_gamificacion }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-corporativo">
+                        <i class="fas fa-external-link-alt me-1"></i>
+                        Ir al sitio externo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Modal para capacitación interna -->
+    <div class="modal fade" id="modalInterno{{ capacitacion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Inscripción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold mb-3">{{ capacitacion.nombre }}</h6>
+                    <p class="mb-4">{{ capacitacion.descripcion }}</p>
+                    
+                    <div class="alert alert-info mb-4">
+                        <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>Información importante:</h6>
+                        <ul class="mb-0">
+                            <li>Duración: {{ capacitacion.get_duracion_display }}</li>
+                            <li>Nivel: {{ capacitacion.get_nivel_dificultad_display }}</li>
+                            {% if capacitacion.puntos_gamificacion %}
+                            <li>Puntos a obtener: {{ capacitacion.puntos_gamificacion }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Al inscribirte, te comprometes a completar la capacitación en el tiempo establecido.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form method="post" action="{% url 'training:inscribir_capacitacion' capacitacion.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.rounded-circle {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+{% endblock %}

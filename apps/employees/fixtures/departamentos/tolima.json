@@ -1,0 +1,386 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 23,
+    "fields": {
+      "nombre": "Tolima",
+      "codigo": "73"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 957,
+    "fields": {
+      "nombre": "Ibague",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 958,
+    "fields": {
+      "nombre": "Alpujarra",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 959,
+    "fields": {
+      "nombre": "Alvarado",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 960,
+    "fields": {
+      "nombre": "Ambalema",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 961,
+    "fields": {
+      "nombre": "Anzoategui",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 962,
+    "fields": {
+      "nombre": "Armero",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 963,
+    "fields": {
+      "nombre": "Ataco",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 964,
+    "fields": {
+      "nombre": "Cajamarca",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 965,
+    "fields": {
+      "nombre": "Carmen De Apicala",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 966,
+    "fields": {
+      "nombre": "Casabianca",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 967,
+    "fields": {
+      "nombre": "Chaparral",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 968,
+    "fields": {
+      "nombre": "Coello",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 969,
+    "fields": {
+      "nombre": "Coyaima",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 970,
+    "fields": {
+      "nombre": "Cunday",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 971,
+    "fields": {
+      "nombre": "Dolores",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 972,
+    "fields": {
+      "nombre": "Espinal",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 973,
+    "fields": {
+      "nombre": "Falan",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 974,
+    "fields": {
+      "nombre": "Flandes",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 975,
+    "fields": {
+      "nombre": "Fresno",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 976,
+    "fields": {
+      "nombre": "Guamo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 977,
+    "fields": {
+      "nombre": "Herveo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 978,
+    "fields": {
+      "nombre": "Honda",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 979,
+    "fields": {
+      "nombre": "Icononzo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 980,
+    "fields": {
+      "nombre": "Lerida",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 981,
+    "fields": {
+      "nombre": "Libano",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 982,
+    "fields": {
+      "nombre": "Mariquita",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 983,
+    "fields": {
+      "nombre": "Melgar",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 984,
+    "fields": {
+      "nombre": "Murillo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 985,
+    "fields": {
+      "nombre": "Natagaima",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 986,
+    "fields": {
+      "nombre": "Ortega",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 987,
+    "fields": {
+      "nombre": "Palocabildo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 988,
+    "fields": {
+      "nombre": "Piedras",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 989,
+    "fields": {
+      "nombre": "Planadas",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 990,
+    "fields": {
+      "nombre": "Prado",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 991,
+    "fields": {
+      "nombre": "Purificacion",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 992,
+    "fields": {
+      "nombre": "Rioblanco",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 993,
+    "fields": {
+      "nombre": "Roncesvalles",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 994,
+    "fields": {
+      "nombre": "Rovira",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 995,
+    "fields": {
+      "nombre": "Saldaña",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 996,
+    "fields": {
+      "nombre": "San Antonio",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 997,
+    "fields": {
+      "nombre": "San Luis",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 998,
+    "fields": {
+      "nombre": "Santa Isabel",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 999,
+    "fields": {
+      "nombre": "Suarez",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1000,
+    "fields": {
+      "nombre": "Valle De San Juan",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1001,
+    "fields": {
+      "nombre": "Venadillo",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1002,
+    "fields": {
+      "nombre": "Villahermosa",
+      "departamento": 23
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1003,
+    "fields": {
+      "nombre": "Villarrica",
+      "departamento": 23
+    }
+  }
+]

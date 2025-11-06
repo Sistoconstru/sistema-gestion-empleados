@@ -1,0 +1,142 @@
+<!-- =============================================================================
+WIDGET DE DOCUMENTOS PARA EL DASHBOARD - templates/core/partials/documents_widget.html
+============================================================================= -->
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-file-alt text-warning me-2"></i>
+                Estado de Documentos
+            </h5>
+            <a href="{% url 'documents:documento_list' %}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-external-link-alt me-1"></i>Ver Todos
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <!-- Documentos Pendientes -->
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-clock text-warning fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="h4 mb-0">{{ documentos_pendientes }}</div>
+                        <div class="text-muted small">Pendientes</div>
+                        {% if alertas_documentos.pendientes %}
+                        <div class="badge bg-warning text-dark small">Requiere atención</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Documentos por Vencer -->
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-calendar-times text-info fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="h4 mb-0">{{ documentos_por_vencer }}</div>
+                        <div class="text-muted small">Por vencer</div>
+                        {% if alertas_documentos.vencimientos %}
+                        <div class="badge bg-info small">Próximos 30 días</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Documentos Vencidos -->
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-exclamation-triangle text-danger fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="h4 mb-0">{{ documentos_vencidos }}</div>
+                        <div class="text-muted small">Vencidos</div>
+                        {% if alertas_documentos.vencidos %}
+                        <div class="badge bg-danger small">Urgente</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empleados Incompletos -->
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-secondary bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-user-times text-secondary fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="h4 mb-0">{{ empleados_docs_incompletos }}</div>
+                        <div class="text-muted small">Docs incompletos</div>
+                        {% if alertas_documentos.incompletos %}
+                        <div class="badge bg-secondary small">En proceso</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acciones Rápidas -->
+        <div class="mt-3 pt-3 border-top">
+            <div class="d-flex gap-2">
+                {% if documentos_pendientes > 0 %}
+                <a href="{% url 'documents:documento_list' %}?estado=pendiente" 
+                   class="btn btn-warning btn-sm">
+                    <i class="fas fa-eye me-1"></i>Revisar Pendientes
+                </a>
+                {% endif %}
+                
+                {% if documentos_vencidos > 0 %}
+                <a href="{% url 'documents:documento_list' %}?vencimiento=vencidos" 
+                   class="btn btn-danger btn-sm">
+                    <i class="fas fa-calendar-times me-1"></i>Ver Vencidos
+                </a>
+                {% endif %}
+                
+                <button onclick="ejecutarComandoVencimientos()" class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-sync me-1"></i>Verificar Vencimientos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function ejecutarComandoVencimientos() {
+    // En un entorno real, esto haría una llamada AJAX al backend
+    // para ejecutar el comando de verificación de vencimientos
+    
+    if (confirm('¿Desea ejecutar la verificación automática de documentos por vencer?')) {
+        fetch('/api/documents/check-expiry/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Verificación completada: ' + data.message);
+            // Recargar estadísticas
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al ejecutar la verificación');
+        });
+    }
+}
+</script>

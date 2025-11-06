@@ -1,0 +1,18 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 3,
+    "fields": {
+      "nombre": "Bogota",
+      "codigo": "11"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 149,
+    "fields": {
+      "nombre": "Bogota, D.C.",
+      "departamento": 3
+    }
+  }
+]

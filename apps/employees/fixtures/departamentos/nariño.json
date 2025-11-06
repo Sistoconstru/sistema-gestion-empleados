@@ -1,0 +1,522 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 17,
+    "fields": {
+      "nombre": "Nariño",
+      "codigo": "52"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 714,
+    "fields": {
+      "nombre": "Pasto",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 715,
+    "fields": {
+      "nombre": "Alban",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 716,
+    "fields": {
+      "nombre": "Aldana",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 717,
+    "fields": {
+      "nombre": "Ancuya",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 718,
+    "fields": {
+      "nombre": "Arboleda",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 719,
+    "fields": {
+      "nombre": "Barbacoas",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 720,
+    "fields": {
+      "nombre": "Belen",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 721,
+    "fields": {
+      "nombre": "Buesaco",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 722,
+    "fields": {
+      "nombre": "Colon",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 723,
+    "fields": {
+      "nombre": "Consaca",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 724,
+    "fields": {
+      "nombre": "Contadero",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 725,
+    "fields": {
+      "nombre": "Cordoba",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 726,
+    "fields": {
+      "nombre": "Cuaspud",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 727,
+    "fields": {
+      "nombre": "Cumbal",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 728,
+    "fields": {
+      "nombre": "Cumbitara",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 729,
+    "fields": {
+      "nombre": "Chachagsi",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 730,
+    "fields": {
+      "nombre": "El Charco",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 731,
+    "fields": {
+      "nombre": "El Peñol",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 732,
+    "fields": {
+      "nombre": "El Rosario",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 733,
+    "fields": {
+      "nombre": "El Tablon De Gomez",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 734,
+    "fields": {
+      "nombre": "El Tambo",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 735,
+    "fields": {
+      "nombre": "Funes",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 736,
+    "fields": {
+      "nombre": "Guachucal",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 737,
+    "fields": {
+      "nombre": "Guaitarilla",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 738,
+    "fields": {
+      "nombre": "Gualmatan",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 739,
+    "fields": {
+      "nombre": "Iles",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 740,
+    "fields": {
+      "nombre": "Imues",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 741,
+    "fields": {
+      "nombre": "Ipiales",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 742,
+    "fields": {
+      "nombre": "La Cruz",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 743,
+    "fields": {
+      "nombre": "La Florida",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 744,
+    "fields": {
+      "nombre": "La Llanada",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 745,
+    "fields": {
+      "nombre": "La Tola",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 746,
+    "fields": {
+      "nombre": "La Union",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 747,
+    "fields": {
+      "nombre": "Leiva",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 748,
+    "fields": {
+      "nombre": "Linares",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 749,
+    "fields": {
+      "nombre": "Los Andes",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 750,
+    "fields": {
+      "nombre": "Magsi",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 751,
+    "fields": {
+      "nombre": "Mallama",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 752,
+    "fields": {
+      "nombre": "Mosquera",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 753,
+    "fields": {
+      "nombre": "Nariño",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 754,
+    "fields": {
+      "nombre": "Olaya Herrera",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 755,
+    "fields": {
+      "nombre": "Ospina",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 756,
+    "fields": {
+      "nombre": "Francisco Pizarro",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 757,
+    "fields": {
+      "nombre": "Policarpa",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 758,
+    "fields": {
+      "nombre": "Potosi",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 759,
+    "fields": {
+      "nombre": "Providencia",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 760,
+    "fields": {
+      "nombre": "Puerres",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 761,
+    "fields": {
+      "nombre": "Pupiales",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 762,
+    "fields": {
+      "nombre": "Ricaurte",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 763,
+    "fields": {
+      "nombre": "Roberto Payan",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 764,
+    "fields": {
+      "nombre": "Samaniego",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 765,
+    "fields": {
+      "nombre": "Sandona",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 766,
+    "fields": {
+      "nombre": "San Bernardo",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 767,
+    "fields": {
+      "nombre": "San Lorenzo",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 768,
+    "fields": {
+      "nombre": "San Pablo",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 769,
+    "fields": {
+      "nombre": "San Pedro De Cartago",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 770,
+    "fields": {
+      "nombre": "Santa Barbara",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 771,
+    "fields": {
+      "nombre": "Santacruz",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 772,
+    "fields": {
+      "nombre": "Sapuyes",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 773,
+    "fields": {
+      "nombre": "Taminango",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 774,
+    "fields": {
+      "nombre": "Tangua",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 775,
+    "fields": {
+      "nombre": "San Andres De Tumaco",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 776,
+    "fields": {
+      "nombre": "Tuquerres",
+      "departamento": 17
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 777,
+    "fields": {
+      "nombre": "Yacuanquer",
+      "departamento": 17
+    }
+  }
+]

@@ -1,0 +1,234 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 10,
+    "fields": {
+      "nombre": "Cordoba",
+      "codigo": "23"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 429,
+    "fields": {
+      "nombre": "Monteria",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 430,
+    "fields": {
+      "nombre": "Ayapel",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 431,
+    "fields": {
+      "nombre": "Buenavista",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 432,
+    "fields": {
+      "nombre": "Canalete",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 433,
+    "fields": {
+      "nombre": "Cerete",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 434,
+    "fields": {
+      "nombre": "Chima",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 435,
+    "fields": {
+      "nombre": "Chinu",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 436,
+    "fields": {
+      "nombre": "Cienaga De Oro",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 437,
+    "fields": {
+      "nombre": "Cotorra",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 438,
+    "fields": {
+      "nombre": "La Apartada",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 439,
+    "fields": {
+      "nombre": "Lorica",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 440,
+    "fields": {
+      "nombre": "Los Cordobas",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 441,
+    "fields": {
+      "nombre": "Momil",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 442,
+    "fields": {
+      "nombre": "Montelibano",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 443,
+    "fields": {
+      "nombre": "Moñitos",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 444,
+    "fields": {
+      "nombre": "Planeta Rica",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 445,
+    "fields": {
+      "nombre": "Pueblo Nuevo",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 446,
+    "fields": {
+      "nombre": "Puerto Escondido",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 447,
+    "fields": {
+      "nombre": "Puerto Libertador",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 448,
+    "fields": {
+      "nombre": "Purisima",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 449,
+    "fields": {
+      "nombre": "Sahagun",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 450,
+    "fields": {
+      "nombre": "San Andres Sotavento",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 451,
+    "fields": {
+      "nombre": "San Antero",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 452,
+    "fields": {
+      "nombre": "San Bernardo Del Viento",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 453,
+    "fields": {
+      "nombre": "San Carlos",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 454,
+    "fields": {
+      "nombre": "San Pelayo",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 455,
+    "fields": {
+      "nombre": "Tierralta",
+      "departamento": 10
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 456,
+    "fields": {
+      "nombre": "Valencia",
+      "departamento": 10
+    }
+  }
+]

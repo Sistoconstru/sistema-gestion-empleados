@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resultados de {{ quiz.titulo }} - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .resultados-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .resultado-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .resultado-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .pregunta-resultado {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+    }
+    .opcion-resultado {
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 0.25rem;
+    }
+    .opcion-correcta {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+    .opcion-incorrecta {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+    .opcion-neutral {
+        background-color: #e9ecef;
+        border: 1px solid #dee2e6;
+    }
+    .intentos-previos {
+        margin-top: 2rem;
+    }
+    .intento-card {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    .retroalimentacion {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="resultados-container">
+        <div class="resultado-header">
+            <h2>{{ quiz.titulo }}</h2>
+            
+            {% if mejor_intento %}
+                {% if mejor_intento.aprobado %}
+                    <div class="alert alert-success">
+                        <h4>¡Felicitaciones! Has aprobado la valoración</h4>
+                        <p class="mb-0">Puntaje obtenido: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <h4>No has alcanzado el puntaje mínimo requerido</h4>
+                        <p>Puntaje obtenido: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</p>
+                        <p class="mb-0">Puntaje mínimo requerido: {{ quiz.porcentaje_aprobacion }}%</p>
+                    </div>
+                {% endif %}
+
+                <div class="resultado-card">
+                    <h4>Detalles del mejor intento</h4>
+                    <ul class="list-unstyled">
+                        <li>Fecha: {{ mejor_intento.fecha_inicio|date:"d/m/Y H:i" }}</li>
+                        <li>Duración: {{ mejor_intento.tiempo_utilizado|default:0 }} segundos</li>
+                        <li>Puntaje: {{ mejor_intento.puntaje_obtenido|floatformat:1 }}%</li>
+                    </ul>
+                </div>
+
+                {% for respuesta in respuestas %}
+                <div class="pregunta-resultado">
+                    <h5>{{ forloop.counter }}. {{ respuesta.pregunta.texto }}</h5>
+
+                    {% if respuesta.pregunta.imagen %}
+                        <img src="{{ respuesta.pregunta.imagen.url }}" 
+                             alt="Imagen de la pregunta" 
+                             class="img-fluid mb-3">
+                    {% endif %}
+
+                    {% for opcion in respuesta.pregunta.opciones.all %}
+                        <div class="opcion-resultado 
+                            {% if opcion == respuesta.opcion_seleccionada %}
+                                {% if respuesta.es_correcta %}
+                                    opcion-correcta
+                                {% else %}
+                                    opcion-incorrecta
+                                {% endif %}
+                            {% elif opcion.es_correcta %}
+                                opcion-correcta
+                            {% else %}
+                                opcion-neutral
+                            {% endif %}">
+
+                            {% if opcion == respuesta.opcion_seleccionada %}
+                                <i class="fas fa-check-circle me-2"></i>
+                            {% elif opcion.es_correcta %}
+                                <i class="fas fa-circle me-2"></i>
+                            {% else %}
+                                <i class="far fa-circle me-2"></i>
+                            {% endif %}
+
+                            {{ opcion.texto }}
+                        </div>
+                    {% endfor %}
+
+                    {% if respuesta.pregunta.explicacion %}
+                        <div class="retroalimentacion">
+                            <h6>Explicación:</h6>
+                            {{ respuesta.pregunta.explicacion }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+            {% endif %}
+            
+            {% if intentos|length > 1 %}
+                <div class="intentos-previos">
+                    <h4>Historial de intentos</h4>
+                    {% for intento in intentos %}
+                        <div class="intento-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Intento #{{ forloop.revcounter }}</strong>
+                                    <br>
+                                    {{ intento.fecha_inicio|date:"d/m/Y H:i" }}
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge {% if intento.aprobado %}bg-corporativo{% else %}bg-danger{% endif %}">
+                                        {{ intento.puntaje_obtenido|floatformat:1 }}%
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ intento.tiempo_utilizado|default:0 }} segundos
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="mt-4">
+                {% if not ultimo_intento.aprobado and quiz.intentos_maximos > intentos|length %}
+                    <a href="{% url 'training:quiz' quiz.pk %}" class="btn btn-corporativo">
+                        Intentar nuevamente
+                    </a>
+                {% endif %}
+                
+                {% if inscripcion %}
+                    <a href="{% url 'training:player' pk=inscripcion.id %}" class="btn btn-secondary">
+                        Volver a la capacitación
+                    </a>
+                {% else %}
+                    <a href="#" class="btn btn-secondary disabled">Inscripción no encontrada</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

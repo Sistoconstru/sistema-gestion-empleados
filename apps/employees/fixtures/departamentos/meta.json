@@ -1,0 +1,242 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 16,
+    "fields": {
+      "nombre": "Meta",
+      "codigo": "50"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 685,
+    "fields": {
+      "nombre": "Villavicencio",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 686,
+    "fields": {
+      "nombre": "Acacias",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 687,
+    "fields": {
+      "nombre": "Barranca De Upia",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 688,
+    "fields": {
+      "nombre": "Cabuyaro",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 689,
+    "fields": {
+      "nombre": "Castilla La Nueva",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 690,
+    "fields": {
+      "nombre": "Cubarral",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 691,
+    "fields": {
+      "nombre": "Cumaral",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 692,
+    "fields": {
+      "nombre": "El Calvario",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 693,
+    "fields": {
+      "nombre": "El Castillo",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 694,
+    "fields": {
+      "nombre": "El Dorado",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 695,
+    "fields": {
+      "nombre": "Fuente De Oro",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 696,
+    "fields": {
+      "nombre": "Granada",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 697,
+    "fields": {
+      "nombre": "Guamal",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 698,
+    "fields": {
+      "nombre": "Mapiripan",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 699,
+    "fields": {
+      "nombre": "Mesetas",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 700,
+    "fields": {
+      "nombre": "La Macarena",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 701,
+    "fields": {
+      "nombre": "Uribe",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 702,
+    "fields": {
+      "nombre": "Lejanias",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 703,
+    "fields": {
+      "nombre": "Puerto Concordia",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 704,
+    "fields": {
+      "nombre": "Puerto Gaitan",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 705,
+    "fields": {
+      "nombre": "Puerto Lopez",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 706,
+    "fields": {
+      "nombre": "Puerto Lleras",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 707,
+    "fields": {
+      "nombre": "Puerto Rico",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 708,
+    "fields": {
+      "nombre": "Restrepo",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 709,
+    "fields": {
+      "nombre": "San Carlos De Guaroa",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 710,
+    "fields": {
+      "nombre": "San Juan De Arama",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 711,
+    "fields": {
+      "nombre": "San Juanito",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 712,
+    "fields": {
+      "nombre": "San Martin",
+      "departamento": 16
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 713,
+    "fields": {
+      "nombre": "Vistahermosa",
+      "departamento": 16
+    }
+  }
+]

@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .ranking-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .ranking-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 138, 0.15);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #43618a 0%, #5a7ba3 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    .employee-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #43618a, #6c7b95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .position-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .position-1 { background: linear-gradient(135deg, #ffd700, #ffed4a); color: #8b5a00; }
+    .position-2 { background: linear-gradient(135deg, #c0c0c0, #e5e5e5); color: #666; }
+    .position-3 { background: linear-gradient(135deg, #cd7f32, #d4985a); color: white; }
+    .position-other { background: linear-gradient(135deg, #43618a, #6c7b95); color: white; }
+    
+    .department-card {
+        background: #f8f9fa;
+        border-left: 4px solid #43618a;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .activity-item {
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        border-radius: 4px;
+        background: #e9ecef;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #43618a, #6c7b95);
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Administración de Ranking - Sistema SIGHU{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-trophy me-2"></i>
+                        Administración de Ranking
+                    </h2>
+                    <p class="text-muted">Análisis completo del sistema de reconocimiento y puntos</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exportarModal">
+                        <i class="fas fa-download me-1"></i>
+                        Exportar Datos
+                    </button>
+                    <a href="{% url 'recognition:dashboard' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas Generales -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-users fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ total_empleados }}</h3>
+            <p class="mb-0">Empleados Activos</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-award fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ empleados_con_puntos }}</h3>
+            <p class="mb-0">Con Puntos</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-coins fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ puntos_totales|floatformat:0 }}</h3>
+            <p class="mb-0">Puntos Totales</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calculator fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ promedio_puntos|floatformat:1 }}</h3>
+            <p class="mb-0">Promedio por Empleado</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Ranking Principal -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-ol me-2"></i>
+                        Ranking General de Empleados
+                    </h5>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-light btn-sm" onclick="cambiarVista('lista')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-light btn-sm" onclick="cambiarVista('tarjetas')">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="ranking-lista">
+                        {% for empleado in empleados_ranking %}
+                        <div class="activity-item">
+                            <div class="position-badge {% if forloop.counter == 1 %}position-1{% elif forloop.counter == 2 %}position-2{% elif forloop.counter == 3 %}position-3{% else %}position-other{% endif %}">
+                                {{ forloop.counter }}
+                            </div>
+                            
+                            <div class="employee-avatar">
+                                {{ empleado.nombres.0 }}{{ empleado.apellidos.0 }}
+                            </div>
+                            
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>{{ empleado.nombres }} {{ empleado.apellidos }}</strong>
+                                    <span class="badge bg-primary badge-lg">
+                                        <i class="fas fa-coins me-1"></i>
+                                        {{ empleado.puntos_totales|default:0 }} puntos
+                                    </span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span>
+                                        {% if empleado.posicion.departamento %}
+                                            <i class="fas fa-building me-1"></i>
+                                            {{ empleado.posicion.departamento.nombre }}
+                                        {% endif %}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-tasks me-1"></i>
+                                        {{ empleado.actividades_completadas }} actividades
+                                        <i class="fas fa-medal ms-2 me-1"></i>
+                                        {{ empleado.insignias_count }} insignias
+                                    </span>
+                                </div>
+                                
+                                <!-- Barra de progreso relativa -->
+                                {% if empleados_ranking.0.puntos_totales %}
+                                <div class="progress-bar-custom mt-2">
+                                    <div class="progress-fill" style="width: {% widthratio empleado.puntos_totales empleados_ranking.0.puntos_totales 100 %}%"></div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="verDetalle({{ empleado.id }})">
+                                        <i class="fas fa-eye me-1"></i> Ver Detalle
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="otorgarPuntos({{ empleado.id }})">
+                                        <i class="fas fa-plus me-1"></i> Otorgar Puntos
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="asignarInsignia({{ empleado.id }})">
+                                        <i class="fas fa-medal me-1"></i> Asignar Insignia
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No hay empleados en el ranking</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Lateral -->
+        <div class="col-lg-4">
+            <!-- Ranking por Departamentos -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-building me-2"></i>
+                        Ranking por Departamentos
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    {% for dept in ranking_departamentos %}
+                    <div class="department-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ dept.posicion__departamento__nombre|default:"Sin Departamento" }}</strong>
+                                <br>
+                                <small class="text-muted">{{ dept.cantidad_empleados }} empleados</small>
+                            </div>
+                            <span class="badge bg-success">
+                                {{ dept.total_puntos|default:0 }} pts
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-chart-bar"></i>
+                        No hay datos disponibles
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Actividad Reciente -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Actividad Reciente
+                    </h6>
+                </div>
+                <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    {% for actividad in actividad_reciente %}
+                    <div class="activity-item">
+                        <div class="employee-avatar" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                            {{ actividad.empleado.nombres.0 }}{{ actividad.empleado.apellidos.0 }}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ actividad.empleado.nombres }} {{ actividad.empleado.apellidos }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ actividad.descripcion|truncatechars:40 }}</small>
+                                    <br>
+                                    <small class="text-primary">{{ actividad.fecha_otorgado|date:"d/m/Y H:i" }}</small>
+                                </div>
+                                <span class="badge bg-primary">
+                                    +{{ actividad.puntos }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-history"></i>
+                        No hay actividad reciente
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Exportar -->
+<div class="modal fade" id="exportarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-download me-2"></i>
+                    Exportar Datos del Ranking
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formExportar">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Formato de Exportación</label>
+                        <select class="form-select" name="formato">
+                            <option value="excel">Excel (.xlsx)</option>
+                            <option value="csv">CSV</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Datos a Incluir</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="incluir[]" value="ranking" checked>
+                            <label class="form-check-label">Ranking completo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="incluir[]" value="departamentos">
+                            <label class="form-check-label">Ranking por departamentos</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="incluir[]" value="actividad">
+                            <label class="form-check-label">Actividad reciente</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-download me-1"></i>
+                        Exportar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function cambiarVista(tipo) {
+        // Implementar cambio de vista
+        console.log('Cambiar vista a:', tipo);
+    }
+    
+    function verDetalle(empleadoId) {
+        // Implementar vista de detalle
+        console.log('Ver detalle empleado:', empleadoId);
+    }
+    
+    function otorgarPuntos(empleadoId) {
+        // Implementar modal para otorgar puntos
+        console.log('Otorgar puntos a empleado:', empleadoId);
+    }
+    
+    function asignarInsignia(empleadoId) {
+        // Implementar modal para asignar insignia
+        console.log('Asignar insignia a empleado:', empleadoId);
+    }
+    
+    document.getElementById('formExportar').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Implementar exportación
+        console.log('Exportar datos');
+    });
+
+    // Animación de las barras de progreso
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,639 @@
+<!-- templates/recognition/admin_canjes.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Administración de Canjes - Reconocimientos{% endblock %}
+
+{% block extra_css %}
+<style>
+.canje-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.canje-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.estado-badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+}
+
+.estado-solicitado { 
+    background: #fff3cd; 
+    color: #856404; 
+    border: 1px solid #ffeaa7;
+}
+
+.estado-aprobado { 
+    background: #d1ecf1; 
+    color: #0c5460; 
+    border: 1px solid #b8daff;
+}
+
+.estado-entregado { 
+    background: #d4edda; 
+    color: #155724; 
+    border: 1px solid #c3e6cb;
+}
+
+.estado-rechazado { 
+    background: #f8d7da; 
+    color: #721c24; 
+    border: 1px solid #f5c6cb;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.btn-aprobar {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: white;
+}
+
+.btn-rechazar {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    color: white;
+}
+
+.btn-entregar {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    color: white;
+}
+
+.filter-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.canje-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-corporativo mb-1">
+                        <i class="fas fa-tasks me-2"></i>Administración de Canjes
+                    </h2>
+                    <p class="text-muted mb-0">Gestiona las solicitudes de canje de beneficios</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'recognition:beneficios' %}" class="btn btn-outline-corporativo">
+                        <i class="fas fa-gift me-1"></i>Ver Beneficios
+                    </a>
+                    <a href="{% url 'recognition:index' %}" class="btn btn-outline-corporativo">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card">
+                <div class="stats-number">{{ canjes_pendientes }}</div>
+                <div>Pendientes</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="stats-number">{{ canjes_aprobados }}</div>
+                <div>Aprobados</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+                <div class="stats-number">{{ canjes_entregados }}</div>
+                <div>Entregados</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                <div class="stats-number">{{ canjes_rechazados }}</div>
+                <div>Rechazados</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card filter-card">
+                <div class="card-body">
+                    <form method="get" class="row align-items-end">
+                        <div class="col-md-3 mb-2">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select name="estado" id="estado" class="form-select">
+                                <option value="todos" {% if request.GET.estado == 'todos' or not request.GET.estado %}selected{% endif %}>Todos</option>
+                                <option value="solicitado" {% if request.GET.estado == 'solicitado' %}selected{% endif %}>Pendientes</option>
+                                <option value="aprobado" {% if request.GET.estado == 'aprobado' %}selected{% endif %}>Aprobados</option>
+                                <option value="entregado" {% if request.GET.estado == 'entregado' %}selected{% endif %}>Entregados</option>
+                                <option value="rechazado" {% if request.GET.estado == 'rechazado' %}selected{% endif %}>Rechazados</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="fecha_desde" class="form-label">Desde</label>
+                            <input type="date" name="fecha_desde" id="fecha_desde" class="form-control" value="{{ request.GET.fecha_desde }}">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label for="fecha_hasta" class="form-label">Hasta</label>
+                            <input type="date" name="fecha_hasta" id="fecha_hasta" class="form-control" value="{{ request.GET.fecha_hasta }}">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-corporativo">
+                                    <i class="fas fa-filter me-1"></i>Filtrar
+                                </button>
+                                <a href="{% url 'recognition:admin_canjes' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Limpiar
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Canjes -->
+    <div class="row">
+        {% if canjes %}
+            {% for canje in canjes %}
+            <div class="col-12 mb-3">
+                <div class="card canje-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="employee-info">
+                                    <div class="employee-avatar">
+                                        {{ canje.empleado.nombres|first }}{{ canje.empleado.apellidos|first }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ canje.empleado.nombre_completo }}</h6>
+                                        <small class="text-muted">{{ canje.empleado.cargo|default:"Sin cargo" }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <h5 class="text-corporativo mb-1">{{ canje.tipo_beneficio.nombre }}</h5>
+                                <p class="text-muted mb-1">{{ canje.tipo_beneficio.descripcion|truncatewords:10 }}</p>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-info">{{ canje.puntos_utilizados }} pts</span>
+                                    <span class="badge bg-secondary">{{ canje.codigo_canje }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 text-center">
+                                <span class="estado-badge estado-{{ canje.estado }}">
+                                    {{ canje.get_estado_display }}
+                                </span>
+                                <div class="mt-2">
+                                    <small class="text-muted">{{ canje.fecha_canje|date:"d/m/Y H:i" }}</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 text-end">
+                                {% if canje.estado == 'solicitado' %}
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-aprobar btn-sm" 
+                                                onclick="mostrarModalAprobacion('{{ canje.id }}', '{{ canje.tipo_beneficio.nombre }}', '{{ canje.empleado.nombre_completo }}')">
+                                            <i class="fas fa-check me-1"></i>Aprobar
+                                        </button>
+                                        <button class="btn btn-rechazar btn-sm" 
+                                                onclick="mostrarModalRechazo('{{ canje.id }}', '{{ canje.tipo_beneficio.nombre }}', '{{ canje.empleado.nombre_completo }}')">
+                                            <i class="fas fa-times me-1"></i>Rechazar
+                                        </button>
+                                    </div>
+                                {% elif canje.estado == 'aprobado' %}
+                                    <button class="btn btn-entregar btn-sm" 
+                                            onclick="mostrarModalEntrega('{{ canje.id }}', '{{ canje.tipo_beneficio.nombre }}', '{{ canje.empleado.nombre_completo }}')">
+                                        <i class="fas fa-check-circle me-1"></i>Marcar Entregado
+                                    </button>
+                                {% endif %}
+                                
+                                <button class="btn btn-outline-info btn-sm mt-1" 
+                                        onclick="verDetalles('{{ canje.id }}')">
+                                    <i class="fas fa-eye me-1"></i>Detalles
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Detalles adicionales -->
+                        <div id="detalles-{{ canje.id }}" class="canje-details" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-corporativo">Información del Beneficio</h6>
+                                    <p><strong>Categoría:</strong> {{ canje.tipo_beneficio.categoria|default:"Sin categoría" }}</p>
+                                    <p><strong>Términos:</strong> {{ canje.tipo_beneficio.terminos_condiciones|default:"Sin términos específicos"|truncatewords:15 }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-corporativo">Estado del Canje</h6>
+                                    {% if canje.fecha_aprobacion %}
+                                    <p><strong>Fecha Aprobación:</strong> {{ canje.fecha_aprobacion|date:"d/m/Y H:i" }}</p>
+                                    {% endif %}
+                                    {% if canje.fecha_reclamo_programada %}
+                                    <p><strong>Fecha Reclamo Programada:</strong> {{ canje.fecha_reclamo_programada|date:"d/m/Y" }}</p>
+                                    {% endif %}
+                                    {% if canje.aprobado_por %}
+                                    <p><strong>Aprobado por:</strong> {{ canje.aprobado_por.get_full_name|default:canje.aprobado_por.username }}</p>
+                                    {% endif %}
+                                    {% if canje.fecha_entrega %}
+                                    <p><strong>Fecha Entrega Real:</strong> {{ canje.fecha_entrega|date:"d/m/Y H:i" }}</p>
+                                    {% endif %}
+                                    {% if canje.observaciones %}
+                                    <p><strong>Observaciones:</strong> {{ canje.observaciones }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay canjes que mostrar</h4>
+                    <p class="text-muted">No se encontraron canjes con los filtros aplicados.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal de Aprobación -->
+<div class="modal fade" id="modalAprobacion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success">
+                    <i class="fas fa-check me-2"></i>Aprobar Canje
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Beneficio:</strong> <span id="beneficioAprobacion"></span><br>
+                    <strong>Empleado:</strong> <span id="empleadoAprobacion"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="comentariosAprobacion" class="form-label">Comentarios (opcional)</label>
+                    <textarea class="form-control" id="comentariosAprobacion" rows="3" 
+                              placeholder="Instrucciones de entrega, condiciones especiales, etc."></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="fechaEntregaProgramada" class="form-label">Fecha de entrega programada (opcional)</label>
+                    <input type="date" class="form-control" id="fechaEntregaProgramada">
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    El empleado será notificado de la aprobación de su canje.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="aprobarCanje()">
+                    <i class="fas fa-check me-1"></i>Aprobar Canje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Rechazo -->
+<div class="modal fade" id="modalRechazo" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-times me-2"></i>Rechazar Canje
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Beneficio:</strong> <span id="beneficioRechazo"></span><br>
+                    <strong>Empleado:</strong> <span id="empleadoRechazo"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="motivoRechazo" class="form-label">Motivo del rechazo <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="motivoRechazo" rows="3" required
+                              placeholder="Explica el motivo del rechazo para que el empleado pueda entenderlo"></textarea>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Importante:</strong> Los puntos utilizados serán restaurados al empleado y el stock del beneficio será incrementado.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="rechazarCanje()">
+                    <i class="fas fa-times me-1"></i>Rechazar Canje
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Entrega -->
+<div class="modal fade" id="modalEntrega" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">
+                    <i class="fas fa-check-circle me-2"></i>Marcar como Entregado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Beneficio:</strong> <span id="beneficioEntrega"></span><br>
+                    <strong>Empleado:</strong> <span id="empleadoEntrega"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="comentariosEntrega" class="form-label">Comentarios de entrega (opcional)</label>
+                    <textarea class="form-control" id="comentariosEntrega" rows="3" 
+                              placeholder="Detalles sobre la entrega, fecha/hora específica, etc."></textarea>
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    El canje será marcado como completado y el empleado será notificado.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="entregarCanje()">
+                    <i class="fas fa-check-circle me-1"></i>Marcar Entregado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% csrf_token %}
+<script>
+let canjeActual = null;
+
+function mostrarModalAprobacion(canjeId, beneficio, empleado) {
+    canjeActual = canjeId;
+    document.getElementById('beneficioAprobacion').textContent = beneficio;
+    document.getElementById('empleadoAprobacion').textContent = empleado;
+    document.getElementById('comentariosAprobacion').value = '';
+    document.getElementById('fechaEntregaProgramada').value = '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalAprobacion'));
+    modal.show();
+}
+
+function mostrarModalRechazo(canjeId, beneficio, empleado) {
+    canjeActual = canjeId;
+    document.getElementById('beneficioRechazo').textContent = beneficio;
+    document.getElementById('empleadoRechazo').textContent = empleado;
+    document.getElementById('motivoRechazo').value = '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalRechazo'));
+    modal.show();
+}
+
+function mostrarModalEntrega(canjeId, beneficio, empleado) {
+    canjeActual = canjeId;
+    document.getElementById('beneficioEntrega').textContent = beneficio;
+    document.getElementById('empleadoEntrega').textContent = empleado;
+    document.getElementById('comentariosEntrega').value = '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalEntrega'));
+    modal.show();
+}
+
+function verDetalles(canjeId) {
+    const detalles = document.getElementById(`detalles-${canjeId}`);
+    if (detalles.style.display === 'none') {
+        detalles.style.display = 'block';
+    } else {
+        detalles.style.display = 'none';
+    }
+}
+
+function aprobarCanje() {
+    if (!canjeActual) return;
+    
+    const comentarios = document.getElementById('comentariosAprobacion').value;
+    const fechaEntrega = document.getElementById('fechaEntregaProgramada').value;
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalAprobacion'));
+    modal.hide();
+    
+    mostrarCargando('Aprobando canje...');
+    
+    fetch(`/reconocimientos/aprobar-canje/${canjeActual}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            comentarios: comentarios,
+            fecha_entrega: fechaEntrega
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        ocultarCargando();
+        if (data.success) {
+            mostrarAlerta('success', data.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            mostrarAlerta('danger', data.error);
+        }
+    })
+    .catch(error => {
+        ocultarCargando();
+        mostrarAlerta('danger', 'Error al procesar la solicitud');
+    });
+}
+
+function rechazarCanje() {
+    if (!canjeActual) return;
+    
+    const motivo = document.getElementById('motivoRechazo').value.trim();
+    if (!motivo) {
+        mostrarAlerta('warning', 'Debes proporcionar un motivo para el rechazo');
+        return;
+    }
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalRechazo'));
+    modal.hide();
+    
+    mostrarCargando('Rechazando canje...');
+    
+    fetch(`/reconocimientos/rechazar-canje/${canjeActual}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            motivo: motivo
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        ocultarCargando();
+        if (data.success) {
+            mostrarAlerta('success', data.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            mostrarAlerta('danger', data.error);
+        }
+    })
+    .catch(error => {
+        ocultarCargando();
+        mostrarAlerta('danger', 'Error al procesar la solicitud');
+    });
+}
+
+function entregarCanje() {
+    if (!canjeActual) return;
+    
+    const comentarios = document.getElementById('comentariosEntrega').value;
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEntrega'));
+    modal.hide();
+    
+    mostrarCargando('Marcando como entregado...');
+    
+    fetch(`/reconocimientos/entregar-canje/${canjeActual}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            comentarios_entrega: comentarios
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        ocultarCargando();
+        if (data.success) {
+            mostrarAlerta('success', data.message);
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            mostrarAlerta('danger', data.error);
+        }
+    })
+    .catch(error => {
+        ocultarCargando();
+        mostrarAlerta('danger', 'Error al procesar la solicitud');
+    });
+}
+
+function mostrarCargando(mensaje) {
+    const loadingAlert = document.createElement('div');
+    loadingAlert.id = 'alertaCargando';
+    loadingAlert.className = 'alert alert-info alert-dismissible fade show position-fixed';
+    loadingAlert.style.top = '20px';
+    loadingAlert.style.right = '20px';
+    loadingAlert.style.zIndex = '9999';
+    loadingAlert.innerHTML = `
+        <i class="fas fa-spinner fa-spin me-2"></i>${mensaje}
+    `;
+    document.body.appendChild(loadingAlert);
+}
+
+function ocultarCargando() {
+    const loadingAlert = document.getElementById('alertaCargando');
+    if (loadingAlert) {
+        loadingAlert.remove();
+    }
+}
+
+function mostrarAlerta(tipo, mensaje) {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+    alert.style.top = '20px';
+    alert.style.right = '20px';
+    alert.style.zIndex = '9999';
+    
+    let icono = 'fas fa-info-circle';
+    if (tipo === 'success') icono = 'fas fa-check';
+    else if (tipo === 'danger') icono = 'fas fa-exclamation-triangle';
+    else if (tipo === 'warning') icono = 'fas fa-exclamation-triangle';
+    
+    alert.innerHTML = `
+        <i class="${icono} me-2"></i>${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,250 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 12,
+    "fields": {
+      "nombre": "Choco",
+      "codigo": "27"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 573,
+    "fields": {
+      "nombre": "Quibdo",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 574,
+    "fields": {
+      "nombre": "Acandi",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 575,
+    "fields": {
+      "nombre": "Alto Baudo",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 576,
+    "fields": {
+      "nombre": "Atrato",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 577,
+    "fields": {
+      "nombre": "Bagado",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 578,
+    "fields": {
+      "nombre": "Bahia Solano",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 579,
+    "fields": {
+      "nombre": "Bajo Baudo",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 580,
+    "fields": {
+      "nombre": "Bojaya",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 581,
+    "fields": {
+      "nombre": "El Canton Del San Pablo",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 582,
+    "fields": {
+      "nombre": "Carmen Del Darien",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 583,
+    "fields": {
+      "nombre": "Certegui",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 584,
+    "fields": {
+      "nombre": "Condoto",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 585,
+    "fields": {
+      "nombre": "El Carmen De Atrato",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 586,
+    "fields": {
+      "nombre": "El Litoral Del San Juan",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 587,
+    "fields": {
+      "nombre": "Istmina",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 588,
+    "fields": {
+      "nombre": "Jurado",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 589,
+    "fields": {
+      "nombre": "Lloro",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 590,
+    "fields": {
+      "nombre": "Medio Atrato",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 591,
+    "fields": {
+      "nombre": "Medio Baudo",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 592,
+    "fields": {
+      "nombre": "Medio San Juan",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 593,
+    "fields": {
+      "nombre": "Novita",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 594,
+    "fields": {
+      "nombre": "Nuqui",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 595,
+    "fields": {
+      "nombre": "Rio Iro",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 596,
+    "fields": {
+      "nombre": "Rio Quito",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 597,
+    "fields": {
+      "nombre": "Riosucio",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 598,
+    "fields": {
+      "nombre": "San Jose Del Palmar",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 599,
+    "fields": {
+      "nombre": "Sipi",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 600,
+    "fields": {
+      "nombre": "Tado",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 601,
+    "fields": {
+      "nombre": "Unguia",
+      "departamento": 12
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 602,
+    "fields": {
+      "nombre": "Union Panamericana",
+      "departamento": 12
+    }
+  }
+]

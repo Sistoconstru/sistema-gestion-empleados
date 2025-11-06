@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .benefit-card {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .benefit-card:hover {
+        box-shadow: 0 4px 15px rgba(67, 97, 138, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .badge-large {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .stats-card {
+        background: linear-gradient(135deg, #43618a 0%, #5a7ba3 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .exchange-item {
+        border-left: 4px solid #43618a;
+        background: #f8f9fa;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(67, 97, 138, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block title %}Administración de Beneficios - Sistema SIGHU{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-gifts me-2"></i>
+                        Administración de Beneficios
+                    </h2>
+                    <p class="text-muted">Gestión completa del sistema de beneficios y canjes</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
+                        <i class="fas fa-plus me-1"></i>
+                        Nuevo Beneficio
+                    </button>
+                    <a href="{% url 'recognition:dashboard' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <i class="fas fa-gifts fa-2x mb-2"></i>
+                <h3 class="mb-1">{{ total_beneficios }}</h3>
+                <p class="mb-0">Beneficios Totales</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h3 class="mb-1">{{ beneficios_activos }}</h3>
+                <p class="mb-0">Beneficios Activos</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <i class="fas fa-exchange-alt fa-2x mb-2"></i>
+                <h3 class="mb-1">{{ total_canjes }}</h3>
+                <p class="mb-0">Canjes Realizados</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card text-center">
+                <i class="fas fa-clock fa-2x mb-2"></i>
+                <h3 class="mb-1">{{ canjes_pendientes }}</h3>
+                <p class="mb-0">Canjes Pendientes</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Lista de Beneficios -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Beneficios Disponibles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for beneficio in beneficios %}
+                        <div class="col-md-6 mb-3">
+                            <div class="benefit-card p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold text-primary">{{ beneficio.nombre }}</h6>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                                type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="editarBeneficio({{ beneficio.id }})">
+                                                <i class="fas fa-edit me-1"></i> Editar
+                                            </a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="toggleBeneficio({{ beneficio.id }})">
+                                                <i class="fas fa-power-off me-1"></i> 
+                                                {% if beneficio.disponible %}Desactivar{% else %}Activar{% endif %}
+                                            </a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="eliminarBeneficio({{ beneficio.id }})">
+                                                <i class="fas fa-trash me-1"></i> Eliminar
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-muted small mb-2">{{ beneficio.descripcion|truncatechars:80 }}</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary badge-large">
+                                        <i class="fas fa-coins me-1"></i>
+                                        {{ beneficio.costo_puntos }} puntos
+                                    </span>
+                                    <span class="badge {% if beneficio.disponible %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {% if beneficio.disponible %}Disponible{% else %}No Disponible{% endif %}
+                                    </span>
+                                </div>
+                                
+                                {% if beneficio.fecha_vencimiento %}
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Vence: {{ beneficio.fecha_vencimiento|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="text-center py-4">
+                                <i class="fas fa-gifts fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No hay beneficios registrados</p>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
+                                    <i class="fas fa-plus me-1"></i>
+                                    Crear Primer Beneficio
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Lateral -->
+        <div class="col-lg-4">
+            <!-- Canjes Recientes -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Canjes Recientes
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    {% for canje in canjes_recientes %}
+                    <div class="exchange-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ canje.empleado.nombres }} {{ canje.empleado.apellidos }}</strong>
+                                <br>
+                                <small class="text-primary">{{ canje.tipo_beneficio.nombre }}</small>
+                                <br>
+                                <small class="text-muted">{{ canje.fecha_canje|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            <span class="badge 
+                                {% if canje.estado == 'solicitado' %}bg-warning
+                                {% elif canje.estado == 'aprobado' %}bg-success
+                                {% elif canje.estado == 'entregado' %}bg-primary
+                                {% else %}bg-danger{% endif %}">
+                                {{ canje.get_estado_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-inbox"></i>
+                        No hay canjes recientes
+                    </div>
+                    {% endfor %}
+                    
+                    {% if canjes_recientes %}
+                    <div class="p-2 border-top">
+                        <a href="{% url 'recognition:admin_canjes' %}" class="btn btn-sm btn-outline-primary w-100">
+                            Ver Todos los Canjes
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Beneficios Más Populares -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-trophy me-2"></i>
+                        Beneficios Más Populares
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for beneficio in beneficios_populares %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>{{ beneficio.nombre }}</strong>
+                            <br>
+                            <small class="text-muted">{{ beneficio.costo_puntos }} puntos</small>
+                        </div>
+                        <span class="badge bg-success">
+                            {{ beneficio.canjes_count }} canjes
+                        </span>
+                    </div>
+                    {% if not forloop.last %}<hr class="my-2">{% endif %}
+                    {% empty %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-chart-bar"></i>
+                        No hay datos disponibles
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo Beneficio -->
+<div class="modal fade" id="nuevoBeneficioModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>
+                    Nuevo Beneficio
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formNuevoBeneficio">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre del Beneficio</label>
+                                <input type="text" class="form-control" name="nombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Costo en Puntos</label>
+                                <input type="number" class="form-control" name="costo_puntos" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Fecha de Vencimiento (Opcional)</label>
+                                <input type="date" class="form-control" name="fecha_vencimiento">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" name="disponible">
+                                    <option value="true">Disponible</option>
+                                    <option value="false">No Disponible</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>
+                        Guardar Beneficio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function editarBeneficio(id) {
+        // Implementar edición de beneficio
+        console.log('Editar beneficio:', id);
+    }
+    
+    function toggleBeneficio(id) {
+        // Implementar toggle de estado
+        console.log('Toggle beneficio:', id);
+    }
+    
+    function eliminarBeneficio(id) {
+        if (confirm('¿Está seguro de eliminar este beneficio?')) {
+            // Implementar eliminación
+            console.log('Eliminar beneficio:', id);
+        }
+    }
+    
+    document.getElementById('formNuevoBeneficio').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Implementar creación de beneficio
+        console.log('Crear nuevo beneficio');
+    });
+</script>
+{% endblock %}

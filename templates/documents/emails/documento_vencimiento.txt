@@ -1,0 +1,27 @@
+<!-- templates/documents/emails/documento_vencimiento.txt -->
+DOCUMENTOS PRÓXIMOS A VENCER
+
+Estimado/a {{ empleado.nombre_completo }},
+
+Le informamos que tiene documentos próximos a vencer o ya vencidos:
+
+{% if documentos_vencidos %}
+DOCUMENTOS VENCIDOS:
+{% for doc in documentos_vencidos %}
+- {{ doc.tipo_documento.nombre }} - Venció el {{ doc.fecha_vencimiento|date:"d/m/Y" }}
+{% endfor %}
+
+{% endif %}
+{% if documentos_proximos %}
+DOCUMENTOS PRÓXIMOS A VENCER:
+{% for doc in documentos_proximos %}
+- {{ doc.tipo_documento.nombre }} - Vence el {{ doc.fecha_vencimiento|date:"d/m/Y" }}
+{% endfor %}
+
+{% endif %}
+ACCIÓN REQUERIDA: Por favor, renueve estos documentos lo antes posible y súbalos al sistema.
+
+Si tiene preguntas, contacte al área de Recursos Humanos.
+
+---
+Sistema RRHH Pro - {{ fecha_actual|date:"d/m/Y" }}

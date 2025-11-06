@@ -1,0 +1,1453 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .admin-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    
+    .admin-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 138, 0.15);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: #43618a;  /* Color corporativo principal */
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        transform: rotate(45deg);
+    }
+    
+    .quick-action-card {
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .quick-action-card:hover {
+        border-color: #43618a;
+        background: rgba(67, 97, 138, 0.05);
+    }
+    
+    .employee-selector {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .filter-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+    }
+    
+    .employee-list-section {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+    }
+    
+    .pending-item {
+        background: #d4edda;  /* Verde claro para las franjas */
+        border-left: 4px solid #28a745;  /* Verde para el borde */
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+        max-height: 350px;
+    }
+    
+    .chart-container canvas {
+        max-height: 250px !important;
+    }
+    
+    .report-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .report-option:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        border-color: var(--color-corporativo);
+    }
+    
+    .report-option .card-body {
+        padding: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Dashboard Administrativo - Reconocimientos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Administrativo -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-primary mb-0">
+                        <i class="fas fa-cogs me-2"></i>
+                        Dashboard Administrativo - Reconocimientos
+                    </h2>
+                    <p class="text-muted">Panel de control para la gestión del sistema de reconocimiento</p>
+                </div>
+                <div>
+                    <button class="btn btn-success me-2" onclick="otorgarPuntosEmpleado()">
+                        <i class="fas fa-plus me-1"></i>
+                        Otorgar Puntos
+                    </button>
+                    <button class="btn btn-warning me-2" onclick="asignarInsigniaEmpleado()">
+                        <i class="fas fa-medal me-1"></i>
+                        Asignar Insignia
+                    </button>
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-1"></i>
+                        Dashboard Principal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas Principales -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-users fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ total_empleados }}</h3>
+            <p class="mb-0">Empleados Activos</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-coins fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ puntos_otorgados_mes|floatformat:0 }}</h3>
+            <p class="mb-0">Puntos Este Mes</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-clock fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ canjes_pendientes }}</h3>
+            <p class="mb-0">Canjes Pendientes</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-medal fa-2x mb-2"></i>
+            <h3 class="mb-1">{{ insignias_otorgadas_mes }}</h3>
+            <p class="mb-0">Insignias Este Mes</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Panel Principal de Gestión -->
+        <div class="col-lg-8">
+            <!-- Acciones Rápidas -->
+            <div class="admin-card">
+                <div class="card-header bg-corporativo text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Acciones Rápidas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="quick-action-card" onclick="location.href='{% url 'recognition:ranking' %}'">
+                                <i class="fas fa-trophy fa-2x text-primary mb-2"></i>
+                                <h6>Ver Ranking Completo</h6>
+                                <p class="text-muted small">Administrar ranking y posiciones</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="quick-action-card" onclick="location.href='{% url 'recognition:beneficios' %}'">
+                                <i class="fas fa-gifts fa-2x text-success mb-2"></i>
+                                <h6>Gestionar Beneficios</h6>
+                                <p class="text-muted small">Administrar catálogo de beneficios</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#reportesModal">
+                                <i class="fas fa-chart-bar fa-2x text-warning mb-2"></i>
+                                <h6>Generar Reportes</h6>
+                                <p class="text-muted small">Exportar datos y métricas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selector de Empleados -->
+            <div class="admin-card">
+                <div class="card-header bg-corporativo text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2"></i>
+                        Búsqueda de Empleados
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="employee-selector">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="filter-section">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-filter me-1"></i>
+                                        Filtrar por Área
+                                    </label>
+                                    <div class="input-group">
+                                        <select class="form-select" id="areaFiltro" onchange="filtrarPorArea()">
+                                            <option value="">Todas las áreas</option>
+                                            {% for area in areas %}
+                                            <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="limpiarFiltro()" title="Limpiar filtro">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Filtra empleados por área de trabajo
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="employee-list-section">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-users me-1"></i>
+                                        Seleccionar Empleado
+                                    </label>
+                                    <select class="form-select" id="empleadoSelector" onchange="cargarDatosEmpleado()">
+                                        <option value="">Seleccionar empleado...</option>
+                                        {% for empleado in empleados_lista %}
+                                        <option value="{{ empleado.id }}" 
+                                                data-puntos="{{ empleado.puntos_totales|default:0 }}"
+                                                data-posicion="{% if empleado.cargo_actual %}{{ empleado.cargo_actual }}{% else %}Sin cargo{% endif %}"
+                                                data-area="{% if empleado.area_actual %}{{ empleado.area_actual.nombre }}{% else %}Sin área{% endif %}"
+                                                data-area-id="{% if empleado.area_actual %}{{ empleado.area_actual.id }}{% else %}{% endif %}">
+                                            {{ empleado.nombres }} {{ empleado.apellidos }}
+                                            {% if empleado.area_actual %} - {{ empleado.area_actual.nombre }}{% endif %}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                    <div class="mt-2">
+                                        <small class="text-muted" id="empleadosCount">
+                                            <i class="fas fa-users me-1"></i>
+                                            {{ empleados_lista|length }} empleados disponibles
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información del empleado seleccionado -->
+                        <div id="infoEmpleado" class="mt-3" style="display: none;">
+                            <div class="alert alert-info">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Puntos Totales:</strong>
+                                        <span id="empleadoPuntos" class="badge bg-primary ms-1">0</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Cargo:</strong>
+                                        <span id="empleadoPosicion">-</span>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <strong>Área:</strong>
+                                        <span id="empleadoArea">-</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-success me-2" onclick="otorgarPuntosDirecto()">
+                                        <i class="fas fa-plus me-1"></i>
+                                        Otorgar Puntos
+                                    </button>
+                                    <button class="btn btn-sm btn-warning me-2" onclick="asignarInsigniaDirecto()">
+                                        <i class="fas fa-medal me-1"></i>
+                                        Asignar Insignia
+                                    </button>
+                                    <button class="btn btn-sm btn-info" onclick="verHistorialEmpleado()">
+                                        <i class="fas fa-history me-1"></i>
+                                        Ver Historial
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Lateral -->
+        <div class="col-lg-4">
+            <!-- Canjes Pendientes de Aprobación -->
+            <div class="admin-card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Aprobaciones Pendientes
+                    </h6>
+                </div>
+                <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
+                    {% for canje in canjes_pendientes_lista %}
+                    <div class="pending-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong>{{ canje.empleado.nombres }} {{ canje.empleado.apellidos }}</strong>
+                                <br>
+                                <span class="text-primary">{{ canje.tipo_beneficio.nombre }}</span>
+                                <br>
+                                <small class="text-muted">{{ canje.fecha_canje|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            <div class="btn-group-vertical btn-group-sm">
+                                <button class="btn btn-success btn-sm" onclick="aprobarCanje({{ canje.id }})">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="rechazarCanje({{ canje.id }})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p>No hay canjes pendientes</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Actividad Reciente -->
+            <div class="admin-card">
+                <div class="card-header bg-corporativo text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-clock me-2"></i>
+                        Actividad Reciente
+                    </h6>
+                </div>
+                <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
+                    {% for actividad in actividad_reciente %}
+                    <div class="p-2 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <i class="fas fa-coins text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <small>
+                                    <strong>{{ actividad.empleado.nombres }} {{ actividad.empleado.apellidos }}</strong>
+                                    recibió <span class="text-primary">{{ actividad.puntos }} puntos</span>
+                                    <br>
+                                    <span class="text-muted">{{ actividad.fecha_otorgado|date:"d/m/Y H:i" }}</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-history"></i>
+                        No hay actividad reciente
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Gráfico de Distribución -->
+            <div class="chart-container">
+                <h6 class="text-primary mb-3">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Distribución de Puntos
+                </h6>
+                <div style="position: relative; height: 250px;">
+                    <canvas id="chartDistribucion"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Otorgar Puntos -->
+<div class="modal fade" id="otorgarPuntosModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>
+                    Otorgar Puntos
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formOtorgarPuntos">
+                {% csrf_token %}
+                <input type="hidden" id="empleadoPreseleccionado" name="empleado_preseleccionado" value="">
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Filtrar por Área</label>
+                            <div class="input-group">
+                                <select class="form-select" id="areaFiltroModal" onchange="filtrarEmpleadosModal()">
+                                    <option value="">Todas las áreas</option>
+                                    {% for area in areas %}
+                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" onclick="limpiarFiltroModal()" title="Limpiar filtro">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Empleado</label>
+                            <select class="form-select" name="empleado" id="empleadoSelectorModal" required>
+                                <option value="">Seleccionar empleado...</option>
+                                {% for empleado in empleados_lista %}
+                                <option value="{{ empleado.id }}"
+                                        data-area-id="{% if empleado.area_actual %}{{ empleado.area_actual.id }}{% else %}{% endif %}">
+                                    {{ empleado.nombres }} {{ empleado.apellidos }}
+                                    {% if empleado.area_actual %} - {{ empleado.area_actual.nombre }}{% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted" id="empleadosCountModal">
+                                <i class="fas fa-users me-1"></i>
+                                {{ empleados_lista|length }} empleados disponibles
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Actividad</label>
+                        <select class="form-select" name="tipo_actividad" id="tipoActividadSelect" required onchange="handleTipoActividadChange()">
+                            <option value="">Seleccionar tipo de actividad...</option>
+                            {% for tipo in tipos_actividad %}
+                            <option value="{{ tipo.id }}" 
+                                    data-codigo="{{ tipo.codigo }}" 
+                                    data-puntos="{{ tipo.puntos_base }}"
+                                    data-descripcion="{{ tipo.descripcion }}">
+                                {{ tipo.nombre }}{% if tipo.puntos_base > 0 %} ({{ tipo.puntos_base }} pts){% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted" id="tipoActividadInfo"></small>
+                    </div>
+                    
+                    <!-- Campo de puntos personalizados (solo para asignación manual) -->
+                    <div class="mb-3" id="puntosCustomDiv" style="display: none;">
+                        <label class="form-label">Cantidad de Puntos</label>
+                        <input type="number" class="form-control" name="puntos_custom" id="puntosCustom" min="1" max="1000">
+                        <small class="text-muted">Especifique la cantidad de puntos para asignación manual</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Descripción/Motivo</label>
+                        <textarea class="form-control" name="descripcion" rows="3" 
+                                  placeholder="Describe el motivo del otorgamiento de puntos..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>
+                        Otorgar Puntos
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Asignar Insignia -->
+<div class="modal fade" id="asignarInsigniaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="fas fa-medal me-2"></i>
+                    Asignar Insignia
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formAsignarInsignia">
+                {% csrf_token %}
+                <input type="hidden" id="empleadoPreseleccionadoInsignia" name="empleado_preseleccionado" value="">
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Filtrar por Área</label>
+                            <div class="input-group">
+                                <select class="form-select" id="areaFiltroModalInsignia" onchange="filtrarEmpleadosModalInsignia()">
+                                    <option value="">Todas las áreas</option>
+                                    {% for area in areas %}
+                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary" type="button" onclick="limpiarFiltroModalInsignia()" title="Limpiar filtro">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Empleado</label>
+                            <select class="form-select" name="empleado" id="empleadoSelectorModalInsignia" required>
+                                <option value="">Seleccionar empleado...</option>
+                                {% for empleado in empleados_lista %}
+                                <option value="{{ empleado.id }}"
+                                        data-area-id="{% if empleado.area_actual %}{{ empleado.area_actual.id }}{% else %}{% endif %}">
+                                    {{ empleado.nombres }} {{ empleado.apellidos }}
+                                    {% if empleado.area_actual %} - {{ empleado.area_actual.nombre }}{% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted" id="empleadosCountModalInsignia">
+                                <i class="fas fa-users me-1"></i>
+                                {{ empleados_lista|length }} empleados disponibles
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Insignia</label>
+                        <select class="form-select" name="insignia" required>
+                            <option value="">Seleccionar insignia...</option>
+                            {% for insignia in insignias_disponibles %}
+                            <option value="{{ insignia.id }}">{{ insignia.nombre }} - {{ insignia.descripcion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-control" name="observaciones" rows="2" 
+                                  placeholder="Observaciones adicionales (opcional)"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save me-1"></i>
+                        Asignar Insignia
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Reportes -->
+<div class="modal fade" id="reportesModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="fas fa-chart-bar me-2"></i>Generar Reportes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <h6>Selecciona el tipo de reporte a generar:</h6>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card report-option" onclick="generarReporte('ranking')">
+                            <div class="card-body text-center">
+                                <i class="fas fa-trophy fa-3x text-primary mb-2"></i>
+                                <h6>Ranking de Empleados</h6>
+                                <p class="text-muted small">Rankings por puntos, actividades y posiciones</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card report-option" onclick="generarReporte('puntos')">
+                            <div class="card-body text-center">
+                                <i class="fas fa-star fa-3x text-success mb-2"></i>
+                                <h6>Historial de Puntos</h6>
+                                <p class="text-muted small">Puntos otorgados por periodo y actividad</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card report-option" onclick="generarReporte('canjes')">
+                            <div class="card-body text-center">
+                                <i class="fas fa-gift fa-3x text-info mb-2"></i>
+                                <h6>Canjes de Beneficios</h6>
+                                <p class="text-muted small">Beneficios canjeados y su estado</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card report-option" onclick="generarReporte('insignias')">
+                            <div class="card-body text-center">
+                                <i class="fas fa-medal fa-3x text-warning mb-2"></i>
+                                <h6>Insignias Otorgadas</h6>
+                                <p class="text-muted small">Insignias por empleado y tipo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    
+    function cargarDatosEmpleado() {
+        const selector = document.getElementById('empleadoSelector');
+        const selectedOption = selector.options[selector.selectedIndex];
+        const infoDiv = document.getElementById('infoEmpleado');
+        
+        if (selector.value) {
+            document.getElementById('empleadoPuntos').textContent = selectedOption.dataset.puntos || '0';
+            document.getElementById('empleadoPosicion').textContent = selectedOption.dataset.posicion || 'Sin cargo';
+            document.getElementById('empleadoArea').textContent = selectedOption.dataset.area || 'Sin área';
+            infoDiv.style.display = 'block';
+        } else {
+            infoDiv.style.display = 'none';
+        }
+    }
+    
+    function filtrarPorArea() {
+        const areaFiltro = document.getElementById('areaFiltro');
+        const empleadoSelector = document.getElementById('empleadoSelector');
+        const empleadosCount = document.getElementById('empleadosCount');
+        const areaSeleccionada = areaFiltro.value;
+        
+        // Limpiar selección de empleado
+        empleadoSelector.value = '';
+        document.getElementById('infoEmpleado').style.display = 'none';
+        
+        // Obtener todas las opciones de empleados
+        const todasLasOpciones = empleadoSelector.querySelectorAll('option');
+        let empleadosVisibles = 0;
+        
+        // Mostrar/ocultar empleados según el área seleccionada
+        todasLasOpciones.forEach(option => {
+            if (option.value === '') {
+                // Mantener la opción "Seleccionar empleado..."
+                option.style.display = 'block';
+                return;
+            }
+            
+            const empleadoAreaId = option.dataset.areaId;
+            
+            if (areaSeleccionada === '' || empleadoAreaId === areaSeleccionada) {
+                option.style.display = 'block';
+                empleadosVisibles++;
+            } else {
+                option.style.display = 'none';
+            }
+        });
+        
+        // Actualizar contador y estilo
+        const filterSection = document.querySelector('.filter-section');
+        if (areaSeleccionada === '') {
+            empleadosCount.innerHTML = '<i class="fas fa-users me-1"></i>' + empleadosVisibles + ' empleados disponibles';
+            filterSection.style.backgroundColor = '#f8f9fa';
+            filterSection.style.border = '1px solid #e9ecef';
+        } else {
+            const areaNombre = areaFiltro.options[areaFiltro.selectedIndex].text;
+            empleadosCount.innerHTML = '<i class="fas fa-filter me-1 text-primary"></i>' + empleadosVisibles + ' empleados en <strong>' + areaNombre + '</strong>';
+            filterSection.style.backgroundColor = '#e7f3ff';
+            filterSection.style.border = '1px solid #43618a';
+        }
+        
+        // Si no hay empleados en el área seleccionada, mostrar mensaje
+        if (empleadosVisibles === 0 && areaSeleccionada !== '') {
+            empleadosCount.innerHTML = '<i class="fas fa-exclamation-triangle me-1 text-warning"></i>No hay empleados en esta área';
+        }
+    }
+    
+    function limpiarFiltro() {
+        document.getElementById('areaFiltro').value = '';
+        filtrarPorArea();
+    }
+    
+    // Funciones para modal de otorgar puntos
+    function filtrarEmpleadosModal() {
+        const areaFiltro = document.getElementById('areaFiltroModal');
+        const empleadoSelector = document.getElementById('empleadoSelectorModal');
+        const empleadosCount = document.getElementById('empleadosCountModal');
+        const areaSeleccionada = areaFiltro.value;
+        
+        // Limpiar selección de empleado
+        empleadoSelector.value = '';
+        
+        // Obtener todas las opciones de empleados
+        const todasLasOpciones = empleadoSelector.querySelectorAll('option');
+        let empleadosVisibles = 0;
+        
+        // Mostrar/ocultar empleados según el área seleccionada
+        todasLasOpciones.forEach(option => {
+            if (option.value === '') {
+                option.style.display = 'block';
+                return;
+            }
+            
+            const empleadoAreaId = option.dataset.areaId;
+            
+            if (areaSeleccionada === '' || empleadoAreaId === areaSeleccionada) {
+                option.style.display = 'block';
+                empleadosVisibles++;
+            } else {
+                option.style.display = 'none';
+            }
+        });
+        
+        // Actualizar contador
+        if (areaSeleccionada === '') {
+            empleadosCount.innerHTML = '<i class="fas fa-users me-1"></i>' + empleadosVisibles + ' empleados disponibles';
+        } else {
+            const areaNombre = areaFiltro.options[areaFiltro.selectedIndex].text;
+            empleadosCount.innerHTML = '<i class="fas fa-filter me-1 text-primary"></i>' + empleadosVisibles + ' empleados en <strong>' + areaNombre + '</strong>';
+        }
+        
+        if (empleadosVisibles === 0 && areaSeleccionada !== '') {
+            empleadosCount.innerHTML = '<i class="fas fa-exclamation-triangle me-1 text-warning"></i>No hay empleados en esta área';
+        }
+    }
+    
+    function limpiarFiltroModal() {
+        document.getElementById('areaFiltroModal').value = '';
+        filtrarEmpleadosModal();
+    }
+    
+    // Función para manejar cambio de tipo de actividad
+    function handleTipoActividadChange() {
+        const tipoSelect = document.getElementById('tipoActividadSelect');
+        const puntosCustomDiv = document.getElementById('puntosCustomDiv');
+        const puntosCustomInput = document.getElementById('puntosCustom');
+        const infoDiv = document.getElementById('tipoActividadInfo');
+        
+        const selectedOption = tipoSelect.options[tipoSelect.selectedIndex];
+        
+        if (selectedOption.value === '') {
+            puntosCustomDiv.style.display = 'none';
+            puntosCustomInput.required = false;
+            infoDiv.textContent = '';
+            return;
+        }
+        
+        const codigo = selectedOption.dataset.codigo;
+        const puntos = selectedOption.dataset.puntos;
+        const descripcion = selectedOption.dataset.descripcion;
+        
+        // Mostrar información del tipo de actividad
+        infoDiv.textContent = descripcion;
+        
+        // Mostrar/ocultar campo de puntos personalizados
+        if (codigo === 'MANUAL_ADMIN') {
+            puntosCustomDiv.style.display = 'block';
+            puntosCustomInput.required = true;
+            puntosCustomInput.focus();
+        } else {
+            puntosCustomDiv.style.display = 'none';
+            puntosCustomInput.required = false;
+            puntosCustomInput.value = '';
+        }
+    }
+    
+    // Funciones para modal de asignar insignia
+    function filtrarEmpleadosModalInsignia() {
+        const areaFiltro = document.getElementById('areaFiltroModalInsignia');
+        const empleadoSelector = document.getElementById('empleadoSelectorModalInsignia');
+        const empleadosCount = document.getElementById('empleadosCountModalInsignia');
+        const areaSeleccionada = areaFiltro.value;
+        
+        // Limpiar selección de empleado
+        empleadoSelector.value = '';
+        
+        // Obtener todas las opciones de empleados
+        const todasLasOpciones = empleadoSelector.querySelectorAll('option');
+        let empleadosVisibles = 0;
+        
+        // Mostrar/ocultar empleados según el área seleccionada
+        todasLasOpciones.forEach(option => {
+            if (option.value === '') {
+                option.style.display = 'block';
+                return;
+            }
+            
+            const empleadoAreaId = option.dataset.areaId;
+            
+            if (areaSeleccionada === '' || empleadoAreaId === areaSeleccionada) {
+                option.style.display = 'block';
+                empleadosVisibles++;
+            } else {
+                option.style.display = 'none';
+            }
+        });
+        
+        // Actualizar contador
+        if (areaSeleccionada === '') {
+            empleadosCount.innerHTML = '<i class="fas fa-users me-1"></i>' + empleadosVisibles + ' empleados disponibles';
+        } else {
+            const areaNombre = areaFiltro.options[areaFiltro.selectedIndex].text;
+            empleadosCount.innerHTML = '<i class="fas fa-filter me-1 text-primary"></i>' + empleadosVisibles + ' empleados en <strong>' + areaNombre + '</strong>';
+        }
+        
+        if (empleadosVisibles === 0 && areaSeleccionada !== '') {
+            empleadosCount.innerHTML = '<i class="fas fa-exclamation-triangle me-1 text-warning"></i>No hay empleados en esta área';
+        }
+    }
+    
+    function limpiarFiltroModalInsignia() {
+        document.getElementById('areaFiltroModalInsignia').value = '';
+        filtrarEmpleadosModalInsignia();
+    }
+    
+    function otorgarPuntosEmpleado() {
+        const empleadoId = document.getElementById('empleadoSelector').value;
+        const areaId = document.getElementById('areaFiltro').value;
+        
+        // Abrir modal
+        const modal = new bootstrap.Modal(document.getElementById('otorgarPuntosModal'));
+        
+        // Pre-seleccionar área si hay una seleccionada
+        if (areaId) {
+            document.getElementById('areaFiltroModal').value = areaId;
+            filtrarEmpleadosModal();
+        }
+        
+        // Pre-seleccionar empleado si hay uno seleccionado
+        if (empleadoId) {
+            document.getElementById('empleadoSelectorModal').value = empleadoId;
+        }
+        
+        modal.show();
+    }
+    
+    function asignarInsigniaEmpleado() {
+        const empleadoId = document.getElementById('empleadoSelector').value;
+        const areaId = document.getElementById('areaFiltro').value;
+        
+        // Abrir modal
+        const modal = new bootstrap.Modal(document.getElementById('asignarInsigniaModal'));
+        
+        // Pre-seleccionar área si hay una seleccionada
+        if (areaId) {
+            document.getElementById('areaFiltroModalInsignia').value = areaId;
+            filtrarEmpleadosModalInsignia();
+        }
+        
+        // Pre-seleccionar empleado si hay uno seleccionado
+        if (empleadoId) {
+            document.getElementById('empleadoSelectorModalInsignia').value = empleadoId;
+        }
+        
+        modal.show();
+    }
+    
+    // Funciones directas para empleado seleccionado
+    function otorgarPuntosDirecto() {
+        const empleadoId = document.getElementById('empleadoSelector').value;
+        const empleadoSelector = document.getElementById('empleadoSelector');
+        const empleadoNombre = empleadoSelector.options[empleadoSelector.selectedIndex].text;
+        
+        if (!empleadoId) {
+            alert('⚠️ Por favor selecciona un empleado primero');
+            return;
+        }
+        
+        // Abrir modal y pre-seleccionar empleado
+        const modal = new bootstrap.Modal(document.getElementById('otorgarPuntosModal'));
+        
+        // Limpiar filtros del modal
+        document.getElementById('areaFiltroModal').value = '';
+        filtrarEmpleadosModal();
+        
+        // Pre-seleccionar empleado
+        document.getElementById('empleadoSelectorModal').value = empleadoId;
+        
+        // Marcar como preseleccionado en campo oculto
+        document.getElementById('empleadoPreseleccionado').value = empleadoId;
+        
+        // Deshabilitar selector de empleado y mostrar que ya está seleccionado
+        const modalEmpleadoSelector = document.getElementById('empleadoSelectorModal');
+        modalEmpleadoSelector.disabled = true;
+        modalEmpleadoSelector.setAttribute('data-preseleccionado', 'true');
+        
+        // Agregar mensaje informativo
+        const infoText = modalEmpleadoSelector.parentNode.querySelector('.empleado-preseleccionado');
+        if (infoText) infoText.remove();
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'empleado-preseleccionado mt-1';
+        infoDiv.innerHTML = '<small class="text-primary"><i class="fas fa-user-check me-1"></i>Empleado preseleccionado: <strong>' + empleadoNombre + '</strong></small>';
+        modalEmpleadoSelector.parentNode.appendChild(infoDiv);
+        
+        modal.show();
+    }
+    
+    function asignarInsigniaDirecto() {
+        const empleadoId = document.getElementById('empleadoSelector').value;
+        const empleadoSelector = document.getElementById('empleadoSelector');
+        const empleadoNombre = empleadoSelector.options[empleadoSelector.selectedIndex].text;
+        
+        if (!empleadoId) {
+            alert('⚠️ Por favor selecciona un empleado primero');
+            return;
+        }
+        
+        // Abrir modal y pre-seleccionar empleado
+        const modal = new bootstrap.Modal(document.getElementById('asignarInsigniaModal'));
+        
+        // Limpiar filtros del modal
+        document.getElementById('areaFiltroModalInsignia').value = '';
+        filtrarEmpleadosModalInsignia();
+        
+        // Pre-seleccionar empleado
+        document.getElementById('empleadoSelectorModalInsignia').value = empleadoId;
+        
+        // Marcar como preseleccionado en campo oculto
+        document.getElementById('empleadoPreseleccionadoInsignia').value = empleadoId;
+        
+        // Deshabilitar selector de empleado y mostrar que ya está seleccionado
+        const modalEmpleadoSelector = document.getElementById('empleadoSelectorModalInsignia');
+        modalEmpleadoSelector.disabled = true;
+        modalEmpleadoSelector.setAttribute('data-preseleccionado', 'true');
+        
+        // Agregar mensaje informativo
+        const infoText = modalEmpleadoSelector.parentNode.querySelector('.empleado-preseleccionado');
+        if (infoText) infoText.remove();
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'empleado-preseleccionado mt-1';
+        infoDiv.innerHTML = '<small class="text-primary"><i class="fas fa-user-check me-1"></i>Empleado preseleccionado: <strong>' + empleadoNombre + '</strong></small>';
+        modalEmpleadoSelector.parentNode.appendChild(infoDiv);
+        
+        modal.show();
+    }
+    
+    function verHistorialEmpleado() {
+        const empleadoId = document.getElementById('empleadoSelector').value;
+        const empleadoSelector = document.getElementById('empleadoSelector');
+        const empleadoNombre = empleadoSelector.options[empleadoSelector.selectedIndex].text;
+        
+        if (!empleadoId) {
+            alert('⚠️ Por favor selecciona un empleado primero');
+            return;
+        }
+        
+        // Cargar historial del empleado
+        cargarHistorialEmpleado(empleadoId, empleadoNombre);
+    }
+    
+    function cargarHistorialEmpleado(empleadoId, empleadoNombre) {
+        // Crear modal dinámico para historial
+        const modalId = 'historialEmpleadoModal';
+        let modal = document.getElementById(modalId);
+        
+        if (!modal) {
+            // Crear modal si no existe
+            const modalHTML = `
+                <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="${modalId}Label">
+                                    <i class="fas fa-history me-2"></i>Historial de Reconocimientos
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="historialContent">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Cargando...</span>
+                                        </div>
+                                        <p class="mt-2">Cargando historial...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i>Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            modal = document.getElementById(modalId);
+        }
+        
+        // Actualizar título con nombre del empleado
+        document.getElementById(modalId + 'Label').innerHTML = 
+            '<i class="fas fa-history me-2"></i>Historial de Reconocimientos - ' + empleadoNombre;
+        
+        // Mostrar modal
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+        
+        // Cargar contenido del historial
+        fetch(`/reconocimientos/historial-empleado/${empleadoId}/`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers.get('content-type'));
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received:', data);
+            if (data.success) {
+                document.getElementById('historialContent').innerHTML = data.html;
+            } else {
+                document.getElementById('historialContent').innerHTML = 
+                    '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>' + 
+                    (data.message || 'Error al cargar el historial') + '</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Detailed Error:', error);
+            document.getElementById('historialContent').innerHTML = 
+                '<div class="alert alert-danger"><i class="fas fa-times me-2"></i>Error al cargar el historial: ' + error.message + '</div>';
+        });
+    }
+    
+    function aprobarCanje(canjeId) {
+        if (confirm('¿Aprobar este canje de beneficio?')) {
+            const submitBtn = event.target;
+            const originalHtml = submitBtn.innerHTML;
+            
+            // Deshabilitar botón y mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            fetch('/recognition/aprobar-canje/' + canjeId + '/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    location.reload(); // Recargar para actualizar la lista
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Intenta nuevamente.');
+            })
+            .finally(() => {
+                // Restaurar botón
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            });
+        }
+    }
+    
+    function rechazarCanje(canjeId) {
+        const motivo = prompt('¿Motivo del rechazo? (opcional):');
+        if (motivo !== null) { // null significa que se canceló
+            const submitBtn = event.target;
+            const originalHtml = submitBtn.innerHTML;
+            
+            // Deshabilitar botón y mostrar loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            const formData = new FormData();
+            if (motivo) formData.append('motivo', motivo);
+            
+            fetch('/recognition/rechazar-canje/' + canjeId + '/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    location.reload(); // Recargar para actualizar la lista
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Intenta nuevamente.');
+            })
+            .finally(() => {
+                // Restaurar botón
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            });
+        }
+    }
+    
+    // Formularios
+    document.getElementById('formOtorgarPuntos').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Verificar si hay un empleado preseleccionado
+        const empleadoPreseleccionado = document.getElementById('empleadoPreseleccionado').value;
+        const modalSelector = document.getElementById('empleadoSelectorModal');
+        
+        if (empleadoPreseleccionado) {
+            // Si viene de contexto directo, usar el empleado preseleccionado
+            formData.set('empleado', empleadoPreseleccionado);
+        } else if (modalSelector.disabled && modalSelector.getAttribute('data-preseleccionado') === 'true') {
+            // Fallback: si el selector está deshabilitado por preselección, usar su valor
+            formData.set('empleado', modalSelector.value);
+        }
+        
+        // Validar tipo de actividad
+        const tipoActividad = formData.get('tipo_actividad');
+        if (!tipoActividad) {
+            alert('❌ Debe seleccionar un tipo de actividad');
+            return;
+        }
+        
+        // Validar puntos personalizados para asignación manual
+        const tipoSelect = document.getElementById('tipoActividadSelect');
+        const selectedOption = tipoSelect.options[tipoSelect.selectedIndex];
+        const codigo = selectedOption.dataset.codigo;
+        
+        if (codigo === 'MANUAL_ADMIN') {
+            const puntosCustom = formData.get('puntos_custom');
+            if (!puntosCustom || parseInt(puntosCustom) <= 0) {
+                alert('❌ Debe especificar la cantidad de puntos para asignación manual');
+                return;
+            }
+        }
+        
+        // Deshabilitar botón y mostrar loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Otorgando...';
+        
+        fetch('{% url "recognition:otorgar_puntos" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                alert('✅ ' + data.message);
+                
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('otorgarPuntosModal'));
+                modal.hide();
+                
+                // Limpiar formulario
+                this.reset();
+                document.getElementById('areaFiltroModal').value = '';
+                document.getElementById('tipoActividadSelect').value = '';
+                document.getElementById('puntosCustomDiv').style.display = 'none';
+                document.getElementById('puntosCustom').value = '';
+                document.getElementById('tipoActividadInfo').textContent = '';
+                filtrarEmpleadosModal();
+                
+                // Opcional: recargar página para actualizar datos
+                location.reload();
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Intenta nuevamente.');
+        })
+        .finally(() => {
+            // Restaurar botón
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    });
+    
+    document.getElementById('formAsignarInsignia').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Verificar si hay un empleado preseleccionado
+        const empleadoPreseleccionado = document.getElementById('empleadoPreseleccionadoInsignia').value;
+        const modalSelector = document.getElementById('empleadoSelectorModalInsignia');
+        
+        if (empleadoPreseleccionado) {
+            // Si viene de contexto directo, usar el empleado preseleccionado
+            formData.set('empleado', empleadoPreseleccionado);
+        } else if (modalSelector.disabled && modalSelector.getAttribute('data-preseleccionado') === 'true') {
+            // Fallback: si el selector está deshabilitado por preselección, usar su valor
+            formData.set('empleado', modalSelector.value);
+        }
+        
+        // Deshabilitar botón y mostrar loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Asignando...';
+        
+        fetch('{% url "recognition:asignar_insignia" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                alert('✅ ' + data.message);
+                
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('asignarInsigniaModal'));
+                modal.hide();
+                
+                // Limpiar formulario
+                this.reset();
+                document.getElementById('areaFiltroModalInsignia').value = '';
+                filtrarEmpleadosModalInsignia();
+                
+                // Opcional: recargar página para actualizar datos
+                location.reload();
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Intenta nuevamente.');
+        })
+        .finally(() => {
+            // Restaurar botón
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    });
+    
+    // Limpiar filtros al cerrar modales
+    document.getElementById('otorgarPuntosModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('areaFiltroModal').value = '';
+        document.getElementById('empleadoSelectorModal').value = '';
+        document.getElementById('tipoActividadSelect').value = '';
+        document.getElementById('puntosCustomDiv').style.display = 'none';
+        document.getElementById('puntosCustom').value = '';
+        document.getElementById('tipoActividadInfo').textContent = '';
+        filtrarEmpleadosModal();
+    });
+    
+    document.getElementById('asignarInsigniaModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('areaFiltroModalInsignia').value = '';
+        document.getElementById('empleadoSelectorModalInsignia').value = '';
+        filtrarEmpleadosModalInsignia();
+    });
+    
+    // Gráfico de distribución
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('chartDistribucion').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['0-100 pts', '101-500 pts', '501-1000 pts', '1000+ pts'],
+                datasets: [{
+                    data: [30, 40, 20, 10],
+                    backgroundColor: [
+                        '#43618a',  // Color corporativo principal
+                        '#28a745',  // Verde corporativo
+                        '#6c757d',  // Gris neutro
+                        '#17a2b8'   // Azul complementario
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1.2,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                }
+            }
+        });
+        
+        // Limpiar preselección cuando se cierre el modal
+        const otorgarModal = document.getElementById('otorgarPuntosModal');
+        const insigniaModal = document.getElementById('asignarInsigniaModal');
+        
+        if (otorgarModal) {
+            otorgarModal.addEventListener('hidden.bs.modal', function() {
+                // Rehabilitar selector de empleado
+                const selector = document.getElementById('empleadoSelectorModal');
+                if (selector) {
+                    selector.disabled = false;
+                    selector.removeAttribute('data-preseleccionado');
+                }
+                // Limpiar campo oculto
+                document.getElementById('empleadoPreseleccionado').value = '';
+                // Limpiar mensaje informativo
+                const infoText = document.querySelector('#otorgarPuntosModal .empleado-preseleccionado');
+                if (infoText) infoText.remove();
+            });
+        }
+        
+        if (insigniaModal) {
+            insigniaModal.addEventListener('hidden.bs.modal', function() {
+                // Rehabilitar selector de empleado
+                const selector = document.getElementById('empleadoSelectorModalInsignia');
+                if (selector) {
+                    selector.disabled = false;
+                    selector.removeAttribute('data-preseleccionado');
+                }
+                // Limpiar campo oculto
+                document.getElementById('empleadoPreseleccionadoInsignia').value = '';
+                // Limpiar mensaje informativo
+                const infoText = document.querySelector('#asignarInsigniaModal .empleado-preseleccionado');
+                if (infoText) infoText.remove();
+            });
+        }
+    });
+    
+    // Función para generar reportes
+    function generarReporte(tipo) {
+        // Cerrar modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('reportesModal'));
+        modal.hide();
+        
+        // Mostrar indicador de carga
+        const loadingToast = document.createElement('div');
+        loadingToast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+        loadingToast.style.zIndex = '9999';
+        loadingToast.innerHTML = `
+            <div class="toast-header bg-info text-white">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                <strong class="me-auto">Generando Reporte</strong>
+            </div>
+            <div class="toast-body">
+                Generando reporte de ${tipo}... Por favor espera.
+            </div>
+        `;
+        document.body.appendChild(loadingToast);
+        
+        // Crear formulario para descarga
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url "recognition:generar_reporte" %}';
+        
+        // Token CSRF
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        form.appendChild(csrfInput);
+        
+        // Tipo de reporte
+        const tipoInput = document.createElement('input');
+        tipoInput.type = 'hidden';
+        tipoInput.name = 'tipo_reporte';
+        tipoInput.value = tipo;
+        form.appendChild(tipoInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        // Remover toast después de 3 segundos
+        setTimeout(() => {
+            if (document.body.contains(loadingToast)) {
+                document.body.removeChild(loadingToast);
+            }
+        }, 3000);
+    }
+</script>
+{% endblock %}

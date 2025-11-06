@@ -1,0 +1,226 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 6,
+    "fields": {
+      "nombre": "Caldas",
+      "codigo": "17"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 319,
+    "fields": {
+      "nombre": "Manizales",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 320,
+    "fields": {
+      "nombre": "Aguadas",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 321,
+    "fields": {
+      "nombre": "Anserma",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 322,
+    "fields": {
+      "nombre": "Aranzazu",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 323,
+    "fields": {
+      "nombre": "Belalcazar",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 324,
+    "fields": {
+      "nombre": "Chinchina",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 325,
+    "fields": {
+      "nombre": "Filadelfia",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 326,
+    "fields": {
+      "nombre": "La Dorada",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 327,
+    "fields": {
+      "nombre": "La Merced",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 328,
+    "fields": {
+      "nombre": "Manzanares",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 329,
+    "fields": {
+      "nombre": "Marmato",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 330,
+    "fields": {
+      "nombre": "Marquetalia",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 331,
+    "fields": {
+      "nombre": "Marulanda",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 332,
+    "fields": {
+      "nombre": "Neira",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 333,
+    "fields": {
+      "nombre": "Norcasia",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 334,
+    "fields": {
+      "nombre": "Pacora",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 335,
+    "fields": {
+      "nombre": "Palestina",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 336,
+    "fields": {
+      "nombre": "Pensilvania",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 337,
+    "fields": {
+      "nombre": "Riosucio",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 338,
+    "fields": {
+      "nombre": "Risaralda",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 339,
+    "fields": {
+      "nombre": "Salamina",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 340,
+    "fields": {
+      "nombre": "Samana",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 341,
+    "fields": {
+      "nombre": "San Jose",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 342,
+    "fields": {
+      "nombre": "Supia",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 343,
+    "fields": {
+      "nombre": "Victoria",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 344,
+    "fields": {
+      "nombre": "Villamaria",
+      "departamento": 6
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 345,
+    "fields": {
+      "nombre": "Viterbo",
+      "departamento": 6
+    }
+  }
+]

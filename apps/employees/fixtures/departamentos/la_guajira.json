@@ -1,0 +1,130 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 14,
+    "fields": {
+      "nombre": "La Guajira",
+      "codigo": "44"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 640,
+    "fields": {
+      "nombre": "Riohacha",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 641,
+    "fields": {
+      "nombre": "Albania",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 642,
+    "fields": {
+      "nombre": "Barrancas",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 643,
+    "fields": {
+      "nombre": "Dibulla",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 644,
+    "fields": {
+      "nombre": "Distraccion",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 645,
+    "fields": {
+      "nombre": "El Molino",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 646,
+    "fields": {
+      "nombre": "Fonseca",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 647,
+    "fields": {
+      "nombre": "Hatonuevo",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 648,
+    "fields": {
+      "nombre": "La Jagua Del Pilar",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 649,
+    "fields": {
+      "nombre": "Maicao",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 650,
+    "fields": {
+      "nombre": "Manaure",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 651,
+    "fields": {
+      "nombre": "San Juan Del Cesar",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 652,
+    "fields": {
+      "nombre": "Uribia",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 653,
+    "fields": {
+      "nombre": "Urumita",
+      "departamento": 14
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 654,
+    "fields": {
+      "nombre": "Villanueva",
+      "departamento": 14
+    }
+  }
+]

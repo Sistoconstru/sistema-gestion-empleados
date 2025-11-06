@@ -1,0 +1,185 @@
+[
+  {
+    "model": "employees.tipodocumento",
+    "pk": 1,
+    "fields": {
+      "codigo": "CC",
+      "nombre": "Cédula de Ciudadanía",
+      "descripcion": "Documento de identidad colombiano para mayores de edad",
+      "requiere_numero": true,
+      "longitud_minima": 6,
+      "longitud_maxima": 11,
+      "activo": true
+    }
+  },
+  {
+    "model": "employees.tipodocumento",
+    "pk": 2,
+    "fields": {
+      "codigo": "TI",
+      "nombre": "Tarjeta de Identidad",
+      "descripcion": "Documento de identidad para menores de edad",
+      "requiere_numero": true,
+      "longitud_minima": 10,
+      "longitud_maxima": 11,
+      "activo": true
+    }
+  },
+  {
+    "model": "employees.tipodocumento",
+    "pk": 3,
+    "fields": {
+      "codigo": "CE",
+      "nombre": "Cédula de Extranjería",
+      "descripcion": "Documento para extranjeros residentes en Colombia",
+      "requiere_numero": true,
+      "longitud_minima": 6,
+      "longitud_maxima": 12,
+      "activo": true
+    }
+  },
+  {
+    "model": "employees.tipodocumento",
+    "pk": 4,
+    "fields": {
+      "codigo": "PASS",
+      "nombre": "Pasaporte",
+      "descripcion": "Documento internacional de identidad",
+      "requiere_numero": true,
+      "longitud_minima": 6,
+      "longitud_maxima": 15,
+      "activo": true
+    }
+  },
+  {
+    "model": "employees.estadoempleado",
+    "pk": 1,
+    "fields": {
+      "codigo": "PRUEBA",
+      "nombre": "En Período de Prueba",
+      "descripcion": "Empleado en los primeros 60 días de trabajo",
+      "permite_acceso_sistema": true
+    }
+  },
+  {
+    "model": "employees.estadoempleado",
+    "pk": 2,
+    "fields": {
+      "codigo": "ACTIVO",
+      "nombre": "Activo",
+      "descripcion": "Empleado activo y confirmado",
+      "permite_acceso_sistema": true
+    }
+  },
+  {
+    "model": "employees.estadoempleado",
+    "pk": 3,
+    "fields": {
+      "codigo": "INACTIVO",
+      "nombre": "Inactivo",
+      "descripcion": "Empleado desvinculado de la empresa",
+      "permite_acceso_sistema": false
+    }
+  },
+  {
+    "model": "employees.estadoempleado",
+    "pk": 4,
+    "fields": {
+      "codigo": "VACACIONES",
+      "nombre": "En Vacaciones",
+      "descripcion": "Empleado en período vacacional",
+      "permite_acceso_sistema": true
+    }
+  },
+  {
+    "model": "employees.estadoempleado",
+    "pk": 5,
+    "fields": {
+      "codigo": "LICENCIA",
+      "nombre": "En Licencia",
+      "descripcion": "Empleado en licencia médica o personal",
+      "permite_acceso_sistema": true
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 1,
+    "fields": {
+      "codigo": "NINGUNO",
+      "nivel": "Ninguno",
+      "orden": 1
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 2,
+    "fields": {
+      "codigo": "PRIMARIA",
+      "nivel": "Primaria",
+      "orden": 2
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 3,
+    "fields": {
+      "codigo": "SECUNDARIA",
+      "nivel": "Secundaria",
+      "orden": 3
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 4,
+    "fields": {
+      "codigo": "TECNICO",
+      "nivel": "Técnico",
+      "orden": 4
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 5,
+    "fields": {
+      "codigo": "TECNOLOGO",
+      "nivel": "Tecnólogo",
+      "orden": 5
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 6,
+    "fields": {
+      "codigo": "UNIVERSITARIO",
+      "nivel": "Universitario",
+      "orden": 6
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 7,
+    "fields": {
+      "codigo": "ESPECIALISTA",
+      "nivel": "Especialista",
+      "orden": 7
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 8,
+    "fields": {
+      "codigo": "MAESTRIA",
+      "nivel": "Maestría",
+      "orden": 8
+    }
+  },
+  {
+    "model": "employees.escolaridad",
+    "pk": 9,
+    "fields": {
+      "codigo": "DOCTORADO",
+      "nivel": "Doctorado",
+      "orden": 9
+    }
+  }
+]

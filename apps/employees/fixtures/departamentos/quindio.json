@@ -1,0 +1,106 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 19,
+    "fields": {
+      "nombre": "Quindio",
+      "codigo": "63"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 818,
+    "fields": {
+      "nombre": "Armenia",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 819,
+    "fields": {
+      "nombre": "Buenavista",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 820,
+    "fields": {
+      "nombre": "Calarca",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 821,
+    "fields": {
+      "nombre": "Circasia",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 822,
+    "fields": {
+      "nombre": "Cordoba",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 823,
+    "fields": {
+      "nombre": "Filandia",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 824,
+    "fields": {
+      "nombre": "Genova",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 825,
+    "fields": {
+      "nombre": "La Tebaida",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 826,
+    "fields": {
+      "nombre": "Montenegro",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 827,
+    "fields": {
+      "nombre": "Pijao",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 828,
+    "fields": {
+      "nombre": "Quimbaya",
+      "departamento": 19
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 829,
+    "fields": {
+      "nombre": "Salento",
+      "departamento": 19
+    }
+  }
+]

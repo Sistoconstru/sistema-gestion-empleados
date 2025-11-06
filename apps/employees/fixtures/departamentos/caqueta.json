@@ -1,0 +1,138 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 7,
+    "fields": {
+      "nombre": "Caqueta",
+      "codigo": "18"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 346,
+    "fields": {
+      "nombre": "Florencia",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 347,
+    "fields": {
+      "nombre": "Albania",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 348,
+    "fields": {
+      "nombre": "Belen De Los Andaquies",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 349,
+    "fields": {
+      "nombre": "Cartagena Del Chaira",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 350,
+    "fields": {
+      "nombre": "Curillo",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 351,
+    "fields": {
+      "nombre": "El Doncello",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 352,
+    "fields": {
+      "nombre": "El Paujil",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 353,
+    "fields": {
+      "nombre": "La Montañita",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 354,
+    "fields": {
+      "nombre": "Milan",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 355,
+    "fields": {
+      "nombre": "Morelia",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 356,
+    "fields": {
+      "nombre": "Puerto Rico",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 357,
+    "fields": {
+      "nombre": "San Jose Del Fragua",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 358,
+    "fields": {
+      "nombre": "San Vicente Del Caguan",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 359,
+    "fields": {
+      "nombre": "Solano",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 360,
+    "fields": {
+      "nombre": "Solita",
+      "departamento": 7
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 361,
+    "fields": {
+      "nombre": "Valparaiso",
+      "departamento": 7
+    }
+  }
+]

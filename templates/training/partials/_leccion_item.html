@@ -1,0 +1,32 @@
+{% load training_extras %}
+{% with leccion_completada=leccion|leccion_completada:inscripcion prev_contenido=contenido.get_contenido_anterior %}
+	{% if contenido %}
+	<a href="?contenido={{ contenido.id }}"
+	   class="lesson-item{% if contenido_actual and contenido == contenido_actual %} active{% endif %}{% if contenido.id in contenidos_completados %} completed{% if modulo_info.tiene_evaluacion %}{% if modulo_info.evaluacion_aprobada %} bg-success{% else %} bg-warning{% endif %}{% endif %}{% endif %}{% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito|modulo_completado:inscripcion or leccion_bloqueada and leccion.leccion_prerequisito and not leccion.leccion_prerequisito|leccion_completada:inscripcion or prev_contenido and prev_contenido.id not in contenidos_completados and not forloop.first %} locked disabled{% endif %}"
+	   data-contenido-id="{{ contenido.id }}"
+	   title="{% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito|modulo_completado:inscripcion %}Debes completar el módulo {{ modulo.modulo_prerequisito.nombre }} primero{% elif leccion_bloqueada and leccion.leccion_prerequisito and not leccion.leccion_prerequisito|leccion_completada:inscripcion %}Debes completar la lección prerequisito primero{% elif prev_contenido and prev_contenido.id not in contenidos_completados and not forloop.first %}Debes completar el contenido anterior primero{% else %}{{ contenido.nombre }}{% endif %}"
+	{% if not modulo_completado and modulo.modulo_prerequisito and not modulo.modulo_prerequisito|modulo_completado:inscripcion or leccion_bloqueada and leccion.leccion_prerequisito and not leccion.leccion_prerequisito|leccion_completada:inscripcion or prev_contenido and prev_contenido.id not in contenidos_completados and not forloop.first %}tabindex="-1" aria-disabled="true" style="opacity:0.7;"{% endif %}>
+			{% if contenido.tipo_contenido.codigo == 'VIDEO' %}
+				<i class="fas fa-play-circle me-1"></i>
+			{% elif contenido.tipo_contenido.codigo == 'DOCUMENTO' %}
+				<i class="fas fa-file-pdf me-1"></i>
+			{% elif contenido.tipo_contenido.codigo == 'YOUTUBE' %}
+				<i class="fab fa-youtube me-1"></i>
+			{% elif contenido.tipo_contenido.codigo == 'PPT' %}
+				<i class="fas fa-file-powerpoint me-1" style="color:#e24726"></i>
+			{% elif contenido.tipo_contenido.codigo == 'TEXTO' %}
+				<i class="fas fa-file me-1" style="color:#6c757d"></i>
+			{% else %}
+				<i class="fas fa-file-alt me-1"></i>
+			{% endif %}
+			{{ contenido.nombre }}
+		</a>
+	{% else %}
+		<div>
+			Sin contenido
+		</div>
+	{% endif %}
+{% endwith %}
+
+
+

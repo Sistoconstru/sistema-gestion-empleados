@@ -1,0 +1,187 @@
+<!-- =============================================================================
+templates/documents/documento_form.html - FORMULARIO INDIVIDUAL DE DOCUMENTO
+============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block breadcrumb_items %}
+
+
+<li class="breadcrumb-item"><a href="{% url 'documents:empleado_documentos' empleado.pk %}">Documentos</a></li>
+<li class="breadcrumb-item active">Subir</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-corporativo text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-upload me-2"></i>{{ titulo }}
+                </h4>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" id="documentForm">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-rojo">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.tipo_documento.id_for_label }}">{{ form.tipo_documento.label }}</label>
+                                {{ form.tipo_documento }}
+                                {% if form.tipo_documento.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.tipo_documento.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.archivo.id_for_label }}">{{ form.archivo.label }}</label>
+                                {{ form.archivo }}
+                                {% if form.archivo.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.archivo.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">Formatos permitidos: PDF, JPG, PNG. Máximo: 5MB</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.fecha_documento.id_for_label }}">{{ form.fecha_documento.label }}</label>
+                                {{ form.fecha_documento }}
+                                {% if form.fecha_documento.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.fecha_documento.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.fecha_vencimiento.id_for_label }}">{{ form.fecha_vencimiento.label }}</label>
+                                {{ form.fecha_vencimiento }}
+                                {% if form.fecha_vencimiento.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.fecha_vencimiento.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">Solo para documentos con vencimiento</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.observaciones.id_for_label }}">{{ form.observaciones.label }}</label>
+                        {{ form.observaciones }}
+                        {% if form.observaciones.errors %}
+                            <div class="invalid-feedback d-block">{{ form.observaciones.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Información del tipo de documento -->
+                    <div id="document-info" class="alert alert-azul" style="display: none;">
+                        <h6><i class="fas fa-info-circle me-1"></i>Información del Documento</h6>
+                        <div id="document-description"></div>
+                        <div id="document-formats"></div>
+                        <div id="document-size"></div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-gris-claro">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'documents:empleado_documentos' empleado.pk %}" class="btn btn-outline-gris">
+                            <i class="fas fa-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-corporativo" id="submitBtn">
+                            <i class="fas fa-upload me-1"></i>Subir Documento
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoSelect = document.querySelector('[name="tipo_documento"]');
+    const fechaVencimientoField = document.querySelector('[name="fecha_vencimiento"]');
+    const documentInfo = document.getElementById('document-info');
+    const form = document.getElementById('documentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Datos de tipos de documento (esto vendría del backend)
+    const tiposInfo = {
+        // Se poblará dinámicamente desde el backend
+    };
+    
+    // Mostrar información del tipo de documento seleccionado
+    tipoSelect.addEventListener('change', function() {
+        const tipoId = this.value;
+        if (tipoId && tiposInfo[tipoId]) {
+            const info = tiposInfo[tipoId];
+            
+            document.getElementById('document-description').textContent = info.descripcion;
+            document.getElementById('document-formats').innerHTML = '<strong>Formatos:</strong> ' + info.formatos_permitidos;
+            document.getElementById('document-size').innerHTML = '<strong>Tamaño máximo:</strong> ' + info.tamaño_maximo_mb + 'MB';
+            
+            documentInfo.style.display = 'block';
+            
+            // Mostrar/ocultar campo de vencimiento
+            if (info.tiene_vencimiento) {
+                fechaVencimientoField.closest('.mb-3').style.display = 'block';
+                fechaVencimientoField.required = true;
+            } else {
+                fechaVencimientoField.closest('.mb-3').style.display = 'none';
+                fechaVencimientoField.required = false;
+            }
+        } else {
+            documentInfo.style.display = 'none';
+            fechaVencimientoField.closest('.mb-3').style.display = 'none';
+        }
+    });
+    
+    // Validación de archivo
+    const archivoInput = document.querySelector('[name="archivo"]');
+    archivoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validar tamaño
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('El archivo es muy grande. Tamaño máximo: 5MB');
+                this.value = '';
+                return;
+            }
+            
+            // Validar extensión
+            const validExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (!validExtensions.includes(fileExtension)) {
+                alert('Formato no válido. Use: PDF, JPG, PNG');
+                this.value = '';
+                return;
+            }
+        }
+    });
+    
+    // Prevenir envío múltiple
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Subiendo...';
+    });
+});
+</script>
+{% endblock %}

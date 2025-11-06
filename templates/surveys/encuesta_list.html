@@ -1,0 +1,182 @@
+<!-- templates/surveys/encuesta_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Encuestas - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+.survey-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.survey-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.btn-survey {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-survey:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="row">
+        <!-- Header -->
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-corporativo mb-1">
+                        <i class="fas fa-list me-2"></i>Todas las Encuestas
+                    </h2>
+                    <p class="text-muted mb-0">Lista completa de encuestas disponibles</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'surveys:index' %}" class="btn btn-outline-corporativo">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Encuestas -->
+    <div class="row">
+        {% if encuestas %}
+            {% for encuesta in encuestas %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card survey-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title text-corporativo mb-0">{{ encuesta.nombre }}</h5>
+                            <span class="badge bg-success status-badge">Disponible</span>
+                        </div>
+                        
+                        <p class="card-text text-muted mb-3">{{ encuesta.descripcion|truncatewords:20 }}</p>
+                        
+                        <div class="mb-3">
+                            <div class="row text-center">
+                                <div class="col-6 border-end">
+                                    <small class="text-muted d-block">Tipo</small>
+                                    <strong class="text-corporativo">{{ encuesta.tipo_encuesta.nombre }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Vence</small>
+                                    <strong class="text-warning">{{ encuesta.fecha_fin|date:"d/m/Y" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                Desde: {{ encuesta.fecha_inicio|date:"d/m/Y" }}
+                            </small>
+                            <br>
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>
+                                Creada por: {{ encuesta.creada_por.get_full_name|default:encuesta.creada_por.username }}
+                            </small>
+                        </div>
+                        
+                        {% if encuesta.instrucciones %}
+                        <div class="alert alert-info alert-sm py-2 mb-3">
+                            <small><strong>Instrucciones:</strong> {{ encuesta.instrucciones|truncatewords:15 }}</small>
+                        </div>
+                        {% endif %}
+                        
+                        <a href="{% url 'surveys:responder_encuesta' encuesta.pk %}" 
+                           class="btn btn-survey w-100">
+                            <i class="fas fa-play me-1"></i>Responder Encuesta
+                        </a>
+                    </div>
+                    
+                    <div class="card-footer bg-light border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                {% if encuesta.tipo_encuesta.anonima %}
+                                    <i class="fas fa-user-secret me-1"></i>Anónima
+                                {% else %}
+                                    <i class="fas fa-user-check me-1"></i>Con identificación
+                                {% endif %}
+                            </small>
+                            <small class="text-muted">
+                                {% if encuesta.tipo_encuesta.obligatoria %}
+                                    <span class="badge bg-danger">Obligatoria</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Opcional</span>
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No hay encuestas disponibles</h3>
+                    <p class="text-muted">No hay encuestas activas en este momento.</p>
+                    <a href="{% url 'surveys:index' %}" class="btn btn-corporativo">
+                        <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="Paginación de encuestas">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">Primera</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

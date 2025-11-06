@@ -1,0 +1,58 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 32,
+    "fields": {
+      "nombre": "Vaupes",
+      "codigo": "97"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1111,
+    "fields": {
+      "nombre": "Mitu",
+      "departamento": 32
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1112,
+    "fields": {
+      "nombre": "Caruru",
+      "departamento": 32
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1113,
+    "fields": {
+      "nombre": "Pacoa",
+      "departamento": 32
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1114,
+    "fields": {
+      "nombre": "Taraira",
+      "departamento": 32
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1115,
+    "fields": {
+      "nombre": "Papunaua",
+      "departamento": 32
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1116,
+    "fields": {
+      "nombre": "Yavarate",
+      "departamento": 32
+    }
+  }
+]

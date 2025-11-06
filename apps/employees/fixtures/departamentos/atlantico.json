@@ -1,0 +1,194 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 2,
+    "fields": {
+      "nombre": "Atlantico",
+      "codigo": "08"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 126,
+    "fields": {
+      "nombre": "Barranquilla",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 127,
+    "fields": {
+      "nombre": "Baranoa",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 128,
+    "fields": {
+      "nombre": "Campo De La Cruz",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 129,
+    "fields": {
+      "nombre": "Candelaria",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 130,
+    "fields": {
+      "nombre": "Galapa",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 131,
+    "fields": {
+      "nombre": "Juan De Acosta",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 132,
+    "fields": {
+      "nombre": "Luruaco",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 133,
+    "fields": {
+      "nombre": "Malambo",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 134,
+    "fields": {
+      "nombre": "Manati",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 135,
+    "fields": {
+      "nombre": "Palmar De Varela",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 136,
+    "fields": {
+      "nombre": "Piojo",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 137,
+    "fields": {
+      "nombre": "Polonuevo",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 138,
+    "fields": {
+      "nombre": "Ponedera",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 139,
+    "fields": {
+      "nombre": "Puerto Colombia",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 140,
+    "fields": {
+      "nombre": "Repelon",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 141,
+    "fields": {
+      "nombre": "Sabanagrande",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 142,
+    "fields": {
+      "nombre": "Sabanalarga",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 143,
+    "fields": {
+      "nombre": "Santa Lucia",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 144,
+    "fields": {
+      "nombre": "Santo Tomas",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 145,
+    "fields": {
+      "nombre": "Soledad",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 146,
+    "fields": {
+      "nombre": "Suan",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 147,
+    "fields": {
+      "nombre": "Tubara",
+      "departamento": 2
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 148,
+    "fields": {
+      "nombre": "Usiacuri",
+      "departamento": 2
+    }
+  }
+]

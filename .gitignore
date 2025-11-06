@@ -1,0 +1,108 @@
+# Ignorar archivos de base de datos y backups
+db.sqlite3
+*.sqlite3
+backup_gestion_empleados.sql
+backup_gestion_empleados_utf8.sql
+evaluaciones_desempeno.sql
+departamentos.json
+ciudades.json
+
+# Ignorar archivo de variables de entorno
+.env
+.env.local
+.env.production
+.env.development
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Entornos virtuales
+venv/
+mi-entorno/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Archivos de media y static (solo en desarrollo)
+media/
+staticfiles/
+static_root/
+
+# Archivos temporales y de sistema
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs y editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.atom/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de configuración sensibles
+config/local_settings.py
+config/production_settings.py
+
+# Archivos de prueba y coverage
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+htmlcov/
+
+# Node.js (si usas npm/yarn para frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos específicos del proyecto
+temp_pdfjs/
+.cache/

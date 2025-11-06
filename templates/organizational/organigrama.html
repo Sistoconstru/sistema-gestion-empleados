@@ -1,0 +1,143 @@
+<!-- =============================================================================
+     templates/organizational/organigrama.html - ORGANIGRAMA
+     ============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organigrama - SIGHU{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'organizational:index' %}">Estructura Organizacional</a></li>
+<li class="breadcrumb-item active">Organigrama</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    <i class="fas fa-sitemap me-2"></i>Organigrama Empresarial
+                </h1>
+                <p class="text-muted mb-0">Estructura jerárquica completa de la organización</p>
+            </div>
+            <div>
+                <button class="btn btn-outline-secondary me-2" onclick="expandAll()">
+                    <i class="fas fa-expand-alt me-1"></i>Expandir Todo
+                </button>
+                <button class="btn btn-outline-secondary" onclick="collapseAll()">
+                    <i class="fas fa-compress-alt me-1"></i>Contraer Todo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Organigrama -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="organigrama-container">
+                    {% for area_principal in estructura_organizacional %}
+                        {% include 'organizational/partials/area_node.html' with area_data=area_principal nivel=1 %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.area-node {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    margin: 10px 0;
+    background: #f8f9fa;
+}
+
+.area-header {
+    background: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.area-header:hover {
+    background: #d1ecf1;
+}
+
+.area-content {
+    padding: 15px;
+}
+
+.cargo-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cargo-item:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.1);
+}
+
+.nivel-1 { margin-left: 0; }
+.nivel-2 { margin-left: 30px; }
+.nivel-3 { margin-left: 60px; }
+.nivel-4 { margin-left: 90px; }
+
+.empleados-count {
+    font-size: 0.8rem;
+}
+
+.area-collapsed .area-content {
+    display: none;
+}
+
+.toggle-icon {
+    transition: transform 0.2s;
+}
+
+.area-collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleArea(element) {
+    const areaNode = element.closest('.area-node');
+    areaNode.classList.toggle('area-collapsed');
+}
+
+function expandAll() {
+    document.querySelectorAll('.area-node').forEach(node => {
+        node.classList.remove('area-collapsed');
+    });
+}
+
+function collapseAll() {
+    document.querySelectorAll('.area-node').forEach(node => {
+        node.classList.add('area-collapsed');
+    });
+}
+
+// Inicializar con áreas principales expandidas
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.nivel-1 .area-header').forEach(header => {
+        header.closest('.area-node').classList.remove('area-collapsed');
+    });
+});
+</script>
+{% endblock %}

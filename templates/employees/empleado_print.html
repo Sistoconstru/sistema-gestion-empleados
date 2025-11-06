@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de {{ empleado.nombre_completo }} - Impresión</title>
+    <style>
+        /* Estilos específicos para impresión */
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 1cm;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #17594A;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            color: #17594A;
+            margin: 0;
+            font-size: 24px;
+        }
+        .header .subtitle {
+            color: #666;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            background-color: #17594A;
+            color: white;
+            padding: 8px 12px;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .info-table td {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        .info-table .field {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            width: 30%;
+        }
+        
+        .info-table .value {
+            background-color: white;
+        }
+        
+        .estado-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+        }
+        
+    .estado-activo { background-color: #198754; }
+    .estado-prueba { background-color: #FFD600; color: #17594A; }
+    .estado-inactivo { background-color: #dc3545; }
+        
+        .historial-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        
+        .historial-table th,
+        .historial-table td {
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        .historial-table th {
+            background-color: #17594A;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .historial-table .actual {
+            background-color: #d4edda;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        .button-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #17594A;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .button-print:hover {
+            background: #143f34;
+        }
+        
+        @media print {
+            .button-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botón de impresión -->
+    <button class="button-print no-print" onclick="window.print()">
+        🖨️ Imprimir
+    </button>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>PERFIL DE EMPLEADO</h1>
+        <div class="subtitle">{{ empleado.nombre_completo }}</div>
+        <div class="subtitle">Generado el: {{ fecha_generacion|date:"d/m/Y H:i" }}</div>
+    </div>
+
+    <!-- Información Básica -->
+    <div class="section">
+        <h2 class="section-title">INFORMACIÓN BÁSICA</h2>
+        <table class="info-table">
+            <tr>
+                <td class="field">Tipo de Documento</td>
+                <td class="value">{{ empleado.tipo_documento.nombre }}</td>
+            </tr>
+            <tr>
+                <td class="field">Número de Documento</td>
+                <td class="value">{{ empleado.numero_documento }}</td>
+            </tr>
+            <tr>
+                <td class="field">Nombres Completos</td>
+                <td class="value">{{ empleado.nombres }}</td>
+            </tr>
+            <tr>
+                <td class="field">Apellidos Completos</td>
+                <td class="value">{{ empleado.apellidos }}</td>
+            </tr>
+            <tr>
+                <td class="field">Email</td>
+                <td class="value">{{ empleado.correo_electronico|default:"No registrado" }}</td>
+            </tr>
+            <tr>
+                <td class="field">Teléfono</td>
+                <td class="value">{{ empleado.telefono_contacto }}</td>
+            </tr>
+            <tr>
+                <td class="field">Fecha de Ingreso</td>
+                <td class="value">{{ empleado.fecha_ingreso|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+                <td class="field">Sede</td>
+                <td class="value">{{ empleado.sede.nombre }}</td>
+            </tr>
+            <tr>
+                <td class="field">Estado Actual</td>
+                <td class="value">
+                    {% if empleado.estado.codigo|lower == 'activo' %}
+                        <span class="estado-badge estado-activo">{{ empleado.estado.nombre }}</span>
+                    {% elif empleado.estado.codigo|lower == 'prueba' %}
+                        <span class="estado-badge estado-prueba">{{ empleado.estado.nombre }}</span>
+                    {% else %}
+                        <span class="estado-badge estado-inactivo">{{ empleado.estado.nombre }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                {% if cargo_actual %}
+                <tr>
+                    <td class="field">Cargo Actual</td>
+                    <td class="value">{{ cargo_actual.cargo.nombre }}</td>
+                </tr>
+                <tr>
+                    <td class="field">Área</td>
+                    <td class="value">{{ cargo_actual.cargo.area.nombre }}</td>
+                </tr>
+                {% endif %}
+            {% endwith %}
+        </table>
+    </div>
+
+    <!-- Información Personal -->
+    {% if empleado.fecha_nacimiento or empleado.ciudad_nacimiento or empleado.escolaridad %}
+    <div class="section">
+        <h2 class="section-title">INFORMACIÓN PERSONAL</h2>
+        <table class="info-table">
+            {% if empleado.fecha_nacimiento %}
+            <tr>
+                <td class="field">Fecha de Nacimiento</td>
+                <td class="value">
+                    {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
+                    ({{ empleado.fecha_nacimiento|timesince }} de edad)
+                </td>
+            </tr>
+            {% endif %}
+            {% if empleado.ciudad_nacimiento %}
+            <tr>
+                <td class="field">Ciudad de Nacimiento</td>
+                <td class="value">{{ empleado.ciudad_nacimiento }}</td>
+            </tr>
+            {% endif %}
+            {% if empleado.escolaridad %}
+            <tr>
+                <td class="field">Escolaridad</td>
+                <td class="value">{{ empleado.escolaridad.nivel }}</td>
+            </tr>
+            {% endif %}
+            {% if empleado.contacto_emergencia_nombre %}
+            <tr>
+                <td class="field">Contacto de Emergencia</td>
+                <td class="value">
+                    {{ empleado.contacto_emergencia_nombre }}
+                    {% if empleado.contacto_emergencia_telefono %}
+                        - {{ empleado.contacto_emergencia_telefono }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Historial de Cargos -->
+    {% if historial_cargos %}
+    <div class="section">
+        <h2 class="section-title">HISTORIAL DE CARGOS</h2>
+        <table class="historial-table">
+            <thead>
+                <tr>
+                    <th>Cargo</th>
+                    <th>Área</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Estado</th>
+                    <th>Motivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for historial in historial_cargos %}
+                <tr {% if historial.activo %}class="actual"{% endif %}>
+                    <td>{{ historial.cargo.nombre }}</td>
+                    <td>{{ historial.cargo.area.nombre }}</td>
+                    <td>{{ historial.fecha_inicio|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if historial.activo %}
+                            <strong>Actual</strong>
+                        {% elif historial.fecha_fin %}
+                            {{ historial.fecha_fin|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if historial.activo %}
+                            <strong>Activo</strong>
+                        {% else %}
+                            Finalizado
+                        {% endif %}
+                    </td>
+                    <td>{{ historial.motivo_cambio|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Documento generado desde RRHH Pro - Sistema de Gestión de Empleados</p>
+        <p>{{ fecha_generacion|date:"d/m/Y H:i:s" }}</p>
+    </div>
+
+    <script>
+        // Auto-abrir diálogo de impresión si viene de un enlace de impresión
+        if (window.location.search.includes('autoprint=true')) {
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

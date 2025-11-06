@@ -1,0 +1,98 @@
+[
+  {
+    "model": "employees.departamento",
+    "pk": 29,
+    "fields": {
+      "nombre": "Amazonas",
+      "codigo": "91"
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1087,
+    "fields": {
+      "nombre": "Leticia",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1088,
+    "fields": {
+      "nombre": "El Encanto",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1089,
+    "fields": {
+      "nombre": "La Chorrera",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1090,
+    "fields": {
+      "nombre": "La Pedrera",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1091,
+    "fields": {
+      "nombre": "La Victoria",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1092,
+    "fields": {
+      "nombre": "Miriti - Parana",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1093,
+    "fields": {
+      "nombre": "Puerto Alegria",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1094,
+    "fields": {
+      "nombre": "Puerto Arica",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1095,
+    "fields": {
+      "nombre": "Puerto Nariño",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1096,
+    "fields": {
+      "nombre": "Puerto Santander",
+      "departamento": 29
+    }
+  },
+  {
+    "model": "employees.ciudad",
+    "pk": 1097,
+    "fields": {
+      "nombre": "Tarapaca",
+      "departamento": 29
+    }
+  }
+]

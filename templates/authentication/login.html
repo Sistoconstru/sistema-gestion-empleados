@@ -1,0 +1,117 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión - Empleados</title>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border-radius: 1.2rem;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+        }
+        .login-avatar {
+            font-size: 4.5rem;
+            color: #2193b0;
+            margin-bottom: 1rem;
+        }
+        .login-container h2 {
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #2193b0;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-group input,
+        .input-group .form-control {
+            width: 100%;
+            padding: 0.75rem 2.2rem 0.75rem 2.2rem; /* Menos padding lateral */
+            border-radius: 0.5rem;
+            border: 1px solid #b0c4de;
+            font-size: 1rem;
+            background: #f8f9fa;
+            box-sizing: border-box; /* Importante */
+}
+        .input-group .fa {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2193b0;
+            font-size: 1.1rem;
+        }
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        .login-btn:hover {
+            background: #fb8c00;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-avatar">
+            <i class="fa fa-user-circle"></i>
+        </div>
+        <h2>Iniciar sesión</h2>
+        {% if form.errors %}
+            <div class="error-message">Usuario o contraseña incorrectos.</div>
+        {% endif %}
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="input-group">
+                <i class="fa fa-user"></i>
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="input-group">
+                <i class="fa fa-lock"></i>
+                {{ form.password|add_class:"form-control" }}
+            </div>
+            <div class="login-options">
+                <label>
+                    <input type="checkbox" name="remember" style="margin-right: 5px;">
+                    Recordarme
+                </label>
+                <a href="{% url 'authentication:password_reset' %}">¿Olvidaste tu contraseña?</a>
+            </div>
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

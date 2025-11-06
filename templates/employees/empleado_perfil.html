@@ -1,0 +1,643 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil - {{ empleado.nombre_completo }}{% endblock %}
+
+{% block breadcrumb_items %}
+
+<li class="breadcrumb-item active">Mi Perfil</li>
+{% endblock %}
+
+{% block content %}
+<!-- Header del Perfil -->
+<div class="row mb-4">
+    <div class="col-12">
+    <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <div class="profile-avatar bg-white bg-opacity-25 rounded-circle mx-auto mb-2" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="mb-1">{{ empleado.nombre_completo }}</h2>
+                        <h5 class="mb-2 opacity-75">
+                            {% if cargo_actual %}
+                                {{ cargo_actual.cargo.nombre }}
+                                <span class="badge bg-amarillo bg-opacity-25 ms-2 text-corporativo">{{ cargo_actual.cargo.area.nombre }}</span>
+                            {% else %}
+                                <span class="badge bg-amarillo text-corporativo">Sin cargo asignado</span>
+                            {% endif %}
+                        </h5>
+                        <div class="row text-sm">
+                            <div class="col-6">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                <strong>Ingreso:</strong> {{ empleado.fecha_ingreso|date:"d/m/Y" }}
+                            </div>
+                            <div class="col-6">
+                                <i class="fas fa-building me-1"></i>
+                                <strong>Sede:</strong> {{ empleado.sede.nombre }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="fs-4 fw-bold">{{ dias_empresa }}</div>
+                                <div class="small opacity-75">Días en empresa</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="fs-4 fw-bold">{{ puntos.total|default:0 }}</div>
+                                <div class="small opacity-75">Puntos totales</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen de Estado -->
+<div class="row mb-4">
+    <div class="col-md-3">
+    <div class="card border-corporativo shadow-sm">
+            <div class="card-body text-center">
+                <div class="circular-progress mb-2" data-percentage="{{ documentos.progreso }}" style="--circle-bg:#f3f4f6;">
+                    <div class="fs-4 fw-bold text-{% if documentos.progreso >= 80 %}corporativo{% elif documentos.progreso >= 50 %}amarillo{% else %}rojo{% endif %}">
+                        {{ documentos.progreso }}%
+                    </div>
+                </div>
+                <h6 class="mb-0">Documentación</h6>
+                <small class="text-muted">{{ documentos.aprobados }}/{{ documentos.total }} completos</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card border-corporativo shadow-sm">
+            <div class="card-body text-center">
+                <div class="circular-progress mb-2" data-percentage="{{ capacitaciones.progreso }}">
+                    <div class="fs-4 fw-bold text-{% if capacitaciones.progreso >= 80 %}corporativo{% elif capacitaciones.progreso >= 50 %}amarillo{% else %}rojo{% endif %}">
+                        {{ capacitaciones.progreso }}%
+                    </div>
+                </div>
+                <h6 class="mb-0">Capacitaciones</h6>
+                <small class="text-muted">{{ capacitaciones.completadas }}/{{ capacitaciones.total }} completadas</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card border-corporativo shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-clipboard-check fa-3x text-{% if evaluaciones.pendientes == 0 %}corporativo{% elif evaluaciones.vencidas > 0 %}rojo{% else %}amarillo{% endif %}"></i>
+                </div>
+                <h6 class="mb-0">Evaluaciones</h6>
+                <small class="text-muted">
+                    {% if evaluaciones.pendientes > 0 %}
+                        {{ evaluaciones.pendientes }} pendiente{{ evaluaciones.pendientes|pluralize }}
+                    {% else %}
+                        Al día
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card border-corporativo shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-2">
+                    <i class="fas fa-trophy fa-3x text-amarillo"></i>
+                </div>
+                <h6 class="mb-0">Reconocimientos</h6>
+                <small class="text-muted">{{ puntos.insignias }} insignia{{ puntos.insignias|pluralize }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas y Acciones Rápidas -->
+{% if documentos.vencidos > 0 or documentos.por_vencer > 0 or evaluaciones.vencidas > 0 or evaluaciones.proximas > 0 %}
+<div class="row mb-4">
+    <div class="col-12">
+    <div class="card border-amarillo">
+            <div class="card-header bg-amarillo text-corporativo">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Atención Requerida
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if documentos.vencidos > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-rojo alert-sm mb-0">
+                            <i class="fas fa-file-times me-2"></i>
+                            <strong>{{ documentos.vencidos }} documento{{ documentos.vencidos|pluralize }}</strong> vencido{{ documentos.vencidos|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if documentos.por_vencer > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-amarillo alert-sm mb-0 text-corporativo">
+                            <i class="fas fa-file-clock me-2"></i>
+                            <strong>{{ documentos.por_vencer }} documento{{ documentos.por_vencer|pluralize }}</strong> por vencer
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if evaluaciones.vencidas > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-rojo alert-sm mb-0">
+                            <i class="fas fa-clipboard-times me-2"></i>
+                            <strong>{{ evaluaciones.vencidas }} evaluación{{ evaluaciones.vencidas|pluralize }}</strong> vencida{{ evaluaciones.vencidas|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if evaluaciones.proximas > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-azul alert-sm mb-0">
+                            <i class="fas fa-clipboard-check me-2"></i>
+                            <strong>{{ evaluaciones.proximas }} evaluación{{ evaluaciones.proximas|pluralize }}</strong> próxima{{ evaluaciones.proximas|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Acciones Rápidas -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-outline-corporativo w-100 py-3">
+                            <i class="fas fa-file-upload fa-2x d-block mb-2"></i>
+                            <strong>Mis Documentos</strong>
+                            <div class="small text-muted">Subir y gestionar</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
+                            <strong>Mis Capacitaciones</strong>
+                            <div class="small text-muted">{{ capacitaciones.completadas }}/{{ capacitaciones.total }} completadas</div>
+                            {% if capacitaciones.en_progreso > 0 %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-amarillo text-corporativo">
+                                    {{ capacitaciones.en_progreso }} en curso
+                                </span>
+                            {% endif %}
+                            {% if capacitaciones.pendientes_obligatorias > 0 %}
+                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-rojo">
+                                    {{ capacitaciones.pendientes_obligatorias }} obligatorias
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'training:catalogo' %}" class="btn btn-outline-azul w-100 py-3">
+                            <i class="fas fa-chalkboard-teacher fa-2x d-block mb-2"></i>
+                            <strong>Catálogo de Capacitaciones</strong>
+                            <div class="small text-muted">Capacitaciones disponibles</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="#" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
+                            <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
+                            <strong>Evaluaciones</strong>
+                            <div class="small text-muted">Pendientes y resultados</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-azul w-100 py-3">
+                            <i class="fas fa-trophy fa-2x d-block mb-2"></i>
+                            <strong>Centro de Reconocimientos</strong>
+                            <div class="small text-muted">Puntos, ranking e insignias</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenido Principal -->
+<div class="row">
+    <!-- Columna Izquierda -->
+    <div class="col-md-8">
+        
+        <!-- Actividad Reciente -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Mi Actividad Reciente
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if actividades_recientes %}
+                <div class="timeline">
+                    {% for actividad in actividades_recientes %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-{% if actividad.tipo == 'documento' %}corporativo{% elif actividad.tipo == 'capacitacion' %}corporativo{% else %}azul{% endif %}"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <i class="{{ actividad.icono }} me-2"></i>
+                                    <strong>{{ actividad.titulo }}</strong>
+                                    {% if actividad.estado %}
+                                        <span class="badge bg-{% if actividad.estado == 'aprobado' or actividad.estado == 'completada' %}corporativo{% elif actividad.estado == 'pendiente' %}amarillo{% else %}gris{% endif %} ms-2 text-{% if actividad.estado == 'pendiente' %}corporativo{% else %}white{% endif %}">
+                                            {{ actividad.estado|capfirst }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">{{ actividad.fecha|timesince }} atrás</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay actividad reciente</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Capacitaciones en Progreso -->
+        {% if capacitaciones.lista_en_progreso %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-play-circle me-2"></i>Capacitaciones en Progreso
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for inscripcion in capacitaciones.lista_en_progreso %}
+                <div class="d-flex align-items-center border-bottom py-2">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-graduation-cap fa-2x text-corporativo"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">{{ inscripcion.capacitacion.titulo }}</h6>
+                        <small class="text-muted">
+                            Iniciada: {{ inscripcion.fecha_inicio|date:"d/m/Y" }}
+                            {% if inscripcion.fecha_limite %}
+                                | Límite: {{ inscripcion.fecha_limite|date:"d/m/Y" }}
+                            {% endif %}
+                        </small>
+                        {% if inscripcion.progreso %}
+                        <div class="progress mt-1" style="height: 4px;">
+                            <div class="progress-bar" style="width: {{ inscripcion.progreso }}%"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-shrink-0">
+                        <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-sm btn-outline-primary">
+        <i class="fas fa-play me-1"></i>
+        Continuar
+    </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+    </div>
+    
+    <!-- Columna Derecha -->
+    <div class="col-md-4">
+        
+        <!-- Estado de Documentos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-folder-open me-2"></i>Estado de Documentos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center mb-3">
+                    <div class="col-4">
+                        <div class="text-corporativo fs-5 fw-bold">{{ documentos.aprobados }}</div>
+                        <small class="text-muted">Aprobados</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-amarillo fs-5 fw-bold">{{ documentos.pendientes }}</div>
+                        <small class="text-muted">Pendientes</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-rojo fs-5 fw-bold">{{ documentos.faltantes }}</div>
+                        <small class="text-muted">Faltantes</small>
+                    </div>
+                </div>
+                
+                {% if documentos.lista_faltantes %}
+                <div class="alert alert-warning alert-sm">
+                    <strong>Documentos faltantes:</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for tipo in documentos.lista_faltantes %}
+                        <li>{{ tipo.nombre }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <div class="d-grid">
+                    <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-corporativo btn-sm">
+                        Gestionar Documentos
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Próximas Evaluaciones -->
+        {% if evaluaciones.lista_proximas %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar-check me-2"></i>Próximas Evaluaciones
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for evaluacion in evaluaciones.lista_proximas %}
+                <div class="d-flex align-items-center border-bottom py-2">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ evaluacion.evaluacion.nombre }}</h6>
+                        <small class="text-muted">
+                            Límite: {{ evaluacion.fecha_limite|date:"d/m/Y" }}
+                        </small>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="badge bg-amarillo text-corporativo">{{ evaluacion.fecha_limite|timeuntil }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Sistema de Puntos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>Mis Logros
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <div class="fs-3 fw-bold text-amarillo">{{ puntos.total }}</div>
+                    <div class="text-muted">Puntos totales</div>
+                </div>
+                
+                <div class="row text-center mb-3">
+                    <div class="col-6">
+                        <div class="fs-6 fw-bold text-azul">{{ puntos.este_mes }}</div>
+                        <small class="text-muted">Este mes</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="fs-6 fw-bold text-corporativo">{{ puntos.insignias }}</div>
+                        <small class="text-muted">Insignias</small>
+                    </div>
+                </div>
+                
+                {% if puntos.ranking_posicion %}
+                <div class="alert alert-azul alert-sm">
+                    <i class="fas fa-medal me-1"></i>
+                    Posición #{{ puntos.ranking_posicion }} en el ranking
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Información Personal -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Información Personal
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="info-item">
+                    <strong>Documento:</strong>
+                    <span>{{ empleado.tipo_documento.codigo }} {{ empleado.numero_documento }}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Email:</strong>
+                    <span>{{ empleado.correo_electronico|default:"No registrado" }}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Teléfono:</strong>
+                    <span>{{ empleado.telefono_contacto }}</span>
+                </div>
+                <div class="info-item">
+                    <strong>Estado:</strong>
+                    <span class="badge bg-{% if empleado.estado.codigo == 'ACTIVO' %}corporativo{% elif empleado.estado.codigo == 'PRUEBA' %}amarillo{% else %}gris{% endif %} text-{% if empleado.estado.codigo == 'PRUEBA' %}corporativo{% else %}white{% endif %}">
+                        {{ empleado.estado.nombre }}
+                    </span>
+                </div>
+                {% if tiempo_cargo %}
+                <div class="info-item">
+                    <strong>Tiempo en cargo:</strong>
+                    <span>{{ tiempo_cargo }} días</span>
+                </div>
+                {% endif %}
+                
+               
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{% if docs_faltantes %}
+<div class="alert alert-amarillo alert-sm text-corporativo">
+    <strong>Documentos obligatorios faltantes por subir:</strong>
+    <ul class="mb-0 mt-1">
+        {% for doc in docs_faltantes %}
+        <li>{{ doc.nombre }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if docs_opcionales_pendientes %}
+<div class="alert alert-azul alert-sm mt-2">
+    <strong>Documentos opcionales pendientes por subir:</strong>
+    <ul class="mb-0 mt-1">
+        {% for doc in docs_opcionales_pendientes %}
+        <li>{{ doc.nombre }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.alert-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn.py-3 {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.timeline {
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 40px;
+    padding-bottom: 20px;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 17px;
+    width: 2px;
+    height: calc(100% - 17px);
+    background-color: #dee2e6;
+}
+
+.circular-progress {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    background: #f8f9fa;
+}
+
+.circular-progress .fs-4 {
+    font-size: 1.1rem !important;
+    padding: 0.2em 0.4em;
+    background: transparent;
+    z-index: 2;
+}
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.profile-avatar {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+<style>
+/* Mejorar visibilidad de los bordes de botones outline corporativos */
+.btn-outline-corporativo, .btn-outline-amarillo, .btn-outline-azul, .btn-outline-rojo {
+    border-width: 2px !important;
+    box-shadow: none !important;
+}
+.btn-outline-corporativo {
+    border-color: var(--color-corporativo, #004b5e) !important;
+}
+.btn-outline-amarillo {
+    border-color: var(--color-amarillo, #ffd600) !important;
+}
+.btn-outline-azul {
+    border-color: var(--color-azul, #009fe3) !important;
+}
+.btn-outline-rojo {
+    border-color: var(--color-rojo, #e53935) !important;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Animación para los círculos de progreso
+    $('.circular-progress').each(function() {
+        var $this = $(this);
+        var percentage = $this.data('percentage');
+        var circleBg = $this.css('--circle-bg') || '#e9ecef';
+        // Color de progreso más suave según porcentaje
+        var progressColor = '#22c55e'; // verde por defecto
+        if (percentage < 50) progressColor = '#ef4444'; // rojo
+        else if (percentage < 80) progressColor = '#facc15'; // amarillo
+        // Crear círculo SVG
+        var size = 60;
+        var strokeWidth = 4;
+        var radius = (size - strokeWidth) / 2;
+        var circumference = radius * 2 * Math.PI;
+        var svg = `
+            <svg width="${size}" height="${size}" style="position: absolute; top: 0; left: 0;">
+            <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
+                stroke="${circleBg}" stroke-width="${strokeWidth}" 
+                fill="transparent" />
+            <circle cx="${size/2}" cy="${size/2}" r="${radius}" 
+                stroke="${progressColor}" stroke-width="${strokeWidth}" 
+                fill="transparent" stroke-dasharray="${circumference}" 
+                stroke-dashoffset="${circumference - (percentage / 100) * circumference}"
+                stroke-linecap="round"
+                transform="rotate(-90 ${size/2} ${size/2})" />
+            </svg>
+        `;
+        $this.prepend(svg);
+    });
+    
+    // Auto-refresh de notificaciones cada 5 minutos
+    setInterval(function() {
+        // Aquí se puede implementar una llamada AJAX para actualizar notificaciones
+        console.log('Checking for new notifications...');
+    }, 300000); // 5 minutos
+});
+</script>
+{% endblock %}

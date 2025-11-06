@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SIGHU{% endblock %}
+
+{% comment %} {% block breadcrumb_items %}
+<li class="breadcrumb-item active">Dashboard</li>
+{% endblock %} {% endcomment %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    ¡Bienvenido{% if user.first_name %}, {{ user.first_name }}{% endif %}! 👋
+                </h1>
+                <p class="text-muted mb-0">Panel de control administrativo del sistema de gestión de empleados</p>
+            </div>
+            <div>
+                <span class="badge bg-success fs-6">
+                    <i class="fas fa-circle me-1"></i>Sistema Activo
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+    <div class="card bg-corporativo text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Total Empleados</h5>
+                        <h3 class="mb-0">{{ total_empleados|default:0 }}</h3>
+                        <small class="opacity-75">+{{ nuevos_mes|default:0 }} este mes</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card bg-corporativo text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Activos</h5>
+                        <h3 class="mb-0">{{ empleados_activos|default:0 }}</h3>
+                        <small class="opacity-75">
+                            {% if total_empleados > 0 %}
+                                {{ porcentaje_activos|default:0 }}% del total
+                            {% else %}
+                                0% del total
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card bg-amarillo text-corporativo">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">En Prueba</h5>
+                        <h3 class="mb-0">{{ empleados_prueba|default:0 }}</h3>
+                        <small class="opacity-75">Período inicial</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+    <div class="card bg-corporativo text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Capacitaciones</h5>
+                        <h3 class="mb-0">{{ capacitaciones_activas|default:0 }}</h3>
+                        <small class="opacity-75">Activas</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-graduation-cap fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Accesos Rápidos -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Accesos Rápidos Administrativos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-corporativo w-100 py-3">
+                            <i class="fas fa-users fa-2x d-block mb-2"></i>
+                            <strong>Gestionar Empleados</strong>
+                            <div class="small text-muted">Ver y administrar</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-corporativo w-100 py-3">
+                            <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
+                            <strong>Nuevo Empleado</strong>
+                            <div class="small text-muted">Registrar personal</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'reports:index' %}" class="btn btn-outline-corporativo w-100 py-3">
+                            <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
+                            <strong>Reportes</strong>
+                            <div class="small text-muted">Análisis y estadísticas</div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
+                            <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
+                            <strong>Capacitaciones</strong>
+                            <div class="small text-muted">Gestión y seguimiento</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Segunda fila de módulos -->
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'surveys:index' %}" class="btn btn-outline-info w-100 py-3">
+                            <i class="fas fa-poll-h fa-2x d-block mb-2"></i>
+                            <strong>Encuestas</strong>
+                            <div class="small text-muted">Evaluaciones y feedback</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-warning w-100 py-3">
+                            <i class="fas fa-award fa-2x d-block mb-2"></i>
+                            <strong>Reconocimientos</strong>
+                            <div class="small text-muted">Premios y logros</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="#" class="btn btn-outline-warning w-100 py-3" title="Próximamente">
+                            <i class="fas fa-bell fa-2x d-block mb-2"></i>
+                            <strong>Notificaciones</strong>
+                            <div class="small text-muted">Alertas y avisos</div>
+                        </a>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas y Estado del Sistema -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Alertas del Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if alertas_documentos.pendientes or alertas_documentos.vencimientos or alertas_documentos.vencidos %}
+                <div class="row">
+                    {% if alertas_documentos.pendientes %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-warning alert-sm">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>{{ documentos_pendientes }}</strong> documento{{ documentos_pendientes|pluralize }} pendiente{{ documentos_pendientes|pluralize }} de aprobación
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_documentos.vencimientos %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-info alert-sm">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            <strong>{{ documentos_por_vencer }}</strong> documento{{ documentos_por_vencer|pluralize }} por vencer
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_documentos.vencidos %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-danger alert-sm">
+                            <i class="fas fa-times-circle me-2"></i>
+                            <strong>{{ documentos_vencidos }}</strong> documento{{ documentos_vencidos|pluralize }} vencido{{ documentos_vencidos|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_documentos.incompletos %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-warning alert-sm">
+                            <i class="fas fa-user-times me-2"></i>
+                            <strong>{{ empleados_docs_incompletos }}</strong> empleado{{ empleados_docs_incompletos|pluralize }} con documentación incompleta
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                    <p class="text-muted">No hay alertas pendientes</p>
+                    <small class="text-muted">Todos los procesos están funcionando correctamente</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Estado del Sistema -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>Estado del Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Base de Datos</span>
+                        <span class="badge bg-corporativo">Conectado</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Empleados Registrados</span>
+                        <span class="badge bg-corporativo">{{ total_empleados|default:0 }}</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Sistema de Archivos</span>
+                        <span class="badge bg-corporativo">Operativo</span>
+                </div>
+                
+                {% if is_admin_dashboard %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Permisos Admin</span>
+                        <span class="badge bg-corporativo">Activos</span>
+                </div>
+                {% endif %}
+                
+                <hr>
+                
+                <div class="text-center">
+                    <small class="text-muted">
+                        Última actualización: {{ "now"|date:"d/m/Y H:i" }}
+                    </small>
+                </div>
+                
+                <div class="d-grid mt-3">
+                    <a href="/admin/" class="btn btn-outline-corporativo btn-sm">
+                        <i class="fas fa-cog me-1"></i>
+                        Panel de Administración
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.alert-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn.py-3 {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,83 @@
+
+<!-- =============================================================================
+     templates/organizational/partials/area_node.html - NODO DE ÁREA
+     ============================================================================= -->
+
+<div class="area-node nivel-{{ nivel }}">
+    <div class="area-header" onclick="toggleArea(this)">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1">
+                    <i class="fas fa-chevron-down toggle-icon me-2"></i>
+                    {{ area_data.area.nombre }}
+                </h5>
+                <small class="text-muted">
+                    Código: {{ area_data.area.codigo }}
+                    {% if area_data.area.responsable %}
+                        | Responsable: {{ area_data.area.responsable.nombre_completo }}
+                    {% endif %}
+                </small>
+            </div>
+            <div>
+                <span class="badge bg-primary">{{ area_data.cargos|length }} cargos</span>
+                {% if area_data.subareas %}
+                    <span class="badge bg-secondary">{{ area_data.subareas|length }} subárea{{ area_data.subareas|length|pluralize }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="area-content">
+        <!-- Cargos del área -->
+        {% if area_data.cargos %}
+        <div class="mb-3">
+            <h6 class="text-muted mb-2">
+                <i class="fas fa-user-tie me-1"></i>Cargos:
+            </h6>
+            {% for cargo_data in area_data.cargos %}
+            <div class="cargo-item">
+                <div>
+                    <strong>{{ cargo_data.cargo.nombre }}</strong>
+                    {% if cargo_data.cargo.rol_automatico %}
+                        <span class="badge bg-info ms-2">{{ cargo_data.cargo.rol_automatico.nombre }}</span>
+                    {% endif %}
+                    <div class="small text-muted">
+                        Nivel {{ cargo_data.cargo.nivel_jerarquico }}
+                        {% if cargo_data.cargo.codigo %}
+                            | Código: {{ cargo_data.cargo.codigo }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-success empleados-count">
+                        {{ cargo_data.count_empleados }} empleado{{ cargo_data.count_empleados|pluralize }}
+                    </span>
+                    {% if cargo_data.empleados %}
+                    <div class="small text-muted mt-1">
+                        {% for empleado in cargo_data.empleados|slice:":3" %}
+                            {{ empleado.nombres|first }}.{{ empleado.apellidos|first }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        {% if cargo_data.empleados|length > 3 %}
+                            y {{ cargo_data.empleados|length|add:"-3" }} más
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Subáreas -->
+        {% if area_data.subareas %}
+        <div class="subareas">
+            <h6 class="text-muted mb-2">
+                <i class="fas fa-layer-group me-1"></i>Subáreas:
+            </h6>
+            {% for subarea in area_data.subareas %}
+                {% include 'organizational/partials/area_node.html' with area_data=subarea nivel=nivel|add:1 %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>

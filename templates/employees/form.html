@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ form_title }} - SIGHU{% endblock %}
+
+{% block content %}
+<h2>{{ form_title }}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            <label for="documento">Documento de Identidad *</label>
+            <input type="text" name="documento" id="documento" class="form-control" value="{{ form.documento.value|default_if_none:'' }}" required>
+            {% if form.documento.errors %}<div class="text-danger">{{ form.documento.errors }}</div>{% endif %}
+
+            <label for="nombres">Nombres *</label>
+            <input type="text" name="nombres" id="nombres" class="form-control" value="{{ form.nombres.value|default_if_none:'' }}" required>
+            {% if form.nombres.errors %}<div class="text-danger">{{ form.nombres.errors }}</div>{% endif %}
+
+            <label for="apellidos">Apellidos *</label>
+            <input type="text" name="apellidos" id="apellidos" class="form-control" value="{{ form.apellidos.value|default_if_none:'' }}" required>
+            {% if form.apellidos.errors %}<div class="text-danger">{{ form.apellidos.errors }}</div>{% endif %}
+
+            <label for="telefono">Número de Contacto *</label>
+            <input type="text" name="telefono" id="telefono" class="form-control" value="{{ form.telefono.value|default_if_none:'' }}" required>
+            {% if form.telefono.errors %}<div class="text-danger">{{ form.telefono.errors }}</div>{% endif %}
+
+            <label for="email">Correo Electrónico *</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ form.email.value|default_if_none:'' }}" required>
+            {% if form.email.errors %}<div class="text-danger">{{ form.email.errors }}</div>{% endif %}
+
+            <label for="fecha_ingreso">Fecha de Ingreso *</label>
+            <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" value="{{ form.fecha_ingreso.value|default_if_none:'' }}" required>
+            {% if form.fecha_ingreso.errors %}<div class="text-danger">{{ form.fecha_ingreso.errors }}</div>{% endif %}
+
+            <label for="sede">Sede *</label>
+            {{ form.sede }}
+            {% if form.sede.errors %}<div class="text-danger">{{ form.sede.errors }}</div>{% endif %}
+
+            <label for="cargo">Cargo *</label>
+            {{ form.cargo }}
+            {% if form.cargo.errors %}<div class="text-danger">{{ form.cargo.errors }}</div>{% endif %}
+                <label for="direccion">Dirección de residencia *</label>
+                <input type="text" name="direccion" id="direccion" class="form-control" value="{{ form.direccion.value|default_if_none:'' }}" required placeholder="Ejemplo: Calle 93 # 15-20, Barrio, Ciudad">
+                <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
+                {% if form.direccion.errors %}<div class="text-danger">{{ form.direccion.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+            <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
+            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default_if_none:'' }}" required>
+            {% if form.fecha_nacimiento.errors %}<div class="text-danger">{{ form.fecha_nacimiento.errors }}</div>{% endif %}
+
+            <label for="ciudad_nacimiento">Ciudad de Nacimiento *</label>
+            <input type="text" name="ciudad_nacimiento" id="ciudad_nacimiento" class="form-control" value="{{ form.ciudad_nacimiento.value|default_if_none:'' }}" required>
+            {% if form.ciudad_nacimiento.errors %}<div class="text-danger">{{ form.ciudad_nacimiento.errors }}</div>{% endif %}
+
+            <label for="escolaridad">Escolaridad *</label>
+            {{ form.escolaridad }}
+            {% if form.escolaridad.errors %}<div class="text-danger">{{ form.escolaridad.errors }}</div>{% endif %}
+
+            <label for="contacto_emergencia">Contacto de Emergencia *</label>
+            <input type="text" name="contacto_emergencia" id="contacto_emergencia" class="form-control" value="{{ form.contacto_emergencia.value|default_if_none:'' }}" required>
+            {% if form.contacto_emergencia.errors %}<div class="text-danger">{{ form.contacto_emergencia.errors }}</div>{% endif %}
+
+            <label for="estado">Estado</label>
+            {{ form.estado }}
+            {% if form.estado.errors %}<div class="text-danger">{{ form.estado.errors }}</div>{% endif %}
+        </div>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-corporativo">Guardar</button>
+        <a href="{% url 'employees:index' %}" class="btn btn-outline-gris">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

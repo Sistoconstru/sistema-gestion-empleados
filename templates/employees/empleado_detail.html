@@ -1,0 +1,1264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load training_filters %}
+
+{% block title %}{{ empleado.nombre_completo }} - Perfil de Empleado{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+<li class="breadcrumb-item active">{{ empleado.nombre_completo }}</li>
+{% endblock %}
+
+{% block content %}
+<!-- Header del Perfil -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-corporativo">
+            <div class="card-body bg-corporativo bg-opacity-75 text-white">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-large bg-corporativo text-white me-4">
+                                {{ empleado.nombres|first }}{{ empleado.apellidos|first }}
+                            </div>
+                            <div>
+                                <h2 class="mb-1">{{ empleado.nombre_completo }}</h2>
+                                <p class="mb-1">
+                                    {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                                        {% if cargo_actual %}
+                                            <span class="fw-bold">{{ cargo_actual.cargo.nombre }}</span>
+                                            <span class="text-white-50">• {{ cargo_actual.cargo.area.nombre }}</span>
+                                        {% else %}
+                                            <span class="text-white-50">Sin cargo asignado</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </p>
+                                <div class="d-flex align-items-center gap-3">
+                                    {% if empleado.estado.codigo|lower == 'activo' %}
+                                        <span class="badge bg-success fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% elif empleado.estado.codigo|lower == 'prueba' %}
+                                        <span class="badge bg-warning fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% elif empleado.estado.codigo|lower == 'inactivo' %}
+                                        <span class="badge bg-danger fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary fs-6">{{ empleado.estado.nombre }}</span>
+                                    {% endif %}
+                                    <span class="text-white-50">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Ingresó {{ empleado.fecha_ingreso|date:"d/m/Y" }}
+                                    </span>
+                                    <span class="text-white-50">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ empleado.fecha_ingreso|timesince }} en la empresa
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        {% if perms.employees.change_empleado %}
+                        <a href="{% url 'employees:empleado_edit' empleado.pk %}" class="btn btn-corporativo">
+                            <i class="fas fa-edit me-1"></i>
+                            Editar Perfil
+                        </a>
+                        {% endif %}
+                        <div class="btn-group ms-2">
+                            <button type="button" class="btn btn-outline-corporativo dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">Exportar Perfil</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_export_individual' empleado.pk %}?format=pdf">
+                                    <i class="fas fa-file-pdf me-2 text-danger"></i>Perfil Completo (PDF)
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_export_individual' empleado.pk %}?format=excel">
+                                    <i class="fas fa-file-excel me-2 text-success"></i>Datos Básicos (Excel)
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Imprimir</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_print' empleado.pk %}?autoprint=true" target="_blank">
+                                    <i class="fas fa-print me-2 text-primary"></i>Imprimir Perfil
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_print' empleado.pk %}" target="_blank">
+                                    <i class="fas fa-eye me-2 text-info"></i>Vista Previa de Impresión
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Historial</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_historial_export' empleado.pk %}?format=pdf">
+                                    <i class="fas fa-history me-2 text-warning"></i>Historial de Cargos (PDF)
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'employees:empleado_historial_export' empleado.pk %}?format=excel">
+                                    <i class="fas fa-table me-2 text-success"></i>Historial de Cargos (Excel)
+                                </a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Otras Acciones</h6></li>
+                                <li><a class="dropdown-item" href="#" onclick="copiarUrlPerfil()">
+                                    <i class="fas fa-link me-2 text-secondary"></i>Copiar Enlace del Perfil
+                                </a></li>
+                                <li><a class="dropdown-item" href="mailto:?subject=Perfil de {{ empleado.nombre_completo }}&body=Te comparto el perfil de {{ empleado.nombre_completo }}: {{ request.build_absolute_uri }}">
+                                    <i class="fas fa-envelope me-2 text-info"></i>Enviar por Email
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 d-flex align-items-stretch">
+        <!-- Información de Contacto -->
+        <div class="card mb-4 border-corporativo flex-fill h-100">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-address-card me-2"></i>
+                    Información de Contacto
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="text-muted small" for="email-display">Email</label>
+                    <div class="fw-bold" id="email-display">
+                        {% if empleado.correo_electronico %}
+                            <a href="mailto:{{ empleado.correo_electronico }}">
+                                {{ empleado.correo_electronico }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No registrado</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small" for="telefono-display">Teléfono</label>
+                    <div class="fw-bold" id="telefono-display">
+                        <a href="tel:{{ empleado.telefono_contacto }}">
+                            {{ empleado.telefono_contacto }}
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small" for="documento-display">Documento</label>
+                    <div class="fw-bold" id="documento-display">
+                        {{ empleado.tipo_documento.nombre }}: {{ empleado.numero_documento }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small" for="sede-display">Sede</label>
+                    <div class="fw-bold" id="sede-display">{{ empleado.sede.nombre }}</div>
+                    {% if empleado.sede.ciudad %}
+                    <div class="text-muted small">{{ empleado.sede.ciudad }}{% if empleado.sede.departamento %}, {{ empleado.sede.departamento }}{% endif %}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted small" for="direccion-display">Dirección de residencia</label>
+                    <div class="fw-bold" id="direccion-display">{{ empleado.direccion }}</div>
+                        {% if empleado.direccion and empleado.direccion != "SIN DIRECCIÓN" %}
+                            <div class="mt-1">
+                                <a href="https://www.google.com/maps/search/{{ empleado.direccion|urlencode }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Ver en Google Maps
+                                </a>
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 d-flex align-items-stretch">
+        <!-- Información Personal -->
+        <div class="card mb-4 border-corporativo flex-fill h-100">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Información Personal
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if empleado.fecha_nacimiento %}
+                <div class="mb-3">
+                    <label class="text-muted small" for="fecha-nacimiento-display">Fecha de Nacimiento</label>
+                    <div class="fw-bold" id="fecha-nacimiento-display">
+                        {{ empleado.fecha_nacimiento|date:"d/m/Y" }}
+                        <span class="text-muted">
+                            ({{ empleado.fecha_nacimiento|timesince }} de edad)
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.ciudad_nacimiento %}
+                <div class="mb-3">
+                    <label class="text-muted small" for="ciudad-nacimiento-display">Ciudad de Nacimiento</label>
+                    <div class="fw-bold" id="ciudad-nacimiento-display">{{ empleado.ciudad_nacimiento }}</div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.escolaridad %}
+                <div class="mb-3">
+                    <label class="text-muted small" for="escolaridad-display">Escolaridad</label>
+                    <div class="fw-bold" id="escolaridad-display">{{ empleado.escolaridad.nivel }}</div>
+                </div>
+                {% endif %}
+                
+                {% if empleado.contacto_emergencia_nombre %}
+                <div class="mb-3">
+                    <label class="text-muted small" for="contacto-emergencia-display">Contacto de Emergencia</label>
+                    <div class="fw-bold" id="contacto-emergencia-display">{{ empleado.contacto_emergencia_nombre }}</div>
+                    {% if empleado.contacto_emergencia_telefono %}
+                    <div class="text-muted">
+                        <a href="tel:{{ empleado.contacto_emergencia_telefono }}">
+                            {{ empleado.contacto_emergencia_telefono }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if not empleado.fecha_nacimiento and not empleado.ciudad_nacimiento %}
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <div>Información personal pendiente</div>
+                    <small>El empleado debe completar estos datos</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="card mb-4 border-corporativo">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Resumen de Actividad
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <div class="h4 text-success">{{ capacitaciones.count|default:0 }}</div>
+                            <div class="text-muted small">Capacitaciones</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-primary">{{ evaluaciones.count|default:0 }}</div>
+                        <div class="text-muted small">Evaluaciones</div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <div class="h4 text-warning">{{ documentos_completos|default:0 }}</div>
+                            <div class="text-muted small">Docs. Completos</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-danger">{{ documentos_pendientes|default:1 }}</div>
+                        <div class="text-muted small">Docs. Pendientes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Pestañas de Contenido -->
+<ul class="nav nav-tabs" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" role="tab">
+            <i class="fas fa-history me-1"></i>Historial de Cargos
+        </button>
+    </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="capacitaciones-tab" data-bs-toggle="tab" data-bs-target="#capacitaciones" type="button" role="tab">
+                    <i class="fas fa-graduation-cap me-1"></i>Capacitaciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="evaluaciones-tab" data-bs-toggle="tab" data-bs-target="#evaluaciones" type="button" role="tab">
+                    <i class="fas fa-clipboard-check me-1"></i>Evaluaciones
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="documentos-tab" data-bs-toggle="tab" data-bs-target="#documentos" type="button" role="tab">
+                    <i class="fas fa-file-alt me-1"></i>Documentos
+                </button>
+            </li>
+            {% if user.is_staff %}
+            <li class="nav-item admin-tabs" role="presentation">
+                <button class="nav-link" id="puntuacion-tab" data-bs-toggle="tab" data-bs-target="#puntuacion" type="button" role="tab">
+                    <i class="fas fa-star me-1"></i>Puntuación
+                </button>
+            </li>
+            <li class="nav-item admin-tabs" role="presentation">
+                <button class="nav-link" id="insignias-tab" data-bs-toggle="tab" data-bs-target="#insignias" type="button" role="tab">
+                    <i class="fas fa-medal me-1"></i>Insignias
+                </button>
+            </li>
+            {% endif %}
+        </ul>
+
+        <div class="tab-content border border-top-0 p-4" id="profileTabsContent">
+            <!-- Historial de Cargos -->
+            <div class="tab-pane fade show active" id="historial" role="tabpanel">
+                <div class="timeline">
+                    {% for historial in historial_cargos %}
+                    <div class="timeline-item {% if historial.activo %}current{% endif %}">
+                        <div class="timeline-marker {% if historial.activo %}bg-success{% else %}bg-secondary{% endif %}"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ historial.cargo.nombre }}</h6>
+                                    <p class="text-muted mb-1">{{ historial.cargo.area.nombre }}</p>
+                                    <small class="text-muted">
+                                        {{ historial.fecha_inicio|date:"d/m/Y" }} - 
+                                        {% if historial.activo %}
+                                            Actual
+                                        {% elif historial.fecha_fin %}
+                                            {{ historial.fecha_fin|date:"d/m/Y" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% if historial.activo %}
+                                <span class="badge bg-success">Actual</span>
+                                {% endif %}
+                            </div>
+                            {% if historial.motivo_cambio %}
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <strong>Motivo:</strong> {{ historial.motivo_cambio }}
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-briefcase fa-2x mb-2"></i>
+                        <div>No hay historial de cargos registrado</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Capacitaciones -->
+            <div class="tab-pane fade" id="capacitaciones" role="tabpanel">
+                <!-- Capacitaciones Obligatorias -->
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">
+                        <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                        Capacitaciones Obligatorias del Cargo
+                    </h6>
+                    
+                    {% for capacitacion in capacitaciones %}
+                        {% if capacitacion.obligatoria %}
+                        <div class="card mb-3 border-{% if capacitacion.estado == 'aprobado' %}success{% elif capacitacion.estado == 'en_progreso' %}warning{% elif capacitacion.estado == 'vencido' %}danger{% else %}secondary{% endif %}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-title d-flex align-items-center gap-2">
+                                            {{ capacitacion.capacitacion.nombre }}
+                                            <span class="badge bg-danger">Obligatoria</span>
+                                        </h6>
+                                        <p class="card-text text-muted">{{ capacitacion.capacitacion.descripcion|truncatewords:20 }}</p>
+                                        <div class="d-flex gap-3 small text-muted">
+                                            <span><i class="fas fa-calendar-alt me-1"></i> Inscrito: {{ capacitacion.fecha_inscripcion|date:"d/m/Y" }}</span>
+                                            {% if capacitacion.fecha_limite %}
+                                            <span class="{% if capacitacion.fecha_limite|dias_hasta_limite <= 7 %}text-danger{% endif %}">
+                                                <i class="fas fa-clock me-1"></i> Vence: {{ capacitacion.fecha_limite|date:"d/m/Y" }}
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-{{ capacitacion.get_estado_color }}">
+                                            {{ capacitacion.get_estado_display }}
+                                        </span>
+                                        {% if capacitacion.estado == 'pendiente_validacion' and capacitacion.capacitacion.es_externa %}
+                                            <div class="mt-2">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-success" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#confirmarInscripcionModal{{ capacitacion.id }}">
+                                                    <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                        {% if capacitacion.puntaje_final %}
+                                        <div class="mt-1">
+                                            <span class="badge bg-light text-dark">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                {{ capacitacion.puntaje_final }}%
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        {% if capacitacion.estado == 'en_progreso' and capacitacion.porcentaje_completado > 0 %}
+                                        <div class="mt-2">
+                                            <div class="progress" style="height: 5px; width: 100px;">
+                                                <div class="progress-bar bg-warning" style="width: {{ capacitacion.porcentaje_completado }}%"></div>
+                                            </div>
+                                            <small class="text-muted">{{ capacitacion.porcentaje_completado }}% completado</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No hay capacitaciones obligatorias asignadas.
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Otras Capacitaciones -->
+                <div>
+                    <h6 class="border-bottom pb-2">
+                        <i class="fas fa-graduation-cap text-primary me-2"></i>
+                        Otras Capacitaciones
+                    </h6>
+                    
+                    {% for capacitacion in capacitaciones %}
+                        {% if not capacitacion.obligatoria %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-title">{{ capacitacion.capacitacion.nombre }}</h6>
+                                        <p class="card-text text-muted">{{ capacitacion.capacitacion.descripcion|truncatewords:20 }}</p>
+                                        <small class="text-muted">
+                                            Inscrito: {{ capacitacion.fecha_inscripcion|date:"d/m/Y" }}
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        {% if capacitacion.estado == 'completado' %}
+                                            <span class="badge bg-success">Completada</span>
+                                        {% elif capacitacion.estado == 'en_progreso' %}
+                                            <span class="badge bg-warning">En Progreso</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ capacitacion.get_estado_display }}</span>
+                                        {% endif %}
+                                        {% if capacitacion.puntaje_final %}
+                                        <div class="mt-1">
+                                            <small class="text-muted">Puntaje: {{ capacitacion.puntaje_final }}%</small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-graduation-cap fa-2x mb-2"></i>
+                        <div>No hay capacitaciones registradas</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Evaluaciones -->
+            <div class="tab-pane fade" id="evaluaciones" role="tabpanel">
+                {% for evaluacion in evaluaciones %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-title">{{ evaluacion.evaluacion.nombre }}</h6>
+                                <p class="card-text text-muted">Período: {{ evaluacion.periodo_evaluacion }}</p>
+                                <small class="text-muted">
+                                    Asignada: {{ evaluacion.fecha_asignacion|date:"d/m/Y" }}
+                                    {% if evaluacion.evaluador %}
+                                    • Evaluador: {{ evaluacion.evaluador.nombre_completo }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                {% if evaluacion.estado == 'completada' %}
+                                    <span class="badge bg-success">Completada</span>
+                                    {% if evaluacion.puntaje_total %}
+                                    <div class="mt-1">
+                                        <small class="text-muted">Puntaje: {{ evaluacion.puntaje_total }}%</small>
+                                    </div>
+                                    {% endif %}
+                                {% elif evaluacion.estado == 'en_progreso' %}
+                                    <span class="badge bg-warning">En Progreso</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ evaluacion.get_estado_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-clipboard-check fa-2x mb-2"></i>
+                    <div>No hay evaluaciones registradas</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Documentos -->
+            <div class="tab-pane fade" id="documentos" role="tabpanel">
+                {% load document_filters %}
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Estado de Documentos</h6>
+                    <div class="btn-group">
+                        <a href="{% url 'documents:empleado_documentos' empleado.pk %}" 
+                        class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-folder-open me-1"></i>Ver Todos
+                        </a>
+                        {% if perms.documents.add_documentoempleado %}
+                        <a href="{% url 'documents:documento_upload' empleado.pk %}" 
+                        class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-upload me-1"></i>Subir
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Barra de Progreso -->
+                {% document_progress_bar empleado %}
+                
+                <!-- Obtener documentos reales del empleado -->
+                {% load select_filters %}
+                {% with documentos_empleado=empleado.documentoempleado_set.all %}
+                
+                <!-- Alertas de documentos vencidos -->
+                {% with docs_vencidos=documentos_empleado|select:"fecha_vencimiento__lt,today" %}
+                {% if docs_vencidos %}
+                <div class="alert alert-danger border-0 mb-3" role="alert">
+                    <div class="d-flex">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <div>
+                            <h6 class="alert-heading mb-1">Documentos Vencidos</h6>
+                            {% for doc in docs_vencidos %}
+                            <div class="small">• {{ doc.tipo_documento.nombre }} ({{ doc.fecha_vencimiento|date:"d/m/Y" }})</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                <div class="row">
+                    <!-- Documentos Obligatorios -->
+                    <div class="col-md-6">
+                        <h6 class="text-success border-bottom pb-1">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Documentos Obligatorios
+                        </h6>
+                        
+                        {% comment "Obtener tipos de documentos obligatorios" %}
+                        {% endcomment %}
+                        <div class="list-group list-group-flush">
+
+                            <!-- Cédula de Ciudadanía -->
+                            {% with doc_cedula=documentos_empleado|select:"tipo_documento__codigo,CED"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-id-card me-2 text-primary"></i>
+                                    <div>
+                                        <div class="fw-bold">Cédula de Ciudadanía</div>
+                                        {% if doc_cedula %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_cedula.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_cedula %}
+                                        {{ doc_cedula|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            <!-- Contrato laboral -->
+                            {% with doc_contrato=documentos_empleado|select:"tipo_documento__codigo,DCLAB"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-file-contract me-2 text-info"></i>
+                                    <div>
+                                        <div class="fw-bold">Contrato laboral</div>
+                                        {% if doc_contrato %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_contrato.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_contrato %}
+                                        {{ doc_contrato|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+
+                            <!-- Hoja de vida -->
+                            {% with doc_hoja_vida=documentos_empleado|select:"tipo_documento__codigo,DHVID"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user me-2 text-secondary"></i>
+                                    <div>
+                                        <div class="fw-bold">Hoja de vida</div>
+                                        {% if doc_hoja_vida %}
+                                        <div class="text-muted small">
+                                            Cargado: {{ doc_hoja_vida.fecha_carga|date:"d/m/Y" }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_hoja_vida %}
+                                        {{ doc_hoja_vida|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificado EPS -->
+                            {% with doc_eps=documentos_empleado|select:"tipo_documento__codigo,EPS"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-heartbeat me-2 text-danger"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado EPS</div>
+                                        {% if doc_eps %}
+                                        <div class="text-muted small">
+                                            {% if doc_eps.fecha_vencimiento %}
+                                            Vence: {{ doc_eps.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% else %}
+                                            Cargado: {{ doc_eps.fecha_carga|date:"d/m/Y" }}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_eps %}
+                                        {{ doc_eps|document_status_badge }}
+                                        {% if doc_eps.fecha_vencimiento %}
+                                            {% with dias_vencer=doc_eps.fecha_vencimiento|timeuntil %}
+                                            {% if "day" in dias_vencer and "30" in dias_vencer %}
+                                            <div class="badge bg-warning small mt-1">Próximo a vencer</div>
+                                            {% endif %}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificado AFP -->
+                            {% with doc_afp=documentos_empleado|select:"tipo_documento__codigo,AFP"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-piggy-bank me-2 text-success"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado AFP</div>
+                                        {% if doc_afp %}
+                                        <div class="text-muted small">
+                                            {% if doc_afp.fecha_vencimiento %}
+                                            Vence: {{ doc_afp.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% else %}
+                                            Cargado: {{ doc_afp.fecha_carga|date:"d/m/Y" }}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_afp %}
+                                        {{ doc_afp|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Faltante
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Documentos Específicos del Cargo -->
+                            {% with cargo_actual=empleado.historialcargo_set.all|first %}
+                            {% if cargo_actual %}
+                                {% comment "Aquí se mostrarían documentos específicos del cargo como licencia de conducir, certificado de alturas, etc." %}
+                                {% endcomment %}
+                                
+                                <!-- Ejemplo: Licencia de Conducir para conductores -->
+                                {% if "CONDUCTOR" in cargo_actual.cargo.codigo|upper %}
+                                {% with doc_licencia=documentos_empleado|select:"tipo_documento__codigo,LIC_CONDUCIR"|first %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-car me-2 text-info"></i>
+                                        <div>
+                                            <div class="fw-bold">Licencia de Conducir</div>
+                                            <div class="text-muted small">Requerido para {{ cargo_actual.cargo.nombre }}</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {% if doc_licencia %}
+                                            {{ doc_licencia|document_status_badge }}
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Requerido
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                {% endif %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    
+                    <!-- Documentos Opcionales -->
+                    <div class="col-md-6">
+                        <h6 class="text-info border-bottom pb-1">
+                            <i class="fas fa-star me-2"></i>Documentos Opcionales
+                        </h6>
+                        
+                        <div class="list-group list-group-flush">
+                            <!-- Certificados Laborales -->
+                            {% with docs_laborales=documentos_empleado|select:"tipo_documento__codigo,CERT_LABORAL" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-briefcase me-2 text-secondary"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificados Laborales</div>
+                                        <div class="text-muted small">Experiencia laboral previa</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_laborales %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_laborales|length }} archivo{{ docs_laborales|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Referencias Personales -->
+                            {% with docs_referencias=documentos_empleado|select:"tipo_documento__codigo,REF_PERSONAL" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-users me-2 text-warning"></i>
+                                    <div>
+                                        <div class="fw-bold">Referencias Personales</div>
+                                        <div class="text-muted small">Contactos de referencia</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_referencias %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_referencias|length }} archivo{{ docs_referencias|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificados de Estudios -->
+                            {% with docs_estudios=documentos_empleado|select:"tipo_documento__codigo,ESTUDIOS" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificados de Estudios</div>
+                                        <div class="text-muted small">Diplomas y certificaciones</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if docs_estudios %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>{{ docs_estudios|length }} archivo{{ docs_estudios|length|pluralize }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Certificado de Cesantías -->
+                            {% with doc_cesantias=documentos_empleado|select:"tipo_documento__codigo,CESANTIAS"|first %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-money-bill-wave me-2 text-success"></i>
+                                    <div>
+                                        <div class="fw-bold">Certificado de Cesantías</div>
+                                        <div class="text-muted small">Certificación de cesantías</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    {% if doc_cesantias %}
+                                        {{ doc_cesantias|document_status_badge }}
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin cargar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen de Acciones -->
+                <div class="mt-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="btn-group">
+                                <a href="{% url 'documents:empleado_documentos' empleado.pk %}" 
+                                class="btn btn-primary">
+                                    <i class="fas fa-folder-open me-1"></i>Gestionar Documentos
+                                </a>
+                                {% if perms.documents.add_documentoempleado %}
+                                <a href="{% url 'documents:documento_upload' empleado.pk %}" 
+                                class="btn btn-outline-primary">
+                                    <i class="fas fa-upload me-1"></i>Subir Documento
+                                </a>
+                                <a href="{% url 'documents:documento_multiple_upload' empleado.pk %}" 
+                                class="btn btn-outline-secondary">
+                                    <i class="fas fa-cloud-upload-alt me-1"></i>Subida Múltiple
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <!-- Indicadores rápidos -->
+                            <div class="small text-muted">
+                                <div>📄 Total: {{ documentos_empleado|length }} documentos</div>
+                                <div>✅ Aprobados: {{ documentos_empleado|select:"estado_aprobacion,aprobado"|length }}</div>
+                                <div>⏳ Pendientes: {{ documentos_empleado|select:"estado_aprobacion,pendiente"|length }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% endwith %}
+            </div>
+
+            <!-- Pestaña Puntuación -->
+            {% if user.is_staff %}
+            <div class="tab-pane fade" id="puntuacion" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Historial de Puntuación</h6>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success btn-sm" onclick="otorgarPuntos('{{ empleado.id }}')">
+                            <i class="fas fa-plus me-1"></i>Otorgar Puntos
+                        </button>
+                        <a href="{% url 'recognition:historial_empleado' empleado.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-history me-1"></i>Ver Historial Completo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Resumen de Puntos -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center border-success">
+                            <div class="card-body">
+                                <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                <h4 class="text-success">{{ empleado.puntos_totales|default:0 }}</h4>
+                                <small class="text-muted">Puntos Totales</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-info">
+                            <div class="card-body">
+                                <i class="fas fa-calendar-month fa-2x text-info mb-2"></i>
+                                <h4 class="text-info">{{ empleado.puntos_mes|default:0 }}</h4>
+                                <small class="text-muted">Este Mes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-warning">
+                            <div class="card-body">
+                                <i class="fas fa-trophy fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">#{{ empleado.ranking_posicion|default:"-" }}</h4>
+                                <small class="text-muted">Posición Ranking</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center border-primary">
+                            <div class="card-body">
+                                <i class="fas fa-tasks fa-2x text-primary mb-2"></i>
+                                <h4 class="text-primary">{{ empleado.actividades_count|default:0 }}</h4>
+                                <small class="text-muted">Actividades</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Últimas Actividades de Puntos -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Últimas Actividades (Últimos 30 días)</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if historial_puntos %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Actividad</th>
+                                        <th>Descripción</th>
+                                        <th>Puntos</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for historial in historial_puntos %}
+                                    <tr>
+                                        <td>{{ historial.fecha_obtencion|date:"d/m/Y H:i" }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ historial.tipo_actividad.nombre }}</span>
+                                        </td>
+                                        <td>{{ historial.descripcion|truncatechars:50 }}</td>
+                                        <td>
+                                            <span class="badge bg-success">+{{ historial.puntos }}</span>
+                                        </td>
+                                        <td>
+                                            {% if historial.validado %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Validado
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>Pendiente
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-star fa-3x mb-3"></i>
+                            <p>No hay actividades de puntos registradas en los últimos 30 días</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña Insignias -->
+            <div class="tab-pane fade" id="insignias" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Insignias y Reconocimientos</h6>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-warning btn-sm" onclick="asignarInsignia('{{ empleado.id }}')">
+                            <i class="fas fa-medal me-1"></i>Asignar Insignia
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumen de Insignias -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-center border-warning">
+                            <div class="card-body">
+                                <i class="fas fa-medal fa-2x text-warning mb-2"></i>
+                                <h4 class="text-warning">{{ insignias_count|default:0 }}</h4>
+                                <small class="text-muted">Total Insignias</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center border-success">
+                            <div class="card-body">
+                                <i class="fas fa-trophy fa-2x text-success mb-2"></i>
+                                <h4 class="text-success">{{ empleado.insignias_mes|default:0 }}</h4>
+                                <small class="text-muted">Este Mes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center border-info">
+                            <div class="card-body">
+                                <i class="fas fa-crown fa-2x text-info mb-2"></i>
+                                <h4 class="text-info">{{ empleado.insignias_especiales|default:0 }}</h4>
+                                <small class="text-muted">Especiales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Insignias -->
+                {% if insignias_empleado %}
+                <div class="row">
+                    {% for insignia in insignias_empleado %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        {% if insignia.tipo_insignia.icono %}
+                                            <img src="{{ insignia.tipo_insignia.icono.url }}" 
+                                                 alt="{{ insignia.tipo_insignia.nombre }}" 
+                                                 class="insignia-icon"
+                                                 style="width: 50px; height: 50px; object-fit: contain;">
+                                        {% else %}
+                                            <i class="fas fa-medal fa-2x" 
+                                               style="color: {{ insignia.tipo_insignia.color_hex|default:'#ffc107' }}"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h6 class="mb-1">{{ insignia.tipo_insignia.nombre }}</h6>
+                                            <span class="badge" style="background-color: {{ insignia.tipo_insignia.color_hex|default:'#6c757d' }}">
+                                                {{ insignia.tipo_insignia.get_nivel_display }}
+                                            </span>
+                                        </div>
+                                        <p class="text-muted small mb-1">{{ insignia.tipo_insignia.descripcion }}</p>
+                                        {% if insignia.tipo_insignia.criterios %}
+                                        <div class="small text-info mb-2">
+                                            <strong>Criterios:</strong> {{ insignia.tipo_insignia.criterios|truncatewords:15 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ insignia.fecha_otorgamiento|date:"d/m/Y" }}
+                                            </small>
+                                            {% if insignia.otorgado_automaticamente %}
+                                                <span class="badge bg-info">Automática</span>
+                                            {% else %}
+                                                <span class="badge bg-primary">Manual</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if insignia.justificacion %}
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <strong>Justificación:</strong> {{ insignia.justificacion }}
+                                            </small>
+                                        </div>
+                                        {% endif %}
+                                        {% if insignia.otorgado_por %}
+                                        <div class="mt-1">
+                                            <small class="text-muted">
+                                                <strong>Otorgado por:</strong> {{ insignia.otorgado_por.get_full_name }}
+                                            </small>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-medal fa-3x mb-3"></i>
+                    <h5>Sin insignias aún</h5>
+                    <p>Este empleado no ha recibido insignias todavía.</p>
+                    <button class="btn btn-outline-warning" onclick="asignarInsignia('{{ empleado.id }}')">
+                        <i class="fas fa-medal me-1"></i>Asignar Primera Insignia
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+<!-- Modales de Confirmación de Inscripción -->
+{% for capacitacion in capacitaciones %}
+    {% if capacitacion.estado == 'pendiente_validacion' and capacitacion.capacitacion.es_externa %}
+    <div class="modal fade" id="confirmarInscripcionModal{{ capacitacion.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Inscripción Externa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'training:validar_inscripcion' capacitacion.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <p>Confirmar inscripción en: <strong>{{ capacitacion.capacitacion.nombre }}</strong></p>
+                        
+                        <div class="mb-3">
+                            <label for="certificado" class="form-label">Certificado del Proveedor</label>
+                            <input type="file" class="form-control" id="certificado" name="certificado" required>
+                            <div class="form-text">Por favor adjunte el certificado o comprobante del proveedor externo.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>Confirmar Inscripción
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+<script>
+function copiarUrlPerfil() {
+    const url = window.location.href;
+    RRHHPro.copyToClipboard(url); // Usar la función global de copyToClipboard
+}
+
+
+
+// Mejorar tooltips para el dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar tooltips a los elementos del dropdown
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        if (!item.hasAttribute('data-bs-toggle')) {
+            const icon = item.querySelector('i');
+            if (icon) {
+                const title = item.textContent.trim();
+                item.setAttribute('title', title);
+                item.setAttribute('data-bs-toggle', 'tooltip');
+                item.setAttribute('data-bs-placement', 'left');
+            }
+        }
+    });
+    
+    // Inicializar tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #dee2e6;
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -30px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #dee2e6;
+}
+
+.timeline-item.current .timeline-marker {
+    box-shadow: 0 0 0 2px #198754;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border-left: 3px solid #dee2e6;
+}
+
+.timeline-item.current .timeline-content {
+    border-left-color: #198754;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Función para otorgar puntos
+function otorgarPuntos(empleadoId) {
+    window.location.href = '{% url "recognition:index" %}?empleado=' + empleadoId + '#otorgar-puntos';
+}
+
+// Función para asignar insignia
+function asignarInsignia(empleadoId) {
+    window.location.href = '{% url "recognition:index" %}?empleado=' + empleadoId + '#asignar-insignia';
+}
+
+// Activar tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}
