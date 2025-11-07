@@ -8,6 +8,22 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import Group
 
+# ===================== MODELO BASE PARA AUDITORÍA =====================
+
+class BaseModel(models.Model):
+    """Modelo base con campos de auditoría estándar"""
+    fecha_creacion = models.DateTimeField(auto_now_add=True, help_text="Fecha y hora de creación del registro")
+    fecha_actualizacion = models.DateTimeField(auto_now=True, help_text="Fecha y hora de última actualización")
+    creado_por = models.ForeignKey(
+        'authentication.Usuario', 
+        on_delete=models.CASCADE, 
+        related_name='%(class)s_creados',
+        help_text="Usuario que creó el registro"
+    )
+    
+    class Meta:
+        abstract = True
+
 # ===================== MODELOS BÁSICOS =====================
 
 class TipoDocumento(models.Model):
@@ -89,7 +105,7 @@ class Ciudad(models.Model):
 
 # ===================== MODELO EMPLEADO =====================
 
-class Empleado(models.Model):
+class Empleado(BaseModel):
     """Modelo principal de empleados"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Identificador único
     usuario = models.OneToOneField(
@@ -107,25 +123,25 @@ class Empleado(models.Model):
     fecha_ingreso = models.DateField()  # Fecha de ingreso
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
     estado = models.ForeignKey(EstadoEmpleado, on_delete=models.CASCADE)  # Estado actual
-    fecha_nacimiento = models.DateField(null=True, blank=False)  # Fecha de nacimiento
+    fecha_nacimiento = models.DateField(null=True, blank=True)  # Fecha de nacimiento
     ciudad_nacimiento = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)  # Ciudad de nacimiento
     escolaridad = models.ForeignKey(Escolaridad, on_delete=models.SET_NULL, null=True, blank=True)  # Escolaridad
     contacto_emergencia_nombre = models.CharField(max_length=100, blank=True)  # Nombre contacto emergencia
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)  # Teléfono contacto emergencia
     correo_electronico = models.EmailField(blank=True)  # Email
     direccion = models.CharField(max_length=200, blank=False, help_text="Dirección de residencia (debe iniciar con el tipo de vía completo)")  # Dirección de residencia
-    fecha_creacion = models.DateTimeField(auto_now_add=True)  # Fecha de creación
-    fecha_actualizacion = models.DateTimeField(auto_now=True)  # Fecha de última actualización
-    creado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='empleados_creados')  # Usuario que creó el registro
+    # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
 
     class Meta:
         db_table = 'empleados'
         verbose_name = 'Empleado'
         verbose_name_plural = 'Empleados'
         indexes = [
-            models.Index(fields=['numero_documento']),
+            # Removemos numero_documento porque ya tiene unique=True (índice automático)
             models.Index(fields=['estado']),
             models.Index(fields=['sede']),
+            models.Index(fields=['fecha_ingreso']),  # Índice útil para consultas de antigüedad
+            models.Index(fields=['estado', 'sede']),  # Índice compuesto para filtros combinados
         ]
 
     def __str__(self):
@@ -140,9 +156,12 @@ class Empleado(models.Model):
     def cargo_actual(self):
         """Retorna el historial de cargo actual del empleado"""
         try:
-            historial = self.historialcargo_set.filter(activo=True).first()
-            return historial
-        except:
+            return self.historialcargo_set.filter(activo=True).first()
+        except (AttributeError, TypeError, ValueError) as e:
+            # Log específico del error para debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error obteniendo cargo actual para empleado {self.id}: {e}")
             return None
     
     @property
@@ -153,7 +172,10 @@ class Empleado(models.Model):
             if historial:
                 return historial.cargo.nombre
             return None
-        except:
+        except (AttributeError, TypeError, ValueError) as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error obteniendo nombre cargo actual para empleado {self.id}: {e}")
             return None
     
     @property
@@ -164,10 +186,13 @@ class Empleado(models.Model):
             if historial:
                 return historial.cargo.area
             return None
-        except:
+        except (AttributeError, TypeError, ValueError) as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error obteniendo área actual para empleado {self.id}: {e}")
             return None
 
-class HistorialCargo(models.Model):
+class HistorialCargo(BaseModel):
     """Historial de cargos de empleados"""
     empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)  # Empleado asociado
     cargo = models.ForeignKey('organizational.Cargo', on_delete=models.CASCADE)  # Cargo asociado
@@ -177,13 +202,43 @@ class HistorialCargo(models.Model):
     activo = models.BooleanField(default=True)  # Si el cargo está activo
     motivo_cambio = models.CharField(max_length=200, blank=True)  # Motivo del cambio de cargo
     observaciones = models.TextField(blank=True)  # Observaciones adicionales
-    fecha_creacion = models.DateTimeField(auto_now_add=True)  # Fecha de creación del registro
-    creado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)  # Usuario que creó el registro
+    # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
     
     class Meta:
         db_table = 'historial_cargos'
-        unique_together = ['empleado', 'activo']
         verbose_name = 'Historial de Cargo'
         verbose_name_plural = 'Historiales de Cargo'
+    
+    def clean(self):
+        """Validación personalizada para asegurar un solo cargo activo por empleado"""
+        from django.core.exceptions import ValidationError
+        
+        if self.activo:
+            # Buscar otros cargos activos para el mismo empleado
+            historial_activo = HistorialCargo.objects.filter(
+                empleado=self.empleado, 
+                activo=True
+            ).exclude(pk=self.pk if self.pk else None)
+            
+            if historial_activo.exists():
+                raise ValidationError('El empleado ya tiene un cargo activo. Desactive el cargo actual antes de asignar uno nuevo.')
+    
+    def save(self, *args, **kwargs):
+        """Override save para manejar transiciones de cargo automáticamente"""
+        if self.activo:
+            # Desactivar otros cargos activos del mismo empleado
+            HistorialCargo.objects.filter(
+                empleado=self.empleado, 
+                activo=True
+            ).exclude(pk=self.pk if self.pk else None).update(
+                activo=False,
+                fecha_fin=self.fecha_inicio
+            )
+        
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        estado = "Activo" if self.activo else "Inactivo"
+        return f"{self.empleado.nombre_completo} - {self.cargo} ({estado})"
 
 

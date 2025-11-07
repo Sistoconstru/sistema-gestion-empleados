@@ -51366,3 +51366,154 @@ WARNING 2025-11-07 09:52:29,670 basehttp 11392 16020 "GET /.well-known/appspecif
 WARNING 2025-11-07 09:52:29,683 log 11392 16020 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2025-11-07 09:52:29,684 basehttp 11392 16020 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
 WARNING 2025-11-07 09:52:29,696 basehttp 11392 16020 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:13:18,440 basehttp 11392 17404 "GET /empleados/ HTTP/1.1" 200 98636
+INFO 2025-11-07 10:13:18,474 basehttp 11392 11452 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+WARNING 2025-11-07 10:13:18,480 log 11392 17404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:13:18,482 basehttp 11392 17404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 10:13:18,483 basehttp 11392 11452 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:13:18,483 basehttp 11392 18232 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:13:18,485 basehttp 11392 5172 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:13:18,485 basehttp 11392 15788 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 10:13:18,496 basehttp 11392 15788 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:13:18,523 basehttp 11392 5172 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-11-07 10:13:21,024 basehttp 11392 5172 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 48935
+WARNING 2025-11-07 10:13:21,052 log 11392 5172 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:13:21,053 basehttp 11392 5172 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:13:21,103 basehttp 11392 5172 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:13:26,397 basehttp 11392 18232 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 200 204290
+WARNING 2025-11-07 10:13:26,423 log 11392 18232 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:13:26,423 basehttp 11392 18232 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:13:26,481 basehttp 11392 18232 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:13:46,572 basehttp 11392 11452 "POST /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 302 0
+INFO 2025-11-07 10:13:46,641 basehttp 11392 11452 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 49332
+WARNING 2025-11-07 10:13:46,675 log 11392 11452 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:13:46,676 basehttp 11392 11452 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:13:46,723 basehttp 11392 11452 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:17:38,643 autoreload 11392 7104 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:17:43,422 apps 4440 17240 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:17:43,557 autoreload 4440 17240 Watching for file changes with StatReloader
+INFO 2025-11-07 10:17:46,107 wsgi 4440 6392 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:18:22,277 autoreload 4440 17240 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:18:23,008 apps 16996 11096 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:18:23,033 autoreload 16996 11096 Watching for file changes with StatReloader
+INFO 2025-11-07 10:18:23,389 wsgi 16996 14144 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:23:09,898 autoreload 16996 11096 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:23:10,879 apps 1732 15348 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:23:10,902 autoreload 1732 15348 Watching for file changes with StatReloader
+INFO 2025-11-07 10:23:11,460 wsgi 1732 7424 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:23:27,595 autoreload 1732 15348 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:23:28,555 apps 9044 9184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:23:28,577 autoreload 9044 9184 Watching for file changes with StatReloader
+INFO 2025-11-07 10:23:29,278 wsgi 9044 16664 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:25:11,403 basehttp 9044 13988 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 48935
+INFO 2025-11-07 10:25:11,419 basehttp 9044 13988 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:25:11,419 basehttp 9044 9864 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:25:11,429 basehttp 9044 17328 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 10:25:11,430 log 9044 7384 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:25:11,431 basehttp 9044 7384 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:25:11,449 basehttp 9044 7384 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:25:11,466 basehttp 9044 17328 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-11-07 10:25:16,092 basehttp 9044 17328 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 200 204281
+WARNING 2025-11-07 10:25:16,113 log 9044 17328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:25:16,113 basehttp 9044 17328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:25:16,180 basehttp 9044 17328 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:25:42,538 basehttp 9044 13988 "POST /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 302 0
+INFO 2025-11-07 10:25:42,591 basehttp 9044 13988 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 49332
+WARNING 2025-11-07 10:25:42,616 log 9044 13988 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:25:42,622 basehttp 9044 13988 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:25:42,657 basehttp 9044 13988 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:25:48,722 basehttp 9044 9864 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 48935
+WARNING 2025-11-07 10:25:48,749 log 9044 9864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:25:48,749 basehttp 9044 9864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:25:48,776 basehttp 9044 9864 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:26:40,823 autoreload 9044 9184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:26:42,107 apps 19340 17192 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:26:42,197 autoreload 19340 17192 Watching for file changes with StatReloader
+INFO 2025-11-07 10:26:42,707 wsgi 19340 6612 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:26:47,088 autoreload 19340 17192 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:26:47,826 apps 1440 8880 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:26:47,847 autoreload 1440 8880 Watching for file changes with StatReloader
+INFO 2025-11-07 10:26:48,222 wsgi 1440 2164 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:26:58,106 basehttp 1440 12592 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 48935
+INFO 2025-11-07 10:26:58,128 basehttp 1440 12592 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+WARNING 2025-11-07 10:26:58,134 log 1440 12508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:26:58,135 basehttp 1440 12508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:26:58,150 basehttp 1440 12508 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:27:01,958 basehttp 1440 12592 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 200 204281
+WARNING 2025-11-07 10:27:01,978 log 1440 12592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:27:01,979 basehttp 1440 12592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:27:02,033 basehttp 1440 12592 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:27:17,706 basehttp 1440 13716 "POST /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/editar/ HTTP/1.1" 302 0
+INFO 2025-11-07 10:27:17,811 basehttp 1440 13716 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 49332
+WARNING 2025-11-07 10:27:17,845 log 1440 13716 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:27:17,845 basehttp 1440 13716 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:27:17,887 basehttp 1440 13716 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:27:22,322 basehttp 1440 15972 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 48935
+WARNING 2025-11-07 10:27:22,345 log 1440 15972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:27:22,345 basehttp 1440 15972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:27:22,375 basehttp 1440 15972 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:28:33,222 basehttp 1440 7760 "GET /empleados/ HTTP/1.1" 200 98636
+WARNING 2025-11-07 10:28:33,249 log 1440 7760 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 10:28:33,250 basehttp 1440 4480 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-11-07 10:28:33,250 basehttp 1440 7760 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:28:33,261 basehttp 1440 7760 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:29:46,584 autoreload 1440 8880 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:29:47,761 apps 18664 18760 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:29:47,781 autoreload 18664 18760 Watching for file changes with StatReloader
+INFO 2025-11-07 10:29:48,185 wsgi 18664 18836 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:30:46,760 basehttp 18664 14704 "GET /empleados/crear/ HTTP/1.1" 200 202563
+INFO 2025-11-07 10:30:46,793 basehttp 18664 18572 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:30:46,793 basehttp 18664 15664 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+WARNING 2025-11-07 10:30:46,793 log 18664 14704 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 10:30:46,795 basehttp 18664 16528 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 10:30:46,795 basehttp 18664 14704 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:30:46,827 basehttp 18664 14704 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:32:08,831 basehttp 18664 16528 "POST /empleados/crear/ HTTP/1.1" 200 204853
+WARNING 2025-11-07 10:32:08,855 log 18664 16528 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:32:08,856 basehttp 18664 16528 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:32:08,898 basehttp 18664 16528 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:35:17,112 autoreload 18664 18760 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:35:18,293 apps 8092 9592 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:35:18,322 autoreload 8092 9592 Watching for file changes with StatReloader
+INFO 2025-11-07 10:35:18,712 wsgi 8092 2028 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:35:26,939 basehttp 8092 18904 "GET /empleados/ HTTP/1.1" 200 98636
+INFO 2025-11-07 10:35:26,962 basehttp 8092 1760 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:35:26,966 basehttp 8092 1760 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 10:35:26,971 basehttp 8092 1924 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 10:35:26,971 log 8092 18904 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:35:26,972 basehttp 8092 18904 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:35:26,983 basehttp 8092 18904 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:35:27,013 basehttp 8092 1924 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-11-07 10:35:35,459 autoreload 8092 9592 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:35:36,448 apps 15200 3592 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:35:36,455 autoreload 15200 3592 Watching for file changes with StatReloader
+INFO 2025-11-07 10:35:36,919 wsgi 15200 9660 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:35:39,905 basehttp 15200 12836 "GET /empleados/3213e0ef-c09b-4208-99ac-3851f81a417b/ HTTP/1.1" 200 47119
+WARNING 2025-11-07 10:35:39,940 log 15200 12836 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:35:39,942 basehttp 15200 12836 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:35:39,986 basehttp 15200 12836 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:35:51,590 autoreload 15200 3592 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:35:52,492 apps 18120 16300 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:35:52,508 autoreload 18120 16300 Watching for file changes with StatReloader
+INFO 2025-11-07 10:35:53,003 wsgi 18120 15308 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:36:06,135 autoreload 18120 16300 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:36:07,070 apps 19276 19312 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:36:07,088 autoreload 19276 19312 Watching for file changes with StatReloader
+INFO 2025-11-07 10:36:07,541 wsgi 19276 856 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:36:21,957 autoreload 19276 19312 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:36:22,920 apps 4184 15580 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:36:22,948 autoreload 4184 15580 Watching for file changes with StatReloader
+INFO 2025-11-07 10:36:23,429 wsgi 4184 4480 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+WARNING 2025-11-07 10:36:25,460 basehttp 4184 5216 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 10:36:25,476 log 4184 14712 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:36:25,477 basehttp 4184 14712 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:36:25,495 log 4184 14712 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 10:36:25,495 basehttp 4184 14712 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 10:36:25,500 basehttp 4184 9072 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 10:38:12,134 autoreload 4184 15580 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\models.py changed, reloading.
+INFO 2025-11-07 10:38:12,873 apps 11116 11260 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:38:12,899 autoreload 11116 11260 Watching for file changes with StatReloader
+INFO 2025-11-07 10:38:13,371 wsgi 11116 13760 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 10:38:27,403 apps 10108 18456 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:38:41,784 apps 10716 16316 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 10:39:04,225 apps 3264 13220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
