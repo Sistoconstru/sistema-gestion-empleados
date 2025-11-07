@@ -51259,3 +51259,110 @@ WARNING 2025-11-07 09:35:36,627 basehttp 15472 17284 "GET /static/css/webfonts/f
 INFO 2025-11-07 09:35:43,595 basehttp 15472 11832 "GET /reconocimientos/ HTTP/1.1" 200 135626
 WARNING 2025-11-07 09:35:43,629 basehttp 15472 11832 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
 WARNING 2025-11-07 09:35:43,645 basehttp 15472 6920 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:47:43,626 apps 14324 14144 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:47:44,085 apps 14660 14976 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:47:44,107 autoreload 14660 14976 Watching for file changes with StatReloader
+INFO 2025-11-07 09:47:44,457 wsgi 14660 8220 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 09:47:48,691 basehttp 14660 13212 "GET /reconocimientos/ HTTP/1.1" 200 135626
+INFO 2025-11-07 09:47:48,720 basehttp 14660 16792 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:47:48,720 basehttp 14660 11704 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:47:48,721 basehttp 14660 8296 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-07 09:47:48,723 basehttp 14660 13212 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-07 09:47:48,757 basehttp 14660 7460 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+WARNING 2025-11-07 09:47:48,790 basehttp 14660 7460 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:47:48,813 basehttp 14660 13212 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:47:53,173 basehttp 14660 8296 "GET /reconocimientos/ HTTP/1.1" 200 135626
+INFO 2025-11-07 09:47:53,190 basehttp 14660 16792 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+INFO 2025-11-07 09:47:53,190 basehttp 14660 11704 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:47:53,192 basehttp 14660 8296 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+WARNING 2025-11-07 09:47:53,221 basehttp 14660 8296 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:47:53,232 basehttp 14660 11704 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:48:14,160 apps 19300 18212 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:48:14,635 apps 11392 7104 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:48:14,656 autoreload 11392 7104 Watching for file changes with StatReloader
+INFO 2025-11-07 09:48:14,991 wsgi 11392 2212 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 09:48:16,996 basehttp 11392 9708 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 09:48:17,243 basehttp 11392 9708 "GET /dashboard/ HTTP/1.1" 200 17004
+INFO 2025-11-07 09:48:17,264 basehttp 11392 9708 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:48:17,268 basehttp 11392 9708 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:48:17,270 basehttp 11392 9708 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 09:48:17,344 basehttp 11392 9708 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:48:17,350 basehttp 11392 9020 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:48:21,424 basehttp 11392 19160 "GET /dashboard/ HTTP/1.1" 200 17004
+WARNING 2025-11-07 09:48:21,459 basehttp 11392 19160 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:48:21,459 basehttp 11392 12140 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:48:57,855 apps 11364 19112 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:49:12,489 apps 11704 9884 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:49:13,017 apps 13428 13364 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:49:13,023 autoreload 13428 13364 Watching for file changes with StatReloader
+INFO 2025-11-07 09:49:13,374 wsgi 13428 6304 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 09:49:18,687 basehttp 11392 17316 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 09:49:18,761 basehttp 11392 17316 "GET /dashboard/ HTTP/1.1" 200 17004
+INFO 2025-11-07 09:49:18,787 basehttp 11392 17316 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:49:18,793 basehttp 11392 17316 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:49:18,795 basehttp 11392 14132 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 09:49:18,861 basehttp 11392 14132 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:49:18,869 basehttp 11392 17316 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:49:30,166 basehttp 11392 17140 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 09:49:30,237 basehttp 11392 17140 "GET /dashboard/ HTTP/1.1" 200 17004
+WARNING 2025-11-07 09:49:30,332 basehttp 11392 17140 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:49:30,338 basehttp 11392 12652 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:49:37,036 basehttp 11392 9824 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:49:37,037 basehttp 11392 16764 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+WARNING 2025-11-07 09:49:37,053 log 11392 16764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:49:37,053 basehttp 11392 16764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:49:37,110 basehttp 11392 16764 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 09:49:38,469 basehttp 11392 9824 "GET /dashboard/ HTTP/1.1" 200 17004
+WARNING 2025-11-07 09:49:38,492 log 11392 17020 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 09:49:38,493 basehttp 11392 9824 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 09:49:38,493 basehttp 11392 17020 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:49:38,540 basehttp 11392 17020 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:49:38,547 basehttp 11392 9824 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 09:49:38,549 basehttp 11392 16952 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:49:43,061 basehttp 11392 19024 "GET /dashboard/ HTTP/1.1" 200 17004
+WARNING 2025-11-07 09:49:43,079 log 11392 19024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:49:43,081 basehttp 11392 19024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 09:49:43,085 basehttp 11392 15212 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-07 09:49:43,091 basehttp 11392 19024 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-07 09:49:43,092 basehttp 11392 8768 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-07 09:49:43,094 basehttp 11392 9484 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-07 09:49:43,095 basehttp 11392 14084 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-07 09:49:43,100 basehttp 11392 5188 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+WARNING 2025-11-07 09:49:43,127 basehttp 11392 5188 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+INFO 2025-11-07 09:49:43,128 basehttp 11392 15212 "GET /static/js/custom.js HTTP/1.1" 200 13589
+WARNING 2025-11-07 09:49:43,147 basehttp 11392 15212 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+WARNING 2025-11-07 09:49:43,148 basehttp 11392 14084 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 09:49:43,236 log 11392 9484 Not Found: /favicon.ico
+WARNING 2025-11-07 09:49:43,236 basehttp 11392 9484 "GET /favicon.ico HTTP/1.1" 404 5362
+INFO 2025-11-07 09:50:23,249 basehttp 11392 9484 "GET /dashboard/ HTTP/1.1" 200 17146
+INFO 2025-11-07 09:50:23,270 basehttp 11392 8768 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+WARNING 2025-11-07 09:50:23,277 log 11392 9484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 09:50:23,277 basehttp 11392 19024 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:50:23,278 basehttp 11392 19188 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 09:50:23,278 basehttp 11392 9484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:50:23,317 basehttp 11392 9484 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 09:50:23,333 basehttp 11392 19188 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 404 2020
+WARNING 2025-11-07 09:50:23,346 basehttp 11392 19024 "GET /static/css/webfonts/fa-solid-900.ttf HTTP/1.1" 404 2014
+INFO 2025-11-07 09:51:58,506 apps 9660 15296 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:52:16,193 apps 5808 8616 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:52:16,758 apps 12576 8676 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 09:52:16,775 autoreload 12576 8676 Watching for file changes with StatReloader
+INFO 2025-11-07 09:52:17,140 wsgi 12576 13136 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 09:52:20,708 basehttp 11392 8768 "GET /dashboard/ HTTP/1.1" 200 17146
+INFO 2025-11-07 09:52:20,735 basehttp 11392 8768 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:52:20,735 basehttp 11392 1292 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-11-07 09:52:20,735 basehttp 11392 18624 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+WARNING 2025-11-07 09:52:20,745 log 11392 18624 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:52:20,746 basehttp 11392 18624 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:52:20,767 basehttp 11392 18624 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-07 09:52:20,785 basehttp 11392 1292 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+INFO 2025-11-07 09:52:26,859 basehttp 11392 1292 "GET /reconocimientos/ HTTP/1.1" 200 135768
+WARNING 2025-11-07 09:52:26,886 log 11392 1292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:52:26,887 basehttp 11392 1292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:52:26,931 basehttp 11392 1292 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 09:52:29,662 basehttp 11392 8768 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-07 09:52:29,669 log 11392 16020 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:52:29,670 basehttp 11392 16020 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:52:29,683 log 11392 16020 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 09:52:29,684 basehttp 11392 16020 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+WARNING 2025-11-07 09:52:29,696 basehttp 11392 16020 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023

@@ -55,6 +55,22 @@ def main():
             "url": "https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js",
             "path": "static/js/vendor/sweetalert2.min.js",
             "description": "SweetAlert2 JS"
+        },
+        # Font Awesome Webfonts (en la ruta correcta)
+        {
+            "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2",
+            "path": "static/css/webfonts/fa-solid-900.woff2",
+            "description": "Font Awesome Solid WOFF2"
+        },
+        {
+            "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2",
+            "path": "static/css/webfonts/fa-regular-400.woff2",
+            "description": "Font Awesome Regular WOFF2"
+        },
+        {
+            "url": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2",
+            "path": "static/css/webfonts/fa-brands-400.woff2",
+            "description": "Font Awesome Brands WOFF2"
         }
     ]
     

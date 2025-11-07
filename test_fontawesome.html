@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Font Awesome</title>
+    
+    <!-- Prueba con CDN primero -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 2rem; 
+            background: #f5f5f5; 
+        }
+        .test-container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .icon-test { 
+            font-size: 2rem; 
+            margin: 1rem; 
+            display: inline-block; 
+        }
+        .icon-test.working { color: #28a745; }
+        .icon-test.broken { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Test de Font Awesome Icons</h1>
+        
+        <h2>Iconos de Prueba:</h2>
+        <div class="icon-test">
+            <i class="fas fa-user"></i> fas fa-user
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-home"></i> fas fa-home
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-cog"></i> fas fa-cog
+        </div>
+        <div class="icon-test">
+            <i class="far fa-heart"></i> far fa-heart
+        </div>
+        <div class="icon-test">
+            <i class="fab fa-github"></i> fab fa-github
+        </div>
+        
+        <h2>Prueba de los iconos del sistema:</h2>
+        <div class="icon-test">
+            <i class="fas fa-users"></i> fas fa-users (Empleados)
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-coins"></i> fas fa-coins (Puntos)
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-clock"></i> fas fa-clock (Pendientes)
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-medal"></i> fas fa-medal (Insignias)
+        </div>
+        <div class="icon-test">
+            <i class="fas fa-gift"></i> fas fa-gift (Beneficios)
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: #e3f2fd; border-radius: 4px;">
+            <strong>Si ves cuadraditos □ en lugar de iconos:</strong>
+            <ul>
+                <li>Las fuentes no se están cargando correctamente</li>
+                <li>Hay un problema con las rutas de los archivos</li>
+                <li>El navegador está bloqueando el CDN</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar si Font Awesome se cargó
+        window.addEventListener('load', function() {
+            const testIcon = document.createElement('i');
+            testIcon.className = 'fas fa-user';
+            testIcon.style.position = 'absolute';
+            testIcon.style.left = '-9999px';
+            document.body.appendChild(testIcon);
+            
+            const computed = window.getComputedStyle(testIcon, ':before');
+            const content = computed.getPropertyValue('content');
+            
+            if (content && content !== 'none' && content !== '""') {
+                console.log('✅ Font Awesome cargado correctamente');
+                document.title = '✅ Font Awesome OK';
+            } else {
+                console.log('❌ Font Awesome NO cargado');
+                document.title = '❌ Font Awesome FAILED';
+            }
+            
+            document.body.removeChild(testIcon);
+        });
+    </script>
+</body>
+</html>
