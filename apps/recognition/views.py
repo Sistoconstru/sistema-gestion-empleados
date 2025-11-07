@@ -81,7 +81,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 'historialpuntos__puntos',
                 filter=Q(historialpuntos__validado=True)
             )
-        ).order_by('nombres', 'apellidos')[:50]  # Limitar para performance
+        ).order_by('nombres', 'apellidos')  # Removido límite para mostrar todos los empleados
         
         # Convertir a lista para poder agregar campos calculados
         empleados_lista = []
