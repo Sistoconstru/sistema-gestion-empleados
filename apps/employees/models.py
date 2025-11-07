@@ -6,7 +6,7 @@ from django.db import models
 
 import uuid
 from django.db import models
-from django.contrib.auth.models import Group
+from apps.core.models import BaseModel as CoreBaseModel
 
 # ===================== MODELO BASE PARA AUDITORÍA =====================
 
@@ -199,7 +199,8 @@ class HistorialCargo(BaseModel):
     fecha_inicio = models.DateField()  # Fecha de inicio en el cargo
     fecha_fin = models.DateField(null=True, blank=True)  # Fecha de fin en el cargo
     salario = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)  # Salario en el cargo
-    activo = models.BooleanField(default=True)  # Si el cargo está activo
+    # activo heredado de BaseModel: Si el cargo está activo
+    activo = models.BooleanField(default=True)  # Si el cargo está activo - agregado explícitamente
     motivo_cambio = models.CharField(max_length=200, blank=True)  # Motivo del cambio de cargo
     observaciones = models.TextField(blank=True)  # Observaciones adicionales
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por

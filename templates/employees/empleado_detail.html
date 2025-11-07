@@ -307,10 +307,19 @@
         <div class="tab-content border border-top-0 p-4" id="profileTabsContent">
             <!-- Historial de Cargos -->
             <div class="tab-pane fade show active" id="historial" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Historial de Cargos</h6>
+                    {% if perms.employees.change_empleado %}
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#cambiarCargoModal">
+                        <i class="fas fa-plus me-1"></i>Cambiar Cargo
+                    </button>
+                    {% endif %}
+                </div>
+                
                 <div class="timeline">
                     {% for historial in historial_cargos %}
-                    <div class="timeline-item {% if historial.activo %}current{% endif %}">
-                        <div class="timeline-marker {% if historial.activo %}bg-success{% else %}bg-secondary{% endif %}"></div>
+                    <div class="timeline-item {% if historial.activa %}current{% endif %}">
+                        <div class="timeline-marker {% if historial.activa %}bg-success{% else %}bg-secondary{% endif %}"></div>
                         <div class="timeline-content">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
@@ -318,7 +327,7 @@
                                     <p class="text-muted mb-1">{{ historial.cargo.area.nombre }}</p>
                                     <small class="text-muted">
                                         {{ historial.fecha_inicio|date:"d/m/Y" }} - 
-                                        {% if historial.activo %}
+                                        {% if historial.activa %}
                                             Actual
                                         {% elif historial.fecha_fin %}
                                             {{ historial.fecha_fin|date:"d/m/Y" }}
@@ -326,15 +335,40 @@
                                             -
                                         {% endif %}
                                     </small>
+                                    {% if historial.activa %}
+                                    <div class="mt-1">
+                                        <small class="text-success">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ historial.fecha_inicio|timesince }} en el cargo
+                                        </small>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% if historial.activo %}
-                                <span class="badge bg-success">Actual</span>
-                                {% endif %}
+                                <div class="text-end">
+                                    {% if historial.activa %}
+                                    <span class="badge bg-success">Actual</span>
+                                    {% endif %}
+                                    {% if historial.salario %}
+                                    <div class="mt-1">
+                                        <small class="text-muted">
+                                            <i class="fas fa-dollar-sign me-1"></i>
+                                            ${{ historial.salario|floatformat:0 }}
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                             {% if historial.motivo_cambio %}
                             <div class="mt-2">
                                 <small class="text-muted">
                                     <strong>Motivo:</strong> {{ historial.motivo_cambio }}
+                                </small>
+                            </div>
+                            {% endif %}
+                            {% if historial.observaciones %}
+                            <div class="mt-1">
+                                <small class="text-muted">
+                                    <strong>Observaciones:</strong> {{ historial.observaciones }}
                                 </small>
                             </div>
                             {% endif %}
@@ -344,6 +378,11 @@
                     <div class="text-center text-muted py-4">
                         <i class="fas fa-briefcase fa-2x mb-2"></i>
                         <div>No hay historial de cargos registrado</div>
+                        {% if perms.employees.change_empleado %}
+                        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#cambiarCargoModal">
+                            <i class="fas fa-plus me-1"></i>Asignar Primer Cargo
+                        </button>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -1173,6 +1212,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
+
+// Función para cambiar cargo (fuera del document ready para acceso global)
+function cambiarCargo(empleadoId) {
+    $('#cambiarCargoModal').modal('show');
+}
 </script>
 {% endblock %}
 
@@ -1253,12 +1297,139 @@ function asignarInsignia(empleadoId) {
     window.location.href = '{% url "recognition:index" %}?empleado=' + empleadoId + '#asignar-insignia';
 }
 
-// Activar tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+// Event handler directo para el botón de cambio de cargo
+$(document).ready(function() {
+    console.log('Document ready - configurando cambio de cargo');
+    
+    $(document).on('click', '#btnGuardarCambio', function(e) {
+        console.log('Botón clickeado');
+        e.preventDefault();
+        cambiarCargoEmpleado();
     });
 });
+
+// Función principal para cambiar cargo
+function cambiarCargoEmpleado() {
+    console.log('Iniciando cambio de cargo');
+    
+    // Validar campos
+    var nuevoCargo = $('#nuevo_cargo').val();
+    var nuevaSede = $('#nueva_sede').val();
+    var fechaInicio = $('#fecha_inicio').val();
+    
+    if (!nuevoCargo || !nuevaSede || !fechaInicio) {
+        alert('Por favor complete todos los campos obligatorios');
+        return;
+    }
+    
+    // Preparar datos
+    var formData = new FormData(document.getElementById('formCambiarCargo'));
+    
+    // Enviar petición
+    $.ajax({
+        url: '{% url "employees:cambiar_cargo" empleado.id %}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+        },
+        success: function(response) {
+            if (response.success) {
+                alert('Cargo cambiado exitosamente: ' + response.message);
+                location.reload();
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function() {
+            alert('Error al procesar la solicitud');
+        }
+    });
+}
 </script>
+
+<!-- Modal para cambiar cargo -->
+<div class="modal fade" id="cambiarCargoModal" tabindex="-1" aria-labelledby="cambiarCargoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cambiarCargoModalLabel">
+                    <i class="fas fa-user-edit me-2"></i>Cambiar Cargo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formCambiarCargo" method="post" onsubmit="return false;">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- Información del cargo actual -->
+                    {% if cargo_actual %}
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Cargo actual:</strong> {{ cargo_actual.cargo.nombre }}
+                        {% if cargo_actual.cargo.area %}
+                            <span class="text-muted">({{ cargo_actual.cargo.area.nombre }})</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="nuevo_cargo" class="form-label">Nuevo Cargo <span class="text-danger">*</span></label>
+                            <select class="form-select" id="nuevo_cargo" name="nuevo_cargo" required>
+                                <option value="">Seleccionar cargo...</option>
+                                {% for cargo in cargos %}
+                                    <option value="{{ cargo.id }}">
+                                        {{ cargo.nombre }}{% if cargo.area %} - {{ cargo.area.nombre }}{% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 mb-3">
+                            <label for="nueva_sede" class="form-label">Nueva Sede <span class="text-danger">*</span></label>
+                            <select class="form-select" id="nueva_sede" name="nueva_sede" required>
+                                <option value="">Seleccionar sede...</option>
+                                {% for sede in sedes %}
+                                    <option value="{{ sede.id }}" {% if sede.id == empleado.sede.id %}selected{% endif %}>
+                                        {{ sede.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" 
+                                   value="{% now 'Y-m-d' %}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="salario" class="form-label">Nuevo Salario</label>
+                            <input type="number" class="form-control" id="salario" name="salario" 
+                                   step="0.01" min="0" placeholder="Opcional (se mantendrá el actual si no se especifica)">
+                            <small class="form-text text-muted">Deje vacío para mantener el salario actual</small>
+                        </div>
+                        
+                        <div class="col-12 mb-3">
+                            <label for="motivo" class="form-label">Motivo del Cambio</label>
+                            <textarea class="form-control" id="motivo" name="motivo" rows="3" 
+                                      placeholder="Describa el motivo del cambio de cargo..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </button>
+                    <button type="submit" id="btnGuardarCambio" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Guardar Cambio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

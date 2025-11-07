@@ -26,7 +26,9 @@ urlpatterns = [
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),
     path('export/', views.empleado_export, name='empleado_export'),
     
+    # Gestión de cargos
+    path('<uuid:pk>/cambiar-cargo/', views.cambiar_cargo_empleado, name='cambiar_cargo'),
+    
     # Historial de cargos (para futuras funcionalidades)
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),
-    # path('<uuid:pk>/cambiar-cargo/', views.CambiarCargoView.as_view(), name='cambiar_cargo'),
 ]

@@ -18,6 +18,8 @@ from django.urls import reverse_lazy
 from django.db.models import Q, Count, Avg, Prefetch
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.db import transaction
@@ -67,10 +69,8 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         # Aplicar filtro de búsqueda
         if search:
             queryset = queryset.filter(
-                Q(nombres__icontains=search) |
-                Q(apellidos__icontains=search) |
-                Q(numero_documento__icontains=search) |
-                Q(correo_electronico__icontains=search)
+                Q(nombres__istartswith=search) |
+                Q(apellidos__istartswith=search)
             )
         
         # Aplicar filtros específicos
@@ -92,7 +92,7 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
                 historialcargo__activo=True
             )
         
-        return queryset.distinct().order_by('apellidos', 'nombres')
+        return queryset.distinct().order_by('nombres', 'apellidos')
     
     def get_context_data(self, **kwargs):
         """Agregar contexto adicional"""
@@ -309,6 +309,19 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             except Exception as e:
                 # Error al obtener datos de reconocimientos
                 pass
+        
+        # Agregar datos necesarios para el modal de cambio de cargo
+        # Excluir el cargo actual del empleado de la lista
+        cargo_actual_id = None
+        if cargo_actual and cargo_actual.cargo:
+            cargo_actual_id = cargo_actual.cargo.id
+        
+        if cargo_actual_id:
+            context['cargos'] = Cargo.objects.filter(activo=True).exclude(id=cargo_actual_id).order_by('nombre')
+        else:
+            context['cargos'] = Cargo.objects.filter(activo=True).order_by('nombre')
+            
+        context['sedes'] = Sede.objects.filter(activa=True).order_by('nombre')
         
         return context
 
@@ -1240,5 +1253,92 @@ def empleado_perfil_redirect(request):
         logger.error(f"Error en empleado_perfil_redirect: {e}")
         messages.error(request, 'Error al acceder al perfil del empleado.')
         return redirect('core:dashboard')
+
+
+@login_required
+@require_POST
+def cambiar_cargo_empleado(request, pk):
+    """Vista para cambiar el cargo de un empleado"""
+    try:
+        empleado = get_object_or_404(Empleado, pk=pk)
+        
+        # Verificar permisos (solo staff puede cambiar cargos)
+        if not request.user.is_staff:
+            return JsonResponse({'success': False, 'message': 'No tienes permisos para realizar esta acción'})
+        
+        # Obtener datos del formulario
+        nuevo_cargo_id = request.POST.get('nuevo_cargo')
+        nueva_sede_id = request.POST.get('nueva_sede')
+        fecha_inicio = request.POST.get('fecha_inicio')
+        salario = request.POST.get('salario')
+        motivo = request.POST.get('motivo', '')
+        
+        # Validaciones
+        if not all([nuevo_cargo_id, nueva_sede_id, fecha_inicio]):
+            return JsonResponse({'success': False, 'message': 'Todos los campos obligatorios deben ser completados'})
+        
+        try:
+            nuevo_cargo = Cargo.objects.get(pk=nuevo_cargo_id, activo=True)
+            nueva_sede = Sede.objects.get(pk=nueva_sede_id, activa=True)
+            
+            # Salario es opcional
+            salario_valor = None
+            if salario and salario.strip():
+                salario_valor = float(salario)
+                if salario_valor <= 0:
+                    return JsonResponse({'success': False, 'message': 'El salario debe ser mayor a 0'})
+            else:
+                # Si no se proporciona salario, mantener el actual
+                cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
+                if cargo_actual and cargo_actual.salario:
+                    salario_valor = cargo_actual.salario
+                
+        except (Cargo.DoesNotExist, Sede.DoesNotExist):
+            return JsonResponse({'success': False, 'message': 'Cargo o sede no válidos'})
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Salario no válido'})
+        
+        # Verificar que no sea el mismo cargo actual
+        cargo_actual_check = empleado.historialcargo_set.filter(activo=True).first()
+        if cargo_actual_check and cargo_actual_check.cargo.id == int(nuevo_cargo_id):
+            return JsonResponse({'success': False, 'message': 'El empleado ya tiene asignado este cargo'})
+        
+        # Realizar el cambio de cargo en una transacción
+        with transaction.atomic():
+            # Desactivar cargo actual
+            if cargo_actual_check:
+                cargo_actual_check.activo = False
+                cargo_actual_check.fecha_fin = fecha_inicio
+                cargo_actual_check.save()
+            
+            # Crear nuevo historial de cargo
+            nuevo_historial = HistorialCargo.objects.create(
+                empleado=empleado,
+                cargo=nuevo_cargo,
+                fecha_inicio=fecha_inicio,
+                salario=salario_valor,
+                motivo_cambio=motivo,
+                activo=True,
+                creado_por=request.user
+            )
+            
+            # Actualizar datos del empleado
+            empleado.cargo = nuevo_cargo
+            empleado.sede = nueva_sede
+            if salario_valor:
+                empleado.salario = salario_valor
+            empleado.modificado_por = request.user
+            empleado.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Cargo cambiado exitosamente a {nuevo_cargo.nombre}'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error al cambiar cargo del empleado {pk}: {e}")
+        return JsonResponse({'success': False, 'message': 'Error interno del servidor'})
+
+
 # Agregar import para agregaciones
 from django.db import models
