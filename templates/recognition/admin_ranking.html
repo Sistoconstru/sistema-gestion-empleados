@@ -3,6 +3,14 @@
 
 {% block extra_css %}
 <style>
+    :root {
+        --color-corporativo: #1b4d3e;
+        --color-corporativo-oscuro: #155a47;
+        --color-corporativo-claro: #2a5d50;
+        --color-amarillo: #ffd600;
+        --color-amarillo-oscuro: #ccaa00;
+    }
+    
     .ranking-card {
         border: none;
         border-radius: 15px;
@@ -24,18 +32,49 @@
     }
     
     .stat-card {
-        background: linear-gradient(135deg, #43618a 0%, #5a7ba3 100%);
-        color: white;
+        background: linear-gradient(135deg, #1b4d3e 0%, #155a47 100%) !important;
+        color: white !important;
         padding: 1.5rem;
         border-radius: 10px;
         text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .stat-card h3 {
+        color: white !important;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card p {
+        color: white !important;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+    
+    .stat-card i {
+        color: #ffd600 !important;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(135deg, #2a5d50 0%, #1e5a48 100%) !important;
     }
     
     .employee-avatar {
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #43618a, #6c7b95);
+        background: linear-gradient(135deg, #1b4d3e, #2a5d50);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -58,11 +97,11 @@
     .position-1 { background: linear-gradient(135deg, #ffd700, #ffed4a); color: #8b5a00; }
     .position-2 { background: linear-gradient(135deg, #c0c0c0, #e5e5e5); color: #666; }
     .position-3 { background: linear-gradient(135deg, #cd7f32, #d4985a); color: white; }
-    .position-other { background: linear-gradient(135deg, #43618a, #6c7b95); color: white; }
+    .position-other { background: linear-gradient(135deg, #1b4d3e, #2a5d50); color: white; }
     
     .department-card {
         background: #f8f9fa;
-        border-left: 4px solid #43618a;
+        border-left: 4px solid #1b4d3e;
         padding: 1rem;
         margin-bottom: 0.5rem;
         border-radius: 0 5px 5px 0;
@@ -89,7 +128,7 @@
     .progress-fill {
         height: 100%;
         border-radius: 4px;
-        background: linear-gradient(90deg, #43618a, #6c7b95);
+        background: linear-gradient(90deg, #1b4d3e, #2a5d50);
         transition: width 0.3s ease;
     }
 </style>
@@ -104,14 +143,14 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="text-primary mb-0">
+                    <h2 class="text-corporativo mb-0">
                         <i class="fas fa-trophy me-2"></i>
                         Administración de Ranking
                     </h2>
                     <p class="text-muted">Análisis completo del sistema de reconocimiento y puntos</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exportarModal">
+                    <button class="btn btn-corporativo me-2" data-bs-toggle="modal" data-bs-target="#exportarModal">
                         <i class="fas fa-download me-1"></i>
                         Exportar Datos
                     </button>
@@ -152,7 +191,7 @@
         <!-- Ranking Principal -->
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-corporativo text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-list-ol me-2"></i>
                         Ranking General de Empleados
@@ -181,7 +220,7 @@
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <strong>{{ empleado.nombres }} {{ empleado.apellidos }}</strong>
-                                    <span class="badge bg-primary badge-lg">
+                                    <span class="badge bg-corporativo badge-lg">
                                         <i class="fas fa-coins me-1"></i>
                                         {{ empleado.puntos_totales|default:0 }} puntos
                                     </span>
@@ -293,9 +332,9 @@
                                     <br>
                                     <small class="text-muted">{{ actividad.descripcion|truncatechars:40 }}</small>
                                     <br>
-                                    <small class="text-primary">{{ actividad.fecha_otorgado|date:"d/m/Y H:i" }}</small>
+                                    <small class="text-corporativo">{{ actividad.fecha_otorgado|date:"d/m/Y H:i" }}</small>
                                 </div>
-                                <span class="badge bg-primary">
+                                <span class="badge bg-corporativo">
                                     +{{ actividad.puntos }}
                                 </span>
                             </div>
@@ -317,7 +356,7 @@
 <div class="modal fade" id="exportarModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-corporativo text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-download me-2"></i>
                     Exportar Datos del Ranking
@@ -353,7 +392,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-corporativo">
                         <i class="fas fa-download me-1"></i>
                         Exportar
                     </button>

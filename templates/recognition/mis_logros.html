@@ -6,7 +6,7 @@
 {% block extra_css %}
 <style>
     .stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
         border-radius: 15px;
         padding: 1.5rem;
         color: white;
@@ -17,6 +17,11 @@
     
     .stat-card:hover {
         transform: translateY(-5px);
+    }
+    
+    .stat-card.amarillo {
+        background: linear-gradient(135deg, #ffd600 0%, #e6c200 100%);
+        color: #1b4d3e;
     }
     
     .stat-number {
@@ -36,7 +41,7 @@
         padding: 1.5rem;
         margin-bottom: 1rem;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        border-left: 4px solid #28a745;
+        border-left: 4px solid #1b4d3e;
     }
     
     .activity-item {
@@ -44,12 +49,12 @@
         border-radius: 8px;
         padding: 1rem;
         margin-bottom: 0.5rem;
-        border-left: 3px solid #007bff;
+        border-left: 3px solid #1b4d3e;
     }
     
     .badge-custom {
-        background: linear-gradient(45deg, #ff6b6b, #ffa500);
-        color: white;
+        background: linear-gradient(45deg, #ffd600, #e6c200);
+        color: #1b4d3e;
         font-weight: bold;
         padding: 0.25rem 0.75rem;
         border-radius: 25px;
@@ -95,11 +100,21 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="h3 mb-3">
-                <i class="fas fa-trophy text-warning"></i>
-                Mis Logros
-            </h1>
-            <p class="text-muted">Resumen completo de tu progreso y reconocimientos</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h1 class="h3 mb-3">
+                        <i class="fas fa-trophy text-amarillo"></i>
+                        Mis Logros
+                    </h1>
+                    <p class="text-muted">Resumen completo de tu progreso y reconocimientos</p>
+                </div>
+                <div>
+                    <a href="{% url 'recognition:index' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Volver al Dashboard
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -114,7 +129,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="stat-card">
                 <div class="stat-number">{{ puntos_totales }}</div>
                 <div class="stat-label">
                     <i class="fas fa-star"></i> Puntos Totales
@@ -122,7 +137,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);">
+            <div class="stat-card amarillo">
                 <div class="stat-number">{{ total_insignias }}</div>
                 <div class="stat-label">
                     <i class="fas fa-medal"></i> Insignias Obtenidas
@@ -130,7 +145,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
+            <div class="stat-card" style="background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%); color: white;">
                 <div class="stat-number">{{ canjes_exitosos }}</div>
                 <div class="stat-label">
                     <i class="fas fa-gift"></i> Beneficios Canjeados
@@ -144,7 +159,7 @@
         <div class="col-lg-8">
             <!-- Historial Reciente de Puntos -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-corporativo text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-history"></i>
                         Actividades Recientes
@@ -181,7 +196,7 @@
 
             <!-- Actividades Más Frecuentes -->
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-corporativo text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-chart-bar"></i>
                         Mis Actividades Favoritas
@@ -195,10 +210,10 @@
                                 <strong>{{ actividad.tipo_actividad__nombre }}</strong>
                             </div>
                             <div class="col-md-3 text-center">
-                                <span class="badge bg-primary">{{ actividad.count }} veces</span>
+                                <span class="badge bg-corporativo">{{ actividad.count }} veces</span>
                             </div>
                             <div class="col-md-3 text-end">
-                                <span class="badge bg-success">{{ actividad.total_puntos }} pts total</span>
+                                <span class="badge bg-corporativo">{{ actividad.total_puntos }} pts total</span>
                             </div>
                         </div>
                         {% endfor %}
@@ -215,7 +230,7 @@
         <div class="col-lg-4">
             <!-- Insignias Obtenidas -->
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-amarillo text-dark">
                     <h5 class="mb-0">
                         <i class="fas fa-medal"></i>
                         Mis Insignias
@@ -251,7 +266,7 @@
 
             <!-- Canjes Recientes -->
             <div class="card mb-4">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-corporativo text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-gift"></i>
                         Canjes Recientes
@@ -271,7 +286,7 @@
                                 </span>
                             </div>
                             <div class="mt-1">
-                                <small class="text-primary">{{ canje.puntos_utilizados }} puntos</small>
+                                <small class="text-corporativo">{{ canje.puntos_utilizados }} puntos</small>
                             </div>
                         </div>
                         {% endfor %}
@@ -284,7 +299,7 @@
                         <div class="text-center text-muted py-3">
                             <i class="fas fa-gift fa-2x mb-2"></i>
                             <p>Aún no has canjeado beneficios</p>
-                            <a href="{% url 'recognition:beneficios' %}" class="btn btn-primary btn-sm">
+                            <a href="{% url 'recognition:beneficios' %}" class="btn btn-corporativo btn-sm">
                                 Explorar beneficios
                             </a>
                         </div>
@@ -303,7 +318,7 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-12 mb-3">
-                            <h4 class="text-primary">{{ puntos_totales }}</h4>
+                            <h4 class="text-corporativo">{{ puntos_totales }}</h4>
                             <small class="text-muted">Puntos ganados</small>
                         </div>
                         <div class="col-6">
@@ -318,10 +333,10 @@
                     
                     {% if puntos_totales > 0 %}
                     <div class="progress mt-3" style="height: 10px;">
-                        <div class="progress-bar bg-success" role="progressbar" 
+                        <div class="progress-bar bg-corporativo" role="progressbar" 
                              style="width: {% widthratio puntos_disponibles puntos_totales 100 %}%">
                         </div>
-                        <div class="progress-bar bg-warning" role="progressbar" 
+                        <div class="progress-bar bg-amarillo" role="progressbar" 
                              style="width: {% widthratio puntos_utilizados puntos_totales 100 %}%">
                         </div>
                     </div>
@@ -342,13 +357,13 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Acciones Rápidas</h5>
                     <div class="btn-group" role="group">
-                        <a href="{% url 'recognition:beneficios' %}" class="btn btn-primary">
+                        <a href="{% url 'recognition:beneficios' %}" class="btn btn-corporativo">
                             <i class="fas fa-gift"></i> Explorar Beneficios
                         </a>
-                        <a href="{% url 'recognition:mis_puntos' %}" class="btn btn-info">
+                        <a href="{% url 'recognition:mis_puntos' %}" class="btn btn-amarillo">
                             <i class="fas fa-coins"></i> Ver Historial de Puntos
                         </a>
-                        <a href="{% url 'recognition:ranking' %}" class="btn btn-success">
+                        <a href="{% url 'recognition:ranking' %}" class="btn btn-outline-corporativo">
                             <i class="fas fa-trophy"></i> Ver Ranking
                         </a>
                     </div>

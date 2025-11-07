@@ -49,7 +49,7 @@
 }
 
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-corporativo) 0%, var(--color-corporativo-oscuro) 100%);
     color: white;
     border-radius: 12px;
     padding: 1.5rem;
@@ -75,7 +75,7 @@
 }
 
 .btn-entregar {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--color-corporativo) 0%, var(--color-corporativo-oscuro) 100%);
     border: none;
     color: white;
 }
@@ -97,7 +97,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -141,7 +141,7 @@
     <!-- Estadísticas -->
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="stats-card">
+            <div class="stat-card-amarillo">
                 <div class="stats-number">{{ canjes_pendientes }}</div>
                 <div>Pendientes</div>
             </div>
@@ -153,7 +153,7 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="stats-card" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+            <div class="stat-card-corporativo">
                 <div class="stats-number">{{ canjes_entregados }}</div>
                 <div>Entregados</div>
             </div>
@@ -398,7 +398,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary">
+                <h5 class="modal-title text-corporativo">
                     <i class="fas fa-check-circle me-2"></i>Marcar como Entregado
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -422,7 +422,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="entregarCanje()">
+                <button type="button" class="btn btn-corporativo" onclick="entregarCanje()">
                     <i class="fas fa-check-circle me-1"></i>Marcar Entregado
                 </button>
             </div>

@@ -50772,3 +50772,311 @@ INFO 2025-09-26 07:50:32,197 basehttp 11528 7752 "GET /empleados/ HTTP/1.1" 200 
 INFO 2025-09-26 07:50:36,422 basehttp 11528 7752 "GET /empleados/236f38c4-5dab-48b3-ae67-0963c95d3ba7/ HTTP/1.1" 200 38861
 WARNING 2025-09-26 07:50:58,940 log 11528 7752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2025-09-26 07:50:58,941 basehttp 11528 7752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-06 14:36:42,304 apps 10120 6264 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 14:36:42,915 apps 16376 17284 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 14:36:42,955 autoreload 16376 17284 Watching for file changes with StatReloader
+INFO 2025-11-06 14:36:43,378 wsgi 16376 13272 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-06 14:36:59,846 basehttp 16376 7136 "GET / HTTP/1.1" 302 0
+INFO 2025-11-06 14:37:00,008 basehttp 16376 7136 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-06 14:37:00,040 basehttp 16376 7136 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-06 14:37:11,268 basehttp 16376 7136 "GET /reconocimientos/ HTTP/1.1" 200 135434
+INFO 2025-11-06 14:37:16,601 basehttp 16376 7136 "GET /reconocimientos/ranking/ HTTP/1.1" 200 87541
+INFO 2025-11-06 14:37:16,618 basehttp 16376 7136 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:37:23,937 basehttp 16376 7136 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-06 14:37:26,385 basehttp 16376 7136 "GET /reconocimientos/admin-canjes/ HTTP/1.1" 200 29425
+INFO 2025-11-06 14:37:58,979 basehttp 16376 7136 "GET /empleados/ HTTP/1.1" 200 98221
+INFO 2025-11-06 14:37:58,996 basehttp 16376 7136 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:38:05,953 basehttp 16376 7136 "GET /empleados/ HTTP/1.1" 200 98221
+INFO 2025-11-06 14:38:11,767 basehttp 16376 7136 "GET /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 46482
+INFO 2025-11-06 14:38:17,580 basehttp 16376 7136 "GET /documentos/empleado/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 16396
+INFO 2025-11-06 14:38:21,042 basehttp 16376 7136 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-11-06 14:38:21,056 basehttp 16376 7136 "GET /dashboard/ HTTP/1.1" 200 17116
+INFO 2025-11-06 14:38:21,070 basehttp 16376 7136 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:38:44,646 basehttp 16376 7136 "GET /reportes/ HTTP/1.1" 200 28527
+INFO 2025-11-06 14:38:44,678 basehttp 16376 7136 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:38:49,263 basehttp 16376 7136 "GET /capacitaciones/admin/ HTTP/1.1" 200 20795
+INFO 2025-11-06 14:39:02,741 basehttp 16376 7136 "GET /admin/ HTTP/1.1" 200 49807
+INFO 2025-11-06 14:39:02,756 basehttp 16376 7136 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,759 basehttp 16376 7136 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,762 basehttp 16376 12824 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,762 basehttp 16376 9700 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,763 basehttp 16376 7136 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,763 basehttp 16376 19444 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,767 basehttp 16376 19444 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,772 basehttp 16376 19444 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,772 basehttp 16376 7136 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2025-11-06 14:39:02,774 basehttp 16376 9700 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+INFO 2025-11-06 14:47:11,708 apps 1812 10408 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 14:54:44,423 apps 15492 13048 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 14:54:44,902 apps 10296 10164 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 14:54:44,920 autoreload 10296 10164 Watching for file changes with StatReloader
+INFO 2025-11-06 14:54:45,374 wsgi 10296 1020 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-06 14:54:48,302 basehttp 10296 16316 "GET / HTTP/1.1" 302 0
+INFO 2025-11-06 14:54:48,402 basehttp 10296 16316 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-06 14:54:48,439 basehttp 10296 16316 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 14:54:57,384 basehttp 10296 16316 "GET /reconocimientos/ HTTP/1.1" 200 135434
+INFO 2025-11-06 14:55:01,771 basehttp 10296 16316 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-06 15:14:39,590 apps 11036 9040 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 15:14:40,059 apps 3412 1148 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-06 15:14:40,075 autoreload 3412 1148 Watching for file changes with StatReloader
+INFO 2025-11-06 15:14:40,476 wsgi 3412 4848 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-06 15:15:01,644 basehttp 3412 10336 "GET /empleados/ HTTP/1.1" 200 98221
+INFO 2025-11-06 15:15:01,664 basehttp 3412 10336 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-06 15:15:28,327 basehttp 3412 10336 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-06 15:16:04,343 basehttp 3412 9468 "GET /capacitaciones/admin/ HTTP/1.1" 200 20795
+INFO 2025-11-06 15:16:07,345 basehttp 3412 9468 "GET /capacitaciones/capacitacion/7c04b5da-44d2-4169-b11c-e88135078fcb/ HTTP/1.1" 200 20475
+INFO 2025-11-06 15:16:12,307 basehttp 3412 9468 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-06 15:16:12,312 basehttp 3412 9468 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-06 15:16:20,365 basehttp 3412 9468 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-06 15:16:20,372 basehttp 3412 9468 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-06 15:16:20,478 basehttp 3412 9468 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22716
+INFO 2025-11-06 15:16:26,495 basehttp 3412 9468 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 27896
+INFO 2025-11-06 15:16:34,828 basehttp 3412 9468 "GET /capacitaciones/player/57d6eedf-bcdb-4784-b98f-5e61bba04c30/ HTTP/1.1" 200 27590
+INFO 2025-11-06 15:16:54,768 basehttp 3412 9468 "GET /capacitaciones/player/be88bf21-43af-437b-801b-60114ac2e8e5/ HTTP/1.1" 200 27548
+INFO 2025-11-07 06:28:29,564 apps 17916 13364 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 06:28:30,035 apps 14692 6728 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 06:28:30,056 autoreload 14692 6728 Watching for file changes with StatReloader
+INFO 2025-11-07 06:28:30,554 wsgi 14692 16108 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 06:28:34,909 basehttp 14692 16088 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 06:28:34,983 basehttp 14692 16088 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-07 06:28:35,108 basehttp 14692 16088 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22321
+INFO 2025-11-07 06:28:35,137 basehttp 14692 16088 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-11-07 06:28:35,219 log 14692 16088 Not Found: /favicon.ico
+WARNING 2025-11-07 06:28:35,219 basehttp 14692 16088 "GET /favicon.ico HTTP/1.1" 404 5362
+INFO 2025-11-07 06:28:44,833 basehttp 14692 16088 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-07 06:28:44,850 basehttp 14692 16088 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-07 06:28:51,252 basehttp 14692 16088 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-07 06:28:51,293 basehttp 14692 16088 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 06:29:01,100 basehttp 14692 16088 "GET /admin/ HTTP/1.1" 200 49807
+INFO 2025-11-07 06:29:08,083 basehttp 14692 16088 "GET /admin/recognition/tipoactividad/ HTTP/1.1" 200 48581
+INFO 2025-11-07 06:29:08,118 basehttp 14692 18592 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,118 basehttp 14692 16088 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,122 basehttp 14692 18592 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,123 basehttp 14692 14508 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,125 basehttp 14692 16088 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,125 basehttp 14692 13440 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,125 basehttp 14692 3944 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,127 basehttp 14692 18592 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,128 basehttp 14692 14508 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,128 basehttp 14692 16088 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,130 basehttp 14692 13440 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,131 basehttp 14692 3944 "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,139 basehttp 14692 3944 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,181 basehttp 14692 13136 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 06:29:08,204 basehttp 14692 13136 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,204 basehttp 14692 3944 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+INFO 2025-11-07 06:29:08,204 basehttp 14692 13440 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2025-11-07 06:35:40,899 basehttp 14692 7380 "GET /admin/recognition/tipobeneficio/ HTTP/1.1" 200 45272
+INFO 2025-11-07 06:35:40,918 basehttp 14692 15860 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-11-07 06:35:40,920 basehttp 14692 7380 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 06:46:52,710 basehttp 14692 8400 "GET /admin/recognition/tipoinsignia/ HTTP/1.1" 200 41363
+INFO 2025-11-07 06:46:52,753 basehttp 14692 8400 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 06:56:23,757 basehttp 14692 7608 "GET /admin/recognition/tiporeconocimiento/ HTTP/1.1" 200 38762
+INFO 2025-11-07 06:56:23,778 basehttp 14692 7608 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 06:56:31,332 basehttp 14692 7608 "GET /admin/recognition/tiporeconocimiento/add/ HTTP/1.1" 200 42320
+INFO 2025-11-07 06:56:31,348 basehttp 14692 14340 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2025-11-07 06:56:31,349 basehttp 14692 7608 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 06:56:31,351 basehttp 14692 7608 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2025-11-07 07:00:17,731 basehttp 14692 19132 "POST /admin/recognition/tiporeconocimiento/add/ HTTP/1.1" 200 42645
+INFO 2025-11-07 07:00:17,753 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:01:00,702 basehttp 14692 19132 "POST /admin/recognition/tiporeconocimiento/add/ HTTP/1.1" 302 0
+INFO 2025-11-07 07:01:00,719 basehttp 14692 19132 "GET /admin/recognition/tiporeconocimiento/ HTTP/1.1" 200 41238
+INFO 2025-11-07 07:01:00,733 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:01:06,471 basehttp 14692 19132 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:01:10,720 basehttp 14692 19132 "GET /reconocimientos/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:01:27,834 basehttp 14692 19132 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:01:46,641 basehttp 14692 19132 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:02:25,814 basehttp 14692 19132 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:02:27,898 basehttp 14692 19132 "GET /admin/ HTTP/1.1" 200 49865
+INFO 2025-11-07 07:02:36,260 basehttp 14692 19132 "GET /admin/recognition/reconocimiento/ HTTP/1.1" 200 38303
+INFO 2025-11-07 07:02:36,278 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:02:41,285 basehttp 14692 19132 "GET /admin/recognition/reconocimiento/add/ HTTP/1.1" 200 58561
+INFO 2025-11-07 07:02:41,301 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:03:15,022 basehttp 14692 19132 "GET /admin/recognition/reconocimiento/ HTTP/1.1" 200 38303
+INFO 2025-11-07 07:03:15,039 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:03:19,774 basehttp 14692 19132 "GET /admin/recognition/historialpuntos/ HTTP/1.1" 200 45124
+INFO 2025-11-07 07:03:19,791 basehttp 14692 19132 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-07 07:04:50,223 basehttp 14692 19132 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:04:53,431 basehttp 14692 19132 "GET /reconocimientos/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:04:58,282 basehttp 14692 19132 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:11:51,430 basehttp 14692 7212 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:23:22,580 autoreload 14692 6728 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\recognition\views.py changed, reloading.
+INFO 2025-11-07 07:23:29,716 apps 4476 15880 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:23:29,947 autoreload 4476 15880 Watching for file changes with StatReloader
+INFO 2025-11-07 07:23:35,280 wsgi 4476 17108 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 07:26:38,799 apps 7572 11632 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:26:39,330 apps 8636 16552 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:26:39,347 autoreload 8636 16552 Watching for file changes with StatReloader
+INFO 2025-11-07 07:26:39,729 wsgi 8636 3016 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 07:26:46,293 basehttp 8636 16348 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:34:32,517 apps 18684 2768 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:34:32,987 apps 15904 11544 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:34:33,012 autoreload 15904 11544 Watching for file changes with StatReloader
+INFO 2025-11-07 07:34:33,377 wsgi 15904 2088 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 07:34:39,120 basehttp 15904 9268 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 07:34:39,376 basehttp 15904 9268 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:35:14,299 basehttp 15904 9268 "GET /reconocimientos/ HTTP/1.1" 200 135434
+INFO 2025-11-07 07:35:20,757 basehttp 15904 9268 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:41:59,896 basehttp 15904 13132 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:42:01,882 basehttp 15904 13132 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:42:03,202 basehttp 15904 13132 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:42:07,109 basehttp 15904 13132 "GET /reconocimientos/ HTTP/1.1" 200 135353
+INFO 2025-11-07 07:42:12,611 basehttp 15904 13132 "GET /reconocimientos/ranking/ HTTP/1.1" 200 87541
+INFO 2025-11-07 07:43:55,345 apps 10524 5296 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:43:55,824 apps 4496 14484 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 07:43:55,824 autoreload 4496 14484 Watching for file changes with StatReloader
+INFO 2025-11-07 07:43:56,179 wsgi 4496 18312 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 07:43:58,917 basehttp 4496 10140 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 07:43:59,143 basehttp 4496 10140 "GET /dashboard/ HTTP/1.1" 200 16731
+WARNING 2025-11-07 07:44:12,040 log 4496 10140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 07:44:12,041 basehttp 4496 10140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 07:44:17,613 basehttp 4496 10140 "GET /dashboard/ HTTP/1.1" 200 16731
+WARNING 2025-11-07 07:44:17,646 log 4496 10140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 07:44:17,648 basehttp 4496 6048 "GET /static/css/custom.css HTTP/1.1" 200 11836
+WARNING 2025-11-07 07:44:17,649 basehttp 4496 10140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 07:44:17,650 basehttp 4496 16528 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-07 07:44:17,657 basehttp 4496 5424 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-07 07:44:17,673 basehttp 4496 4080 "GET /static/css/corporativo.css HTTP/1.1" 200 4164
+WARNING 2025-11-07 07:44:18,113 log 4496 4080 Not Found: /favicon.ico
+WARNING 2025-11-07 07:44:18,114 basehttp 4496 4080 "GET /favicon.ico HTTP/1.1" 404 5362
+INFO 2025-11-07 07:44:28,985 basehttp 4496 4080 "GET /reconocimientos/ HTTP/1.1" 200 135353
+INFO 2025-11-07 07:44:43,797 basehttp 4496 4080 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39965
+INFO 2025-11-07 07:56:40,968 basehttp 4496 11596 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39967
+INFO 2025-11-07 07:56:40,987 basehttp 4496 344 "GET /static/css/corporativo.css HTTP/1.1" 200 4164
+INFO 2025-11-07 07:56:40,995 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-07 07:56:50,228 basehttp 4496 11596 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 07:56:54,903 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 135353
+INFO 2025-11-07 07:57:04,929 basehttp 4496 11596 "GET /reconocimientos/ranking/ HTTP/1.1" 200 87859
+INFO 2025-11-07 08:00:29,949 basehttp 4496 11596 "GET /reconocimientos/ranking/ HTTP/1.1" 200 88721
+INFO 2025-11-07 08:00:29,970 basehttp 4496 344 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:00:29,970 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:00:47,730 basehttp 4496 11596 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135353
+INFO 2025-11-07 08:00:55,203 basehttp 4496 11596 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39967
+INFO 2025-11-07 08:01:01,326 basehttp 4496 11596 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135353
+INFO 2025-11-07 08:02:17,279 basehttp 4496 11596 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39967
+INFO 2025-11-07 08:02:17,300 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:02:17,303 basehttp 4496 11596 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:02:24,635 basehttp 4496 11596 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 135353
+INFO 2025-11-07 08:02:35,664 basehttp 4496 11596 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:02:35,712 basehttp 4496 11596 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-07 08:02:40,939 basehttp 4496 11596 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:02:40,950 basehttp 4496 11596 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:02:41,022 basehttp 4496 11596 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22716
+INFO 2025-11-07 08:02:44,438 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26686
+INFO 2025-11-07 08:05:56,112 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:05:56,112 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:05:56,136 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-07 08:06:10,068 basehttp 4496 18940 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:06:10,162 basehttp 4496 18940 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22321
+INFO 2025-11-07 08:06:10,178 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:06:12,547 basehttp 4496 18940 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:06:15,328 basehttp 4496 18940 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:06:15,371 basehttp 4496 18940 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22321
+INFO 2025-11-07 08:06:15,388 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:06:19,424 basehttp 4496 18940 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:06:27,455 basehttp 4496 18940 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13670
+INFO 2025-11-07 08:06:27,473 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:06:42,549 basehttp 4496 18940 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18816
+INFO 2025-11-07 08:06:42,564 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:06:56,186 basehttp 4496 18940 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21343
+INFO 2025-11-07 08:06:56,202 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:07:39,893 basehttp 4496 18940 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21343
+INFO 2025-11-07 08:07:39,895 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-07 08:10:44,495 basehttp 4496 18940 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51143
+INFO 2025-11-07 08:10:44,516 basehttp 4496 18940 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:10:44,516 basehttp 4496 11596 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:10:49,445 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:10:53,148 basehttp 4496 11596 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18816
+INFO 2025-11-07 08:10:57,693 basehttp 4496 11596 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51143
+INFO 2025-11-07 08:14:45,915 basehttp 4496 11596 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51146
+INFO 2025-11-07 08:14:45,929 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:14:45,929 basehttp 4496 18940 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:17:46,761 basehttp 4496 18940 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:17:46,785 basehttp 4496 18940 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:17:46,785 basehttp 4496 11596 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:17:49,224 basehttp 4496 11596 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21374
+INFO 2025-11-07 08:18:01,866 basehttp 4496 11596 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18815
+INFO 2025-11-07 08:18:27,072 basehttp 4496 11596 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51146
+WARNING 2025-11-07 08:18:43,777 log 4496 11596 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 08:18:43,777 basehttp 4496 11596 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 08:19:25,795 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:19:25,825 basehttp 4496 11596 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:19:29,480 basehttp 4496 11596 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39882
+INFO 2025-11-07 08:19:30,969 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:19:32,518 basehttp 4496 11596 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13670
+INFO 2025-11-07 08:19:38,806 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:20:02,959 basehttp 4496 11596 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13670
+INFO 2025-11-07 08:20:07,503 basehttp 4496 11596 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:20:10,300 basehttp 4496 11596 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21374
+INFO 2025-11-07 08:22:54,160 basehttp 4496 11596 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13670
+INFO 2025-11-07 08:22:54,175 basehttp 4496 11596 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:22:54,177 basehttp 4496 11596 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:23:34,744 basehttp 4496 10296 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39882
+INFO 2025-11-07 08:24:34,167 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:24:34,181 basehttp 4496 10296 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:24:43,168 basehttp 4496 10296 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39882
+INFO 2025-11-07 08:24:59,879 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:25:08,595 basehttp 4496 10296 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21839
+INFO 2025-11-07 08:25:28,014 basehttp 4496 10296 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21839
+INFO 2025-11-07 08:25:32,032 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:25:39,169 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18812
+INFO 2025-11-07 08:26:16,809 basehttp 4496 10296 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13670
+INFO 2025-11-07 08:26:16,827 basehttp 4496 10296 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:26:41,637 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:26:41,651 basehttp 4496 10296 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:26:45,522 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18812
+INFO 2025-11-07 08:30:11,261 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18840
+INFO 2025-11-07 08:30:11,283 basehttp 4496 10296 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:31:03,418 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:31:03,431 basehttp 4496 10296 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:31:06,559 basehttp 4496 10296 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13679
+INFO 2025-11-07 08:31:15,992 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:31:20,994 basehttp 4496 10296 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21839
+INFO 2025-11-07 08:31:25,034 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:31:26,490 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18840
+INFO 2025-11-07 08:31:28,167 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:31:29,610 basehttp 4496 10296 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51150
+INFO 2025-11-07 08:34:33,844 basehttp 4496 10296 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51614
+INFO 2025-11-07 08:34:33,866 basehttp 4496 10296 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:34:49,894 basehttp 4496 10296 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 21839
+INFO 2025-11-07 08:34:53,887 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18840
+INFO 2025-11-07 08:35:09,160 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:35:11,294 basehttp 4496 10296 "GET /reconocimientos/puntos/ HTTP/1.1" 200 18840
+INFO 2025-11-07 08:35:16,033 basehttp 4496 10296 "GET /reconocimientos/ranking/ HTTP/1.1" 200 51614
+INFO 2025-11-07 08:35:24,399 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:35:26,017 basehttp 4496 10296 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13679
+INFO 2025-11-07 08:35:30,444 basehttp 4496 10296 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:35:30,465 basehttp 4496 10296 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:35:33,123 basehttp 4496 10296 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 39882
+INFO 2025-11-07 08:42:39,577 basehttp 4496 12768 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41108
+INFO 2025-11-07 08:42:39,598 basehttp 4496 12768 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:42:39,598 basehttp 4496 13308 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:46:23,578 basehttp 4496 12768 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41368
+INFO 2025-11-07 08:46:23,587 basehttp 4496 12768 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:46:31,780 basehttp 4496 12768 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41368
+INFO 2025-11-07 08:46:44,977 basehttp 4496 12768 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:46:56,021 basehttp 4496 12768 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41368
+WARNING 2025-11-07 08:47:17,031 log 4496 12768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 08:47:17,032 basehttp 4496 12768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 08:47:37,444 basehttp 4496 12768 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41368
+WARNING 2025-11-07 08:47:37,470 log 4496 12768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 08:47:37,470 basehttp 4496 12768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 08:47:37,470 basehttp 4496 19288 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-07 08:47:37,470 basehttp 4496 13308 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-07 08:47:37,478 basehttp 4496 3216 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-07 08:47:37,478 basehttp 4496 11728 "GET /static/js/custom.js HTTP/1.1" 200 13589
+WARNING 2025-11-07 08:47:38,348 log 4496 3216 Not Found: /favicon.ico
+WARNING 2025-11-07 08:47:38,350 basehttp 4496 3216 "GET /favicon.ico HTTP/1.1" 404 5362
+INFO 2025-11-07 08:50:28,743 basehttp 4496 3216 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41371
+INFO 2025-11-07 08:50:41,943 basehttp 4496 3216 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:52:02,438 apps 1256 14092 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 08:52:02,903 apps 2972 2500 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 08:52:02,926 autoreload 2972 2500 Watching for file changes with StatReloader
+INFO 2025-11-07 08:52:03,276 wsgi 2972 7448 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 08:52:06,022 basehttp 2972 17776 "GET / HTTP/1.1" 302 0
+INFO 2025-11-07 08:52:06,103 basehttp 2972 17776 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:52:06,185 basehttp 2972 17776 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22321
+INFO 2025-11-07 08:52:06,212 basehttp 2972 17776 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:52:11,929 basehttp 2972 17776 "GET /reconocimientos/ HTTP/1.1" 200 26723
+INFO 2025-11-07 08:52:15,030 basehttp 2972 17776 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13679
+INFO 2025-11-07 08:52:20,015 basehttp 2972 17776 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41371

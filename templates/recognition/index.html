@@ -18,13 +18,13 @@
 }
 
 .points-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
     color: white;
 }
 
 .ranking-card {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: linear-gradient(135deg, #ffd600 0%, #e6c200 100%);
+    color: #8b5a00;
 }
 
 .insignia-card {
@@ -35,7 +35,7 @@
 }
 
 .insignia-card:hover {
-    border-color: #667eea;
+    border-color: #1b4d3e;
     transform: scale(1.05);
 }
 
@@ -127,7 +127,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(to bottom, #667eea, #764ba2);
+    background: linear-gradient(to bottom, #1b4d3e, #2a5d50);
 }
 
 .activity-item {
@@ -142,7 +142,7 @@
     top: 8px;
     width: 24px;
     height: 24px;
-    background: #667eea;
+    background: #1b4d3e;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -223,14 +223,14 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-warning text-white rounded-circle p-3">
+                            <div class="bg-amarillo text-dark rounded-circle p-3">
                                 <i class="fas fa-medal fa-2x"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <div class="text-muted small">Mis Insignias</div>
-                            <div class="h3 text-warning mb-0">{{ mis_insignias|length }}</div>
-                            <div class="text-success small">
+                            <div class="h3 text-amarillo mb-0">{{ mis_insignias|length }}</div>
+                            <div class="text-corporativo small">
                                 <i class="fas fa-award me-1"></i>Conseguidas
                             </div>
                         </div>
@@ -244,14 +244,14 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-info text-white rounded-circle p-3">
+                            <div class="bg-corporativo text-white rounded-circle p-3">
                                 <i class="fas fa-gift fa-2x"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <div class="text-muted small">Beneficios</div>
-                            <div class="h3 text-info mb-0">{{ beneficios_disponibles }}</div>
-                            <div class="text-success small">
+                            <div class="h3 text-corporativo mb-0">{{ beneficios_disponibles }}</div>
+                            <div class="text-corporativo small">
                                 <i class="fas fa-shopping-cart me-1"></i>Disponibles
                             </div>
                         </div>
@@ -268,14 +268,14 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                            <a href="{% url 'recognition:mis_logros' %}" class="btn btn-outline-primary w-100 py-3">
+                            <a href="{% url 'recognition:mis_logros' %}" class="btn btn-outline-corporativo w-100 py-3">
                                 <i class="fas fa-trophy fa-2x d-block mb-2"></i>
                                 <strong>Mis Logros</strong>
                                 <div class="small text-muted">Resumen completo</div>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                            <a href="{% url 'recognition:mis_puntos' %}" class="btn btn-outline-info w-100 py-3">
+                            <a href="{% url 'recognition:mis_puntos' %}" class="btn btn-outline-corporativo w-100 py-3">
                                 <i class="fas fa-coins fa-2x d-block mb-2"></i>
                                 <strong>Mis Puntos</strong>
                                 <div class="small text-muted">Historial detallado</div>
@@ -289,7 +289,7 @@
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-warning w-100 py-3">
+                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-amarillo w-100 py-3">
                                 <i class="fas fa-medal fa-2x d-block mb-2"></i>
                                 <strong>Insignias</strong>
                                 <div class="small text-muted">Logros y medallas</div>
@@ -335,7 +335,7 @@
                             {% endfor %}
                         </div>
                         <div class="text-center">
-                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-warning btn-sm">
+                            <a href="{% url 'recognition:mis_insignias' %}" class="btn btn-outline-amarillo btn-sm">
                                 Ver Todas mis Insignias
                             </a>
                         </div>

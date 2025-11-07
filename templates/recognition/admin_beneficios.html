@@ -10,7 +10,7 @@
     }
     
     .benefit-card:hover {
-        box-shadow: 0 4px 15px rgba(67, 97, 138, 0.1);
+        box-shadow: 0 4px 15px rgba(var(--color-verde-rgb), 0.1);
         transform: translateY(-2px);
     }
     
@@ -20,15 +20,11 @@
     }
     
     .stats-card {
-        background: linear-gradient(135deg, #43618a 0%, #5a7ba3 100%);
-        color: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
+        /* Usar clases CSS corporativas en lugar de estilo inline */
     }
     
     .exchange-item {
-        border-left: 4px solid #43618a;
+        border-left: 4px solid var(--color-corporativo);
         background: #f8f9fa;
         padding: 1rem;
         margin-bottom: 0.5rem;
@@ -50,14 +46,14 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="text-primary mb-0">
+                    <h2 class="text-corporativo mb-0">
                         <i class="fas fa-gifts me-2"></i>
                         Administración de Beneficios
                     </h2>
                     <p class="text-muted">Gestión completa del sistema de beneficios y canjes</p>
                 </div>
                 <div>
-                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
+                    <button class="btn btn-corporativo me-2" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
                         <i class="fas fa-plus me-1"></i>
                         Nuevo Beneficio
                     </button>
@@ -73,28 +69,28 @@
     <!-- Estadísticas -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="stats-card text-center">
+            <div class="stat-card-corporativo">
                 <i class="fas fa-gifts fa-2x mb-2"></i>
                 <h3 class="mb-1">{{ total_beneficios }}</h3>
                 <p class="mb-0">Beneficios Totales</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card text-center">
+            <div class="stat-card-corporativo">
                 <i class="fas fa-check-circle fa-2x mb-2"></i>
                 <h3 class="mb-1">{{ beneficios_activos }}</h3>
                 <p class="mb-0">Beneficios Activos</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card text-center">
+            <div class="stat-card-corporativo">
                 <i class="fas fa-exchange-alt fa-2x mb-2"></i>
                 <h3 class="mb-1">{{ total_canjes }}</h3>
                 <p class="mb-0">Canjes Realizados</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card text-center">
+            <div class="stat-card-amarillo">
                 <i class="fas fa-clock fa-2x mb-2"></i>
                 <h3 class="mb-1">{{ canjes_pendientes }}</h3>
                 <p class="mb-0">Canjes Pendientes</p>
@@ -106,7 +102,7 @@
         <!-- Lista de Beneficios -->
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-corporativo text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-list me-2"></i>
                         Beneficios Disponibles
@@ -118,7 +114,7 @@
                         <div class="col-md-6 mb-3">
                             <div class="benefit-card p-3">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="fw-bold text-primary">{{ beneficio.nombre }}</h6>
+                                    <h6 class="fw-bold text-corporativo">{{ beneficio.nombre }}</h6>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
                                                 type="button" data-bs-toggle="dropdown">
@@ -143,7 +139,7 @@
                                 <p class="text-muted small mb-2">{{ beneficio.descripcion|truncatechars:80 }}</p>
                                 
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-primary badge-large">
+                                    <span class="badge bg-corporativo badge-large">
                                         <i class="fas fa-coins me-1"></i>
                                         {{ beneficio.costo_puntos }} puntos
                                     </span>
@@ -167,7 +163,7 @@
                             <div class="text-center py-4">
                                 <i class="fas fa-gifts fa-3x text-muted mb-3"></i>
                                 <p class="text-muted">No hay beneficios registrados</p>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
+                                <button class="btn btn-corporativo" data-bs-toggle="modal" data-bs-target="#nuevoBeneficioModal">
                                     <i class="fas fa-plus me-1"></i>
                                     Crear Primer Beneficio
                                 </button>
@@ -196,14 +192,14 @@
                             <div>
                                 <strong>{{ canje.empleado.nombres }} {{ canje.empleado.apellidos }}</strong>
                                 <br>
-                                <small class="text-primary">{{ canje.tipo_beneficio.nombre }}</small>
+                                <small class="text-corporativo">{{ canje.tipo_beneficio.nombre }}</small>
                                 <br>
                                 <small class="text-muted">{{ canje.fecha_canje|date:"d/m/Y H:i" }}</small>
                             </div>
                             <span class="badge 
                                 {% if canje.estado == 'solicitado' %}bg-warning
                                 {% elif canje.estado == 'aprobado' %}bg-success
-                                {% elif canje.estado == 'entregado' %}bg-primary
+                                {% elif canje.estado == 'entregado' %}bg-corporativo
                                 {% else %}bg-danger{% endif %}">
                                 {{ canje.get_estado_display }}
                             </span>
@@ -263,7 +259,7 @@
 <div class="modal fade" id="nuevoBeneficioModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-corporativo text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-plus me-2"></i>
                     Nuevo Beneficio
@@ -312,7 +308,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-corporativo">
                         <i class="fas fa-save me-1"></i>
                         Guardar Beneficio
                     </button>

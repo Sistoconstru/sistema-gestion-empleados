@@ -28,21 +28,78 @@
 }
 
 .mis-puntos-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
     color: white;
 }
 
-.canje-item {
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    border: 1px solid #f1f5f9;
+/* Mantener altura natural de la tarjeta de puntos */
+.mis-puntos-card {
+    height: auto;
 }
 
-.estado-solicitado { border-left: 4px solid #ffc107; }
-.estado-aprobado { border-left: 4px solid #28a745; }
-.estado-entregado { border-left: 4px solid #007bff; }
-.estado-rechazado { border-left: 4px solid #dc3545; }
+/* Igualar altura de la tarjeta de canjes a la de puntos */
+.canjes-card {
+    height: 154px; /* Altura exacta de la tarjeta de puntos */
+}
+
+.canjes-card .card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+/* Contenedor de canjes con scroll */
+.canjes-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-height: 60px;
+}
+
+.canjes-scrollable {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1b4d3e transparent;
+}
+
+/* Estilos para webkit scrollbar - oculto por defecto */
+.canjes-scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.canjes-scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.canjes-scrollable::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+}
+
+/* Mostrar scrollbar al hacer hover en el contenedor */
+.canjes-container:hover .canjes-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(27, 77, 62, 0.6);
+}
+
+.canjes-container:hover .canjes-scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(27, 77, 62, 0.8);
+}
+
+.canje-item {
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.375rem;
+    border: 1px solid #f1f5f9;
+    font-size: 0.8rem;
+}
+
+.estado-solicitado { border-left: 3px solid #ffc107; }
+.estado-aprobado { border-left: 3px solid #28a745; }
+.estado-entregado { border-left: 3px solid var(--color-corporativo); }
+.estado-rechazado { border-left: 3px solid #dc3545; }
 
 .btn-canjear {
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
@@ -78,7 +135,7 @@
                 </div>
                 <div class="d-flex gap-2">
                     {% if user.is_staff %}
-                    <a href="{% url 'recognition:admin_canjes' %}" class="btn btn-warning">
+                    <a href="{% url 'recognition:admin_canjes' %}" class="btn btn-amarillo">
                         <i class="fas fa-tasks me-1"></i>Administrar Canjes
                     </a>
                     {% endif %}
@@ -91,7 +148,7 @@
     </div>
 
     <!-- Mis Puntos -->
-    <div class="row mb-4">
+    <div class="row mb-4 puntos-canjes-row">
         <div class="col-md-6">
             <div class="card mis-puntos-card border-0 shadow">
                 <div class="card-body text-center">
@@ -105,13 +162,15 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card border-0 shadow">
+            <div class="card border-0 shadow canjes-card">
                 <div class="card-body">
-                    <h5 class="text-corporativo mb-3">
+                    <h6 class="text-corporativo mb-2">
                         <i class="fas fa-history me-2"></i>Mis Canjes Recientes
-                    </h5>
-                    {% if mis_canjes %}
-                        {% for canje in mis_canjes %}
+                    </h6>
+                    <div class="canjes-container">
+                        <div class="canjes-scrollable">
+                            {% if mis_canjes %}
+                                {% for canje in mis_canjes %}
                         <div class="canje-item estado-{{ canje.estado }}">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
@@ -134,7 +193,7 @@
                                         </div>
                                     {% elif canje.estado == 'entregado' %}
                                         <div class="mt-2">
-                                            <div class="text-primary small">
+                                            <div class="text-corporativo small">
                                                 <i class="fas fa-check-double me-1"></i>
                                                 Entregado: {{ canje.fecha_entrega|date:"d/m/Y" }}
                                             </div>
@@ -164,9 +223,11 @@
                             </div>
                         </div>
                         {% endfor %}
-                    {% else %}
-                        <p class="text-muted text-center">No tienes canjes registrados</p>
-                    {% endif %}
+                            {% else %}
+                                <p class="text-muted text-center">No tienes canjes registrados</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

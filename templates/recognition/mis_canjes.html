@@ -25,7 +25,7 @@
     }
     
     .stats-card {
-        background: linear-gradient(135deg, #43618a, #6c8bb5);
+        background: linear-gradient(135deg, var(--color-corporativo), var(--color-corporativo-claro));
         color: white;
         border-radius: 10px;
         padding: 1.5rem;
@@ -48,14 +48,20 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-md-8">
-            <h2><i class="fas fa-history text-primary me-2"></i>Mis Canjes</h2>
+            <h2><i class="fas fa-history text-corporativo me-2"></i>Mis Canjes</h2>
             <p class="text-muted">Historial de beneficios canjeados</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{% url 'recognition:beneficios' %}" class="btn btn-primary">
-                <i class="fas fa-gifts me-1"></i>
-                Ver Catálogo
-            </a>
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="{% url 'recognition:beneficios' %}" class="btn btn-corporativo">
+                    <i class="fas fa-gifts me-1"></i>
+                    Ver Catálogo
+                </a>
+                <a href="{% url 'recognition:index' %}" class="btn btn-outline-corporativo">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Volver al Dashboard
+                </a>
+            </div>
         </div>
     </div>
 
@@ -121,7 +127,7 @@
                                      style="max-width: 80px; max-height: 80px;" 
                                      alt="{{ canje.tipo_beneficio.nombre }}">
                             {% else %}
-                                <div class="bg-primary text-white rounded d-inline-flex align-items-center justify-content-center" 
+                                <div class="bg-corporativo text-white rounded d-inline-flex align-items-center justify-content-center" 
                                      style="width: 80px; height: 80px;">
                                     <i class="fas fa-gift fa-2x"></i>
                                 </div>
@@ -149,7 +155,7 @@
                         </div>
                         
                         <div class="col-md-2 text-center">
-                            <h6 class="text-primary mb-0">{{ canje.puntos_utilizados }} pts</h6>
+                            <h6 class="text-corporativo mb-0">{{ canje.puntos_utilizados }} pts</h6>
                             <small class="text-muted">Utilizados</small>
                         </div>
                         
@@ -218,7 +224,7 @@
                 <i class="fas fa-gift fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">No tienes canjes aún</h4>
                 <p class="text-muted">Visita el catálogo de beneficios para realizar tu primer canje</p>
-                <a href="{% url 'recognition:beneficios' %}" class="btn btn-primary">
+                <a href="{% url 'recognition:beneficios' %}" class="btn btn-corporativo">
                     <i class="fas fa-gifts me-1"></i>
                     Ver Catálogo
                 </a>

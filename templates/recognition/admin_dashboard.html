@@ -24,13 +24,7 @@
     }
     
     .stat-card {
-        background: #43618a;  /* Color corporativo principal */
-        color: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+        /* Usar clase CSS corporativa en lugar de estilo inline */
     }
     
     .stat-card::before {
@@ -55,8 +49,8 @@
     }
     
     .quick-action-card:hover {
-        border-color: #43618a;
-        background: rgba(67, 97, 138, 0.05);
+        border-color: var(--color-verde);
+        background: rgba(27, 77, 62, 0.05);
     }
     
     .employee-selector {
@@ -135,15 +129,15 @@
                     <p class="text-muted">Panel de control para la gestión del sistema de reconocimiento</p>
                 </div>
                 <div>
-                    <button class="btn btn-success me-2" onclick="otorgarPuntosEmpleado()">
+                    <button class="btn btn-corporativo me-2" onclick="otorgarPuntosEmpleado()">
                         <i class="fas fa-plus me-1"></i>
                         Otorgar Puntos
                     </button>
-                    <button class="btn btn-warning me-2" onclick="asignarInsigniaEmpleado()">
+                    <button class="btn btn-amarillo me-2" onclick="asignarInsigniaEmpleado()">
                         <i class="fas fa-medal me-1"></i>
                         Asignar Insignia
                     </button>
-                    <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-outline-corporativo">
                         <i class="fas fa-home me-1"></i>
                         Dashboard Principal
                     </a>
@@ -154,22 +148,22 @@
 
     <!-- Estadísticas Principales -->
     <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card-corporativo">
             <i class="fas fa-users fa-2x mb-2"></i>
             <h3 class="mb-1">{{ total_empleados }}</h3>
             <p class="mb-0">Empleados Activos</p>
         </div>
-        <div class="stat-card">
+        <div class="stat-card-corporativo">
             <i class="fas fa-coins fa-2x mb-2"></i>
             <h3 class="mb-1">{{ puntos_otorgados_mes|floatformat:0 }}</h3>
             <p class="mb-0">Puntos Este Mes</p>
         </div>
-        <div class="stat-card">
+        <div class="stat-card-amarillo">
             <i class="fas fa-clock fa-2x mb-2"></i>
             <h3 class="mb-1">{{ canjes_pendientes }}</h3>
             <p class="mb-0">Canjes Pendientes</p>
         </div>
-        <div class="stat-card">
+        <div class="stat-card-corporativo">
             <i class="fas fa-medal fa-2x mb-2"></i>
             <h3 class="mb-1">{{ insignias_otorgadas_mes }}</h3>
             <p class="mb-0">Insignias Este Mes</p>
@@ -487,7 +481,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-corporativo">
                         <i class="fas fa-save me-1"></i>
                         Otorgar Puntos
                     </button>
@@ -564,7 +558,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-amarillo">
                         <i class="fas fa-save me-1"></i>
                         Asignar Insignia
                     </button>
@@ -702,7 +696,7 @@
             const areaNombre = areaFiltro.options[areaFiltro.selectedIndex].text;
             empleadosCount.innerHTML = '<i class="fas fa-filter me-1 text-primary"></i>' + empleadosVisibles + ' empleados en <strong>' + areaNombre + '</strong>';
             filterSection.style.backgroundColor = '#e7f3ff';
-            filterSection.style.border = '1px solid #43618a';
+            filterSection.style.border = '1px solid #1b4d3e';
         }
         
         // Si no hay empleados en el área seleccionada, mostrar mensaje
@@ -1320,10 +1314,10 @@
                 datasets: [{
                     data: [30, 40, 20, 10],
                     backgroundColor: [
-                        '#43618a',  // Color corporativo principal
-                        '#28a745',  // Verde corporativo
-                        '#6c757d',  // Gris neutro
-                        '#17a2b8'   // Azul complementario
+                        '#1b4d3e',  // Verde corporativo principal
+                        '#2d6b4f',  // Verde corporativo claro
+                        '#ffd600',  // Amarillo corporativo
+                        '#6c757d'   // Gris neutro
                     ],
                     borderWidth: 2,
                     borderColor: '#ffffff'

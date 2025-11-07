@@ -15,9 +15,9 @@
 }
 
 .ranking-item:hover {
-    background-color: rgba(67, 97, 138, 0.05);
+    background-color: rgba(27, 77, 62, 0.05);
     transform: translateX(5px);
-    border-color: #667eea;
+    border-color: #1b4d3e;
 }
 
 .ranking-position {
@@ -38,15 +38,26 @@
 .ranking-other { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
 
 .mi-posicion {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
     color: white;
-    border: 2px solid #667eea;
+    border: 2px solid #1b4d3e;
+}
+
+.mi-posicion .text-success,
+.mi-posicion .text-info,
+.mi-posicion .text-warning,
+.mi-posicion .text-corporativo {
+    color: white !important;
+}
+
+.mi-posicion .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .points-display {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #28a745;
+    color: #1b4d3e;
 }
 
 .podium {
@@ -64,7 +75,7 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1b4d3e 0%, #2a5d50 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,7 +100,7 @@
                     <p class="text-muted mb-0">Clasificación por puntos acumulados</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-success" onclick="generarReporte()">
+                    <button class="btn btn-corporativo" onclick="generarReporte()">
                         <i class="fas fa-file-excel me-1"></i>Generar Reporte
                     </button>
                     <a href="{% url 'recognition:index' %}" class="btn btn-outline-corporativo">
@@ -172,21 +183,21 @@
                                         <h6 class="text-corporativo mb-1">
                                             {{ empleado.nombres }} {{ empleado.apellidos }}
                                             {% if mi_posicion and forloop.counter == mi_posicion %}
-                                                <span class="badge bg-primary ms-2">Tú</span>
+                                                <span class="badge bg-corporativo ms-2">Tú</span>
                                             {% endif %}
                                         </h6>
                                         <small class="text-muted">{{ empleado.nombre_cargo_actual|default:"Sin cargo" }}</small>
                                     </div>
                                     <div class="col-md-2 text-center">
-                                        <div class="fw-bold text-success">{{ empleado.puntos_totales|default:0 }}</div>
+                                        <div class="fw-bold text-corporativo">{{ empleado.puntos_totales|default:0 }}</div>
                                         <small class="text-muted">puntos</small>
                                     </div>
                                     <div class="col-md-3 text-center">
-                                        <div class="fw-bold text-info">{{ empleado.actividades_completadas }}</div>
+                                        <div class="fw-bold text-corporativo">{{ empleado.actividades_completadas }}</div>
                                         <small class="text-muted">actividades</small>
                                     </div>
                                     <div class="col-md-3 text-center">
-                                        <div class="fw-bold text-warning">{{ empleado.insignias_count }}</div>
+                                        <div class="fw-bold text-amarillo">{{ empleado.insignias_count }}</div>
                                         <small class="text-muted">insignias</small>
                                     </div>
                                 </div>
