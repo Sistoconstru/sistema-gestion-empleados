@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CSS Corporativo</title>
+    
+    <!-- Bootstrap local si existe, sino CDN -->
+    <link href="/static/css/vendor/bootstrap.min.css" rel="stylesheet" onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';">
+    
+    <!-- CSS Corporativo -->
+    <link href="/static/css/corporativo.css" rel="stylesheet">
+    
+    <style>
+        .test-container {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        .status.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .status.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Diagnóstico de CSS Corporativo</h1>
+        
+        <div class="status" id="bootstrap-status">
+            <strong>Bootstrap:</strong> <span id="bootstrap-result">Verificando...</span>
+        </div>
+        
+        <div class="status" id="corporativo-status">
+            <strong>CSS Corporativo:</strong> <span id="corporativo-result">Verificando...</span>
+        </div>
+        
+        <h2>Prueba de Estilos:</h2>
+        
+        <!-- Tarjetas de prueba -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card-corporativo">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3 class="mb-1">50</h3>
+                    <p class="mb-0">Empleados</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card-amarillo">
+                    <i class="fas fa-clock fa-2x mb-2"></i>
+                    <h3 class="mb-1">0</h3>
+                    <p class="mb-0">Pendientes</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botones de prueba -->
+        <div class="mb-3">
+            <button class="btn btn-corporativo me-2">Botón Corporativo</button>
+            <button class="btn btn-amarillo me-2">Botón Amarillo</button>
+            <button class="btn btn-outline-corporativo">Botón Outline</button>
+        </div>
+        
+        <div class="alert alert-info">
+            <strong>Esperado:</strong> 
+            <ul>
+                <li>Tarjeta verde con texto blanco</li>
+                <li>Tarjeta amarilla con texto verde</li>
+                <li>Botones con colores corporativos</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar carga de CSS
+        window.addEventListener('load', function() {
+            // Verificar Bootstrap
+            const testElement = document.createElement('div');
+            testElement.className = 'container';
+            document.body.appendChild(testElement);
+            const hasBootstrap = window.getComputedStyle(testElement).maxWidth !== 'none';
+            document.getElementById('bootstrap-result').textContent = hasBootstrap ? '✅ Cargado' : '❌ No cargado';
+            document.getElementById('bootstrap-status').className = 'status ' + (hasBootstrap ? 'success' : 'error');
+            document.body.removeChild(testElement);
+            
+            // Verificar CSS Corporativo
+            const testCorp = document.createElement('div');
+            testCorp.className = 'stat-card-corporativo';
+            testCorp.style.visibility = 'hidden';
+            document.body.appendChild(testCorp);
+            const corpStyles = window.getComputedStyle(testCorp);
+            const hasCorporativo = corpStyles.backgroundColor.includes('27, 77, 62') || corpStyles.backgroundColor.includes('#1b4d3e');
+            document.getElementById('corporativo-result').textContent = hasCorporativo ? '✅ Cargado' : '❌ No cargado';
+            document.getElementById('corporativo-status').className = 'status ' + (hasCorporativo ? 'success' : 'error');
+            document.body.removeChild(testCorp);
+        });
+    </script>
+</body>
+</html>
