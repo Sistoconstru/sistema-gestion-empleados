@@ -51080,3 +51080,27 @@ INFO 2025-11-07 08:52:06,212 basehttp 2972 17776 "GET /static/css/corporativo.cs
 INFO 2025-11-07 08:52:11,929 basehttp 2972 17776 "GET /reconocimientos/ HTTP/1.1" 200 26723
 INFO 2025-11-07 08:52:15,030 basehttp 2972 17776 "GET /reconocimientos/insignias/ HTTP/1.1" 200 13679
 INFO 2025-11-07 08:52:20,015 basehttp 2972 17776 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41371
+INFO 2025-11-07 08:57:46,204 apps 16952 14136 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 08:57:46,709 apps 15472 1132 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-07 08:57:46,730 autoreload 15472 1132 Watching for file changes with StatReloader
+INFO 2025-11-07 08:57:47,117 wsgi 15472 18036 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-07 08:57:50,627 basehttp 15472 16764 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:57:50,718 basehttp 15472 16764 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22321
+INFO 2025-11-07 08:57:50,745 basehttp 15472 18916 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:57:50,745 basehttp 15472 16764 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-11-07 08:57:54,427 basehttp 15472 16764 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:57:54,427 basehttp 15472 16764 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-07 08:57:59,128 basehttp 15472 16764 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-07 08:57:59,160 basehttp 15472 16764 "GET /dashboard/ HTTP/1.1" 200 16731
+INFO 2025-11-07 08:58:11,667 basehttp 15472 16764 "GET /reconocimientos/ HTTP/1.1" 200 135353
+WARNING 2025-11-07 08:58:23,716 log 15472 16764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-07 08:58:23,718 basehttp 15472 16764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 08:58:28,475 basehttp 15472 16764 "GET /reconocimientos/ HTTP/1.1" 200 135353
+INFO 2025-11-07 08:58:28,496 basehttp 15472 18916 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-07 08:58:28,498 basehttp 15472 16764 "GET /static/css/custom.css HTTP/1.1" 200 11836
+WARNING 2025-11-07 08:58:28,503 log 15472 11740 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-07 08:58:28,504 basehttp 15472 4912 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+WARNING 2025-11-07 08:58:28,504 basehttp 15472 11740 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5473
+INFO 2025-11-07 08:58:28,504 basehttp 15472 6872 "GET /static/js/custom.js HTTP/1.1" 200 13589
+WARNING 2025-11-07 08:58:29,417 log 15472 11740 Not Found: /favicon.ico
+WARNING 2025-11-07 08:58:29,417 basehttp 15472 11740 "GET /favicon.ico HTTP/1.1" 404 5362

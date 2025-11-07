@@ -52,7 +52,7 @@ venv.bak/
 
 # Archivos de media y static (solo en desarrollo)
 media/
-staticfiles/
+# staticfiles/ - Comentado para permitir deploy de CSS corporativo
 static_root/
 
 # Archivos temporales y de sistema
