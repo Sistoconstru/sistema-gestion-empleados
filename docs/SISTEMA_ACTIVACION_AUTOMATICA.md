@@ -2,12 +2,12 @@
 
 ## Descripción General
 
-El sistema de gestión de empleados ahora incluye funcionalidad para activar automáticamente a los empleados que han completado su período de prueba de 3 meses (90 días).
+El sistema de gestión de empleados ahora incluye funcionalidad para activar automáticamente a los empleados que han completado su período de prueba de 2 meses (60 días).
 
 ## Características Principales
 
 ### 1. Activación Automática
-- **Criterio**: Empleados con estado "per. prueba" (código: p-prue) que hayan cumplido 90 días desde su fecha de ingreso
+- **Criterio**: Empleados con estado "per. prueba" (código: p-prue) que hayan cumplido 60 días desde su fecha de ingreso
 - **Estado destino**: Activo (código: 999)
 - **Proceso**: Completamente automatizado
 
@@ -18,7 +18,7 @@ python manage.py activar_empleados_prueba
 
 # Opciones disponibles
 python manage.py activar_empleados_prueba --dry-run              # Solo muestra qué se haría
-python manage.py activar_empleados_prueba --dias-periodo 120     # Usar 120 días en lugar de 90
+python manage.py activar_empleados_prueba --dias-periodo 90      # Usar 90 días en lugar de 60
 ```
 
 ### 3. Script Automatizado
@@ -93,8 +93,8 @@ python manage.py activar_empleados_prueba
 
 ### 3. Configuración Personalizada
 ```bash
-# Usar período de 120 días en lugar de 90
-python manage.py activar_empleados_prueba --dias-periodo 120
+# Usar período de 90 días en lugar de 60 (política anterior)
+python manage.py activar_empleados_prueba --dias-periodo 90
 ```
 
 ## Consideraciones Importantes

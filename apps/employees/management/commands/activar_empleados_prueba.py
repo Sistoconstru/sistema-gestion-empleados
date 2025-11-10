@@ -18,8 +18,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--dias-periodo',
             type=int,
-            default=90,
-            help='Número de días del periodo de prueba (por defecto 90 días = 3 meses)',
+            default=60,
+            help='Número de días del periodo de prueba (por defecto 60 días = 2 meses)',
         )
 
     def handle(self, *args, **options):
@@ -36,7 +36,7 @@ class Command(BaseCommand):
             )
             return
 
-        # Calcular fecha límite (hace 3 meses)
+        # Calcular fecha límite (hace 2 meses)
         fecha_limite = timezone.now().date() - timedelta(days=dias_periodo)
         
         # Buscar empleados en periodo de prueba que cumplen el tiempo
@@ -49,7 +49,7 @@ class Command(BaseCommand):
         
         if total_empleados == 0:
             self.stdout.write(
-                self.style.SUCCESS('No hay empleados en periodo de prueba que cumplan los 3 meses.')
+                self.style.SUCCESS('No hay empleados en periodo de prueba que cumplan los 2 meses.')
             )
             return
         

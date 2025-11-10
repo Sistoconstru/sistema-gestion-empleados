@@ -9,7 +9,7 @@
 2. Crear Tarea Básica
 3. Configurar:
    - Nombre: "Activar Empleados Periodo Prueba"
-   - Descripción: "Activa automáticamente empleados que han completado 3 meses de periodo de prueba"
+   - Descripción: "Activa automáticamente empleados que han completado 2 meses de periodo de prueba"
    - Disparador: Diario a las 06:00 AM
    - Acción: Iniciar programa
      - Programa: C:\path\to\python.exe  (ruta al Python del entorno virtual)

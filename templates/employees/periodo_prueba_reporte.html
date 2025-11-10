@@ -173,7 +173,7 @@
         <div class="col-12">
             <div class="alert alert-info">
                 <h5><i class="fas fa-info-circle me-2"></i>Información sobre Activación Automática</h5>
-                <p class="mb-2">Los empleados en período de prueba se activan automáticamente después de <strong>90 días (3 meses)</strong> desde su fecha de ingreso.</p>
+                <p class="mb-2">Los empleados en período de prueba se activan automáticamente después de <strong>60 días (2 meses)</strong> desde su fecha de ingreso.</p>
                 <p class="mb-0">
                     <strong>Comando manual:</strong> <code>python manage.py activar_empleados_prueba</code><br>
                     <strong>Comando con vista previa:</strong> <code>python manage.py activar_empleados_prueba --dry-run</code>
@@ -201,9 +201,9 @@
                             <th>Cargo</th>
                             <th>Sede</th>
                             <th>Fecha Ingreso</th>
-                            <th class="col-dias">Días Transcurridos</th>
+                            <th class="col-dias">Días completados</th>
                             <th>Fecha Activación</th>
-                            <th class="col-estado">Estado</th>
+                            <th class="col-estado">Faltan</th>
                             <th class="col-acciones">Acciones</th>
                         </tr>
                     </thead>
@@ -320,7 +320,7 @@
                         <i class="fas fa-info-circle me-2"></i>
                         <strong>Configuración actual:</strong> Se muestran empleados con {{ dias_antelacion }} días o menos para activarse.
                         <br>
-                        <strong>Total período de prueba:</strong> 90 días (3 meses)
+                        <strong>Total período de prueba:</strong> 60 días (2 meses)
                     </div>
                 </form>
             </div>

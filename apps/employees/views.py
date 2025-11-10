@@ -1409,17 +1409,17 @@ def empleados_periodo_prueba_reporte(request):
         'historialcargo_set__cargo__area'
     ).order_by('fecha_ingreso')
     
-    # Calcular información de activación para cada empleado
+        # Calcular información de activación para cada empleado
     empleados_info = []
     hoy = timezone.now().date()
     
     for empleado in empleados_prueba:
         dias_transcurridos = (hoy - empleado.fecha_ingreso).days
-        dias_restantes = 90 - dias_transcurridos
-        fecha_activacion = empleado.fecha_ingreso + timedelta(days=90)
+        dias_restantes = 60 - dias_transcurridos
+        fecha_activacion = empleado.fecha_ingreso + timedelta(days=60)
         
         # Determinar estado de activación
-        if dias_transcurridos >= 90:
+        if dias_transcurridos >= 60:
             estado_activacion = 'Listo para activar'
         elif dias_restantes <= dias_antelacion:
             estado_activacion = f'Próximo a activar'

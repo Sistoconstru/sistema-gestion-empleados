@@ -53151,3 +53151,20 @@ INFO 2025-11-10 13:00:46,171 basehttp 12612 14596 "GET /dashboard/ HTTP/1.1" 200
 INFO 2025-11-10 13:00:47,460 basehttp 12612 14596 "GET /empleados/ HTTP/1.1" 200 98922
 INFO 2025-11-10 13:00:51,649 basehttp 12612 14596 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 22238
 INFO 2025-11-10 13:00:54,094 basehttp 12612 14596 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 14:28:05,607 apps 13640 18792 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:28:26,791 apps 15064 3208 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:28:48,980 apps 18944 9484 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:28:49,549 apps 3240 2636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:28:49,565 autoreload 3240 2636 Watching for file changes with StatReloader
+INFO 2025-11-10 14:28:49,944 wsgi 3240 4444 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 14:28:58,358 basehttp 3240 2408 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 19740
+INFO 2025-11-10 14:30:01,215 autoreload 3240 2636 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\urls.py changed, reloading.
+INFO 2025-11-10 14:30:02,153 apps 9780 8612 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:30:02,168 autoreload 9780 8612 Watching for file changes with StatReloader
+INFO 2025-11-10 14:30:02,845 wsgi 9780 3076 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 14:30:04,066 autoreload 9780 8612 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\signals.py changed, reloading.
+INFO 2025-11-10 14:30:04,817 apps 12812 1744 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 14:30:04,836 autoreload 12812 1744 Watching for file changes with StatReloader
+INFO 2025-11-10 14:30:05,210 wsgi 12812 2736 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 14:31:27,679 basehttp 12812 8624 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 19738
+INFO 2025-11-10 14:32:37,493 basehttp 12812 8624 "GET /dashboard/ HTTP/1.1" 200 17147
