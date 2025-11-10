@@ -69,10 +69,8 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         # Aplicar filtro de búsqueda
         if search:
             queryset = queryset.filter(
-                Q(nombres__icontains=search) |
-                Q(apellidos__icontains=search) |
-                Q(numero_documento__icontains=search) |
-                Q(correo_electronico__icontains=search)
+                Q(nombres__istartswith=search) |
+                Q(apellidos__istartswith=search)
             )
         
         # Aplicar filtros específicos
@@ -94,7 +92,7 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
                 historialcargo__activo=True
             )
         
-        return queryset.distinct().order_by('apellidos', 'nombres')
+        return queryset.distinct().order_by('nombres', 'apellidos')
     
     def get_context_data(self, **kwargs):
         """Agregar contexto adicional"""
@@ -851,6 +849,9 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         # Días en la empresa
         dias_empresa = (date.today() - empleado.fecha_ingreso).days
         
+        # Formatear tiempo en empresa de forma amigable
+        tiempo_empresa_texto = self.formatear_tiempo_empresa(dias_empresa)
+        
         # Tiempo en cargo actual
         tiempo_cargo = None
         if cargo_actual:
@@ -859,9 +860,46 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         return {
             'cargo_actual': cargo_actual,
             'dias_empresa': dias_empresa,
+            'tiempo_empresa_texto': tiempo_empresa_texto,
             'tiempo_cargo': tiempo_cargo,
             'anos_empresa': dias_empresa // 365,
         }
+    
+    def formatear_tiempo_empresa(self, dias_totales):
+        """
+        Formatear el tiempo en la empresa de forma amigable:
+        - Menos de 30 días: "X días"
+        - Menos de 365 días: "X meses y Y días"
+        - 365 días o más: "X años, Y meses y Z días"
+        """
+        if dias_totales < 30:
+            return f"{dias_totales} día{'s' if dias_totales != 1 else ''}"
+        
+        elif dias_totales < 365:
+            meses = dias_totales // 30
+            dias_restantes = dias_totales % 30
+            
+            texto = f"{meses} mes{'es' if meses != 1 else ''}"
+            if dias_restantes > 0:
+                texto += f" y {dias_restantes} día{'s' if dias_restantes != 1 else ''}"
+            
+            return texto
+        
+        else:
+            anos = dias_totales // 365
+            dias_restantes = dias_totales % 365
+            meses = dias_restantes // 30
+            dias = dias_restantes % 30
+            
+            texto = f"{anos} año{'s' if anos != 1 else ''}"
+            
+            if meses > 0:
+                texto += f", {meses} mes{'es' if meses != 1 else ''}"
+            
+            if dias > 0:
+                texto += f" y {dias} día{'s' if dias != 1 else ''}"
+            
+            return texto
     
     def get_estado_documentos(self, empleado):
         """Obtener estado de documentos del empleado"""

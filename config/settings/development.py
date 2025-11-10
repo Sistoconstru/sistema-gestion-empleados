@@ -8,6 +8,27 @@ from .base import *
 DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
+# =============================================================================
+# CONFIGURACIÓN DE STORAGE PARA DESARROLLO (LOCAL)
+# =============================================================================
+# En desarrollo usamos almacenamiento local en lugar de S3
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Patch para modelos que tienen storage explícito de S3 en desarrollo
+import os
+if os.environ.get('DJANGO_SETTINGS_MODULE') == 'config.settings.development':
+    # Sobrescribir storage de S3 para desarrollo
+    try:
+        from django.core.files.storage import FileSystemStorage
+        # Crear storage local para desarrollo
+        local_storage = FileSystemStorage()
+        
+        # Monkey patch para el MediaStorage usado en modelos
+        import custom_storage.media
+        custom_storage.media.MediaStorage = lambda: local_storage
+    except ImportError:
+        pass
+
 # Sobrescribir configuración de base de datos para desarrollo
 DATABASES = {
     'default': {

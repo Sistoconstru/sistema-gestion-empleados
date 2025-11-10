@@ -52471,3 +52471,512 @@ ERROR 2025-11-10 08:44:10,357 basehttp 12792 6432 "GET /empleados/a3fa886d-4321-
 INFO 2025-11-10 08:44:39,874 basehttp 12792 6432 "GET /empleados/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 65080
 INFO 2025-11-10 08:47:05,940 basehttp 12792 6432 "GET /dashboard/ HTTP/1.1" 200 17146
 INFO 2025-11-10 08:52:29,059 basehttp 12792 7804 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:01:27,891 apps 1748 7436 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-10 09:01:28,389 apps 11192 12992 [CoreConfig.ready] DEFAULT_FILE_STORAGE: None
+INFO 2025-11-10 09:01:28,415 autoreload 11192 12992 Watching for file changes with StatReloader
+INFO 2025-11-10 09:01:28,820 wsgi 11192 3872 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:01:32,706 basehttp 11192 17452 "GET /reconocimientos/ HTTP/1.1" 200 139228
+INFO 2025-11-10 09:01:44,965 basehttp 11192 17452 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:01:44,973 basehttp 11192 17452 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:01:48,998 basehttp 11192 17452 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:01:49,009 basehttp 11192 17452 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:01:49,114 basehttp 11192 17452 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 23130
+INFO 2025-11-10 09:01:53,439 basehttp 11192 17452 "GET /reconocimientos/ HTTP/1.1" 200 28049
+INFO 2025-11-10 09:02:01,427 basehttp 11192 17452 "GET /reconocimientos/insignias/ HTTP/1.1" 200 14093
+INFO 2025-11-10 09:02:20,819 basehttp 11192 17452 "GET /reconocimientos/ HTTP/1.1" 200 28049
+ERROR 2025-11-10 09:02:27,005 log 11192 17452 Internal Server Error: /reconocimientos/beneficios/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1075, in render
+    output = self.filter_expression.resolve(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 722, in resolve
+    obj = self.var.resolve(context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 854, in resolve
+    value = self._resolve_lookup(context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\files.py", line 70, in url
+    return self.storage.url(self.name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 691, in url
+    params["Bucket"] = self.bucket.name
+                       ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 515, in bucket
+    self._bucket = self.connection.Bucket(self.bucket_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\factory.py", line 528, in create_resource
+    return partial(
+           ^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\base.py", line 123, in __init__
+    raise ValueError(f'Required parameter {identifier} not set')
+ValueError: Required parameter name not set
+ERROR 2025-11-10 09:02:27,023 basehttp 11192 17452 "GET /reconocimientos/beneficios/ HTTP/1.1" 500 283632
+ERROR 2025-11-10 09:02:36,614 log 11192 17452 Internal Server Error: /reconocimientos/beneficios/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1075, in render
+    output = self.filter_expression.resolve(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 722, in resolve
+    obj = self.var.resolve(context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 854, in resolve
+    value = self._resolve_lookup(context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\files.py", line 70, in url
+    return self.storage.url(self.name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 691, in url
+    params["Bucket"] = self.bucket.name
+                       ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 515, in bucket
+    self._bucket = self.connection.Bucket(self.bucket_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\factory.py", line 528, in create_resource
+    return partial(
+           ^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\base.py", line 123, in __init__
+    raise ValueError(f'Required parameter {identifier} not set')
+ValueError: Required parameter name not set
+ERROR 2025-11-10 09:02:36,619 basehttp 11192 17452 "GET /reconocimientos/beneficios/ HTTP/1.1" 500 283632
+INFO 2025-11-10 09:05:41,988 basehttp 11192 17452 "GET /reconocimientos/insignias/ HTTP/1.1" 200 14093
+ERROR 2025-11-10 09:05:45,565 log 11192 17452 Internal Server Error: /reconocimientos/beneficios/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 890, in _resolve_lookup
+    raise TypeError
+TypeError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1075, in render
+    output = self.filter_expression.resolve(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 722, in resolve
+    obj = self.var.resolve(context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 854, in resolve
+    value = self._resolve_lookup(context)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 901, in _resolve_lookup
+    current = getattr(current, bit)
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\files.py", line 70, in url
+    return self.storage.url(self.name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 691, in url
+    params["Bucket"] = self.bucket.name
+                       ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\storages\backends\s3.py", line 515, in bucket
+    self._bucket = self.connection.Bucket(self.bucket_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\factory.py", line 528, in create_resource
+    return partial(
+           ^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\boto3\resources\base.py", line 123, in __init__
+    raise ValueError(f'Required parameter {identifier} not set')
+ValueError: Required parameter name not set
+ERROR 2025-11-10 09:05:45,568 basehttp 11192 17452 "GET /reconocimientos/beneficios/ HTTP/1.1" 500 283632
+INFO 2025-11-10 09:06:38,239 autoreload 11192 12992 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\development.py changed, reloading.
+INFO 2025-11-10 09:06:39,272 apps 9332 9836 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:06:39,301 autoreload 9332 9836 Watching for file changes with StatReloader
+INFO 2025-11-10 09:06:39,915 wsgi 9332 15340 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:06:48,472 autoreload 9332 9836 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\development.py changed, reloading.
+INFO 2025-11-10 09:06:49,330 apps 16744 1020 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:06:49,351 autoreload 16744 1020 Watching for file changes with StatReloader
+INFO 2025-11-10 09:06:50,000 wsgi 16744 15848 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:07:40,456 apps 17792 18952 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:07:40,974 apps 11900 6220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:07:40,989 autoreload 11900 6220 Watching for file changes with StatReloader
+INFO 2025-11-10 09:07:41,342 wsgi 11900 7152 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:08:00,539 apps 16008 13932 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:08:19,485 apps 9592 13200 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:08:47,307 apps 12640 11668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:08:47,876 apps 14868 7260 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:08:47,898 autoreload 14868 7260 Watching for file changes with StatReloader
+INFO 2025-11-10 09:08:48,249 wsgi 14868 7456 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:16:57,705 basehttp 16744 456 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41695
+INFO 2025-11-10 09:16:57,738 basehttp 16744 456 "GET /media/beneficios/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-10 09:17:20,605 basehttp 16744 456 "GET /reconocimientos/ HTTP/1.1" 200 28049
+INFO 2025-11-10 09:18:43,304 autoreload 14868 7260 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\development.py changed, reloading.
+INFO 2025-11-10 09:18:43,796 autoreload 16744 1020 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\development.py changed, reloading.
+INFO 2025-11-10 09:18:44,174 apps 11192 4648 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:18:44,199 autoreload 11192 4648 Watching for file changes with StatReloader
+INFO 2025-11-10 09:18:44,605 wsgi 11192 18564 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:18:44,629 apps 17452 6928 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:18:44,650 autoreload 17452 6928 Watching for file changes with StatReloader
+INFO 2025-11-10 09:18:45,027 wsgi 17452 19020 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:19:13,422 basehttp 11192 6544 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:19:13,505 basehttp 11192 6544 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22735
+INFO 2025-11-10 09:26:56,711 autoreload 11192 4648 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 09:26:56,933 autoreload 17452 6928 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 09:26:57,662 apps 8776 10532 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:26:57,683 autoreload 8776 10532 Watching for file changes with StatReloader
+INFO 2025-11-10 09:26:57,830 apps 12300 15848 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:26:57,840 autoreload 12300 15848 Watching for file changes with StatReloader
+INFO 2025-11-10 09:26:58,429 wsgi 8776 18188 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:26:58,438 wsgi 12300 7396 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 09:27:48,589 basehttp 8776 1320 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22751
+INFO 2025-11-10 09:28:34,219 basehttp 8776 1320 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:28:34,306 basehttp 8776 1320 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22751
+INFO 2025-11-10 09:28:49,157 basehttp 8776 1320 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:28:49,165 basehttp 8776 1320 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:28:55,166 basehttp 8776 1320 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:28:55,199 basehttp 8776 1320 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:29:44,871 basehttp 8776 1320 "GET /empleados/ HTTP/1.1" 200 98647
+INFO 2025-11-10 09:29:48,116 basehttp 8776 1320 "GET /empleados/crear/ HTTP/1.1" 200 202562
+INFO 2025-11-10 09:35:30,922 basehttp 8776 8900 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:35:31,166 basehttp 8776 8900 "GET /empleados/ HTTP/1.1" 200 99484
+INFO 2025-11-10 09:35:53,771 basehttp 8776 8900 "GET /empleados/ HTTP/1.1" 200 98647
+INFO 2025-11-10 09:39:03,228 basehttp 8776 7856 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:39:05,353 basehttp 8776 7856 "GET /empleados/ HTTP/1.1" 200 98647
+INFO 2025-11-10 09:39:07,521 basehttp 8776 7856 "GET /empleados/70c02329-5575-42ac-b634-cf224bca1fb5/ HTTP/1.1" 200 65081
+INFO 2025-11-10 09:39:17,375 basehttp 8776 7856 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:39:17,379 basehttp 8776 7856 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:39:36,271 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:39:36,288 basehttp 8776 7856 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:39:39,906 basehttp 8776 7856 "GET /empleados/ HTTP/1.1" 200 98647
+INFO 2025-11-10 09:39:47,055 basehttp 8776 7856 "GET /empleados/?page=2 HTTP/1.1" 200 99253
+INFO 2025-11-10 09:39:55,273 basehttp 8776 7856 "GET /empleados/?page=3 HTTP/1.1" 200 66771
+INFO 2025-11-10 09:40:36,390 basehttp 8776 7856 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:40:36,390 basehttp 8776 7856 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:41:06,688 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 200 3898
+INFO 2025-11-10 09:42:16,988 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 200 3898
+INFO 2025-11-10 09:42:23,558 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:42:23,607 basehttp 8776 7856 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:42:26,779 basehttp 8776 7856 "GET /empleados/ HTTP/1.1" 200 98647
+INFO 2025-11-10 09:42:33,588 basehttp 8776 7856 "GET /empleados/?search=que&estado=&area=&cargo=&sede= HTTP/1.1" 200 21149
+INFO 2025-11-10 09:42:40,754 basehttp 8776 7856 "GET /empleados/bab27a5c-fe18-4059-ac4e-77dce0f25458/ HTTP/1.1" 200 65996
+INFO 2025-11-10 09:43:14,090 basehttp 8776 7856 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:43:14,105 basehttp 8776 7856 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:43:50,412 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 200 3898
+INFO 2025-11-10 09:44:37,903 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 200 3898
+INFO 2025-11-10 09:44:52,269 basehttp 8776 7856 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:44:52,303 basehttp 8776 7856 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:44:57,821 basehttp 8776 7856 "GET /admin/ HTTP/1.1" 200 49868
+INFO 2025-11-10 09:44:57,836 basehttp 8776 7856 "GET /static/admin/css/base.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,840 basehttp 8776 11864 "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,840 basehttp 8776 7856 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,841 basehttp 8776 9108 "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,842 basehttp 8776 1320 "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,842 basehttp 8776 13120 "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,845 basehttp 8776 13120 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,851 basehttp 8776 1320 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:44:57,851 basehttp 8776 13120 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,155 basehttp 8776 1320 "GET /admin/authentication/usuario/ HTTP/1.1" 200 103514
+INFO 2025-11-10 09:45:07,184 basehttp 8776 1320 "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,192 basehttp 8776 11864 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,192 basehttp 8776 13120 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,192 basehttp 8776 9108 "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,193 basehttp 8776 7856 "GET /static/admin/js/core.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,194 basehttp 8776 9196 "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,195 basehttp 8776 13120 "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,196 basehttp 8776 9108 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,198 basehttp 8776 11864 "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,209 basehttp 8776 13120 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-11-10 09:45:07,209 basehttp 8776 9196 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-11-10 09:45:07,212 basehttp 8776 9196 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,215 basehttp 8776 9196 "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,236 basehttp 8776 1320 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-10 09:45:07,261 basehttp 8776 9196 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,262 basehttp 8776 9196 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:07,269 basehttp 8776 1320 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-11-10 09:45:25,755 basehttp 8776 1320 "GET /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/change/ HTTP/1.1" 200 82694
+INFO 2025-11-10 09:45:25,787 basehttp 8776 11864 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,787 basehttp 8776 13120 "GET /static/admin/js/calendar.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,787 basehttp 8776 1320 "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,790 basehttp 8776 1320 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,792 basehttp 8776 1320 "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,810 basehttp 8776 9108 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-11-10 09:45:25,810 basehttp 8776 7856 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+INFO 2025-11-10 09:45:25,813 basehttp 8776 9108 "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,940 basehttp 8776 9196 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-10 09:45:25,980 basehttp 8776 7856 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 304 0
+INFO 2025-11-10 09:45:25,994 basehttp 8776 9108 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+INFO 2025-11-10 09:45:25,994 basehttp 8776 9196 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+INFO 2025-11-10 09:45:44,655 basehttp 8776 9196 "GET /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/password/ HTTP/1.1" 200 39188
+INFO 2025-11-10 09:45:44,680 basehttp 8776 9196 "GET /static/admin/css/unusable_password_field.css HTTP/1.1" 200 663
+INFO 2025-11-10 09:45:44,687 basehttp 8776 9108 "GET /static/admin/js/unusable_password_field.js HTTP/1.1" 200 1480
+INFO 2025-11-10 09:46:06,371 basehttp 8776 9108 "POST /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/password/ HTTP/1.1" 200 39463
+INFO 2025-11-10 09:47:10,121 basehttp 8776 9108 "POST /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/password/ HTTP/1.1" 200 39416
+INFO 2025-11-10 09:48:00,654 basehttp 8776 9108 "POST /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/password/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:48:00,772 basehttp 8776 9108 "GET /admin/authentication/usuario/1420f694-06da-46b7-af15-7af7bc503449/change/ HTTP/1.1" 200 82841
+INFO 2025-11-10 09:48:00,795 basehttp 8776 9108 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-10 09:48:16,220 basehttp 8776 9108 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 09:48:18,446 basehttp 8776 9108 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:48:18,455 basehttp 8776 9108 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 09:48:50,524 basehttp 8776 9108 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:48:50,538 basehttp 8776 9108 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 09:48:50,607 basehttp 8776 9108 "GET /empleados/perfil/bab27a5c-fe18-4059-ac4e-77dce0f25458/ HTTP/1.1" 200 23163
+INFO 2025-11-10 09:50:10,352 autoreload 12300 15848 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 09:50:11,001 autoreload 8776 10532 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 09:50:14,593 apps 16268 16832 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 09:50:14,707 autoreload 16268 16832 Watching for file changes with StatReloader
+INFO 2025-11-10 09:50:14,708 autoreload 1132 11080 Watching for file changes with StatReloader
+INFO 2025-11-10 09:50:17,009 wsgi 16268 19224 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:31:11,897 autoreload 16268 16832 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:31:11,914 autoreload 1132 11080 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:31:13,018 apps 7244 6908 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:31:13,023 apps 10312 12048 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:31:13,037 autoreload 7244 6908 Watching for file changes with StatReloader
+INFO 2025-11-10 10:31:13,043 autoreload 10312 12048 Watching for file changes with StatReloader
+INFO 2025-11-10 10:31:13,701 wsgi 10312 6528 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:31:13,701 wsgi 7244 17984 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:31:19,298 autoreload 7244 6908 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:31:19,313 autoreload 10312 12048 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:31:20,399 apps 6672 10224 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:31:20,405 apps 13844 11072 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:31:20,420 autoreload 6672 10224 Watching for file changes with StatReloader
+INFO 2025-11-10 10:31:20,427 autoreload 13844 11072 Watching for file changes with StatReloader
+INFO 2025-11-10 10:31:20,987 wsgi 6672 7696 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:31:20,987 wsgi 13844 7612 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:33:39,670 basehttp 6672 13764 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:33:39,703 basehttp 6672 13764 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 10:33:42,907 basehttp 6672 13764 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:33:43,027 basehttp 6672 13764 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 10:33:47,469 basehttp 6672 13764 "GET /empleados/ HTTP/1.1" 200 98684
+INFO 2025-11-10 10:33:59,170 basehttp 6672 13764 "GET /empleados/?search=m&estado=&area=&cargo=&sede= HTTP/1.1" 200 53117
+INFO 2025-11-10 10:34:18,168 basehttp 6672 13764 "GET /empleados/c031a700-6581-4be3-a84c-9b995f262bc4/ HTTP/1.1" 200 65310
+INFO 2025-11-10 10:36:03,107 autoreload 13844 11072 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:36:03,536 autoreload 6672 10224 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:36:03,901 apps 10520 4724 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:36:03,923 autoreload 10520 4724 Watching for file changes with StatReloader
+INFO 2025-11-10 10:36:04,321 apps 12220 12388 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:36:04,343 autoreload 12220 12388 Watching for file changes with StatReloader
+INFO 2025-11-10 10:36:04,384 wsgi 10520 18956 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:36:04,768 wsgi 12220 16032 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
