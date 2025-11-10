@@ -109,7 +109,12 @@ class TipoInsignia(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField()
     criterios = models.TextField()
-    icono = models.ImageField(upload_to='insignias/', blank=True)
+    from custom_storage.media import MediaStorage
+    icono = models.ImageField(
+        upload_to='insignias/', 
+        storage=MediaStorage(),
+        blank=True
+    )
     color_hex = models.CharField(max_length=7, default='#1f2937')
     nivel = models.CharField(max_length=20, choices=NIVELES, default='bronce')
     puntos_requeridos = models.IntegerField(null=True, blank=True)
@@ -150,7 +155,12 @@ class TipoBeneficio(models.Model):
     costo_puntos = models.IntegerField()
     stock_inicial = models.IntegerField(null=True, blank=True)
     stock_actual = models.IntegerField(null=True, blank=True)
-    imagen = models.ImageField(upload_to='beneficios/', blank=True)
+    from custom_storage.media import MediaStorage
+    imagen = models.ImageField(
+        upload_to='beneficios/', 
+        storage=MediaStorage(),
+        blank=True
+    )
     terminos_condiciones = models.TextField(blank=True)
     vigencia_inicio = models.DateField(null=True, blank=True)
     vigencia_fin = models.DateField(null=True, blank=True)

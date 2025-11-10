@@ -69,8 +69,10 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         # Aplicar filtro de búsqueda
         if search:
             queryset = queryset.filter(
-                Q(nombres__istartswith=search) |
-                Q(apellidos__istartswith=search)
+                Q(nombres__icontains=search) |
+                Q(apellidos__icontains=search) |
+                Q(numero_documento__icontains=search) |
+                Q(correo_electronico__icontains=search)
             )
         
         # Aplicar filtros específicos
@@ -92,7 +94,7 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
                 historialcargo__activo=True
             )
         
-        return queryset.distinct().order_by('nombres', 'apellidos')
+        return queryset.distinct().order_by('apellidos', 'nombres')
     
     def get_context_data(self, **kwargs):
         """Agregar contexto adicional"""
