@@ -52980,3 +52980,64 @@ INFO 2025-11-10 10:36:04,321 apps 12220 12388 [CoreConfig.ready] DEFAULT_FILE_ST
 INFO 2025-11-10 10:36:04,343 autoreload 12220 12388 Watching for file changes with StatReloader
 INFO 2025-11-10 10:36:04,384 wsgi 10520 18956 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
 INFO 2025-11-10 10:36:04,768 wsgi 12220 16032 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:41:41,169 basehttp 10520 2780 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:41:41,203 basehttp 10520 2780 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 10:44:18,923 apps 8612 10148 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:44:19,392 apps 1680 10644 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:44:19,408 autoreload 1680 10644 Watching for file changes with StatReloader
+INFO 2025-11-10 10:44:19,850 wsgi 1680 16484 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:44:27,722 basehttp 10520 2780 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:44:27,774 basehttp 10520 2780 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 10:44:33,800 basehttp 10520 2780 "GET /empleados/ HTTP/1.1" 200 98684
+INFO 2025-11-10 10:44:37,352 basehttp 10520 2780 "GET /empleados/c031a700-6581-4be3-a84c-9b995f262bc4/ HTTP/1.1" 200 65310
+INFO 2025-11-10 10:44:46,670 basehttp 10520 2780 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:44:46,670 basehttp 10520 2780 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 10:44:50,919 basehttp 10520 2780 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:44:50,932 basehttp 10520 2780 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:44:51,035 basehttp 10520 2780 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 23146
+INFO 2025-11-10 10:45:08,572 basehttp 10520 2780 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:45:08,576 basehttp 10520 2780 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 10:45:12,915 basehttp 10520 2780 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:45:12,932 basehttp 10520 2780 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 10:45:17,902 basehttp 10520 2780 "GET /reconocimientos/ HTTP/1.1" 200 140523
+INFO 2025-11-10 10:45:25,818 basehttp 10520 2780 "GET /reconocimientos/ranking/ HTTP/1.1" 200 90140
+INFO 2025-11-10 10:45:31,285 basehttp 10520 2780 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:45:31,285 basehttp 10520 2780 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 10:45:35,913 basehttp 10520 2780 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:45:35,927 basehttp 10520 2780 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 10:45:36,012 basehttp 10520 2780 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 23146
+INFO 2025-11-10 10:48:53,265 autoreload 10520 4724 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:48:53,973 autoreload 1680 10644 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:48:54,258 apps 9548 10204 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:48:54,277 autoreload 9548 10204 Watching for file changes with StatReloader
+INFO 2025-11-10 10:48:54,980 wsgi 9548 19196 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:48:55,074 apps 18508 14972 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:48:55,095 autoreload 18508 14972 Watching for file changes with StatReloader
+INFO 2025-11-10 10:48:55,555 wsgi 18508 15236 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:58:49,868 basehttp 9548 12944 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22950
+INFO 2025-11-10 10:58:56,699 basehttp 9548 12944 "GET /reconocimientos/ HTTP/1.1" 200 28049
+INFO 2025-11-10 10:59:00,567 basehttp 9548 12944 "GET /reconocimientos/mis-logros/ HTTP/1.1" 200 22253
+INFO 2025-11-10 10:59:33,566 autoreload 9548 10204 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:59:33,841 autoreload 18508 14972 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 10:59:34,451 apps 7536 2800 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:59:34,467 autoreload 7536 2800 Watching for file changes with StatReloader
+INFO 2025-11-10 10:59:34,651 apps 1944 12860 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 10:59:34,668 autoreload 1944 12860 Watching for file changes with StatReloader
+INFO 2025-11-10 10:59:34,908 wsgi 7536 7672 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 10:59:35,167 wsgi 1944 16744 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 11:00:10,351 basehttp 7536 268 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:00:10,485 basehttp 7536 268 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 22950
+INFO 2025-11-10 11:02:26,468 basehttp 7536 268 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:02:26,485 basehttp 7536 268 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 11:02:30,916 basehttp 7536 268 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:02:30,949 basehttp 7536 268 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 11:02:39,470 basehttp 7536 268 "GET /empleados/ HTTP/1.1" 200 98684
+INFO 2025-11-10 11:02:45,851 basehttp 7536 268 "GET /empleados/?search=&estado=2&area=&cargo=&sede= HTTP/1.1" 200 17717
+INFO 2025-11-10 11:02:54,770 basehttp 7536 268 "GET /empleados/?search=&estado=&area=&cargo=&sede= HTTP/1.1" 200 98824
+INFO 2025-11-10 11:03:02,718 basehttp 7536 268 "GET /empleados/?search=&estado=4&area=&cargo=&sede= HTTP/1.1" 200 25138
+INFO 2025-11-10 11:03:13,468 basehttp 7536 268 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 67116
+INFO 2025-11-10 11:04:04,022 basehttp 7536 268 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:04:04,022 basehttp 7536 268 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 11:04:25,452 basehttp 7536 268 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:04:25,471 basehttp 7536 268 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:04:25,533 basehttp 7536 268 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 23163

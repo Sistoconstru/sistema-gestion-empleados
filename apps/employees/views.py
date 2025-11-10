@@ -1116,20 +1116,22 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
     def get_sistema_puntos(self, empleado):
         """Obtener información del sistema de puntos y reconocimientos"""
         try:
-            from apps.recognition.models import PuntoEmpleado, InsigniaEmpleado
+            from apps.recognition.models import HistorialPuntos, InsigniaEmpleado
             from django.db import models
             
             # Puntos totales
-            puntos_totales = PuntoEmpleado.objects.filter(
-                empleado=empleado
+            puntos_totales = HistorialPuntos.objects.filter(
+                empleado=empleado,
+                validado=True
             ).aggregate(
                 total=models.Sum('puntos')
             )['total'] or 0
             
             # Puntos este mes
             inicio_mes = date.today().replace(day=1)
-            puntos_mes = PuntoEmpleado.objects.filter(
+            puntos_mes = HistorialPuntos.objects.filter(
                 empleado=empleado,
+                validado=True,
                 fecha_obtencion__gte=inicio_mes
             ).aggregate(
                 total=models.Sum('puntos')
@@ -1138,10 +1140,12 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             # Insignias obtenidas
             insignias = InsigniaEmpleado.objects.filter(
                 empleado=empleado
-            ).select_related('insignia')
+            ).select_related('tipo_insignia')
             
             # Posición en ranking (aproximada)
-            empleados_mas_puntos = PuntoEmpleado.objects.values('empleado').annotate(
+            empleados_mas_puntos = HistorialPuntos.objects.filter(
+                validado=True
+            ).values('empleado').annotate(
                 total_puntos=models.Sum('puntos')
             ).filter(
                 total_puntos__gt=puntos_totales
