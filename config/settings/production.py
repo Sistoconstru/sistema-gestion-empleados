@@ -3,7 +3,7 @@ from .base import *
 # Configuración de storage para producción
 DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'
 
-car el settings activo
+# Log para verificar el settings activo
 import os
 import logging
 from django.conf import settings
