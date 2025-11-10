@@ -1384,5 +1384,73 @@ def cambiar_cargo_empleado(request, pk):
         return JsonResponse({'success': False, 'message': 'Error interno del servidor'})
 
 
+@login_required
+def empleados_periodo_prueba_reporte(request):
+    """Vista para mostrar empleados en periodo de prueba y sus fechas de activación automática"""
+    
+    try:
+        # Obtener estado de periodo de prueba
+        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
+    except EstadoEmpleado.DoesNotExist:
+        messages.error(request, 'No se encontró el estado de periodo de prueba')
+        return redirect('employees:empleado_list')
+    
+    # Obtener días de antelación de los parámetros GET o usar 7 por defecto
+    dias_antelacion = int(request.GET.get('dias_antelacion', 7))
+    if dias_antelacion < 1 or dias_antelacion > 30:
+        dias_antelacion = 7
+    
+    # Obtener empleados en periodo de prueba
+    empleados_prueba = Empleado.objects.filter(
+        estado=estado_prueba
+    ).select_related(
+        'sede', 'tipo_documento', 'estado'
+    ).prefetch_related(
+        'historialcargo_set__cargo__area'
+    ).order_by('fecha_ingreso')
+    
+    # Calcular información de activación para cada empleado
+    empleados_info = []
+    hoy = timezone.now().date()
+    
+    for empleado in empleados_prueba:
+        dias_transcurridos = (hoy - empleado.fecha_ingreso).days
+        dias_restantes = 90 - dias_transcurridos
+        fecha_activacion = empleado.fecha_ingreso + timedelta(days=90)
+        
+        # Determinar estado de activación
+        if dias_transcurridos >= 90:
+            estado_activacion = 'Listo para activar'
+        elif dias_restantes <= dias_antelacion:
+            estado_activacion = f'Próximo a activar'
+        else:
+            estado_activacion = f'En período de prueba'
+        
+        empleados_info.append({
+            'empleado': empleado,
+            'dias_transcurridos': dias_transcurridos,
+            'dias_restantes': max(0, dias_restantes),
+            'fecha_activacion': fecha_activacion,
+            'estado_activacion': estado_activacion,
+            'cargo_actual': empleado.cargo_actual,
+        })
+    
+    # Estadísticas generales
+    total_empleados = len(empleados_info)
+    listos_activar = len([e for e in empleados_info if e['dias_restantes'] == 0])
+    proximos_activar = len([e for e in empleados_info if 0 < e['dias_restantes'] <= dias_antelacion])
+    
+    context = {
+        'empleados_info': empleados_info,
+        'total_empleados': total_empleados,
+        'listos_activar': listos_activar,
+        'proximos_activar': proximos_activar,
+        'fecha_actual': hoy,
+        'dias_antelacion': dias_antelacion,
+    }
+    
+    return render(request, 'employees/periodo_prueba_reporte.html', context)
+
+
 # Agregar import para agregaciones
 from django.db import models

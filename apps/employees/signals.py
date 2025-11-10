@@ -1,8 +1,11 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from .models import HistorialCargo, Empleado
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=Empleado)
@@ -60,3 +63,47 @@ def crear_usuario_automatico_empleado(sender, instance, created, **kwargs):
                 print(f"[ERROR al crear usuario automático]: {e}")
 
         transaction.on_commit(crear_usuario_post_commit)
+
+
+@receiver(pre_save, sender=Empleado)
+def capturar_estado_anterior(sender, instance, **kwargs):
+    """Captura el estado anterior del empleado antes de guardarlo"""
+    if instance.pk:
+        try:
+            instance._estado_anterior = Empleado.objects.get(pk=instance.pk).estado
+        except Empleado.DoesNotExist:
+            instance._estado_anterior = None
+    else:
+        instance._estado_anterior = None
+
+
+@receiver(post_save, sender=Empleado)
+def registrar_cambio_estado(sender, instance, created, **kwargs):
+    """Registra cambios de estado de empleados para auditoría"""
+    if not created and hasattr(instance, '_estado_anterior'):
+        estado_anterior = instance._estado_anterior
+        estado_actual = instance.estado
+        
+        if estado_anterior and estado_anterior != estado_actual:
+            # Detectar si fue un cambio automático de periodo de prueba a activo
+            es_activacion_automatica = (
+                estado_anterior.codigo == 'p-prue' and 
+                estado_actual.codigo == '999'
+            )
+            
+            # Log del cambio de estado
+            if es_activacion_automatica:
+                logger.info(
+                    f"ACTIVACIÓN AUTOMÁTICA: Empleado {instance.numero_documento} "
+                    f"({instance.nombre_completo}) cambió de estado '{estado_anterior.nombre}' "
+                    f"a '{estado_actual.nombre}' automáticamente por cumplir periodo de prueba"
+                )
+            else:
+                logger.info(
+                    f"CAMBIO DE ESTADO: Empleado {instance.numero_documento} "
+                    f"({instance.nombre_completo}) cambió de estado '{estado_anterior.nombre}' "
+                    f"a '{estado_actual.nombre}'"
+                )
+        
+        # Limpiar el estado anterior
+        delattr(instance, '_estado_anterior')

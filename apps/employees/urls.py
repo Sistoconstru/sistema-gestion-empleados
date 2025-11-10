@@ -29,6 +29,9 @@ urlpatterns = [
     # Gestión de cargos
     path('<uuid:pk>/cambiar-cargo/', views.cambiar_cargo_empleado, name='cambiar_cargo'),
     
+    # Reportes especiales
+    path('periodo-prueba/', views.empleados_periodo_prueba_reporte, name='periodo_prueba_reporte'),
+    
     # Historial de cargos (para futuras funcionalidades)
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),
 ]

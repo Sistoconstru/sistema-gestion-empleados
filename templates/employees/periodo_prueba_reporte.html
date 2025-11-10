@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reporte - Empleados en Período de Prueba{% endblock %}
+
+{% block extra_css %}
+<style>
+    .estado-badge {
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.4rem;
+        font-weight: bold;
+        text-align: center;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        display: inline-block;
+        min-width: fit-content;
+        line-height: 1.2;
+    }
+    .card-stats {
+        border-left: 4px solid var(--bs-corporativo, #2c5530);
+    }
+    .table-responsive {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    .empleado-row:hover {
+        background-color: #f8f9fa;
+    }
+    /* Colores corporativos para estados */
+    .estado-listo {
+        background-color: #28a745;
+        border: 1px solid #1e7e34;
+    }
+    .estado-proximo {
+        background-color: #ffc107;
+        color: #212529 !important;
+        border: 1px solid #e0a800;
+    }
+    .estado-pendiente {
+        background-color: #17a2b8;
+        border: 1px solid #138496;
+    }
+    /* Mejorar contraste de la tabla */
+    .table-header-corporativo {
+        background-color: #2c5530 !important;
+        color: white !important;
+    }
+    .table-header-corporativo th {
+        border-color: #1a3d1f !important;
+        font-weight: 600;
+        padding: 1rem 0.75rem;
+    }
+    /* Ancho específico para columnas */
+    .col-estado {
+        min-width: 140px;
+        width: 140px;
+    }
+    .col-acciones {
+        min-width: 100px;
+        width: 100px;
+    }
+    .col-dias {
+        min-width: 120px;
+        width: 120px;
+    }
+    .badge-documento {
+        background-color: #6c757d;
+        font-size: 0.75rem;
+    }
+    .dias-badge {
+        background-color: #2c5530;
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'employees:empleado_list' %}">Empleados</a></li>
+            <li class="breadcrumb-item active">Período de Prueba</li>
+        </ol>
+    </nav>
+
+    <!-- Título -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clock me-2"></i>Empleados en Período de Prueba</h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Volver
+            </a>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#configurarDiasModal">
+                <i class="fas fa-cog me-1"></i>Configurar Días
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card card-stats">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title text-muted mb-0">Total en Prueba</h5>
+                            <h2 class="mb-0">{{ total_empleados }}</h2>
+                        </div>
+                        <div style="color: #2c5530;">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="border-left: 4px solid #28a745;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title text-muted mb-0">Listos para Activar</h5>
+                            <h2 class="mb-0 text-success">{{ listos_activar }}</h2>
+                        </div>
+                        <div class="text-success">
+                            <i class="fas fa-user-check fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="border-left: 4px solid #ffc107;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title text-muted mb-0">Próximos a Activar</h5>
+                            <h2 class="mb-0" style="color: #856404;">{{ proximos_activar }}</h2>
+                        </div>
+                        <div style="color: #856404;">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="border-left: 4px solid #2c5530;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h5 class="card-title text-muted mb-0">Fecha Actual</h5>
+                            <h6 class="mb-0">{{ fecha_actual|date:"d/m/Y" }}</h6>
+                        </div>
+                        <div style="color: #2c5530;">
+                            <i class="fas fa-calendar fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional (solo en desarrollo) -->
+    {% if debug %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5><i class="fas fa-info-circle me-2"></i>Información sobre Activación Automática</h5>
+                <p class="mb-2">Los empleados en período de prueba se activan automáticamente después de <strong>90 días (3 meses)</strong> desde su fecha de ingreso.</p>
+                <p class="mb-0">
+                    <strong>Comando manual:</strong> <code>python manage.py activar_empleados_prueba</code><br>
+                    <strong>Comando con vista previa:</strong> <code>python manage.py activar_empleados_prueba --dry-run</code>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de empleados -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>Lista de Empleados en Período de Prueba
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            {% if empleados_info %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-header-corporativo">
+                        <tr>
+                            <th>Empleado</th>
+                            <th>Documento</th>
+                            <th>Cargo</th>
+                            <th>Sede</th>
+                            <th>Fecha Ingreso</th>
+                            <th class="col-dias">Días Transcurridos</th>
+                            <th>Fecha Activación</th>
+                            <th class="col-estado">Estado</th>
+                            <th class="col-acciones">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for info in empleados_info %}
+                        <tr class="empleado-row">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <strong>{{ info.empleado.nombre_completo }}</strong><br>
+                                        <small class="text-muted">{{ info.empleado.correo_electronico }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-documento">{{ info.empleado.tipo_documento.codigo }}</span><br>
+                                {{ info.empleado.numero_documento }}
+                            </td>
+                            <td>
+                                {% if info.cargo_actual %}
+                                    <strong>{{ info.cargo_actual.cargo.nombre }}</strong><br>
+                                    <small class="text-muted">{{ info.cargo_actual.cargo.area.nombre }}</small>
+                                {% else %}
+                                    <span class="text-muted">Sin cargo asignado</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ info.empleado.sede.nombre }}</td>
+                            <td>
+                                {{ info.empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                                <small class="text-muted">{{ info.empleado.fecha_ingreso|timesince }} atrás</small>
+                            </td>
+                            <td class="col-dias">
+                                <span class="badge dias-badge">{{ info.dias_transcurridos }} días</span>
+                            </td>
+                            <td>
+                                {{ info.fecha_activacion|date:"d/m/Y" }}<br>
+                                {% if info.dias_restantes == 0 %}
+                                    <small class="text-success"><strong>¡Ya cumplió!</strong></small>
+                                {% else %}
+                                    <small class="text-muted">En {{ info.dias_restantes }} días</small>
+                                {% endif %}
+                            </td>
+                            <td class="col-estado">
+                                {% if info.dias_restantes == 0 %}
+                                    <span class="estado-badge estado-listo">
+                                        ¡Listo!
+                                    </span>
+                                {% elif info.dias_restantes <= dias_antelacion %}
+                                    <span class="estado-badge estado-proximo">
+                                        {{ info.dias_restantes }} días
+                                    </span>
+                                {% else %}
+                                    <span class="estado-badge estado-pendiente">
+                                        {{ info.dias_restantes }} días
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="col-acciones">
+                                <div class="btn-group-sm">
+                                    <a href="{% url 'employees:empleado_detail' info.empleado.pk %}" 
+                                       class="btn btn-sm btn-outline-primary" title="Ver perfil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% if info.dias_restantes == 0 %}
+                                    <button type="button" class="btn btn-sm btn-success" 
+                                            onclick="activarEmpleado('{{ info.empleado.pk }}')" 
+                                            title="Activar ahora">
+                                        <i class="fas fa-user-check"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-smile fa-3x text-success mb-3"></i>
+                <h4>¡Excelente!</h4>
+                <p class="text-muted">No hay empleados en período de prueba en este momento.</p>
+                <a href="{% url 'employees:empleado_list' %}" class="btn btn-primary">
+                    <i class="fas fa-users me-1"></i>Ver Todos los Empleados
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Configuración -->
+<div class="modal fade" id="configurarDiasModal" tabindex="-1" aria-labelledby="configurarDiasModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #2c5530; color: white;">
+                <h5 class="modal-title" id="configurarDiasModalLabel">
+                    <i class="fas fa-cog me-2"></i>Configurar Días de Antelación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="configurarDiasForm">
+                    <div class="mb-3">
+                        <label for="diasAntelacion" class="form-label">
+                            <i class="fas fa-calendar-alt me-2"></i>Días de antelación para mostrar "Próximos a Activar"
+                        </label>
+                        <input type="number" class="form-control" id="diasAntelacion" value="7" min="1" max="30">
+                        <div class="form-text">
+                            Los empleados que les falten esta cantidad de días o menos aparecerán en "Próximos a Activar"
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Configuración actual:</strong> Se muestran empleados con {{ dias_antelacion }} días o menos para activarse.
+                        <br>
+                        <strong>Total período de prueba:</strong> 90 días (3 meses)
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="aplicarConfiguracion()">
+                    <i class="fas fa-check me-1"></i>Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Obtener configuración actual de localStorage o usar valor por defecto
+let diasAntelacion = localStorage.getItem('diasAntelacionPeriodoPrueba') || {{ dias_antelacion }};
+
+// Aplicar configuración al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('diasAntelacion').value = diasAntelacion;
+});
+
+function aplicarConfiguracion() {
+    const nuevoDias = document.getElementById('diasAntelacion').value;
+    
+    if (nuevoDias < 1 || nuevoDias > 30) {
+        alert('Los días deben estar entre 1 y 30');
+        return;
+    }
+    
+    // Guardar en localStorage
+    localStorage.setItem('diasAntelacionPeriodoPrueba', nuevoDias);
+    diasAntelacion = nuevoDias;
+    
+    // Cerrar modal
+    bootstrap.Modal.getInstance(document.getElementById('configurarDiasModal')).hide();
+    
+    // Recargar página con nueva configuración
+    const url = new URL(window.location);
+    url.searchParams.set('dias_antelacion', nuevoDias);
+    window.location = url;
+}
+
+function actualizarEstadisticas() {
+    // Actualizar las estadísticas basadas en la nueva configuración
+    const filas = document.querySelectorAll('.empleado-row');
+    let proximosCount = 0;
+    
+    filas.forEach(fila => {
+        const badge = fila.querySelector('.estado-badge');
+        const diasRestantes = parseInt(badge.textContent.replace(' días', '').replace('¡Listo!', '0'));
+        
+        if (diasRestantes > 0 && diasRestantes <= diasAntelacion) {
+            proximosCount++;
+        }
+    });
+    
+    // Aquí podrías actualizar las estadísticas en tiempo real si fuera necesario
+}
+
+// Auto-actualizar cada 5 minutos
+setInterval(function() {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}

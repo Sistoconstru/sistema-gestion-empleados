@@ -53041,3 +53041,113 @@ INFO 2025-11-10 11:04:04,022 basehttp 7536 268 "GET /auth/login/ HTTP/1.1" 200 3
 INFO 2025-11-10 11:04:25,452 basehttp 7536 268 "POST /auth/login/ HTTP/1.1" 302 0
 INFO 2025-11-10 11:04:25,471 basehttp 7536 268 "GET /dashboard/ HTTP/1.1" 302 0
 INFO 2025-11-10 11:04:25,533 basehttp 7536 268 "GET /empleados/perfil/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 23163
+INFO 2025-11-10 11:35:33,367 basehttp 7536 8684 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:35:33,371 basehttp 7536 8684 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-10 11:35:36,623 basehttp 7536 8684 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:35:36,658 basehttp 7536 8684 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 11:36:02,964 basehttp 7536 12980 "GET /empleados/ HTTP/1.1" 200 98684
+INFO 2025-11-10 11:36:18,667 basehttp 7536 12980 "GET /empleados/?search=f&estado=&area=&cargo=&sede= HTTP/1.1" 200 45041
+INFO 2025-11-10 11:36:23,310 basehttp 7536 12980 "GET /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 71027
+INFO 2025-11-10 11:36:29,655 basehttp 7536 12980 "GET /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/editar/ HTTP/1.1" 200 204242
+INFO 2025-11-10 11:37:18,718 basehttp 7536 12980 "POST /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/editar/ HTTP/1.1" 302 0
+INFO 2025-11-10 11:37:18,866 basehttp 7536 12980 "GET /empleados/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 71836
+INFO 2025-11-10 11:38:45,883 basehttp 7536 12980 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 11:38:47,818 basehttp 7536 12980 "GET /empleados/ HTTP/1.1" 200 98684
+INFO 2025-11-10 11:39:05,799 basehttp 7536 12980 "GET /empleados/?page=2 HTTP/1.1" 200 99156
+INFO 2025-11-10 11:39:14,916 basehttp 7536 12980 "GET /empleados/?search=&estado=4&area=&cargo=&sede= HTTP/1.1" 200 25138
+INFO 2025-11-10 12:02:23,417 basehttp 7536 9648 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 12:06:23,825 autoreload 7536 2800 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\views.py changed, reloading.
+INFO 2025-11-10 12:06:24,936 apps 17448 6120 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:06:24,948 autoreload 17448 6120 Watching for file changes with StatReloader
+INFO 2025-11-10 12:06:25,460 wsgi 17448 16884 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:08:24,649 basehttp 17448 18444 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 12:08:27,032 basehttp 17448 18444 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 12:08:45,793 apps 17492 16040 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:08:46,273 apps 5696 2128 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:08:46,295 autoreload 5696 2128 Watching for file changes with StatReloader
+INFO 2025-11-10 12:08:46,647 wsgi 5696 8760 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:08:50,369 basehttp 5696 18576 "GET / HTTP/1.1" 302 0
+INFO 2025-11-10 12:08:50,512 basehttp 5696 18576 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 12:08:54,716 basehttp 5696 18576 "GET /dashboard/ HTTP/1.1" 200 17145
+INFO 2025-11-10 12:10:05,440 basehttp 5696 18576 "GET /admin/ HTTP/1.1" 200 49917
+INFO 2025-11-10 12:10:42,064 basehttp 5696 18576 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 41609
+INFO 2025-11-10 12:10:42,095 basehttp 5696 18576 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-10 12:12:25,567 autoreload 5696 2128 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\views.py changed, reloading.
+INFO 2025-11-10 12:12:26,524 apps 7800 13068 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:12:26,551 autoreload 7800 13068 Watching for file changes with StatReloader
+INFO 2025-11-10 12:12:27,167 wsgi 7800 18584 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:13:16,108 apps 16056 10920 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:13:16,625 apps 18044 7772 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:13:16,625 autoreload 18044 7772 Watching for file changes with StatReloader
+INFO 2025-11-10 12:13:17,029 wsgi 18044 18912 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:13:20,232 basehttp 18044 16644 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 12:17:37,595 autoreload 18044 7772 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\views.py changed, reloading.
+INFO 2025-11-10 12:17:38,427 apps 7888 7816 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:17:38,453 autoreload 7888 7816 Watching for file changes with StatReloader
+INFO 2025-11-10 12:17:38,812 wsgi 7888 6160 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:19:19,648 apps 4328 18576 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:19:34,842 apps 5692 7772 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:20:50,208 apps 10684 17452 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:21:19,174 apps 13376 6648 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:22:22,149 apps 1900 18744 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:22:22,165 activar_empleados_automatico 1900 18744 Iniciando proceso de activación automática de empleados
+INFO 2025-11-10 12:22:22,165 activar_empleados_automatico 1900 18744 Configuración Django: config.settings.development
+INFO 2025-11-10 12:22:22,216 activar_empleados_automatico 1900 18744 Proceso de activación automática completado exitosamente
+INFO 2025-11-10 12:25:26,149 apps 15824 17608 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:25:36,729 apps 17632 2636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:27:18,341 apps 14584 7356 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:27:18,812 apps 1744 15676 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:27:18,826 autoreload 1744 15676 Watching for file changes with StatReloader
+INFO 2025-11-10 12:27:19,297 wsgi 1744 17952 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:27:24,599 basehttp 1744 16592 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 12:27:32,664 basehttp 1744 16592 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 12:27:38,998 basehttp 1744 16592 "GET /empleados/?search=&estado=4&area=&cargo=&sede= HTTP/1.1" 200 25395
+INFO 2025-11-10 12:27:58,900 basehttp 1744 16592 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 12:28:01,030 basehttp 1744 16592 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 12:28:04,058 basehttp 1744 16592 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18181
+INFO 2025-11-10 12:29:15,445 basehttp 1744 16592 "GET /empleados/83390c80-0c9a-4a1d-a85e-4aaf9e09137b/ HTTP/1.1" 200 65565
+INFO 2025-11-10 12:29:22,830 basehttp 1744 16592 "GET /empleados/eaa3c95d-b1c2-4ebd-85c9-7bcbb86122f2/ HTTP/1.1" 200 63834
+INFO 2025-11-10 12:30:09,162 basehttp 1744 16592 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 12:30:32,064 basehttp 1744 16592 "GET /empleados/?search=&estado=4&area=&cargo=&sede= HTTP/1.1" 200 25395
+INFO 2025-11-10 12:30:45,091 basehttp 1744 16592 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18181
+INFO 2025-11-10 12:31:26,446 basehttp 1744 16592 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 12:31:30,078 basehttp 1744 16592 "GET /admin/ HTTP/1.1" 200 49917
+INFO 2025-11-10 12:33:06,450 basehttp 1744 16592 "GET /admin/ HTTP/1.1" 200 49917
+INFO 2025-11-10 12:33:09,523 basehttp 1744 16592 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 12:39:07,561 basehttp 1744 1212 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 12:39:08,452 basehttp 1744 1212 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18181
+INFO 2025-11-10 12:43:03,452 autoreload 1744 15676 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 12:43:04,426 apps 11036 8508 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:43:04,442 autoreload 11036 8508 Watching for file changes with StatReloader
+INFO 2025-11-10 12:43:04,889 wsgi 11036 8208 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:43:41,890 basehttp 11036 1584 "GET /empleados/periodo-prueba/?id=bb1fab80-230a-4c03-843f-feeb24e3b6a6&vscodeBrowserReqId=1762796621858 HTTP/1.1" 302 0
+INFO 2025-11-10 12:43:41,899 basehttp 11036 1584 "GET /auth/login/?next=/empleados/periodo-prueba/%3Fid%3Dbb1fab80-230a-4c03-843f-feeb24e3b6a6%26vscodeBrowserReqId%3D1762796621858 HTTP/1.1" 200 3787
+INFO 2025-11-10 12:44:08,642 basehttp 11036 628 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18598
+INFO 2025-11-10 12:44:32,583 basehttp 11036 628 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18598
+INFO 2025-11-10 12:44:44,096 basehttp 11036 628 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 12:44:49,923 basehttp 11036 628 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 18598
+INFO 2025-11-10 12:48:13,818 basehttp 11036 1584 "GET /empleados/periodo-prueba/?id=bb1fab80-230a-4c03-843f-feeb24e3b6a6&vscodeBrowserReqId=1762796893813 HTTP/1.1" 302 0
+INFO 2025-11-10 12:48:13,822 basehttp 11036 1584 "GET /auth/login/?next=/empleados/periodo-prueba/%3Fid%3Dbb1fab80-230a-4c03-843f-feeb24e3b6a6%26vscodeBrowserReqId%3D1762796893813 HTTP/1.1" 200 3787
+INFO 2025-11-10 12:48:23,237 basehttp 11036 628 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 19204
+INFO 2025-11-10 12:52:24,188 basehttp 11036 628 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 19128
+INFO 2025-11-10 12:57:24,592 basehttp 11036 17448 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 19128
+INFO 2025-11-10 12:58:59,734 autoreload 11036 8508 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 12:59:00,768 apps 7196 14792 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:59:00,784 autoreload 7196 14792 Watching for file changes with StatReloader
+INFO 2025-11-10 12:59:01,278 wsgi 7196 1212 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:59:07,951 autoreload 7196 14792 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 12:59:08,778 apps 5604 16620 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:59:08,806 autoreload 5604 16620 Watching for file changes with StatReloader
+INFO 2025-11-10 12:59:09,306 wsgi 5604 9332 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:59:18,047 autoreload 5604 16620 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-10 12:59:18,894 apps 12612 16028 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-10 12:59:18,916 autoreload 12612 16028 Watching for file changes with StatReloader
+INFO 2025-11-10 12:59:19,572 wsgi 12612 14116 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-10 12:59:50,718 basehttp 12612 7336 "GET /empleados/periodo-prueba/?id=bb1fab80-230a-4c03-843f-feeb24e3b6a6&vscodeBrowserReqId=1762797590687 HTTP/1.1" 302 0
+INFO 2025-11-10 12:59:50,725 basehttp 12612 7336 "GET /auth/login/?next=/empleados/periodo-prueba/%3Fid%3Dbb1fab80-230a-4c03-843f-feeb24e3b6a6%26vscodeBrowserReqId%3D1762797590687 HTTP/1.1" 200 3787
+INFO 2025-11-10 12:59:58,773 basehttp 12612 14596 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 22238
+INFO 2025-11-10 13:00:22,281 basehttp 12612 14596 "GET /empleados/periodo-prueba/?dias_antelacion=10 HTTP/1.1" 200 22240
+INFO 2025-11-10 13:00:46,171 basehttp 12612 14596 "GET /dashboard/ HTTP/1.1" 200 17147
+INFO 2025-11-10 13:00:47,460 basehttp 12612 14596 "GET /empleados/ HTTP/1.1" 200 98922
+INFO 2025-11-10 13:00:51,649 basehttp 12612 14596 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 22238
+INFO 2025-11-10 13:00:54,094 basehttp 12612 14596 "GET /empleados/ HTTP/1.1" 200 98922

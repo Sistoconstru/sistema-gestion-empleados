@@ -57,24 +57,44 @@ def dashboard_view(request):
         # Total real de empleados (incluyendo todos los estados)
         context['total_empleados'] = Empleado.objects.count()
         
-        # Empleados activos - ahora usando el código correcto 'activo'
+        # Empleados activos - buscar entre los códigos posibles
+        empleados_activos = 0
         try:
-            estado_activo = EstadoEmpleado.objects.get(codigo__iexact='activo')  # Activo
-            context['empleados_activos'] = Empleado.objects.filter(
-                estado=estado_activo
-            ).count()
-        except EstadoEmpleado.DoesNotExist:
-            logger.warning("Estado código 'activo' no encontrado en la base de datos")
+            # Intentar con diferentes códigos de estado activo
+            codigos_activo = ['ACTIVO', '999', 'activo']
+            for codigo in codigos_activo:
+                try:
+                    estado_activo = EstadoEmpleado.objects.get(codigo=codigo)
+                    empleados_activos += Empleado.objects.filter(estado=estado_activo).count()
+                    logger.info(f"Encontrados empleados activos con código '{codigo}'")
+                    break
+                except EstadoEmpleado.DoesNotExist:
+                    continue
+            
+            context['empleados_activos'] = empleados_activos
+            
+        except Exception as e:
+            logger.warning(f"Error calculando empleados activos: {e}")
             context['empleados_activos'] = 0
 
-        # Empleados en período de prueba - ahora usando el código correcto 'periodo_prueba'
+        # Empleados en período de prueba - buscar entre los códigos posibles
+        empleados_prueba = 0
         try:
-            estado_prueba = EstadoEmpleado.objects.get(codigo__iexact='periodo_prueba')  # Periodo de prueba
-            context['empleados_prueba'] = Empleado.objects.filter(
-                estado=estado_prueba
-            ).count()
-        except EstadoEmpleado.DoesNotExist:
-            logger.warning("Estado código 'periodo_prueba' no encontrado en la base de datos")
+            # Intentar con diferentes códigos de estado de prueba
+            codigos_prueba = ['PRUEBA', 'periodo_prueba', 'p-prue', 'prueba']
+            for codigo in codigos_prueba:
+                try:
+                    estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
+                    empleados_prueba += Empleado.objects.filter(estado=estado_prueba).count()
+                    logger.info(f"Encontrados empleados en prueba con código '{codigo}'")
+                    break
+                except EstadoEmpleado.DoesNotExist:
+                    continue
+            
+            context['empleados_prueba'] = empleados_prueba
+            
+        except Exception as e:
+            logger.warning(f"Error calculando empleados en prueba: {e}")
             context['empleados_prueba'] = 0
         
         # Nuevos empleados este mes
