@@ -54160,3 +54160,120 @@ INFO 2025-11-12 08:30:01,520 apps 15060 18948 [CoreConfig.ready] DEFAULT_FILE_ST
 INFO 2025-11-12 08:30:22,493 apps 13376 13744 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-12 08:30:33,229 apps 13404 13764 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-12 08:46:30,195 apps 7628 14220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:47:23,139 apps 14364 17736 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:47:23,635 apps 6748 7556 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:47:23,651 autoreload 6748 7556 Watching for file changes with StatReloader
+INFO 2025-11-12 08:47:24,057 wsgi 6748 15000 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 08:47:28,713 basehttp 6748 2028 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 08:47:28,738 log 6748 2028 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 08:47:28,743 basehttp 6748 2028 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 08:47:28,764 basehttp 6748 2028 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 08:47:30,504 basehttp 6748 648 "GET /empleados/ HTTP/1.1" 200 98917
+WARNING 2025-11-12 08:47:30,530 log 6748 648 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 08:47:30,531 basehttp 6748 648 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 08:47:30,578 basehttp 6748 648 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 08:47:33,371 basehttp 6748 11008 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 08:47:33,402 log 6748 11008 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 08:47:33,403 basehttp 6748 11008 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 08:47:33,453 basehttp 6748 11008 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 08:47:35,172 basehttp 6748 12484 "GET /documentos/ HTTP/1.1" 200 26636
+WARNING 2025-11-12 08:47:35,196 log 6748 12484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 08:47:35,196 basehttp 6748 12484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 08:47:35,233 basehttp 6748 12484 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 08:47:38,701 basehttp 6748 13548 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 08:47:38,731 log 6748 13548 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 08:47:38,733 basehttp 6748 13548 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 08:47:38,768 basehttp 6748 13548 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:00:23,925 apps 17244 2544 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:00:24,436 apps 18808 14408 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:00:24,449 autoreload 18808 14408 Watching for file changes with StatReloader
+INFO 2025-11-12 09:00:24,853 wsgi 18808 8968 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 09:00:25,242 basehttp 18808 17292 "GET /admin/ HTTP/1.1" 200 49933
+WARNING 2025-11-12 09:00:25,286 log 18808 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:00:25,286 basehttp 18808 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-12 09:00:25,298 basehttp 18808 2876 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-11-12 09:00:25,299 basehttp 18808 12396 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-11-12 09:00:25,313 basehttp 18808 12396 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-11-12 09:00:25,313 basehttp 18808 17292 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-11-12 09:00:25,325 basehttp 18808 17292 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-12 09:00:25,328 basehttp 18808 12396 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-11-12 09:00:25,350 basehttp 18808 17292 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-12 09:00:25,519 basehttp 18808 12396 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-12 09:00:25,519 basehttp 18808 17292 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+WARNING 2025-11-12 09:00:26,147 log 18808 17292 Not Found: /favicon.ico
+WARNING 2025-11-12 09:00:26,149 basehttp 18808 17292 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-12 09:00:33,210 basehttp 18808 17292 "GET /admin/employees/estadoempleado/ HTTP/1.1" 200 41609
+WARNING 2025-11-12 09:00:33,246 log 18808 17292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:00:33,250 basehttp 18808 17292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-12 09:00:33,267 basehttp 18808 12396 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-11-12 09:00:33,271 basehttp 18808 9756 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-12 09:00:33,284 basehttp 18808 19028 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-11-12 09:00:33,293 basehttp 18808 17292 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-11-12 09:00:33,299 basehttp 18808 9756 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-12 09:00:33,300 basehttp 18808 12396 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-11-12 09:00:33,316 basehttp 18808 19028 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-12 09:00:33,316 basehttp 18808 9756 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-11-12 09:00:33,333 basehttp 18808 16120 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-11-12 09:00:33,362 basehttp 18808 2876 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-12 09:00:33,382 basehttp 18808 2876 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-12 09:00:33,415 basehttp 18808 17292 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-11-12 09:00:33,446 basehttp 18808 2876 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-11-12 09:00:33,446 basehttp 18808 16120 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-11-12 09:00:33,449 basehttp 18808 17292 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-12 09:07:24,714 basehttp 18808 17016 "GET /dashboard/ HTTP/1.1" 200 18115
+INFO 2025-11-12 09:07:24,755 basehttp 18808 20188 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-12 09:07:24,755 basehttp 18808 18772 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-12 09:07:24,755 basehttp 18808 20600 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-12 09:07:24,757 basehttp 18808 368 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+WARNING 2025-11-12 09:07:24,765 log 18808 18772 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:07:24,766 basehttp 18808 18772 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-12 09:07:24,768 basehttp 18808 17016 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-12 09:07:24,788 basehttp 18808 20188 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-12 09:07:24,788 basehttp 18808 11168 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+WARNING 2025-11-12 09:07:24,850 basehttp 18808 20188 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:07:24,854 basehttp 18808 11168 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+INFO 2025-11-12 09:13:17,501 autoreload 18808 14408 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\views.py changed, reloading.
+INFO 2025-11-12 09:13:18,429 apps 2916 12432 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:13:18,451 autoreload 2916 12432 Watching for file changes with StatReloader
+INFO 2025-11-12 09:13:19,038 wsgi 2916 328 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 09:13:34,996 autoreload 2916 12432 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\views.py changed, reloading.
+INFO 2025-11-12 09:13:35,939 apps 20760 16284 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:13:35,957 autoreload 20760 16284 Watching for file changes with StatReloader
+INFO 2025-11-12 09:13:36,450 wsgi 20760 6824 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 09:27:44,138 apps 19588 8840 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:31:10,926 apps 20864 20240 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:31:11,459 apps 6596 6824 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:31:11,475 autoreload 6596 6824 Watching for file changes with StatReloader
+INFO 2025-11-12 09:31:11,875 wsgi 6596 14836 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 09:31:28,152 basehttp 6596 20104 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 09:31:28,182 log 6596 20104 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:31:28,182 basehttp 6596 20104 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:31:28,230 basehttp 6596 20104 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:10,601 apps 11212 19536 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:33:11,145 apps 19084 13036 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 09:33:11,162 autoreload 19084 13036 Watching for file changes with StatReloader
+INFO 2025-11-12 09:33:11,592 wsgi 19084 19364 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-12 09:33:14,875 basehttp 19084 6324 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 09:33:14,905 log 19084 6324 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:14,906 basehttp 19084 6324 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:14,939 basehttp 19084 6324 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:16,742 basehttp 19084 3820 "GET /empleados/ HTTP/1.1" 200 98917
+WARNING 2025-11-12 09:33:16,763 log 19084 3820 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:16,765 basehttp 19084 3820 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:16,834 basehttp 19084 3820 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:19,150 basehttp 19084 14308 "GET /empleados/65de11dc-cb6b-490f-aa60-b7924f316b72/ HTTP/1.1" 200 65320
+WARNING 2025-11-12 09:33:19,176 log 19084 14308 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:19,177 basehttp 19084 14308 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:19,248 basehttp 19084 14308 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:21,390 basehttp 19084 5312 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 09:33:21,420 log 19084 5312 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:21,422 basehttp 19084 5312 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:21,461 basehttp 19084 5312 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:22,771 basehttp 19084 19148 "GET /documentos/ HTTP/1.1" 200 26636
+WARNING 2025-11-12 09:33:22,793 log 19084 19148 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:22,794 basehttp 19084 19148 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:22,855 basehttp 19084 19148 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 09:33:27,092 basehttp 19084 2008 "GET /dashboard/ HTTP/1.1" 200 18115
+WARNING 2025-11-12 09:33:27,127 log 19084 2008 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-12 09:33:27,129 basehttp 19084 2008 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-12 09:33:27,151 basehttp 19084 2008 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023

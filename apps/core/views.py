@@ -65,10 +65,15 @@ def dashboard_view(request):
             for codigo in codigos_activo:
                 try:
                     estado_activo = EstadoEmpleado.objects.get(codigo=codigo)
-                    empleados_activos += Empleado.objects.filter(estado=estado_activo).count()
-                    logger.info(f"Encontrados empleados activos con código '{codigo}'")
-                    break
+                    count = Empleado.objects.filter(estado=estado_activo).count()
+                    if count > 0:
+                        empleados_activos += count
+                        logger.info(f"Encontrados {count} empleados activos con código '{codigo}'")
+                        break  # Solo salir si realmente encontramos empleados
+                    else:
+                        logger.info(f"Estado '{codigo}' existe pero no tiene empleados asignados")
                 except EstadoEmpleado.DoesNotExist:
+                    logger.info(f"Estado con código '{codigo}' no existe")
                     continue
             
             context['empleados_activos'] = empleados_activos
@@ -85,10 +90,15 @@ def dashboard_view(request):
             for codigo in codigos_prueba:
                 try:
                     estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
-                    empleados_prueba += Empleado.objects.filter(estado=estado_prueba).count()
-                    logger.info(f"Encontrados empleados en prueba con código '{codigo}'")
-                    break
+                    count = Empleado.objects.filter(estado=estado_prueba).count()
+                    if count > 0:
+                        empleados_prueba += count
+                        logger.info(f"Encontrados {count} empleados en prueba con código '{codigo}'")
+                        break  # Solo salir si realmente encontramos empleados
+                    else:
+                        logger.info(f"Estado '{codigo}' existe pero no tiene empleados en prueba")
                 except EstadoEmpleado.DoesNotExist:
+                    logger.info(f"Estado de prueba con código '{codigo}' no existe")
                     continue
             
             context['empleados_prueba'] = empleados_prueba
