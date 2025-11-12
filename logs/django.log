@@ -54156,3 +54156,6 @@ INFO 2025-11-12 08:17:06,496 basehttp 12428 20872 "GET /dashboard/ HTTP/1.1" 200
 WARNING 2025-11-12 08:17:06,535 log 12428 20872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2025-11-12 08:17:06,536 basehttp 12428 20872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
 WARNING 2025-11-12 08:17:06,569 basehttp 12428 20872 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-12 08:30:01,520 apps 15060 18948 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:30:22,493 apps 13376 13744 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:30:33,229 apps 13404 13764 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
