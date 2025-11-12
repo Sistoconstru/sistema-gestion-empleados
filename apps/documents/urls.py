@@ -11,8 +11,11 @@ from . import views_proxy
 app_name = 'documents'
 
 urlpatterns = [
-    # Página de inicio
-    path('', TemplateView.as_view(template_name='documents/index.html'), name='index'),
+    # Vista principal: empleados con documentos pendientes
+    path('', views.empleados_documentos_pendientes, name='empleados_documentos_pendientes'),
+    
+    # Lista completa de documentos para administradores
+    path('lista-completa/', views.DocumentoEmpleadoListView.as_view(), name='documento_list'),
     
     # Gestión de documentos por empleado
     path('empleado/<uuid:empleado_pk>/', views.documento_empleado_detail, name='empleado_documentos'),
@@ -35,7 +38,10 @@ urlpatterns = [
     # APIs
     path('api/pendientes/', views.documentos_pendientes_api, name='documentos_pendientes_api'),
     
-    # Lista general (para administradores)
-    path('', views.DocumentoEmpleadoListView.as_view(), name='documento_list'),
+    # Lista de empleados con documentos pendientes (vista principal)
+    path('', views.empleados_documentos_pendientes, name='empleados_pendientes'),
+    
+    # APIs y vistas de prueba
+    path('test/', views.documento_test_view, name='documento_test'),
     path('proxy-pdf/', views_proxy.proxy_pdf, name='proxy_pdf'),
 ]

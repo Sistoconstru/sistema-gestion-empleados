@@ -278,16 +278,13 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                            class="btn btn-corporativo">
                             <i class="fas fa-upload me-1"></i>Subir Documento
                         </a>
-                        <a href="{% url 'documents:documento_multiple_upload' empleado.pk %}" 
-                           class="btn btn-outline-gris">
-                            <i class="fas fa-cloud-upload-alt me-1"></i>Subida Múltiple
-                        </a>
+                        
                         {% endif %}
                         
                         {% if es_administrador %}
-                        <a href="{% url 'documents:documento_list' %}" 
+                        <a href="{% url 'documents:empleados_documentos_pendientes' %}" 
                            class="btn btn-outline-azul">
-                            <i class="fas fa-list me-1"></i>Ver Todos los Documentos
+                            <i class="fas fa-users me-1"></i>Ver Empleados con Documentos Pendientes
                         </a>
                         {% endif %}
                     </div>

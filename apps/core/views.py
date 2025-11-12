@@ -139,6 +139,45 @@ def dashboard_view(request):
             num_docs=Count('documentoempleado')
         ).filter(num_docs__lt=3).count()  # Asumiendo que cada empleado debe tener al menos 3 documentos
         
+        # === EMPLEADOS LISTOS PARA ACTIVAR ===
+        # Empleados en período de prueba que han cumplido 60 días
+        empleados_listos_activar = 0
+        empleados_listos_nombres = []
+        try:
+            # Buscar estado de período de prueba
+            codigos_prueba = ['p-prue', 'PRUEBA', 'periodo_prueba', 'prueba']
+            estado_prueba = None
+            
+            for codigo in codigos_prueba:
+                try:
+                    estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
+                    break
+                except EstadoEmpleado.DoesNotExist:
+                    continue
+            
+            if estado_prueba:
+                # Calcular fecha límite (hace 60 días o más)
+                fecha_limite = timezone.now().date() - timedelta(days=60)
+                
+                # Buscar empleados que cumplan el período
+                empleados_listos_queryset = Empleado.objects.filter(
+                    estado=estado_prueba,
+                    fecha_ingreso__lte=fecha_limite
+                ).select_related('estado')[:10]  # Límite para evitar listas muy largas
+                
+                empleados_listos_activar = empleados_listos_queryset.count()
+                empleados_listos_nombres = [emp.nombre_completo for emp in empleados_listos_queryset]
+                
+                logger.info(f"Encontrados {empleados_listos_activar} empleados listos para activar")
+                
+        except Exception as e:
+            logger.warning(f"Error calculando empleados listos para activar: {e}")
+            empleados_listos_activar = 0
+            empleados_listos_nombres = []
+        
+        context['empleados_listos_activar'] = empleados_listos_activar
+        context['empleados_listos_nombres'] = empleados_listos_nombres
+        
         # === ALERTAS ===
         context.update({
             'alertas_documentos': {
@@ -146,6 +185,9 @@ def dashboard_view(request):
                 'vencimientos': context['documentos_por_vencer'] > 0,
                 'vencidos': context['documentos_vencidos'] > 0,
                 'incompletos': context['empleados_docs_incompletos'] > 0
+            },
+            'alertas_empleados': {
+                'listos_activar': context['empleados_listos_activar'] > 0
             }
         })
         
@@ -165,11 +207,16 @@ def dashboard_view(request):
             'documentos_por_vencer': 0,
             'documentos_vencidos': 0,
             'empleados_docs_incompletos': 0,
+            'empleados_listos_activar': 0,
+            'empleados_listos_nombres': [],
             'alertas_documentos': {
                 'pendientes': False,
                 'vencimientos': False, 
                 'vencidos': False,
                 'incompletos': False
+            },
+            'alertas_empleados': {
+                'listos_activar': False
             },
             'is_admin_dashboard': True
         })

@@ -31,6 +31,7 @@ urlpatterns = [
     
     # Reportes especiales
     path('periodo-prueba/', views.empleados_periodo_prueba_reporte, name='periodo_prueba_reporte'),
+    path('<uuid:pk>/activar/', views.activar_empleado_individual, name='activar_empleado'),
     
     # Historial de cargos (para futuras funcionalidades)
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),

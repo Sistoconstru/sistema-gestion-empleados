@@ -25,30 +25,6 @@ from apps.employees.models import Empleado
 logger = logging.getLogger(__name__)
 
 
-class DocumentoEmpleadoListView(LoginRequiredMixin, ListView):
-    """Vista para listar documentos del empleado"""
-    model = DocumentoEmpleado
-    template_name = 'documents/documento_list.html'
-    context_object_name = 'documentos'
-    
-    def get_queryset(self):
-        """Filtrar documentos según usuario"""
-        if self.request.user.is_staff:
-            # Administradores ven todos los documentos
-            return DocumentoEmpleado.objects.select_related(
-                'empleado', 'tipo_documento', 'cargado_por', 'aprobado_por'
-            ).order_by('-fecha_carga')
-        else:
-            # Empleados solo ven sus documentos
-            try:
-                empleado = Empleado.objects.get(usuario=self.request.user)
-                return DocumentoEmpleado.objects.filter(empleado=empleado).select_related(
-                    'tipo_documento', 'cargado_por', 'aprobado_por'
-                ).order_by('-fecha_carga')
-            except Empleado.DoesNotExist:
-                return DocumentoEmpleado.objects.none()
-
-
 @login_required
 def documento_replace(request, documento_id):
     """Vista para reemplazar un documento rechazado"""
@@ -426,6 +402,72 @@ def documento_download(request, documento_pk):
 
 
 @login_required
+def documento_test_view(request):
+    """Vista de prueba simple"""
+    from django.http import HttpResponse
+    
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><title>Test</title></head>
+    <body>
+        <h1>VISTA DE PRUEBA FUNCIONANDO</h1>
+        <p>Usuario: {request.user.username}</p>
+        <p>Autenticado: {request.user.is_authenticated}</p>
+        <p>Es staff: {request.user.is_staff}</p>
+        <p>GET params: {dict(request.GET)}</p>
+    </body>
+    </html>
+    """
+    
+    return HttpResponse(html)
+
+
+@login_required
+def empleados_documentos_pendientes(request):
+    """Vista para mostrar empleados con documentos pendientes de aprobación"""
+    from apps.employees.models import Empleado
+    from django.db.models import Count, Q
+    
+    # Verificar que el usuario tenga permisos
+    if not request.user.is_staff:
+        return redirect('employees:empleado_perfil_detail', pk=request.user.empleado.pk)
+    
+    # Obtener empleados con documentos pendientes
+    empleados_con_pendientes = Empleado.objects.filter(
+        documentoempleado__estado_aprobacion='pendiente'
+    ).annotate(
+        documentos_pendientes_count=Count(
+            'documentoempleado', 
+            filter=Q(documentoempleado__estado_aprobacion='pendiente')
+        )
+    ).select_related('usuario', 'sede', 'estado').distinct().order_by('apellidos', 'nombres')
+    
+    # Obtener los documentos pendientes para cada empleado
+    empleados_data = []
+    for empleado in empleados_con_pendientes:
+        documentos_pendientes = DocumentoEmpleado.objects.filter(
+            empleado=empleado,
+            estado_aprobacion='pendiente'
+        ).select_related('tipo_documento', 'cargado_por').order_by('-fecha_carga')
+        
+        empleados_data.append({
+            'empleado': empleado,
+            'documentos_pendientes': documentos_pendientes,
+            'count': documentos_pendientes.count()
+        })
+    
+    context = {
+        'empleados_data': empleados_data,
+        'total_empleados': len(empleados_data),
+        'total_documentos': sum(item['count'] for item in empleados_data),
+        'titulo_pagina': 'Empleados con Documentos Pendientes de Aprobación'
+    }
+    
+    return render(request, 'documents/empleados_pendientes.html', context)
+
+
+@login_required
 def documentos_pendientes_api(request):
     """API para obtener documentos pendientes de aprobación"""
     if not request.user.is_staff:
@@ -446,3 +488,51 @@ def documentos_pendientes_api(request):
         })
     
     return JsonResponse({'documentos': data})
+
+
+# =============================================================================
+# VISTA DE LISTA DE DOCUMENTOS (PARA ADMINISTRADORES)
+# =============================================================================
+
+class DocumentoEmpleadoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """Vista de lista para mostrar todos los documentos del sistema"""
+    model = DocumentoEmpleado
+    template_name = 'documents/documento_list.html'
+    context_object_name = 'documentos'
+    paginate_by = 20
+    permission_required = 'documents.view_documentoempleado'
+    
+    def get_queryset(self):
+        """Obtener queryset filtrado"""
+        queryset = DocumentoEmpleado.objects.select_related(
+            'empleado', 
+            'tipo_documento',
+            'empleado__sede'
+        ).order_by('-fecha_creacion')
+        
+        # Filtrar por estado si se especifica
+        estado = self.request.GET.get('estado')
+        if estado:
+            queryset = queryset.filter(estado=estado)
+            
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        """Agregar contexto adicional"""
+        context = super().get_context_data(**kwargs)
+        
+        # Estadísticas
+        total_documentos = DocumentoEmpleado.objects.count()
+        pendientes = DocumentoEmpleado.objects.filter(estado='pendiente').count()
+        aprobados = DocumentoEmpleado.objects.filter(estado='aprobado').count()
+        rechazados = DocumentoEmpleado.objects.filter(estado='rechazado').count()
+        
+        context.update({
+            'total_documentos': total_documentos,
+            'pendientes': pendientes,
+            'aprobados': aprobados,
+            'rechazados': rechazados,
+            'estado_filtro': self.request.GET.get('estado', ''),
+        })
+        
+        return context

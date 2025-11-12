@@ -1,48 +1,401 @@
-<!-- =============================================================================
-templates/documents/documento_list.html - LISTA GENERAL PARA ADMINISTRADORES
-============================================================================= -->
+{% extends 'base.html' %}<!-- =============================================================================
 
-{% extends 'base.html' %}
-{% load static %}
-{% load document_filters %}
+{% comment %}templates/documents/documento_list.html - LISTA GENERAL PARA ADMINISTRADORES
 
-{% block title %}Gestión de Documentos - RRHH Pro{% endblock %}
+templates/documents/documento_list.html - LISTA GENERAL PARA ADMINISTRADORES============================================================================= -->
 
-{% block breadcrumb_items %}
-<li class="breadcrumb-item">Documentos</li>
-<li class="breadcrumb-item active">Administración</li>
-{% endblock %}
+{% endcomment %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-1">
-            <i class="fas fa-file-alt text-primary me-2"></i>
-            Administración de Documentos
-        </h1>
-        <p class="text-muted mb-0">Gestión completa de documentos de empleados</p>
-    </div>
-    <div>
-        <div class="btn-group">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fas fa-download me-1"></i>Reportes
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">
-                    <i class="fas fa-file-excel me-2 text-success"></i>Documentos Pendientes (Excel)
-                </a></li>
-                <li><a class="dropdown-item" href="#">
+{% load static %}{% extends 'base.html' %}
+
+{% load core_tags %}{% load static %}
+
+
+
+{% block title %}Lista de Documentos{% endblock %}{% block title %}{{ titulo_pagina|default:"Gestión de Documentos" }} - RRHH Pro{% endblock %}
+
+
+
+{% block extra_css %}{% block breadcrumb_items %}
+
+<style><li class="breadcrumb-item">Documentos</li>
+
+    .estado-badge {<li class="breadcrumb-item active">{{ titulo_pagina|default:"Administración" }}</li>
+
+        font-size: 0.75rem;{% endblock %}
+
+        padding: 0.25rem 0.5rem;
+
+        border-radius: 0.375rem;{% block content %}
+
+    }<div class="d-flex justify-content-between align-items-center mb-4">
+
+    .estado-pendiente { background-color: #ffeaa7; color: #d63031; }    <div>
+
+    .estado-aprobado { background-color: #00b894; color: white; }        <h1 class="h3 mb-1">
+
+    .estado-rechazado { background-color: #e17055; color: white; }            <i class="fas fa-file-alt text-primary me-2"></i>
+
+                {{ titulo_pagina|default:"Administración de Documentos" }}
+
+    .card-hover:hover {        </h1>
+
+        transform: translateY(-2px);        <p class="text-muted mb-0">
+
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);            {% if estado_filtro == 'pendiente' %}
+
+        transition: all 0.3s ease;                Documentos que requieren revisión y aprobación
+
+    }            {% elif estado_filtro == 'aprobado' %}
+
+                    Documentos aprobados y validados
+
+    .documento-nombre {            {% elif estado_filtro == 'rechazado' %}
+
+        font-size: 0.9rem;                Documentos rechazados que requieren reenvío
+
+        color: #2d3436;            {% else %}
+
+        font-weight: 500;                Gestión completa de documentos de empleados
+
+    }            {% endif %}
+
+            </p>
+
+    .empleado-info {    </div>
+
+        font-size: 0.85rem;    <div>
+
+        color: #636e72;        <div class="btn-group">
+
+    }            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+
+                    <i class="fas fa-download me-1"></i>Reportes
+
+    .btn-sm {            </button>
+
+        padding: 0.25rem 0.5rem;            <ul class="dropdown-menu">
+
+        font-size: 0.75rem;                <li><a class="dropdown-item" href="#">
+
+    }                    <i class="fas fa-file-excel me-2 text-success"></i>Documentos Pendientes (Excel)
+
+</style>                </a></li>
+
+{% endblock %}                <li><a class="dropdown-item" href="#">
+
                     <i class="fas fa-file-pdf me-2 text-danger"></i>Documentos Vencidos (PDF)
-                </a></li>
-                <li><a class="dropdown-item" href="#">
-                    <i class="fas fa-chart-bar me-2 text-info"></i>Reporte de Cumplimiento
-                </a></li>
-            </ul>
-        </div>
+
+{% block content %}                </a></li>
+
+<div class="container-fluid">                <li><a class="dropdown-item" href="#">
+
+    <div class="row">                    <i class="fas fa-chart-bar me-2 text-info"></i>Reporte de Cumplimiento
+
+        <div class="col-12">                </a></li>
+
+            <div class="card shadow-sm">            </ul>
+
+                <div class="card-header bg-azul text-white">        </div>
+
+                    <div class="row align-items-center">    </div>
+
+                        <div class="col"></div>
+
+                            <h4 class="mb-0">
+
+                                <i class="fas fa-file-alt me-2"></i>Lista de Documentos<!-- Filtros de Estado -->
+
+                            </h4>{% if user.is_staff %}
+
+                        </div><div class="card border-0 shadow-sm mb-4">
+
+                        <div class="col-auto">    <div class="card-body py-3">
+
+                            <span class="badge bg-light text-azul">        <div class="d-flex align-items-center">
+
+                                Total: {{ documentos|length }}            <span class="text-muted me-3">
+
+                            </span>                <i class="fas fa-filter me-1"></i>Filtrar por estado:
+
+                        </div>            </span>
+
+                    </div>            <div class="btn-group" role="group">
+
+                </div>                <a href="{% url 'documents:documento_list' %}" 
+
+                                   class="btn {% if not estado_filtro %}btn-primary{% else %}btn-outline-secondary{% endif %} btn-sm">
+
+                <!-- Filtros -->                    <i class="fas fa-list me-1"></i>Todos
+
+                <div class="card-body border-bottom">                </a>
+
+                    <div class="row g-2">                <a href="{% url 'documents:documento_list' %}?estado=pendiente" 
+
+                        <div class="col-auto">                   class="btn {% if estado_filtro == 'pendiente' %}btn-warning{% else %}btn-outline-secondary{% endif %} btn-sm">
+
+                            <a href="{% url 'documents:documento_list' %}"                     <i class="fas fa-clock me-1"></i>Pendientes
+
+                               class="btn btn-outline-azul btn-sm {% if not request.GET.estado %}active{% endif %}">                </a>
+
+                                Todos                <a href="{% url 'documents:documento_list' %}?estado=aprobado" 
+
+                            </a>                   class="btn {% if estado_filtro == 'aprobado' %}btn-success{% else %}btn-outline-secondary{% endif %} btn-sm">
+
+                        </div>                    <i class="fas fa-check me-1"></i>Aprobados
+
+                        <div class="col-auto">                </a>
+
+                            <a href="{% url 'documents:documento_list' %}?estado=pendiente"                 <a href="{% url 'documents:documento_list' %}?estado=rechazado" 
+
+                               class="btn btn-outline-warning btn-sm {% if request.GET.estado == 'pendiente' %}active{% endif %}">                   class="btn {% if estado_filtro == 'rechazado' %}btn-danger{% else %}btn-outline-secondary{% endif %} btn-sm">
+
+                                Pendientes                    <i class="fas fa-times me-1"></i>Rechazados
+
+                            </a>                </a>
+
+                        </div>            </div>
+
+                        <div class="col-auto">            {% if estado_filtro %}
+
+                            <a href="{% url 'documents:documento_list' %}?estado=aprobado"             <div class="ms-3">
+
+                               class="btn btn-outline-success btn-sm {% if request.GET.estado == 'aprobado' %}active{% endif %}">                <span class="badge bg-light text-dark">
+
+                                Aprobados                    <i class="fas fa-info-circle me-1"></i>
+
+                            </a>                    Mostrando solo documentos {{ estado_filtro|title }}
+
+                        </div>                </span>
+
+                        <div class="col-auto">            </div>
+
+                            <a href="{% url 'documents:documento_list' %}?estado=rechazado"             {% endif %}
+
+                               class="btn btn-outline-danger btn-sm {% if request.GET.estado == 'rechazado' %}active{% endif %}">        </div>
+
+                                Rechazados    </div>
+
+                            </a></div>
+
+                        </div>{% endif %}
+
+                    </div>
+
+                </div><!-- Lista de Documentos -->
+
+                <div class="card border-0 shadow-sm">
+
+                <div class="card-body">    <div class="card-body">
+
+                    {% if documentos %}        {% if documentos %}
+
+                        <div class="row g-3">            <div class="table-responsive">
+
+                            {% for documento in documentos %}                <table class="table table-hover align-middle">
+
+                            <div class="col-md-6 col-lg-4">                    <thead class="table-light">
+
+                                <div class="card h-100 card-hover">                        <tr>
+
+                                    <div class="card-body">                            <th>Empleado</th>
+
+                                        <div class="d-flex justify-content-between align-items-start mb-2">                            <th>Tipo de Documento</th>
+
+                                            <span class="estado-badge estado-{{ documento.estado }}">                            <th>Estado</th>
+
+                                                {{ documento.get_estado_display }}                            <th>Fecha Carga</th>
+
+                                            </span>                            <th>Cargado por</th>
+
+                                            <small class="text-muted">                            <th class="text-center">Acciones</th>
+
+                                                {{ documento.fecha_creacion|date:"d/m/Y" }}                        </tr>
+
+                                            </small>                    </thead>
+
+                                        </div>                    <tbody>
+
+                                                                {% for documento in documentos %}
+
+                                        <h6 class="documento-nombre mb-2">                        <tr>
+
+                                            {{ documento.tipo_documento.nombre }}                            <td>
+
+                                        </h6>                                <div class="d-flex align-items-center">
+
+                                                                            <div class="avatar bg-primary text-white rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+
+                                        <div class="empleado-info mb-3">                                        {{ documento.empleado.nombres|first }}{{ documento.empleado.apellidos|first }}
+
+                                            <div><strong>Empleado:</strong> {{ documento.empleado.nombre_completo }}</div>                                    </div>
+
+                                            <div><strong>Documento:</strong> {{ documento.empleado.numero_documento }}</div>                                    <div>
+
+                                            {% if documento.empleado.sede %}                                        <div class="fw-bold">{{ documento.empleado.nombre_completo }}</div>
+
+                                            <div><strong>Sede:</strong> {{ documento.empleado.sede.nombre }}</div>                                        <small class="text-muted">{{ documento.empleado.numero_documento }}</small>
+
+                                            {% endif %}                                    </div>
+
+                                        </div>                                </div>
+
+                                                                    </td>
+
+                                        <div class="d-flex gap-1">                            <td>
+
+                                            <a href="{% url 'documents:documento_empleado_detail' documento.empleado.id %}"                                 <div class="fw-medium">{{ documento.tipo_documento.nombre }}</div>
+
+                                               class="btn btn-azul btn-sm flex-fill">                                {% if documento.tipo_documento.descripcion %}
+
+                                                <i class="fas fa-eye me-1"></i>Ver                                <small class="text-muted">{{ documento.tipo_documento.descripcion }}</small>
+
+                                            </a>                                {% endif %}
+
+                                            {% if documento.archivo %}                            </td>
+
+                                            <a href="{% url 'documents:documento_view' documento.id %}"                             <td>
+
+                                               class="btn btn-outline-azul btn-sm"                                {% if documento.estado_aprobacion == 'pendiente' %}
+
+                                               target="_blank">                                    <span class="badge bg-warning text-dark">
+
+                                                <i class="fas fa-external-link-alt"></i>                                        <i class="fas fa-clock me-1"></i>Pendiente
+
+                                            </a>                                    </span>
+
+                                            {% endif %}                                {% elif documento.estado_aprobacion == 'aprobado' %}
+
+                                        </div>                                    <span class="badge bg-success">
+
+                                    </div>                                        <i class="fas fa-check me-1"></i>Aprobado
+
+                                </div>                                    </span>
+
+                            </div>                                {% elif documento.estado_aprobacion == 'rechazado' %}
+
+                            {% endfor %}                                    <span class="badge bg-danger">
+
+                        </div>                                        <i class="fas fa-times me-1"></i>Rechazado
+
+                                                            </span>
+
+                        {% if is_paginated %}                                {% endif %}
+
+                        <nav aria-label="Paginación" class="mt-4">                            </td>
+
+                            <ul class="pagination justify-content-center">                            <td>
+
+                                {% if page_obj.has_previous %}                                <div>{{ documento.fecha_carga|date:"d/m/Y" }}</div>
+
+                                <li class="page-item">                                <small class="text-muted">{{ documento.fecha_carga|time:"H:i" }}</small>
+
+                                    <a class="page-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">                            </td>
+
+                                        <i class="fas fa-chevron-left"></i>                            <td>
+
+                                    </a>                                {% if documento.cargado_por %}
+
+                                </li>                                    <div>{{ documento.cargado_por.get_full_name|default:documento.cargado_por.username }}</div>
+
+                                {% endif %}                                {% else %}
+
+                                                                    <span class="text-muted">Sistema</span>
+
+                                {% for num in page_obj.paginator.page_range %}                                {% endif %}
+
+                                    {% if page_obj.number == num %}                            </td>
+
+                                    <li class="page-item active">                            <td class="text-center">
+
+                                        <span class="page-link">{{ num }}</span>                                <div class="btn-group btn-group-sm">
+
+                                    </li>                                    <a href="{% url 'documents:documento_download' documento.pk %}" 
+
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}                                       class="btn btn-outline-primary" title="Descargar">
+
+                                    <li class="page-item">                                        <i class="fas fa-download"></i>
+
+                                        <a class="page-link" href="?{% url_replace request 'page' num %}">{{ num }}</a>                                    </a>
+
+                                    </li>                                    {% if documento.estado_aprobacion == 'pendiente' %}
+
+                                    {% endif %}                                    <a href="{% url 'documents:documento_approve' documento.pk %}" 
+
+                                {% endfor %}                                       class="btn btn-outline-success" title="Revisar/Aprobar">
+
+                                                                        <i class="fas fa-eye"></i>
+
+                                {% if page_obj.has_next %}                                    </a>
+
+                                <li class="page-item">                                    {% endif %}
+
+                                    <a class="page-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">                                    <div class="btn-group btn-group-sm">
+
+                                        <i class="fas fa-chevron-right"></i>                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+
+                                    </a>                                            <span class="visually-hidden">Más opciones</span>
+
+                                </li>                                        </button>
+
+                                {% endif %}                                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            </ul>                                            <li><a class="dropdown-item" href="{% url 'documents:empleado_documentos' documento.empleado.pk %}">
+
+                        </nav>                                                <i class="fas fa-user me-2"></i>Ver todos los documentos del empleado
+
+                        {% endif %}                                            </a></li>
+
+                                                                </ul>
+
+                    {% else %}                                    </div>
+
+                        <div class="text-center py-5">                                </div>
+
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>                            </td>
+
+                            <h5 class="text-muted">No hay documentos disponibles</h5>                        </tr>
+
+                            <p class="text-muted">                        {% endfor %}
+
+                                {% if request.GET.estado %}                    </tbody>
+
+                                    No se encontraron documentos con estado "{{ request.GET.estado }}".                </table>
+
+                                {% else %}            </div>
+
+                                    No hay documentos registrados en el sistema.        {% else %}
+
+                                {% endif %}            <div class="text-center py-5">
+
+                            </p>                <div class="mb-4">
+
+                        </div>                    <i class="fas fa-file-alt fa-3x text-muted"></i>
+
+                    {% endif %}                </div>
+
+                </div>                <h4 class="text-muted">No hay documentos</h4>
+
+            </div>                <p class="text-muted">
+
+        </div>                    {% if estado_filtro == 'pendiente' %}
+
+    </div>                        No hay documentos pendientes de aprobación en este momento.
+
+</div>                    {% elif estado_filtro == 'aprobado' %}
+
+{% endblock %}                        No hay documentos aprobados.
+                    {% elif estado_filtro == 'rechazado' %}
+                        No hay documentos rechazados.
+                    {% else %}
+                        No se encontraron documentos en el sistema.
+                    {% endif %}
+                </p>
+            </div>
+        {% endif %}
     </div>
 </div>
-
-<!-- Estadísticas Rápidas -->
+{% endblock %}
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="card border-0 bg-primary text-white">

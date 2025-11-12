@@ -383,6 +383,101 @@ function actualizarEstadisticas() {
     // Aquí podrías actualizar las estadísticas en tiempo real si fuera necesario
 }
 
+function activarEmpleado(empleadoId) {
+    if (confirm('¿Está seguro de que desea activar a este empleado ahora?')) {
+        // Mostrar indicador de carga
+        const boton = document.querySelector(`button[onclick="activarEmpleado('${empleadoId}')"]`);
+        const textoOriginal = boton.innerHTML;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        boton.disabled = true;
+        
+        // Realizar petición AJAX
+        fetch(`/empleados/${empleadoId}/activar/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                alert(`✓ ${data.message}`);
+                
+                // Remover la fila de la tabla
+                const fila = boton.closest('tr');
+                fila.style.transition = 'opacity 0.5s ease';
+                fila.style.opacity = '0';
+                
+                setTimeout(() => {
+                    fila.remove();
+                    
+                    // Actualizar contadores
+                    actualizarContadores();
+                    
+                    // Si no quedan empleados, mostrar mensaje
+                    if (document.querySelectorAll('.empleado-row').length === 0) {
+                        location.reload();
+                    }
+                }, 500);
+            } else {
+                // Mostrar error
+                alert(`Error: ${data.message}`);
+                // Restaurar botón
+                boton.innerHTML = textoOriginal;
+                boton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error de conexión. Intente nuevamente.');
+            // Restaurar botón
+            boton.innerHTML = textoOriginal;
+            boton.disabled = false;
+        });
+    }
+}
+
+function actualizarContadores() {
+    // Recalcular contadores después de activar un empleado
+    const filas = document.querySelectorAll('.empleado-row');
+    const totalElemento = document.querySelector('.card-stats h2');
+    const listosElemento = document.querySelector('.text-success');
+    
+    if (totalElemento) {
+        totalElemento.textContent = filas.length;
+    }
+    
+    // Contar empleados listos (pueden haber más después de activar uno)
+    let listosCount = 0;
+    filas.forEach(fila => {
+        const badge = fila.querySelector('.estado-listo');
+        if (badge) {
+            listosCount++;
+        }
+    });
+    
+    if (listosElemento) {
+        listosElemento.textContent = listosCount;
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // Auto-actualizar cada 5 minutos
 setInterval(function() {
     location.reload();

@@ -1452,5 +1452,63 @@ def empleados_periodo_prueba_reporte(request):
     return render(request, 'employees/periodo_prueba_reporte.html', context)
 
 
+@login_required
+@require_POST
+def activar_empleado_individual(request, pk):
+    """Activa individualmente un empleado que cumplió el período de prueba"""
+    try:
+        # Obtener empleado
+        empleado = get_object_or_404(Empleado, pk=pk)
+        
+        # Verificar que esté en período de prueba
+        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
+        if empleado.estado != estado_prueba:
+            return JsonResponse({
+                'success': False,
+                'message': 'El empleado no está en período de prueba'
+            })
+        
+        # Verificar que haya cumplido los 60 días
+        dias_transcurridos = (timezone.now().date() - empleado.fecha_ingreso).days
+        if dias_transcurridos < 60:
+            return JsonResponse({
+                'success': False,
+                'message': f'El empleado aún no cumple los 60 días. Días transcurridos: {dias_transcurridos}'
+            })
+        
+        # Obtener estado activo
+        estado_activo = EstadoEmpleado.objects.get(codigo='999')
+        
+        # Cambiar estado
+        empleado.estado = estado_activo
+        empleado.save()
+        
+        # Log de activación manual
+        logger.info(
+            f'ACTIVACIÓN MANUAL: Empleado {empleado.numero_documento} '
+            f'({empleado.nombre_completo}) activado manualmente por {request.user.username} '
+            f'después de {dias_transcurridos} días en período de prueba'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Empleado {empleado.nombre_completo} activado exitosamente',
+            'empleado_nombre': empleado.nombre_completo,
+            'dias_transcurridos': dias_transcurridos
+        })
+        
+    except EstadoEmpleado.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Error: Estados de empleado no configurados correctamente'
+        })
+    except Exception as e:
+        logger.error(f"Error al activar empleado {pk}: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error interno del servidor'
+        })
+
+
 # Agregar import para agregaciones
 from django.db import models

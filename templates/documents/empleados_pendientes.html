@@ -1,0 +1,219 @@
+<!-- =============================================================================
+templates/documents/empleados_pendientes.html - EMPLEADOS CON DOCUMENTOS PENDIENTES
+============================================================================= -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo_pagina }} - RRHH Pro{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item">Documentos</li>
+<li class="breadcrumb-item active">Empleados Pendientes</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-users text-warning me-2"></i>
+            {{ titulo_pagina }}
+        </h1>
+        <p class="text-muted mb-0">
+            Empleados que tienen documentos esperando revisión y aprobación
+        </p>
+    </div>
+    <div>
+        <div class="btn-group">
+            <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-users me-1"></i>Ver Todos los Empleados
+            </a>
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                <span class="visually-hidden">Más opciones</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{% url 'core:dashboard' %}">
+                    <i class="fas fa-home me-2"></i>Volver al Dashboard
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" onclick="alert('Próximamente')">
+                    <i class="fas fa-download me-2"></i>Exportar Lista (Excel)
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen de Estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ total_empleados }}</h4>
+                        <p class="mb-0">Empleado{{ total_empleados|pluralize }} con documentos pendientes</p>
+                    </div>
+                    <i class="fas fa-users fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ total_documentos }}</h4>
+                        <p class="mb-0">Documento{{ total_documentos|pluralize }} total{{ total_documentos|pluralize:"es" }} pendiente{{ total_documentos|pluralize }}</p>
+                    </div>
+                    <i class="fas fa-file-alt fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Empleados con Documentos Pendientes -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        {% if empleados_data %}
+            {% for item in empleados_data %}
+            <div class="card mb-3 {% cycle 'border-warning' 'border-info' %}">
+                <div class="card-header bg-light">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary text-white rounded-circle me-3" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                    {{ item.empleado.nombres|first }}{{ item.empleado.apellidos|first }}
+                                </div>
+                                <div>
+                                    <h5 class="mb-1 fw-bold">{{ item.empleado.nombre_completo }}</h5>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-id-card me-1"></i>{{ item.empleado.numero_documento }}
+                                        {% if item.empleado.sede %}
+                                        <span class="ms-3"><i class="fas fa-building me-1"></i>{{ item.empleado.sede.nombre }}</span>
+                                        {% endif %}
+                                        <span class="ms-3">
+                                            <i class="fas fa-user-tag me-1"></i>{{ item.empleado.estado.nombre }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="d-flex align-items-center justify-content-end">
+                                <div class="me-3">
+                                    <span class="badge bg-warning text-dark fs-6">
+                                        {{ item.count }} documento{{ item.count|pluralize }} pendiente{{ item.count|pluralize }}
+                                    </span>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'documents:empleado_documentos' item.empleado.pk %}" 
+                                       class="btn btn-outline-primary" title="Ver todos los documentos">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'employees:empleado_detail' pk=item.empleado.pk %}" 
+                                       class="btn btn-outline-secondary" title="Ver perfil del empleado">
+                                        <i class="fas fa-user"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-clock text-warning me-2"></i>Documentos Pendientes de Aprobación:
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tipo de Documento</th>
+                                    <th>Fecha de Carga</th>
+                                    <th>Cargado por</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for documento in item.documentos_pendientes %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-medium">{{ documento.tipo_documento.nombre }}</div>
+                                        {% if documento.tipo_documento.obligatorio %}
+                                        <span class="badge bg-danger text-white small">Obligatorio</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div>{{ documento.fecha_carga|date:"d/m/Y" }}</div>
+                                        <small class="text-muted">{{ documento.fecha_carga|time:"H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        {% if documento.cargado_por %}
+                                            {{ documento.cargado_por.get_full_name|default:documento.cargado_por.username }}
+                                        {% else %}
+                                            <span class="text-muted">Sistema</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'documents:documento_approve' documento.pk %}" 
+                                               class="btn btn-success" title="Revisar y Aprobar">
+                                                <i class="fas fa-check"></i>
+                                                Revisar
+                                            </a>
+                                            <a href="{% url 'documents:documento_download' documento.pk %}" 
+                                               class="btn btn-outline-secondary" title="Descargar">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-3x text-success"></i>
+                </div>
+                <h4 class="text-success">¡Excelente trabajo!</h4>
+                <p class="text-muted">
+                    No hay empleados con documentos pendientes de aprobación en este momento.
+                    <br>
+                    Todos los documentos han sido procesados correctamente.
+                </p>
+                <div class="mt-4">
+                    <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-1"></i>Ver Todos los Empleados
+                    </a>
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-primary ms-2">
+                        <i class="fas fa-home me-1"></i>Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar el título de la página con el conteo
+    document.title = `({{ total_documentos }}) {{ titulo_pagina }} - RRHH Pro`;
+    
+    // Agregar tooltip a los botones de acción
+    const tooltipTriggerList = document.querySelectorAll('[title]');
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}
