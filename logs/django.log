@@ -54159,3 +54159,4 @@ WARNING 2025-11-12 08:17:06,569 basehttp 12428 20872 "GET /static/css/vendor/boo
 INFO 2025-11-12 08:30:01,520 apps 15060 18948 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-12 08:30:22,493 apps 13376 13744 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-12 08:30:33,229 apps 13404 13764 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-12 08:46:30,195 apps 7628 14220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage

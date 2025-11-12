@@ -61,7 +61,7 @@ def dashboard_view(request):
         empleados_activos = 0
         try:
             # Intentar con diferentes códigos de estado activo
-            codigos_activo = ['ACTIVO', '999', 'activo']
+            codigos_activo = ['ACTIVO', 'Activo', '999', 'activo']
             for codigo in codigos_activo:
                 try:
                     estado_activo = EstadoEmpleado.objects.get(codigo=codigo)

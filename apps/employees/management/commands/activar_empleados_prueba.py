@@ -29,7 +29,20 @@ class Command(BaseCommand):
         # Obtener estados
         try:
             estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
-            estado_activo = EstadoEmpleado.objects.get(codigo='999')
+            
+            # Buscar estado activo entre diferentes códigos posibles
+            estado_activo = None
+            codigos_activo = ['999', 'ACTIVO', 'Activo', 'activo']
+            for codigo in codigos_activo:
+                try:
+                    estado_activo = EstadoEmpleado.objects.get(codigo=codigo)
+                    break
+                except EstadoEmpleado.DoesNotExist:
+                    continue
+                    
+            if not estado_activo:
+                raise EstadoEmpleado.DoesNotExist("No se encontró ningún estado activo válido")
+                
         except EstadoEmpleado.DoesNotExist as e:
             self.stdout.write(
                 self.style.ERROR(f'Error: No se encontraron los estados necesarios: {e}')
