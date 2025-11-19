@@ -521,15 +521,61 @@
                                     • Evaluador: {{ evaluacion.evaluador.nombre_completo }}
                                     {% endif %}
                                 </small>
+                                
+                                {% if evaluacion.estado == 'completada' and evaluacion.puntaje_total %}
+                                <div class="mt-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Puntaje Obtenido:</small>
+                                            <span class="fw-bold">{{ evaluacion.puntaje_total }} de 21 puntos</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Porcentaje:</small>
+                                            <span class="fw-bold">{{ evaluacion.porcentaje_completado|floatformat:1 }}%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if evaluacion.puntaje_total <= 13 %}
+                                    <div class="alert alert-danger alert-sm mt-2 mb-0">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        <strong>EMPLEADO REPROBADO</strong> - Puntaje insuficiente (mínimo requerido: 14 puntos)
+                                    </div>
+                                    {% elif evaluacion.puntaje_total >= 14 and evaluacion.puntaje_total <= 17 %}
+                                    <div class="alert alert-warning alert-sm mt-2 mb-0">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        <strong>APROBADO</strong> - Desempeño satisfactorio
+                                    </div>
+                                    {% elif evaluacion.puntaje_total >= 18 %}
+                                    <div class="alert alert-success alert-sm mt-2 mb-0">
+                                        <i class="fas fa-star me-1"></i>
+                                        <strong>EXCELENTE</strong> - Desempeño sobresaliente
+                                    {% endif %}
+                                </div>
+                                {% endif %}
                             </div>
                             <div class="text-end">
                                 {% if evaluacion.estado == 'completada' %}
-                                    <span class="badge bg-success">Completada</span>
-                                    {% if evaluacion.puntaje_total %}
-                                    <div class="mt-1">
-                                        <small class="text-muted">Puntaje: {{ evaluacion.puntaje_total }}%</small>
-                                    </div>
+                                    <span class="badge bg-success mb-2">Completada</span>
+                                    
+                                    {% if evaluacion.estado_aprobacion == 'pendiente_aprobacion' %}
+                                        <div>
+                                            <span class="badge bg-warning">Pendiente de Aprobación</span>
+                                        </div>
+                                    {% elif evaluacion.estado_aprobacion == 'aprobada' %}
+                                        <div>
+                                            <span class="badge bg-info">Aprobada por Admin</span>
+                                            {% if evaluacion.puntaje_total <= 13 %}
+                                            <div class="mt-1">
+                                                <span class="badge bg-danger"><i class="fas fa-user-times me-1"></i>Requiere Desactivación</span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    {% elif evaluacion.estado_aprobacion == 'desaprobada' %}
+                                        <div>
+                                            <span class="badge bg-danger">Desaprobada</span>
+                                        </div>
                                     {% endif %}
+                                    
                                 {% elif evaluacion.estado == 'en_progreso' %}
                                     <span class="badge bg-warning">En Progreso</span>
                                 {% else %}

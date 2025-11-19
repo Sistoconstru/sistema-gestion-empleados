@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evaluaciones Pendientes{% endblock %}
+
+{% block extra_css %}
+<style>
+.evaluation-row {
+    transition: all 0.3s;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.evaluation-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.priority-high {
+    border-left: 5px solid #dc3545;
+}
+.priority-medium {
+    border-left: 5px solid #ffc107;
+}
+.priority-low {
+    border-left: 5px solid #28a745;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-tasks text-warning"></i> Evaluaciones Pendientes</h2>
+                    <p class="text-muted">Evaluaciones asignadas como supervisor</p>
+                </div>
+                <a href="{% url 'evaluations:index' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar empleado..." id="searchInput">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Evaluaciones -->
+    {% if evaluaciones %}
+        <div id="evaluationsContainer">
+            {% for asignacion in evaluaciones %}
+            <div class="evaluation-row 
+                        {% if asignacion.dias_transcurridos > 35 %}priority-high
+                        {% elif asignacion.dias_transcurridos > 30 %}priority-medium
+                        {% else %}priority-low{% endif %}"
+                 data-empleado="{{ asignacion.empleado_evaluado.nombre_completo|lower }}">
+                
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3">
+                                {% if asignacion.empleado_evaluado.foto %}
+                                    <img src="{{ asignacion.empleado_evaluado.foto.url }}" 
+                                         class="rounded-circle" width="50" height="50" alt="Foto">
+                                {% else %}
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 50px;">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-1 text-primary">{{ asignacion.empleado_evaluado.nombre_completo }}</h6>
+                                <small class="text-muted">{{ asignacion.empleado_evaluado.numero_documento }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div>
+                            <strong>{{ asignacion.evaluacion.nombre }}</strong>
+                            <br>
+                            <small class="text-muted">{{ asignacion.evaluacion.tipo_evaluacion.nombre }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div>
+                            <small class="text-muted d-block">Asignada:</small>
+                            <strong>{{ asignacion.fecha_asignacion|date:"d/m/Y" }}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        {% if asignacion.estado == 'pendiente' %}
+                            <span class="badge badge-warning badge-lg">
+                                <i class="fas fa-clock"></i> Pendiente
+                            </span>
+                        {% elif asignacion.estado == 'en_progreso' %}
+                            <span class="badge badge-info badge-lg">
+                                <i class="fas fa-play"></i> En Progreso
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-1 text-right">
+                        <a href="{% url 'evaluations:completar' asignacion.id %}" 
+                           class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i>
+                            {% if asignacion.estado == 'pendiente' %}Iniciar{% else %}Continuar{% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Paginación">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_num == page_obj.number %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-clipboard-check fa-4x text-success mb-3"></i>
+            <h4>¡Excelente trabajo!</h4>
+            <p class="text-muted">No tienes evaluaciones pendientes por completar.</p>
+            <a href="{% url 'evaluations:index' %}" class="btn btn-primary">
+                <i class="fas fa-chart-line"></i> Ir al Dashboard
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Filtro de búsqueda en tiempo real
+document.getElementById('searchInput').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const evaluationRows = document.querySelectorAll('.evaluation-row');
+    
+    evaluationRows.forEach(row => {
+        const empleadoName = row.getAttribute('data-empleado');
+        if (empleadoName.includes(searchTerm)) {
+            row.style.display = 'block';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

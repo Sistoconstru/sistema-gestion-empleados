@@ -22,6 +22,7 @@ urlpatterns = [
     path('<uuid:pk>/historial/export/', views.empleado_historial_export, name='empleado_historial_export'),
     path('mi-perfil/', views.empleado_perfil_redirect, name='empleado_perfil'),
     path('perfil/<uuid:pk>/', views.EmpleadoPerfilView.as_view(), name='empleado_perfil_detail'),
+    path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),
     # APIs y exportación
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),
     path('export/', views.empleado_export, name='empleado_export'),
@@ -32,6 +33,7 @@ urlpatterns = [
     # Reportes especiales
     path('periodo-prueba/', views.empleados_periodo_prueba_reporte, name='periodo_prueba_reporte'),
     path('<uuid:pk>/activar/', views.activar_empleado_individual, name='activar_empleado'),
+    path('<uuid:pk>/desactivar-reprobado/', views.desactivar_empleado_reprobado, name='desactivar_empleado_reprobado'),
     
     # Historial de cargos (para futuras funcionalidades)
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),

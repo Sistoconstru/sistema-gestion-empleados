@@ -1,10 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load evaluation_filters %}
 
 {% block title %}Reporte - Empleados en Período de Prueba{% endblock %}
 
 {% block extra_css %}
 <style>
+    .btn-desactivar {
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+    
+    .btn-desactivar:hover {
+        background-color: #c82333 !important;
+        border-color: #bd2130 !important;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-desactivar:active {
+        transform: scale(0.95);
+    }
+
     .estado-badge {
         color: white;
         padding: 0.4rem 0.8rem;
@@ -75,6 +92,87 @@
     .dias-badge {
         background-color: #2c5530;
         font-size: 0.8rem;
+    }
+    
+    /* Responsividad para móviles */
+    @media (max-width: 768px) {
+        .table-responsive {
+            max-height: none;
+        }
+        
+        .desktop-table {
+            display: none;
+        }
+        
+        .mobile-cards {
+            display: block;
+        }
+        
+        .empleado-card {
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        
+        .empleado-card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem;
+        }
+        
+        .empleado-card-body {
+            padding: 0.75rem;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.875rem;
+        }
+        
+        .info-value {
+            text-align: right;
+            font-size: 0.875rem;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .mobile-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .mobile-cards {
+            display: none;
+        }
+        
+        .desktop-table {
+            display: block;
+        }
     }
 </style>
 {% endblock %}
@@ -192,7 +290,8 @@
         </div>
         <div class="card-body p-0">
             {% if empleados_info %}
-            <div class="table-responsive">
+            <!-- Tabla para escritorio -->
+            <div class="table-responsive desktop-table">
                 <table class="table table-hover mb-0">
                     <thead class="table-header-corporativo">
                         <tr>
@@ -204,6 +303,7 @@
                             <th class="col-dias">Días completados</th>
                             <th>Fecha Activación</th>
                             <th class="col-estado">Faltan</th>
+                            <th>Evaluación</th>
                             <th class="col-acciones">Acciones</th>
                         </tr>
                     </thead>
@@ -261,6 +361,40 @@
                                     </span>
                                 {% endif %}
                             </td>
+                            <td>
+                                {% if info.evaluacion.existe %}
+                                    {% if info.evaluacion.requiere_desactivacion %}
+                                        <button type="button" 
+                                                class="btn btn-danger btn-sm w-100 btn-desactivar" 
+                                                data-empleado-id="{{ info.empleado.pk }}"
+                                                data-empleado-nombre="{{ info.empleado.nombre_completo }}"
+                                                data-puntaje="{{ info.evaluacion.puntaje }}"
+                                                title="Desactivar empleado reprobado">
+                                            <i class="fas fa-user-times mb-1"></i><br>
+                                            <strong>REPROBADO</strong><br>
+                                            <small>{{ info.evaluacion.puntaje }}/21 pts</small><br>
+                                            <small><strong>Clic para desactivar</strong></small>
+                                        </button>
+                                    {% elif info.evaluacion.aprobado %}
+                                        <div class="alert alert-success p-2 mb-0 text-center">
+                                            <i class="fas fa-check-circle mb-1"></i><br>
+                                            <strong>APROBADO</strong><br>
+                                            <small>{{ info.evaluacion.puntaje }}/21 pts</small>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning p-2 mb-0 text-center">
+                                            <i class="fas fa-clock mb-1"></i><br>
+                                            <strong>PENDIENTE</strong><br>
+                                            <small>Evaluación completada</small>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-secondary p-2 mb-0 text-center">
+                                        <i class="fas fa-minus-circle mb-1"></i><br>
+                                        <small>Sin evaluación</small>
+                                    </div>
+                                {% endif %}
+                            </td>
                             <td class="col-acciones">
                                 <div class="btn-group-sm">
                                     <a href="{% url 'employees:empleado_detail' info.empleado.pk %}" 
@@ -280,6 +414,133 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- Tarjetas para móviles -->
+            <div class="mobile-cards p-3">
+                {% for info in empleados_info %}
+                <div class="empleado-card">
+                    <div class="empleado-card-header">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ info.empleado.nombre_completo }}</strong><br>
+                                <small class="text-muted">{{ info.empleado.correo_electronico }}</small>
+                            </div>
+                            <div class="mobile-status">
+                                {% if info.dias_restantes == 0 %}
+                                    <span class="estado-badge estado-listo">¡Listo!</span>
+                                {% elif info.dias_restantes <= dias_antelacion %}
+                                    <span class="estado-badge estado-proximo">{{ info.dias_restantes }} días</span>
+                                {% else %}
+                                    <span class="estado-badge estado-pendiente">{{ info.dias_restantes }} días</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="empleado-card-body">
+                        <div class="info-row">
+                            <span class="info-label">Documento:</span>
+                            <span class="info-value">
+                                <span class="badge badge-documento">{{ info.empleado.tipo_documento.codigo }}</span>
+                                {{ info.empleado.numero_documento }}
+                            </span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Cargo:</span>
+                            <span class="info-value">
+                                {% if info.cargo_actual %}
+                                    <strong>{{ info.cargo_actual.cargo.nombre }}</strong><br>
+                                    <small class="text-muted">{{ info.cargo_actual.cargo.area.nombre }}</small>
+                                {% else %}
+                                    <span class="text-muted">Sin cargo asignado</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Sede:</span>
+                            <span class="info-value">{{ info.empleado.sede.nombre }}</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Fecha Ingreso:</span>
+                            <span class="info-value">
+                                {{ info.empleado.fecha_ingreso|date:"d/m/Y" }}<br>
+                                <small class="text-muted">{{ info.empleado.fecha_ingreso|timesince }} atrás</small>
+                            </span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Días Completados:</span>
+                            <span class="info-value">
+                                <span class="badge dias-badge">{{ info.dias_transcurridos }} días</span>
+                            </span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Fecha Activación:</span>
+                            <span class="info-value">
+                                {{ info.fecha_activacion|date:"d/m/Y" }}<br>
+                                {% if info.dias_restantes == 0 %}
+                                    <small class="text-success"><strong>¡Ya cumplió!</strong></small>
+                                {% else %}
+                                    <small class="text-muted">En {{ info.dias_restantes }} días</small>
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Evaluación:</span>
+                            <span class="info-value">
+                                {% if info.evaluacion.existe %}
+                                    {% if info.evaluacion.requiere_desactivacion %}
+                                        <span class="badge bg-danger text-white">
+                                            REPROBADO - {{ info.evaluacion.puntaje }}/21 pts
+                                        </span>
+                                    {% elif info.evaluacion.aprobado %}
+                                        <span class="badge bg-success text-white">
+                                            APROBADO - {{ info.evaluacion.puntaje }}/21 pts
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">
+                                            PENDIENTE
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary text-white">
+                                        Sin evaluación
+                                    </span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <a href="{% url 'employees:empleado_detail' info.empleado.pk %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i>Ver Perfil
+                            </a>
+                            
+                            {% if info.dias_restantes == 0 %}
+                            <button type="button" class="btn btn-sm btn-success" 
+                                    onclick="activarEmpleado('{{ info.empleado.pk }}')">                         <i class="fas fa-user-check me-1"></i>Activar
+                            </button>
+                            {% endif %}
+                            
+                            {% if info.evaluacion.existe and info.evaluacion.requiere_desactivacion %}
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-desactivar" 
+                                    data-empleado-id="{{ info.empleado.pk }}"
+                                    data-empleado-nombre="{{ info.empleado.nombre_completo }}"
+                                    data-puntaje="{{ info.evaluacion.puntaje }}"
+                                    title="Desactivar empleado reprobado">
+                                <i class="fas fa-user-times me-1"></i>Desactivar
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
             {% else %}
             <div class="text-center py-5">
@@ -343,6 +604,17 @@ let diasAntelacion = localStorage.getItem('diasAntelacionPeriodoPrueba') || {{ d
 // Aplicar configuración al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('diasAntelacion').value = diasAntelacion;
+    
+    // Event listeners para botones de desactivación
+    document.querySelectorAll('.btn-desactivar').forEach(boton => {
+        boton.addEventListener('click', function() {
+            const empleadoId = this.dataset.empleadoId;
+            const empleadoNombre = this.dataset.empleadoNombre;
+            const puntaje = this.dataset.puntaje;
+            
+            desactivarEmpleadoReprobado(empleadoId, empleadoNombre, puntaje);
+        });
+    });
 });
 
 function aplicarConfiguracion() {
@@ -424,6 +696,64 @@ function activarEmpleado(empleadoId) {
             } else {
                 // Mostrar error
                 alert(`Error: ${data.message}`);
+                // Restaurar botón
+                boton.innerHTML = textoOriginal;
+                boton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error de conexión. Intente nuevamente.');
+            // Restaurar botón
+            boton.innerHTML = textoOriginal;
+            boton.disabled = false;
+        });
+    }
+}
+
+function desactivarEmpleadoReprobado(empleadoId, empleadoNombre, puntaje) {
+    const mensaje = `⚠️ CONFIRMAR DESACTIVACIÓN\n\nEmpleado: ${empleadoNombre}\nPuntaje evaluación: ${puntaje}/21 puntos\n\n¿Está seguro de que desea DESACTIVAR a este empleado por reprobación en su evaluación?\n\nEsta acción no se puede deshacer.`;
+    
+    if (confirm(mensaje)) {
+        // Mostrar indicador de carga en el botón
+        const boton = document.querySelector(`button[data-empleado-id="${empleadoId}"]`);
+        const textoOriginal = boton.innerHTML;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><br>Desactivando...';
+        boton.disabled = true;
+        
+        // Realizar petición AJAX
+        fetch(`/empleados/${empleadoId}/desactivar-reprobado/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                alert(`✓ ${data.message}\n\nMotivo: ${data.motivo}\nPuntaje: ${data.puntaje}/21 puntos`);
+                
+                // Remover la fila de la tabla
+                const fila = boton.closest('tr');
+                fila.style.transition = 'opacity 0.5s ease';
+                fila.style.opacity = '0';
+                
+                setTimeout(() => {
+                    fila.remove();
+                    
+                    // Actualizar contadores
+                    actualizarContadores();
+                    
+                    // Si no quedan empleados, mostrar mensaje
+                    if (document.querySelectorAll('.empleado-row').length === 0) {
+                        location.reload();
+                    }
+                }, 500);
+            } else {
+                // Mostrar error
+                alert(`❌ Error: ${data.message}`);
                 // Restaurar botón
                 boton.innerHTML = textoOriginal;
                 boton.disabled = false;

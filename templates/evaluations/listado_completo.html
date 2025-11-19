@@ -1,0 +1,445 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Listado Completo de Evaluaciones - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.stats-card {
+    transition: transform 0.2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'evaluations:index' %}">Evaluaciones</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Listado Completo</li>
+        </ol>
+    </nav>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">
+                <i class="fas fa-list-alt text-primary"></i>
+                Listado Completo de Evaluaciones
+            </h1>
+            <p class="text-muted mb-0">Gestión integral de todas las evaluaciones del sistema</p>
+        </div>
+        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Evaluaciones</h6>
+                            <h3 class="mb-0 text-primary">{{ total_evaluaciones }}</h3>
+                        </div>
+                        <div class="text-primary">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Pendientes</h6>
+                            <h3 class="mb-0 text-warning">{{ evaluaciones_pendientes }}</h3>
+                        </div>
+                        <div class="text-warning">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Completadas</h6>
+                            <h3 class="mb-0 text-success">{{ evaluaciones_completadas }}</h3>
+                        </div>
+                        <div class="text-success">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card stats-card border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Aprobadas</h6>
+                            <h3 class="mb-0 text-info">{{ evaluaciones_aprobadas }}</h3>
+                        </div>
+                        <div class="text-info">
+                            <i class="fas fa-thumbs-up fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-filter"></i> Filtros de Búsqueda
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosAvanzados" aria-expanded="false">
+                <i class="fas fa-chevron-down"></i> Mostrar/Ocultar
+            </button>
+        </div>
+        
+        <div class="collapse show" id="filtrosAvanzados">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-select">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="en_progreso" {% if estado_filtro == 'en_progreso' %}selected{% endif %}>En Progreso</option>
+                            <option value="completada" {% if estado_filtro == 'completada' %}selected{% endif %}>Completada</option>
+                            <option value="aprobada" {% if estado_filtro == 'aprobada' %}selected{% endif %}>Aprobada</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo de Evaluación</label>
+                        <select name="tipo" class="form-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="periodo_prueba" {% if tipo_filtro == 'periodo_prueba' %}selected{% endif %}>Período de Prueba</option>
+                            <option value="desempeño_anual" {% if tipo_filtro == 'desempeño_anual' %}selected{% endif %}>Desempeño Anual</option>
+                            <option value="extraordinaria" {% if tipo_filtro == 'extraordinaria' %}selected{% endif %}>Extraordinaria</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Empleado</label>
+                        <select name="empleado" class="form-select">
+                            <option value="">Todos los empleados</option>
+                            {% for empleado in empleados_disponibles %}
+                                <option value="{{ empleado.id }}" {% if empleado_filtro and empleado.id|stringformat:"s" == empleado_filtro %}selected{% endif %}>
+                                    {{ empleado.apellidos }}, {{ empleado.nombres }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Buscar</label>
+                        <input type="text" name="buscar" class="form-control" placeholder="Nombre o apellido..." value="{% if buscar %}{{ buscar }}{% endif %}">
+                    </div>
+                    
+                    <div class="col-md-12 d-flex align-items-end justify-content-start mt-3">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                        <a href="{% url 'evaluations:listado_completo' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Evaluaciones -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-table"></i> 
+                Evaluaciones 
+                {% if estado_filtro or tipo_filtro or buscar or empleado_filtro %}
+                    <span class="badge bg-light text-dark ms-2">Filtradas</span>
+                {% endif %}
+            </h5>
+            <span class="badge bg-light text-dark">{{ page_obj.paginator.count }} resultados</span>
+        </div>
+        
+        <div class="card-body p-0">
+            {% if evaluaciones %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Empleado</th>
+                                <th>Tipo de Evaluación</th>
+                                <th>Evaluador</th>
+                                <th>Estado</th>
+                                <th>Fecha Asignación</th>
+                                <th>Fecha Completada</th>
+                                <th>Puntaje</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for evaluacion in evaluaciones %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary text-white me-2">
+                                            {{ evaluacion.empleado_evaluado.nombres.0 }}{{ evaluacion.empleado_evaluado.apellidos.0 }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ evaluacion.empleado_evaluado.nombre_completo }}</strong><br>
+                                            <small class="text-muted">{{ evaluacion.empleado_evaluado.numero_documento }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info text-dark">{{ evaluacion.evaluacion.nombre }}</span><br>
+                                    <small class="text-muted">{{ evaluacion.periodo_evaluacion|default:"N/A" }}</small>
+                                </td>
+                                <td>
+                                    {% if evaluacion.evaluador %}
+                                        {{ evaluacion.evaluador.nombre_completo }}
+                                    {% else %}
+                                        <span class="text-muted">Sin asignar</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if evaluacion.estado == 'pendiente' %}
+                                        <span class="badge bg-warning">Pendiente</span>
+                                    {% elif evaluacion.estado == 'en_progreso' %}
+                                        <span class="badge bg-info">En Progreso</span>
+                                    {% elif evaluacion.estado == 'completada' %}
+                                        <span class="badge bg-success">Completada</span>
+                                    {% elif evaluacion.estado == 'aprobada' %}
+                                        <span class="badge bg-primary">Aprobada</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ evaluacion.estado|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ evaluacion.fecha_asignacion|date:"d/m/Y" }}<br>
+                                    <small class="text-muted">{{ evaluacion.fecha_asignacion|timesince }} atrás</small>
+                                </td>
+                                <td>
+                                    {% if evaluacion.fecha_completada %}
+                                        {{ evaluacion.fecha_completada|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if evaluacion.puntaje_total %}
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-2" style="width: 50px; height: 20px;">
+                                                {% with porcentaje=evaluacion.porcentaje_completado|default:0 %}
+                                                <div class="progress-bar 
+                                                    {% if porcentaje >= 70 %}bg-success
+                                                    {% elif porcentaje >= 50 %}bg-warning
+                                                    {% else %}bg-danger{% endif %}" 
+                                                    style="width: {{ porcentaje }}%">
+                                                </div>
+                                                {% endwith %}
+                                            </div>
+                                            <small><strong>{{ evaluacion.puntaje_total|floatformat:0 }}</strong>/21</small>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% if evaluacion.estado == 'completada' %}
+                                        <a href="{% url 'evaluations:ver_resultado' evaluacion.id %}" 
+                                           class="btn btn-sm btn-outline-primary" title="Ver Resultados">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                    {% elif evaluacion.estado == 'pendiente' and evaluacion.evaluador == empleado_actual %}
+                                        <a href="{% url 'evaluations:completar' evaluacion.id %}" 
+                                           class="btn btn-sm btn-outline-warning" title="Completar Evaluación">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    {% endif %}
+                                    
+                                    <!-- Dropdown para más acciones -->
+                                    <div class="btn-group dropstart">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{% url 'employees:empleado_detail' evaluacion.empleado_evaluado.pk %}">
+                                                <i class="fas fa-user"></i> Ver Empleado
+                                            </a></li>
+                                            {% if evaluacion.estado == 'completada' and es_superusuario %}
+                                                {% if '[ACEPTADO_EMPLEADO:' in evaluacion.observaciones or evaluacion.puntaje_total < 14 %}
+                                                    <li><a class="dropdown-item" href="#" onclick="aprobarEvaluacion('{{ evaluacion.id }}')">
+                                                        <i class="fas fa-check text-success"></i> Aprobar Evaluación
+                                                    </a></li>
+                                                {% else %}
+                                                    <li><a class="dropdown-item text-muted disabled" href="#" onclick="return false;" 
+                                                           title="El empleado debe aceptar los resultados primero">
+                                                        <i class="fas fa-clock text-warning"></i> Esperando aceptación del empleado
+                                                    </a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if es_superusuario %}
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#" onclick="confirmarEliminacion('{{ evaluacion.id }}')">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h6>No se encontraron evaluaciones</h6>
+                    <p>
+                        {% if estado_filtro or tipo_filtro or buscar %}
+                            Intenta ajustar los filtros de búsqueda
+                        {% else %}
+                            Aún no hay evaluaciones en el sistema
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="card-footer">
+            <nav aria-label="Navegación de evaluaciones">
+                <ul class="pagination pagination-sm justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if estado_filtro %}&estado={{ estado_filtro }}{% endif %}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if buscar %}&buscar={{ buscar }}{% endif %}{% if empleado_filtro %}&empleado={{ empleado_filtro }}{% endif %}">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if estado_filtro %}&estado={{ estado_filtro }}{% endif %}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if buscar %}&buscar={{ buscar }}{% endif %}{% if empleado_filtro %}&empleado={{ empleado_filtro }}{% endif %}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if estado_filtro %}&estado={{ estado_filtro }}{% endif %}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if buscar %}&buscar={{ buscar }}{% endif %}{% if empleado_filtro %}&empleado={{ empleado_filtro }}{% endif %}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if estado_filtro %}&estado={{ estado_filtro }}{% endif %}{% if tipo_filtro %}&tipo={{ tipo_filtro }}{% endif %}{% if buscar %}&buscar={{ buscar }}{% endif %}{% if empleado_filtro %}&empleado={{ empleado_filtro }}{% endif %}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JavaScript para funcionalidades adicionales -->
+<script>
+function aprobarEvaluacion(evaluacionId) {
+    if (confirm('¿Está seguro de que desea aprobar esta evaluación?')) {
+        // TODO: Implementar aprobación de evaluación
+        alert('Funcionalidad de aprobación en desarrollo.');
+    }
+}
+
+function confirmarEliminacion(evaluacionId) {
+    if (confirm('¿Está seguro de que desea eliminar esta evaluación? Esta acción no se puede deshacer.')) {
+        // TODO: Implementar eliminación de evaluación
+        alert('Funcionalidad de eliminación en desarrollo.');
+    }
+}
+
+// Auto-submit del formulario de filtros cuando cambian los selects (excepto empleado)
+document.addEventListener('DOMContentLoaded', function() {
+    const selectElements = document.querySelectorAll('select[name="estado"], select[name="tipo"]');
+    selectElements.forEach(function(select) {
+        select.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    });
+    
+    // Para el filtro de empleado, no hacer auto-submit para mejor UX
+    const empleadoSelect = document.querySelector('select[name="empleado"]');
+    if (empleadoSelect) {
+        empleadoSelect.addEventListener('change', function() {
+            // Solo agregar una indicación visual de que se puede filtrar
+            const filterButton = document.querySelector('button[type="submit"]');
+            if (this.value) {
+                filterButton.classList.add('btn-warning');
+                filterButton.innerHTML = '<i class="fas fa-search"></i> Aplicar Filtro';
+            } else {
+                filterButton.classList.remove('btn-warning');
+                filterButton.classList.add('btn-primary');
+                filterButton.innerHTML = '<i class="fas fa-search"></i> Filtrar';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

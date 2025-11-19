@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evaluaciones Pendientes de Aprobación{% endblock %}
+
+{% block extra_css %}
+<style>
+.evaluation-card {
+    border-left: 4px solid #ffc107;
+    transition: all 0.3s ease;
+}
+.evaluation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.evaluation-period-trial {
+    border-left-color: #e74c3c;
+}
+.evaluation-period-trial .badge {
+    background-color: #e74c3c !important;
+}
+.stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+.btn-approve { background-color: #28a745; border-color: #28a745; }
+.btn-approve:hover { background-color: #218838; border-color: #1e7e34; }
+.btn-reject { background-color: #dc3545; border-color: #dc3545; }
+.btn-reject:hover { background-color: #c82333; border-color: #bd2130; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-clipboard-check text-warning me-2"></i>
+                        Evaluaciones Pendientes de Aprobación
+                    </h1>
+                    <p class="text-muted mt-1">Gestión administrativa de evaluaciones completadas</p>
+                </div>
+                <div>
+                    <a href="{% url 'evaluations:index' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">Total Pendientes</h5>
+                        <h3 class="mb-0">{{ total_pendientes }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">Período de Prueba</h5>
+                        <h3 class="mb-0">{{ total_periodo_prueba }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">Requieren Atención</h5>
+                        <h3 class="mb-0">{{ requieren_atencion }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Evaluaciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-check me-2"></i>
+                        Evaluaciones para Aprobación
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if evaluaciones_pendientes %}
+                        <div class="row">
+                            {% for asignacion in evaluaciones_pendientes %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card evaluation-card h-100 {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}evaluation-period-trial{% endif %}">
+                                    <div class="card-body">
+                                        <!-- Header -->
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title mb-1">
+                                                    {{ asignacion.empleado_evaluado.nombre_completo }}
+                                                </h6>
+                                                <small class="text-muted">
+                                                    {{ asignacion.empleado_evaluado.cargo|default:"Sin cargo asignado" }}
+                                                </small>
+                                            </div>
+                                            {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                                <span class="badge bg-danger ms-2">
+                                                    <i class="fas fa-user-clock me-1"></i>Período Prueba
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-primary ms-2">
+                                                    {{ asignacion.evaluacion.tipo_evaluacion.nombre }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Detalles -->
+                                        <div class="mb-3">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <small class="text-muted d-block">Evaluación:</small>
+                                                    <small class="fw-medium">{{ asignacion.evaluacion.nombre }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted d-block">Evaluador:</small>
+                                                    <small class="fw-medium">{{ asignacion.evaluador.nombre_completo|default:"No asignado" }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted d-block">Completada:</small>
+                                                    <small class="fw-medium">{{ asignacion.fecha_completada|date:"d/m/Y H:i" }}</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted d-block">Puntaje:</small>
+                                                    <small class="fw-medium">
+                                                        {% if asignacion.puntaje_total %}
+                                                            <span class="badge bg-info">{{ asignacion.puntaje_total|floatformat:1 }} pts</span>
+                                                        {% else %}
+                                                            <span class="text-muted">Pendiente</span>
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                                <div class="col-12 mt-2">
+                                                    <small class="text-muted d-block">Estado de aceptación:</small>
+                                                    {% if asignacion.puntaje_total < 14 %}
+                                                        <small class="fw-medium">
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-times me-1"></i>Evaluación reprobada - Lista para aprobar
+                                                            </span>
+                                                        </small>
+                                                    {% elif '[ACEPTADO_EMPLEADO:' in asignacion.observaciones %}
+                                                        <small class="fw-medium">
+                                                            <span class="badge bg-success">
+                                                                <i class="fas fa-check me-1"></i>Empleado aceptó resultados
+                                                            </span>
+                                                        </small>
+                                                    {% else %}
+                                                        <small class="fw-medium">
+                                                            <span class="badge bg-warning text-dark">
+                                                                <i class="fas fa-clock me-1"></i>Pendiente aceptación del empleado
+                                                            </span>
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Botones de Acción -->
+                                        <div class="d-grid gap-2">
+                                            {% if asignacion.puntaje_total < 14 %}
+                                                <!-- Evaluación reprobada - No necesita aceptación del empleado -->
+                                                <a href="{% url 'evaluations:aprobar_evaluacion' asignacion.id %}" 
+                                                   class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-times me-1"></i>Revisar y Aprobar (Reprobada)
+                                                </a>
+                                                <div class="row g-1">
+                                                    <div class="col-6">
+                                                        <button class="btn btn-outline-danger btn-sm w-100" 
+                                                                onclick="aprobarRapido('{{ asignacion.id }}', '{{ asignacion.empleado_evaluado.nombre_completo }}')">
+                                                            <i class="fas fa-times"></i> Aprobar
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <a href="{% url 'evaluations:ver_resultado' asignacion.id %}" 
+                                                           class="btn btn-outline-info btn-sm w-100">
+                                                            <i class="fas fa-chart-bar"></i> Ver
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% elif '[ACEPTADO_EMPLEADO:' in asignacion.observaciones %}
+                                                <!-- Evaluación aprobada y aceptada por empleado -->
+                                                <a href="{% url 'evaluations:aprobar_evaluacion' asignacion.id %}" 
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check me-1"></i>Listo para Aprobar
+                                                </a>
+                                                <div class="row g-1">
+                                                    <div class="col-6">
+                                                        <button class="btn btn-outline-success btn-sm w-100" 
+                                                                onclick="aprobarRapido('{{ asignacion.id }}', '{{ asignacion.empleado_evaluado.nombre_completo }}')">
+                                                            <i class="fas fa-check"></i> Aprobar
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <a href="{% url 'evaluations:ver_resultado' asignacion.id %}" 
+                                                           class="btn btn-outline-info btn-sm w-100">
+                                                            <i class="fas fa-chart-bar"></i> Ver
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <!-- Evaluación aprobada pero sin aceptación del empleado -->
+                                                <div class="alert alert-warning p-2 mb-2 text-center" style="font-size: 0.85rem;">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                                    Esperando que el empleado acepte los resultados
+                                                </div>
+                                                <div class="row g-1">
+                                                    <div class="col-6">
+                                                        <button class="btn btn-outline-secondary btn-sm w-100" disabled
+                                                                title="Debe esperar a que el empleado acepte">
+                                                            <i class="fas fa-lock"></i> Aprobar
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <a href="{% url 'evaluations:ver_resultado' asignacion.id %}" 
+                                                           class="btn btn-outline-info btn-sm w-100">
+                                                            <i class="fas fa-chart-bar"></i> Ver
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Paginación -->
+                        {% if is_paginated %}
+                        <div class="d-flex justify-content-center mt-4">
+                            <nav aria-label="Paginación de evaluaciones">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ num }}</span>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                        {% endif %}
+
+                    {% else %}
+                        <!-- Estado Vacío -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-clipboard-check fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-muted">No hay evaluaciones pendientes de aprobación</h5>
+                            <p class="text-muted">
+                                Todas las evaluaciones completadas han sido procesadas.
+                            </p>
+                            <a href="{% url 'evaluations:index' %}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Aprobación Rápida -->
+<div class="modal fade" id="modalAprobacionRapida" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    Aprobación Rápida
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" id="formAprobacionRapida">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>¿Está seguro que desea <strong>aprobar</strong> la evaluación de <strong id="nombreEmpleado"></strong>?</p>
+                    <input type="hidden" name="decision" value="aprobada">
+                    <input type="hidden" name="recomendacion_continuidad" value="continua">
+                    <div class="mb-3">
+                        <label class="form-label">Comentarios (opcional):</label>
+                        <textarea class="form-control" name="comentarios_aprobacion" rows="3" 
+                                  placeholder="Comentarios sobre la aprobación..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-1"></i>Aprobar Evaluación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function aprobarRapido(asignacionId, nombreEmpleado) {
+    document.getElementById('nombreEmpleado').textContent = nombreEmpleado;
+    document.getElementById('formAprobacionRapida').action = `/evaluaciones/admin/aprobar/${asignacionId}/`;
+    new bootstrap.Modal(document.getElementById('modalAprobacionRapida')).show();
+}
+
+// Auto-refresh cada 5 minutos
+setTimeout(function() {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}

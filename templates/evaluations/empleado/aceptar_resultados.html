@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load evaluation_filters %}
+
+{% block extra_css %}
+<style>
+.acceptance-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.acceptance-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.acceptance-body {
+    padding: 30px;
+}
+
+.summary-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.improvement-plan {
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.improvement-plan h5 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.improvement-item {
+    padding: 8px 0;
+    border-left: 4px solid #007bff;
+    padding-left: 15px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+}
+
+.commitment-section {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.btn-accept-final {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-accept-final:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40,167,69,0.3);
+    color: white;
+}
+
+.btn-back {
+    background: #6c757d;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 25px;
+    margin-right: 15px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="acceptance-container">
+        <!-- Header -->
+        <div class="acceptance-header">
+            <h2><i class="fas fa-clipboard-check"></i> Aceptación de Resultados</h2>
+            <p class="mb-0">Evaluación de Período de Prueba - {{ asignacion.empleado_evaluado.nombre_completo }}</p>
+        </div>
+
+        <div class="acceptance-body">
+            <!-- Resumen de resultados -->
+            <div class="summary-card">
+                <h5><i class="fas fa-chart-line text-primary"></i> Resumen de su Evaluación</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Puntaje Obtenido:</strong> {{ asignacion.puntaje_total|default:"Calculando..." }}<br>
+                        <strong>Porcentaje:</strong> {{ asignacion.porcentaje_completado|floatformat:1 }}%<br>
+                        <strong>Fecha Evaluación:</strong> {{ asignacion.fecha_completada|date:"d/m/Y" }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Evaluador:</strong> {{ asignacion.evaluador.nombre_completo|default:"Sistema" }}<br>
+                        <strong>Estado:</strong> {{ asignacion.get_estado_aprobacion_display }}<br>
+                        <strong>Recomendación:</strong> 
+                        {% if asignacion.recomendacion_continuidad == 'continua' %}
+                            <span class="text-success">Continúa</span>
+                        {% else %}
+                            <span class="text-warning">En revisión</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan de mejora -->
+            <div class="improvement-plan">
+                <h5><i class="fas fa-arrow-up"></i> Su Plan de Mejora Personal</h5>
+                <p>Con base en los resultados de su evaluación, hemos identificado las siguientes áreas para su desarrollo profesional:</p>
+                
+                {% with resultado=asignacion.resultadoevaluacion %}
+                    {% if resultado.areas_mejora %}
+                        <div class="improvement-item">
+                            {{ resultado.areas_mejora|linebreaksbr }}
+                        </div>
+                    {% else %}
+                        <div class="improvement-item">
+                            • Continuar desarrollando las competencias adquiridas durante el período de prueba
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Compromisos -->
+            <div class="commitment-section">
+                <h5><i class="fas fa-handshake text-warning"></i> Compromisos para su Desarrollo</h5>
+                <p>Al aceptar estos resultados, usted se compromete a:</p>
+                <ul>
+                    <li>Trabajar activamente en las áreas de mejora identificadas</li>
+                    <li>Solicitar apoyo y orientación cuando sea necesario</li>
+                    <li>Mantener una actitud positiva hacia el aprendizaje y desarrollo</li>
+                    <li>Aplicar las recomendaciones recibidas en su trabajo diario</li>
+                    <li>Participar en actividades de capacitación que se le asignen</li>
+                </ul>
+            </div>
+
+            <!-- Formulario de aceptación -->
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group mb-4">
+                    <label for="comentarios_empleado" class="form-label">
+                        <strong>Sus Comentarios (Opcional):</strong>
+                    </label>
+                    <textarea name="comentarios_empleado" 
+                              id="comentarios_empleado" 
+                              class="form-control" 
+                              rows="4" 
+                              placeholder="Puede agregar sus comentarios sobre la evaluación, compromisos adicionales, o cualquier observación que considere importante..."></textarea>
+                    <small class="form-text text-muted">
+                        Sus comentarios serán considerados en futuros procesos de evaluación.
+                    </small>
+                </div>
+
+                <!-- Declaración de aceptación -->
+                <div class="form-check mb-4">
+                    <input type="checkbox" 
+                           class="form-check-input" 
+                           id="acepto_resultados" 
+                           required>
+                    <label class="form-check-label" for="acepto_resultados">
+                        <strong>Declaro que he leído y entendido los resultados de mi evaluación, 
+                        acepto el plan de mejora propuesto y me comprometo a trabajar en mi desarrollo profesional.</strong>
+                    </label>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="text-center">
+                    <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" class="btn btn-back">
+                        <i class="fas fa-arrow-left"></i> Revisar Nuevamente
+                    </a>
+                    <button type="submit" class="btn btn-accept-final">
+                        <i class="fas fa-check-circle"></i> Aceptar Resultados y Plan de Mejora
+                    </button>
+                </div>
+            </form>
+
+            <!-- Información adicional -->
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle"></i>
+                    Una vez aceptados los resultados, estos quedarán registrados en su expediente laboral.
+                    La administración recibirá notificación de su aceptación.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('acepto_resultados');
+    const submitBtn = document.querySelector('.btn-accept-final');
+    
+    // Deshabilitar botón inicialmente
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.6';
+    
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+        }
+    });
+});
+</script>
+{% endblock %}

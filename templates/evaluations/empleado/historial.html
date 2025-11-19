@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Evaluaciones{% endblock %}
+
+{% block extra_css %}
+<style>
+.evaluation-timeline {
+    position: relative;
+    margin: 20px 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 20px 0 20px 60px;
+    border-left: 3px solid #dee2e6;
+    margin-left: 20px;
+}
+
+.timeline-item:last-child {
+    border-left-color: transparent;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -15px;
+    top: 25px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+}
+
+.timeline-icon.completed {
+    background: linear-gradient(45deg, #28a745, #20c997);
+}
+
+.timeline-icon.in-progress {
+    background: linear-gradient(45deg, #17a2b8, #138496);
+}
+
+.timeline-icon.pending {
+    background: linear-gradient(45deg, #ffc107, #e0a800);
+}
+
+.evaluation-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.evaluation-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.evaluation-card.completed {
+    border-color: #28a745;
+}
+
+.evaluation-card.in-progress {
+    border-color: #17a2b8;
+}
+
+.evaluation-card.pending {
+    border-color: #ffc107;
+}
+
+.result-score {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.score-excellent {
+    color: #28a745;
+}
+
+.score-good {
+    color: #20c997;
+}
+
+.score-satisfactory {
+    color: #ffc107;
+}
+
+.score-needs-improvement {
+    color: #fd7e14;
+}
+
+.score-unsatisfactory {
+    color: #dc3545;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-user-graduate text-info"></i> Mis Evaluaciones</h2>
+                    <p class="text-muted">Historial de evaluaciones de desempeño</p>
+                </div>
+                <a href="{% url 'evaluations:index' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas resumen -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <h3>{{ evaluaciones|length }}</h3>
+                    <p class="mb-0">Total Evaluaciones</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white text-center">
+                <div class="card-body">
+                    <h3>{{ evaluaciones_completadas }}</h3>
+                    <p class="mb-0">Completadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white text-center">
+                <div class="card-body">
+                    <h3>{{ evaluaciones_pendientes }}</h3>
+                    <p class="mb-0">En Proceso</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body">
+                    <h3>{{ promedio_general|floatformat:1 }}</h3>
+                    <p class="mb-0">Promedio General</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline de evaluaciones -->
+    {% if evaluaciones %}
+        <div class="evaluation-timeline">
+            {% for asignacion in evaluaciones %}
+                <div class="timeline-item">
+                    <div class="timeline-icon 
+                                {% if asignacion.estado == 'completada' %}completed
+                                {% elif asignacion.estado == 'en_progreso' %}in-progress
+                                {% else %}pending{% endif %}">
+                        {% if asignacion.estado == 'completada' %}
+                            <i class="fas fa-check"></i>
+                        {% elif asignacion.estado == 'en_progreso' %}
+                            <i class="fas fa-play"></i>
+                        {% else %}
+                            <i class="fas fa-clock"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="evaluation-card {{ asignacion.estado }}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="card-title text-primary">
+                                        {{ asignacion.evaluacion.nombre }}
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        {{ asignacion.evaluacion.tipo_evaluacion.nombre }}
+                                    </h6>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <small class="text-muted d-block">Supervisor:</small>
+                                            <strong>{{ asignacion.supervisor.get_full_name }}</strong>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <small class="text-muted d-block">Fecha asignación:</small>
+                                            <strong>{{ asignacion.fecha_asignacion|date:"d/m/Y" }}</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if asignacion.fecha_completada %}
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block">Fecha completada:</small>
+                                            <strong>{{ asignacion.fecha_completada|date:"d/m/Y" }}</strong>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="mb-2">
+                                        {% if asignacion.estado == 'completada' %}
+                                            <span class="badge badge-success badge-lg">
+                                                <i class="fas fa-check-circle"></i> Completada
+                                            </span>
+                                        {% elif asignacion.estado == 'en_progreso' %}
+                                            <span class="badge badge-info badge-lg">
+                                                <i class="fas fa-play-circle"></i> En Progreso
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-warning badge-lg">
+                                                <i class="fas fa-clock"></i> Asignada
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Resultado (si está completada) -->
+                                {% if asignacion.estado == 'completada' %}
+                                    <div class="col-md-4 text-center">
+                                        {% with asignacion.resultado_set.first as resultado %}
+                                            {% if resultado %}
+                                                <div class="mb-2">
+                                                    <div class="result-score 
+                                                                {% if resultado.puntaje_final >= 4.5 %}score-excellent
+                                                                {% elif resultado.puntaje_final >= 4.0 %}score-good
+                                                                {% elif resultado.puntaje_final >= 3.0 %}score-satisfactory
+                                                                {% elif resultado.puntaje_final >= 2.0 %}score-needs-improvement
+                                                                {% else %}score-unsatisfactory{% endif %}">
+                                                        {{ resultado.puntaje_final|floatformat:1 }}/5.0
+                                                    </div>
+                                                    <div class="badge badge-secondary">
+                                                        {{ resultado.clasificacion }}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        
+                                        <a href="{% url 'evaluations:ver_resultado' asignacion.id %}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-chart-bar"></i> Ver Detalle
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Descripción de la evaluación -->
+                            {% if asignacion.evaluacion.descripcion %}
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        {{ asignacion.evaluacion.descripcion|truncatewords:20 }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Paginación">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in page_obj.paginator.page_range %}
+                            {% if page_num == page_obj.number %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-clipboard fa-4x text-muted mb-3"></i>
+            <h4>Sin evaluaciones</h4>
+            <p class="text-muted">Aún no tienes evaluaciones asignadas en el sistema.</p>
+            <a href="{% url 'evaluations:index' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

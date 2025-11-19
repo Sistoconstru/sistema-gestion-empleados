@@ -40,8 +40,14 @@ INSTALLED_APPS = [
     'apps.employees.apps.EmployeesConfig',
     'apps.organizational',
     'apps.authentication',
+    'apps.core',  # Módulo core
     'apps.documents',
     'apps.training',  # Módulo de capacitaciones
+    'apps.evaluations',  # Módulo de evaluaciones
+    'apps.surveys',  # Módulo de encuestas
+    'apps.recognition',  # Módulo de reconocimientos
+    'apps.notifications',  # Módulo de notificaciones
+    'apps.reports',  # Módulo de reportes
     'widget_tweaks',  # Nueva línea añadida
 ]
 

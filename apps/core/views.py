@@ -126,6 +126,81 @@ def dashboard_view(request):
             estado='en_progreso'
         ).count()
         
+        # === ESTADÍSTICAS DE EVALUACIONES ===
+        try:
+            # Evaluaciones pendientes como evaluador
+            evaluaciones_pendientes = 0
+            try:
+                # Obtener el empleado del usuario actual
+                empleado_usuario = Empleado.objects.get(usuario=request.user)
+                evaluaciones_pendientes = AsignacionEvaluacion.objects.filter(
+                    evaluador=empleado_usuario,
+                    estado__in=['pendiente', 'en_progreso']
+                ).count()
+            except Empleado.DoesNotExist:
+                # Si el usuario no es empleado, no tiene evaluaciones pendientes
+                evaluaciones_pendientes = 0
+            
+            # Empleados próximos a cumplir 60 días sin evaluación completada
+            fecha_limite_evaluacion = timezone.now().date() - timedelta(days=25)  # 25 días o más
+            fecha_limite_activacion = timezone.now().date() - timedelta(days=55)   # Próximos a 60 días
+            
+            # Buscar empleados en período de prueba entre 25-59 días sin evaluación
+            codigos_prueba = ['p-prue', 'PRUEBA', 'periodo_prueba', 'prueba']
+            estado_prueba = None
+            
+            for codigo in codigos_prueba:
+                try:
+                    estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
+                    break
+                except EstadoEmpleado.DoesNotExist:
+                    continue
+            
+            empleados_sin_evaluacion = 0
+            if estado_prueba:
+                empleados_sin_evaluacion = Empleado.objects.filter(
+                    estado=estado_prueba,
+                    fecha_ingreso__lte=fecha_limite_evaluacion,
+                    fecha_ingreso__gte=fecha_limite_activacion
+                ).exclude(
+                    evaluaciones_recibidas__estado='completada'
+                ).count()
+            
+            # Evaluaciones pendientes de aprobación (solo para administradores)
+            evaluaciones_pendientes_aprobacion = 0
+            empleados_requieren_desactivacion = 0
+            if request.user.is_superuser:
+                evaluaciones_pendientes_aprobacion = AsignacionEvaluacion.objects.filter(
+                    estado='completada',
+                    estado_aprobacion='pendiente_aprobacion'
+                ).count()
+                print(f"DEBUG: Evaluaciones pendientes de aprobación: {evaluaciones_pendientes_aprobacion}")
+                
+                # Empleados que reprobaron evaluaciones aprobadas (puntaje total ≤ 13) y requieren desactivación
+                empleados_requieren_desactivacion = AsignacionEvaluacion.objects.filter(
+                    estado='completada',
+                    estado_aprobacion='aprobada',
+                    puntaje_total__lte=13,  # Puntaje total menor o igual a 13 = reprobado
+                    empleado_evaluado__estado__codigo='p-prue'  # Solo empleados en período de prueba
+                ).values('empleado_evaluado').distinct().count()
+                print(f"DEBUG: Empleados que requieren desactivación: {empleados_requieren_desactivacion}")
+
+            context.update({
+                'evaluaciones_pendientes_evaluador': evaluaciones_pendientes,
+                'empleados_sin_evaluacion': empleados_sin_evaluacion,
+                'evaluaciones_pendientes_aprobacion': evaluaciones_pendientes_aprobacion,
+                'empleados_requieren_desactivacion': empleados_requieren_desactivacion,
+            })
+            
+        except Exception as e:
+            logger.warning(f"Error calculando estadísticas de evaluaciones: {e}")
+            context.update({
+                'evaluaciones_pendientes_evaluador': 0,
+                'empleados_sin_evaluacion': 0,
+                'evaluaciones_pendientes_aprobacion': 0,
+                'empleados_requieren_desactivacion': 0,
+            })
+        
         # === ESTADÍSTICAS DE DOCUMENTOS ===
         # Documentos pendientes de aprobación
         context['documentos_pendientes'] = DocumentoEmpleado.objects.filter(
@@ -198,6 +273,12 @@ def dashboard_view(request):
             },
             'alertas_empleados': {
                 'listos_activar': context['empleados_listos_activar'] > 0
+            },
+            'alertas_evaluaciones': {
+                'pendientes_supervisor': context.get('evaluaciones_pendientes_evaluador', 0) > 0,
+                'empleados_sin_evaluacion': context.get('empleados_sin_evaluacion', 0) > 0,
+                'pendientes_aprobacion': context.get('evaluaciones_pendientes_aprobacion', 0) > 0,
+                'requieren_desactivacion': context.get('empleados_requieren_desactivacion', 0) > 0
             }
         })
         
@@ -219,6 +300,10 @@ def dashboard_view(request):
             'empleados_docs_incompletos': 0,
             'empleados_listos_activar': 0,
             'empleados_listos_nombres': [],
+            'evaluaciones_pendientes_evaluador': 0,
+            'empleados_sin_evaluacion': 0,
+            'evaluaciones_pendientes_aprobacion': 0,
+            'empleados_requieren_desactivacion': 0,
             'alertas_documentos': {
                 'pendientes': False,
                 'vencimientos': False, 
@@ -227,6 +312,12 @@ def dashboard_view(request):
             },
             'alertas_empleados': {
                 'listos_activar': False
+            },
+            'alertas_evaluaciones': {
+                'pendientes_supervisor': False,
+                'empleados_sin_evaluacion': False,
+                'pendientes_aprobacion': False,
+                'requieren_desactivacion': False
             },
             'is_admin_dashboard': True
         })

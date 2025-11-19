@@ -221,10 +221,20 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
+                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3 position-relative">
                             <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>
-                            <div class="small text-muted">Pendientes y resultados</div>
+                            <div class="small text-muted">{{ evaluaciones.pendientes }} pendientes</div>
+                            {% if evaluaciones.pendientes > 0 %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-amarillo text-corporativo">
+                                    {{ evaluaciones.pendientes }} pendientes
+                                </span>
+                            {% endif %}
+                            {% if evaluaciones.vencidas > 0 %}
+                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-rojo">
+                                    {{ evaluaciones.vencidas }} vencidas
+                                </span>
+                            {% endif %}
                         </a>
                     </div>
                     
@@ -258,20 +268,54 @@
                 <div class="timeline">
                     {% for actividad in actividades_recientes %}
                     <div class="timeline-item">
-                        <div class="timeline-marker bg-{% if actividad.tipo == 'documento' %}corporativo{% elif actividad.tipo == 'capacitacion' %}corporativo{% else %}azul{% endif %}"></div>
+                        <div class="timeline-marker bg-{% if actividad.tipo == 'documento' %}corporativo{% elif actividad.tipo == 'capacitacion' %}corporativo{% elif actividad.tipo == 'evaluacion_aceptar' %}warning{% else %}azul{% endif %}"></div>
                         <div class="timeline-content">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <i class="{{ actividad.icono }} me-2"></i>
-                                    <strong>{{ actividad.titulo }}</strong>
-                                    {% if actividad.estado %}
-                                        <span class="badge bg-{% if actividad.estado == 'aprobado' or actividad.estado == 'completada' %}corporativo{% elif actividad.estado == 'pendiente' %}amarillo{% else %}gris{% endif %} ms-2 text-{% if actividad.estado == 'pendiente' %}corporativo{% else %}white{% endif %}">
-                                            {{ actividad.estado|capfirst }}
-                                        </span>
-                                    {% endif %}
+                            {% if actividad.tipo == 'evaluacion_aceptar' %}
+                                <!-- Diseño especial para evaluaciones pendientes de aceptación -->
+                                <div class="card border-warning bg-light mb-3">
+                                    <div class="card-body py-3">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title mb-2">
+                                                    <i class="{{ actividad.icono }} text-warning me-2"></i>
+                                                    {{ actividad.titulo }}
+                                                </h6>
+                                                {% if actividad.descripcion %}
+                                                    <p class="card-text text-muted mb-2">{{ actividad.descripcion }}</p>
+                                                {% endif %}
+                                                {% if actividad.puntaje %}
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-star text-warning"></i> 
+                                                        Puntaje obtenido: {{ actividad.puntaje }}/21
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted d-block">{{ actividad.fecha|timesince }} atrás</small>
+                                                {% if actividad.url %}
+                                                    <a href="{{ actividad.url }}" class="btn btn-warning btn-sm mt-2">
+                                                        <i class="fas fa-eye me-1"></i>{{ actividad.accion|default:"Ver" }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="text-muted">{{ actividad.fecha|timesince }} atrás</small>
-                            </div>
+                            {% else %}
+                                <!-- Diseño normal para otras actividades -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <i class="{{ actividad.icono }} me-2"></i>
+                                        <strong>{{ actividad.titulo }}</strong>
+                                        {% if actividad.estado %}
+                                            <span class="badge bg-{% if actividad.estado == 'aprobado' or actividad.estado == 'completada' %}corporativo{% elif actividad.estado == 'pendiente' %}amarillo{% else %}gris{% endif %} ms-2 text-{% if actividad.estado == 'pendiente' %}corporativo{% else %}white{% endif %}">
+                                                {{ actividad.estado|capfirst }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">{{ actividad.fecha|timesince }} atrás</small>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -394,6 +438,99 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Empleados a mi Cargo -->
+        {% if empleados_a_cargo.es_jefe %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-users me-2"></i>Mi Equipo
+                    <span class="badge bg-corporativo ms-2">{{ empleados_a_cargo.tipo_jefe|capfirst }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center mb-3">
+                    <div class="col-4">
+                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.total }}</div>
+                        <small class="text-muted">Total</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.activos }}</div>
+                        <small class="text-muted">Activos</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-{% if empleados_a_cargo.con_alertas > 0 %}amarillo{% else %}corporativo{% endif %} fs-5 fw-bold">{{ empleados_a_cargo.con_alertas }}</div>
+                        <small class="text-muted">Con alertas</small>
+                    </div>
+                </div>
+                
+                {% if empleados_a_cargo.en_prueba > 0 %}
+                <div class="alert alert-amarillo alert-sm text-corporativo mb-3">
+                    <i class="fas fa-clock me-1"></i>
+                    <strong>{{ empleados_a_cargo.en_prueba }} empleado{{ empleados_a_cargo.en_prueba|pluralize }}</strong> en período de prueba
+                </div>
+                {% endif %}
+                
+                {% if empleados_a_cargo.lista_empleados %}
+                <div class="empleados-cargo-list">
+                    {% for item in empleados_a_cargo.lista_empleados %}
+                    <div class="d-flex align-items-center border-bottom py-2 {% if item.tiene_alertas %}bg-warning bg-opacity-10{% endif %}">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-sm bg-corporativo bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                <i class="fas fa-user text-corporativo"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">
+                                <a href="{% url 'employees:empleado_detail_supervisor' pk=item.empleado.pk %}" class="text-decoration-none">
+                                    {{ item.empleado.nombre_completo }}
+                                </a>
+                                {% if item.tiene_alertas %}
+                                    <i class="fas fa-exclamation-triangle text-amarillo ms-1" title="Tiene alertas"></i>
+                                {% endif %}
+                            </h6>
+                            <small class="text-muted">
+                                {% if item.cargo_actual %}
+                                    {{ item.cargo_actual.cargo.nombre }}
+                                {% else %}
+                                    Sin cargo asignado
+                                {% endif %}
+                                • {{ item.dias_empresa }} días en empresa
+                            </small>
+                            {% if item.alertas %}
+                                <div class="mt-1">
+                                    {% for alerta in item.alertas %}
+                                        <span class="badge bg-amarillo text-corporativo me-1">{{ alerta }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="badge bg-{% if item.empleado.estado.codigo == 'ACTIVO' %}corporativo{% elif item.empleado.estado.codigo == 'PRUEBA' or item.empleado.estado.codigo == 'p-prue' %}amarillo text-corporativo{% else %}secondary{% endif %}">
+                                {{ item.empleado.estado.nombre }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if empleados_a_cargo.total > empleados_a_cargo.lista_empleados|length %}
+                    <div class="text-center mt-2">
+                        <a href="{% url 'evaluations:index' %}" class="btn btn-sm btn-outline-corporativo">
+                            <i class="fas fa-users me-1"></i>
+                            Ver todos ({{ empleados_a_cargo.total }} empleados)
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center py-3">
+                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-0">No hay empleados asignados</p>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endif %}
@@ -577,6 +714,35 @@
 
 .profile-avatar {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilos para la sección de empleados a cargo */
+.empleados-cargo-list .avatar-sm {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+}
+
+.empleados-cargo-list .d-flex:hover {
+    background-color: rgba(0, 75, 94, 0.05) !important;
+    transition: background-color 0.2s ease;
+}
+
+.empleados-cargo-list .d-flex:last-child {
+    border-bottom: none !important;
+}
+
+.empleados-cargo-list h6 a {
+    color: var(--color-corporativo, #004b5e);
+}
+
+.empleados-cargo-list h6 a:hover {
+    color: var(--color-amarillo, #ffd600);
+    text-decoration: underline !important;
+}
+
+.empleados-cargo-list .badge {
+    font-size: 0.75rem;
 }
 </style>
 <style>

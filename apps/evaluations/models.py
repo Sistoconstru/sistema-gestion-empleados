@@ -227,6 +227,13 @@ class AsignacionEvaluacion(models.Model):
         ('vencida', 'Vencida'),
     ]
     
+    ESTADOS_APROBACION = [
+        ('pendiente_aprobacion', 'Pendiente de Aprobación'),
+        ('aprobada', 'Aprobada'),
+        ('desaprobada', 'Desaprobada'),
+        ('requiere_revision', 'Requiere Revisión'),
+    ]
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     empleado_evaluado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE, related_name='evaluaciones_recibidas')
     evaluacion = models.ForeignKey(EvaluacionDesempeño, on_delete=models.CASCADE)
@@ -241,6 +248,15 @@ class AsignacionEvaluacion(models.Model):
     puntaje_total = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     porcentaje_completado = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     asignado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
+    
+    # Campos de aprobación administrativa
+    estado_aprobacion = models.CharField(max_length=30, choices=ESTADOS_APROBACION, null=True, blank=True)
+    aprobada_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='evaluaciones_aprobadas')
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True)
+    comentarios_aprobacion = models.TextField(blank=True)
+    recomendacion_continuidad = models.CharField(max_length=20, choices=[('continua', 'Continúa'), ('no_continua', 'No Continúa')], null=True, blank=True)
+    aspectos_mejora_generados = models.TextField(blank=True, help_text='Aspectos de mejora generados automáticamente')
+    observaciones = models.TextField(blank=True)
     
     class Meta:
         db_table = 'asignaciones_evaluacion'

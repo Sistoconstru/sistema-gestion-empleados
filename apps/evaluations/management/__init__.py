@@ -1,0 +1,1 @@
+# Este archivo permite que Django reconozca management como un módulo de Python

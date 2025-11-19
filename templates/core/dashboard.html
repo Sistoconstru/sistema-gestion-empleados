@@ -122,11 +122,19 @@
                         </a>
                     </div>
                     
-                    <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-corporativo w-100 py-3">
                             <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                             <strong>Nuevo Empleado</strong>
                             <div class="small text-muted">Registrar personal</div>
+                        </a>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-success w-100 py-3">
+                            <i class="fas fa-chart-line fa-2x d-block mb-2"></i>
+                            <strong>Evaluaciones</strong>
+                            <div class="small text-muted">Sistema integral</div>
                         </a>
                     </div>
                     
@@ -137,18 +145,18 @@
                             <div class="small text-muted">Análisis y estadísticas</div>
                         </a>
                     </div>
-
-                    <div class="col-md-2 col-sm-6 mb-3">
+                </div>
+                
+                <!-- Segunda fila de módulos -->
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Capacitaciones</strong>
                             <div class="small text-muted">Gestión y seguimiento</div>
                         </a>
                     </div>
-                </div>
-                
-                <!-- Segunda fila de módulos -->
-                <div class="row">
+
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'surveys:index' %}" class="btn btn-outline-info w-100 py-3">
                             <i class="fas fa-poll-h fa-2x d-block mb-2"></i>
@@ -166,7 +174,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="#" class="btn btn-outline-warning w-100 py-3" title="Próximamente">
+                        <a href="{% url 'notifications:index' %}" class="btn btn-outline-warning w-100 py-3">
                             <i class="fas fa-bell fa-2x d-block mb-2"></i>
                             <strong>Notificaciones</strong>
                             <div class="small text-muted">Alertas y avisos</div>
@@ -188,7 +196,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                {% if alertas_documentos.pendientes or alertas_documentos.vencimientos or alertas_documentos.vencidos or alertas_empleados.listos_activar %}
+                {% if alertas_documentos.pendientes or alertas_documentos.vencimientos or alertas_documentos.vencidos or alertas_empleados.listos_activar or alertas_evaluaciones.pendientes_supervisor or alertas_evaluaciones.empleados_sin_evaluacion or alertas_evaluaciones.pendientes_aprobacion or alertas_evaluaciones.requieren_desactivacion %}
                 <div class="row">
                     {% if alertas_empleados.listos_activar %}
                     <div class="col-md-6 mb-2">
@@ -198,6 +206,62 @@
                             <div class="mt-2">
                                 <a href="{% url 'employees:periodo_prueba_reporte' %}" class="btn btn-sm btn-success">
                                     <i class="fas fa-eye me-1"></i>Ver Empleados
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_evaluaciones.pendientes_supervisor %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-warning alert-sm">
+                            <i class="fas fa-chart-line me-2"></i>
+                            <strong>{{ evaluaciones_pendientes_evaluador }}</strong> evaluación{{ evaluaciones_pendientes_evaluador|pluralize:"es" }} pendiente{{ evaluaciones_pendientes_evaluador|pluralize }} de completar
+                            <div class="mt-2">
+                                <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-clipboard-list me-1"></i>Completar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_evaluaciones.empleados_sin_evaluacion %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-info alert-sm">
+                            <i class="fas fa-user-clock me-2"></i>
+                            <strong>{{ empleados_sin_evaluacion }}</strong> empleado{{ empleados_sin_evaluacion|pluralize }} requiere{{ empleados_sin_evaluacion|pluralize:"n," }} evaluación
+                            <div class="mt-2">
+                                <a href="{% url 'evaluations:index' %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-search me-1"></i>Revisar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_evaluaciones.pendientes_aprobacion %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-danger alert-sm">
+                            <i class="fas fa-clipboard-check me-2"></i>
+                            <strong>{{ evaluaciones_pendientes_aprobacion }}</strong> evaluación{{ evaluaciones_pendientes_aprobacion|pluralize:"es" }} completada{{ evaluaciones_pendientes_aprobacion|pluralize }} pendiente{{ evaluaciones_pendientes_aprobacion|pluralize }} de aprobación
+                            <div class="mt-2">
+                                <a href="{% url 'evaluations:pendientes_aprobacion' %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-check me-1"></i>Aprobar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if alertas_evaluaciones.requieren_desactivacion %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-warning alert-sm" style="background-color: #ff6b35; border-color: #ff4500; color: white;">
+                            <i class="fas fa-user-times me-2"></i>
+                            <strong>{{ empleados_requieren_desactivacion }}</strong> empleado{{ empleados_requieren_desactivacion|pluralize }} reprobó{{ empleados_requieren_desactivacion|pluralize:"aron," }} evaluación y requiere{{ empleados_requieren_desactivacion|pluralize:"n," }} desactivación
+                            <div class="mt-2">
+                                <a href="{% url 'employees:periodo_prueba_reporte' %}" class="btn btn-sm" style="background-color: white; color: #ff4500; border-color: white;">
+                                    <i class="fas fa-user-times me-1"></i>Gestionar
                                 </a>
                             </div>
                         </div>

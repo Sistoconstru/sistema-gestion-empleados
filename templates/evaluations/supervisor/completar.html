@@ -1,0 +1,797 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Completar Evaluación - {{ empleado.nombre_completo }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.evaluation-form {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.question-card {
+    border: 2px solid #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.question-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 3px 10px rgba(0,123,255,0.1);
+}
+
+.question-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+    margin: -1px -1px 20px -1px;
+}
+
+.scale-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.scale-option {
+    text-align: center;
+    flex: 1;
+    margin: 0 5px;
+}
+
+.scale-option input[type="radio"] {
+    display: none;
+}
+
+.scale-option label {
+    display: block;
+    padding: 15px 10px;
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.scale-option label:hover {
+    border-color: #007bff;
+    background: #f0f8ff;
+}
+
+.scale-option input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.employee-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.progress-indicator {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.required-indicator {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.category-separator {
+    border-top: 3px solid #007bff;
+    margin: 40px 0 30px 0;
+    position: relative;
+}
+
+.category-label {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background: white;
+    padding: 5px 15px;
+    font-weight: bold;
+    color: #007bff;
+    border-radius: 20px;
+    border: 2px solid #007bff;
+}
+
+.btn-save {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    padding: 12px 30px;
+    font-weight: bold;
+}
+
+.btn-finish {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    padding: 12px 30px;
+    font-weight: bold;
+}
+
+/* Estilos para escala de 3 puntos */
+.scale-3 {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.scale-option-3 {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.scale-option-3 input[type="radio"] {
+    display: none;
+}
+
+.scale-option-3 label {
+    display: block;
+    padding: 20px 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 100px;
+}
+
+.scale-option-3 label:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+}
+
+.scale-option-3 input[type="radio"]:checked + label {
+    border-color: #007bff;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.scale-option-3 .scale-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.scale-option-3 .scale-text {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+/* Estilos para el indicador de puntaje en tiempo real */
+.score-indicator {
+    transition: all 0.3s ease;
+    border: 2px solid #e3f2fd;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+}
+
+.score-indicator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.score-indicator .card-title {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.score-indicator h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.score-indicator .progress {
+    height: 10px;
+    border-radius: 10px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.score-indicator .progress-bar {
+    transition: width 0.4s ease, background-color 0.3s ease;
+    border-radius: 10px;
+}
+
+#current-score {
+    color: #2196f3 !important;
+    text-shadow: 0 1px 3px rgba(33,150,243,0.3);
+}
+
+#current-percentage {
+    color: #4caf50 !important;
+    text-shadow: 0 1px 3px rgba(76,175,80,0.3);
+}
+
+/* Animación de pulso para cambios de puntaje */
+@keyframes scorePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.score-updated {
+    animation: scorePulse 0.3s ease-in-out;
+}
+
+/* Estilos para validación de preguntas sin responder */
+.border-danger {
+    border: 2px solid #dc3545 !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Estilos para el botón de completar según el estado */
+.btn-finish {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-finish:hover {
+    background: linear-gradient(135deg, #218838, #1abc9c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header con información del empleado -->
+    <div class="employee-info">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h3><i class="fas fa-user-check"></i> Evaluación de Desempeño</h3>
+                <h5>{{ empleado.nombre_completo }}</h5>
+                <p class="mb-0">
+                    <i class="fas fa-id-card"></i> {{ empleado.numero_documento }} | 
+                    <i class="fas fa-building"></i> {{ empleado.sede.nombre }} |
+                    <i class="fas fa-calendar"></i> Ingreso: {{ empleado.fecha_ingreso|date:"d/m/Y" }}
+                </p>
+            </div>
+            <div class="col-md-4 text-right">
+                <div class="badge badge-light badge-lg p-3">
+                    <i class="fas fa-clipboard-list text-primary"></i><br>
+                    <strong>{{ evaluacion.nombre }}</strong><br>
+                    <small>{{ evaluacion.tipo_evaluacion.nombre }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicador de progreso -->
+    <div class="progress-indicator">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h6><i class="fas fa-tasks"></i> Progreso de la Evaluación</h6>
+                <p class="mb-0">Complete todas las preguntas obligatorias (<span class="required-indicator">*</span>). Al completar, se calcularán automáticamente los resultados y se notificará al empleado.</p>
+            </div>
+            <div class="col-md-4 text-right">
+                {% if asignacion.estado == 'pendiente' %}
+                    <span class="badge badge-warning badge-lg">No Iniciada</span>
+                {% elif asignacion.estado == 'en_progreso' %}
+                    <span class="badge badge-info badge-lg">En Progreso</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de evaluación -->
+    <div class="evaluation-form p-4">
+        <form method="post" id="evaluationForm">
+            {% csrf_token %}
+            
+            {% regroup preguntas by categoria as categorias %}
+            {% for categoria in categorias %}
+                <div class="category-separator">
+                    <div class="category-label">
+                        <i class="fas fa-folder-open"></i> {{ categoria.grouper }}
+                    </div>
+                </div>
+
+                {% for pregunta in categoria.list %}
+                    <div class="question-card">
+                        <div class="question-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    Pregunta {{ pregunta.orden }}
+                                    {% if pregunta.obligatoria %}<span class="required-indicator">*</span>{% endif %}
+                                </h6>
+                                <div class="badge badge-light">
+                                    Peso: {{ pregunta.peso_porcentual }}%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4">
+                            <h6 class="question-text mb-3">{{ pregunta.pregunta }}</h6>
+                            
+                            {% if pregunta.descripcion %}
+                                <p class="text-muted mb-3">{{ pregunta.descripcion }}</p>
+                            {% endif %}
+
+                            {% if pregunta.tipo_pregunta.codigo == 'ESCALA_5' %}
+                                <!-- Escala Likert 1-5 -->
+                                <div class="scale-options">
+                                    {% for opcion in pregunta.opcionevaluacion_set.all %}
+                                        <div class="scale-option">
+                                            <input type="radio" 
+                                                   name="pregunta_{{ pregunta.id }}" 
+                                                   id="pregunta_{{ pregunta.id }}_{{ opcion.id }}"
+                                                   value="{{ opcion.id }}"
+                                                   data-puntaje="{{ opcion.valor_numerico }}">
+                                            <label for="pregunta_{{ pregunta.id }}_{{ opcion.id }}">
+                                                <div class="h5 mb-1">{{ opcion.valor_numerico }}</div>
+                                                <div class="small">{{ opcion.opcion }}</div>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Leyenda de la escala 1-5 -->
+                                <div class="row mt-3">
+                                    <div class="col text-center">
+                                        <small class="text-muted">
+                                            <strong>1:</strong> Muy Deficiente &nbsp;|&nbsp;
+                                            <strong>2:</strong> Deficiente &nbsp;|&nbsp;
+                                            <strong>3:</strong> Satisfactorio &nbsp;|&nbsp;
+                                            <strong>4:</strong> Bueno &nbsp;|&nbsp;
+                                            <strong>5:</strong> Excelente
+                                        </small>
+                                    </div>
+                                </div>
+
+                            {% elif pregunta.tipo_pregunta.codigo == 'ESCALA_3' %}
+                                <!-- Escala 1-3 para período de prueba -->
+                                <div class="scale-options scale-3">
+                                    {% for opcion in pregunta.opcionevaluacion_set.all %}
+                                        <div class="scale-option-3">
+                                            <input type="radio" 
+                                                   name="pregunta_{{ pregunta.id }}" 
+                                                   id="pregunta_{{ pregunta.id }}_{{ opcion.id }}"
+                                                   value="{{ opcion.id }}"
+                                                   data-puntaje="{{ opcion.valor_numerico }}"
+                                                   {% if pregunta.obligatoria %}required{% endif %}
+                                                   {% if asignacion.estado == 'completada' %}disabled{% endif %}>
+                                            <label for="pregunta_{{ pregunta.id }}_{{ opcion.id }}">
+                                                <div class="scale-value">{{ opcion.valor_numerico|floatformat:0 }}</div>
+                                                <div class="scale-text">{{ opcion.opcion }}</div>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Leyenda de la escala 1-3 -->
+                                <div class="row mt-3">
+                                    <div class="col text-center">
+                                        <small class="text-muted">
+                                            <strong>1:</strong> No cumple &nbsp;|&nbsp;
+                                            <strong>2:</strong> Cumple parcialmente &nbsp;|&nbsp;
+                                            <strong>3:</strong> Cumple totalmente
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                            {% elif pregunta.tipo_pregunta.codigo == 'TEXTO_LIBRE' %}
+                                <!-- Respuesta de texto libre -->
+                                <textarea name="pregunta_{{ pregunta.id }}" 
+                                          class="form-control" 
+                                          rows="3" 
+                                          placeholder="Escriba su respuesta aquí..."
+                                          {% if pregunta.obligatoria %}required{% endif %}
+                                          {% if asignacion.estado == 'completada' %}readonly{% endif %}></textarea>
+                                
+                            {% elif pregunta.tipo_pregunta.codigo == 'SI_NO' %}
+                                <!-- Respuesta Sí/No -->
+                                <div class="si-no-options">
+                                    {% for opcion in pregunta.opcionevaluacion_set.all %}
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" 
+                                                   name="pregunta_{{ pregunta.id }}" 
+                                                   id="pregunta_{{ pregunta.id }}_{{ opcion.id }}"
+                                                   value="{{ opcion.id }}"
+                                                   data-puntaje="{{ opcion.valor_numerico }}"
+                                                   class="form-check-input"
+                                                   {% if pregunta.obligatoria %}required{% endif %}
+                                                   {% if asignacion.estado == 'completada' %}disabled{% endif %}>
+                                            <label class="form-check-label" for="pregunta_{{ pregunta.id }}_{{ opcion.id }}">
+                                                {{ opcion.opcion }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                            {% elif pregunta.tipo_pregunta.codigo == 'MULTIPLE' %}
+                                <!-- Selección múltiple -->
+                                <div class="multiple-options">
+                                    {% for opcion in pregunta.opcionevaluacion_set.all %}
+                                        <div class="form-check">
+                                            <input type="radio" 
+                                                   name="pregunta_{{ pregunta.id }}" 
+                                                   id="pregunta_{{ pregunta.id }}_{{ opcion.id }}"
+                                                   value="{{ opcion.id }}"
+                                                   data-puntaje="{{ opcion.valor_numerico }}"
+                                                   class="form-check-input"
+                                                   {% if pregunta.obligatoria %}required{% endif %}
+                                                   {% if asignacion.estado == 'completada' %}disabled{% endif %}>
+                                            <label class="form-check-label" for="pregunta_{{ pregunta.id }}_{{ opcion.id }}">
+                                                {{ opcion.opcion }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                            {% else %}
+                                <!-- Fallback para otros tipos -->
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Tipo de pregunta no configurado: {{ pregunta.tipo_pregunta.codigo }}
+                                </div>
+                            {% endif %}
+
+                            <!-- Campo para comentarios adicionales -->
+                            <div class="mt-3">
+                                <label class="form-label">
+                                    <i class="fas fa-comment"></i> Comentarios adicionales (opcional)
+                                </label>
+                                <textarea name="comentario_{{ pregunta.id }}" 
+                                          class="form-control" 
+                                          rows="2" 
+                                          placeholder="Agregue observaciones específicas..."
+                                          {% if asignacion.estado == 'completada' %}readonly{% endif %}></textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <!-- Botones de acción -->
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4">
+                    <a href="{% url 'evaluations:supervisor_pendientes' %}" 
+                       class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> 
+                        {% if asignacion.estado == 'completada' %}Volver{% else %}Cancelar{% endif %}
+                    </a>
+                </div>
+                
+                <!-- Indicador de Puntaje en Tiempo Real -->
+                <div class="col-md-4 text-center">
+                    {% if asignacion.estado != 'completada' %}
+                        <div class="card border-info bg-light score-indicator">
+                            <div class="card-body py-3">
+                                <h6 class="card-title mb-2 text-info">
+                                    <i class="fas fa-chart-line"></i> Progreso Actual
+                                </h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <h4 class="mb-1 text-primary" id="current-score">0</h4>
+                                            <small class="text-muted">Puntaje / 21</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <h4 class="mb-1 text-success" id="current-percentage">0%</h4>
+                                            <small class="text-muted">Completado</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="progress mt-2" style="height: 8px;">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         id="progress-bar" style="width: 0%" 
+                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="21">
+                                    </div>
+                                </div>
+                                <small class="text-muted mt-1 d-block">
+                                    <span id="answered-count">0</span> de {{ preguntas.count }} preguntas respondidas
+                                </small>
+                                <div class="mt-2">
+                                    <small class="text-info">
+                                        <i class="fas fa-info-circle"></i> 
+                                        Mínimo para aprobar: 14 puntos (67%)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 text-right">
+                    {% if asignacion.estado != 'completada' %}
+                        <button type="button" name="finalizar" class="btn btn-finish btn-lg" 
+                                id="completar-btn">
+                            <i class="fas fa-check-circle"></i> Completar Evaluación
+                        </button>
+                    {% else %}
+                        <!-- Evaluación completada -->
+                        <div class="alert alert-success" role="alert">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Evaluación Completada</strong><br>
+                            Esta evaluación fue finalizada el {{ asignacion.fecha_completada|date:"d/m/Y H:i" }}
+                            {% if asignacion.estado_aprobacion %}
+                                <br><small>Estado: {{ asignacion.get_estado_aprobacion_display }}</small>
+                            {% endif %}
+                        </div>
+                        {% if asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
+                            <a href="{% url 'evaluations:pendientes_aprobacion' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-tasks"></i> Ir a Aprobaciones Pendientes
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Función para validar que todas las preguntas estén respondidas
+function validarYConfirmar() {
+    console.log('validarYConfirmar called'); // Debug
+    const form = document.getElementById('evaluationForm');
+    const totalQuestions = {{ preguntas.count }};
+    const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
+    const answeredQuestions = radioButtons.length;
+    
+    console.log('Total questions:', totalQuestions); // Debug
+    console.log('Answered questions:', answeredQuestions); // Debug
+    
+    // Verificar si todas las preguntas están respondidas
+    if (answeredQuestions < totalQuestions) {
+        const preguntasFaltantes = totalQuestions - answeredQuestions;
+        const mensaje = `Aún faltan ${preguntasFaltantes} pregunta${preguntasFaltantes > 1 ? 's' : ''} por responder. ` +
+                      `Por favor, complete toda la evaluación antes de finalizar.`;
+        
+        // Mostrar alerta de error
+        alert(mensaje);
+        
+        // Opcional: resaltar las preguntas sin responder
+        resaltarPreguntasSinResponder();
+        
+        return false; // Cancelar el envío del formulario
+    }
+    
+    // Si todas las preguntas están respondidas, mostrar confirmación normal
+    return confirm('¿Está seguro de completar esta evaluación? Se calcularán los resultados automáticamente y se notificará al empleado.');
+}
+
+// Función para resaltar preguntas sin responder
+function resaltarPreguntasSinResponder() {
+    const form = document.getElementById('evaluationForm');
+    // Obtener todas las preguntas
+    const preguntasCards = form.querySelectorAll('.card.mb-4');
+    
+    preguntasCards.forEach((card, index) => {
+        // Verificar si esta pregunta tiene una respuesta seleccionada
+        const radioButtons = card.querySelectorAll('input[type="radio"]');
+        const hasAnswer = Array.from(radioButtons).some(radio => radio.checked);
+        
+        // Remover resaltado previo
+        card.classList.remove('border-danger');
+        
+        // Si no tiene respuesta, resaltar con borde rojo
+        if (!hasAnswer) {
+            card.classList.add('border-danger');
+            
+            // Opcional: scroll a la primera pregunta sin responder
+            if (index === 0 || !card.previousElementSibling.classList.contains('border-danger')) {
+                card.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+    });
+    
+    // Remover el resaltado después de unos segundos
+    setTimeout(() => {
+        preguntasCards.forEach(card => {
+            card.classList.remove('border-danger');
+        });
+    }, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Validación del formulario - simplificada
+    const form = document.getElementById('evaluationForm');
+    const completarBtn = document.getElementById('completar-btn');
+    
+    console.log('Form found:', form); // Debug
+    console.log('Button found:', completarBtn); // Debug
+    
+    // Agregar event listener al botón de completar
+    if (completarBtn) {
+        completarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Button clicked!'); // Debug
+            
+            if (validarYConfirmar()) {
+                // Si la validación pasa, agregar campo finalizar y enviar el formulario
+                const finalizarInput = document.createElement('input');
+                finalizarInput.type = 'hidden';
+                finalizarInput.name = 'finalizar';
+                finalizarInput.value = 'true';
+                form.appendChild(finalizarInput);
+                
+                form.submit();
+            }
+        });
+    }
+    
+    // Cargar respuestas existentes
+    {% if respuestas_existentes %}
+        // Procesar respuestas existentes
+        {% for pregunta_id, respuesta in respuestas_existentes.items %}
+            {% if respuesta.opcion_seleccionada %}
+                // Marcar radio button seleccionado para pregunta {{ pregunta_id }}
+                (function() {
+                    const radioEl = document.querySelector('input[name="pregunta_{{ pregunta_id }}"][value="{{ respuesta.opcion_seleccionada.id }}"]');
+                    if (radioEl) radioEl.checked = true;
+                })();
+            {% endif %}
+            
+            {% if respuesta.respuesta_texto %}
+                // Llenar textarea con respuesta de texto para pregunta {{ pregunta_id }}
+                (function() {
+                    const textareaEl = document.querySelector('textarea[name="pregunta_{{ pregunta_id }}"]');
+                    if (textareaEl) textareaEl.value = `{{ respuesta.respuesta_texto|escapejs }}`;
+                })();
+            {% endif %}
+            
+            {% if respuesta.comentarios_evaluador %}
+                // Llenar comentario para pregunta {{ pregunta_id }}
+                (function() {
+                    const comentarioEl = document.querySelector('textarea[name="comentario_{{ pregunta_id }}"]');
+                    if (comentarioEl) comentarioEl.value = `{{ respuesta.comentarios_evaluador|escapejs }}`;
+                })();
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    // Función para calcular puntaje en tiempo real
+    function updateScoreProgress() {
+        const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
+        const totalQuestions = {{ preguntas.count }};
+        let currentScore = 0;
+        let answeredQuestions = radioButtons.length;
+        
+        // Calcular puntaje basado en opciones seleccionadas
+        radioButtons.forEach(radio => {
+            // Obtener el puntaje directamente del atributo data-puntaje
+            const puntaje = parseFloat(radio.getAttribute('data-puntaje'));
+            if (!isNaN(puntaje)) {
+                currentScore += puntaje;
+            }
+        });
+        
+        // Actualizar elementos del DOM
+        const currentScoreEl = document.getElementById('current-score');
+        const currentPercentageEl = document.getElementById('current-percentage');
+        const progressBarEl = document.getElementById('progress-bar');
+        const answeredCountEl = document.getElementById('answered-count');
+        
+        if (currentScoreEl && currentPercentageEl && progressBarEl && answeredCountEl) {
+            // Guardar puntajes anteriores para animación
+            const oldScore = parseInt(currentScoreEl.textContent) || 0;
+            const newScore = currentScore;
+            
+            // Actualizar puntaje actual
+            currentScoreEl.textContent = currentScore;
+            
+            // Calcular porcentaje (basado en 21 puntos máximos)
+            const percentage = Math.round((currentScore / 21) * 100);
+            currentPercentageEl.textContent = percentage + '%';
+            
+            // Actualizar barra de progreso
+            progressBarEl.style.width = percentage + '%';
+            progressBarEl.setAttribute('aria-valuenow', currentScore);
+            
+            // Cambiar color de barra según el puntaje
+            progressBarEl.className = 'progress-bar';
+            if (percentage >= 70) {
+                progressBarEl.classList.add('bg-success');
+            } else if (percentage >= 50) {
+                progressBarEl.classList.add('bg-warning');
+            } else {
+                progressBarEl.classList.add('bg-danger');
+            }
+            
+            // Actualizar contador de preguntas respondidas
+            answeredCountEl.textContent = answeredQuestions;
+            
+            // Actualizar estado del botón de completar
+            const completarBtn = document.getElementById('completar-btn');
+            if (completarBtn) {
+                if (answeredQuestions === totalQuestions) {
+                    completarBtn.classList.remove('btn-secondary');
+                    completarBtn.classList.add('btn-finish');
+                    completarBtn.disabled = false;
+                    completarBtn.title = 'Todas las preguntas han sido respondidas';
+                } else {
+                    completarBtn.classList.remove('btn-finish');
+                    completarBtn.classList.add('btn-secondary');
+                    completarBtn.disabled = false; // Mantener habilitado para mostrar mensaje de validación
+                    const faltantes = totalQuestions - answeredQuestions;
+                    completarBtn.title = `Faltan ${faltantes} pregunta${faltantes > 1 ? 's' : ''} por responder`;
+                }
+            }
+            
+            // Agregar animación si el puntaje cambió
+            if (oldScore !== newScore && oldScore > 0) {
+                currentScoreEl.classList.add('score-updated');
+                currentPercentageEl.classList.add('score-updated');
+                setTimeout(() => {
+                    currentScoreEl.classList.remove('score-updated');
+                    currentPercentageEl.classList.remove('score-updated');
+                }, 300);
+            }
+        }
+    }
+    
+    // Agregar listeners a todos los radio buttons
+    const allRadioButtons = form.querySelectorAll('input[type="radio"]');
+    allRadioButtons.forEach(radio => {
+        radio.addEventListener('change', updateScoreProgress);
+    });
+    
+    // Calcular puntaje inicial (en caso de respuestas pre-cargadas)
+    setTimeout(updateScoreProgress, 100);
+    
+    // Animación smooth scroll para navegación
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

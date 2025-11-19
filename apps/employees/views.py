@@ -15,7 +15,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy
-from django.db.models import Q, Count, Avg, Prefetch
+from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -830,6 +830,9 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         # === EVALUACIONES ===
         context.update(self.get_evaluaciones(empleado))
         
+        # === EMPLEADOS A CARGO ===
+        context.update(self.get_empleados_a_cargo(empleado))
+        
         # === SISTEMA DE PUNTOS ===
         context.update(self.get_sistema_puntos(empleado))
         
@@ -1062,24 +1065,30 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 empleado_evaluado=empleado
             ).select_related('evaluacion', 'evaluador')
             
-            # Pendientes (no completadas y no vencidas)
+            # Pendientes (estado pendiente o en progreso, y no vencidas)
             pendientes = evaluaciones.filter(
-                fecha_completada__isnull=True,
-                fecha_vencimiento__gte=date.today()
+                estado__in=['pendiente', 'en_progreso']
             )
             
-            # Vencidas (no completadas y vencidas)
+            # Vencidas (estado vencida o vencidas por fecha)
             vencidas = evaluaciones.filter(
+                estado='vencida'
+            ) | evaluaciones.filter(
                 fecha_completada__isnull=True,
                 fecha_vencimiento__lt=date.today()
             )
             
-            # Completadas este año
+            # Completadas este año (estado completada)
             completadas_año = evaluaciones.filter(
+                estado='completada',
+                fecha_completada__year=date.today().year
+            )
+            completadas_año = evaluaciones.filter(
+                estado='completada',
                 fecha_completada__year=date.today().year
             )
             
-            # Próximas (siguientes 15 días)
+            # Próximas (pendientes o en progreso, siguientes 15 días)
             fecha_limite = date.today() + timedelta(days=15)
             proximas = pendientes.filter(fecha_vencimiento__lte=fecha_limite)
             
@@ -1113,6 +1122,200 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 }
             }
     
+    def get_empleados_a_cargo(self, empleado):
+        """Obtener empleados a cargo según jerarquía organizacional"""
+        try:
+            # Obtener cargo actual del empleado
+            cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
+            
+            if not cargo_actual or not cargo_actual.cargo:
+                return {
+                    'empleados_a_cargo': {
+                        'total': 0,
+                        'activos': 0,
+                        'en_prueba': 0,
+                        'con_alertas': 0,
+                        'lista_empleados': [],
+                        'es_jefe': False,
+                        'tipo_jefe': None
+                    }
+                }
+            
+            # Determinar tipo de jefe según nombre del cargo
+            cargo_nombre = cargo_actual.cargo.nombre.lower()
+            tipo_jefe = None
+            
+            if 'gerente' in cargo_nombre:
+                tipo_jefe = 'gerente'
+            elif 'director' in cargo_nombre:
+                tipo_jefe = 'director'  
+            elif 'coordinador' in cargo_nombre:
+                tipo_jefe = 'coordinador'
+            elif 'supervisor' in cargo_nombre or 'jefe' in cargo_nombre:
+                tipo_jefe = 'supervisor'
+            
+            if not tipo_jefe:
+                # No es un cargo de jefatura
+                return {
+                    'empleados_a_cargo': {
+                        'total': 0,
+                        'activos': 0,
+                        'en_prueba': 0,
+                        'con_alertas': 0,
+                        'lista_empleados': [],
+                        'es_jefe': False,
+                        'tipo_jefe': None
+                    }
+                }
+            
+            # Buscar empleados a cargo según jerarquía
+            empleados_subordinados = []
+            
+            if tipo_jefe == 'gerente':
+                # Gerente tiene directores y subgerentes
+                empleados_subordinados = Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__area=cargo_actual.cargo.area,
+                    historialcargo__cargo__nombre__icontains='director'
+                ).exclude(pk=empleado.pk) | Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__area=cargo_actual.cargo.area,
+                    historialcargo__cargo__nombre__icontains='subgerente'
+                ).exclude(pk=empleado.pk)
+                
+            elif tipo_jefe == 'director':
+                # Director tiene coordinadores
+                empleados_subordinados = Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__area=cargo_actual.cargo.area,
+                    historialcargo__cargo__nombre__icontains='coordinador'
+                ).exclude(pk=empleado.pk)
+                
+            elif tipo_jefe == 'coordinador':
+                # Coordinador puede tener empleados en dos formas:
+                # 1. Por relación directa cargo_jefe
+                empleados_por_cargo_jefe = Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__cargo_jefe=cargo_actual.cargo
+                ).exclude(pk=empleado.pk)
+                
+                # 2. Por nivel jerárquico mayor en la misma área (auxiliares, operarios, etc.)
+                empleados_por_nivel = Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__area=cargo_actual.cargo.area,
+                    historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico
+                ).exclude(
+                    Q(historialcargo__cargo__nombre__icontains='gerente') |
+                    Q(historialcargo__cargo__nombre__icontains='director') |
+                    Q(historialcargo__cargo__nombre__icontains='coordinador') |
+                    Q(pk=empleado.pk)
+                )
+                
+                # Combinar ambos conjuntos
+                empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
+                
+            elif tipo_jefe == 'supervisor':
+                # Supervisor/jefe buscar por nivel jerárquico mayor y relación directa
+                empleados_por_cargo_jefe = Empleado.objects.filter(
+                    historialcargo__activo=True,
+                    historialcargo__cargo__cargo_jefe=cargo_actual.cargo
+                ).exclude(pk=empleado.pk)
+                
+                if cargo_actual.cargo.nivel_jerarquico:
+                    empleados_por_nivel = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico
+                    ).exclude(pk=empleado.pk)
+                    
+                    empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
+                else:
+                    empleados_subordinados = empleados_por_cargo_jefe
+            
+            # Eliminar duplicados
+            empleados_subordinados = empleados_subordinados.distinct()
+            
+            # Calcular estadísticas
+            total_subordinados = empleados_subordinados.count()
+            activos = empleados_subordinados.filter(estado__codigo='ACTIVO').count()
+            en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
+            
+            # Empleados con alertas (documentos vencidos, evaluaciones pendientes, etc.)
+            con_alertas = 0
+            lista_empleados = []
+            
+            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo')[:10]:
+                # Verificar si tiene alertas
+                tiene_alertas = False
+                alertas = []
+                
+                # Verificar documentos vencidos/pendientes
+                try:
+                    from apps.documents.models import DocumentoEmpleado
+                    docs_vencidos = DocumentoEmpleado.objects.filter(
+                        empleado=emp,
+                        fecha_vencimiento__lt=date.today()
+                    ).count()
+                    if docs_vencidos > 0:
+                        tiene_alertas = True
+                        alertas.append(f"{docs_vencidos} doc. vencidos")
+                except ImportError:
+                    pass
+                
+                # Verificar evaluaciones pendientes
+                try:
+                    from apps.evaluations.models import AsignacionEvaluacion
+                    eval_pendientes = AsignacionEvaluacion.objects.filter(
+                        empleado_evaluado=emp,
+                        estado__in=['asignada', 'en_progreso'],
+                        fecha_vencimiento__lt=date.today()
+                    ).count()
+                    if eval_pendientes > 0:
+                        tiene_alertas = True
+                        alertas.append(f"{eval_pendientes} eval. vencidas")
+                except ImportError:
+                    pass
+                
+                if tiene_alertas:
+                    con_alertas += 1
+                
+                # Obtener cargo actual del subordinado
+                cargo_subordinado = emp.historialcargo_set.filter(activo=True).first()
+                
+                lista_empleados.append({
+                    'empleado': emp,
+                    'cargo_actual': cargo_subordinado,
+                    'tiene_alertas': tiene_alertas,
+                    'alertas': alertas,
+                    'dias_empresa': (date.today() - emp.fecha_ingreso).days
+                })
+            
+            return {
+                'empleados_a_cargo': {
+                    'total': total_subordinados,
+                    'activos': activos,
+                    'en_prueba': en_prueba,
+                    'con_alertas': con_alertas,
+                    'lista_empleados': lista_empleados,
+                    'es_jefe': True,
+                    'tipo_jefe': tipo_jefe
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo empleados a cargo: {e}")
+            return {
+                'empleados_a_cargo': {
+                    'total': 0,
+                    'activos': 0,
+                    'en_prueba': 0,
+                    'con_alertas': 0,
+                    'lista_empleados': [],
+                    'es_jefe': False,
+                    'tipo_jefe': None
+                }
+            }
+
     def get_sistema_puntos(self, empleado):
         """Obtener información del sistema de puntos y reconocimientos"""
         try:
@@ -1268,6 +1471,40 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             except ImportError:
                 pass
             
+            # Evaluaciones completadas pendientes de aceptación
+            try:
+                from apps.evaluations.models import AsignacionEvaluacion
+                
+                evaluaciones_pendientes_aceptacion = AsignacionEvaluacion.objects.filter(
+                    empleado_evaluado=empleado,
+                    estado='completada',
+                    fecha_completada__isnull=False,
+                    fecha_completada__gte=timezone.now() - timedelta(days=30),  # Últimos 30 días
+                    puntaje_total__gte=14  # Solo evaluaciones aprobadas (>= 14 puntos)
+                ).exclude(
+                    observaciones__icontains='[ACEPTADO_EMPLEADO:'  # Excluir las ya aceptadas
+                ).order_by('-fecha_completada')
+                
+                for evaluacion in evaluaciones_pendientes_aceptacion:
+                    # Verificar si tiene resultados para aceptar
+                    if hasattr(evaluacion, 'resultadoevaluacion'):
+                        resultado = evaluacion.resultadoevaluacion
+                        actividades.append({
+                            'tipo': 'evaluacion_aceptar',
+                            'icono': 'fas fa-clipboard-check',
+                            'color': 'warning',
+                            'titulo': f'📋 Plan de mejora disponible - {evaluacion.evaluacion.nombre}',
+                            'descripcion': 'Revisa y acepta tu plan de desarrollo profesional',
+                            'fecha': evaluacion.fecha_completada,
+                            'estado': 'pendiente_aceptacion',
+                            'url': f'/evaluaciones/ver-resultados/{evaluacion.id}/',
+                            'accion': 'Ver Resultados',
+                            'evaluacion_id': evaluacion.id,
+                            'puntaje': resultado.puntaje_final if resultado else None
+                        })
+            except ImportError:
+                pass
+            
             # Ordenar por fecha
             actividades.sort(key=lambda x: x['fecha'], reverse=True)
             
@@ -1279,6 +1516,229 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             return {
                 'actividades_recientes': []
             }
+
+
+class EmpleadoDetailSupervisorView(LoginRequiredMixin, DetailView):
+    """Vista para que supervisores vean detalles de sus empleados subordinados"""
+    model = Empleado
+    template_name = 'employees/empleado_detail_supervisor.html'
+    context_object_name = 'empleado'
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Verificar permisos antes de procesar la vista"""
+        empleado_a_ver = get_object_or_404(Empleado, pk=kwargs['pk'])
+        
+        # Si es superusuario, permitir acceso
+        if request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+        
+        # Verificar si el usuario actual es supervisor del empleado
+        try:
+            usuario_actual = Empleado.objects.get(usuario=request.user)
+            cargo_actual = usuario_actual.cargo_actual
+            
+            if not cargo_actual:
+                raise Http404("No tienes permisos para ver este perfil.")
+            
+            # Verificar si el empleado está bajo mi supervisión
+            empleado_cargo = empleado_a_ver.cargo_actual
+            if not empleado_cargo:
+                raise Http404("Empleado sin cargo asignado.")
+            
+            # Verificar jerarquía: debe ser mi subordinado directo o indirecto
+            es_subordinado = False
+            
+            # 1. Subordinado directo (mi cargo es su cargo_jefe)
+            if empleado_cargo.cargo.cargo_jefe == cargo_actual.cargo:
+                es_subordinado = True
+            
+            # 2. Misma área y nivel jerárquico mayor (subordinado indirecto)
+            elif (empleado_cargo.cargo.area == cargo_actual.cargo.area and 
+                  empleado_cargo.cargo.nivel_jerarquico > cargo_actual.cargo.nivel_jerarquico):
+                es_subordinado = True
+            
+            if not es_subordinado:
+                raise Http404("No tienes permisos para ver este perfil.")
+                
+        except Empleado.DoesNotExist:
+            raise Http404("Usuario sin perfil de empleado.")
+        
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empleado = self.object
+        
+        # Información básica del empleado
+        context['cargo_actual'] = empleado.cargo_actual
+        context['tiempo_empresa'] = (date.today() - empleado.fecha_ingreso).days
+        context['tiempo_empresa_texto'] = self._calcular_tiempo_empresa_texto(empleado.fecha_ingreso)
+        
+        # Documentos
+        context['documentos'] = self._get_documentos_info(empleado)
+        
+        # Capacitaciones
+        context['capacitaciones'] = self._get_capacitaciones_info(empleado)
+        
+        # Evaluaciones
+        context['evaluaciones'] = self._get_evaluaciones_info(empleado)
+        
+        # Sistema de puntos
+        context['puntos'] = self._get_sistema_puntos(empleado)
+        
+        # Historial de cargos
+        context['historial_cargos'] = HistorialCargo.objects.filter(
+            empleado=empleado
+        ).select_related('cargo', 'cargo__area').order_by('-fecha_inicio')
+        
+        # Actividad reciente
+        context['actividades_recientes'] = self._get_actividad_reciente(empleado)[:10]
+        
+        # Información del supervisor
+        context['es_vista_supervisor'] = True
+        context['supervisor_actual'] = self.request.user.empleado if hasattr(self.request.user, 'empleado') else None
+        
+        return context
+    
+    def _calcular_tiempo_empresa_texto(self, fecha_ingreso):
+        """Calcular texto legible del tiempo en empresa"""
+        try:
+            tiempo_total = date.today() - fecha_ingreso
+            años = tiempo_total.days // 365
+            meses = (tiempo_total.days % 365) // 30
+            
+            if años > 0:
+                return f"{años} año{'s' if años > 1 else ''}"
+            elif meses > 0:
+                return f"{meses} mes{'es' if meses > 1 else ''}"
+            else:
+                return f"{tiempo_total.days} días"
+        except:
+            return "No disponible"
+    
+    def _get_documentos_info(self, empleado):
+        """Obtener información de documentos del empleado"""
+        try:
+            tipos_requeridos = TipoDocumentoEmpleado.objects.filter(activo=True)
+            documentos_empleado = DocumentoEmpleado.objects.filter(empleado=empleado)
+            
+            aprobados = documentos_empleado.filter(estado='aprobado').count()
+            pendientes = documentos_empleado.filter(estado__in=['pendiente', 'revision']).count()
+            total = tipos_requeridos.count()
+            faltantes = total - documentos_empleado.count()
+            
+            return {
+                'aprobados': aprobados,
+                'pendientes': pendientes,
+                'total': total,
+                'faltantes': faltantes,
+                'progreso': int((aprobados / total * 100)) if total > 0 else 0,
+            }
+        except:
+            return {'aprobados': 0, 'pendientes': 0, 'total': 0, 'faltantes': 0, 'progreso': 0}
+    
+    def _get_capacitaciones_info(self, empleado):
+        """Obtener información de capacitaciones del empleado"""
+        try:
+            inscripciones = InscripcionCapacitacion.objects.filter(empleado=empleado)
+            completadas = inscripciones.filter(estado='completada').count()
+            en_progreso = inscripciones.filter(estado='en_progreso').count()
+            total = inscripciones.count()
+            
+            return {
+                'completadas': completadas,
+                'en_progreso': en_progreso,
+                'total': total,
+                'progreso': int((completadas / total * 100)) if total > 0 else 0,
+            }
+        except:
+            return {'completadas': 0, 'en_progreso': 0, 'total': 0, 'progreso': 0}
+    
+    def _get_evaluaciones_info(self, empleado):
+        """Obtener información de evaluaciones del empleado"""
+        try:
+            evaluaciones = AsignacionEvaluacion.objects.filter(empleado_evaluado=empleado)
+            
+            # Pendientes: estado pendiente o en_progreso
+            pendientes = evaluaciones.filter(estado__in=['pendiente', 'en_progreso']).count()
+            
+            # Completadas: estado completada  
+            completadas = evaluaciones.filter(estado='completada').count()
+            
+            # Vencidas: estado vencida o vencidas por fecha
+            vencidas = evaluaciones.filter(estado='vencida').count()
+            vencidas += evaluaciones.filter(
+                fecha_completada__isnull=True,
+                fecha_vencimiento__lt=date.today()
+            ).exclude(estado='vencida').count()
+            
+            return {
+                'pendientes': pendientes,
+                'completadas': completadas,
+                'vencidas': vencidas,
+                'total': evaluaciones.count(),
+            }
+        except:
+            return {'pendientes': 0, 'completadas': 0, 'vencidas': 0, 'total': 0}
+    
+    def _get_sistema_puntos(self, empleado):
+        """Obtener información del sistema de puntos"""
+        try:
+            from apps.recognition.models import HistorialPuntos, InsigniaEmpleado
+            
+            puntos_totales = HistorialPuntos.objects.filter(empleado=empleado).aggregate(
+                total=Sum('puntos')
+            )['total'] or 0
+            
+            insignias = InsigniaEmpleado.objects.filter(empleado=empleado).count()
+            
+            return {
+                'total': puntos_totales,
+                'insignias': insignias,
+            }
+        except:
+            return {'total': 0, 'insignias': 0}
+    
+    def _get_actividad_reciente(self, empleado):
+        """Obtener actividad reciente del empleado"""
+        actividades = []
+        
+        try:
+            # Documentos recientes
+            docs_recientes = DocumentoEmpleado.objects.filter(
+                empleado=empleado
+            ).order_by('-fecha_subida')[:5]
+            
+            for doc in docs_recientes:
+                actividades.append({
+                    'tipo': 'documento',
+                    'titulo': f'Documento subido: {doc.tipo_documento.nombre}',
+                    'fecha': doc.fecha_subida,
+                    'estado': doc.estado,
+                    'icono': 'fas fa-file-upload'
+                })
+            
+            # Capacitaciones recientes
+            caps_recientes = InscripcionCapacitacion.objects.filter(
+                empleado=empleado
+            ).order_by('-fecha_inscripcion')[:5]
+            
+            for cap in caps_recientes:
+                actividades.append({
+                    'tipo': 'capacitacion',
+                    'titulo': f'Capacitación: {cap.capacitacion.titulo}',
+                    'fecha': cap.fecha_inscripcion,
+                    'estado': cap.estado,
+                    'icono': 'fas fa-graduation-cap'
+                })
+            
+            # Ordenar por fecha
+            actividades.sort(key=lambda x: x['fecha'], reverse=True)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo actividad reciente: {e}")
+        
+        return actividades[:10]
 
 
 @login_required
@@ -1426,6 +1886,33 @@ def empleados_periodo_prueba_reporte(request):
         else:
             estado_activacion = f'En período de prueba'
         
+        # Obtener información de evaluación si existe
+        evaluacion_info = None
+        try:
+            from apps.evaluations.models import AsignacionEvaluacion
+            evaluacion = AsignacionEvaluacion.objects.filter(
+                empleado_evaluado=empleado,
+                estado='completada'
+            ).first()
+            
+            if evaluacion:
+                evaluacion_info = {
+                    'existe': True,
+                    'puntaje': evaluacion.puntaje_total,
+                    'aprobado': evaluacion.puntaje_total >= 14 if evaluacion.puntaje_total else False,
+                    'estado_aprobacion': evaluacion.estado_aprobacion,
+                    'fecha_completada': evaluacion.fecha_completada,
+                    'requiere_desactivacion': (
+                        evaluacion.estado_aprobacion == 'aprobada' and 
+                        evaluacion.puntaje_total and 
+                        evaluacion.puntaje_total <= 13
+                    )
+                }
+            else:
+                evaluacion_info = {'existe': False}
+        except:
+            evaluacion_info = {'existe': False}
+        
         empleados_info.append({
             'empleado': empleado,
             'dias_transcurridos': dias_transcurridos,
@@ -1433,6 +1920,7 @@ def empleados_periodo_prueba_reporte(request):
             'fecha_activacion': fecha_activacion,
             'estado_activacion': estado_activacion,
             'cargo_actual': empleado.cargo_actual,
+            'evaluacion': evaluacion_info,
         })
     
     # Estadísticas generales
@@ -1504,6 +1992,79 @@ def activar_empleado_individual(request, pk):
         })
     except Exception as e:
         logger.error(f"Error al activar empleado {pk}: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error interno del servidor'
+        })
+
+
+@require_POST
+@login_required
+def desactivar_empleado_reprobado(request, pk):
+    """Desactiva un empleado que reprobó la evaluación de período de prueba"""
+    try:
+        # Obtener empleado
+        empleado = get_object_or_404(Empleado, pk=pk)
+        
+        # Verificar que esté en período de prueba
+        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
+        if empleado.estado != estado_prueba:
+            return JsonResponse({
+                'success': False,
+                'message': 'El empleado no está en período de prueba'
+            })
+        
+        # Verificar que tenga una evaluación reprobada
+        try:
+            from apps.evaluations.models import AsignacionEvaluacion
+            evaluacion = AsignacionEvaluacion.objects.filter(
+                empleado_evaluado=empleado,
+                estado='completada',
+                estado_aprobacion='aprobada'
+            ).first()
+            
+            if not evaluacion or not evaluacion.puntaje_total or evaluacion.puntaje_total > 13:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'El empleado no tiene una evaluación reprobada que justifique la desactivación'
+                })
+        except Exception as e:
+            logger.error(f"Error al verificar evaluación: {e}")
+            return JsonResponse({
+                'success': False,
+                'message': 'Error al verificar la evaluación del empleado'
+            })
+        
+        # Obtener estado inactivo
+        estado_inactivo = EstadoEmpleado.objects.get(codigo='000')
+        
+        # Desactivar empleado
+        empleado.estado = estado_inactivo
+        empleado.observaciones = f'Desactivado por reprobación en evaluación de período de prueba. Puntaje: {evaluacion.puntaje_total}/21 puntos. Fecha: {timezone.now().date()}'
+        empleado.save()
+        
+        # Log de desactivación
+        logger.info(
+            f'DESACTIVACIÓN POR REPROBACIÓN: Empleado {empleado.numero_documento} '
+            f'({empleado.nombre_completo}) desactivado por {request.user.username} '
+            f'debido a evaluación reprobada ({evaluacion.puntaje_total}/21 puntos)'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Empleado {empleado.nombre_completo} desactivado por reprobación',
+            'empleado_nombre': empleado.nombre_completo,
+            'puntaje': evaluacion.puntaje_total,
+            'motivo': 'Evaluación reprobada'
+        })
+        
+    except EstadoEmpleado.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Error: Estados de empleado no configurados correctamente'
+        })
+    except Exception as e:
+        logger.error(f"Error al desactivar empleado reprobado {pk}: {e}")
         return JsonResponse({
             'success': False,
             'message': 'Error interno del servidor'

@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
 from apps.employees.models import Empleado, EstadoEmpleado
+from apps.evaluations.models import AsignacionEvaluacion, ResultadoEvaluacion
 import logging
 
 logger = logging.getLogger(__name__)
@@ -72,6 +73,8 @@ class Command(BaseCommand):
         
         empleados_activados = []
         empleados_con_error = []
+        empleados_sin_evaluacion = []
+        empleados_evaluacion_insatisfactoria = []
         
         for empleado in empleados_a_activar:
             dias_transcurridos = (timezone.now().date() - empleado.fecha_ingreso).days
@@ -86,6 +89,37 @@ class Command(BaseCommand):
             self.stdout.write(
                 f'  Sede: {empleado.sede}'
             )
+            
+            # VALIDACIÓN DE EVALUACIÓN DE PERIODO DE PRUEBA
+            evaluacion_valida = self._verificar_evaluacion_periodo_prueba(empleado)
+            
+            if evaluacion_valida['estado'] == 'sin_evaluacion':
+                empleados_sin_evaluacion.append(empleado)
+                self.stdout.write(
+                    self.style.WARNING(f'  ⚠️ Sin evaluación de periodo de prueba - NO SE ACTIVARÁ')
+                )
+                continue
+                
+            elif evaluacion_valida['estado'] == 'pendiente':
+                empleados_sin_evaluacion.append(empleado)
+                self.stdout.write(
+                    self.style.WARNING(f'  ⚠️ Evaluación pendiente de completar - NO SE ACTIVARÁ')
+                )
+                continue
+                
+            elif evaluacion_valida['estado'] == 'insatisfactorio':
+                empleados_evaluacion_insatisfactoria.append(empleado)
+                puntaje = evaluacion_valida['puntaje']
+                self.stdout.write(
+                    self.style.ERROR(f'  ❌ Evaluación insatisfactoria ({puntaje:.1f}/5.0) - NO SE ACTIVARÁ')
+                )
+                continue
+                
+            elif evaluacion_valida['estado'] == 'satisfactorio':
+                puntaje = evaluacion_valida['puntaje']
+                self.stdout.write(
+                    self.style.SUCCESS(f'  ✅ Evaluación satisfactoria ({puntaje:.1f}/5.0) - PROCEDE ACTIVACIÓN')
+                )
             
             if not dry_run:
                 try:
@@ -102,7 +136,8 @@ class Command(BaseCommand):
                     logger.info(
                         f'Empleado {empleado.numero_documento} '
                         f'({empleado.nombre_completo}) activado automáticamente '
-                        f'después de {dias_transcurridos} días en periodo de prueba'
+                        f'después de {dias_transcurridos} días con evaluación satisfactoria '
+                        f'(puntaje: {evaluacion_valida["puntaje"]:.1f})'
                     )
                     
                 except Exception as e:
@@ -122,36 +157,163 @@ class Command(BaseCommand):
         
         # Resumen final
         if dry_run:
+            activados = total_empleados - len(empleados_sin_evaluacion) - len(empleados_evaluacion_insatisfactoria)
             self.stdout.write(
                 self.style.WARNING(
-                    f'DRY RUN completado. Se activarían {total_empleados} empleados.'
+                    f'DRY RUN completado. Se activarían {activados} empleados de {total_empleados} candidatos.'
                 )
             )
         else:
             activados = len(empleados_activados)
             errores = len(empleados_con_error)
+            sin_evaluacion = len(empleados_sin_evaluacion)
+            evaluacion_insatisfactoria = len(empleados_evaluacion_insatisfactoria)
             
+            self.stdout.write('\n' + '='*60)
+            self.stdout.write('📊 RESUMEN DE ACTIVACIONES:')
             self.stdout.write(
-                self.style.SUCCESS(
-                    f'Proceso completado: {activados} empleados activados exitosamente'
-                )
+                self.style.SUCCESS(f'✅ Empleados activados: {activados}')
             )
-            
+            self.stdout.write(
+                self.style.WARNING(f'⚠️ Sin evaluación/pendiente: {sin_evaluacion}')
+            )
+            self.stdout.write(
+                self.style.ERROR(f'❌ Evaluación insatisfactoria: {evaluacion_insatisfactoria}')
+            )
             if errores > 0:
                 self.stdout.write(
-                    self.style.ERROR(f'{errores} empleados con errores')
+                    self.style.ERROR(f'💥 Errores técnicos: {errores}')
                 )
                 for empleado, error in empleados_con_error:
                     self.stdout.write(
                         self.style.ERROR(
-                            f'- {empleado.nombre_completo}: {error}'
+                            f'  - {empleado.nombre_completo}: {error}'
                         )
                     )
         
         # Información adicional sobre configuración
-        self.stdout.write('\n' + '='*50)
-        self.stdout.write(f'Configuración utilizada:')
+        self.stdout.write('\n' + '='*60)
+        self.stdout.write('⚙️ CONFIGURACIÓN UTILIZADA:')
         self.stdout.write(f'- Días de periodo de prueba: {dias_periodo}')
         self.stdout.write(f'- Fecha límite de ingreso: {fecha_limite}')
         self.stdout.write(f'- Estado origen: {estado_prueba.nombre} ({estado_prueba.codigo})')
         self.stdout.write(f'- Estado destino: {estado_activo.nombre} ({estado_activo.codigo})')
+        self.stdout.write(f'- Validación de evaluación: ✅ ACTIVADA')
+        self.stdout.write('='*60)
+
+    def _verificar_evaluacion_periodo_prueba(self, empleado):
+        """
+        Verifica si el empleado tiene una evaluación de período de prueba completada
+        y si el resultado es satisfactorio (>=3.0 en escala 1-5)
+        
+        Returns:
+            dict: {
+                'estado': 'sin_evaluacion'|'pendiente'|'satisfactorio'|'insatisfactorio',
+                'puntaje': float|None,
+                'asignacion': AsignacionEvaluacion|None
+            }
+        """
+        try:
+            # Buscar asignación de evaluación de período de prueba
+            periodo_evaluacion = f"{empleado.fecha_ingreso.year}-PP"
+            asignacion = AsignacionEvaluacion.objects.filter(
+                empleado_evaluado=empleado,
+                periodo_evaluacion=periodo_evaluacion,
+                evaluacion__tipo_evaluacion__codigo='PERIODO_PRUEBA'
+            ).first()
+            
+            if not asignacion:
+                return {
+                    'estado': 'sin_evaluacion',
+                    'puntaje': None,
+                    'asignacion': None
+                }
+            
+            # Verificar si está completada
+            if asignacion.estado != 'completada':
+                return {
+                    'estado': 'pendiente',
+                    'puntaje': None,
+                    'asignacion': asignacion
+                }
+            
+            # Verificar resultado
+            try:
+                resultado = ResultadoEvaluacion.objects.get(asignacion=asignacion)
+                puntaje = float(resultado.puntaje_final)
+                
+                # Satisfactorio >= 3.0 en escala 1-5 (equivale a "Satisfactorio" o mejor)
+                if puntaje >= 3.0:
+                    return {
+                        'estado': 'satisfactorio',
+                        'puntaje': puntaje,
+                        'asignacion': asignacion
+                    }
+                else:
+                    return {
+                        'estado': 'insatisfactorio',
+                        'puntaje': puntaje,
+                        'asignacion': asignacion
+                    }
+                    
+            except ResultadoEvaluacion.DoesNotExist:
+                # Completada pero sin resultado calculado
+                # Calcular puntaje manualmente
+                puntaje_promedio = self._calcular_puntaje_evaluacion(asignacion)
+                
+                if puntaje_promedio >= 3.0:
+                    return {
+                        'estado': 'satisfactorio',
+                        'puntaje': puntaje_promedio,
+                        'asignacion': asignacion
+                    }
+                else:
+                    return {
+                        'estado': 'insatisfactorio', 
+                        'puntaje': puntaje_promedio,
+                        'asignacion': asignacion
+                    }
+                    
+        except Exception as e:
+            logger.error(f"Error verificando evaluación para empleado {empleado.id}: {e}")
+            return {
+                'estado': 'sin_evaluacion',
+                'puntaje': None,
+                'asignacion': None
+            }
+
+    def _calcular_puntaje_evaluacion(self, asignacion):
+        """
+        Calcula el puntaje promedio de una evaluación basado en las respuestas
+        """
+        from apps.evaluations.models import RespuestaEvaluacion
+        from decimal import Decimal
+        
+        try:
+            respuestas = RespuestaEvaluacion.objects.filter(
+                asignacion=asignacion,
+                pregunta__peso_porcentual__gt=0  # Solo preguntas que afectan el puntaje
+            ).select_related('opcion_seleccionada', 'pregunta')
+            
+            if not respuestas.exists():
+                return 0.0
+            
+            total_peso = Decimal('0.00')
+            puntaje_ponderado = Decimal('0.00')
+            
+            for respuesta in respuestas:
+                if respuesta.opcion_seleccionada:
+                    peso = respuesta.pregunta.peso_porcentual / 100  # Convertir porcentaje
+                    valor = respuesta.opcion_seleccionada.valor_numerico
+                    
+                    puntaje_ponderado += Decimal(str(valor)) * peso
+                    total_peso += peso
+            
+            if total_peso > 0:
+                return float(puntaje_ponderado / total_peso)
+            else:
+                return 0.0
+                
+        except Exception as e:
+            logger.error(f"Error calculando puntaje de evaluación {asignacion.id}: {e}")
+            return 0.0

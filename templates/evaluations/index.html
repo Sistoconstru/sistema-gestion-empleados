@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evaluaciones de Desempeño{% endblock %}
+
+{% block extra_css %}
+<style>
+.evaluation-card {
+    transition: transform 0.2s;
+    border-left: 4px solid #007bff;
+}
+.evaluation-card:hover {
+    transform: translateY(-2px);
+}
+.pending-badge {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    animation: pulse 2s infinite;
+}
+.completed-badge {
+    background: linear-gradient(45deg, #51cf66, #40c057);
+}
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-chart-line text-primary"></i> Sistema de Evaluaciones</h2>
+                    <p class="text-muted">Gestiona evaluaciones de desempeño, período de prueba, autoevaluaciones y más</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card text-center p-3">
+                <h3>{{ total_pendientes }}</h3>
+                <p class="mb-0">Evaluaciones Pendientes</p>
+                <small>Como supervisor</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white text-center p-3">
+                <h3>{{ total_mis_evaluaciones }}</h3>
+                <p class="mb-0">Mis Evaluaciones</p>
+                <small>Como empleado</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white text-center p-3">
+                <h3>4</h3>
+                <p class="mb-0">Tipos de Evaluación</p>
+                <small>Disponibles</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white text-center p-3">
+                <h3>{{ evaluaciones_completadas|default:0 }}</h3>
+                <p class="mb-0">Completadas</p>
+                <small>Este mes</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tipos de Evaluaciones Disponibles -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list text-primary"></i> 
+                        Tipos de Evaluaciones Disponibles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border border-primary h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-clock fa-2x text-primary mb-3"></i>
+                                    <h6 class="text-primary">Período de Prueba</h6>
+                                    <p class="small text-muted">Evaluación inicial para nuevos empleados (30 días)</p>
+                                    <span class="badge badge-primary">Automática</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border border-info h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-bar fa-2x text-info mb-3"></i>
+                                    <h6 class="text-info">Desempeño Anual</h6>
+                                    <p class="small text-muted">Evaluación periódica del rendimiento laboral</p>
+                                    <span class="badge badge-info">Anual</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border border-warning h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-exclamation-circle fa-2x text-warning mb-3"></i>
+                                    <h6 class="text-warning">Extraordinaria</h6>
+                                    <p class="small text-muted">Evaluación especial por circunstancias particulares</p>
+                                    <span class="badge badge-warning">Manual</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border border-success h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-check fa-2x text-success mb-3"></i>
+                                    <h6 class="text-success">Autoevaluación</h6>
+                                    <p class="small text-muted">Evaluación personal del propio desempeño</p>
+                                    <span class="badge badge-success">Opcional</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos Rápidos del Sistema -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt"></i> 
+                        Accesos Rápidos del Sistema
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-outline-warning w-100 py-3">
+                                <i class="fas fa-tasks fa-2x d-block mb-2"></i>
+                                <strong>Pendientes</strong>
+                                <div class="small text-muted">Completar evaluaciones</div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:mis_evaluaciones' %}" class="btn btn-outline-info w-100 py-3">
+                                <i class="fas fa-user-graduate fa-2x d-block mb-2"></i>
+                                <strong>Mi Historial</strong>
+                                <div class="small text-muted">Mis evaluaciones</div>
+                            </a>
+                        </div>
+                        
+                        {% if user.is_superuser or perms.evaluations.change_asignacionevaluacion %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:pendientes_aprobacion' %}" class="btn btn-outline-danger w-100 py-3">
+                                <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
+                                <strong>Aprobaciones</strong>
+                                <div class="small text-muted">Pendientes administrativas</div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:listado_completo' %}" class="btn btn-outline-secondary w-100 py-3">
+                                <i class="fas fa-list fa-2x d-block mb-2"></i>
+                                <strong>Listado Completo</strong>
+                                <div class="small text-muted">{{ total_evaluaciones }} evaluaciones</div>
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-outline-success w-100 py-3" title="Función disponible solo para administradores">
+                                <i class="fas fa-plus-circle fa-2x d-block mb-2"></i>
+                                <strong>Nueva Evaluación</strong>
+                                <div class="small text-muted">Asignar evaluación</div>
+                            </a>
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-outline-primary w-100 py-3" title="Próximamente">
+                                <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
+                                <strong>Reportes</strong>
+                                <div class="small text-muted">Análisis y estadísticas</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Evaluaciones Pendientes (Como Supervisor) -->
+        {% if evaluaciones_pendientes and total_pendientes > 0 %}
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i> 
+                        Evaluaciones por Completar (Como Supervisor)
+                        <span class="badge pending-badge float-right">{{ total_pendientes }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for asignacion in evaluaciones_pendientes %}
+                    <div class="evaluation-card card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title text-primary mb-1">
+                                        {{ asignacion.empleado_evaluado.nombre_completo }}
+                                    </h6>
+                                    <p class="card-text mb-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i> 
+                                            Asignada: {{ asignacion.fecha_asignacion|date:"d/m/Y" }}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <span class="badge badge-secondary">{{ asignacion.evaluacion.tipo_evaluacion.nombre }}</span>
+                                    </p>
+                                </div>
+                                <div>
+                                    {% if asignacion.estado == 'pendiente' %}
+                                        <span class="badge badge-warning">Pendiente</span>
+                                    {% elif asignacion.estado == 'en_progreso' %}
+                                        <span class="badge badge-info">En Progreso</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'evaluations:completar' asignacion.id %}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i> 
+                                    {% if asignacion.estado == 'pendiente' %}Iniciar Evaluación{% else %}Continuar Evaluación{% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if total_pendientes > 5 %}
+                    <div class="text-center">
+                        <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-outline-primary">
+                            Ver todas las evaluaciones ({{ total_pendientes }})
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Mis Evaluaciones (Como Empleado) -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-check"></i> 
+                        Mis Evaluaciones
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if mis_evaluaciones %}
+                        {% for asignacion in mis_evaluaciones %}
+                        <div class="evaluation-card card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-title text-info mb-1">
+                                            {{ asignacion.evaluacion.tipo_evaluacion.nombre }}
+                                        </h6>
+                                        <p class="card-text mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-user"></i> 
+                                                Supervisor: {{ asignacion.evaluador.nombre_completo }}
+                                            </small>
+                                        </p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar"></i> 
+                                                Asignada: {{ asignacion.fecha_asignacion|date:"d/m/Y" }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        {% if asignacion.estado == 'completada' %}
+                                            <span class="badge completed-badge">Completada</span>
+                                        {% elif asignacion.estado == 'en_progreso' %}
+                                            <span class="badge badge-info">En Progreso</span>
+                                        {% else %}
+                                            <span class="badge badge-warning">Pendiente</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if asignacion.estado == 'completada' %}
+                                <div class="mt-3">
+                                    {% if asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
+                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> Ver Resultados Preliminares
+                                        </a>
+                                        {% if not asignacion.observaciones %}
+                                        <a href="{% url 'evaluations:aceptar_resultados' asignacion.id %}" 
+                                           class="btn btn-sm btn-success ml-2">
+                                            <i class="fas fa-check"></i> Aceptar Plan de Mejora
+                                        </a>
+                                        {% endif %}
+                                    {% elif asignacion.estado_aprobacion == 'aprobada' %}
+                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
+                                           class="btn btn-sm btn-success">
+                                            <i class="fas fa-certificate"></i> Ver Resultados Finales
+                                        </a>
+                                        {% if asignacion.observaciones %}
+                                            <small class="text-success d-block mt-1">
+                                                <i class="fas fa-check-circle"></i> Plan aceptado
+                                            </small>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
+                                           class="btn btn-sm btn-info">
+                                            <i class="fas fa-chart-bar"></i> Ver Resultado
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                    <div class="mt-3">
+                                        <span class="text-muted">
+                                            <i class="fas fa-clock"></i> 
+                                            Esperando evaluación del supervisor
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if total_mis_evaluaciones > 5 %}
+                        <div class="text-center">
+                            <a href="{% url 'evaluations:mis_evaluaciones' %}" class="btn btn-outline-info">
+                                Ver historial completo ({{ total_mis_evaluaciones }})
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-clipboard fa-3x mb-3"></i>
+                            <h6>Sin evaluaciones</h6>
+                            <p>Aún no tienes evaluaciones asignadas</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
