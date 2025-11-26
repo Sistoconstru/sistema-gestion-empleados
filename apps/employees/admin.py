@@ -10,8 +10,12 @@ from django.db.models import Q
 from datetime import date
 
 from .models import (
-    TipoDocumento, Escolaridad, EstadoEmpleado, 
-    Empleado, HistorialCargo
+    TipoDocumento, Escolaridad, EstadoEmpleado,
+    Empleado, HistorialCargo,
+    # Marketplace
+    Categoria, Producto, Venta, Subasta, PujaSubasta, Regalo,
+    # Messaging
+    Conversacion, Mensaje, LecturaConversacion
 )
 
 # Registro del modelo TipoDocumento en el admin de Django
@@ -361,6 +365,249 @@ class HistorialCargoAdmin(admin.ModelAdmin):
         if not change:
             obj.creado_por = request.user
         super().save_model(request, obj, form, change)
+
+# ===================== MARKETPLACE - ADMIN =====================
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'activa', 'fecha_creacion')
+    list_filter = ('activa', 'fecha_creacion')
+    search_fields = ('nombre', 'descripcion')
+    ordering = ('nombre',)
+
+
+class ProductoInline(admin.TabularInline):
+    """Inline para ver productos en subastas/ventas"""
+    model = Producto
+    extra = 0
+    fields = ('titulo', 'tipo', 'precio_inicial', 'estado')
+    readonly_fields = ('fecha_creacion', 'creado_por')
+
+
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'vendedor', 'tipo', 'categoria', 'precio_inicial', 'estado', 'fecha_creacion')
+    list_filter = ('tipo', 'estado', 'categoria', 'fecha_creacion')
+    search_fields = ('titulo', 'descripcion', 'vendedor__nombre_completo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Información General', {
+            'fields': ('id', 'titulo', 'descripcion', 'categoria', 'vendedor')
+        }),
+        ('Tipo de Oferta', {
+            'fields': ('tipo', 'precio_inicial', 'estado')
+        }),
+        ('Imagen', {
+            'fields': ('imagen',),
+            'classes': ('collapse',)
+        }),
+        ('Visibilidad', {
+            'fields': ('visible_para',),
+            'classes': ('collapse',),
+            'description': 'Dejar vacío para que sea visible para todos'
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    filter_horizontal = ('visible_para',)
+    ordering = ('-fecha_creacion',)
+
+
+@admin.register(Venta)
+class VentaAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'vendedor', 'comprador', 'precio_final', 'estado', 'fecha_venta')
+    list_filter = ('estado', 'fecha_venta')
+    search_fields = ('producto__titulo', 'vendedor__nombre_completo', 'comprador__nombre_completo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Producto', {
+            'fields': ('id', 'producto', 'vendedor', 'comprador')
+        }),
+        ('Transacción', {
+            'fields': ('precio_final', 'estado', 'observaciones')
+        }),
+        ('Calificaciones', {
+            'fields': ('calificacion_vendedor', 'comentario_vendedor', 'calificacion_comprador', 'comentario_comprador'),
+            'classes': ('collapse',)
+        }),
+        ('Fechas', {
+            'fields': ('fecha_venta', 'fecha_completada'),
+            'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    ordering = ('-fecha_venta',)
+
+
+class PujaSubastaInline(admin.TabularInline):
+    """Inline para ver pujas en una subasta"""
+    model = PujaSubasta
+    extra = 0
+    fields = ('pujador', 'monto', 'es_puja_automatica', 'fecha_creacion')
+    readonly_fields = ('fecha_creacion', 'creado_por')
+    ordering = ('-fecha_creacion',)
+
+
+@admin.register(Subasta)
+class SubastaAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'vendedor', 'precio_actual', 'pujador_actual', 'estado', 'fecha_fin')
+    list_filter = ('estado', 'fecha_inicio', 'fecha_fin')
+    search_fields = ('producto__titulo', 'vendedor__nombre_completo', 'pujador_actual__nombre_completo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Producto', {
+            'fields': ('id', 'producto', 'vendedor')
+        }),
+        ('Subasta', {
+            'fields': ('precio_inicial', 'precio_actual', 'incremento_minimo', 'estado')
+        }),
+        ('Pujadores', {
+            'fields': ('pujador_actual', 'ganador')
+        }),
+        ('Fechas', {
+            'fields': ('fecha_inicio', 'fecha_fin')
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    inlines = [PujaSubastaInline]
+    ordering = ('-fecha_inicio',)
+
+
+@admin.register(PujaSubasta)
+class PujaSubastaAdmin(admin.ModelAdmin):
+    list_display = ('subasta', 'pujador', 'monto', 'es_puja_automatica', 'fecha_creacion')
+    list_filter = ('es_puja_automatica', 'fecha_creacion', 'subasta')
+    search_fields = ('pujador__nombre_completo', 'subasta__producto__titulo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Información', {
+            'fields': ('id', 'subasta', 'pujador')
+        }),
+        ('Puja', {
+            'fields': ('monto', 'es_puja_automatica', 'monto_maximo')
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    ordering = ('-fecha_creacion',)
+
+
+@admin.register(Regalo)
+class RegaloAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'donante', 'receptor', 'estado', 'fecha_ofrecimiento')
+    list_filter = ('estado', 'fecha_ofrecimiento')
+    search_fields = ('producto__titulo', 'donante__nombre_completo', 'receptor__nombre_completo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Información', {
+            'fields': ('id', 'producto', 'donante', 'receptor')
+        }),
+        ('Regalo', {
+            'fields': ('estado', 'mensaje')
+        }),
+        ('Fechas', {
+            'fields': ('fecha_ofrecimiento', 'fecha_aceptacion')
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    ordering = ('-fecha_ofrecimiento',)
+
+
+# ===================== MESSAGING - ADMIN =====================
+
+class MensajeInline(admin.TabularInline):
+    """Inline para ver mensajes en una conversación"""
+    model = Mensaje
+    extra = 0
+    fields = ('remitente', 'contenido', 'leido', 'fecha_creacion')
+    readonly_fields = ('remitente', 'contenido', 'leido', 'fecha_creacion', 'creado_por')
+    can_delete = False
+    ordering = ('fecha_creacion',)
+
+    def has_add_permission(self, request, obj=None):
+        """No permitir agregar mensajes desde inline"""
+        return False
+
+
+@admin.register(Conversacion)
+class ConversacionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contexto', 'participantes_display', 'fecha_ultima_actividad', 'archivada')
+    list_filter = ('contexto', 'archivada', 'fecha_ultima_actividad')
+    search_fields = ('participantes__nombre_completo', 'producto_referencia__titulo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Información', {
+            'fields': ('id', 'contexto', 'titulo', 'producto_referencia', 'archivada')
+        }),
+        ('Participantes', {
+            'fields': ('participantes',)
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    filter_horizontal = ('participantes',)
+    inlines = [MensajeInline]
+    ordering = ('-fecha_ultima_actividad',)
+
+    def participantes_display(self, obj):
+        """Muestra los participantes de forma legible"""
+        return ', '.join([p.nombre_completo for p in obj.participantes.all()[:3]])
+    participantes_display.short_description = 'Participantes'
+
+
+@admin.register(Mensaje)
+class MensajeAdmin(admin.ModelAdmin):
+    list_display = ('remitente', 'conversacion', 'contenido_preview', 'leido', 'fecha_creacion')
+    list_filter = ('leido', 'fecha_creacion', 'conversacion')
+    search_fields = ('remitente__nombre_completo', 'contenido', 'conversacion__participantes__nombre_completo')
+    readonly_fields = ('fecha_creacion', 'creado_por', 'fecha_actualizacion', 'id')
+    fieldsets = (
+        ('Información', {
+            'fields': ('id', 'conversacion', 'remitente')
+        }),
+        ('Contenido', {
+            'fields': ('contenido', 'archivos_adjuntos')
+        }),
+        ('Lectura', {
+            'fields': ('leido', 'fecha_lectura')
+        }),
+        ('Auditoría', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'creado_por'),
+            'classes': ('collapse',)
+        }),
+    )
+    ordering = ('-fecha_creacion',)
+
+    def contenido_preview(self, obj):
+        """Muestra una vista previa del contenido"""
+        preview = obj.contenido[:50] + '...' if len(obj.contenido) > 50 else obj.contenido
+        return preview
+    contenido_preview.short_description = 'Contenido'
+
+
+@admin.register(LecturaConversacion)
+class LecturaConversacionAdmin(admin.ModelAdmin):
+    list_display = ('empleado', 'conversacion', 'fecha_actualizacion')
+    list_filter = ('fecha_actualizacion',)
+    search_fields = ('empleado__nombre_completo', 'conversacion__participantes__nombre_completo')
+    readonly_fields = ('fecha_actualizacion',)
+    ordering = ('-fecha_actualizacion',)
+
 
 # Personalización del sitio admin
 admin.site.site_header = "RRHH Pro - Administración"
