@@ -32,3 +32,18 @@ def select(queryset, field, value=None):
     return resultado
 
 register.filter('select', select)
+
+
+def get_item(dictionary, key):
+    """
+    Filtro personalizado para acceder a items de un diccionario en templates.
+    Uso: {{ diccionario|get_item:clave }}
+    """
+    if dictionary is None:
+        return None
+    if isinstance(dictionary, dict):
+        return dictionary.get(str(key))
+    return None
+
+
+register.filter('get_item', get_item)

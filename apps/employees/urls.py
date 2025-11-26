@@ -25,6 +25,7 @@ urlpatterns = [
     path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),
     # APIs y exportación
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),
+    path('api/jefes-potenciales/<int:cargo_id>/', views.obtener_jefes_potenciales, name='obtener_jefes_potenciales'),
     path('export/', views.empleado_export, name='empleado_export'),
     
     # Gestión de cargos

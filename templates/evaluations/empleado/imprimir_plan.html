@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Mejora - {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</title>
+    <style>
+        @media print {
+            @page {
+                size: letter;
+                margin: 1.5cm;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #28a745;
+            margin: 10px 0;
+            font-size: 28px;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-section h3 {
+            color: #495057;
+            font-size: 18px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #495057;
+            display: block;
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .info-item .value {
+            color: #212529;
+            font-size: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .plan-section {
+            margin-bottom: 30px;
+        }
+
+        .plan-section h3 {
+            color: #28a745;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            border-left: 4px solid #28a745;
+            padding-left: 15px;
+        }
+
+        .plan-content {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .seguimientos-section {
+            margin-bottom: 30px;
+        }
+
+        .seguimientos-section h3 {
+            color: #17a2b8;
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            border-left: 4px solid #17a2b8;
+            padding-left: 15px;
+        }
+
+        .seguimiento-item {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+
+        .seguimiento-item .header-seg {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .seguimiento-item .titulo {
+            font-weight: 600;
+            font-size: 15px;
+            color: #495057;
+        }
+
+        .seguimiento-item .fecha {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .seguimiento-item .observaciones {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .evaluacion-final {
+            border: 2px solid #6f42c1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: #f8f5ff;
+        }
+
+        .evaluacion-final h3 {
+            color: #6f42c1;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            text-align: center;
+        }
+
+        .evaluacion-final .resultado {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .evaluacion-final .conclusion {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .firma-section {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .firma-box {
+            text-align: center;
+        }
+
+        .firma-line {
+            border-top: 1px solid #333;
+            margin: 50px 20px 10px 20px;
+        }
+
+        .firma-label {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .print-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        .print-button i {
+            margin-right: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Botón de impresión (no se imprime) -->
+    <button class="print-button no-print" onclick="window.print()">
+        <i class="fas fa-print"></i> Imprimir Plan
+    </button>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>
+            <i class="fas fa-clipboard-list"></i>
+            PLAN DE MEJORA DE DESEMPEÑO
+        </h1>
+        <p class="subtitle">Sistema Integral de Gestión Humana - SIGHU</p>
+    </div>
+
+    <!-- Información del Empleado y Evaluación -->
+    <div class="info-section">
+        <h3><i class="fas fa-user"></i> Información del Empleado</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Nombre Completo:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</div>
+            </div>
+            <div class="info-item">
+                <label>Documento:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.numero_documento }}</div>
+            </div>
+            <div class="info-item">
+                <label>Cargo:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"No asignado" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Departamento:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"No asignado" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Sede:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.sede }}</div>
+            </div>
+            <div class="info-item">
+                <label>Fecha de Ingreso:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.fecha_ingreso|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información de la Evaluación -->
+    <div class="info-section">
+        <h3><i class="fas fa-chart-bar"></i> Información de la Evaluación</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Tipo de Evaluación:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}</div>
+            </div>
+            <div class="info-item">
+                <label>Período:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.periodo_evaluacion }}</div>
+            </div>
+            <div class="info-item">
+                <label>Fecha Evaluación:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.fecha_completada|date:"d/m/Y" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Evaluador/Supervisor:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Puntaje Obtenido:</label>
+                <div class="value">
+                    <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                        {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21 puntos
+                    </span>
+                </div>
+            </div>
+            <div class="info-item">
+                <label>Estado del Plan:</label>
+                <div class="value">
+                    <span class="badge badge-{% if plan.estado == 'aprobado' or plan.estado == 'en_seguimiento' %}success{% elif plan.estado == 'completado' %}info{% else %}warning{% endif %}">
+                        {{ plan.get_estado_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Plan -->
+    <div class="info-section">
+        <h3><i class="fas fa-info-circle"></i> Detalles del Plan</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Plan Generado por:</label>
+                <div class="value">{{ plan.generado_por.get_full_name }}</div>
+            </div>
+            <div class="info-item">
+                <label>Fecha de Generación:</label>
+                <div class="value">{{ plan.fecha_creacion|date:"d/m/Y H:i" }}</div>
+            </div>
+            <div class="info-item">
+                <label>Duración del Plan:</label>
+                <div class="value">{{ plan.duracion_meses }} meses</div>
+            </div>
+            {% if plan.fecha_aprobacion %}
+            <div class="info-item">
+                <label>Fecha de Aprobación:</label>
+                <div class="value">{{ plan.fecha_aprobacion|date:"d/m/Y" }}</div>
+            </div>
+            {% endif %}
+            {% if plan.aceptado_por_empleado %}
+            <div class="info-item">
+                <label>Aceptado por Empleado:</label>
+                <div class="value">
+                    <span class="badge badge-success">
+                        <i class="fas fa-check"></i> {{ plan.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Contenido del Plan de Mejora -->
+    <div class="plan-section">
+        <h3><i class="fas fa-clipboard-list"></i> Plan de Mejora</h3>
+        <div class="plan-content">{{ plan.plan_mejora }}</div>
+    </div>
+
+    {% if plan.comentarios_aprobacion and plan.estado != 'pendiente_aprobacion' %}
+    <!-- Comentarios del Supervisor -->
+    <div class="info-section">
+        <h3><i class="fas fa-comment"></i> Comentarios del Supervisor</h3>
+        <div class="plan-content" style="white-space: normal;">{{ plan.comentarios_aprobacion }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Seguimientos Bimensuales -->
+    {% if seguimientos %}
+    <div class="page-break"></div>
+    <div class="seguimientos-section">
+        <h3><i class="fas fa-calendar-check"></i> Seguimientos Bimensuales</h3>
+
+        {% for seguimiento in seguimientos %}
+        <div class="seguimiento-item">
+            <div class="header-seg">
+                <div class="titulo">
+                    <i class="fas fa-calendar"></i>
+                    {{ seguimiento.numero_bimestre }}° Bimestre
+                </div>
+                <div class="fecha">
+                    {% if seguimiento.estado == 'completado' %}
+                        Completado: {{ seguimiento.fecha_completado|date:"d/m/Y" }}
+                    {% else %}
+                        Fecha límite: {{ seguimiento.fecha_limite|date:"d/m/Y" }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info-item">
+                <label>Estado:</label>
+                <div class="value">
+                    <span class="badge badge-{% if seguimiento.estado == 'completado' %}success{% elif seguimiento.estado == 'pendiente' %}warning{% else %}danger{% endif %}">
+                        {{ seguimiento.get_estado_display }}
+                    </span>
+                </div>
+            </div>
+
+            {% if seguimiento.estado == 'completado' %}
+                <div class="info-item">
+                    <label>Avance Evaluado:</label>
+                    <div class="value">
+                        <span class="badge badge-{% if seguimiento.avance_satisfactorio %}success{% else %}warning{% endif %}">
+                            {% if seguimiento.avance_satisfactorio %}
+                                <i class="fas fa-check"></i> Satisfactorio
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle"></i> Necesita Mejorar
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Evaluado por:</label>
+                    <div class="value">{{ seguimiento.completado_por.get_full_name }}</div>
+                </div>
+
+                {% if seguimiento.observaciones %}
+                <div style="margin-top: 10px;">
+                    <label>Observaciones:</label>
+                    <div class="observaciones">{{ seguimiento.observaciones }}</div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Evaluación Final -->
+    {% if evaluacion_final %}
+    <div class="page-break"></div>
+    <div class="evaluacion-final">
+        <h3><i class="fas fa-star"></i> EVALUACIÓN FINAL DEL PLAN</h3>
+
+        <div class="resultado">
+            <label>Resultado:</label>
+            <span class="badge badge-{% if evaluacion_final.resultado == 'exitoso' %}success{% elif evaluacion_final.resultado == 'parcial' %}warning{% else %}danger{% endif %}">
+                {{ evaluacion_final.get_resultado_display }}
+            </span>
+        </div>
+
+        <div class="info-item">
+            <label>Fecha de Evaluación:</label>
+            <div class="value">{{ evaluacion_final.fecha_evaluacion|date:"d/m/Y" }}</div>
+        </div>
+
+        <div class="info-item">
+            <label>Evaluado por:</label>
+            <div class="value">{{ evaluacion_final.evaluado_por.get_full_name }}</div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <label>Conclusión:</label>
+            <div class="conclusion">{{ evaluacion_final.conclusion }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sección de Firmas -->
+    <div class="firma-section">
+        <div class="firma-box">
+            <div class="firma-line"></div>
+            <div class="firma-label">
+                {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}<br>
+                <small>EMPLEADO</small>
+            </div>
+        </div>
+        <div class="firma-box">
+            <div class="firma-line"></div>
+            <div class="firma-label">
+                {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Supervisor" }}<br>
+                <small>SUPERVISOR/EVALUADOR</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>
+            <strong>Plan de Mejora de Desempeño</strong><br>
+            Generado el {{ plan.fecha_creacion|date:"d/m/Y" }} - Impreso el {% now "d/m/Y H:i" %}<br>
+            Sistema Integral de Gestión Humana (SIGHU)
+        </p>
+    </div>
+</body>
+</html>

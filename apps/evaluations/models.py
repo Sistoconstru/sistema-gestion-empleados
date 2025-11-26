@@ -238,7 +238,7 @@ class AsignacionEvaluacion(models.Model):
     empleado_evaluado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE, related_name='evaluaciones_recibidas')
     evaluacion = models.ForeignKey(EvaluacionDesempeño, on_delete=models.CASCADE)
     evaluador = models.ForeignKey('employees.Empleado', on_delete=models.SET_NULL, null=True, blank=True, related_name='evaluaciones_realizadas')
-    periodo_evaluacion = models.CharField(max_length=20)
+    periodo_evaluacion = models.CharField(max_length=100)
     fecha_asignacion = models.DateTimeField(auto_now_add=True)
     fecha_vencimiento = models.DateField()
     fecha_inicio = models.DateTimeField(null=True, blank=True)
@@ -347,4 +347,119 @@ class PlanAccion(models.Model):
         db_table = 'planes_accion'
         verbose_name = 'Plan de Acción'
         verbose_name_plural = 'Planes de Acción'
+
+
+class PlanMejoraPredefinido(models.Model):
+    """Planes de mejora generados automáticamente con respuestas predefinidas"""
+    ESTADOS = [
+        ('pendiente_aprobacion', 'Pendiente de Aprobación'),
+        ('aprobado', 'Aprobado'),
+        ('en_seguimiento', 'En Seguimiento'),
+        ('completado', 'Completado'),
+        ('rechazado', 'Rechazado'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    asignacion_evaluacion = models.ForeignKey(AsignacionEvaluacion, on_delete=models.CASCADE, related_name='planes_mejora')
+    
+    # Respuestas predefinidas generadas automáticamente
+    plan_mejora = models.TextField(help_text="Plan de mejora generado automáticamente basado en las respuestas")
+    
+    # Estado y aprobación
+    estado = models.CharField(max_length=25, choices=ESTADOS, default='pendiente_aprobacion')
+    
+    # Aceptación del empleado
+    aceptado_por_empleado = models.BooleanField(default=False, help_text="Indica si el empleado ha aceptado el plan")
+    fecha_aceptacion_empleado = models.DateTimeField(null=True, blank=True, help_text="Fecha en que el empleado aceptó el plan")
+    
+    # Fechas de creación y gestión
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True)
+    
+    # Usuarios involucrados
+    generado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='planes_generados')
+    aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='planes_aprobados')
+    
+    # Comentarios del proceso
+    comentarios_aprobacion = models.TextField(blank=True, help_text="Comentarios del supervisor durante la aprobación")
+    comentarios_seguimiento = models.TextField(blank=True, help_text="Comentarios del seguimiento")
+    
+    class Meta:
+        db_table = 'planes_mejora_predefinidos'
+        verbose_name = 'Plan de Mejora Predefinido'
+        verbose_name_plural = 'Planes de Mejora Predefinidos'
+    
+    def __str__(self):
+        return f"Plan {self.asignacion_evaluacion.empleado_evaluado.nombre_completo} - {self.get_estado_display()}"
+
+
+class SeguimientoBimensual(models.Model):
+    """Seguimiento bimensual automático de planes de mejora"""
+    ESTADOS_SEGUIMIENTO = [
+        ('pendiente', 'Pendiente'),
+        ('completado', 'Completado'),
+        ('atrasado', 'Atrasado'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    plan_mejora = models.ForeignKey(PlanMejoraPredefinido, on_delete=models.CASCADE, related_name='seguimientos')
+    
+    # Información del bimestre
+    numero_bimestre = models.IntegerField(help_text="1, 2, 3 (primer, segundo, tercer bimestre)")
+    fecha_limite = models.DateField(help_text="Fecha límite para completar este seguimiento")
+    fecha_completado = models.DateTimeField(null=True, blank=True)
+    
+    # Estado del seguimiento
+    estado = models.CharField(max_length=15, choices=ESTADOS_SEGUIMIENTO, default='pendiente')
+    
+    # Campos que se marcan durante el seguimiento
+    avance_satisfactorio = models.BooleanField(null=True, blank=True, help_text="¿El avance es satisfactorio?")
+    observaciones = models.TextField(blank=True, help_text="Observaciones del seguimiento")
+    
+    # Usuario que realiza el seguimiento
+    completado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    class Meta:
+        db_table = 'seguimientos_bimensuales'
+        unique_together = ['plan_mejora', 'numero_bimestre']
+        verbose_name = 'Seguimiento Bimensual'
+        verbose_name_plural = 'Seguimientos Bimensuales'
+        ordering = ['plan_mejora', 'numero_bimestre']
+    
+    def __str__(self):
+        return f"Seguimiento {self.numero_bimestre}° - {self.plan_mejora}"
+    
+    @property
+    def esta_vencido(self):
+        """Verifica si el seguimiento está vencido"""
+        from django.utils import timezone
+        return timezone.now().date() > self.fecha_limite and self.estado == 'pendiente'
+
+
+class EvaluacionFinal(models.Model):
+    """Evaluación final después de los 3 bimestres de seguimiento"""
+    RESULTADOS = [
+        ('exitoso', 'Exitoso'),
+        ('parcialmente_exitoso', 'Parcialmente Exitoso'),
+        ('no_exitoso', 'No Exitoso'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    plan_mejora = models.OneToOneField(PlanMejoraPredefinido, on_delete=models.CASCADE, related_name='evaluacion_final')
+    
+    # Resultado final
+    resultado = models.CharField(max_length=25, choices=RESULTADOS)
+    conclusion = models.TextField(help_text="Conclusión final del evaluador sobre el plan de mejora")
+    
+    # Fechas y usuario
+    fecha_evaluacion = models.DateTimeField(auto_now_add=True)
+    evaluado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'evaluaciones_finales'
+        verbose_name = 'Evaluación Final'
+        verbose_name_plural = 'Evaluaciones Finales'
+    
+    def __str__(self):
+        return f"Evaluación Final - {self.plan_mejora} - {self.get_resultado_display()}"
 

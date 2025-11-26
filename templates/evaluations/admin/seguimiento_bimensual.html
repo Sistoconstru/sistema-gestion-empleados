@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}Seguimiento Bimensual - SIGHU{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .plan-content {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        white-space: pre-wrap;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .seguimiento-header {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .timeline-item {
+        padding: 10px;
+        border-left: 3px solid #007bff;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        background: #f8f9fa;
+    }
+    .timeline-item.completed {
+        border-left-color: #28a745;
+        background: #e8f5e8;
+    }
+    .timeline-item.current {
+        border-left-color: #ffc107;
+        background: #fff3cd;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="seguimiento-header text-center">
+                <h2>
+                    <i class="fas fa-calendar-check"></i>
+                    Seguimiento del {{ seguimiento.numero_bimestre }}° Bimestre
+                </h2>
+                <p class="mb-0">
+                    Plan de Mejora - {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información del Plan -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        Información del Plan
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</p>
+                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Departamento:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"Sin departamento" }}</p>
+                    <p><strong>Evaluador original:</strong> {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                    <p><strong>Estado del plan:</strong> 
+                        <span class="badge badge-primary">{{ plan.get_estado_display }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-calendar-alt"></i>
+                        Información del Seguimiento
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Bimestre:</strong> {{ seguimiento.numero_bimestre }}° de 3</p>
+                    <p><strong>Fecha límite:</strong> 
+                        <span class="{% if seguimiento.esta_vencido %}text-danger{% elif seguimiento.fecha_limite|date:'Y-m-d' <= 'now'|date:'Y-m-d' %}text-warning{% else %}text-success{% endif %}">
+                            {{ seguimiento.fecha_limite|date:"d/m/Y" }}
+                            {% if seguimiento.esta_vencido %}
+                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                            {% endif %}
+                        </span>
+                    </p>
+                    <p><strong>Estado:</strong> 
+                        <span class="badge badge-{% if seguimiento.estado == 'pendiente' %}warning{% elif seguimiento.estado == 'completado' %}success{% else %}danger{% endif %}">
+                            {{ seguimiento.get_estado_display }}
+                        </span>
+                    </p>
+                    {% if seguimiento.fecha_completado %}
+                    <p><strong>Completado el:</strong> {{ seguimiento.fecha_completado|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Completado por:</strong> {{ seguimiento.completado_por.get_full_name }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Timeline de Seguimientos -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-timeline"></i>
+                        Progreso General
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for seg in plan.seguimientos.all %}
+                    <div class="timeline-item {% if seg.estado == 'completado' %}completed{% elif seg.numero_bimestre == seguimiento.numero_bimestre %}current{% endif %}">
+                        <strong>{{ seg.numero_bimestre }}° Bimestre</strong>
+                        {% if seg.avance_satisfactorio is not None %}
+                            <span class="badge {% if seg.avance_satisfactorio %}bg-success{% else %}bg-warning{% endif %} ms-2">
+                                {% if seg.avance_satisfactorio %}
+                                    <i class="fas fa-check"></i> Satisfactorio
+                                {% else %}
+                                    <i class="fas fa-exclamation"></i> Necesita Mejorar
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                        <br>
+                        <small>
+                            Límite: {{ seg.fecha_limite|date:"d/m/Y" }}<br>
+                            {% if seg.estado == 'completado' %}
+                                <i class="fas fa-check text-success"></i> Completado
+                                {% if seg.fecha_completado %}
+                                    el {{ seg.fecha_completado|date:"d/m/Y" }}
+                                {% endif %}
+                            {% elif seg.numero_bimestre == seguimiento.numero_bimestre %}
+                                <i class="fas fa-clock text-warning"></i> En curso
+                            {% else %}
+                                <i class="fas fa-hourglass text-muted"></i> Pendiente
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan y Formulario -->
+        <div class="col-md-8">
+            <!-- Contenido del Plan -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i>
+                        Plan de Mejora
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="plan-content">{{ plan.plan_mejora }}</div>
+                </div>
+            </div>
+
+            <!-- Formulario de Seguimiento -->
+            {% if seguimiento.estado == 'pendiente' %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-clipboard-check"></i>
+                        Completar Seguimiento del {{ seguimiento.numero_bimestre }}° Bimestre
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Instrucciones:</strong><br>
+                            Evalúe el progreso del empleado en este bimestre. preste especial atención a las calificaciones que estan en 1 y 2. Marque si el avance es satisfactorio y agregue sus observaciones.
+                        </div>
+
+                        <div class="form-group">
+                            <legend class="font-weight-bold mb-2">¿El avance del empleado es satisfactorio en este bimestre?</legend>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="avance_satisfactorio" id="avance_si" value="true" required>
+                                    <label class="form-check-label text-success" for="avance_si">
+                                        <i class="fas fa-check-circle"></i>
+                                        Sí, el avance es satisfactorio
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="avance_satisfactorio" id="avance_no" value="false" required>
+                                    <label class="form-check-label text-warning" for="avance_no">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        No, necesita mejorar
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observaciones" class="font-weight-bold">Observaciones del seguimiento:</label>
+                            <textarea 
+                                class="form-control" 
+                                id="observaciones" 
+                                name="observaciones" 
+                                rows="4" 
+                                placeholder="Describa el progreso observado, logros alcanzados, dificultades encontradas, recomendaciones para el próximo bimestre, etc."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'evaluations:supervisor_seguimientos_pendientes' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver a Seguimientos
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                Completar Seguimiento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <!-- Mostrar información del seguimiento completado -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-check-circle text-success"></i>
+                        Seguimiento Completado
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <strong>Este seguimiento ya fue completado el {{ seguimiento.fecha_completado|date:"d/m/Y H:i" }}</strong><br>
+                        Por: {{ seguimiento.completado_por.get_full_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <legend class="font-weight-bold">Avance fue satisfactorio:</legend>
+                        <p class="{% if seguimiento.avance_satisfactorio %}text-success{% else %}text-warning{% endif %}">
+                            {% if seguimiento.avance_satisfactorio %}
+                                <i class="fas fa-check-circle"></i> Sí
+                            {% else %}
+                                <i class="fas fa-exclamation-triangle"></i> No, necesitaba mejorar
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    {% if seguimiento.observaciones %}
+                    <div class="form-group">
+                        <legend class="font-weight-bold">Observaciones:</legend>
+                        <div class="border p-3 rounded" style="background-color: #f8f9fa;">
+                            {{ seguimiento.observaciones }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'evaluations:supervisor_seguimientos_pendientes' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Volver a Seguimientos Pendientes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[method="post"]');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const observaciones = document.getElementById('observaciones').value.trim();
+            if (observaciones.length < 20) {
+                alert('Por favor, proporcione observaciones más detalladas (mínimo 20 caracteres).');
+                e.preventDefault();
+                return;
+            }
+            
+            if (!confirm('¿Está seguro que desea completar este seguimiento? Esta acción no se puede deshacer.')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock extra_js %}

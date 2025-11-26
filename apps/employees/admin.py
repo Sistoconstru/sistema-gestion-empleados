@@ -38,13 +38,14 @@ class EstadoEmpleadoAdmin(admin.ModelAdmin):
 # Inline para historial de cargos en el formulario de empleado
 class HistorialCargoInline(admin.TabularInline):
     model = HistorialCargo
+    fk_name = 'empleado'  # Especificar cuál ForeignKey usar (hay dos: empleado y jefe_directo)
     extra = 1
-    fields = ('cargo', 'fecha_inicio', 'fecha_fin', 'activo', 'motivo_cambio')
+    fields = ('cargo', 'jefe_directo', 'fecha_inicio', 'fecha_fin', 'activo', 'motivo_cambio')
     readonly_fields = ('fecha_creacion', 'creado_por')
     ordering = ('-fecha_inicio',)
-    
+
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('cargo__area')
+        return super().get_queryset(request).select_related('cargo__area', 'jefe_directo')
 
 # Registro del modelo Empleado en el admin de Django
 @admin.register(Empleado)
@@ -287,22 +288,23 @@ class EmpleadoAdmin(admin.ModelAdmin):
 @admin.register(HistorialCargo)
 class HistorialCargoAdmin(admin.ModelAdmin):
     list_display = (
-        'empleado', 'cargo', 'get_area', 'fecha_inicio', 
-        'fecha_fin', 'activo', 'get_duracion'
+        'empleado', 'cargo', 'get_area', 'jefe_directo',
+        'fecha_inicio', 'fecha_fin', 'activo', 'get_duracion'
     )
     list_filter = (
         'activo', 'cargo__area', 'fecha_inicio', 'fecha_fin'
     )
     search_fields = (
-        'empleado__nombres', 'empleado__apellidos', 
-        'cargo__nombre', 'cargo__area__nombre'
+        'empleado__nombres', 'empleado__apellidos',
+        'cargo__nombre', 'cargo__area__nombre',
+        'jefe_directo__nombres', 'jefe_directo__apellidos'
     )
     date_hierarchy = 'fecha_inicio'
     ordering = ('-fecha_inicio',)
     
     fieldsets = (
         ('Información del Cargo', {
-            'fields': ('empleado', 'cargo', 'fecha_inicio', 'fecha_fin', 'activo')
+            'fields': ('empleado', 'cargo', 'jefe_directo', 'fecha_inicio', 'fecha_fin', 'activo')
         }),
         ('Detalles', {
             'fields': ('salario', 'motivo_cambio', 'observaciones'),
@@ -318,7 +320,7 @@ class HistorialCargoAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
-            'empleado', 'cargo__area', 'creado_por'
+            'empleado', 'cargo__area', 'creado_por', 'jefe_directo'
         )
     
     def get_area(self, obj):

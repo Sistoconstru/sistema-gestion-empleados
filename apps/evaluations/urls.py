@@ -1,4 +1,5 @@
 
+
 # =============================================================================
 # apps/evaluations/urls.py
 # =============================================================================
@@ -15,9 +16,14 @@ urlpatterns = [
     # Listado completo de evaluaciones
     path('listado-completo/', views.ListadoCompletoEvaluacionesView.as_view(), name='listado_completo'),
     
-    # Evaluaciones como supervisor
+    # Evaluaciones como supervisor (jefe inmediato)
     path('supervisor/pendientes/', views.MisEvaluacionesPendientesView.as_view(), name='supervisor_pendientes'),
+    path('supervisor/completadas/', views.MisEvaluacionesCompletadasView.as_view(), name='supervisor_completadas'),
+    path('supervisor/seguimientos-pendientes/', views.seguimientos_pendientes_supervisor, name='supervisor_seguimientos_pendientes'),
     path('completar/<uuid:asignacion_id>/', views.completar_evaluacion, name='completar'),
+
+    # Vista administrativa: TODAS las evaluaciones pendientes del sistema
+    path('admin/todas-pendientes/', views.AdminTodasPendientesView.as_view(), name='admin_todas_pendientes'),
     
     # Evaluaciones como empleado
     path('mis-evaluaciones/', views.EvaluacionHistorialView.as_view(), name='mis_evaluaciones'),
@@ -25,14 +31,24 @@ urlpatterns = [
     # Resultados para empleados
     path('ver-resultados/<uuid:asignacion_id>/', views.ver_resultados_evaluacion, name='ver_resultados'),
     path('aceptar-resultados/<uuid:asignacion_id>/', views.aceptar_resultados_evaluacion, name='aceptar_resultados'),
+
+    # Asignación manual de evaluaciones (AJAX/modal)
+    path('asignar-evaluacion-manual/', views.asignar_evaluacion_manual, name='asignar_evaluacion_manual'),
+    path('ver-plan-mejora/<uuid:plan_id>/', views.ver_plan_mejora_empleado, name='ver_plan_mejora_empleado'),
+    path('aceptar-plan/<uuid:plan_id>/', views.aceptar_plan_mejora, name='aceptar_plan_mejora'),
+    path('imprimir-plan/<uuid:plan_id>/', views.imprimir_plan_mejora, name='imprimir_plan_mejora'),
     
-    # Resultados para supervisores/admin
-    path('resultado/<uuid:asignacion_id>/', views.ver_resultado_evaluacion, name='ver_resultado'),
     
-    # Aprobación administrativa 
-    path('admin/pendientes-aprobacion/', views.EvaluacionesPendientesAprobacionView.as_view(), name='pendientes_aprobacion'),
+    # Aprobación administrativa y planes de mejora
+    path('admin/pendientes-aprobacion/', views.EvaluacionesPendientesAprobacionView.as_view(), name='admin_pendientes_aprobacion'),
     path('admin/aprobar/<uuid:asignacion_id>/', views.aprobar_evaluacion, name='aprobar_evaluacion'),
     path('admin/revisar/<uuid:asignacion_id>/', views.revisar_evaluacion, name='revisar_evaluacion'),
+    
+    # Planes de mejora predefinidos
+    path('admin/generar-plan-predefinido/<uuid:asignacion_id>/', views.generar_plan_predefinido, name='generar_plan_predefinido'),
+    path('admin/revisar-plan-predefinido/<uuid:plan_id>/', views.revisar_plan_predefinido, name='revisar_plan_predefinido'),
+    path('admin/seguimiento-bimensual/<uuid:seguimiento_id>/', views.gestionar_seguimiento_bimensual, name='seguimiento_bimensual'),
+    path('admin/evaluacion-final/<uuid:plan_id>/', views.evaluacion_final_plan, name='evaluacion_final'),
     
     # URLs comentadas para futuro desarrollo
     # Valoraciones (exámenes)

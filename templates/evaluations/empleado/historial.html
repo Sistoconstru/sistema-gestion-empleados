@@ -5,6 +5,59 @@
 
 {% block extra_css %}
 <style>
+/* Header con estilo corporativo */
+.page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+.page-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+.page-header p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+}
+.page-header .btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.page-header .btn:hover {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+/* Tarjetas de estadísticas mejoradas */
+.stat-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+.stat-card.bg-success {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important;
+}
+.stat-card.bg-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+.stat-card.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+.stat-card.bg-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
 .evaluation-timeline {
     position: relative;
     margin: 20px 0;
@@ -36,36 +89,36 @@
 }
 
 .timeline-icon.completed {
-    background: linear-gradient(45deg, #28a745, #20c997);
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
 }
 
 .timeline-icon.in-progress {
-    background: linear-gradient(45deg, #17a2b8, #138496);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .timeline-icon.pending {
-    background: linear-gradient(45deg, #ffc107, #e0a800);
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
 }
 
 .evaluation-card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     transition: all 0.3s;
     border: 2px solid transparent;
 }
 
 .evaluation-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
 .evaluation-card.completed {
-    border-color: #28a745;
+    border-color: #51cf66;
 }
 
 .evaluation-card.in-progress {
-    border-color: #17a2b8;
+    border-color: #667eea;
 }
 
 .evaluation-card.pending {
@@ -96,30 +149,57 @@
 .score-unsatisfactory {
     color: #dc3545;
 }
+
+/* Estado vacío mejorado */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+.empty-state i {
+    font-size: 4em;
+    color: #667eea;
+    opacity: 0.5;
+    margin-bottom: 20px;
+}
+.empty-state h4 {
+    color: #333;
+    font-weight: 600;
+}
+.empty-state p {
+    color: #6c757d;
+}
+.empty-state .btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="fas fa-user-graduate text-info"></i> Mis Evaluaciones</h2>
-                    <p class="text-muted">Historial de evaluaciones de desempeño</p>
-                </div>
-                <a href="{% url 'evaluations:index' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-user-graduate me-2"></i> Mis Evaluaciones</h2>
+                <p>Historial de evaluaciones de desempeño</p>
             </div>
+            <a href="{% url 'evaluations:index' %}" class="btn">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+            </a>
         </div>
     </div>
 
     <!-- Estadísticas resumen -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-success text-white text-center">
+            <div class="card stat-card bg-success text-white text-center">
                 <div class="card-body">
                     <h3>{{ evaluaciones|length }}</h3>
                     <p class="mb-0">Total Evaluaciones</p>
@@ -127,7 +207,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white text-center">
+            <div class="card stat-card bg-info text-white text-center">
                 <div class="card-body">
                     <h3>{{ evaluaciones_completadas }}</h3>
                     <p class="mb-0">Completadas</p>
@@ -135,7 +215,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white text-center">
+            <div class="card stat-card bg-warning text-white text-center">
                 <div class="card-body">
                     <h3>{{ evaluaciones_pendientes }}</h3>
                     <p class="mb-0">En Proceso</p>
@@ -143,7 +223,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-primary text-white text-center">
+            <div class="card stat-card bg-primary text-white text-center">
                 <div class="card-body">
                     <h3>{{ promedio_general|floatformat:1 }}</h3>
                     <p class="mb-0">Promedio General</p>
@@ -236,11 +316,12 @@
                                                 </div>
                                             {% endif %}
                                         {% endwith %}
-                                        
-                                        <a href="{% url 'evaluations:ver_resultado' asignacion.id %}" 
-                                           class="btn btn-primary btn-sm">
-                                            <i class="fas fa-chart-bar"></i> Ver Detalle
-                                        </a>
+
+                                        <div class="mt-3">
+                                            <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-clipboard-list me-1"></i> Ver Mi Plan de Mejora
+                                            </a>
+                                        </div>
                                     </div>
                                 {% endif %}
                             </div>
@@ -299,12 +380,12 @@
         {% endif %}
 
     {% else %}
-        <div class="text-center py-5">
-            <i class="fas fa-clipboard fa-4x text-muted mb-3"></i>
+        <div class="empty-state">
+            <i class="fas fa-clipboard"></i>
             <h4>Sin evaluaciones</h4>
-            <p class="text-muted">Aún no tienes evaluaciones asignadas en el sistema.</p>
-            <a href="{% url 'evaluations:index' %}" class="btn btn-primary">
-                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            <p>Aún no tienes evaluaciones asignadas en el sistema.</p>
+            <a href="{% url 'evaluations:index' %}" class="btn">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
             </a>
         </div>
     {% endif %}

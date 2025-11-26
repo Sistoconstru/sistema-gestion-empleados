@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seguimientos Bimensuales Pendientes - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Header con estilo corporativo */
+.page-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+.page-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+.page-header p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+}
+.page-header .btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.page-header .btn:hover {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+/* Tarjetas de estadísticas */
+.stat-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    padding: 20px;
+    color: white;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+.stat-card.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}
+.stat-card.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100!) !important;
+}
+.stat-card.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+/* Tarjetas de seguimiento */
+.seguimiento-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    border-left: 3px solid #17a2b8;
+    margin-bottom: 15px;
+}
+.seguimiento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.seguimiento-card .card-body {
+    padding: 12px;
+}
+.seguimiento-card.vencido {
+    border-left-color: #dc3545;
+}
+.seguimiento-card.proximo {
+    border-left-color: #ffc107;
+}
+
+.bimestre-badge {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.empleado-info {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.fecha-limite {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.fecha-limite.vencida {
+    color: #dc3545;
+}
+
+.fecha-limite.proxima {
+    color: #ffc107;
+}
+
+.fecha-limite.normal {
+    color: #17a2b8;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+.empty-state i {
+    font-size: 4em;
+    color: #17a2b8;
+    opacity: 0.5;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-calendar-check me-2"></i> Seguimientos Bimensuales Pendientes</h2>
+                <p>Gestión de seguimientos de planes de mejora</p>
+            </div>
+            <a href="{% url 'evaluations:index' %}" class="btn">
+                <i class="fas fa-arrow-left me-1"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card bg-info text-white text-center">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ total_pendientes }}</h3>
+                            <p class="mb-0">Total Pendientes</p>
+                        </div>
+                        <i class="fas fa-tasks fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-danger text-white text-center">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ vencidos }}</h3>
+                            <p class="mb-0">Vencidos</p>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-warning text-white text-center">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ proximos }}</h3>
+                            <p class="mb-0">Próximos (7 días)</p>
+                        </div>
+                        <i class="fas fa-clock fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Seguimientos Agrupados por Jefe -->
+    {% if jefes_con_seguimientos %}
+        {% for jefe_info in jefes_con_seguimientos %}
+        <div class="card mb-4">
+            <!-- Header del Jefe -->
+            <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-tie me-2"></i>
+                            {% if es_admin %}
+                                Supervisor: {{ jefe_info.jefe.get_full_name }}
+                            {% else %}
+                                Mis Seguimientos Pendientes
+                            {% endif %}
+                        </h5>
+                        {% if es_admin %}
+                        <small class="opacity-75">
+                            {{ jefe_info.jefe.nombre_cargo_actual|default:"Sin cargo" }} -
+                            {% if jefe_info.jefe.area_actual %}{{ jefe_info.jefe.area_actual.nombre }}{% else %}Sin área{% endif %}
+                        </small>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="bg-white bg-opacity-25 rounded p-2">
+                                    <strong class="d-block" style="font-size: 1.5rem;">{{ jefe_info.total }}</strong>
+                                    <small>Total</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="bg-white bg-opacity-25 rounded p-2">
+                                    <strong class="d-block" style="font-size: 1.5rem; color: #ffebee;">{{ jefe_info.vencidos }}</strong>
+                                    <small>Vencidos</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="bg-white bg-opacity-25 rounded p-2">
+                                    <strong class="d-block" style="font-size: 1.5rem; color: #fff9c4;">{{ jefe_info.proximos }}</strong>
+                                    <small>Próximos</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Seguimientos del Jefe -->
+            <div class="card-body p-3">
+                {% for seguimiento in jefe_info.seguimientos %}
+                    {% with plan=seguimiento.plan_mejora %}
+                    <div class="card seguimiento-card {% if seguimiento.esta_vencido %}vencido{% elif seguimiento.es_proximo %}proximo{% endif %}" {% if seguimiento.esta_bloqueado %}style="opacity: 0.75;"{% endif %}>
+                        <div class="card-body">
+                            {% if seguimiento.esta_bloqueado %}
+                            <div class="alert alert-warning mb-3 p-2" style="font-size: 0.9rem;">
+                                <i class="fas fa-lock me-2"></i>
+                                <strong>Bloqueado:</strong> {{ seguimiento.razon_bloqueo }}
+                            </div>
+                            {% endif %}
+                            <div class="row align-items-center">
+                                <!-- Bimestre y Empleado -->
+                                <div class="col-md-5">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bimestre-badge bg-primary me-2">
+                                            {{ seguimiento.numero_bimestre }}° Bimestre
+                                        </span>
+                                        {% if seguimiento.esta_vencido %}
+                                            <small class="badge bg-danger">VENCIDO</small>
+                                        {% elif seguimiento.es_proximo %}
+                                            <small class="badge bg-warning">PRÓXIMO</small>
+                                        {% endif %}
+                                        {% if seguimiento.esta_bloqueado %}
+                                            <small class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Bloqueado</small>
+                                        {% endif %}
+                                    </div>
+                                    <strong class="d-block text-dark">
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.primer_nombre }} {{ plan.asignacion_evaluacion.empleado_evaluado.primer_apellido }}
+                                    </strong>
+                                    <small class="text-muted d-block">
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_cargo_actual|default:"Sin cargo" }}
+                                        {% if plan.asignacion_evaluacion.empleado_evaluado.area_actual %}
+                                            • {{ plan.asignacion_evaluacion.empleado_evaluado.area_actual.nombre }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+
+                                <!-- Fecha límite -->
+                                <div class="col-md-2 text-center">
+                                    <small class="text-muted d-block">Fecha límite</small>
+                                    <span class="fecha-limite {% if seguimiento.esta_vencido %}vencida{% elif seguimiento.es_proximo %}proxima{% else %}normal{% endif %}">
+                                        {{ seguimiento.fecha_limite|date:"d/m/Y" }}
+                                    </span>
+                                </div>
+
+                                <!-- Puntaje -->
+                                <div class="col-md-2 text-center">
+                                    <small class="text-muted d-block">Puntaje</small>
+                                    <span class="badge bg-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                                        {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
+                                    </span>
+                                </div>
+
+                                <!-- Botón de Acción -->
+                                <div class="col-md-3">
+                                    {% if seguimiento.esta_bloqueado %}
+                                        <button class="btn btn-secondary btn-sm w-100" disabled>
+                                            <i class="fas fa-lock me-1"></i>
+                                            Bloqueado
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'evaluations:seguimiento_bimensual' seguimiento.id %}"
+                                           class="btn btn-primary btn-sm w-100">
+                                            <i class="fas fa-clipboard-check me-1"></i>
+                                            Completar
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <!-- Estado Vacío -->
+        <div class="empty-state">
+            <i class="fas fa-calendar-check"></i>
+            <h4>No hay seguimientos pendientes</h4>
+            <p class="text-muted">
+                {% if es_admin %}
+                    No hay seguimientos bimensuales pendientes en el sistema en este momento.
+                {% else %}
+                    No tienes seguimientos bimensuales pendientes en este momento.
+                {% endif %}
+            </p>
+            <a href="{% url 'evaluations:index' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animar cards cuando aparecen
+    const cards = document.querySelectorAll('.seguimiento-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}

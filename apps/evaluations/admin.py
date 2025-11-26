@@ -9,7 +9,8 @@ from .models import (
     TipoPregunta, Valoracion, PreguntaValoracion, OpcionRespuesta, 
     IntentoValoracion, RespuestaValoracion, CertificadoCapacitacion,
     TipoEvaluacion, EvaluacionDesempeño, PreguntaEvaluacion, OpcionEvaluacion,
-    AsignacionEvaluacion, RespuestaEvaluacion, ResultadoEvaluacion
+    AsignacionEvaluacion, RespuestaEvaluacion, ResultadoEvaluacion,
+    PlanMejoraPredefinido, SeguimientoBimensual, EvaluacionFinal
 )
 
 # Registro del modelo TipoPregunta en el admin de Django
@@ -128,3 +129,98 @@ class ResultadoEvaluacionAdmin(admin.ModelAdmin):
 class CertificadoCapacitacionAdmin(admin.ModelAdmin):
     list_display = ('numero_certificado', 'inscripcion', 'fecha_emision', 'fecha_vencimiento')
     search_fields = ('numero_certificado',)
+
+
+# ===================== ADMIN PARA PLANES PREDEFINIDOS =====================
+
+# Inline para seguimientos bimensuales
+class SeguimientoBimensualInline(admin.TabularInline):
+    model = SeguimientoBimensual
+    extra = 0
+    fields = ('numero_bimestre', 'fecha_limite', 'estado', 'avance_satisfactorio', 'fecha_completado')
+    readonly_fields = ('fecha_limite',)
+    ordering = ['numero_bimestre']
+
+# Registro del modelo PlanMejoraPredefinido en el admin de Django
+@admin.register(PlanMejoraPredefinido)
+class PlanMejoraPredefinidoAdmin(admin.ModelAdmin):
+    list_display = ('empleado_name', 'estado', 'fecha_creacion', 'fecha_aprobacion', 'generado_por')
+    list_filter = ('estado', 'fecha_creacion', 'generado_por')
+    search_fields = (
+        'asignacion_evaluacion__empleado_evaluado__nombres',
+        'asignacion_evaluacion__empleado_evaluado__apellidos',
+    )
+    readonly_fields = ('fecha_creacion', 'fecha_aprobacion')
+    inlines = [SeguimientoBimensualInline]
+    
+    fieldsets = (
+        ('Información General', {
+            'fields': ('asignacion_evaluacion', 'estado', 'fecha_creacion', 'fecha_aprobacion')
+        }),
+        ('Plan de Mejora', {
+            'fields': ('plan_mejora',),
+            'classes': ('wide',)
+        }),
+        ('Usuarios Involucrados', {
+            'fields': ('generado_por', 'aprobado_por')
+        }),
+        ('Comentarios', {
+            'fields': ('comentarios_aprobacion', 'comentarios_seguimiento'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def empleado_name(self, obj):
+        return obj.asignacion_evaluacion.empleado_evaluado.get_full_name()
+    empleado_name.short_description = 'Empleado'
+
+
+# Registro del modelo SeguimientoBimensual en el admin de Django
+@admin.register(SeguimientoBimensual)
+class SeguimientoBimensualAdmin(admin.ModelAdmin):
+    list_display = ('plan_empleado', 'numero_bimestre', 'fecha_limite', 'estado', 'avance_satisfactorio', 'fecha_completado')
+    list_filter = ('estado', 'numero_bimestre', 'avance_satisfactorio', 'fecha_limite')
+    search_fields = (
+        'plan_mejora__asignacion_evaluacion__empleado_evaluado__nombres',
+        'plan_mejora__asignacion_evaluacion__empleado_evaluado__apellidos',
+    )
+    readonly_fields = ('fecha_completado',)
+    
+    fieldsets = (
+        ('Información del Seguimiento', {
+            'fields': ('plan_mejora', 'numero_bimestre', 'fecha_limite', 'estado')
+        }),
+        ('Resultados del Seguimiento', {
+            'fields': ('avance_satisfactorio', 'observaciones', 'fecha_completado', 'completado_por')
+        }),
+    )
+    
+    def plan_empleado(self, obj):
+        return f"{obj.plan_mejora.asignacion_evaluacion.empleado_evaluado.get_full_name()} - {obj.numero_bimestre}°"
+    plan_empleado.short_description = 'Empleado - Bimestre'
+
+
+# Registro del modelo EvaluacionFinal en el admin de Django
+@admin.register(EvaluacionFinal)
+class EvaluacionFinalAdmin(admin.ModelAdmin):
+    list_display = ('plan_empleado', 'resultado', 'fecha_evaluacion', 'evaluado_por')
+    list_filter = ('resultado', 'fecha_evaluacion', 'evaluado_por')
+    search_fields = (
+        'plan_mejora__asignacion_evaluacion__empleado_evaluado__nombres',
+        'plan_mejora__asignacion_evaluacion__empleado_evaluado__apellidos',
+    )
+    readonly_fields = ('fecha_evaluacion',)
+    
+    fieldsets = (
+        ('Información General', {
+            'fields': ('plan_mejora', 'resultado', 'fecha_evaluacion', 'evaluado_por')
+        }),
+        ('Conclusión', {
+            'fields': ('conclusion',),
+            'classes': ('wide',)
+        }),
+    )
+    
+    def plan_empleado(self, obj):
+        return obj.plan_mejora.asignacion_evaluacion.empleado_evaluado.get_full_name()
+    plan_empleado.short_description = 'Empleado'

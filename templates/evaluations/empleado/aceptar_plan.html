@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aceptar Plan de Mejora - SIGHU{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:index' %}">Evaluaciones</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}">Plan de Mejora</a></li>
+                    <li class="breadcrumb-item active">Aceptar Plan</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-check-circle me-2"></i>Aceptar Plan de Mejora</h2>
+                    <p class="text-muted mb-0">Revise y acepte su plan de desarrollo profesional</p>
+                </div>
+                <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Volver al Plan
+                </a>
+            </div>
+
+            <!-- Información de la Evaluación -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Evaluación</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Evaluación:</strong> {{ asignacion.evaluacion.nombre }}</p>
+                            <p><strong>Periodo:</strong> {{ asignacion.evaluacion.periodo_inicio|date:"d/m/Y" }} - {{ asignacion.evaluacion.periodo_fin|date:"d/m/Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Evaluador:</strong> {{ asignacion.supervisor.get_full_name }}</p>
+                            <p><strong>Plan generado:</strong> {{ plan.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista previa del plan -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0"><i class="fas fa-tasks me-2"></i>Vista Previa del Plan de Mejora</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Importante:</strong> Al aceptar este plan, usted se compromete a seguir las recomendaciones y participar en los seguimientos programados.
+                    </div>
+
+                    <div class="plan-preview border rounded p-3 bg-light">
+                        <div class="plan-content">
+                            {{ plan.plan_mejora|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de aceptación -->
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-signature me-2"></i>Aceptación del Plan</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Términos de Aceptación</h6>
+                            <ul class="mb-0">
+                                <li>Acepto las recomendaciones y el plan de mejora establecido</li>
+                                <li>Me comprometo a participar en los seguimientos bimensuales programados</li>
+                                <li>Entiendo que el cumplimiento del plan será evaluado periódicamente</li>
+                                <li>Acepto trabajar en colaboración con mi supervisor para alcanzar los objetivos</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="acepto_terminos" required>
+                            <label class="form-check-label fw-bold" for="acepto_terminos">
+                                He leído y acepto los términos del plan de mejora
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-1"></i>Aceptar Plan de Mejora
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.plan-preview {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.plan-content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.card-header h5 {
+    font-weight: 600;
+}
+
+.form-check-label {
+    color: #333;
+}
+
+.alert ul {
+    padding-left: 1.2rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('acepto_terminos');
+    const submitButton = document.querySelector('button[type="submit"]');
+    
+    function updateSubmitButton() {
+        submitButton.disabled = !checkbox.checked;
+    }
+    
+    checkbox.addEventListener('change', updateSubmitButton);
+    updateSubmitButton(); // Inicializar el estado
+});
+</script>
+{% endblock %}

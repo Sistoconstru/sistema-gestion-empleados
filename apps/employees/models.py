@@ -203,6 +203,15 @@ class HistorialCargo(BaseModel):
     activo = models.BooleanField(default=True)  # Si el cargo está activo - agregado explícitamente
     motivo_cambio = models.CharField(max_length=200, blank=True)  # Motivo del cambio de cargo
     observaciones = models.TextField(blank=True)  # Observaciones adicionales
+    # Jefe directo: empleado que ocupa el cargo_jefe del cargo asignado
+    jefe_directo = models.ForeignKey(
+        'employees.Empleado',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='subordinados',
+        help_text="Jefe directo del empleado (empleado que ocupa el cargo jefe)"
+    )
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
     
     class Meta:

@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+
+{% block title %}Evaluación Final - Plan de Mejora - SIGHU{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .plan-content {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        white-space: pre-wrap;
+        max-height: 250px;
+        overflow-y: auto;
+        font-size: 0.9rem;
+    }
+    .evaluation-header {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .seguimiento-card {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    .seguimiento-card.satisfactorio {
+        border-left: 4px solid #28a745;
+        background-color: #f8fff8;
+    }
+    .seguimiento-card.no-satisfactorio {
+        border-left: 4px solid #dc3545;
+        background-color: #fff8f8;
+    }
+    .resultado-option {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .resultado-option:hover {
+        border-color: #007bff;
+        background-color: #f8f9ff;
+    }
+    .resultado-option.exitoso {
+        border-color: #28a745;
+        background-color: #f8fff8;
+    }
+    .resultado-option.parcial {
+        border-color: #ffc107;
+        background-color: #fffdf8;
+    }
+    .resultado-option.no-exitoso {
+        border-color: #dc3545;
+        background-color: #fff8f8;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="evaluation-header text-center">
+                <h2>
+                    <i class="fas fa-star"></i>
+                    Evaluación Final del Plan de Mejora
+                </h2>
+                <p class="mb-0">
+                    {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información y Plan -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        Información del Empleado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</p>
+                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Departamento:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"Sin departamento" }}</p>
+                    <p><strong>Evaluador original:</strong> {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                    <p><strong>Período evaluado:</strong> {{ plan.asignacion_evaluacion.periodo_evaluacion }}</p>
+                    <p><strong>Puntaje original:</strong> 
+                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/20
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i>
+                        Plan de Mejora Original
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="plan-content">{{ plan.plan_mejora }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seguimientos y Evaluación Final -->
+        <div class="col-md-7">
+            <!-- Resumen de Seguimientos -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i>
+                        Resumen de Seguimientos Bimensuales
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for seguimiento in seguimientos %}
+                    <div class="seguimiento-card {% if seguimiento.avance_satisfactorio %}satisfactorio{% elif seguimiento.avance_satisfactorio is not None %}no-satisfactorio{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-2">
+                                    {{ seguimiento.numero_bimestre }}° Bimestre
+                                    {% if seguimiento.avance_satisfactorio is not None %}
+                                        {% if seguimiento.avance_satisfactorio %}
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fas fa-check"></i> Satisfactorio
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark ms-2">
+                                                <i class="fas fa-exclamation-triangle"></i> Necesita Mejorar
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted d-block">Completado: {{ seguimiento.fecha_completado|date:"d/m/Y" }}</small>
+                                {% if seguimiento.completado_por %}
+                                <small class="text-muted d-block">Por: {{ seguimiento.completado_por.get_full_name }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if seguimiento.observaciones %}
+                        <div class="mt-2">
+                            <small><strong>Observaciones:</strong></small>
+                            <div class="small text-muted">{{ seguimiento.observaciones|truncatechars:150 }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Estadísticas rápidas -->
+                    <div class="row mt-3">
+                        <div class="col-4 text-center">
+                            <div class="small text-muted">Total Seguimientos</div>
+                            <div class="h4 text-primary">{{ seguimientos|length }}</div>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="small text-muted">Satisfactorios</div>
+                            <div class="h4 text-success">{{ satisfactorios }}</div>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="small text-muted">Completado</div>
+                            <div class="h4 text-info">100%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Evaluación Final -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-gavel"></i>
+                        Evaluación Final
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Instrucciones:</strong><br>
+                            Basándose en los 3 seguimientos bimensuales completados, proporcione su evaluación final sobre el éxito del plan de mejora.
+                        </div>
+
+                        <div class="form-group">
+                            <legend class="font-weight-bold">Resultado del Plan de Mejora:</legend>
+
+                            <div class="resultado-option exitoso" onclick="selectResultado('exitoso')">
+                                <input type="radio" name="resultado" value="exitoso" id="resultado_exitoso" required style="display: none;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle fa-2x text-success mr-3"></i>
+                                    <div>
+                                        <strong>Exitoso</strong>
+                                        <div class="small text-muted">El empleado ha cumplido satisfactoriamente con todos los objetivos del plan de mejora.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="resultado-option parcial" onclick="selectResultado('parcialmente_exitoso')">
+                                <input type="radio" name="resultado" value="parcialmente_exitoso" id="resultado_parcial" required style="display: none;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle fa-2x text-warning mr-3"></i>
+                                    <div>
+                                        <strong>Parcialmente Exitoso</strong>
+                                        <div class="small text-muted">El empleado ha mostrado mejoras significativas pero aún requiere seguimiento en algunas áreas.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="resultado-option no-exitoso" onclick="selectResultado('no_exitoso')">
+                                <input type="radio" name="resultado" value="no_exitoso" id="resultado_no_exitoso" required style="display: none;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-times-circle fa-2x text-danger mr-3"></i>
+                                    <div>
+                                        <strong>No Exitoso</strong>
+                                        <div class="small text-muted">El empleado no ha logrado los objetivos del plan y requiere medidas adicionales.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conclusion" class="font-weight-bold">Conclusión Final (obligatorio):</label>
+                            <textarea 
+                                class="form-control" 
+                                id="conclusion" 
+                                name="conclusion" 
+                                rows="5" 
+                                placeholder="Proporcione una conclusión detallada sobre el desempeño del empleado durante el período de seguimiento. Incluya logros observados, áreas que aún necesitan atención, y recomendaciones futuras."
+                                required
+                            ></textarea>
+                            <small class="form-text text-muted">
+                                Mínimo 50 caracteres. Sea específico y constructivo en sus comentarios.
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <!-- Enlace eliminado: admin_pendientes_aprobacion ya no existe -->
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-gavel"></i>
+                                Completar Evaluación Final
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+function selectResultado(valor) {
+    // Limpiar selecciones previas
+    document.querySelectorAll('.resultado-option').forEach(option => {
+        option.style.borderWidth = '2px';
+        option.style.transform = 'scale(1)';
+    });
+
+    document.querySelectorAll('input[name="resultado"]').forEach(input => {
+        input.checked = false;
+    });
+
+    // Seleccionar el nuevo
+    let inputId;
+    if (valor === 'exitoso') {
+        inputId = 'resultado_exitoso';
+    } else if (valor === 'parcialmente_exitoso') {
+        inputId = 'resultado_parcial';
+    } else if (valor === 'no_exitoso') {
+        inputId = 'resultado_no_exitoso';
+    }
+
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.checked = true;
+        input.closest('.resultado-option').style.borderWidth = '3px';
+        input.closest('.resultado-option').style.transform = 'scale(1.02)';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[method="post"]');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const conclusion = document.getElementById('conclusion').value.trim();
+            const resultadoSelected = document.querySelector('input[name="resultado"]:checked');
+            
+            if (!resultadoSelected) {
+                alert('Por favor, seleccione el resultado del plan de mejora.');
+                e.preventDefault();
+                return;
+            }
+            
+            if (conclusion.length < 50) {
+                alert('La conclusión debe tener al menos 50 caracteres. Sea más específico en sus comentarios.');
+                e.preventDefault();
+                return;
+            }
+            
+            const confirmMessage = `¿Está seguro que desea completar la evaluación final con el resultado "${resultadoSelected.closest('.resultado-option').querySelector('strong').textContent}"?\n\nEsta acción marcará el plan como terminado y no se puede deshacer.`;
+            
+            if (!confirm(confirmMessage)) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock extra_js %}

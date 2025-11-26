@@ -9,7 +9,7 @@ from datetime import date, timedelta
 import re
 import logging
 
-from .models import Empleado, TipoDocumento, Escolaridad, EstadoEmpleado
+from .models import Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo
 from apps.organizational.models import Sede, Cargo, AreaEmpresa
 
 User = get_user_model()
@@ -35,8 +35,17 @@ class EmpleadoForm(forms.ModelForm):
         queryset=Cargo.objects.filter(activo=True),
         label="Cargo",
         required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_cargo'}),
         help_text="Cargo que ocupará el empleado"
+    )
+
+    # Campo para jefe directo (se muestra dinámicamente según el cargo seleccionado)
+    jefe_directo = forms.ModelChoiceField(
+        queryset=Empleado.objects.none(),
+        label="Jefe Directo",
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_jefe_directo'}),
+        help_text="Seleccione el jefe directo del empleado (si hay más de un posible jefe)"
     )
     
     departamento = forms.ModelChoiceField(
@@ -130,6 +139,8 @@ class EmpleadoForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        # Obtener cargo_id de kwargs si viene de POST
+        cargo_id = kwargs.pop('cargo_id', None)
         super().__init__(*args, **kwargs)
         from apps.employees.models import Departamento, Ciudad
         # Configurar queryset de departamento
@@ -139,22 +150,49 @@ class EmpleadoForm(forms.ModelForm):
             self.fields['tipo_documento'].queryset = TipoDocumento.objects.filter(activo=True)
             self.fields['sede'].queryset = Sede.objects.filter(activa=True)
             self.fields['escolaridad'].queryset = Escolaridad.objects.all()
-            self.fields['cargo'].queryset = Cargo.objects.filter(activo=True).select_related('area')
+            self.fields['cargo'].queryset = Cargo.objects.filter(activo=True).select_related('area', 'cargo_jefe')
             self.fields['ciudad_nacimiento'].queryset = Ciudad.objects.all().order_by('nombre')
         except Exception as e:
             logger.error(f"Error configurando querysets en formulario: {e}")
-        # Si estamos editando, cargar el cargo actual
+
+        # Si estamos editando, cargar el cargo actual y jefe directo
         if self.instance and self.instance.pk:
             try:
                 cargo_actual = self.instance.historialcargo_set.filter(activo=True).first()
                 if cargo_actual:
                     self.fields['cargo'].initial = cargo_actual.cargo
+                    # Cargar jefe directo si existe
+                    if cargo_actual.jefe_directo:
+                        self.fields['jefe_directo'].initial = cargo_actual.jefe_directo
+                    # Cargar lista de posibles jefes para el cargo actual
+                    if cargo_actual.cargo and cargo_actual.cargo.cargo_jefe:
+                        jefes_potenciales = self._obtener_jefes_potenciales(cargo_actual.cargo)
+                        self.fields['jefe_directo'].queryset = jefes_potenciales
                 # Inicializar departamento según la ciudad actual
                 ciudad_actual = self.instance.ciudad_nacimiento
                 if ciudad_actual:
                     self.fields['departamento'].initial = ciudad_actual.departamento
             except Exception as e:
                 logger.warning(f"Error cargando cargo/departamento actual: {e}")
+
+        # Si viene un cargo_id de POST, cargar los jefes potenciales
+        if cargo_id:
+            try:
+                cargo = Cargo.objects.get(pk=cargo_id, activo=True)
+                jefes_potenciales = self._obtener_jefes_potenciales(cargo)
+                self.fields['jefe_directo'].queryset = jefes_potenciales
+            except Cargo.DoesNotExist:
+                pass
+        # Si viene en data del POST, intentar obtener cargo_id
+        elif self.data and self.data.get('cargo'):
+            try:
+                cargo_id = int(self.data.get('cargo'))
+                cargo = Cargo.objects.get(pk=cargo_id, activo=True)
+                jefes_potenciales = self._obtener_jefes_potenciales(cargo)
+                self.fields['jefe_directo'].queryset = jefes_potenciales
+            except (ValueError, Cargo.DoesNotExist):
+                pass
+
         # Hacer campos requeridos más explícitos
         required_fields = [
             'tipo_documento', 'numero_documento', 'nombres', 'apellidos',
@@ -166,6 +204,20 @@ class EmpleadoForm(forms.ModelForm):
                 # Agregar asterisco visual
                 if not self.fields[field_name].label.endswith('*'):
                     self.fields[field_name].label += ' *'
+
+    def _obtener_jefes_potenciales(self, cargo):
+        """Obtiene los empleados que ocupan el cargo_jefe del cargo dado"""
+        if not cargo or not cargo.cargo_jefe:
+            return Empleado.objects.none()
+
+        # Buscar empleados activos que ocupen el cargo_jefe
+        jefes = Empleado.objects.filter(
+            historialcargo__cargo=cargo.cargo_jefe,
+            historialcargo__activo=True,
+            estado__codigo__in=['999', 'ACTIVO', 'p-prue']  # Estados activos o en prueba
+        ).distinct().select_related('estado')
+
+        return jefes
 
     def clean_direccion(self):
         value = self.cleaned_data.get('direccion', '').strip()

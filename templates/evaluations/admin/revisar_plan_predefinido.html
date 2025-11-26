@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block title %}Revisar Plan de Mejora - SIGHU{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .plan-content {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        white-space: pre-wrap;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .employee-info {
+        background: #e3f2fd;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 15px 0;
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>
+                <i class="fas fa-clipboard-check text-primary"></i>
+                Revisar Plan de Mejora
+            </h2>
+            <p class="text-muted">
+                Revise el plan generado automáticamente y decida si aprobarlo o rechazarlo.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información del Empleado -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user"></i>
+                        Información del Empleado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</p>
+                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Departamento:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"Sin departamento" }}</p>
+                    <p><strong>Evaluador:</strong> {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        Información del Plan
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Estado:</strong>
+                        <span class="badge badge-warning">{{ plan.get_estado_display }}</span>
+                    </p>
+                    <p><strong>Generado por:</strong> {{ plan.generado_por.get_full_name }}</p>
+                    <p><strong>Fecha de generación:</strong> {{ plan.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                    <p><strong>Tipo de evaluación:</strong> {{ plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}</p>
+                    <p><strong>Período:</strong> {{ plan.asignacion_evaluacion.periodo_evaluacion }}</p>
+                    <p><strong>Puntaje obtenido:</strong>
+                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
+                        </span>
+                    </p>
+                    <p><strong>Aceptación del Empleado:</strong>
+                        {% if plan.aceptado_por_empleado %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i> Aceptado
+                            </span>
+                            <br><small class="text-muted">{{ plan.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}</small>
+                        {% else %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-clock"></i> Pendiente
+                            </span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido del Plan -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i>
+                        Contenido del Plan de Mejora
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-robot"></i>
+                        <strong>Plan Generado Automáticamente</strong><br>
+                        Este plan ha sido generado automáticamente basado en las áreas que necesitan mejora según la evaluación.
+                    </div>
+                    
+                    <div class="plan-content">{{ plan.plan_mejora }}</div>
+                </div>
+            </div>
+
+            <!-- Formulario de Aprobación/Rechazo -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-decision"></i>
+                        Decisión sobre el Plan
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="reviewForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="comentarios_aprobacion">Comentarios (opcional):</label>
+                            <textarea 
+                                class="form-control" 
+                                id="comentarios_aprobacion" 
+                                name="comentarios_aprobacion" 
+                                rows="3" 
+                                placeholder="Agregue sus observaciones sobre el plan de mejora..."
+                            ></textarea>
+                        </div>
+
+                        <div class="action-buttons">
+                            {% comment %}
+                            Si la evaluación fue reprobada (puntaje < 14), no se requiere aceptación del empleado
+                            porque no se genera plan de mejora (el empleado no aprueba el período de prueba)
+                            {% endcomment %}
+                            {% if plan.asignacion_evaluacion.puntaje_total >= 14 and not plan.aceptado_por_empleado %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Esperando aceptación del empleado</strong>
+                                <p class="mb-0">El plan debe ser aceptado por el empleado antes de poder aprobarlo administrativamente.</p>
+                            </div>
+                            {% elif plan.asignacion_evaluacion.puntaje_total < 14 %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Evaluación con puntaje insatisfactorio</strong>
+                                <p class="mb-0">Como el puntaje es inferior a 14 puntos, no se requiere aceptación del empleado. El empleado no aprueba el período de prueba.</p>
+                            </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <a href="{% url 'evaluations:admin_pendientes_aprobacion' %}" class="btn btn-outline-secondary btn-block">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Volver a Lista
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    {% comment %}Permitir imprimir si está aceptado O si puntaje < 14{% endcomment %}
+                                    {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                    <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
+                                        <i class="fas fa-print"></i>
+                                        Imprimir Plan
+                                    </a>
+                                    {% else %}
+                                    <button type="button" class="btn btn-outline-secondary btn-block" disabled title="El plan debe ser aceptado primero">
+                                        <i class="fas fa-print"></i>
+                                        Imprimir Plan
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-block" id="btnRechazar">
+                                        <i class="fas fa-times"></i>
+                                        Rechazar Plan
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    {% comment %}Permitir aprobar si está aceptado O si puntaje < 14{% endcomment %}
+                                    <button
+                                        type="submit"
+                                        name="accion"
+                                        value="aprobar"
+                                        class="btn btn-success btn-block"
+                                        id="btnAprobar"
+                                        {% if plan.asignacion_evaluacion.puntaje_total >= 14 and not plan.aceptado_por_empleado %}disabled title="Debe esperar a que el empleado acepte el plan"{% endif %}
+                                    >
+                                        <i class="fas fa-{% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}check{% else %}lock{% endif %}"></i>
+                                        {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}Aprobar Plan{% else %}Aprobar (Bloqueado){% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reviewForm');
+    const btnAprobar = document.getElementById('btnAprobar');
+    const btnRechazar = document.getElementById('btnRechazar');
+
+    // Confirmar aprobación
+    btnAprobar.addEventListener('click', function(e) {
+        // Verificar que el botón no esté deshabilitado
+        if (this.disabled) {
+            e.preventDefault();
+            alert('El plan debe ser aceptado por el empleado antes de poder aprobarlo.');
+            return;
+        }
+
+        if (!confirm('¿Está seguro que desea APROBAR este plan de mejora?\n\nAl aprobarlo se crearán automáticamente los seguimientos bimensuales.')) {
+            e.preventDefault();
+        }
+    });
+
+    // Confirmar rechazo
+    btnRechazar.addEventListener('click', function(e) {
+        const comentarios = document.getElementById('comentarios_aprobacion').value.trim();
+        if (comentarios === '') {
+            alert('Por favor, agregue un comentario explicando las razones del rechazo.');
+            e.preventDefault();
+            return;
+        }
+
+        if (!confirm('¿Está seguro que desea RECHAZAR este plan de mejora?\n\nSe podrá generar un nuevo plan posteriormente.')) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock extra_js %}

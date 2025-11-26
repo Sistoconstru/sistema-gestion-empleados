@@ -29,6 +29,40 @@
     color: white;
     border-radius: 10px;
 }
+
+/* Responsivo para modal de evaluación */
+@media (max-width: 768px) {
+    #modalNuevaEvaluacion .modal-dialog {
+        max-width: 95% !important;
+        margin: 10px auto !important;
+    }
+    #modalNuevaEvaluacion .modal-header {
+        padding: 12px 15px;
+    }
+    #modalNuevaEvaluacion .modal-title {
+        font-size: 16px;
+    }
+    #modalNuevaEvaluacion .modal-body {
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #modalNuevaEvaluacion .modal-dialog {
+        max-width: 100% !important;
+        margin: 8px !important;
+    }
+    #modalNuevaEvaluacion .modal-content {
+        border-radius: 12px;
+    }
+    #modalNuevaEvaluacion .modal-header {
+        border-radius: 12px 12px 0 0;
+        padding: 14px 16px;
+    }
+    #modalNuevaEvaluacion .modal-title {
+        font-size: 17px;
+    }
+}
 </style>
 {% endblock %}
 
@@ -52,7 +86,7 @@
             <div class="card stat-card text-center p-3">
                 <h3>{{ total_pendientes }}</h3>
                 <p class="mb-0">Evaluaciones Pendientes</p>
-                <small>Como supervisor</small>
+                <small>{% if es_superusuario %}En todo el sistema{% else %}Como jefe inmediato{% endif %}</small>
             </div>
         </div>
         <div class="col-md-3">
@@ -151,30 +185,42 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        {% if user.is_superuser or perms.evaluations.change_asignacionevaluacion %}
+                        <!-- Vista administrador: muestra TODAS las evaluaciones pendientes del sistema -->
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-outline-warning w-100 py-3">
+                            <a href="{% url 'evaluations:admin_todas_pendientes' %}" class="btn btn-outline-danger w-100 py-3">
                                 <i class="fas fa-tasks fa-2x d-block mb-2"></i>
-                                <strong>Pendientes</strong>
-                                <div class="small text-muted">Completar evaluaciones</div>
+                                <strong>Todas Pendientes</strong>
+                                <div class="small text-muted">{{ total_pendientes }} en el sistema</div>
                             </a>
                         </div>
-                        
+                        {% endif %}
+
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'evaluations:mis_evaluaciones' %}" class="btn btn-outline-info w-100 py-3">
+                            <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-outline-warning w-100 py-3">
+                                <i class="fas fa-clipboard-list fa-2x d-block mb-2"></i>
+                                <strong>Evaluaciones Pendientes</strong>
+                                <div class="small text-muted">Como jefe inmediato</div>
+                            </a>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:supervisor_seguimientos_pendientes' %}" class="btn btn-outline-info w-100 py-3">
+                                <i class="fas fa-calendar-check fa-2x d-block mb-2"></i>
+                                <strong>Seguimientos Pendientes</strong>
+                                <div class="small text-muted">Planes de mejora</div>
+                            </a>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:mis_evaluaciones' %}" class="btn btn-outline-secondary w-100 py-3">
                                 <i class="fas fa-user-graduate fa-2x d-block mb-2"></i>
                                 <strong>Mi Historial</strong>
                                 <div class="small text-muted">Mis evaluaciones</div>
                             </a>
                         </div>
-                        
+
                         {% if user.is_superuser or perms.evaluations.change_asignacionevaluacion %}
-                        <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'evaluations:pendientes_aprobacion' %}" class="btn btn-outline-danger w-100 py-3">
-                                <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
-                                <strong>Aprobaciones</strong>
-                                <div class="small text-muted">Pendientes administrativas</div>
-                            </a>
-                        </div>
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="{% url 'evaluations:listado_completo' %}" class="btn btn-outline-secondary w-100 py-3">
                                 <i class="fas fa-list fa-2x d-block mb-2"></i>
@@ -182,16 +228,25 @@
                                 <div class="small text-muted">{{ total_evaluaciones }} evaluaciones</div>
                             </a>
                         </div>
-                        {% endif %}
-                        
+
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="#" class="btn btn-outline-success w-100 py-3" title="Función disponible solo para administradores">
+                            <a href="{% url 'evaluations:admin_pendientes_aprobacion' %}" class="btn btn-outline-purple w-100 py-3" style="border-color: #6f42c1; color: #6f42c1;">
+                                <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
+                                <strong>Planes de Mejora</strong>
+                                <div class="small text-muted">Aprobación y seguimiento</div>
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% if user.is_superuser or perms.evaluations.add_asignacionevaluacion %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <button type="button" class="btn btn-outline-success w-100 py-3" data-bs-toggle="modal" data-bs-target="#modalNuevaEvaluacion">
                                 <i class="fas fa-plus-circle fa-2x d-block mb-2"></i>
                                 <strong>Nueva Evaluación</strong>
                                 <div class="small text-muted">Asignar evaluación</div>
-                            </a>
+                            </button>
                         </div>
-                        
+
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="#" class="btn btn-outline-primary w-100 py-3" title="Próximamente">
                                 <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
@@ -199,6 +254,7 @@
                                 <div class="small text-muted">Análisis y estadísticas</div>
                             </a>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -206,14 +262,14 @@
     </div>
 
     <div class="row">
-        <!-- Evaluaciones Pendientes (Como Supervisor) -->
+        <!-- Evaluaciones Pendientes (Como Jefe Inmediato) -->
         {% if evaluaciones_pendientes and total_pendientes > 0 %}
         <div class="col-lg-6 mb-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
-                        <i class="fas fa-clipboard-list"></i> 
-                        Evaluaciones por Completar (Como Supervisor)
+                        <i class="fas fa-clipboard-list"></i>
+                        Evaluaciones por Completar {% if es_superusuario %}(Sistema){% else %}(Como Jefe Inmediato){% endif %}
                         <span class="badge pending-badge float-right">{{ total_pendientes }}</span>
                     </h5>
                 </div>
@@ -288,8 +344,8 @@
                                         </h6>
                                         <p class="card-text mb-2">
                                             <small class="text-muted">
-                                                <i class="fas fa-user"></i> 
-                                                Supervisor: {{ asignacion.evaluador.nombre_completo }}
+                                                <i class="fas fa-user"></i>
+                                                Jefe Inmediato: {{ asignacion.evaluador.nombre_completo }}
                                             </small>
                                         </p>
                                         <p class="card-text">
@@ -312,30 +368,47 @@
                                 {% if asignacion.estado == 'completada' %}
                                 <div class="mt-3">
                                     {% if asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
-                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
-                                           class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> Ver Resultados Preliminares
-                                        </a>
-                                        {% if not asignacion.observaciones %}
-                                        <a href="{% url 'evaluations:aceptar_resultados' asignacion.id %}" 
-                                           class="btn btn-sm btn-success ml-2">
-                                            <i class="fas fa-check"></i> Aceptar Plan de Mejora
-                                        </a>
+                                        <!-- Verificar si existe plan de mejora predefinido -->
+                                        {% if asignacion.planmejorapredefinido %}
+                                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                               class="btn btn-sm btn-warning">
+                                                <i class="fas fa-clipboard-check"></i> Ver y Aceptar Plan de Mejora
+                                            </a>
+                                            <small class="text-warning d-block mt-1">
+                                                <i class="fas fa-exclamation-circle"></i> Pendiente de tu aceptación
+                                            </small>
+                                        {% else %}
+                                            <a href="{% url 'evaluations:ver_resultados' asignacion.id %}"
+                                               class="btn btn-sm btn-info">
+                                                <i class="fas fa-clipboard-list"></i> Ver Mi Plan de Mejora
+                                            </a>
                                         {% endif %}
                                     {% elif asignacion.estado_aprobacion == 'aprobada' %}
-                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
-                                           class="btn btn-sm btn-success">
-                                            <i class="fas fa-certificate"></i> Ver Resultados Finales
-                                        </a>
-                                        {% if asignacion.observaciones %}
-                                            <small class="text-success d-block mt-1">
-                                                <i class="fas fa-check-circle"></i> Plan aceptado
-                                            </small>
+                                        <!-- Para evaluaciones aprobadas, también verificar plan -->
+                                        {% if asignacion.planmejorapredefinido %}
+                                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-tasks"></i> Mi Plan de Mejora
+                                            </a>
+                                            {% if '[ACEPTADO_EMPLEADO:' in asignacion.observaciones %}
+                                                <small class="text-success d-block mt-1">
+                                                    <i class="fas fa-check-circle"></i> Plan aceptado
+                                                </small>
+                                            {% else %}
+                                                <small class="text-info d-block mt-1">
+                                                    <i class="fas fa-info-circle"></i> Plan activo con seguimientos
+                                                </small>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'evaluations:ver_resultados' asignacion.id %}"
+                                               class="btn btn-sm btn-success">
+                                                <i class="fas fa-clipboard-list"></i> Ver Mi Plan de Mejora
+                                            </a>
                                         {% endif %}
                                     {% else %}
-                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" 
-                                           class="btn btn-sm btn-info">
-                                            <i class="fas fa-chart-bar"></i> Ver Resultado
+                                        <a href="{% url 'evaluations:ver_resultados' asignacion.id %}"
+                                           class="btn btn-sm btn-secondary">
+                                            <i class="fas fa-clipboard-list"></i> Ver Mi Plan de Mejora
                                         </a>
                                     {% endif %}
                                 </div>
@@ -370,4 +443,162 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Nueva Evaluación -->
+<div class="modal fade" id="modalNuevaEvaluacion" tabindex="-1" aria-labelledby="modalNuevaEvaluacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 750px; margin: 10px auto;">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <h5 class="modal-title" id="modalNuevaEvaluacionLabel"><i class="fas fa-plus-circle me-2"></i> Asignar Nueva Evaluación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="form-asignar-evaluacion-placeholder">
+                    <div class="alert alert-info m-3">Cargando formulario...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Funciones globales para el checkbox "Seleccionar todos" (cargado vía AJAX)
+function toggleSeleccionarTodos(chk) {
+    var lista = document.getElementById('lista-empleados-checkboxes');
+    if (!lista) return;
+    var inputs = lista.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type === 'checkbox') {
+            inputs[i].checked = chk.checked;
+        }
+    }
+    actualizarContadorEmpleados();
+}
+
+function actualizarContadorEmpleados() {
+    var lista = document.getElementById('lista-empleados-checkboxes');
+    var spanContador = document.getElementById('span-contador-num');
+    var chkTodos = document.getElementById('chk-seleccionar-todos');
+    if (!lista || !spanContador) return;
+
+    var inputs = lista.getElementsByTagName('input');
+    var total = 0;
+    var marcados = 0;
+
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type === 'checkbox') {
+            total++;
+            if (inputs[i].checked) marcados++;
+        }
+    }
+
+    spanContador.textContent = marcados;
+
+    if (chkTodos) {
+        chkTodos.checked = (marcados === total && total > 0);
+        chkTodos.indeterminate = (marcados > 0 && marcados < total);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('modalNuevaEvaluacion');
+    var placeholder = document.getElementById('form-asignar-evaluacion-placeholder');
+
+    // Obtener CSRF token de las cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Función para cargar el formulario vía AJAX
+    function cargarFormulario(url, formData) {
+        if (!placeholder) return;
+
+        placeholder.innerHTML = '<div class="alert alert-info m-3"><i class="fas fa-spinner fa-spin me-2"></i>Cargando...</div>';
+
+        var fetchOptions = {
+            method: formData ? 'POST' : 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+
+        if (formData) {
+            fetchOptions.body = formData;
+        }
+
+        fetch(url, fetchOptions)
+            .then(response => response.text())
+            .then(html => {
+                placeholder.innerHTML = html;
+                // Vincular el evento submit al nuevo formulario
+                vincularFormulario();
+                // Actualizar contador de empleados si existe la lista
+                if (typeof actualizarContadorEmpleados === 'function') {
+                    actualizarContadorEmpleados();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                placeholder.innerHTML = '<div class="alert alert-danger m-3">Error al cargar el formulario.</div>';
+            });
+    }
+
+    // Función para vincular el submit del formulario a AJAX
+    function vincularFormulario() {
+        var form = placeholder.querySelector('form');
+        if (form) {
+            // Capturar clics en los botones de submit para saber cuál se presionó
+            var submitButtons = form.querySelectorAll('button[type="submit"]');
+            var clickedButton = null;
+
+            submitButtons.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    clickedButton = this;
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var formData = new FormData(form);
+
+                // Agregar el nombre del botón clickeado al FormData
+                if (clickedButton && clickedButton.name) {
+                    formData.append(clickedButton.name, clickedButton.value || '');
+                }
+
+                cargarFormulario(form.action, formData);
+                clickedButton = null; // Reset para el próximo clic
+                return false;
+            });
+        }
+    }
+
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function () {
+            cargarFormulario('{% url "evaluations:asignar_evaluacion_manual" %}');
+        });
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            if (placeholder) {
+                placeholder.innerHTML = '<div class="alert alert-info m-3">Cargando formulario...</div>';
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

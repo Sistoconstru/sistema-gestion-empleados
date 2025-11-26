@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Todas las Evaluaciones Pendientes - Administración{% endblock %}
+
+{% block extra_css %}
+<style>
+.stat-mini {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+.stat-mini h4 {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.stat-mini small {
+    opacity: 0.8;
+}
+.evaluation-row:hover {
+    background-color: #f8f9fa;
+}
+.badge-vencida {
+    background-color: #dc3545;
+    color: white;
+}
+.badge-proxima {
+    background-color: #ffc107;
+    color: #212529;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="fas fa-tasks text-primary"></i> Todas las Evaluaciones Pendientes</h2>
+                    <p class="text-muted">Vista administrativa: todas las evaluaciones pendientes por completar en el sistema</p>
+                </div>
+                <a href="{% url 'evaluations:index' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-mini bg-primary text-white">
+                <h4>{{ total_pendientes }}</h4>
+                <small>Total Pendientes</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-mini bg-warning text-dark">
+                <h4>{{ sin_evaluador }}</h4>
+                <small>Sin Evaluador Asignado</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-mini bg-info text-white">
+                <h4>{{ en_progreso }}</h4>
+                <small>En Progreso</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stat-mini bg-danger text-white">
+                <h4>{{ proximas_vencer }}</h4>
+                <small>Vencen en 7 días</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen por tipo -->
+    {% if por_tipo %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-chart-pie"></i> Distribución por Tipo de Evaluación</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for tipo in por_tipo %}
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                                <span>{{ tipo.evaluacion__tipo_evaluacion__nombre|default:"Sin tipo" }}</span>
+                                <span class="badge bg-secondary">{{ tipo.total }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de evaluaciones pendientes -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list"></i> Listado de Evaluaciones Pendientes
+                        <span class="badge bg-light text-primary float-end">{{ total_pendientes }} registros</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if evaluaciones %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Empleado Evaluado</th>
+                                    <th>Tipo de Evaluación</th>
+                                    <th>Evaluador (Jefe Inmediato)</th>
+                                    <th>Fecha Asignación</th>
+                                    <th>Vencimiento</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for asignacion in evaluaciones %}
+                                <tr class="evaluation-row">
+                                    <td>
+                                        <strong>{{ asignacion.empleado_evaluado.nombre_completo }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {% if asignacion.empleado_evaluado.cargo_actual %}
+                                                {{ asignacion.empleado_evaluado.cargo_actual.cargo.nombre }}
+                                            {% else %}
+                                                Sin cargo
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ asignacion.evaluacion.tipo_evaluacion.nombre }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if asignacion.evaluador %}
+                                            {{ asignacion.evaluador.nombre_completo }}
+                                        {% else %}
+                                            <span class="text-danger">
+                                                <i class="fas fa-exclamation-triangle"></i> Sin asignar
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ asignacion.fecha_asignacion|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if asignacion.fecha_vencimiento %}
+                                            {{ asignacion.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% now "Y-m-d" as today %}
+                                            {% if asignacion.fecha_vencimiento|date:"Y-m-d" < today %}
+                                                <span class="badge badge-vencida">Vencida</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if asignacion.estado == 'pendiente' %}
+                                            <span class="badge bg-warning text-dark">Pendiente</span>
+                                        {% elif asignacion.estado == 'en_progreso' %}
+                                            <span class="badge bg-info">En Progreso</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if asignacion.evaluador %}
+                                            <a href="{% url 'evaluations:completar' asignacion.id %}"
+                                               class="btn btn-sm btn-primary"
+                                               title="Completar evaluación como administrador">
+                                                <i class="fas fa-edit"></i> Evaluar
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted small">Requiere evaluador</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    {% if is_paginated %}
+                    <div class="card-footer">
+                        <nav aria-label="Paginación">
+                            <ul class="pagination justify-content-center mb-0">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                        <i class="fas fa-chevron-left"></i> Anterior
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                        Siguiente <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        <h5>No hay evaluaciones pendientes</h5>
+                        <p class="text-muted">Todas las evaluaciones han sido completadas.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

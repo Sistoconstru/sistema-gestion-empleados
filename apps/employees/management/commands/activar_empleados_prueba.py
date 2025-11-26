@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
 from apps.employees.models import Empleado, EstadoEmpleado
-from apps.evaluations.models import AsignacionEvaluacion, ResultadoEvaluacion
+from apps.evaluations.models import AsignacionEvaluacion
 import logging
 
 logger = logging.getLogger(__name__)
@@ -111,14 +111,14 @@ class Command(BaseCommand):
                 empleados_evaluacion_insatisfactoria.append(empleado)
                 puntaje = evaluacion_valida['puntaje']
                 self.stdout.write(
-                    self.style.ERROR(f'  ❌ Evaluación insatisfactoria ({puntaje:.1f}/5.0) - NO SE ACTIVARÁ')
+                    self.style.ERROR(f'  ❌ Evaluación insatisfactoria ({puntaje:.0f}/21 puntos) - NO SE ACTIVARÁ')
                 )
                 continue
-                
+
             elif evaluacion_valida['estado'] == 'satisfactorio':
                 puntaje = evaluacion_valida['puntaje']
                 self.stdout.write(
-                    self.style.SUCCESS(f'  ✅ Evaluación satisfactoria ({puntaje:.1f}/5.0) - PROCEDE ACTIVACIÓN')
+                    self.style.SUCCESS(f'  ✅ Evaluación satisfactoria ({puntaje:.0f}/21 puntos) - PROCEDE ACTIVACIÓN')
                 )
             
             if not dry_run:
@@ -137,7 +137,7 @@ class Command(BaseCommand):
                         f'Empleado {empleado.numero_documento} '
                         f'({empleado.nombre_completo}) activado automáticamente '
                         f'después de {dias_transcurridos} días con evaluación satisfactoria '
-                        f'(puntaje: {evaluacion_valida["puntaje"]:.1f})'
+                        f'(puntaje: {evaluacion_valida["puntaje"]:.0f}/21 puntos)'
                     )
                     
                 except Exception as e:
@@ -204,8 +204,14 @@ class Command(BaseCommand):
     def _verificar_evaluacion_periodo_prueba(self, empleado):
         """
         Verifica si el empleado tiene una evaluación de período de prueba completada
-        y si el resultado es satisfactorio (>=3.0 en escala 1-5)
-        
+        y si el resultado es satisfactorio (puntaje_total >= 14 puntos)
+
+        El puntaje se calcula por SUMA de respuestas (no promedio):
+        - Evaluación tiene 7 preguntas
+        - Cada pregunta se valora de 1 a 3
+        - Puntaje máximo: 21 puntos (7 * 3)
+        - Puntaje mínimo aprobatorio: 14 puntos
+
         Returns:
             dict: {
                 'estado': 'sin_evaluacion'|'pendiente'|'satisfactorio'|'insatisfactorio',
@@ -221,14 +227,14 @@ class Command(BaseCommand):
                 periodo_evaluacion=periodo_evaluacion,
                 evaluacion__tipo_evaluacion__codigo='PERIODO_PRUEBA'
             ).first()
-            
+
             if not asignacion:
                 return {
                     'estado': 'sin_evaluacion',
                     'puntaje': None,
                     'asignacion': None
                 }
-            
+
             # Verificar si está completada
             if asignacion.estado != 'completada':
                 return {
@@ -236,44 +242,38 @@ class Command(BaseCommand):
                     'puntaje': None,
                     'asignacion': asignacion
                 }
-            
-            # Verificar resultado
-            try:
-                resultado = ResultadoEvaluacion.objects.get(asignacion=asignacion)
-                puntaje = float(resultado.puntaje_final)
-                
-                # Satisfactorio >= 3.0 en escala 1-5 (equivale a "Satisfactorio" o mejor)
-                if puntaje >= 3.0:
-                    return {
-                        'estado': 'satisfactorio',
-                        'puntaje': puntaje,
-                        'asignacion': asignacion
-                    }
-                else:
-                    return {
-                        'estado': 'insatisfactorio',
-                        'puntaje': puntaje,
-                        'asignacion': asignacion
-                    }
-                    
-            except ResultadoEvaluacion.DoesNotExist:
-                # Completada pero sin resultado calculado
-                # Calcular puntaje manualmente
-                puntaje_promedio = self._calcular_puntaje_evaluacion(asignacion)
-                
-                if puntaje_promedio >= 3.0:
-                    return {
-                        'estado': 'satisfactorio',
-                        'puntaje': puntaje_promedio,
-                        'asignacion': asignacion
-                    }
-                else:
-                    return {
-                        'estado': 'insatisfactorio', 
-                        'puntaje': puntaje_promedio,
-                        'asignacion': asignacion
-                    }
-                    
+
+            # Obtener puntaje total (suma de respuestas)
+            puntaje_total = None
+
+            # Primero intentar obtener de AsignacionEvaluacion.puntaje_total
+            if asignacion.puntaje_total:
+                puntaje_total = float(asignacion.puntaje_total)
+            else:
+                # Si no existe, intentar calcular manualmente
+                puntaje_total = self._calcular_puntaje_suma(asignacion)
+
+            if puntaje_total is None:
+                return {
+                    'estado': 'sin_evaluacion',
+                    'puntaje': None,
+                    'asignacion': asignacion
+                }
+
+            # Satisfactorio >= 14 puntos (umbral de aprobación)
+            if puntaje_total >= 14:
+                return {
+                    'estado': 'satisfactorio',
+                    'puntaje': puntaje_total,
+                    'asignacion': asignacion
+                }
+            else:
+                return {
+                    'estado': 'insatisfactorio',
+                    'puntaje': puntaje_total,
+                    'asignacion': asignacion
+                }
+
         except Exception as e:
             logger.error(f"Error verificando evaluación para empleado {empleado.id}: {e}")
             return {
@@ -282,38 +282,37 @@ class Command(BaseCommand):
                 'asignacion': None
             }
 
-    def _calcular_puntaje_evaluacion(self, asignacion):
+    def _calcular_puntaje_suma(self, asignacion):
         """
-        Calcula el puntaje promedio de una evaluación basado en las respuestas
+        Calcula el puntaje total por SUMA de respuestas (no promedio)
+
+        Para evaluaciones de período de prueba:
+        - 7 preguntas
+        - Cada respuesta vale de 1 a 3 puntos
+        - Puntaje total = suma de todas las respuestas
         """
         from apps.evaluations.models import RespuestaEvaluacion
         from decimal import Decimal
-        
+
         try:
             respuestas = RespuestaEvaluacion.objects.filter(
-                asignacion=asignacion,
-                pregunta__peso_porcentual__gt=0  # Solo preguntas que afectan el puntaje
+                asignacion=asignacion
             ).select_related('opcion_seleccionada', 'pregunta')
-            
+
             if not respuestas.exists():
                 return 0.0
-            
-            total_peso = Decimal('0.00')
-            puntaje_ponderado = Decimal('0.00')
-            
+
+            puntaje_total = Decimal('0.00')
+
             for respuesta in respuestas:
                 if respuesta.opcion_seleccionada:
-                    peso = respuesta.pregunta.peso_porcentual / 100  # Convertir porcentaje
                     valor = respuesta.opcion_seleccionada.valor_numerico
-                    
-                    puntaje_ponderado += Decimal(str(valor)) * peso
-                    total_peso += peso
-            
-            if total_peso > 0:
-                return float(puntaje_ponderado / total_peso)
-            else:
-                return 0.0
-                
+                    puntaje_total += Decimal(str(valor))
+                elif respuesta.puntaje_obtenido:
+                    puntaje_total += Decimal(str(respuesta.puntaje_obtenido))
+
+            return float(puntaje_total)
+
         except Exception as e:
-            logger.error(f"Error calculando puntaje de evaluación {asignacion.id}: {e}")
+            logger.error(f"Error calculando puntaje suma de evaluación {asignacion.id}: {e}")
             return 0.0

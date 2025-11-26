@@ -154,18 +154,47 @@
                                         {{ form.cargo.errors.0 }}
                                     </div>
                                 {% endif %}
-                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="{{ form.direccion.id_for_label }}">{{ form.direccion.label }}</label>
-                                    {{ form.direccion }}
-                                    <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
-                                    {% if form.direccion.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.direccion.errors.0 }}
-                                        </div>
+                        </div>
+
+                        <!-- Campo de Jefe Directo (dinámico según cargo seleccionado) -->
+                        <div class="col-md-6" id="contenedor-jefe-directo" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label" for="id_jefe_directo">
+                                    <i class="fas fa-user-tie text-primary me-1"></i>
+                                    Jefe Directo
+                                </label>
+                                <select name="jefe_directo" class="form-control" id="id_jefe_directo">
+                                    <option value="">-- Seleccione jefe directo --</option>
+                                    {% if form.jefe_directo.field.queryset %}
+                                        {% for jefe in form.jefe_directo.field.queryset %}
+                                            <option value="{{ jefe.pk }}" {% if form.jefe_directo.value == jefe.pk|stringformat:"s" %}selected{% endif %}>
+                                                {{ jefe.nombre_completo }}
+                                            </option>
+                                        {% endfor %}
                                     {% endif %}
+                                </select>
+                                <div class="form-text" id="info-jefe-directo">
+                                    El jefe directo se determina según el cargo seleccionado
+                                </div>
+                                {% if form.jefe_directo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.jefe_directo.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.direccion.id_for_label }}">{{ form.direccion.label }}</label>
+                                {{ form.direccion }}
+                                <div class="form-text">Debe iniciar con el tipo de vía completo (Calle, Carrera, Avenida, Vereda, etc.)</div>
+                                {% if form.direccion.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.direccion.errors.0 }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -542,6 +571,85 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         // Inicializar filtro al cargar
         departamentoSelect.dispatchEvent(new Event('change'));
+    }
+
+    // ====== CARGA DINÁMICA DE JEFES POTENCIALES ======
+    const cargoSelect = document.querySelector('[name="cargo"]');
+    const jefeDirectoContenedor = document.getElementById('contenedor-jefe-directo');
+    const jefeDirectoSelect = document.getElementById('id_jefe_directo');
+    const infoJefeDirecto = document.getElementById('info-jefe-directo');
+
+    if (cargoSelect && jefeDirectoContenedor && jefeDirectoSelect) {
+        // Función para cargar jefes potenciales vía AJAX
+        function cargarJefesPotenciales(cargoId) {
+            if (!cargoId) {
+                jefeDirectoContenedor.style.display = 'none';
+                jefeDirectoSelect.innerHTML = '<option value="">-- Seleccione jefe directo --</option>';
+                return;
+            }
+
+            // Mostrar indicador de carga
+            jefeDirectoSelect.innerHTML = '<option value="">Cargando...</option>';
+            jefeDirectoContenedor.style.display = '';
+
+            fetch(`/empleados/api/jefes-potenciales/${cargoId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        jefeDirectoSelect.innerHTML = '<option value="">-- Seleccione jefe directo --</option>';
+
+                        if (data.tiene_cargo_jefe && data.jefes.length > 0) {
+                            // Hay jefes potenciales
+                            data.jefes.forEach(jefe => {
+                                const option = document.createElement('option');
+                                option.value = jefe.id;
+                                option.textContent = `${jefe.nombre_completo} - ${jefe.cargo}`;
+                                jefeDirectoSelect.appendChild(option);
+                            });
+
+                            jefeDirectoContenedor.style.display = '';
+                            infoJefeDirecto.innerHTML = `<i class="fas fa-info-circle text-info me-1"></i> Cargo jefe: <strong>${data.cargo_jefe_nombre}</strong> (${data.cantidad} empleado${data.cantidad !== 1 ? 's' : ''})`;
+
+                            // Si solo hay un jefe, seleccionarlo automáticamente
+                            if (data.jefes.length === 1) {
+                                jefeDirectoSelect.value = data.jefes[0].id;
+                                infoJefeDirecto.innerHTML += ' - <span class="text-success">Seleccionado automáticamente</span>';
+                            }
+                        } else if (data.tiene_cargo_jefe && data.jefes.length === 0) {
+                            // El cargo tiene cargo_jefe definido pero no hay empleados ocupando ese cargo
+                            jefeDirectoContenedor.style.display = '';
+                            infoJefeDirecto.innerHTML = `<i class="fas fa-exclamation-triangle text-warning me-1"></i> El cargo jefe (${data.cargo_jefe_nombre}) no tiene empleados asignados actualmente`;
+                        } else {
+                            // El cargo no tiene cargo_jefe definido
+                            jefeDirectoContenedor.style.display = 'none';
+                            infoJefeDirecto.textContent = data.mensaje || 'Este cargo no tiene un cargo jefe definido';
+                        }
+                    } else {
+                        jefeDirectoContenedor.style.display = 'none';
+                        console.error('Error cargando jefes:', data.mensaje);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la petición:', error);
+                    jefeDirectoContenedor.style.display = 'none';
+                    jefeDirectoSelect.innerHTML = '<option value="">Error al cargar</option>';
+                });
+        }
+
+        // Evento cuando cambia el cargo
+        cargoSelect.addEventListener('change', function() {
+            cargarJefesPotenciales(this.value);
+        });
+
+        // Cargar jefes al iniciar si hay un cargo seleccionado
+        if (cargoSelect.value) {
+            // Si ya hay opciones en el select (recargado por error de validación), mostrar el contenedor
+            if (jefeDirectoSelect.options.length > 1) {
+                jefeDirectoContenedor.style.display = '';
+            } else {
+                cargarJefesPotenciales(cargoSelect.value);
+            }
+        }
     }
 });
 </script>

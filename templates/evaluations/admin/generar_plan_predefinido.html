@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Generar Plan de Mejora - SIGHU{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .plan-preview {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        max-height: 400px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+    }
+    .evaluation-summary {
+        background: #e3f2fd;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .response-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+    }
+    .score-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        color: white;
+        font-weight: bold;
+    }
+    .score-1 { background-color: #f44336; }
+    .score-2 { background-color: #ff9800; }
+    .score-3 { background-color: #4caf50; }
+    .score-4 { background-color: #2196f3; }
+    .score-5 { background-color: #9c27b0; }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>
+                <i class="fas fa-robot text-primary"></i>
+                Generar Plan de Mejora Automático
+            </h2>
+            <p class="text-muted">
+                Se generará automáticamente un plan de mejora basado en las respuestas de la evaluación.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información de la Evaluación -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        Información de la Evaluación
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Empleado:</strong> {{ asignacion.empleado_evaluado.get_full_name }}</p>
+                    <p><strong>Cargo:</strong> {{ asignacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Evaluador:</strong> {{ asignacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                    <p><strong>Tipo:</strong> {{ asignacion.evaluacion.tipo_evaluacion.nombre }}</p>
+                    <p><strong>Período:</strong> {{ asignacion.periodo_evaluacion }}</p>
+                    <p><strong>Puntaje:</strong> 
+                        <span class="badge badge-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                            {{ asignacion.puntaje_total|floatformat:1 }}/20
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Resumen de Respuestas -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar"></i>
+                        Respuestas de la Evaluación
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    {% for respuesta in respuestas %}
+                    <div class="response-item">
+                        <span>{{ respuesta.pregunta.texto|truncatechars:30 }}</span>
+                        <span class="score-badge score-{{ respuesta.opcion_seleccionada.valor_numerico|floatformat:0 }}">
+                            {{ respuesta.opcion_seleccionada.valor_numerico|floatformat:0 }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview del Plan -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-eye"></i>
+                        Vista Previa del Plan de Mejora
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Plan Generado Automáticamente:</strong> 
+                        Este plan se ha generado automáticamente basado en las respuestas de la evaluación. 
+                        Se enfoca en las áreas que obtuvieron puntuaciones de 1 o 2 puntos.
+                    </div>
+                    
+                    <div class="plan-preview">{{ plan_preview }}</div>
+                    
+                    <!-- Formulario de Confirmación -->
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>¿Confirmar generación?</strong><br>
+                            El plan será creado y enviado para aprobación. Una vez aprobado, se iniciarán automáticamente los seguimientos bimensuales.
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <!-- Enlace eliminado: admin_pendientes_aprobacion ya no existe -->
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                Generar Plan de Mejora
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Confirmar antes de generar
+    const form = document.querySelector('form[method="post"]');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!confirm('¿Está seguro que desea generar este plan de mejora?')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock extra_js %}

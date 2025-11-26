@@ -554,10 +554,14 @@
                                 <br><small>Estado: {{ asignacion.get_estado_aprobacion_display }}</small>
                             {% endif %}
                         </div>
-                        {% if asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
-                            <a href="{% url 'evaluations:pendientes_aprobacion' %}" class="btn btn-primary btn-lg">
-                                <i class="fas fa-tasks"></i> Ir a Aprobaciones Pendientes
+                        <!-- Botón para visualizar el plan de mejora generado (solo lectura para supervisor) -->
+                        {% if plan_mejora %}
+                        <div class="mt-3">
+                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_mejora.id %}" class="btn btn-outline-success" target="_blank">
+                                <i class="fas fa-clipboard-list"></i> Ver Plan de Mejora Generado
                             </a>
+                            <div class="small text-muted mt-1">Solo visualización. El supervisor no puede aceptar el plan, solo revisarlo.</div>
+                        </div>
                         {% endif %}
                     {% endif %}
                 </div>
