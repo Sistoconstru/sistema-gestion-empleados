@@ -252,3 +252,450 @@ class HistorialCargo(BaseModel):
         return f"{self.empleado.nombre_completo} - {self.cargo} ({estado})"
 
 
+# ===================== MARKETPLACE - PRODUCTOS =====================
+
+class Categoria(models.Model):
+    """Categorías de productos del marketplace"""
+    nombre = models.CharField(max_length=100, unique=True, help_text="Nombre de la categoría")
+    descripcion = models.TextField(blank=True, help_text="Descripción detallada")
+    icono = models.CharField(max_length=50, blank=True, help_text="Clase de icono (Font Awesome)")
+    activa = models.BooleanField(default=True, help_text="Si la categoría está activa")
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'marketplace_categorias'
+        verbose_name = 'Categoría'
+        verbose_name_plural = 'Categorías'
+        ordering = ['nombre']
+
+    def __str__(self):
+        return self.nombre
+
+
+class Producto(BaseModel):
+    """Productos disponibles en el marketplace"""
+    TIPO_CHOICES = [
+        ('venta', 'Venta Normal'),
+        ('regalo', 'Regalo'),
+        ('subasta', 'Subasta'),
+    ]
+
+    ESTADO_CHOICES = [
+        ('activo', 'Activo'),
+        ('vendido', 'Vendido'),
+        ('cancelado', 'Cancelado'),
+        ('archivado', 'Archivado'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vendedor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='productos_creados',
+        help_text="Empleado que ofrece el producto"
+    )
+    titulo = models.CharField(max_length=200, help_text="Título del producto")
+    descripcion = models.TextField(help_text="Descripción detallada del producto")
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="Categoría del producto"
+    )
+    tipo = models.CharField(
+        max_length=10,
+        choices=TIPO_CHOICES,
+        default='venta',
+        help_text="Tipo de oferta"
+    )
+    precio_inicial = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Precio inicial para venta o valor base para subasta"
+    )
+    imagen = models.ImageField(
+        upload_to='marketplace/productos/',
+        null=True,
+        blank=True,
+        help_text="Imagen principal del producto"
+    )
+    estado = models.CharField(
+        max_length=15,
+        choices=ESTADO_CHOICES,
+        default='activo',
+        help_text="Estado actual del producto"
+    )
+    visible_para = models.ManyToManyField(
+        Empleado,
+        blank=True,
+        related_name='productos_visibles',
+        help_text="Empleados que pueden ver este producto (vacío = todos)"
+    )
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_productos'
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
+        indexes = [
+            models.Index(fields=['vendedor', 'estado']),
+            models.Index(fields=['categoria', 'estado']),
+            models.Index(fields=['tipo', 'estado']),
+            models.Index(fields=['fecha_creacion']),
+        ]
+        ordering = ['-fecha_creacion']
+
+    def __str__(self):
+        return f"{self.titulo} (${self.precio_inicial})" if self.precio_inicial else self.titulo
+
+
+class Venta(BaseModel):
+    """Transacciones de venta normal entre empleados"""
+    ESTADO_CHOICES = [
+        ('pendiente_vendedor', 'Pendiente aceptación vendedor'),
+        ('pendiente_comprador', 'Pendiente confirmación comprador'),
+        ('completada', 'Completada'),
+        ('cancelada', 'Cancelada'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='ventas'
+    )
+    vendedor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='ventas_como_vendedor'
+    )
+    comprador = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='compras'
+    )
+    precio_final = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        help_text="Precio final acordado"
+    )
+    estado = models.CharField(
+        max_length=25,
+        choices=ESTADO_CHOICES,
+        default='pendiente_vendedor'
+    )
+    observaciones = models.TextField(blank=True, help_text="Notas sobre la venta")
+    calificacion_vendedor = models.IntegerField(
+        null=True,
+        blank=True,
+        choices=[(i, i) for i in range(1, 6)],
+        help_text="Calificación del vendedor (1-5 estrellas)"
+    )
+    calificacion_comprador = models.IntegerField(
+        null=True,
+        blank=True,
+        choices=[(i, i) for i in range(1, 6)],
+        help_text="Calificación del comprador (1-5 estrellas)"
+    )
+    comentario_vendedor = models.TextField(blank=True, help_text="Comentario sobre el comprador")
+    comentario_comprador = models.TextField(blank=True, help_text="Comentario sobre el vendedor")
+    fecha_venta = models.DateTimeField(auto_now_add=True)
+    fecha_completada = models.DateTimeField(null=True, blank=True)
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_ventas'
+        verbose_name = 'Venta'
+        verbose_name_plural = 'Ventas'
+        indexes = [
+            models.Index(fields=['vendedor', 'estado']),
+            models.Index(fields=['comprador', 'estado']),
+            models.Index(fields=['fecha_venta']),
+        ]
+        ordering = ['-fecha_venta']
+
+    def __str__(self):
+        return f"{self.producto.titulo} - {self.vendedor} → {self.comprador}"
+
+
+class Subasta(BaseModel):
+    """Subastas de productos entre empleados"""
+    ESTADO_CHOICES = [
+        ('activa', 'Activa'),
+        ('finalizada', 'Finalizada'),
+        ('cancelada', 'Cancelada'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='subastas'
+    )
+    vendedor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='subastas_creadas'
+    )
+    precio_inicial = models.DecimalField(max_digits=12, decimal_places=2)
+    precio_actual = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        help_text="Precio de la puja más alta"
+    )
+    pujador_actual = models.ForeignKey(
+        Empleado,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='subastas_pujadas'
+    )
+    estado = models.CharField(
+        max_length=15,
+        choices=ESTADO_CHOICES,
+        default='activa'
+    )
+    fecha_inicio = models.DateTimeField(auto_now_add=True)
+    fecha_fin = models.DateTimeField(help_text="Fecha y hora de finalización de la subasta")
+    incremento_minimo = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=1000,
+        help_text="Incremento mínimo para nueva puja"
+    )
+    ganador = models.ForeignKey(
+        Empleado,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='subastas_ganadas'
+    )
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_subastas'
+        verbose_name = 'Subasta'
+        verbose_name_plural = 'Subastas'
+        indexes = [
+            models.Index(fields=['vendedor', 'estado']),
+            models.Index(fields=['estado', 'fecha_fin']),
+            models.Index(fields=['pujador_actual']),
+        ]
+        ordering = ['-fecha_inicio']
+
+    def __str__(self):
+        return f"Subasta: {self.producto.titulo} ({self.estado})"
+
+
+class PujaSubasta(BaseModel):
+    """Historial de pujas en subastas"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    subasta = models.ForeignKey(
+        Subasta,
+        on_delete=models.CASCADE,
+        related_name='pujas'
+    )
+    pujador = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mis_pujas'
+    )
+    monto = models.DecimalField(max_digits=12, decimal_places=2)
+    es_puja_automatica = models.BooleanField(
+        default=False,
+        help_text="Si es una puja automática del sistema"
+    )
+    monto_maximo = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Monto máximo permitido para pujas automáticas"
+    )
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_pujas'
+        verbose_name = 'Puja'
+        verbose_name_plural = 'Pujas'
+        indexes = [
+            models.Index(fields=['subasta', 'fecha_creacion']),
+            models.Index(fields=['pujador']),
+        ]
+        ordering = ['-fecha_creacion']
+
+    def __str__(self):
+        return f"Puja de {self.pujador.nombre_completo}: ${self.monto}"
+
+
+class Regalo(BaseModel):
+    """Regalos entre empleados"""
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente aceptación'),
+        ('aceptado', 'Aceptado'),
+        ('rechazado', 'Rechazado'),
+        ('cancelado', 'Cancelado'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='regalos'
+    )
+    donante = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='regalos_dados'
+    )
+    receptor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='regalos_recibidos'
+    )
+    estado = models.CharField(
+        max_length=15,
+        choices=ESTADO_CHOICES,
+        default='pendiente'
+    )
+    mensaje = models.TextField(blank=True, help_text="Mensaje del donante")
+    fecha_ofrecimiento = models.DateTimeField(auto_now_add=True)
+    fecha_aceptacion = models.DateTimeField(null=True, blank=True)
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_regalos'
+        verbose_name = 'Regalo'
+        verbose_name_plural = 'Regalos'
+        indexes = [
+            models.Index(fields=['receptor', 'estado']),
+            models.Index(fields=['donante']),
+        ]
+        ordering = ['-fecha_ofrecimiento']
+
+    def __str__(self):
+        return f"{self.donante.nombre_completo} → {self.receptor.nombre_completo}: {self.producto.titulo}"
+
+
+# ===================== MESSAGING - CONVERSACIONES =====================
+
+class Conversacion(BaseModel):
+    """Conversaciones/chats entre empleados"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    participantes = models.ManyToManyField(
+        Empleado,
+        related_name='conversaciones'
+    )
+    titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Título opcional de la conversación"
+    )
+    contexto = models.CharField(
+        max_length=20,
+        choices=[
+            ('venta', 'Venta'),
+            ('subasta', 'Subasta'),
+            ('regalo', 'Regalo'),
+            ('general', 'General'),
+        ],
+        default='general',
+        help_text="Contexto de la conversación"
+    )
+    producto_referencia = models.ForeignKey(
+        Producto,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='conversaciones'
+    )
+    archivada = models.BooleanField(default=False)
+    fecha_ultima_actividad = models.DateTimeField(auto_now=True)
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'messaging_conversaciones'
+        verbose_name = 'Conversación'
+        verbose_name_plural = 'Conversaciones'
+        indexes = [
+            models.Index(fields=['fecha_ultima_actividad']),
+        ]
+        ordering = ['-fecha_ultima_actividad']
+
+    def __str__(self):
+        participantes_str = ', '.join([p.nombre_completo for p in self.participantes.all()[:2]])
+        return f"Chat: {participantes_str}"
+
+
+class Mensaje(BaseModel):
+    """Mensajes individuales en conversaciones"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    conversacion = models.ForeignKey(
+        Conversacion,
+        on_delete=models.CASCADE,
+        related_name='mensajes'
+    )
+    remitente = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mensajes_enviados'
+    )
+    contenido = models.TextField(help_text="Contenido del mensaje")
+    archivos_adjuntos = models.FileField(
+        upload_to='messaging/archivos/',
+        null=True,
+        blank=True,
+        help_text="Archivo adjunto (opcional)"
+    )
+    leido = models.BooleanField(default=False)
+    fecha_lectura = models.DateTimeField(null=True, blank=True)
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'messaging_mensajes'
+        verbose_name = 'Mensaje'
+        verbose_name_plural = 'Mensajes'
+        indexes = [
+            models.Index(fields=['conversacion', 'fecha_creacion']),
+            models.Index(fields=['remitente']),
+            models.Index(fields=['leido']),
+        ]
+        ordering = ['fecha_creacion']
+
+    def __str__(self):
+        preview = self.contenido[:50] + '...' if len(self.contenido) > 50 else self.contenido
+        return f"{self.remitente.nombre_completo}: {preview}"
+
+
+class LecturaConversacion(models.Model):
+    """Rastreo del último mensaje leído por cada participante"""
+    conversacion = models.ForeignKey(
+        Conversacion,
+        on_delete=models.CASCADE,
+        related_name='lecturas'
+    )
+    empleado = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mis_lecturas'
+    )
+    ultimo_mensaje_leido = models.ForeignKey(
+        Mensaje,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'messaging_lecturas'
+        unique_together = ['conversacion', 'empleado']
+        verbose_name = 'Lectura de Conversación'
+        verbose_name_plural = 'Lecturas de Conversaciones'
+
+    def __str__(self):
+        return f"{self.empleado.nombre_completo} en {self.conversacion}"
+
