@@ -508,6 +508,7 @@
 
             <!-- Evaluaciones -->
             <div class="tab-pane fade" id="evaluaciones" role="tabpanel">
+                {% load select_filters %}
                 {% for evaluacion in evaluaciones %}
                 <div class="card mb-3">
                     <div class="card-body">
@@ -524,12 +525,12 @@
                                 
                                 {% if evaluacion.estado == 'completada' and evaluacion.puntaje_total %}
                                 <div class="mt-2">
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                    <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div>
                                             <small class="text-muted d-block">Puntaje Obtenido:</small>
                                             <span class="fw-bold">{{ evaluacion.puntaje_total }} de 21 puntos</span>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div>
                                             <small class="text-muted d-block">Porcentaje:</small>
                                             <span class="fw-bold">{{ evaluacion.porcentaje_completado|floatformat:1 }}%</span>
                                         </div>
@@ -556,26 +557,39 @@
                             <div class="text-end">
                                 {% if evaluacion.estado == 'completada' %}
                                     <span class="badge bg-success mb-2">Completada</span>
-                                    
+
                                     {% if evaluacion.estado_aprobacion == 'pendiente_aprobacion' %}
-                                        <div>
-                                            <span class="badge bg-warning">Pendiente de Aprobación</span>
-                                        </div>
+                                    <div>
+                                        <span class="badge bg-warning">Pendiente de Aprobación</span>
+                                    </div>
                                     {% elif evaluacion.estado_aprobacion == 'aprobada' %}
-                                        <div>
-                                            <span class="badge bg-info">Aprobada por Admin</span>
-                                            {% if evaluacion.puntaje_total <= 13 %}
-                                            <div class="mt-1">
-                                                <span class="badge bg-danger"><i class="fas fa-user-times me-1"></i>Requiere Desactivación</span>
-                                            </div>
-                                            {% endif %}
+                                    <div>
+                                        <span class="badge bg-info">Aprobada por Admin</span>
+                                        {% if evaluacion.puntaje_total <= 13 %}
+                                        <div class="mt-1">
+                                            <span class="badge bg-danger"><i class="fas fa-user-times me-1"></i>Requiere Desactivación</span>
                                         </div>
+                                        {% endif %}
+                                    </div>
                                     {% elif evaluacion.estado_aprobacion == 'desaprobada' %}
-                                        <div>
-                                            <span class="badge bg-danger">Desaprobada</span>
-                                        </div>
+                                    <div>
+                                        <span class="badge bg-danger">Desaprobada</span>
+                                    </div>
                                     {% endif %}
-                                    
+
+                                    <!-- Botón para ver plan de mejora (solo si puntaje < 21) -->
+                                    {% if evaluacion.estado_aprobacion == 'aprobada' and evaluacion.puntaje_total < 21 %}
+                                    {% with plan=planes_mejora|get_item:evaluacion.id %}
+                                        {% if plan %}
+                                        <div class="mt-2">
+                                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-file-alt me-1"></i>Ver Plan de Mejora
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                    {% endif %}
+
                                 {% elif evaluacion.estado == 'en_progreso' %}
                                     <span class="badge bg-warning">En Progreso</span>
                                 {% else %}
@@ -1268,6 +1282,95 @@ function cambiarCargo(empleadoId) {
 
 {% block extra_css %}
 <style>
+/* Estilos para la sección de evaluaciones - Prevenir expansión excesiva del card */
+
+/* Controlar el contenedor principal de tabs */
+#profileTabsContent {
+    display: block !important;
+    min-height: auto !important;
+    height: auto !important;
+}
+
+/* Controlar la pestaña misma - Prevenir expansión vertical */
+.tab-pane#evaluaciones {
+    display: block;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+}
+
+.tab-pane#evaluaciones .card {
+    overflow: visible;
+    max-width: 100%;
+    flex-shrink: 0;
+}
+
+.tab-pane#evaluaciones .card .card-body {
+    padding: 1rem;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.tab-pane#evaluaciones .d-flex.justify-content-between {
+    display: flex !important;
+    gap: 1rem;
+    align-items: flex-start !important;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+/* Limitar el contenido izquierdo */
+.tab-pane#evaluaciones .card .d-flex > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Lado derecho: fijo y sin expansión */
+.tab-pane#evaluaciones .card .text-end {
+    flex-shrink: 0;
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+    width: auto;
+    min-width: fit-content;
+}
+
+/* Badges dentro de text-end */
+.tab-pane#evaluaciones .card .text-end span.badge {
+    margin: 0 !important;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+/* Botones dentro de text-end */
+.tab-pane#evaluaciones .card .text-end .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Limitar la altura de las alertas dentro del card */
+.tab-pane#evaluaciones .card .alert-sm {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0 !important;
+    margin-top: 0.5rem;
+}
+
+/* Remover margen inferior de card cuando es el último */
+.tab-pane#evaluaciones .card.mb-3 {
+    margin-bottom: 0 !important;
+}
+
+/* Asegurar que todas las tab-panes tengan altura automática */
+.tab-pane {
+    min-height: auto !important;
+    max-height: none !important;
+}
+
 .avatar-large {
     width: 80px;
     height: 80px;
