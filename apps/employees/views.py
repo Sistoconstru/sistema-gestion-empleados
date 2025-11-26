@@ -192,8 +192,23 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             context['evaluaciones'] = AsignacionEvaluacion.objects.filter(
                 empleado_evaluado=empleado
             ).select_related('evaluacion', 'evaluador').order_by('-fecha_asignacion')[:5]
+
+            # Obtener planes de mejora asociados a cada evaluación
+            try:
+                from apps.evaluations.models import PlanMejoraPredefinido
+                planes_dict = {}
+                for evaluacion in context['evaluaciones']:
+                    plan = PlanMejoraPredefinido.objects.filter(
+                        asignacion_evaluacion=evaluacion
+                    ).first()
+                    if plan:
+                        planes_dict[str(evaluacion.id)] = plan
+                context['planes_mejora'] = planes_dict
+            except Exception as e:
+                context['planes_mejora'] = {}
         except:
             context['evaluaciones'] = []
+            context['planes_mejora'] = {}
         
         # Estadísticas reales de documentos
         documentos = empleado.documentoempleado_set.all()
@@ -378,12 +393,16 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 # Crear historial de cargo si se especificó cargo
                 cargo = form.cleaned_data.get('cargo')
                 if cargo:
+                    # Obtener el jefe directo seleccionado (si existe)
+                    jefe_directo = form.cleaned_data.get('jefe_directo')
+
                     HistorialCargo.objects.create(
                         empleado=empleado,
                         cargo=cargo,
                         fecha_inicio=empleado.fecha_ingreso,
                         activo=True,
-                        creado_por=self.request.user
+                        creado_por=self.request.user,
+                        jefe_directo=jefe_directo
                     )
                 
                 messages.success(
@@ -497,21 +516,18 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
         """Procesar cambios en el formulario"""
         try:
             with transaction.atomic():
-                response = super().form_valid(form)
-                messages.success(
-                    self.request, 
-                    f'Empleado {self.object.nombre_completo} actualizado exitosamente.'
-                )
-                return response
-                # Verificar si cambió el cargo
+                # Verificar si cambió el cargo o jefe directo
                 cargo_nuevo = form.cleaned_data.get('cargo')
+                jefe_directo_nuevo = form.cleaned_data.get('jefe_directo')
                 cargo_actual = None
-                
+                jefe_directo_actual = None
+
                 # Obtener cargo actual
                 historial_actual = self.object.historialcargo_set.filter(activo=True).first()
                 if historial_actual:
                     cargo_actual = historial_actual.cargo
-                
+                    jefe_directo_actual = historial_actual.jefe_directo
+
                 # Si cambió el cargo, crear nuevo historial
                 if cargo_nuevo and cargo_nuevo != cargo_actual:
                     # Desactivar cargo actual
@@ -519,7 +535,7 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                         historial_actual.activo = False
                         historial_actual.fecha_fin = date.today()
                         historial_actual.save()
-                    
+
                     # Crear nuevo historial
                     HistorialCargo.objects.create(
                         empleado=self.object,
@@ -527,16 +543,21 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                         fecha_inicio=date.today(),
                         activo=True,
                         motivo_cambio="Actualización de cargo",
-                        creado_por=self.request.user
+                        creado_por=self.request.user,
+                        jefe_directo=jefe_directo_nuevo
                     )
-                
+                # Si solo cambió el jefe directo (mismo cargo)
+                elif historial_actual and jefe_directo_nuevo != jefe_directo_actual:
+                    historial_actual.jefe_directo = jefe_directo_nuevo
+                    historial_actual.save()
+
                 response = super().form_valid(form)
-                
+
                 messages.success(
-                    self.request, 
+                    self.request,
                     f'Empleado {self.object.nombre_completo} actualizado exitosamente.'
                 )
-                
+
                 return response
                 
         except Exception as e:
@@ -1489,16 +1510,33 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     # Verificar si tiene resultados para aceptar
                     if hasattr(evaluacion, 'resultadoevaluacion'):
                         resultado = evaluacion.resultadoevaluacion
+                        
+                        # Verificar si existe plan de mejora predefinido
+                        try:
+                            from apps.evaluations.models import PlanMejoraPredefinido
+                            plan_mejora = PlanMejoraPredefinido.objects.get(asignacion_evaluacion=evaluacion)
+                            # Si existe plan predefinido, dirigir al plan
+                            url_destino = f'/evaluaciones/ver-plan-mejora/{plan_mejora.id}/'
+                            accion_texto = 'Ver Plan de Mejora'
+                            titulo_texto = f'📋 Mi Plan de Mejora - {evaluacion.evaluacion.nombre}'
+                            descripcion_texto = f'Plan personalizado en estado: {plan_mejora.get_estado_display()}'
+                        except PlanMejoraPredefinido.DoesNotExist:
+                            # Si no hay plan predefinido, dirigir a resultados
+                            url_destino = f'/evaluaciones/ver-resultados/{evaluacion.id}/'
+                            accion_texto = 'Ver Resultados'
+                            titulo_texto = f'📋 Plan de mejora disponible - {evaluacion.evaluacion.nombre}'
+                            descripcion_texto = 'Revisa y acepta tu plan de desarrollo profesional'
+                        
                         actividades.append({
                             'tipo': 'evaluacion_aceptar',
                             'icono': 'fas fa-clipboard-check',
                             'color': 'warning',
-                            'titulo': f'📋 Plan de mejora disponible - {evaluacion.evaluacion.nombre}',
-                            'descripcion': 'Revisa y acepta tu plan de desarrollo profesional',
+                            'titulo': titulo_texto,
+                            'descripcion': descripcion_texto,
                             'fecha': evaluacion.fecha_completada,
                             'estado': 'pendiente_aceptacion',
-                            'url': f'/evaluaciones/ver-resultados/{evaluacion.id}/',
-                            'accion': 'Ver Resultados',
+                            'url': url_destino,
+                            'accion': accion_texto,
                             'evaluacion_id': evaluacion.id,
                             'puntaje': resultado.puntaje_final if resultado else None
                         })
@@ -2073,3 +2111,64 @@ def desactivar_empleado_reprobado(request, pk):
 
 # Agregar import para agregaciones
 from django.db import models
+
+
+@login_required
+def obtener_jefes_potenciales(request, cargo_id):
+    """
+    API para obtener los posibles jefes directos según el cargo seleccionado.
+    Retorna lista de empleados que ocupan el cargo_jefe del cargo dado.
+    """
+    try:
+        cargo = get_object_or_404(Cargo, pk=cargo_id, activo=True)
+
+        # Si el cargo no tiene cargo_jefe definido, no hay jefes potenciales
+        if not cargo.cargo_jefe:
+            return JsonResponse({
+                'success': True,
+                'tiene_cargo_jefe': False,
+                'cargo_jefe_nombre': None,
+                'jefes': [],
+                'mensaje': 'Este cargo no tiene un cargo jefe definido'
+            })
+
+        # Buscar empleados activos que ocupen el cargo_jefe
+        jefes = Empleado.objects.filter(
+            historialcargo__cargo=cargo.cargo_jefe,
+            historialcargo__activo=True,
+            estado__codigo__in=['999', 'ACTIVO', 'p-prue']
+        ).distinct().select_related('estado').prefetch_related(
+            Prefetch(
+                'historialcargo_set',
+                queryset=HistorialCargo.objects.filter(activo=True).select_related('cargo'),
+                to_attr='cargo_actual_list'
+            )
+        )
+
+        jefes_lista = []
+        for jefe in jefes:
+            cargo_actual = jefe.cargo_actual_list[0] if jefe.cargo_actual_list else None
+            jefes_lista.append({
+                'id': str(jefe.pk),
+                'nombre_completo': jefe.nombre_completo,
+                'documento': jefe.numero_documento,
+                'cargo': cargo_actual.cargo.nombre if cargo_actual else 'Sin cargo',
+                'area': cargo_actual.cargo.area.nombre if cargo_actual and cargo_actual.cargo.area else ''
+            })
+
+        return JsonResponse({
+            'success': True,
+            'tiene_cargo_jefe': True,
+            'cargo_jefe_nombre': cargo.cargo_jefe.nombre,
+            'jefes': jefes_lista,
+            'cantidad': len(jefes_lista),
+            'mensaje': f'Se encontraron {len(jefes_lista)} posibles jefes'
+        })
+
+    except Exception as e:
+        logger.error(f"Error obteniendo jefes potenciales para cargo {cargo_id}: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e),
+            'mensaje': 'Error al obtener los jefes potenciales'
+        }, status=500)

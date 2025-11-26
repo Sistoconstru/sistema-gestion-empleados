@@ -550,6 +550,7 @@
                                     <div class="alert alert-success alert-sm mt-2 mb-0">
                                         <i class="fas fa-star me-1"></i>
                                         <strong>EXCELENTE</strong> - Desempeño sobresaliente
+                                    </div>
                                     {% endif %}
                                 </div>
                                 {% endif %}
@@ -577,8 +578,7 @@
                                     </div>
                                     {% endif %}
 
-                                    <!-- Botón para ver plan de mejora (solo si puntaje < 21) -->
-                                    {% if evaluacion.estado_aprobacion == 'aprobada' and evaluacion.puntaje_total < 21 %}
+                                    <!-- Botón para ver plan de mejora si existe -->
                                     {% with plan=planes_mejora|get_item:evaluacion.id %}
                                         {% if plan %}
                                         <div class="mt-2">
@@ -588,7 +588,6 @@
                                         </div>
                                         {% endif %}
                                     {% endwith %}
-                                    {% endif %}
 
                                 {% elif evaluacion.estado == 'en_progreso' %}
                                     <span class="badge bg-warning">En Progreso</span>
@@ -1277,6 +1276,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function cambiarCargo(empleadoId) {
     $('#cambiarCargoModal').modal('show');
 }
+
+// Ajustar la altura del tab-content cuando cambia de pestaña
+document.addEventListener('shown.bs.tab', function (e) {
+    const tabContent = document.getElementById('profileTabsContent');
+    if (tabContent) {
+        // Forzar recálculo de altura
+        tabContent.style.height = 'auto';
+        tabContent.style.minHeight = 'auto';
+    }
+});
 </script>
 {% endblock %}
 
@@ -1289,6 +1298,15 @@ function cambiarCargo(empleadoId) {
     display: block !important;
     min-height: auto !important;
     height: auto !important;
+    overflow: visible !important;
+}
+
+/* Asegurar que el tab-content se ajuste al contenido */
+.tab-content {
+    min-height: unset !important;
+    height: auto !important;
+    max-height: unset !important;
+    display: block !important;
 }
 
 /* Controlar la pestaña misma - Prevenir expansión vertical */
@@ -1367,8 +1385,23 @@ function cambiarCargo(empleadoId) {
 
 /* Asegurar que todas las tab-panes tengan altura automática */
 .tab-pane {
-    min-height: auto !important;
-    max-height: none !important;
+    min-height: unset !important;
+    max-height: unset !important;
+    height: auto !important;
+}
+
+/* Cuando una tab-pane está activa, asegurar que se muestre correctamente */
+.tab-pane.active {
+    display: block !important;
+    min-height: unset !important;
+    height: auto !important;
+}
+
+/* Cuando una tab-pane está inactiva, ocultarla completamente sin afectar layout */
+.tab-pane:not(.active) {
+    display: none !important;
+    height: 0;
+    min-height: 0;
 }
 
 .avatar-large {
