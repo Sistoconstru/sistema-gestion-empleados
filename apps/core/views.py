@@ -158,12 +158,19 @@ def dashboard_view(request):
             
             empleados_sin_evaluacion = 0
             if estado_prueba:
+                from django.db.models import Q, Count
+                # Contar empleados en período de prueba sin evaluaciones completadas
                 empleados_sin_evaluacion = Empleado.objects.filter(
                     estado=estado_prueba,
                     fecha_ingreso__lte=fecha_limite_evaluacion,
                     fecha_ingreso__gte=fecha_limite_activacion
-                ).exclude(
-                    evaluaciones_recibidas__estado='completada'
+                ).annotate(
+                    evaluaciones_completadas=Count(
+                        'evaluaciones_recibidas',
+                        filter=Q(evaluaciones_recibidas__estado='completada')
+                    )
+                ).filter(
+                    evaluaciones_completadas=0
                 ).count()
             
             # Evaluaciones pendientes de aprobación (solo para administradores)
