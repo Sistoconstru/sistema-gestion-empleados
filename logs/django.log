@@ -1,1 +1,91 @@
 
+INFO 2025-11-26 12:12:46,291 apps 9020 52152 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:12:46,824 apps 20428 47184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:12:46,851 autoreload 20428 47184 Watching for file changes with StatReloader
+INFO 2025-11-26 12:12:47,259 wsgi 20428 48704 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-26 12:12:49,543 basehttp 20428 3452 "GET / HTTP/1.1" 302 0
+INFO 2025-11-26 12:12:49,859 basehttp 20428 3452 "GET /dashboard/ HTTP/1.1" 200 19252
+INFO 2025-11-26 12:13:13,860 basehttp 20428 3452 "GET /empleados/ HTTP/1.1" 200 100352
+INFO 2025-11-26 12:13:17,814 basehttp 20428 3452 "GET /empleados/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 81891
+INFO 2025-11-26 12:44:45,220 autoreload 20428 47184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\apps.py changed, reloading.
+INFO 2025-11-26 12:44:46,061 apps 56112 40812 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:44:46,076 autoreload 56112 40812 Watching for file changes with StatReloader
+INFO 2025-11-26 12:44:46,557 wsgi 56112 17404 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-26 12:45:42,322 apps 38184 54176 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:46:34,107 apps 13752 31616 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:47:50,872 apps 3440 43188 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:48:00,723 apps 47948 17568 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 12:48:01,041 base 47948 17568 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO 2025-11-26 12:48:01,041 base 47948 17568 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO 2025-11-26 12:48:01,041 base 47948 17568 Added job "Asignar evaluaciones de período de prueba" to job store "default"
+INFO 2025-11-26 12:48:01,041 base 47948 17568 Added job "Activar empleados de período de prueba" to job store "default"
+INFO 2025-11-26 12:48:01,041 base 47948 17568 Scheduler started
+INFO 2025-11-26 12:53:47,419 basehttp 56112 13524 "GET /dashboard/ HTTP/1.1" 200 19252
+INFO 2025-11-26 12:53:49,488 basehttp 56112 13524 "GET /empleados/ HTTP/1.1" 200 100352
+INFO 2025-11-26 12:53:51,208 basehttp 56112 13524 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 90449
+INFO 2025-11-26 12:54:07,691 basehttp 56112 13524 "GET /dashboard/ HTTP/1.1" 200 19252
+INFO 2025-11-26 12:54:21,236 basehttp 56112 13524 "GET /empleados/ HTTP/1.1" 200 100352
+INFO 2025-11-26 12:54:23,206 basehttp 56112 13524 "GET /empleados/crear/ HTTP/1.1" 200 209567
+INFO 2025-11-26 12:55:36,828 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/10/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:38,359 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/11/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:38,912 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/20/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:39,342 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/23/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:39,792 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/27/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:40,307 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/30/ HTTP/1.1" 200 164
+INFO 2025-11-26 12:55:43,776 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/45/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:50,761 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/49/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:54,011 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/54/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:55:54,609 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/41/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:55:57,168 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/4/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:55:58,324 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/44/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:56:00,281 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/51/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:56:00,747 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/12/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:56:01,147 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/24/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:56:01,595 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/58/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:08,532 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/59/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:09,073 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/60/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:09,540 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/61/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:10,503 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/62/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:10,974 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/63/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:11,358 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/47/ HTTP/1.1" 200 161
+INFO 2025-11-26 12:56:11,923 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/46/ HTTP/1.1" 200 308
+INFO 2025-11-26 12:56:14,640 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/40/ HTTP/1.1" 200 534
+INFO 2025-11-26 12:56:15,275 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/37/ HTTP/1.1" 200 149
+INFO 2025-11-26 12:56:15,592 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/28/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:15,909 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/26/ HTTP/1.1" 200 165
+INFO 2025-11-26 12:56:17,382 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/28/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:18,678 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/26/ HTTP/1.1" 200 165
+INFO 2025-11-26 12:56:19,129 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/22/ HTTP/1.1" 200 161
+INFO 2025-11-26 12:56:19,560 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/3/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:56:20,121 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/8/ HTTP/1.1" 200 141
+INFO 2025-11-26 12:56:20,514 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/57/ HTTP/1.1" 200 159
+INFO 2025-11-26 12:56:21,107 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/64/ HTTP/1.1" 200 510
+INFO 2025-11-26 12:56:21,546 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/65/ HTTP/1.1" 200 328
+INFO 2025-11-26 12:56:24,083 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/66/ HTTP/1.1" 200 157
+INFO 2025-11-26 12:56:25,093 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/67/ HTTP/1.1" 200 157
+INFO 2025-11-26 12:56:25,558 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/68/ HTTP/1.1" 200 159
+INFO 2025-11-26 12:56:25,935 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/34/ HTTP/1.1" 200 171
+INFO 2025-11-26 12:56:26,421 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/36/ HTTP/1.1" 200 164
+INFO 2025-11-26 12:56:27,015 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/7/ HTTP/1.1" 200 173
+INFO 2025-11-26 12:56:27,710 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/38/ HTTP/1.1" 200 150
+INFO 2025-11-26 12:56:28,730 basehttp 56112 13524 "GET /empleados/api/jefes-potenciales/52/ HTTP/1.1" 200 318
+INFO 2025-11-26 12:57:24,021 basehttp 56112 13524 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-11-26 12:57:24,208 basehttp 56112 13524 "GET /empleados/ HTTP/1.1" 200 101201
+INFO 2025-11-26 12:57:46,623 basehttp 56112 13524 "GET /dashboard/ HTTP/1.1" 200 19253
+INFO 2025-11-26 12:57:49,338 basehttp 56112 13524 "GET /evaluaciones/ HTTP/1.1" 200 28759
+INFO 2025-11-26 12:57:55,759 basehttp 56112 13524 "GET /evaluaciones/admin/todas-pendientes/ HTTP/1.1" 200 16197
+INFO 2025-11-26 12:58:01,694 basehttp 56112 33948 "GET /dashboard/ HTTP/1.1" 200 19253
+INFO 2025-11-26 12:58:03,120 basehttp 56112 33948 "GET /empleados/ HTTP/1.1" 200 100364
+INFO 2025-11-26 12:58:04,561 basehttp 56112 33948 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:03:04,724 basehttp 56112 23052 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:08:04,875 basehttp 56112 24644 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:13:05,050 basehttp 56112 5408 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:18:05,229 basehttp 56112 48804 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:23:05,392 basehttp 56112 37960 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:28:05,773 basehttp 56112 6880 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:33:05,966 basehttp 56112 27156 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:38:06,175 basehttp 56112 17768 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:43:06,358 basehttp 56112 51800 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:48:06,537 basehttp 56112 17236 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:53:06,742 basehttp 56112 39436 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 13:58:07,275 basehttp 56112 13996 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531

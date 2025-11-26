@@ -260,8 +260,8 @@ class Command(BaseCommand):
                     'asignacion': asignacion
                 }
 
-            # Satisfactorio >= 14 puntos (umbral de aprobación)
-            if puntaje_total >= 14:
+            # Satisfactorio > 13 puntos (umbral de aprobación)
+            if puntaje_total > 13:
                 return {
                     'estado': 'satisfactorio',
                     'puntaje': puntaje_total,
