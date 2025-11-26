@@ -5,11 +5,16 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from datetime import date, timedelta
+from django.utils import timezone
+from datetime import date, datetime, timedelta
 import re
 import logging
 
-from .models import Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo
+from .models import (
+    Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
+    Producto, Venta, Subasta, PujaSubasta, Regalo,
+    Conversacion, Mensaje
+)
 from apps.organizational.models import Sede, Cargo, AreaEmpresa
 
 User = get_user_model()
@@ -487,3 +492,568 @@ class BusquedaEmpleadoForm(forms.Form):
         empty_label="Todas las Sedes",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+
+
+# ===================== MARKETPLACE - PRODUCTOS =====================
+
+class ProductoForm(forms.ModelForm):
+    """Formulario para crear y editar productos"""
+
+    class Meta:
+        model = Producto
+        fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'imagen', 'visible_para']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Titulo del producto',
+                'maxlength': '200',
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Describe detalladamente tu producto...',
+                'rows': 5,
+            }),
+            'categoria': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'tipo': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'precio_inicial': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Precio o valor inicial',
+                'step': '0.01',
+                'min': '0',
+            }),
+            'imagen': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
+            'visible_para': forms.CheckboxSelectMultiple(attrs={
+                'class': 'form-check-input',
+            }),
+        }
+        labels = {
+            'titulo': 'Titulo',
+            'descripcion': 'Descripcion',
+            'categoria': 'Categoria',
+            'tipo': 'Tipo de Oferta',
+            'precio_inicial': 'Precio/Valor Inicial',
+            'imagen': 'Imagen del Producto',
+            'visible_para': 'Visible para (dejar vacio = todos)',
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get('tipo')
+        precio = cleaned_data.get('precio_inicial')
+
+        # Validar que regalos no tengan precio
+        if tipo == 'regalo' and precio:
+            raise ValidationError(
+                'Los regalos no deben tener precio inicial. Dejar en blanco.'
+            )
+
+        # Validar que ventas y subastas tengan precio
+        if tipo in ['venta', 'subasta'] and not precio:
+            raise ValidationError(
+                f'Los productos de {tipo} requieren un precio inicial.'
+            )
+
+        # Validar que el precio sea positivo
+        if precio and precio <= 0:
+            raise ValidationError('El precio debe ser mayor a 0.')
+
+        return cleaned_data
+
+    def clean_titulo(self):
+        titulo = self.cleaned_data.get('titulo')
+        if titulo and len(titulo.strip()) < 5:
+            raise ValidationError('El titulo debe tener al menos 5 caracteres.')
+        return titulo
+
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if descripcion and len(descripcion.strip()) < 20:
+            raise ValidationError('La descripcion debe tener al menos 20 caracteres.')
+        return descripcion
+
+
+# ===================== MARKETPLACE - VENTAS =====================
+
+class VentaForm(forms.ModelForm):
+    """Formulario para confirmación de compra"""
+
+    confirmar_precio = forms.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Confirma el precio final',
+            'step': '0.01',
+            'min': '0',
+        }),
+        required=True,
+        help_text='Confirma el precio que acordaste con el vendedor'
+    )
+
+    acepto_terminos = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+        }),
+        label='Acepto los terminos y condiciones de esta compra'
+    )
+
+    class Meta:
+        model = Venta
+        fields = ['precio_final', 'observaciones']
+        widgets = {
+            'precio_final': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01',
+                'min': '0',
+            }),
+            'observaciones': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Notas adicionales (opcional)',
+                'rows': 3,
+            }),
+        }
+        labels = {
+            'precio_final': 'Precio Final',
+            'observaciones': 'Observaciones',
+        }
+
+    def __init__(self, *args, vendedor=None, comprador=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.vendedor = vendedor
+        self.comprador = comprador
+
+    def clean(self):
+        cleaned_data = super().clean()
+        precio_final = cleaned_data.get('precio_final')
+        confirmar_precio = cleaned_data.get('confirmar_precio')
+
+        # Validar que los precios coincidan
+        if precio_final and confirmar_precio:
+            if precio_final != confirmar_precio:
+                raise ValidationError(
+                    'El precio confirmado no coincide con el precio final.'
+                )
+
+        # Validar que no sea venta a uno mismo
+        if self.vendedor and self.comprador:
+            if self.vendedor.id == self.comprador.id:
+                raise ValidationError(
+                    'No puedes comprar tu propio producto.'
+                )
+
+        # Validar que ambos sean empleados activos
+        if self.vendedor and self.vendedor.estado.codigo not in ['999', 'ACTIVO']:
+            raise ValidationError(
+                'El vendedor debe estar activo para realizar la transaccion.'
+            )
+
+        if self.comprador and self.comprador.estado.codigo not in ['999', 'ACTIVO']:
+            raise ValidationError(
+                'Debes estar activo para realizar compras.'
+            )
+
+        return cleaned_data
+
+
+# ===================== MARKETPLACE - SUBASTAS =====================
+
+class SubastaForm(forms.ModelForm):
+    """Formulario para crear subastas"""
+
+    fecha_fin_date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date',
+        }),
+        help_text='Fecha de finalizacion de la subasta'
+    )
+
+    fecha_fin_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={
+            'class': 'form-control',
+            'type': 'time',
+        }),
+        help_text='Hora de finalizacion',
+        required=False
+    )
+
+    class Meta:
+        model = Subasta
+        fields = ['precio_inicial', 'incremento_minimo']
+        widgets = {
+            'precio_inicial': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Precio inicial de la subasta',
+                'step': '0.01',
+                'min': '0',
+            }),
+            'incremento_minimo': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Incremento minimo entre pujas',
+                'step': '0.01',
+                'min': '0',
+            }),
+        }
+        labels = {
+            'precio_inicial': 'Precio Inicial',
+            'incremento_minimo': 'Incremento Minimo',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Si es edicion, cargar los valores de fecha_fin
+        if self.instance and self.instance.fecha_fin:
+            self.fields['fecha_fin_date'].initial = self.instance.fecha_fin.date()
+            self.fields['fecha_fin_time'].initial = self.instance.fecha_fin.time()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        precio_inicial = cleaned_data.get('precio_inicial')
+        incremento = cleaned_data.get('incremento_minimo')
+        fecha_date = cleaned_data.get('fecha_fin_date')
+        fecha_time = cleaned_data.get('fecha_fin_time')
+
+        # Validar precio inicial positivo
+        if precio_inicial and precio_inicial <= 0:
+            raise ValidationError('El precio inicial debe ser mayor a 0.')
+
+        # Validar incremento minimo positivo
+        if incremento and incremento <= 0:
+            raise ValidationError('El incremento minimo debe ser mayor a 0.')
+
+        # Validar fechas
+        if fecha_date:
+            hora = fecha_time or timezone.now().time()
+            from datetime import datetime
+            fecha_fin = timezone.make_aware(
+                datetime.combine(fecha_date, hora)
+            )
+            ahora = timezone.now()
+
+            if fecha_fin <= ahora:
+                raise ValidationError(
+                    'La fecha de finalizacion debe ser posterior a ahora.'
+                )
+
+            # Validar que no sea mas de 30 dias
+            if (fecha_fin - ahora).days > 30:
+                raise ValidationError(
+                    'La subasta no puede durar mas de 30 dias.'
+                )
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        fecha_date = self.cleaned_data.get('fecha_fin_date')
+        fecha_time = self.cleaned_data.get('fecha_fin_time') or timezone.now().time()
+
+        if fecha_date:
+            from datetime import datetime
+            instance.fecha_fin = timezone.make_aware(
+                datetime.combine(fecha_date, fecha_time)
+            )
+
+        if commit:
+            instance.save()
+        return instance
+
+
+# ===================== MARKETPLACE - PUJAS =====================
+
+class PujaForm(forms.ModelForm):
+    """Formulario para realizar pujas con validacion de montos"""
+
+    puja_automatica = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+        }),
+        label='Realizar pujas automaticas hasta un monto maximo',
+        help_text='El sistema pujara automaticamente por ti hasta el monto que especifiques'
+    )
+
+    monto_maximo_auto = forms.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Monto maximo para pujas automaticas',
+            'step': '0.01',
+            'min': '0',
+        }),
+        help_text='Solo si activas pujas automaticas'
+    )
+
+    class Meta:
+        model = PujaSubasta
+        fields = ['monto']
+        widgets = {
+            'monto': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Tu puja',
+                'step': '0.01',
+                'min': '0',
+            }),
+        }
+        labels = {
+            'monto': 'Monto de tu Puja',
+        }
+
+    def __init__(self, *args, subasta=None, pujador=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.subasta = subasta
+        self.pujador = pujador
+
+    def clean(self):
+        cleaned_data = super().clean()
+        monto = cleaned_data.get('monto')
+        puja_automatica = cleaned_data.get('puja_automatica')
+        monto_maximo = cleaned_data.get('monto_maximo_auto')
+
+        if not self.subasta:
+            raise ValidationError('Error: Subasta no especificada.')
+
+        # Validar que monto sea positivo
+        if monto and monto <= 0:
+            raise ValidationError('La puja debe ser mayor a 0.')
+
+        # Validar que sea mayor que el precio actual
+        if monto and monto <= self.subasta.precio_actual:
+            raise ValidationError(
+                f'Tu puja debe ser mayor a ${self.subasta.precio_actual}.'
+            )
+
+        # Validar incremento minimo
+        puja_minima = self.subasta.precio_actual + self.subasta.incremento_minimo
+        if monto and monto < puja_minima:
+            raise ValidationError(
+                f'El incremento minimo es de ${self.subasta.incremento_minimo}. '
+                f'Debes pujar al menos ${puja_minima}.'
+            )
+
+        # Validar que no sea el vendedor
+        if self.pujador and self.pujador.id == self.subasta.vendedor.id:
+            raise ValidationError(
+                'No puedes pujar en tu propia subasta.'
+            )
+
+        # Validar que sea empleado activo
+        if self.pujador and self.pujador.estado.codigo not in ['999', 'ACTIVO']:
+            raise ValidationError(
+                'Solo empleados activos pueden pujar.'
+            )
+
+        # Validar pujas automaticas
+        if puja_automatica:
+            if not monto_maximo:
+                raise ValidationError(
+                    'Debes especificar un monto maximo para pujas automaticas.'
+                )
+            if monto_maximo and monto_maximo <= monto:
+                raise ValidationError(
+                    'El monto maximo debe ser mayor a tu puja actual.'
+                )
+            if monto_maximo and monto_maximo <= self.subasta.precio_actual:
+                raise ValidationError(
+                    'El monto maximo debe ser mayor al precio actual de la subasta.'
+                )
+
+        return cleaned_data
+
+
+# ===================== MARKETPLACE - REGALOS =====================
+
+class RegaloForm(forms.ModelForm):
+    """Formulario para regalar productos"""
+
+    receptor_id = forms.ModelChoiceField(
+        queryset=Empleado.objects.filter(
+            estado__codigo__in=['999', 'ACTIVO']
+        ).order_by('apellidos', 'nombres'),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        }),
+        label='Receptor del Regalo',
+        help_text='Selecciona a quien quieres regalar este producto'
+    )
+
+    class Meta:
+        model = Regalo
+        fields = ['mensaje']
+        widgets = {
+            'mensaje': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Mensaje personal para el receptor (opcional)',
+                'rows': 3,
+            }),
+        }
+        labels = {
+            'mensaje': 'Mensaje del Donante',
+        }
+
+    def __init__(self, *args, donante=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.donante = donante
+
+    def clean(self):
+        cleaned_data = super().clean()
+        receptor = cleaned_data.get('receptor_id')
+
+        # Validar que no regales a uno mismo
+        if receptor and self.donante:
+            if receptor.id == self.donante.id:
+                raise ValidationError(
+                    'No puedes regalarte productos a ti mismo.'
+                )
+
+        # Validar que el receptor este activo
+        if receptor and receptor.estado.codigo not in ['999', 'ACTIVO']:
+            raise ValidationError(
+                'Solo puedes regalar a empleados activos.'
+            )
+
+        return cleaned_data
+
+
+# ===================== MESSAGING - CONVERSACIONES =====================
+
+class ConversacionForm(forms.ModelForm):
+    """Formulario para iniciar nuevas conversaciones"""
+
+    participante_id = forms.ModelChoiceField(
+        queryset=Empleado.objects.filter(
+            estado__codigo__in=['999', 'ACTIVO']
+        ).order_by('apellidos', 'nombres'),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        }),
+        label='Iniciar Conversacion Con',
+        help_text='Selecciona a quien quieres hablar'
+    )
+
+    class Meta:
+        model = Conversacion
+        fields = ['titulo', 'contexto']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Asunto (opcional)',
+                'maxlength': '200',
+            }),
+            'contexto': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }
+        labels = {
+            'titulo': 'Asunto',
+            'contexto': 'Tipo de Conversacion',
+        }
+
+    def __init__(self, *args, usuario_actual=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.usuario_actual = usuario_actual
+
+        # Excluir al usuario actual de las opciones de participante
+        if usuario_actual:
+            self.fields['participante_id'].queryset = \
+                Empleado.objects.filter(
+                    estado__codigo__in=['999', 'ACTIVO']
+                ).exclude(id=usuario_actual.id).order_by('apellidos', 'nombres')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        participante = cleaned_data.get('participante_id')
+
+        if not participante:
+            raise ValidationError('Debes seleccionar un participante.')
+
+        return cleaned_data
+
+
+# ===================== MESSAGING - MENSAJES =====================
+
+class MensajeForm(forms.ModelForm):
+    """Formulario para enviar mensajes"""
+
+    class Meta:
+        model = Mensaje
+        fields = ['contenido', 'archivos_adjuntos']
+        widgets = {
+            'contenido': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Escribe tu mensaje...',
+                'rows': 3,
+            }),
+            'archivos_adjuntos': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.png,.gif',
+            }),
+        }
+        labels = {
+            'contenido': 'Mensaje',
+            'archivos_adjuntos': 'Archivo Adjunto (opcional)',
+        }
+
+    def __init__(self, *args, remitente=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.remitente = remitente
+
+    def clean_contenido(self):
+        contenido = self.cleaned_data.get('contenido')
+
+        if contenido and len(contenido.strip()) == 0:
+            raise ValidationError('El mensaje no puede estar vacio.')
+
+        if contenido and len(contenido.strip()) < 2:
+            raise ValidationError('El mensaje debe tener al menos 2 caracteres.')
+
+        if contenido and len(contenido) > 5000:
+            raise ValidationError('El mensaje no puede exceder 5000 caracteres.')
+
+        return contenido
+
+    def clean_archivos_adjuntos(self):
+        archivo = self.cleaned_data.get('archivos_adjuntos')
+
+        if archivo:
+            # Validar tamaño maximo (5MB)
+            if archivo.size > 5 * 1024 * 1024:
+                raise ValidationError('El archivo no puede exceder 5MB.')
+
+            # Validar extensiones permitidas
+            extensiones_permitidas = {
+                'pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt',
+                'jpg', 'jpeg', 'png', 'gif'
+            }
+            extension = archivo.name.split('.')[-1].lower()
+            if extension not in extensiones_permitidas:
+                raise ValidationError(
+                    f'El archivo .{extension} no esta permitido. '
+                    f'Formatos permitidos: {", ".join(extensiones_permitidas)}'
+                )
+
+        return archivo
+
+    def clean(self):
+        cleaned_data = super().clean()
+        contenido = cleaned_data.get('contenido')
+        archivo = cleaned_data.get('archivos_adjuntos')
+
+        # Validar que tenga al menos contenido o archivo
+        if not contenido and not archivo:
+            raise ValidationError(
+                'El mensaje debe tener contenido o un archivo adjunto.'
+            )
+
+        return cleaned_data
