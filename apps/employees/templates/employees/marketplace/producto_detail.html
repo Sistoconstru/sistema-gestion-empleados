@@ -91,8 +91,10 @@
             <!-- Precio -->
             {% if producto.precio_inicial %}
             <div class="info-section">
-                <p class="text-muted mb-2">Precio:</p>
-                <p class="precio-grande">${{ producto.precio_inicial|floatformat:0 }}</p>
+                <p class="text-muted mb-2"><i class="fas fa-tag me-1"></i>Precio:</p>
+                <p class="precio-grande">
+                    <i class="fas fa-dollar-sign"></i>{{ producto.precio_inicial|floatformat:0 }} <span style="font-size: 0.6em; font-weight: normal;">COP</span>
+                </p>
             </div>
             {% endif %}
 
@@ -167,4 +169,28 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Script para formatear precio con separadores de miles -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para formatear número con separadores de miles
+    function formatearPrecio(numero) {
+        return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Buscar el elemento que contiene el precio
+    const precioElement = document.querySelector('.precio-grande');
+    if (precioElement) {
+        const texto = precioElement.textContent.trim();
+        // Extraer solo los números del texto
+        const match = texto.match(/\d+/);
+        if (match) {
+            const precioSinFormateo = match[0];
+            const precioFormateado = formatearPrecio(precioSinFormateo);
+            // Reemplazar el contenido pero mantener el ícono y COP
+            precioElement.innerHTML = '<i class="fas fa-dollar-sign"></i>' + precioFormateado + ' <span style="font-size: 0.6em; font-weight: normal;">COP</span>';
+        }
+    }
+});
+</script>
 {% endblock %}

@@ -58,7 +58,7 @@
         <p><strong>Categoría:</strong> {{ producto.categoria.nombre }}</p>
         <p><strong>Tipo:</strong> {{ producto.get_tipo_display }}</p>
         {% if producto.precio_inicial %}
-        <p><strong>Precio:</strong> ${{ producto.precio_inicial|floatformat:0 }}</p>
+        <p><strong>Precio:</strong> <i class="fas fa-dollar-sign"></i>{{ producto.precio_inicial|floatformat:0 }} COP</p>
         {% endif %}
     </div>
 
@@ -77,4 +77,32 @@
         <small>Si cambias de opinión, puedes volver a la página del producto haciendo clic en "Cancelar".</small>
     </div>
 </div>
+
+<!-- Script para formatear precio con separadores de miles -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para formatear número con separadores de miles
+    function formatearPrecio(numero) {
+        return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Buscar el párrafo que contiene el precio
+    const productInfo = document.querySelector('.product-info');
+    if (productInfo) {
+        const paragrafos = productInfo.querySelectorAll('p');
+        paragrafos.forEach(p => {
+            if (p.textContent.includes('Precio:')) {
+                // Extraer solo los números del texto
+                const match = p.textContent.match(/\d+/);
+                if (match) {
+                    const precioSinFormateo = match[0];
+                    const precioFormateado = formatearPrecio(precioSinFormateo);
+                    // Reemplazar el contenido pero mantener el ícono y COP
+                    p.innerHTML = '<strong>Precio:</strong> <i class="fas fa-dollar-sign"></i>' + precioFormateado + ' COP';
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

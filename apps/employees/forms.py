@@ -521,9 +521,10 @@ class ProductoForm(forms.ModelForm):
             }),
             'precio_inicial': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Precio o valor inicial',
-                'step': '0.01',
+                'placeholder': '0',
+                'step': '1',
                 'min': '0',
+                'inputmode': 'numeric',
             }),
             'imagen': forms.FileInput(attrs={
                 'class': 'form-control',
@@ -551,6 +552,8 @@ class ProductoForm(forms.ModelForm):
         cleaned_data = super().clean()
         tipo = cleaned_data.get('tipo')
         precio = cleaned_data.get('precio_inicial')
+        titulo = cleaned_data.get('titulo')
+        vendedor = cleaned_data.get('vendedor')
 
         # Validar que regalos no tengan precio
         if tipo == 'regalo' and precio:
@@ -567,6 +570,25 @@ class ProductoForm(forms.ModelForm):
         # Validar que el precio sea positivo
         if precio and precio <= 0:
             raise ValidationError('El precio debe ser mayor a 0.')
+
+        # Validar que no exista un producto duplicado del mismo vendedor
+        if titulo and vendedor:
+            from apps.employees.models import Producto
+            # Buscar productos con el mismo título y vendedor
+            duplicado = Producto.objects.filter(
+                titulo__iexact=titulo.strip(),
+                vendedor=vendedor
+            )
+
+            # Si estamos editando, excluir el producto actual
+            if self.instance.pk:
+                duplicado = duplicado.exclude(pk=self.instance.pk)
+
+            if duplicado.exists():
+                raise ValidationError(
+                    f'Ya existe un producto con el título "{titulo}" de este vendedor. '
+                    'Por favor usa un título diferente o edita el producto existente.'
+                )
 
         return cleaned_data
 

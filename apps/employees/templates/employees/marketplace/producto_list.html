@@ -138,7 +138,7 @@
                     </p>
 
                     <!-- Precio -->
-                    <p class="precio">
+                    <p class="precio producto-precio">
                         {% if producto.precio_inicial %}
                         ${{ producto.precio_inicial|floatformat:0 }}
                         {% else %}
@@ -212,4 +212,28 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Script para formatear precios con separadores de miles -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para formatear número con separadores de miles
+    function formatearPrecio(numero) {
+        return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Buscar todos los elementos de precio
+    const precioElements = document.querySelectorAll('.producto-precio');
+    precioElements.forEach(element => {
+        const texto = element.textContent.trim();
+        // Extraer solo los números del texto
+        const match = texto.match(/\d+/);
+        if (match) {
+            const precioSinFormateo = match[0];
+            const precioFormateado = formatearPrecio(precioSinFormateo);
+            // Reemplazar el contenido pero mantener el $ al inicio
+            element.innerHTML = '$' + precioFormateado;
+        }
+    });
+});
+</script>
 {% endblock %}
