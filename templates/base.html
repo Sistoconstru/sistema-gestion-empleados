@@ -43,6 +43,16 @@
                 </ul>
                 <!-- Menú usuario a la derecha -->
                 <ul class="navbar-nav ms-auto">
+                    <!-- Inbox de Mensajes -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'employees:inbox' %}" title="Ver mis conversaciones">
+                            <i class="fas fa-envelope me-1"></i>Mensajes
+                            {% if mensajes_sin_leer %}
+                            <span class="badge bg-info ms-1">{{ mensajes_sin_leer }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle me-1"></i>
