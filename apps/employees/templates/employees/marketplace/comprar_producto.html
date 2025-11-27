@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirmar Compra | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .compra-container {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .producto-resumen {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .producto-titulo-resumen {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    .resumen-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .resumen-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .resumen-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    .resumen-valor {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    .precio-total {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 1rem;
+    }
+    .confirmacion-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ddd;
+    }
+    .formulario-titulo {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+    }
+    .confirmacion-checkbox {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background-color: #f9f9f9;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .confirmacion-checkbox input[type="checkbox"] {
+        width: auto;
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+    .confirmacion-texto {
+        cursor: pointer;
+        flex-grow: 1;
+    }
+    .botones-accion {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .botones-accion .btn {
+        flex-grow: 1;
+    }
+    .info-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid #1976d2;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        color: #1565c0;
+    }
+    .info-box i {
+        margin-right: 0.5rem;
+    }
+    .error-message {
+        background-color: #ffebee;
+        border-left: 4px solid #c62828;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: #b71c1c;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="compra-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:producto_list' %}">Marketplace</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:producto_detail' producto.pk %}">{{ producto.titulo }}</a>
+                </li>
+                <li class="breadcrumb-item active">Confirmar Compra</li>
+            </ol>
+        </nav>
+
+        <!-- Título -->
+        <div class="mb-4">
+            <h1><i class="fas fa-credit-card me-2"></i>Confirmar Compra</h1>
+            <p class="text-muted">Revisa los detalles y confirma tu compra</p>
+        </div>
+
+        <!-- Resumen del Producto -->
+        <div class="producto-resumen">
+            <div class="producto-titulo-resumen">{{ producto.titulo }}</div>
+            <div class="resumen-item">
+                <span class="resumen-label">Vendedor:</span>
+                <span class="resumen-valor">{{ producto.vendedor.nombre_completo }}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Categoría:</span>
+                <span class="resumen-valor">{{ producto.categoria.nombre }}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Descripción:</span>
+                <span class="resumen-valor" style="font-size: 0.9rem;">{{ producto.descripcion|truncatewords:10 }}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Precio:</span>
+                <span class="resumen-valor">${{ producto.precio_inicial|floatformat:0 }}</span>
+            </div>
+            <div class="precio-total">${{ producto.precio_inicial|floatformat:0 }}</div>
+        </div>
+
+        <!-- Información útil -->
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <strong>Información:</strong> Esta es una compra de producto a precio fijo. Al confirmar, se notificará al vendedor y se iniciará el proceso de transacción.
+        </div>
+
+        <!-- Formulario de confirmación -->
+        <div class="confirmacion-form">
+            <div class="formulario-titulo">
+                <i class="fas fa-check-circle me-2"></i>Confirmación de Compra
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Campo de confirmación de precio -->
+                <div class="mb-3">
+                    <label for="{{ form.precio_confirmacion.id_for_label }}" class="form-label">
+                        {{ form.precio_confirmacion.label }}
+                        <span class="text-danger">*</span>
+                    </label>
+                    {{ form.precio_confirmacion }}
+                    {% if form.precio_confirmacion.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.precio_confirmacion.errors %}
+                        {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block mt-1">
+                        Confirma el precio para validar tu compra
+                    </small>
+                </div>
+
+                <!-- Checkbox de confirmación -->
+                <div class="confirmacion-checkbox">
+                    <input type="checkbox" id="confirmo" name="confirmo" required>
+                    <label for="confirmo" class="confirmacion-texto">
+                        Confirmo que deseo comprar este producto a {{ producto.vendedor.nombre_completo }} por ${{ producto.precio_inicial|floatformat:0 }}
+                    </label>
+                </div>
+
+                <!-- Checkbox de términos -->
+                <div class="confirmacion-checkbox">
+                    <input type="checkbox" id="acepto_terminos" name="acepto_terminos" required>
+                    <label for="acepto_terminos" class="confirmacion-texto">
+                        Acepto los términos y condiciones de la transacción
+                    </label>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="botones-accion">
+                    <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-check-circle me-2"></i>Confirmar Compra
+                    </button>
+                </div>
+            </form>
+
+            <!-- Información adicional -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h6 class="mb-3">
+                    <i class="fas fa-shield-alt me-2"></i>Protección del Comprador
+                </h6>
+                <ul class="mb-0 ps-3 text-muted small">
+                    <li>Tu dinero está protegido hasta que confirmes la entrega</li>
+                    <li>Puedes contactar con el vendedor para resolver dudas</li>
+                    <li>Tienes derecho a devolver el producto si no es conforme</li>
+                    <li>El sistema registra todos los detalles de la transacción</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <div class="mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>¿Puedo cancelar la compra después de confirmar?</strong>
+                        <p class="text-muted mb-0">Sí, puedes cancelarla si aún no ha sido aceptada por el vendedor.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>¿Cuánto tiempo tengo para pagar?</strong>
+                        <p class="text-muted mb-0">El vendedor tiene 48 horas para confirmar la transacción.</p>
+                    </div>
+                    <div>
+                        <strong>¿Cómo reporto un problema?</strong>
+                        <p class="text-muted mb-0">Puedes contactar al vendedor a través del chat o reportar el problema en tu perfil.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

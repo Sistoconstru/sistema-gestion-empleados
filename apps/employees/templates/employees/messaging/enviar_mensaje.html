@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Enviar Mensaje | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .mensaje-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    .conversacion-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .header-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header-titulo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .header-participantes {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+    .header-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: rgba(255,255,255,0.2);
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+    }
+    .chat-container {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background-color: #f9f9f9;
+    }
+    .mensaje-grupo {
+        margin-bottom: 1.5rem;
+    }
+    .mensaje-item {
+        display: flex;
+        margin-bottom: 0.75rem;
+        align-items: flex-start;
+    }
+    .mensaje-item.propio {
+        flex-direction: row-reverse;
+    }
+    .mensaje-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #667eea;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 0.75rem;
+        flex-shrink: 0;
+    }
+    .mensaje-contenido {
+        max-width: 60%;
+        background-color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #e0e0e0;
+    }
+    .mensaje-item.propio .mensaje-contenido {
+        background-color: #e3f2fd;
+        border-color: #1976d2;
+    }
+    .mensaje-texto {
+        margin: 0;
+        word-wrap: break-word;
+    }
+    .mensaje-fecha {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.25rem;
+    }
+    .mensaje-archivo {
+        display: inline-block;
+        padding: 0.5rem;
+        background-color: #fff3cd;
+        border-radius: 0.25rem;
+        margin-top: 0.5rem;
+    }
+    .mensaje-archivo a {
+        color: #f57f17;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .mensaje-archivo a:hover {
+        text-decoration: underline;
+    }
+    .formulario-mensaje {
+        border-top: 1px solid #ddd;
+        padding: 1.5rem;
+        background-color: white;
+    }
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+    .section-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    .textarea-wrapper {
+        position: relative;
+    }
+    .textarea-wrapper textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 100px;
+    }
+    .char-count {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.25rem;
+        text-align: right;
+    }
+    .archivo-input-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    .archivo-input {
+        display: none;
+    }
+    .archivo-btn {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border: 2px dashed #667eea;
+        border-radius: 0.5rem;
+        background-color: #f9f9f9;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .archivo-btn:hover {
+        background-color: #f0f0f0;
+        border-color: #764ba2;
+    }
+    .archivo-btn i {
+        margin-right: 0.5rem;
+        color: #667eea;
+    }
+    .archivo-lista {
+        margin-top: 0.75rem;
+    }
+    .archivo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        background-color: #e3f2fd;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .archivo-item i {
+        color: #1976d2;
+        margin-right: 0.5rem;
+    }
+    .archivo-remove {
+        background: none;
+        border: none;
+        color: #c62828;
+        cursor: pointer;
+        padding: 0;
+    }
+    .archivo-remove:hover {
+        color: #b71c1c;
+    }
+    .botones-accion {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .botones-accion .btn {
+        flex-grow: 1;
+    }
+    .error-message {
+        background-color: #ffebee;
+        border-left: 4px solid #c62828;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: #b71c1c;
+        margin-bottom: 1rem;
+    }
+    .info-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid #388e3c;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: #1b5e20;
+        margin-bottom: 1rem;
+    }
+    .sin-mensajes {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #999;
+    }
+    .sin-mensajes i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #ccc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mensaje-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:inbox' %}">Inbox</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:conversacion_detail' conversacion.pk %}">
+                        {% if conversacion.titulo %}
+                            {{ conversacion.titulo }}
+                        {% else %}
+                            {% for p in conversacion.participantes.all %}
+                                {% if p.id != user.empleado.id %}{{ p.nombre_completo }}{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Nuevo Mensaje</li>
+            </ol>
+        </nav>
+
+        <!-- Header de Conversación -->
+        <div class="conversacion-header">
+            <div class="header-info">
+                <div>
+                    <div class="header-titulo">
+                        <i class="fas fa-comments me-2"></i>
+                        {% if conversacion.titulo %}
+                            {{ conversacion.titulo }}
+                        {% else %}
+                            Conversación
+                        {% endif %}
+                    </div>
+                    <div class="header-participantes">
+                        <i class="fas fa-users me-1"></i>
+                        {% for p in conversacion.participantes.all %}
+                            {{ p.nombre_completo }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <span class="header-badge">
+                        <i class="fas fa-comments me-1"></i>
+                        {{ conversacion.mensajes.count }} mensaje{{ conversacion.mensajes.count|pluralize }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {% if conversacion.mensajes.exists %}
+        <!-- Chat con mensajes anteriores -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="mensaje-grupo">
+                    <p class="text-center text-muted small mb-0">
+                        <i class="fas fa-info-circle me-1"></i>Inicio de la conversación
+                    </p>
+                </div>
+
+                {% for mensaje in conversacion.mensajes.all %}
+                <div class="mensaje-item {% if mensaje.remitente.id == user.empleado.id %}propio{% endif %}">
+                    <div class="mensaje-avatar">
+                        {{ mensaje.remitente.nombres|first|upper }}
+                    </div>
+                    <div class="mensaje-contenido">
+                        <p class="mensaje-texto">{{ mensaje.contenido }}</p>
+                        {% if mensaje.archivos_adjuntos %}
+                        <div class="mensaje-archivo">
+                            <a href="{{ mensaje.archivos_adjuntos.url }}" target="_blank">
+                                <i class="fas fa-paperclip me-1"></i>Ver archivo
+                            </a>
+                        </div>
+                        {% endif %}
+                        <div class="mensaje-fecha">
+                            <strong>{{ mensaje.remitente.nombres }}</strong> - {{ mensaje.fecha_creacion|date:"d/m H:i" }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <!-- Sin mensajes previos -->
+        <div class="chat-container">
+            <div class="chat-messages">
+                <div class="sin-mensajes">
+                    <i class="fas fa-comments"></i>
+                    <p>No hay mensajes previos</p>
+                    <p class="small text-muted">Sé el primero en enviar un mensaje</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Formulario para enviar mensaje -->
+        <div class="formulario-mensaje">
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <!-- Campo de contenido -->
+                <div class="form-section">
+                    <label for="{{ form.contenido.id_for_label }}" class="section-label">
+                        <i class="fas fa-pen-square me-1"></i>Tu Mensaje
+                    </label>
+                    <div class="textarea-wrapper">
+                        {{ form.contenido }}
+                    </div>
+                    {% if form.contenido.errors %}
+                    <div class="text-danger small mt-2">
+                        {% for error in form.contenido.errors %}
+                        {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="char-count">
+                        <span id="char-count">0</span> / 5000 caracteres
+                    </div>
+                </div>
+
+                <!-- Campo de archivos -->
+                <div class="form-section">
+                    <label class="section-label">
+                        <i class="fas fa-paperclip me-1"></i>Archivos Adjuntos (Opcional)
+                    </label>
+                    <div class="archivo-input-wrapper">
+                        <label for="{{ form.archivos_adjuntos.id_for_label }}" class="archivo-btn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Haz clic para adjuntar o arrastra archivos aquí
+                        </label>
+                        {{ form.archivos_adjuntos }}
+                    </div>
+                    {% if form.archivos_adjuntos.errors %}
+                    <div class="text-danger small mt-2">
+                        {% for error in form.archivos_adjuntos.errors %}
+                        {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block mt-2">
+                        Formatos permitidos: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (máximo 5MB)
+                    </small>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="botones-accion">
+                    <a href="{% url 'employees:conversacion_detail' conversacion.pk %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Información -->
+        <div class="info-box mt-4">
+            <i class="fas fa-lightbulb me-2"></i>
+            <strong>Consejos:</strong>
+            <ul class="mb-0 mt-2 ps-3">
+                <li>Mantén un tono profesional en todos tus mensajes</li>
+                <li>Los mensajes son visible para todos los participantes</li>
+                <li>Puedes adjuntar archivos importante relacionados con la conversación</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Contador de caracteres
+    const contenidoField = document.getElementById('{{ form.contenido.id_for_label }}');
+    const charCount = document.getElementById('char-count');
+
+    contenidoField.addEventListener('input', function() {
+        charCount.textContent = this.value.length;
+    });
+
+    // Auto-scroll al final del chat
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Drag and drop para archivos
+    const archivoBtn = document.querySelector('.archivo-btn');
+    const archivoInput = document.getElementById('{{ form.archivos_adjuntos.id_for_label }}');
+
+    if (archivoBtn && archivoInput) {
+        archivoBtn.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#e8e8e8';
+        });
+
+        archivoBtn.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#f9f9f9';
+        });
+
+        archivoBtn.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#f9f9f9';
+            archivoInput.files = e.dataTransfer.files;
+        });
+    }
+});
+</script>
+{% endblock %}

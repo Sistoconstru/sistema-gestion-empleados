@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Regalar Producto | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .regalo-container {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .producto-resumen {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .producto-titulo-resumen {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    .resumen-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .resumen-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .resumen-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    .resumen-valor {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    .regalo-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ddd;
+    }
+    .formulario-titulo {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+    }
+    .form-section {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .section-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    .info-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid #1976d2;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        color: #1565c0;
+    }
+    .info-box i {
+        margin-right: 0.5rem;
+    }
+    .error-message {
+        background-color: #ffebee;
+        border-left: 4px solid #c62828;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: #b71c1c;
+        margin-bottom: 1.5rem;
+    }
+    .participante-card {
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 0.5rem;
+    }
+    .participante-card:hover {
+        border-color: #667eea;
+        background-color: #f9f9f9;
+    }
+    .participante-card input[type="radio"] {
+        width: auto;
+        margin-right: 1rem;
+    }
+    .participante-nombre {
+        font-weight: 600;
+        color: #333;
+    }
+    .participante-cargo {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+    .botones-accion {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .botones-accion .btn {
+        flex-grow: 1;
+    }
+    .icon-regalo {
+        color: #e91e63;
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="regalo-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:producto_list' %}">Marketplace</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:producto_detail' producto.pk %}">{{ producto.titulo }}</a>
+                </li>
+                <li class="breadcrumb-item active">Regalar Producto</li>
+            </ol>
+        </nav>
+
+        <!-- Título -->
+        <div class="mb-4">
+            <h1><i class="fas fa-gift icon-regalo me-2"></i>Regalar Producto</h1>
+            <p class="text-muted">Selecciona a quién deseas regalar este producto</p>
+        </div>
+
+        <!-- Resumen del Producto -->
+        <div class="producto-resumen">
+            <div class="producto-titulo-resumen">{{ producto.titulo }}</div>
+            <div class="resumen-item">
+                <span class="resumen-label">Descripción:</span>
+                <span class="resumen-valor" style="font-size: 0.9rem;">{{ producto.descripcion|truncatewords:10 }}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Categoría:</span>
+                <span class="resumen-valor">{{ producto.categoria.nombre }}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Estado:</span>
+                <span class="resumen-valor">{{ producto.get_estado_display }}</span>
+            </div>
+        </div>
+
+        <!-- Información útil -->
+        <div class="info-box">
+            <i class="fas fa-heart"></i>
+            <strong>Información:</strong> Al regalar este producto, el receptor será notificado y podrá aceptar o rechazar el regalo.
+        </div>
+
+        <!-- Formulario de regalo -->
+        <div class="regalo-form">
+            <div class="formulario-titulo">
+                <i class="fas fa-user-plus me-2"></i>Selecciona Receptor
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Selección de Receptor -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-circle me-2"></i>Receptor del Regalo
+                    </div>
+
+                    {% if form.receptor_id.errors %}
+                    <div class="text-danger small mb-3">
+                        {% for error in form.receptor_id.errors %}
+                        {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {{ form.receptor_id }}
+                        {% if form.receptor_id.help_text %}
+                        <small class="form-text text-muted d-block mt-2">{{ form.receptor_id.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Mensaje Opcional -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-comment-dots me-2"></i>Mensaje Personalizado (Opcional)
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.mensaje.id_for_label }}" class="form-label">
+                            {{ form.mensaje.label }}
+                        </label>
+                        {{ form.mensaje }}
+                        {% if form.mensaje.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.mensaje.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            Puedes escribir un mensaje personal que verá el receptor del regalo
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Confirmación -->
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="confirmar_regalo" name="confirmar_regalo" class="form-check-input" required>
+                    <label class="form-check-label" for="confirmar_regalo">
+                        Confirmo que deseo regalar este producto a <strong id="nombre_receptor">la persona seleccionada</strong>
+                    </label>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="botones-accion">
+                    <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fas fa-gift me-2"></i>Confirmar Regalo
+                    </button>
+                </div>
+            </form>
+
+            <!-- Información adicional -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h6 class="mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Cómo Funciona
+                </h6>
+                <ul class="mb-0 ps-3 text-muted small">
+                    <li>El receptor recibe una notificación del regalo</li>
+                    <li>Tiene tiempo para aceptar o rechazar el regalo</li>
+                    <li>Si acepta, el producto pasa a su inventario</li>
+                    <li>Puedes ver el estado en tu historial de regalos</li>
+                    <li>Puedes incluir un mensaje personal opcional</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <div class="mt-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>¿Qué pasa si el receptor rechaza el regalo?</strong>
+                        <p class="text-muted mb-0">El producto vuelve a tu inventario y puedes intentar regalarlo a otra persona.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>¿Puede el receptor vender un producto regalado?</strong>
+                        <p class="text-muted mb-0">Sí, una vez aceptado el regalo, el receptor puede hacer con él lo que quiera.</p>
+                    </div>
+                    <div>
+                        <strong>¿Hay límite de regalos?</strong>
+                        <p class="text-muted mb-0">No hay límite, puedes regalar tantos productos como desees.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const receptorSelect = document.getElementById('{{ form.receptor_id.id_for_label }}');
+    const nombreReceptor = document.getElementById('nombre_receptor');
+
+    receptorSelect.addEventListener('change', function() {
+        const option = this.options[this.selectedIndex];
+        nombreReceptor.textContent = option.text || 'la persona seleccionada';
+    });
+
+    // Establecer el nombre inicial si hay selección
+    if (receptorSelect.value) {
+        const option = receptorSelect.options[receptorSelect.selectedIndex];
+        nombreReceptor.textContent = option.text;
+    }
+});
+</script>
+{% endblock %}

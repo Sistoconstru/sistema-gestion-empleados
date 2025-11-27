@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Realizar Puja | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .puja-container {
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+    .subasta-info {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .info-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .info-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+    .info-valor {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    .countdown {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .puja-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ddd;
+    }
+    .form-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+    }
+    .puja-tipo {
+        margin-bottom: 2rem;
+    }
+    .puja-tipo-titulo {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    .tipo-radio {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .tipo-radio:hover {
+        border-color: #667eea;
+        background-color: #f9f9f9;
+    }
+    .tipo-radio input[type="radio"] {
+        width: auto;
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+    .tipo-contenido {
+        flex-grow: 1;
+    }
+    .tipo-titulo {
+        font-weight: 600;
+        color: #333;
+    }
+    .tipo-descripcion {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+    .puja-campos {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .info-box {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        color: #856404;
+    }
+    .error-message {
+        background-color: #ffebee;
+        border-left: 4px solid #c62828;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: #b71c1c;
+        margin-bottom: 1.5rem;
+    }
+    .puja-historia {
+        margin-top: 2rem;
+    }
+    .puja-historia-titulo {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #ddd;
+    }
+    .puja-item {
+        padding: 0.75rem;
+        background: white;
+        border-left: 3px solid #667eea;
+        margin-bottom: 0.5rem;
+        border-radius: 0.25rem;
+    }
+    .puja-item-header {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+    .puja-item-meta {
+        font-size: 0.85rem;
+        color: #999;
+    }
+    .puja-item-monto {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #28a745;
+        margin-top: 0.25rem;
+    }
+    .botones-accion {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .botones-accion .btn {
+        flex-grow: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="puja-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:subasta_list' %}">Subastas</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'employees:subasta_detail' subasta.pk %}">{{ subasta.producto.titulo }}</a>
+                </li>
+                <li class="breadcrumb-item active">Realizar Puja</li>
+            </ol>
+        </nav>
+
+        <!-- Título -->
+        <div class="mb-4">
+            <h1><i class="fas fa-gavel me-2"></i>Realizar Puja</h1>
+            <p class="text-muted">Participa en la subasta y pujas por el producto</p>
+        </div>
+
+        <!-- Información de la Subasta -->
+        <div class="subasta-info">
+            <div class="info-title">{{ subasta.producto.titulo }}</div>
+            <div class="info-row">
+                <span class="info-label">Precio Actual:</span>
+                <span class="info-valor">${{ subasta.precio_actual|floatformat:0 }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Incremento Mínimo:</span>
+                <span class="info-valor">${{ subasta.incremento_minimo|floatformat:0 }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Número de Pujas:</span>
+                <span class="info-valor">{{ subasta.pujas.count }}</span>
+            </div>
+            {% if subasta.pujador_actual %}
+            <div class="info-row">
+                <span class="info-label">Pujador Actual:</span>
+                <span class="info-valor">{{ subasta.pujador_actual.nombre_completo }}</span>
+            </div>
+            {% endif %}
+            <div class="countdown">
+                <i class="fas fa-clock me-2"></i>Finaliza: {{ subasta.fecha_fin|date:"d/m/Y H:i" }}
+            </div>
+        </div>
+
+        <!-- Información importante -->
+        <div class="info-box">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Importante:</strong> Al pujar, aceptas que si ganas, debes completar la compra del producto.
+        </div>
+
+        <!-- Errores generales -->
+        {% if form.non_field_errors %}
+        <div class="error-message">
+            {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Formulario de Puja -->
+        <div class="puja-form">
+            <div class="form-title">
+                <i class="fas fa-hand-paper me-2"></i>Nueva Puja
+            </div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Tipo de Puja -->
+                <div class="puja-tipo">
+                    <div class="puja-tipo-titulo">Tipo de Puja</div>
+
+                    <!-- Puja Manual -->
+                    <label class="tipo-radio">
+                        <input type="radio" name="tipo_puja" value="manual" checked onchange="mostrarCamposPuja('manual')">
+                        <div class="tipo-contenido">
+                            <div class="tipo-titulo">Puja Manual</div>
+                            <div class="tipo-descripcion">Especifica exactamente cuánto deseas pujar ahora</div>
+                        </div>
+                    </label>
+
+                    <!-- Puja Automática -->
+                    <label class="tipo-radio">
+                        <input type="radio" name="tipo_puja" value="automatica" onchange="mostrarCamposPuja('automatica')">
+                        <div class="tipo-contenido">
+                            <div class="tipo-titulo">Puja Automática</div>
+                            <div class="tipo-descripcion">Establece un límite máximo y el sistema pujará automáticamente por ti</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Campos de Puja Manual -->
+                <div id="campos-manual" class="puja-campos">
+                    <div class="mb-3">
+                        <label for="{{ form.monto.id_for_label }}" class="form-label">
+                            {{ form.monto.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ form.monto }}
+                        </div>
+                        {% if form.monto.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.monto.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            Mínimo: ${{ monto_minimo|floatformat:0 }}
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Campos de Puja Automática -->
+                <div id="campos-automatica" class="puja-campos" style="display: none;">
+                    <div class="mb-3">
+                        <label for="{{ form.monto_maximo.id_for_label }}" class="form-label">
+                            {{ form.monto_maximo.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ form.monto_maximo }}
+                        </div>
+                        {% if form.monto_maximo.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.monto_maximo.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            El sistema pujará automáticamente hasta este monto
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="botones-accion">
+                    <a href="{% url 'employees:subasta_detail' subasta.pk %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="fas fa-gavel me-2"></i>Realizar Puja
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Historial de Pujas -->
+        {% if historial_pujas %}
+        <div class="puja-historia">
+            <div class="puja-historia-titulo">
+                <i class="fas fa-history me-2"></i>Últimas 5 Pujas
+            </div>
+            {% for puja in historial_pujas|slice:":5" %}
+            <div class="puja-item">
+                <div class="puja-item-header">
+                    <i class="fas fa-user-circle me-1"></i>{{ puja.pujador.nombre_completo }}
+                </div>
+                <div class="puja-item-meta">
+                    {{ puja.fecha_creacion|date:"d/m/Y H:i" }}
+                    {% if puja.puja_automatica %}
+                    <span class="badge bg-info ms-2">Automática</span>
+                    {% endif %}
+                </div>
+                <div class="puja-item-monto">${{ puja.monto|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Consejos -->
+        <div class="mt-4 p-3 bg-light rounded">
+            <h6 class="mb-3">
+                <i class="fas fa-lightbulb me-2"></i>Consejos para Pujar
+            </h6>
+            <ul class="mb-0 ps-3 text-muted small">
+                <li>Establece un presupuesto máximo antes de comenzar a pujar</li>
+                <li>La puja automática te ayuda a no perder la subasta</li>
+                <li>Las pujas no pueden ser canceladas, sé estratégico</li>
+                <li>Puedes contactar al vendedor para preguntas sobre el producto</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+function mostrarCamposPuja(tipo) {
+    const manual = document.getElementById('campos-manual');
+    const automatica = document.getElementById('campos-automatica');
+
+    if (tipo === 'manual') {
+        manual.style.display = 'block';
+        automatica.style.display = 'none';
+        document.getElementById('id_monto').required = true;
+        document.getElementById('id_monto_maximo').required = false;
+    } else {
+        manual.style.display = 'none';
+        automatica.style.display = 'block';
+        document.getElementById('id_monto').required = false;
+        document.getElementById('id_monto_maximo').required = true;
+    }
+}
+</script>
+{% endblock %}
