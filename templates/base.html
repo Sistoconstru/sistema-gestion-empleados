@@ -47,8 +47,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'employees:inbox' %}" title="Ver mis conversaciones">
                             <i class="fas fa-envelope me-1"></i>Mensajes
-                            {% if mensajes_sin_leer %}
-                            <span class="badge bg-info ms-1">{{ mensajes_sin_leer }}</span>
+                            {% if mensajes_sin_leer > 0 %}
+                            <span class="badge bg-danger ms-1">{{ mensajes_sin_leer }}</span>
                             {% endif %}
                         </a>
                     </li>
