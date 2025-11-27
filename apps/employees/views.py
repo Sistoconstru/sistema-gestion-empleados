@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse, HttpResponse
@@ -26,8 +26,14 @@ from django.db import transaction
 
 # Importaciones locales
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
-from .models import Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo
-from .forms import EmpleadoForm, BusquedaEmpleadoForm
+from .models import (
+    Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
+    Producto, Venta, Subasta, PujaSubasta, Regalo, Conversacion, Mensaje, Categoria
+)
+from .forms import (
+    EmpleadoForm, BusquedaEmpleadoForm,
+    ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm
+)
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
 from apps.evaluations.models import AsignacionEvaluacion
@@ -2172,3 +2178,396 @@ def obtener_jefes_potenciales(request, cargo_id):
             'error': str(e),
             'mensaje': 'Error al obtener los jefes potenciales'
         }, status=500)
+
+
+# =============================================================================
+# MARKETPLACE - PRODUCTOS
+# =============================================================================
+
+class ProductoListView(LoginRequiredMixin, ListView):
+    """Listar productos del marketplace con filtros"""
+    model = Producto
+    paginate_by = 12
+    context_object_name = 'productos'
+    template_name = 'employees/marketplace/producto_list.html'
+
+    def get_queryset(self):
+        """Filtrar productos activos y visibles"""
+        queryset = Producto.objects.filter(estado='activo').select_related('vendedor', 'categoria')
+
+        # Filtro por tipo
+        tipo = self.request.GET.get('tipo')
+        if tipo in ['venta', 'regalo', 'subasta']:
+            queryset = queryset.filter(tipo=tipo)
+
+        # Filtro por categoría
+        categoria_id = self.request.GET.get('categoria')
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+
+        # Búsqueda por título o descripción
+        search = self.request.GET.get('search')
+        if search:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(titulo__icontains=search) | Q(descripcion__icontains=search)
+            )
+
+        return queryset.order_by('-fecha_creacion')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.filter(activa=True)
+        context['tipos'] = Producto.TIPO_CHOICES
+        context['search'] = self.request.GET.get('search', '')
+        context['tipo_filter'] = self.request.GET.get('tipo', '')
+        context['categoria_filter'] = self.request.GET.get('categoria', '')
+        return context
+
+
+class ProductoDetailView(LoginRequiredMixin, DetailView):
+    """Ver detalles de un producto"""
+    model = Producto
+    context_object_name = 'producto'
+    template_name = 'employees/marketplace/producto_detail.html'
+
+    def get_queryset(self):
+        return Producto.objects.select_related('vendedor', 'categoria')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        producto = self.object
+        usuario = self.request.user.empleado
+
+        # Agregar información según tipo
+        if producto.tipo == 'venta':
+            context['puede_comprar'] = usuario.id != producto.vendedor.id
+        elif producto.tipo == 'subasta':
+            context['subasta'] = producto.subastas.filter(estado='activa').first()
+        elif producto.tipo == 'regalo':
+            context['puede_recibir'] = usuario.id != producto.vendedor.id
+
+        return context
+
+
+class CrearProductoView(LoginRequiredMixin, CreateView):
+    """Crear nuevo producto"""
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'employees/marketplace/producto_form.html'
+
+    def form_valid(self, form):
+        """Asignar vendedor automáticamente"""
+        form.instance.vendedor = self.request.user.empleado
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
+
+
+class MisProductosView(LoginRequiredMixin, ListView):
+    """Mis productos creados"""
+    model = Producto
+    paginate_by = 12
+    context_object_name = 'productos'
+    template_name = 'employees/marketplace/mis_productos.html'
+
+    def get_queryset(self):
+        return Producto.objects.filter(
+            vendedor=self.request.user.empleado
+        ).select_related('categoria').order_by('-fecha_creacion')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empleado = self.request.user.empleado
+        context['total_productos'] = self.get_queryset().count()
+        context['productos_activos'] = self.get_queryset().filter(estado='activo').count()
+        context['productos_vendidos'] = self.get_queryset().filter(estado='vendido').count()
+        return context
+
+
+class MisComprasView(LoginRequiredMixin, ListView):
+    """Mi historial de compras"""
+    model = Venta
+    paginate_by = 12
+    context_object_name = 'compras'
+    template_name = 'employees/marketplace/mis_compras.html'
+
+    def get_queryset(self):
+        return Venta.objects.filter(
+            comprador=self.request.user.empleado
+        ).select_related('producto', 'vendedor').order_by('-fecha_venta')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        context['total_compras'] = queryset.count()
+        context['total_gastado'] = sum(v.precio_final for v in queryset)
+        context['compras_completadas'] = queryset.filter(estado='completada').count()
+        return context
+
+
+class ComprarProductoView(LoginRequiredMixin, CreateView):
+    """Flujo de compra de un producto"""
+    model = Venta
+    form_class = VentaForm
+    template_name = 'employees/marketplace/comprar_producto.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['vendedor'] = self.get_producto().vendedor
+        kwargs['comprador'] = self.request.user.empleado
+        return kwargs
+
+    def get_producto(self):
+        """Obtener producto a comprar"""
+        if not hasattr(self, '_producto'):
+            self._producto = get_object_or_404(Producto, pk=self.kwargs['producto_pk'])
+        return self._producto
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['producto'] = self.get_producto()
+        return context
+
+    def form_valid(self, form):
+        """Procesar compra"""
+        form.instance.producto = self.get_producto()
+        form.instance.vendedor = self.get_producto().vendedor
+        form.instance.comprador = self.request.user.empleado
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('employees:mis_compras')
+
+
+# =============================================================================
+# MARKETPLACE - SUBASTAS
+# =============================================================================
+
+class SubastaListView(LoginRequiredMixin, ListView):
+    """Listar subastas activas"""
+    model = Subasta
+    paginate_by = 12
+    context_object_name = 'subastas'
+    template_name = 'employees/marketplace/subasta_list.html'
+
+    def get_queryset(self):
+        return Subasta.objects.filter(
+            estado='activa'
+        ).select_related('producto', 'vendedor').order_by('-fecha_inicio')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_subastas'] = self.get_queryset().count()
+        return context
+
+
+class PujarView(LoginRequiredMixin, CreateView):
+    """Realizar puja en subasta"""
+    model = PujaSubasta
+    form_class = PujaForm
+    template_name = 'employees/marketplace/puja_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['subasta'] = self.get_subasta()
+        kwargs['pujador'] = self.request.user.empleado
+        return kwargs
+
+    def get_subasta(self):
+        """Obtener subasta"""
+        if not hasattr(self, '_subasta'):
+            self._subasta = get_object_or_404(Subasta, pk=self.kwargs['subasta_pk'])
+        return self._subasta
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        subasta = self.get_subasta()
+        context['subasta'] = subasta
+        context['producto'] = subasta.producto
+        context['precio_minimo'] = subasta.precio_actual + subasta.incremento_minimo
+        return context
+
+    def form_valid(self, form):
+        """Procesar puja"""
+        subasta = self.get_subasta()
+        form.instance.subasta = subasta
+        form.instance.pujador = self.request.user.empleado
+        form.instance.creado_por = self.request.user
+
+        # Guardar puja
+        response = super().form_valid(form)
+
+        # Actualizar precio actual de la subasta
+        subasta.precio_actual = form.instance.monto
+        subasta.pujador_actual = self.request.user.empleado
+        subasta.save()
+
+        return response
+
+    def get_success_url(self):
+        return reverse('employees:subasta_detail', kwargs={'pk': self.kwargs['subasta_pk']})
+
+
+class SubastaDetailView(LoginRequiredMixin, DetailView):
+    """Ver detalles de subasta"""
+    model = Subasta
+    context_object_name = 'subasta'
+    template_name = 'employees/marketplace/subasta_detail.html'
+
+    def get_queryset(self):
+        return Subasta.objects.select_related('producto', 'vendedor')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        subasta = self.object
+        context['pujas'] = subasta.pujas.select_related('pujador').order_by('-fecha_creacion')
+        context['precio_minimo'] = subasta.precio_actual + subasta.incremento_minimo
+        context['puede_pujar'] = (
+            self.request.user.empleado.id != subasta.vendedor.id and
+            self.request.user.empleado.estado.codigo in ['999', 'ACTIVO']
+        )
+        return context
+
+
+# =============================================================================
+# MARKETPLACE - REGALOS
+# =============================================================================
+
+class RegalarProductoView(LoginRequiredMixin, CreateView):
+    """Regalar un producto"""
+    model = Regalo
+    form_class = RegaloForm
+    template_name = 'employees/marketplace/regalar_producto.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['donante'] = self.request.user.empleado
+        return kwargs
+
+    def get_producto(self):
+        """Obtener producto a regalar"""
+        if not hasattr(self, '_producto'):
+            self._producto = get_object_or_404(Producto, pk=self.kwargs['producto_pk'])
+        return self._producto
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['producto'] = self.get_producto()
+        return context
+
+    def form_valid(self, form):
+        """Procesar regalo"""
+        form.instance.producto = self.get_producto()
+        form.instance.donante = self.request.user.empleado
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('employees:mis_productos')
+
+
+# =============================================================================
+# MESSAGING - CONVERSACIONES
+# =============================================================================
+
+class InboxView(LoginRequiredMixin, ListView):
+    """Inbox de conversaciones"""
+    model = Conversacion
+    paginate_by = 20
+    context_object_name = 'conversaciones'
+    template_name = 'employees/messaging/inbox.html'
+
+    def get_queryset(self):
+        """Conversaciones del usuario actual"""
+        return Conversacion.objects.filter(
+            participantes=self.request.user.empleado
+        ).exclude(
+            archivada=True
+        ).select_related('creado_por').prefetch_related('participantes').order_by('-fecha_ultima_actividad')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_conversaciones'] = self.get_queryset().count()
+        return context
+
+
+class ConversacionDetailView(LoginRequiredMixin, DetailView):
+    """Ver conversación detallada"""
+    model = Conversacion
+    context_object_name = 'conversacion'
+    template_name = 'employees/messaging/conversacion_detail.html'
+
+    def get_queryset(self):
+        """Solo conversaciones donde es participante"""
+        return Conversacion.objects.filter(
+            participantes=self.request.user.empleado
+        ).prefetch_related('participantes', 'mensajes')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        conversacion = self.object
+        context['mensajes'] = conversacion.mensajes.select_related('remitente').order_by('fecha_creacion')
+        context['form'] = MensajeForm()
+        return context
+
+
+class IniciarConversacionView(LoginRequiredMixin, CreateView):
+    """Iniciar nueva conversación"""
+    model = Conversacion
+    form_class = ConversacionForm
+    template_name = 'employees/messaging/iniciar_conversacion.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['usuario_actual'] = self.request.user.empleado
+        return kwargs
+
+    def form_valid(self, form):
+        """Crear conversación con participantes"""
+        form.instance.creado_por = self.request.user
+        response = super().form_valid(form)
+
+        # Agregar participantes
+        participante = form.cleaned_data['participante_id']
+        self.object.participantes.add(self.request.user.empleado, participante)
+
+        return response
+
+    def get_success_url(self):
+        return reverse('employees:conversacion_detail', kwargs={'pk': self.object.pk})
+
+
+class EnviarMensajeView(LoginRequiredMixin, CreateView):
+    """Enviar mensaje en conversación"""
+    model = Mensaje
+    form_class = MensajeForm
+    template_name = 'employees/messaging/enviar_mensaje.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['remitente'] = self.request.user.empleado
+        return kwargs
+
+    def get_conversacion(self):
+        """Obtener conversación"""
+        if not hasattr(self, '_conversacion'):
+            self._conversacion = get_object_or_404(
+                Conversacion,
+                pk=self.kwargs['conversacion_pk'],
+                participantes=self.request.user.empleado
+            )
+        return self._conversacion
+
+    def form_valid(self, form):
+        """Guardar mensaje"""
+        form.instance.conversacion = self.get_conversacion()
+        form.instance.remitente = self.request.user.empleado
+        form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('employees:conversacion_detail', kwargs={'pk': self.kwargs['conversacion_pk']})

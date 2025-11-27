@@ -38,4 +38,34 @@ urlpatterns = [
     
     # Historial de cargos (para futuras funcionalidades)
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),
+
+    # =============================================================================
+    # MARKETPLACE - PRODUCTOS
+    # =============================================================================
+    path('marketplace/productos/', views.ProductoListView.as_view(), name='producto_list'),
+    path('marketplace/productos/crear/', views.CrearProductoView.as_view(), name='crear_producto'),
+    path('marketplace/productos/<uuid:pk>/', views.ProductoDetailView.as_view(), name='producto_detail'),
+    path('marketplace/mis-productos/', views.MisProductosView.as_view(), name='mis_productos'),
+    path('marketplace/mis-compras/', views.MisComprasView.as_view(), name='mis_compras'),
+    path('marketplace/productos/<uuid:producto_pk>/comprar/', views.ComprarProductoView.as_view(), name='comprar_producto'),
+
+    # =============================================================================
+    # MARKETPLACE - SUBASTAS
+    # =============================================================================
+    path('marketplace/subastas/', views.SubastaListView.as_view(), name='subasta_list'),
+    path('marketplace/subastas/<uuid:pk>/', views.SubastaDetailView.as_view(), name='subasta_detail'),
+    path('marketplace/subastas/<uuid:subasta_pk>/pujar/', views.PujarView.as_view(), name='pujar'),
+
+    # =============================================================================
+    # MARKETPLACE - REGALOS
+    # =============================================================================
+    path('marketplace/productos/<uuid:producto_pk>/regalar/', views.RegalarProductoView.as_view(), name='regalar_producto'),
+
+    # =============================================================================
+    # MESSAGING - CONVERSACIONES
+    # =============================================================================
+    path('mensajeria/inbox/', views.InboxView.as_view(), name='inbox'),
+    path('mensajeria/iniciar/', views.IniciarConversacionView.as_view(), name='iniciar_conversacion'),
+    path('mensajeria/conversacion/<uuid:pk>/', views.ConversacionDetailView.as_view(), name='conversacion_detail'),
+    path('mensajeria/conversacion/<uuid:conversacion_pk>/mensaje/', views.EnviarMensajeView.as_view(), name='enviar_mensaje'),
 ]
