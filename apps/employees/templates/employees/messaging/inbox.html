@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inbox - Mensajes | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .conversacion-item {
+        cursor: pointer;
+        transition: background-color 0.2s;
+        padding: 1rem;
+        border-left: 4px solid transparent;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .conversacion-item:hover {
+        background-color: #f5f5f5;
+        border-left-color: #667eea;
+    }
+    .conversacion-item.activa {
+        background-color: #e3f2fd;
+        border-left-color: #667eea;
+    }
+    .conversacion-titulo {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+    .conversacion-preview {
+        font-size: 0.9rem;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .conversacion-fecha {
+        font-size: 0.85rem;
+        color: #999;
+    }
+    .badge-contexto {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        margin-right: 0.5rem;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+    .empty-state i {
+        font-size: 4rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Header -->
+        <div class="col-12 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-inbox me-2"></i>Mensajes</h1>
+                    <p class="text-muted mb-0">
+                        Total de conversaciones: <strong>{{ total_conversaciones }}</strong>
+                    </p>
+                </div>
+                <a href="{% url 'employees:iniciar_conversacion' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Nueva Conversación
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if conversaciones %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for conversacion in conversaciones %}
+                        <a href="{% url 'employees:conversacion_detail' conversacion.pk %}"
+                           class="conversacion-item list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <!-- Título o participantes -->
+                                    <h6 class="conversacion-titulo">
+                                        {% if conversacion.titulo %}
+                                        {{ conversacion.titulo }}
+                                        {% else %}
+                                        {% for p in conversacion.participantes.all %}
+                                            {% if p.id != user.empleado.id %}
+                                            {{ p.nombre_completo }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% endif %}
+                                    </h6>
+
+                                    <!-- Contexto -->
+                                    <div class="mb-2">
+                                        <span class="badge badge-contexto
+                                            {% if conversacion.contexto == 'venta' %}bg-success
+                                            {% elif conversacion.contexto == 'subasta' %}bg-warning
+                                            {% elif conversacion.contexto == 'regalo' %}bg-info
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ conversacion.get_contexto_display }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Vista previa del último mensaje -->
+                                    {% if conversacion.mensajes.first %}
+                                    <p class="conversacion-preview mb-0">
+                                        <strong>{{ conversacion.mensajes.first.remitente.nombres }}:</strong>
+                                        {{ conversacion.mensajes.first.contenido|truncatewords:10 }}
+                                    </p>
+                                    {% else %}
+                                    <p class="conversacion-preview mb-0 text-muted">
+                                        <em>Sin mensajes aún</em>
+                                    </p>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Fecha -->
+                                <div class="text-end ms-3">
+                                    <div class="conversacion-fecha">
+                                        {{ conversacion.fecha_ultima_actividad|date:"d/m H:i" }}
+                                    </div>
+
+                                    <!-- Badge si está archivada -->
+                                    {% if conversacion.archivada %}
+                                    <span class="badge bg-secondary mt-2">
+                                        <i class="fas fa-archive me-1"></i>Archivada
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paginación -->
+            {% if is_paginated %}
+            <nav aria-label="Paginación" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Sin conversaciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h4>No hay conversaciones</h4>
+                    <p class="text-muted mb-4">Inicia una nueva conversación para comenzar a chatear</p>
+                    <a href="{% url 'employees:iniciar_conversacion' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Nueva Conversación
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

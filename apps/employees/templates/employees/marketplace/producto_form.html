@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Producto | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background-color: #f9f9f9;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+    }
+    .help-text {
+        font-size: 0.875rem;
+        color: #666;
+    }
+    .form-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>
+                <i class="fas fa-{% if form.instance.pk %}edit{% else %}plus-circle{% endif %} me-2"></i>
+                {% if form.instance.pk %}Editar Producto{% else %}Crear Nuevo Producto{% endif %}
+            </h1>
+            <p class="text-muted">Completa los campos para {% if form.instance.pk %}actualizar{% else %}crear{% endif %} tu producto</p>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <!-- Información General -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-info-circle me-2"></i>Información General
+                    </h5>
+
+                    <!-- Título -->
+                    <div class="mb-3">
+                        <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                            {{ form.titulo.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.titulo }}
+                        {% if form.titulo.errors %}
+                        <div class="form-error">
+                            {% for error in form.titulo.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.titulo.help_text %}
+                        <small class="form-text text-muted d-block mt-1">{{ form.titulo.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-3">
+                        <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                            {{ form.descripcion.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.descripcion }}
+                        {% if form.descripcion.errors %}
+                        <div class="form-error">
+                            {% for error in form.descripcion.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.descripcion.help_text %}
+                        <small class="form-text text-muted d-block mt-1">{{ form.descripcion.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Categoría -->
+                    <div class="mb-3">
+                        <label for="{{ form.categoria.id_for_label }}" class="form-label">
+                            {{ form.categoria.label }}
+                        </label>
+                        {{ form.categoria }}
+                        {% if form.categoria.errors %}
+                        <div class="form-error">
+                            {% for error in form.categoria.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tipo de Oferta -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-tag me-2"></i>Tipo de Oferta
+                    </h5>
+
+                    <!-- Tipo -->
+                    <div class="mb-3">
+                        <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                            {{ form.tipo.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.tipo }}
+                        {% if form.tipo.errors %}
+                        <div class="form-error">
+                            {% for error in form.tipo.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            <strong>Venta:</strong> Vender a un precio fijo |
+                            <strong>Subasta:</strong> Vender al mejor postor |
+                            <strong>Regalo:</strong> Regalar sin costo
+                        </small>
+                    </div>
+
+                    <!-- Precio Inicial -->
+                    <div class="mb-3">
+                        <label for="{{ form.precio_inicial.id_for_label }}" class="form-label">
+                            {{ form.precio_inicial.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ form.precio_inicial }}
+                        </div>
+                        {% if form.precio_inicial.errors %}
+                        <div class="form-error">
+                            {% for error in form.precio_inicial.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            Precio para venta o valor inicial para subasta (no aplica para regalos)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-image me-2"></i>Imagen
+                    </h5>
+
+                    <div class="mb-3">
+                        <label for="{{ form.imagen.id_for_label }}" class="form-label">
+                            {{ form.imagen.label }}
+                        </label>
+
+                        {% if form.instance.imagen %}
+                        <div class="mb-2">
+                            <img src="{{ form.instance.imagen.url }}" alt="Imagen actual" class="img-thumbnail" style="max-height: 200px;">
+                            <p class="text-muted small mt-2">Imagen actual</p>
+                        </div>
+                        {% endif %}
+
+                        {{ form.imagen }}
+                        {% if form.imagen.errors %}
+                        <div class="form-error">
+                            {% for error in form.imagen.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Formatos permitidos: JPG, PNG, GIF (máximo 5MB)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Visibilidad -->
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-eye me-2"></i>Visibilidad
+                    </h5>
+
+                    <div class="mb-3">
+                        <label for="{{ form.visible_para.id_for_label }}" class="form-label">
+                            {{ form.visible_para.label }}
+                        </label>
+                        <p class="text-muted small mb-2">
+                            Selecciona a quién puede ver este producto (deja sin seleccionar para que todos lo vean)
+                        </p>
+                        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 1rem; border-radius: 0.25rem;">
+                            {{ form.visible_para }}
+                        </div>
+                        {% if form.visible_para.errors %}
+                        <div class="form-error">
+                            {% for error in form.visible_para.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h5>Errores encontrados:</h5>
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Botones de acción -->
+                <div class="d-flex gap-2 mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                        <i class="fas fa-save me-2"></i>
+                        {% if form.instance.pk %}Guardar Cambios{% else %}Crear Producto{% endif %}
+                    </button>
+                    <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para manejo de tipo de producto -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoSelect = document.getElementById('{{ form.tipo.id_for_label }}');
+    const precioField = document.getElementById('{{ form.precio_inicial.id_for_label }}').closest('.mb-3');
+
+    function togglePriceField() {
+        const tipo = tipoSelect.value;
+        if (tipo === 'regalo') {
+            precioField.style.display = 'none';
+        } else {
+            precioField.style.display = 'block';
+        }
+    }
+
+    tipoSelect.addEventListener('change', togglePriceField);
+    togglePriceField(); // Llamar al inicio
+});
+</script>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Iniciar Conversación | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background-color: #f9f9f9;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-comments me-2"></i>Iniciar Conversación</h1>
+            <p class="text-muted">Selecciona un compañero para comenzar a chatear</p>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-section">
+                    <!-- Participante -->
+                    <div class="mb-3">
+                        <label for="{{ form.participante_id.id_for_label }}" class="form-label">
+                            {{ form.participante_id.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.participante_id }}
+                        {% if form.participante_id.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.participante_id.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.participante_id.help_text %}
+                        <small class="form-text text-muted d-block mt-1">{{ form.participante_id.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Tipo de Conversación -->
+                    <div class="mb-3">
+                        <label for="{{ form.contexto.id_for_label }}" class="form-label">
+                            {{ form.contexto.label }}
+                        </label>
+                        {{ form.contexto }}
+                        {% if form.contexto.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.contexto.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Asunto -->
+                    <div class="mb-3">
+                        <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                            {{ form.titulo.label }}
+                        </label>
+                        {{ form.titulo }}
+                        {% if form.titulo.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.titulo.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">Opcional: Un título para identificar la conversación</small>
+                    </div>
+                </div>
+
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h5>Errores encontrados:</h5>
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Botones -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                        <i class="fas fa-comments me-2"></i>Iniciar Conversación
+                    </button>
+                    <a href="{% url 'employees:inbox' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="row mt-5">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="alert alert-info" role="alert">
+                <h6 class="alert-heading">
+                    <i class="fas fa-lightbulb me-2"></i>Consejos
+                </h6>
+                <ul class="mb-0">
+                    <li>Solo puedes chatear con empleados activos</li>
+                    <li>El asunto es opcional y ayuda a identificar el tema</li>
+                    <li>Selecciona el tipo de conversación para mayor contexto</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

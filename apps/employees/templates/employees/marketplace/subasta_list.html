@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Subastas | Marketplace | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subasta-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+    }
+    .subasta-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    .subasta-countdown {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-weight: bold;
+    }
+    .subasta-imagen {
+        height: 180px;
+        object-fit: cover;
+        background-color: #f5f5f5;
+    }
+    .precio-actual {
+        font-size: 1.75rem;
+        font-weight: bold;
+        color: #28a745;
+    }
+    .pujas-count {
+        background-color: #e3f2fd;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-gavel me-2"></i>Subastas Activas</h1>
+            <p class="text-muted">
+                <i class="fas fa-info-circle me-2"></i>
+                Total de subastas: <strong>{{ total_subastas }}</strong>
+            </p>
+        </div>
+    </div>
+
+    {% if subastas %}
+    <div class="row">
+        {% for subasta in subastas %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card subasta-card h-100">
+                <!-- Imagen -->
+                <div class="position-relative">
+                    {% if subasta.producto.imagen %}
+                    <img src="{{ subasta.producto.imagen.url }}" class="card-img-top subasta-imagen" alt="{{ subasta.producto.titulo }}">
+                    {% else %}
+                    <div class="subasta-imagen d-flex align-items-center justify-content-center">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+
+                    <!-- Badge -->
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                        <i class="fas fa-fire me-1"></i>En Subasta
+                    </span>
+                </div>
+
+                <!-- Contenido -->
+                <div class="card-body">
+                    <h5 class="card-title text-truncate">{{ subasta.producto.titulo }}</h5>
+
+                    <!-- Categoría -->
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-tag me-1"></i>{{ subasta.producto.categoria.nombre }}
+                    </p>
+
+                    <!-- Precio actual -->
+                    <div class="mb-2">
+                        <p class="text-muted small mb-1">Precio actual:</p>
+                        <p class="precio-actual mb-0">${{ subasta.precio_actual|floatformat:0 }}</p>
+                    </div>
+
+                    <!-- Pujas -->
+                    <div class="pujas-count mb-3">
+                        <i class="fas fa-hand-paper me-1"></i>
+                        {{ subasta.pujas.count }} puja{{ subasta.pujas.count|pluralize }}
+                    </div>
+
+                    <!-- Pujador actual -->
+                    {% if subasta.pujador_actual %}
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-user-circle me-1"></i>
+                        <strong>Líder:</strong> {{ subasta.pujador_actual.nombre_completo }}
+                    </p>
+                    {% endif %}
+
+                    <!-- Vendedor -->
+                    <p class="text-muted small mb-3">
+                        <i class="fas fa-store me-1"></i>{{ subasta.vendedor.nombre_completo }}
+                    </p>
+
+                    <!-- Botón detalle -->
+                    <a href="{% url 'employees:subasta_detail' subasta.pk %}" class="btn btn-warning w-100 btn-sm">
+                        <i class="fas fa-gavel me-1"></i>Ver y Pujar
+                    </a>
+                </div>
+
+                <!-- Footer con fecha -->
+                <div class="card-footer bg-light">
+                    <small class="text-muted d-block">
+                        <i class="fas fa-calendar me-1"></i>Finaliza: {{ subasta.fecha_fin|date:"d/m H:i" }}
+                    </small>
+                    <small class="text-muted">
+                        <i class="fas fa-plus-circle me-1"></i>Incremento mín: ${{ subasta.incremento_minimo|floatformat:0 }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <nav aria-label="Paginación" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">Primera</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <!-- Sin resultados -->
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <h4>No hay subastas activas</h4>
+        <p class="mb-3">Vuelve más tarde para ver nuevas subastas</p>
+        <a href="{% url 'employees:producto_list' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-bag me-2"></i>Ir al Marketplace
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

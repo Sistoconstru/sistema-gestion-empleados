@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ producto.titulo }} | Marketplace | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .producto-galeria {
+        height: 400px;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .producto-galeria img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .info-section {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .vendedor-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+    .precio-grande {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #28a745;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">Marketplace</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}?categoria={{ producto.categoria.id }}">{{ producto.categoria.nombre }}</a></li>
+            <li class="breadcrumb-item active">{{ producto.titulo|truncatewords:5 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Galería -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="producto-galeria">
+                    {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.titulo }}">
+                    {% else %}
+                    <div class="text-center">
+                        <i class="fas fa-image fa-5x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Vendedor -->
+            <div class="vendedor-card mt-4">
+                <h5><i class="fas fa-user-circle me-2"></i>{{ producto.vendedor.nombre_completo }}</h5>
+                <p class="mb-0">{{ producto.vendedor.estado.nombre }}</p>
+            </div>
+        </div>
+
+        <!-- Información -->
+        <div class="col-lg-6">
+            <!-- Tipo y Categoría -->
+            <div class="mb-3">
+                <span class="badge bg-primary me-2">{{ producto.get_tipo_display }}</span>
+                <span class="badge bg-secondary">{{ producto.categoria.nombre }}</span>
+            </div>
+
+            <!-- Título -->
+            <h1 class="mb-2">{{ producto.titulo }}</h1>
+
+            <!-- Fecha -->
+            <p class="text-muted mb-4">
+                <i class="fas fa-calendar me-1"></i>Publicado el {{ producto.fecha_creacion|date:"d/m/Y H:i" }}
+            </p>
+
+            <!-- Precio -->
+            {% if producto.precio_inicial %}
+            <div class="info-section">
+                <p class="text-muted mb-2">Precio:</p>
+                <p class="precio-grande">${{ producto.precio_inicial|floatformat:0 }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Descripción -->
+            <div class="info-section">
+                <h5 class="mb-3"><i class="fas fa-align-left me-2"></i>Descripción</h5>
+                <p class="mb-0">{{ producto.descripcion }}</p>
+            </div>
+
+            <!-- Acciones según tipo -->
+            <div class="mt-4">
+                {% if producto.tipo == 'venta' and puede_comprar %}
+                <a href="{% url 'employees:comprar_producto' producto.pk %}" class="btn btn-success btn-lg w-100 mb-2">
+                    <i class="fas fa-shopping-cart me-2"></i>Comprar Ahora
+                </a>
+                {% endif %}
+
+                {% if producto.tipo == 'subasta' and subasta %}
+                <a href="{% url 'employees:subasta_detail' subasta.pk %}" class="btn btn-warning btn-lg w-100 mb-2">
+                    <i class="fas fa-gavel me-2"></i>Ver Subasta
+                </a>
+                {% endif %}
+
+                {% if producto.tipo == 'regalo' and puede_recibir %}
+                <a href="{% url 'employees:regalar_producto' producto.pk %}" class="btn btn-info btn-lg w-100 mb-2">
+                    <i class="fas fa-gift me-2"></i>Recibir Regalo
+                </a>
+                {% endif %}
+
+                <!-- Botón volver -->
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-secondary btn-lg w-100">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Marketplace
+                </a>
+            </div>
+
+            <!-- Información del vendedor -->
+            {% if user.empleado.id != producto.vendedor.id %}
+            <div class="mt-4">
+                <a href="{% url 'employees:iniciar_conversacion' %}?receptor={{ producto.vendedor.id }}"
+                   class="btn btn-outline-primary w-100">
+                    <i class="fas fa-comments me-2"></i>Contactar al Vendedor
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    {% if producto.visible_para.all.count > 0 %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="info-section">
+                <h5><i class="fas fa-eye me-2"></i>Visible para:</h5>
+                <div class="mt-2">
+                    {% for empleado in producto.visible_para.all %}
+                    <span class="badge bg-light text-dark me-2 mb-2">
+                        <i class="fas fa-user me-1"></i>{{ empleado.nombre_completo }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

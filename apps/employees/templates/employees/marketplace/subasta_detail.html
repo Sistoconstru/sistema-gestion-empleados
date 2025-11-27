@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Subasta - {{ subasta.producto.titulo }} | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subasta-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+    }
+    .precio-subasta {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+    .countdown {
+        background-color: #f5f5f5;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        margin: 1rem 0;
+    }
+    .subasta-imagen {
+        height: 350px;
+        object-fit: cover;
+        background-color: #f5f5f5;
+        border-radius: 0.5rem;
+    }
+    .puja-item {
+        background-color: #f9f9f9;
+        padding: 1rem;
+        border-left: 4px solid #667eea;
+        margin-bottom: 0.75rem;
+        border-radius: 0.25rem;
+    }
+    .puja-item.ganador {
+        background-color: #e8f5e9;
+        border-left-color: #28a745;
+    }
+    .info-box {
+        background-color: #f0f7ff;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="subasta-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="mb-2">{{ subasta.producto.titulo }}</h1>
+                <p class="lead mb-0">
+                    <i class="fas fa-gavel me-2"></i>Subasta Activa
+                </p>
+            </div>
+            <div class="col-lg-6 text-end">
+                <div class="precio-subasta">
+                    ${{ subasta.precio_actual|floatformat:0 }}
+                </div>
+                <p class="mb-0">Precio actual</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <!-- Columna izquierda: Imagen y detalles -->
+        <div class="col-lg-6 mb-4">
+            <!-- Imagen -->
+            {% if subasta.producto.imagen %}
+            <img src="{{ subasta.producto.imagen.url }}" class="subasta-imagen w-100" alt="{{ subasta.producto.titulo }}">
+            {% else %}
+            <div class="subasta-imagen d-flex align-items-center justify-content-center w-100">
+                <i class="fas fa-image fa-5x text-muted"></i>
+            </div>
+            {% endif %}
+
+            <!-- Información del producto -->
+            <div class="mt-4">
+                <h5>Descripción del Producto</h5>
+                <p>{{ subasta.producto.descripcion }}</p>
+
+                <!-- Vendedor -->
+                <div class="info-box mt-4">
+                    <h6><i class="fas fa-user-circle me-2"></i>Vendedor</h6>
+                    <p class="mb-0">{{ subasta.vendedor.nombre_completo }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna derecha: Información de la subasta y puja -->
+        <div class="col-lg-6">
+            <!-- Información de la subasta -->
+            <div class="info-box">
+                <h6><i class="fas fa-info-circle me-2"></i>Información de la Subasta</h6>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <p class="text-muted small mb-1">Precio inicial:</p>
+                        <p class="mb-3"><strong>${{ subasta.precio_inicial|floatformat:0 }}</strong></p>
+
+                        <p class="text-muted small mb-1">Pujas realizadas:</p>
+                        <p class="mb-0"><strong>{{ subasta.pujas.count }}</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-muted small mb-1">Finaliza:</p>
+                        <p class="mb-3"><strong>{{ subasta.fecha_fin|date:"d/m/Y H:i" }}</strong></p>
+
+                        <p class="text-muted small mb-1">Incremento mínimo:</p>
+                        <p class="mb-0"><strong>${{ subasta.incremento_minimo|floatformat:0 }}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pujador líder -->
+            {% if subasta.pujador_actual %}
+            <div class="alert alert-success" role="alert">
+                <h6 class="alert-heading">
+                    <i class="fas fa-crown me-2"></i>Líder Actual
+                </h6>
+                <p class="mb-0">
+                    <strong>{{ subasta.pujador_actual.nombre_completo }}</strong>
+                    con una puja de <strong>${{ subasta.precio_actual|floatformat:0 }}</strong>
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Formulario de puja -->
+            {% if puede_pujar %}
+            <div class="card border-warning">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-hand-paper me-2"></i>Realizar una Puja</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'employees:pujar' subasta.pk %}">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.monto.id_for_label }}" class="form-label">
+                                Tu Puja (mínimo: ${{ precio_minimo|floatformat:0 }})
+                            </label>
+                            {{ form.monto }}
+                            {% if form.monto.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.monto.errors %}
+                                {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.puja_automatica }}
+                            <label class="form-check-label" for="{{ form.puja_automatica.id_for_label }}">
+                                {{ form.puja_automatica.label }}
+                            </label>
+                            {% if form.puja_automatica.help_text %}
+                            <small class="form-text text-muted d-block mt-1">{{ form.puja_automatica.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3" id="monto_maximo_group" style="display: none;">
+                            <label for="{{ form.monto_maximo_auto.id_for_label }}" class="form-label">
+                                {{ form.monto_maximo_auto.label }}
+                            </label>
+                            {{ form.monto_maximo_auto }}
+                            {% if form.monto_maximo_auto.help_text %}
+                            <small class="form-text text-muted d-block mt-1">{{ form.monto_maximo_auto.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-warning w-100 btn-lg">
+                            <i class="fas fa-gavel me-2"></i>Pujar Ahora
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                No puedes pujar en esta subasta. Debes estar activo y no ser el vendedor.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Historial de pujas -->
+    {% if pujas %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="mb-3">
+                <i class="fas fa-history me-2"></i>Historial de Pujas
+            </h4>
+
+            {% for puja in pujas %}
+            <div class="puja-item {% if forloop.first %}ganador{% endif %}">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">
+                            {{ puja.pujador.nombre_completo }}
+                            {% if forloop.first %}<span class="badge bg-success ms-2">Líder</span>{% endif %}
+                        </h6>
+                        {% if puja.es_puja_automatica %}
+                        <small class="text-muted">
+                            <i class="fas fa-robot me-1"></i>Puja automática
+                            {% if puja.monto_maximo %}hasta ${{ puja.monto_maximo|floatformat:0 }}{% endif %}
+                        </small>
+                        {% else %}
+                        <small class="text-muted">
+                            <i class="fas fa-hand-paper me-1"></i>Puja manual
+                        </small>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <strong>${{ puja.monto|floatformat:0 }}</strong>
+                    </div>
+                    <div class="col-md-2 text-end text-muted small">
+                        {{ puja.fecha_creacion|date:"d/m H:i" }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Botones de acción -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <a href="{% url 'employees:subasta_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Volver a Subastas
+            </a>
+            <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-shopping-bag me-2"></i>Ver Marketplace
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Script para mostrar/ocultar monto máximo -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pujaAutomatica = document.getElementById('{{ form.puja_automatica.id_for_label }}');
+    const montoMaximoGroup = document.getElementById('monto_maximo_group');
+
+    function toggleMontoMaximo() {
+        if (pujaAutomatica.checked) {
+            montoMaximoGroup.style.display = 'block';
+        } else {
+            montoMaximoGroup.style.display = 'none';
+        }
+    }
+
+    pujaAutomatica.addEventListener('change', toggleMontoMaximo);
+    toggleMontoMaximo(); // Llamar al inicio
+});
+</script>
+{% endblock %}
