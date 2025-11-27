@@ -501,7 +501,7 @@ class ProductoForm(forms.ModelForm):
 
     class Meta:
         model = Producto
-        fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'imagen', 'visible_para']
+        fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'imagen', 'visible_para', 'vendedor']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -532,6 +532,9 @@ class ProductoForm(forms.ModelForm):
             'visible_para': forms.CheckboxSelectMultiple(attrs={
                 'class': 'form-check-input',
             }),
+            'vendedor': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
         labels = {
             'titulo': 'Titulo',
@@ -541,6 +544,7 @@ class ProductoForm(forms.ModelForm):
             'precio_inicial': 'Precio/Valor Inicial',
             'imagen': 'Imagen del Producto',
             'visible_para': 'Visible para (dejar vacio = todos)',
+            'vendedor': 'Vendedor',
         }
 
     def clean(self):

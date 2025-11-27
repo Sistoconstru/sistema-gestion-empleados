@@ -122,6 +122,13 @@
                 </a>
                 {% endif %}
 
+                <!-- Botón eliminar (solo para admin o vendedor) -->
+                {% if user.is_superuser or user.is_staff or user.empleado.id == producto.vendedor.id %}
+                <a href="{% url 'employees:eliminar_producto' producto.pk %}" class="btn btn-danger btn-lg w-100 mb-2">
+                    <i class="fas fa-trash-alt me-2"></i>Eliminar Producto
+                </a>
+                {% endif %}
+
                 <!-- Botón volver -->
                 <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-secondary btn-lg w-100">
                     <i class="fas fa-arrow-left me-2"></i>Volver al Marketplace
@@ -129,13 +136,15 @@
             </div>
 
             <!-- Información del vendedor -->
-            {% if user.empleado.id != producto.vendedor.id %}
-            <div class="mt-4">
-                <a href="{% url 'employees:iniciar_conversacion' %}?receptor={{ producto.vendedor.id }}"
-                   class="btn btn-outline-primary w-100">
-                    <i class="fas fa-comments me-2"></i>Contactar al Vendedor
-                </a>
-            </div>
+            {% if user.is_authenticated %}
+                {% if user.is_superuser or user.is_staff or user.empleado.id != producto.vendedor.id %}
+                <div class="mt-4">
+                    <a href="{% url 'employees:iniciar_conversacion' %}?receptor={{ producto.vendedor.id }}"
+                       class="btn btn-outline-primary w-100">
+                        <i class="fas fa-comments me-2"></i>Contactar al Vendedor
+                    </a>
+                </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>

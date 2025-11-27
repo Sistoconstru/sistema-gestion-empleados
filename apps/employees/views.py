@@ -8,12 +8,13 @@ import logging
 from datetime import timedelta, date
 
 # Importaciones de Django
+from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
@@ -2237,15 +2238,22 @@ class ProductoDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         producto = self.object
-        usuario = self.request.user.empleado
 
-        # Agregar información según tipo
-        if producto.tipo == 'venta':
-            context['puede_comprar'] = usuario.id != producto.vendedor.id
-        elif producto.tipo == 'subasta':
-            context['subasta'] = producto.subastas.filter(estado='activa').first()
-        elif producto.tipo == 'regalo':
-            context['puede_recibir'] = usuario.id != producto.vendedor.id
+        # Solo agregamos información si el usuario tiene un perfil de empleado
+        try:
+            usuario = self.request.user.empleado
+
+            # Agregar información según tipo
+            if producto.tipo == 'venta':
+                context['puede_comprar'] = usuario.id != producto.vendedor.id
+            elif producto.tipo == 'subasta':
+                context['subasta'] = producto.subastas.filter(estado='activa').first()
+            elif producto.tipo == 'regalo':
+                context['puede_recibir'] = usuario.id != producto.vendedor.id
+        except Empleado.DoesNotExist:
+            # Los superusuarios/admin pueden ver pero no pueden comprar/recibir
+            context['puede_comprar'] = False
+            context['puede_recibir'] = False
 
         return context
 
@@ -2256,14 +2264,60 @@ class CrearProductoView(LoginRequiredMixin, CreateView):
     form_class = ProductoForm
     template_name = 'employees/marketplace/producto_form.html'
 
+    def get_form(self, form_class=None):
+        """Personalizar el formulario según el tipo de usuario"""
+        form = super().get_form(form_class)
+
+        if not (self.request.user.is_superuser or self.request.user.is_staff):
+            # Para empleados normales: esconder el campo vendedor y usar el empleado actual
+            form.fields['vendedor'].widget = forms.HiddenInput()
+            try:
+                form.initial['vendedor'] = self.request.user.empleado
+                form.fields['vendedor'].required = False
+            except Empleado.DoesNotExist:
+                # Si no tiene empleado, mostrar error
+                messages.error(self.request, 'Debes tener un perfil de empleado para crear productos.')
+
+        return form
+
     def form_valid(self, form):
-        """Asignar vendedor automáticamente"""
-        form.instance.vendedor = self.request.user.empleado
+        """Validar y procesar el formulario"""
+        # El vendedor ya viene del formulario
         form.instance.creado_por = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
+
+
+class EliminarProductoView(LoginRequiredMixin, DeleteView):
+    """Eliminar un producto"""
+    model = Producto
+    template_name = 'employees/marketplace/producto_confirm_delete.html'
+    context_object_name = 'producto'
+
+    def get_queryset(self):
+        """Solo el vendedor o admin pueden eliminar"""
+        user = self.request.user
+        queryset = Producto.objects.all()
+
+        # Admin puede eliminar cualquier producto
+        if user.is_superuser or user.is_staff:
+            return queryset
+
+        # Empleados normales solo pueden eliminar sus propios productos
+        try:
+            return queryset.filter(vendedor=user.empleado)
+        except Empleado.DoesNotExist:
+            return queryset.none()
+
+    def delete(self, request, *args, **kwargs):
+        """Mostrar mensaje de confirmación"""
+        messages.success(request, 'Producto eliminado correctamente.')
+        return super().delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('employees:producto_list')
 
 
 class MisProductosView(LoginRequiredMixin, ListView):

@@ -45,6 +45,7 @@ urlpatterns = [
     path('marketplace/productos/', views.ProductoListView.as_view(), name='producto_list'),
     path('marketplace/productos/crear/', views.CrearProductoView.as_view(), name='crear_producto'),
     path('marketplace/productos/<uuid:pk>/', views.ProductoDetailView.as_view(), name='producto_detail'),
+    path('marketplace/productos/<uuid:pk>/eliminar/', views.EliminarProductoView.as_view(), name='eliminar_producto'),
     path('marketplace/mis-productos/', views.MisProductosView.as_view(), name='mis_productos'),
     path('marketplace/mis-compras/', views.MisComprasView.as_view(), name='mis_compras'),
     path('marketplace/productos/<uuid:producto_pk>/comprar/', views.ComprarProductoView.as_view(), name='comprar_producto'),

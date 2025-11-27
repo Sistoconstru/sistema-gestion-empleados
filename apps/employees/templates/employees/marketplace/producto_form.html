@@ -107,6 +107,30 @@
                         </div>
                         {% endif %}
                     </div>
+
+                    <!-- Vendedor (solo visible para superusuarios) -->
+                    {% if form.vendedor.widget.input_type != "hidden" %}
+                    <div class="mb-3">
+                        <label for="{{ form.vendedor.id_for_label }}" class="form-label">
+                            {{ form.vendedor.label }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ form.vendedor }}
+                        {% if form.vendedor.errors %}
+                        <div class="form-error">
+                            {% for error in form.vendedor.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.vendedor.help_text %}
+                        <small class="form-text text-muted d-block mt-1">{{ form.vendedor.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <!-- Campo oculto para empleados normales -->
+                    {{ form.vendedor }}
+                    {% endif %}
                 </div>
 
                 <!-- Tipo de Oferta -->

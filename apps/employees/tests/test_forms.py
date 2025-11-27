@@ -52,6 +52,7 @@ class ProductoFormTest(TestCase):
             'tipo': 'venta',
             'precio_inicial': 1500.00,
             'categoria': self.categoria.id,
+            'vendedor': self.empleado.id,
         }
         form = ProductoForm(data)
         self.assertTrue(form.is_valid())
@@ -64,6 +65,7 @@ class ProductoFormTest(TestCase):
             'tipo': 'venta',
             'precio_inicial': 100.00,
             'categoria': self.categoria.id,
+            'vendedor': self.empleado.id,
         }
         form = ProductoForm(data)
         self.assertFalse(form.is_valid())
@@ -76,6 +78,7 @@ class ProductoFormTest(TestCase):
             'tipo': 'venta',
             'precio_inicial': 100.00,
             'categoria': self.categoria.id,
+            'vendedor': self.empleado.id,
         }
         form = ProductoForm(data)
         self.assertFalse(form.is_valid())
@@ -87,6 +90,7 @@ class ProductoFormTest(TestCase):
             'descripcion': 'Libro interesante' * 5,
             'tipo': 'regalo',
             'categoria': self.categoria.id,
+            'vendedor': self.empleado.id,
         }
         form = ProductoForm(data)
         self.assertTrue(form.is_valid())
@@ -99,6 +103,7 @@ class ProductoFormTest(TestCase):
             'tipo': 'venta',
             'precio_inicial': -100.00,
             'categoria': self.categoria.id,
+            'vendedor': self.empleado.id,
         }
         form = ProductoForm(data)
         self.assertFalse(form.is_valid())
