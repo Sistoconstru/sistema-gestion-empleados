@@ -1,6 +1,6 @@
 # Progreso - Mini Red Social Corporativa (Marketplace MVP)
 
-## Estado Actual: FASE 1 MVP - EN CURSO (50% COMPLETADO) ✅
+## Estado Actual: FASE 1 MVP - EN CURSO (60% COMPLETADO) ✅
 
 **Rama:** `feature/marketplace-mvp`
 
@@ -10,8 +10,9 @@
 
 **Fases implementadas:**
 - ✅ FASE 1A: Modelos, Admin, Formularios
-- ✅ FASE 1B: Vistas & URLs (NUEVA)
-- ⏳ FASE 1C: Templates (próxima)
+- ✅ FASE 1B: Vistas & URLs
+- ✅ FASE 1C: Templates (NUEVA)
+- ⏳ FASE 1D: Notificaciones (próxima)
 
 ### 1. Modelos de Base de Datos
 **Commit:** `c51097a` - Crear modelos de Marketplace y Messaging
@@ -232,30 +233,76 @@ LecturaConversacion - Rastreo de quién leyó qué
 - ✅ Actualización automática de precios en subastas
 - ✅ Django check: Sin errores
 
-### FASE 1C: Templates
-**Estimado:** 3-4 días
+### FASE 1C: Templates - COMPLETADA
+**Commit:** `b2c5287` - Agregar templates para marketplace y messaging
 
+#### Templates Implementados (8 total)
+
+**MARKETPLACE TEMPLATES:**
 ```
-MARKETPLACE:
-- [ ] marketplace/
-  - [ ] listar_productos.html
-  - [ ] producto_detalle.html
-  - [ ] crear_producto.html
-  - [ ] mis_productos.html
-  - [ ] mis_compras.html
-  - [ ] subastas_listar.html
-  - [ ] subasta_detalle.html
+✅ producto_list.html (listado con filtros)
+   - Búsqueda por título/descripción
+   - Filtros por tipo y categoría
+   - Tarjetas responsivas con hover
+   - Paginación de 12 productos
 
-MESSAGING:
-- [ ] messaging/
-  - [ ] inbox.html
-  - [ ] conversacion.html
+✅ producto_detail.html (vista detallada)
+   - Galería de imágenes
+   - Información del vendedor
+   - Botones de acción contextuales
+   - Breadcrumb de navegación
 
-COMPONENTS:
-- [ ] producto_card.html (reutilizable)
-- [ ] puja_form.html (reutilizable)
-- [ ] rating_stars.html (calificaciones)
+✅ producto_form.html (crear/editar)
+   - Formulario con secciones organizadas
+   - Validación en tiempo real
+   - JavaScript interactivo
+   - Preview de imagen
+
+✅ subasta_list.html (listado de subastas)
+   - Información de precio y pujas
+   - Pujador líder visible
+   - Badges de estado
+   - Paginación
+
+✅ subasta_detail.html (vista de subasta)
+   - Historial de pujas completo
+   - Identificación de ganador actual
+   - Formulario para pujar
+   - Soporte para pujas automáticas
 ```
+
+**MESSAGING TEMPLATES:**
+```
+✅ inbox.html (lista de conversaciones)
+   - Vista previa del último mensaje
+   - Tipo de contexto visible
+   - Indicador de archivadas
+   - Botón para iniciar conversación
+
+✅ conversacion_detail.html (chat detallado)
+   - Chat en tiempo real
+   - Scroll automático
+   - Soporte para archivos adjuntos
+   - Timestamps y remitentes claros
+
+✅ iniciar_conversacion.html (crear chat)
+   - Selector de participante
+   - Tipo de contexto
+   - Asunto opcional
+   - Información y consejos
+```
+
+#### Características Técnicas:
+- ✅ Bootstrap 5 responsivo
+- ✅ Font Awesome para iconos
+- ✅ CSS personalizado con hover effects
+- ✅ JavaScript para interactividad
+- ✅ Manejo de errores visible
+- ✅ Formularios renderizados
+- ✅ Validación cliente/servidor
+- ✅ Scroll automático en chat
+- ✅ Mobile-first design
+- ✅ 1,648 líneas de HTML/CSS
 
 ### FASE 1D: Notificaciones
 **Estimado:** 1-2 días
@@ -276,14 +323,22 @@ COMPONENTS:
 
 ```
 apps/employees/
-├── models.py              ✅ 702 líneas (modelos completos)
-├── admin.py              ✅ 615 líneas (admin completo)
-├── forms.py              ✅ 1054 líneas (7 formularios + validaciones)
-├── views.py              ⏳ EN PRÓXIMA FASE
-├── urls.py               ⏳ EN PRÓXIMA FASE
+├── models.py              ✅ 702 líneas (9 modelos completos)
+├── admin.py              ✅ 615 líneas (9 admin classes)
+├── forms.py              ✅ 1054 líneas (7 formularios)
+├── views.py              ✅ 2573 líneas (14 vistas)
+├── urls.py               ✅ 71 líneas (18 rutas)
 ├── templates/employees/
-│   ├── marketplace/      ⏳ EN PRÓXIMA FASE
-│   └── messaging/        ⏳ EN PRÓXIMA FASE
+│   ├── marketplace/      ✅ 5 templates
+│   │   ├── producto_list.html
+│   │   ├── producto_detail.html
+│   │   ├── producto_form.html
+│   │   ├── subasta_list.html
+│   │   └── subasta_detail.html
+│   └── messaging/        ✅ 3 templates
+│       ├── inbox.html
+│       ├── conversacion_detail.html
+│       └── iniciar_conversacion.html
 └── migrations/
     └── 0015_...          ✅ Creada y aplicada
 ```
@@ -420,12 +475,25 @@ FEATURES:
 | **Admin Django** | ✅ Completado | 100% |
 | **Formularios** | ✅ Completado | 100% |
 | **Vistas & URLs** | ✅ Completado | 100% |
-| **Templates** | ⏳ Próxima | 0% |
+| **Templates** | ✅ Completado | 100% |
 | **Notificaciones** | ⏳ Próxima | 0% |
-| **TOTAL MVP FASE 1** | 🔄 EN CURSO | **50%** |
+| **TOTAL MVP FASE 1** | 🔄 EN CURSO | **60%** |
 
 **Última actualización:** 2025-11-27
 **Rama de trabajo:** `feature/marketplace-mvp`
-**Estado general:** MVP en construcción (50% completado)
+**Estado general:** MVP en construcción (60% completado)
 
-**Siguiente fase:** FASE 1C - Templates
+**Siguientes fases:**
+- FASE 1D: Notificaciones (próxima)
+- FASE 1E: Pruebas (siguiente)
+
+**Commits en rama:**
+```
+b2c5287 feat: Agregar templates para marketplace y messaging (FASE 1C)
+b211848 docs: Actualizar PROGRESS_MARKETPLACE - FASE 1B completa (50%)
+b0f8c10 feat: Agregar vistas y URLs para marketplace y messaging (FASE 1B)
+f8e2e5a docs: Actualizar PROGRESS_MARKETPLACE - FASE 1A completa (40%)
+0f50b8b feat: Agregar formularios completos para marketplace y messaging
+c68d637 feat: Registrar modelos de Marketplace y Messaging en Django Admin
+c51097a feat: Crear modelos de Marketplace y Messaging integrados en employees
+```
