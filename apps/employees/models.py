@@ -333,6 +333,11 @@ class Producto(BaseModel):
         related_name='productos_visibles',
         help_text="Empleados que pueden ver este producto (vacío = todos)"
     )
+    cantidad_disponible = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Cantidad disponible del producto (NULL = sin límite)"
+    )
     # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
 
     class Meta:
@@ -349,6 +354,77 @@ class Producto(BaseModel):
 
     def __str__(self):
         return f"{self.titulo} (${self.precio_inicial})" if self.precio_inicial else self.titulo
+
+    def get_cantidad_reservada(self):
+        """Obtiene la cantidad de productos reservados"""
+        return self.reservas.filter(estado='activa').count()
+
+    def tiene_disponible(self):
+        """Verifica si hay cantidad disponible para reservar"""
+        if self.cantidad_disponible is None:
+            return True  # Sin límite
+        return self.get_cantidad_reservada() < self.cantidad_disponible
+
+    def get_disponible_texto(self):
+        """Retorna texto de disponibilidad"""
+        if self.cantidad_disponible is None:
+            return "Sin límite"
+        reservadas = self.get_cantidad_reservada()
+        disponible = self.cantidad_disponible - reservadas
+        return f"{disponible} de {self.cantidad_disponible}"
+
+
+class Reserva(BaseModel):
+    """Reservas/separaciones de productos por comprador"""
+    ESTADO_CHOICES = [
+        ('activa', 'Activa'),
+        ('confirmada', 'Confirmada (Venta)'),
+        ('cancelada', 'Cancelada'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.CASCADE,
+        related_name='reservas',
+        help_text="Producto reservado"
+    )
+    comprador = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='reservas_como_comprador',
+        help_text="Empleado que hizo la reserva"
+    )
+    estado = models.CharField(
+        max_length=15,
+        choices=ESTADO_CHOICES,
+        default='activa',
+        help_text="Estado de la reserva"
+    )
+    venta_asociada = models.OneToOneField(
+        'Venta',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reserva_origen',
+        help_text="Venta originada de esta reserva"
+    )
+    # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
+
+    class Meta:
+        db_table = 'marketplace_reservas'
+        verbose_name = 'Reserva'
+        verbose_name_plural = 'Reservas'
+        indexes = [
+            models.Index(fields=['producto', 'estado']),
+            models.Index(fields=['comprador', 'estado']),
+            models.Index(fields=['fecha_creacion']),
+        ]
+        ordering = ['-fecha_creacion']
+        unique_together = [['producto', 'comprador', 'estado']]  # Un usuario no puede tener 2 reservas activas del mismo producto
+
+    def __str__(self):
+        return f"Reserva: {self.producto.titulo} - {self.comprador}"
 
 
 class Venta(BaseModel):

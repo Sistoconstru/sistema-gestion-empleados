@@ -23,7 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.db import transaction
+from django.db import transaction, IntegrityError
 
 # Importaciones locales
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
@@ -2250,10 +2250,16 @@ class ProductoDetailView(LoginRequiredMixin, DetailView):
                 context['subasta'] = producto.subastas.filter(estado='activa').first()
             elif producto.tipo == 'regalo':
                 context['puede_recibir'] = usuario.id != producto.vendedor.id
+
+            # Agregar información de reservaciones (solo para el vendedor)
+            if usuario.id == producto.vendedor.id:
+                context['reservaciones_activas'] = producto.get_cantidad_reservada()
+                context['es_vendedor'] = True
         except Empleado.DoesNotExist:
             # Los superusuarios/admin pueden ver pero no pueden comprar/recibir
             context['puede_comprar'] = False
             context['puede_recibir'] = False
+            context['es_vendedor'] = False
 
         return context
 
@@ -2675,3 +2681,84 @@ def enviar_mensaje_producto(request, pk):
         logger.error(f'Error enviando mensaje del producto: {str(e)}')
         messages.error(request, 'Hubo un error al enviar el mensaje. Intenta de nuevo.')
         return redirect('employees:producto_detail', pk=pk)
+
+
+@login_required
+def separar_producto_view(request, pk):
+    """Vista que muestra el formulario de advertencia para separar un producto"""
+    from apps.employees.models import Producto, Reserva
+
+    producto = get_object_or_404(Producto, pk=pk)
+
+    # Verificar que el usuario sea empleado
+    try:
+        comprador = request.user.empleado
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Debes tener un perfil de empleado para separar productos.')
+        return redirect('employees:producto_detail', pk=pk)
+
+    # Verificar que no sea el vendedor
+    if comprador.id == producto.vendedor.id:
+        messages.error(request, 'No puedes separar tu propio producto.')
+        return redirect('employees:producto_detail', pk=pk)
+
+    # Verificar disponibilidad
+    if not producto.tiene_disponible():
+        messages.error(request, 'Este producto no tiene cantidad disponible para separar.')
+        return redirect('employees:producto_detail', pk=pk)
+
+    # Verificar si ya tiene una reserva activa
+    reserva_existente = Reserva.objects.filter(
+        producto=producto,
+        comprador=comprador,
+        estado='activa'
+    ).first()
+
+    if reserva_existente:
+        messages.warning(request, 'Ya tienes una separación activa de este producto.')
+        return redirect('employees:producto_detail', pk=pk)
+
+    # GET: mostrar formulario de advertencia
+    if request.method == 'GET':
+        context = {
+            'producto': producto,
+            'cantidad_reservada': producto.get_cantidad_reservada(),
+            'disponible': producto.get_disponible_texto(),
+        }
+        return render(request, 'employees/marketplace/separar_producto.html', context)
+
+    # POST: crear la reserva
+    elif request.method == 'POST':
+        confirmado = request.POST.get('confirmado') == 'true'
+
+        if not confirmado:
+            messages.warning(request, 'Debes confirmar la separación del producto.')
+            context = {
+                'producto': producto,
+                'cantidad_reservada': producto.get_cantidad_reservada(),
+                'disponible': producto.get_disponible_texto(),
+            }
+            return render(request, 'employees/marketplace/separar_producto.html', context)
+
+        try:
+            # Crear la reserva
+            reserva = Reserva.objects.create(
+                producto=producto,
+                comprador=comprador,
+                creado_por=request.user,
+                estado='activa'
+            )
+
+            messages.success(
+                request,
+                f'Producto separado exitosamente. Tienes {7} días para confirmar la compra o la reserva se cancelará.'
+            )
+            return redirect('employees:producto_detail', pk=pk)
+
+        except IntegrityError:
+            messages.error(request, 'Ya tienes una separación activa de este producto.')
+            return redirect('employees:producto_detail', pk=pk)
+        except Exception as e:
+            logger.error(f'Error creando reserva: {str(e)}')
+            messages.error(request, 'Hubo un error al separar el producto. Intenta de nuevo.')
+            return redirect('employees:producto_detail', pk=pk)
