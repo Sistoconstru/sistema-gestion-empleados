@@ -2697,18 +2697,33 @@ def enviar_mensaje_producto(request, pk):
             messages.error(request, 'No puedes enviarte mensajes a ti mismo.')
             return redirect('employees:producto_detail', pk=pk)
 
-        # Obtener o crear la conversación entre los dos empleados
-        conversacion, creada = Conversacion.objects.get_or_create(
-            entre_usuario1=remitente,
-            entre_usuario2=producto.vendedor
-        )
-
         # Obtener el contenido del mensaje
         contenido = request.POST.get('contenido', '').strip()
 
         if not contenido:
             messages.error(request, 'El mensaje no puede estar vacío.')
             return redirect('employees:producto_detail', pk=pk)
+
+        # Buscar conversación existente entre los dos empleados para este producto
+        conversaciones = Conversacion.objects.filter(
+            participantes=remitente,
+            producto_referencia=producto
+        ).filter(
+            participantes=producto.vendedor
+        )
+
+        if conversaciones.exists():
+            conversacion = conversaciones.first()
+        else:
+            # Crear nueva conversación
+            conversacion = Conversacion.objects.create(
+                titulo=f"Pregunta sobre {producto.titulo}",
+                contexto='venta',
+                producto_referencia=producto,
+                creado_por=request.user
+            )
+            # Agregar participantes
+            conversacion.participantes.add(remitente, producto.vendedor)
 
         # Crear el mensaje
         mensaje = Mensaje.objects.create(
