@@ -47,6 +47,30 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
+# =============================================================================
+# MIXINS REUTILIZABLES
+# =============================================================================
+
+class EmpleadoRequiredMixin(LoginRequiredMixin):
+    """
+    Mixin que requiere que el usuario autenticado tenga un registro de Empleado.
+    Si no lo tiene, redirige al dashboard con un mensaje de error.
+    """
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            # Intenta acceder al empleado del usuario
+            _ = request.user.empleado
+            return super().dispatch(request, *args, **kwargs)
+        except (AttributeError, Empleado.DoesNotExist):
+            # Si no existe empleado, mostrar mensaje y redirigir
+            messages.error(
+                request,
+                'Tu cuenta de usuario no está asociada a un registro de empleado. '
+                'Contacta con Recursos Humanos para completar tu perfil.'
+            )
+            return redirect('core:dashboard')
+
+
 class EmpleadoListView(LoginRequiredMixin, ListView):
     """Vista para listar empleados con filtros y búsqueda"""
     model = Empleado
@@ -2185,7 +2209,7 @@ def obtener_jefes_potenciales(request, cargo_id):
 # MARKETPLACE - PRODUCTOS
 # =============================================================================
 
-class ProductoListView(LoginRequiredMixin, ListView):
+class ProductoListView(EmpleadoRequiredMixin, ListView):
     """Listar productos del marketplace con filtros"""
     model = Producto
     paginate_by = 12
@@ -2226,7 +2250,7 @@ class ProductoListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ProductoDetailView(LoginRequiredMixin, DetailView):
+class ProductoDetailView(EmpleadoRequiredMixin, DetailView):
     """Ver detalles de un producto"""
     model = Producto
     context_object_name = 'producto'
@@ -2264,7 +2288,7 @@ class ProductoDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class CrearProductoView(LoginRequiredMixin, CreateView):
+class CrearProductoView(EmpleadoRequiredMixin, CreateView):
     """Crear nuevo producto"""
     model = Producto
     form_class = ProductoForm
@@ -2296,7 +2320,7 @@ class CrearProductoView(LoginRequiredMixin, CreateView):
         return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
 
 
-class EditarProductoView(LoginRequiredMixin, UpdateView):
+class EditarProductoView(EmpleadoRequiredMixin, UpdateView):
     """Editar un producto existente"""
     model = Producto
     form_class = ProductoForm
@@ -2331,7 +2355,7 @@ class EditarProductoView(LoginRequiredMixin, UpdateView):
         return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
 
 
-class EliminarProductoView(LoginRequiredMixin, DeleteView):
+class EliminarProductoView(EmpleadoRequiredMixin, DeleteView):
     """Eliminar un producto"""
     model = Producto
     template_name = 'employees/marketplace/producto_confirm_delete.html'
@@ -2361,7 +2385,7 @@ class EliminarProductoView(LoginRequiredMixin, DeleteView):
         return reverse('employees:producto_list')
 
 
-class MisProductosView(LoginRequiredMixin, ListView):
+class MisProductosView(EmpleadoRequiredMixin, ListView):
     """Mis productos creados"""
     model = Producto
     paginate_by = 12
@@ -2391,7 +2415,7 @@ class MisProductosView(LoginRequiredMixin, ListView):
         return context
 
 
-class MisComprasView(LoginRequiredMixin, ListView):
+class MisComprasView(EmpleadoRequiredMixin, ListView):
     """Mi historial de compras"""
     model = Venta
     paginate_by = 12
@@ -2412,7 +2436,7 @@ class MisComprasView(LoginRequiredMixin, ListView):
         return context
 
 
-class ComprarProductoView(LoginRequiredMixin, CreateView):
+class ComprarProductoView(EmpleadoRequiredMixin, CreateView):
     """Flujo de compra de un producto"""
     model = Venta
     form_class = VentaForm
@@ -2451,7 +2475,7 @@ class ComprarProductoView(LoginRequiredMixin, CreateView):
 # MARKETPLACE - SUBASTAS
 # =============================================================================
 
-class SubastaListView(LoginRequiredMixin, ListView):
+class SubastaListView(EmpleadoRequiredMixin, ListView):
     """Listar subastas activas"""
     model = Subasta
     paginate_by = 12
@@ -2469,7 +2493,7 @@ class SubastaListView(LoginRequiredMixin, ListView):
         return context
 
 
-class PujarView(LoginRequiredMixin, CreateView):
+class PujarView(EmpleadoRequiredMixin, CreateView):
     """Realizar puja en subasta"""
     model = PujaSubasta
     form_class = PujaForm
@@ -2516,7 +2540,7 @@ class PujarView(LoginRequiredMixin, CreateView):
         return reverse('employees:subasta_detail', kwargs={'pk': self.kwargs['subasta_pk']})
 
 
-class SubastaDetailView(LoginRequiredMixin, DetailView):
+class SubastaDetailView(EmpleadoRequiredMixin, DetailView):
     """Ver detalles de subasta"""
     model = Subasta
     context_object_name = 'subasta'
@@ -2541,7 +2565,7 @@ class SubastaDetailView(LoginRequiredMixin, DetailView):
 # MARKETPLACE - REGALOS
 # =============================================================================
 
-class RegalarProductoView(LoginRequiredMixin, CreateView):
+class RegalarProductoView(EmpleadoRequiredMixin, CreateView):
     """Regalar un producto"""
     model = Regalo
     form_class = RegaloForm
@@ -2578,7 +2602,7 @@ class RegalarProductoView(LoginRequiredMixin, CreateView):
 # MESSAGING - CONVERSACIONES
 # =============================================================================
 
-class InboxView(LoginRequiredMixin, ListView):
+class InboxView(EmpleadoRequiredMixin, ListView):
     """Inbox de conversaciones"""
     model = Conversacion
     paginate_by = 20
@@ -2599,7 +2623,7 @@ class InboxView(LoginRequiredMixin, ListView):
         return context
 
 
-class ConversacionDetailView(LoginRequiredMixin, DetailView):
+class ConversacionDetailView(EmpleadoRequiredMixin, DetailView):
     """Ver conversación detallada"""
     model = Conversacion
     context_object_name = 'conversacion'
@@ -2619,7 +2643,7 @@ class ConversacionDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class IniciarConversacionView(LoginRequiredMixin, CreateView):
+class IniciarConversacionView(EmpleadoRequiredMixin, CreateView):
     """Iniciar nueva conversación"""
     model = Conversacion
     form_class = ConversacionForm
@@ -2645,7 +2669,7 @@ class IniciarConversacionView(LoginRequiredMixin, CreateView):
         return reverse('employees:conversacion_detail', kwargs={'pk': self.object.pk})
 
 
-class EnviarMensajeView(LoginRequiredMixin, CreateView):
+class EnviarMensajeView(EmpleadoRequiredMixin, CreateView):
     """Enviar mensaje en conversación"""
     model = Mensaje
     form_class = MensajeForm

@@ -3380,3 +3380,255 @@ INFO 2025-11-27 15:35:43,454 apps 37064 51680 [CoreConfig.ready] DEFAULT_FILE_ST
 INFO 2025-11-27 15:35:43,935 apps 1268 13992 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-27 15:35:43,951 autoreload 1268 13992 Watching for file changes with StatReloader
 INFO 2025-11-27 15:35:44,348 wsgi 1268 29120 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:35:46,690 basehttp 17024 42904 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 15:35:46,987 basehttp 17024 42904 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:35:47,123 basehttp 17024 42904 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27266
+WARNING 2025-11-27 15:35:57,059 log 17024 42904 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 15:35:57,059 basehttp 17024 42904 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 15:35:57,103 basehttp 17024 42904 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 15:40:47,809 basehttp 17024 17948 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27266
+WARNING 2025-11-27 15:40:47,835 log 17024 17948 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 15:40:47,837 basehttp 17024 17948 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 15:40:47,843 basehttp 17024 14136 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-27 15:40:47,845 basehttp 17024 40064 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-27 15:40:47,847 basehttp 17024 17948 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-27 15:40:47,847 basehttp 17024 50840 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-27 15:40:47,848 basehttp 17024 14136 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-27 15:40:47,849 basehttp 17024 41080 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-27 15:40:47,849 basehttp 17024 30824 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-27 15:40:47,867 basehttp 17024 30824 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-27 15:40:47,890 basehttp 17024 30824 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 15:40:48,247 log 17024 14136 Not Found: /favicon.ico
+WARNING 2025-11-27 15:40:48,247 basehttp 17024 14136 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-27 15:43:05,325 apps 54352 56148 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:43:05,820 apps 9896 43484 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:43:05,820 autoreload 9896 43484 Watching for file changes with StatReloader
+INFO 2025-11-27 15:43:06,207 wsgi 9896 55400 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:43:16,394 basehttp 17024 14136 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27266
+WARNING 2025-11-27 15:43:16,420 log 17024 14136 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 15:43:16,425 basehttp 17024 17948 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-27 15:43:16,426 basehttp 17024 40064 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+WARNING 2025-11-27 15:43:16,426 basehttp 17024 14136 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 15:43:16,427 basehttp 17024 50840 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-27 15:43:16,432 basehttp 17024 17948 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-27 15:43:16,433 basehttp 17024 40064 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-27 15:43:16,433 basehttp 17024 40864 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-27 15:43:16,434 basehttp 17024 41080 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+WARNING 2025-11-27 15:43:16,465 basehttp 17024 40864 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 15:43:16,468 basehttp 17024 41080 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-27 15:43:16,523 log 17024 41080 Not Found: /favicon.ico
+WARNING 2025-11-27 15:43:16,523 basehttp 17024 41080 "GET /favicon.ico HTTP/1.1" 404 5209
+WARNING 2025-11-27 15:43:57,843 log 17024 41080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 15:43:57,843 basehttp 17024 41080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 15:43:57,843 basehttp 17024 41080 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 15:46:03,865 apps 12920 36636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:46:49,259 apps 57312 31412 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:49:56,892 apps 36712 40500 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:49:57,384 apps 18184 47184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:49:57,400 autoreload 18184 47184 Watching for file changes with StatReloader
+INFO 2025-11-27 15:49:57,808 wsgi 18184 8800 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:50:15,987 basehttp 17024 56148 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 15:50:16,041 basehttp 17024 56148 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:50:16,132 basehttp 17024 56148 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27266
+INFO 2025-11-27 15:52:50,906 autoreload 18184 47184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\base.py changed, reloading.
+INFO 2025-11-27 15:52:51,544 autoreload 17024 58000 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\base.py changed, reloading.
+INFO 2025-11-27 15:52:51,771 apps 32156 11100 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:52:51,795 autoreload 32156 11100 Watching for file changes with StatReloader
+INFO 2025-11-27 15:52:52,320 wsgi 32156 26008 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:52:52,480 apps 39532 31020 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:52:52,489 autoreload 39532 31020 Watching for file changes with StatReloader
+INFO 2025-11-27 15:52:52,897 wsgi 39532 54124 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:53:23,492 basehttp 32156 332 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27484
+INFO 2025-11-27 15:53:54,644 basehttp 32156 332 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 11494
+INFO 2025-11-27 15:54:00,187 basehttp 32156 332 "GET /empleados/mensajeria/conversacion/f38d743e-0624-4443-a8cb-e8af322cb31b/ HTTP/1.1" 200 14530
+INFO 2025-11-27 15:54:05,842 basehttp 32156 332 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 11494
+INFO 2025-11-27 15:54:08,799 basehttp 32156 332 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:54:08,848 basehttp 32156 332 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27484
+INFO 2025-11-27 15:54:11,642 basehttp 32156 332 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27484
+INFO 2025-11-27 15:54:15,123 basehttp 32156 332 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 11494
+INFO 2025-11-27 15:54:19,759 basehttp 32156 332 "GET /empleados/mensajeria/conversacion/f38d743e-0624-4443-a8cb-e8af322cb31b/ HTTP/1.1" 200 14530
+INFO 2025-11-27 15:54:27,698 basehttp 32156 332 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 11494
+INFO 2025-11-27 15:54:31,860 basehttp 32156 332 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:54:32,006 basehttp 32156 332 "GET /empleados/perfil/50bbbb2f-25b5-42c2-a571-2c0cb4aa6205/ HTTP/1.1" 200 27484
+INFO 2025-11-27 15:54:36,278 basehttp 32156 332 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:54:36,288 basehttp 32156 332 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-27 15:54:40,410 basehttp 32156 332 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:54:40,466 basehttp 32156 332 "GET /dashboard/ HTTP/1.1" 200 20173
+ERROR 2025-11-27 15:54:50,075 log 32156 332 Internal Server Error: /empleados/mensajeria/inbox/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\list.py", line 158, in get
+    self.object_list = self.get_queryset()
+                       ^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2591, in get_queryset
+    participantes=self.request.user.empleado
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 15:54:50,092 basehttp 32156 332 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 500 102844
+INFO 2025-11-27 15:54:57,596 basehttp 32156 332 "GET /notificaciones/ HTTP/1.1" 200 10553
+INFO 2025-11-27 15:55:06,013 basehttp 32156 332 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31503
+INFO 2025-11-27 15:55:06,031 basehttp 32156 332 "GET /media/marketplace/productos/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-11-27 15:55:06,040 basehttp 32156 43768 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-27 15:55:06,041 basehttp 32156 40888 "GET /media/marketplace/productos/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-27 15:55:06,041 basehttp 32156 22276 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-27 15:55:06,042 basehttp 32156 332 "GET /media/marketplace/productos/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-27 15:55:06,044 basehttp 32156 51868 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-27 15:55:06,045 basehttp 32156 14200 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+INFO 2025-11-27 15:55:06,054 basehttp 32156 43768 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+INFO 2025-11-27 15:55:38,959 apps 51160 52680 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:56:00,748 basehttp 32156 41708 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-27 15:59:19,537 autoreload 32156 11100 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:19,970 autoreload 39532 31020 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:20,714 apps 30952 5276 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:20,736 autoreload 30952 5276 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:21,063 apps 23388 33452 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:21,086 autoreload 23388 33452 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:21,293 wsgi 30952 11204 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:59:21,564 wsgi 23388 7224 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:59:40,649 autoreload 23388 33452 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:41,391 autoreload 30952 5276 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:41,553 apps 24068 14036 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:41,576 autoreload 24068 14036 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:42,134 wsgi 24068 33556 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:59:42,334 apps 44720 18300 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:42,346 autoreload 44720 18300 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:42,811 wsgi 44720 32808 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:59:49,427 autoreload 44720 18300 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:49,875 autoreload 24068 14036 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 15:59:50,303 apps 38512 33932 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:50,322 autoreload 38512 33932 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:50,793 apps 27808 4432 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 15:59:50,813 autoreload 27808 4432 Watching for file changes with StatReloader
+INFO 2025-11-27 15:59:50,864 wsgi 38512 28188 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 15:59:51,376 wsgi 27808 55088 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:00:06,861 autoreload 38512 33932 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:00:07,198 autoreload 27808 4432 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:00:07,778 apps 54188 31180 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:00:07,797 autoreload 54188 31180 Watching for file changes with StatReloader
+INFO 2025-11-27 16:00:08,184 apps 51512 54896 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:00:08,201 autoreload 51512 54896 Watching for file changes with StatReloader
+INFO 2025-11-27 16:00:08,382 wsgi 54188 48696 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:00:08,797 wsgi 51512 22328 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:15,309 autoreload 54188 31180 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:15,644 autoreload 51512 54896 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:16,234 apps 42104 27520 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:16,252 autoreload 42104 27520 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:16,511 apps 8376 8692 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:16,535 autoreload 8376 8692 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:16,898 wsgi 42104 35728 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:17,001 wsgi 8376 15084 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:29,859 autoreload 8376 8692 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:30,732 apps 16488 8844 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:30,739 autoreload 42104 27520 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:30,755 autoreload 16488 8844 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:31,328 wsgi 16488 11200 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:31,659 apps 36720 28092 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:31,675 autoreload 36720 28092 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:32,137 wsgi 36720 9680 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:43,937 autoreload 36720 28092 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:44,195 autoreload 16488 8844 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:01:44,805 apps 56956 54960 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:44,826 autoreload 56956 54960 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:45,116 apps 20484 12880 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:01:45,132 autoreload 20484 12880 Watching for file changes with StatReloader
+INFO 2025-11-27 16:01:45,314 wsgi 56956 24620 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:01:45,693 wsgi 20484 18564 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:19,281 autoreload 20484 12880 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:19,992 autoreload 56956 54960 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:20,185 apps 30296 27004 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:20,205 autoreload 30296 27004 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:20,864 wsgi 30296 38280 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:20,958 apps 6716 17456 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:20,982 autoreload 6716 17456 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:21,413 wsgi 6716 48528 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:30,192 autoreload 6716 17456 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:30,526 autoreload 30296 27004 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:31,146 apps 31848 51392 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:31,170 autoreload 31848 51392 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:31,462 apps 8188 16468 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:31,483 autoreload 8188 16468 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:31,859 wsgi 31848 57936 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:31,963 wsgi 8188 13632 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:42,478 autoreload 31848 51392 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:42,746 autoreload 8188 16468 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:43,400 apps 31988 50892 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:43,420 autoreload 31988 50892 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:43,649 apps 39332 19556 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:43,670 autoreload 39332 19556 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:44,033 wsgi 31988 32012 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:44,210 wsgi 39332 12528 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:50,838 autoreload 39332 19556 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:51,719 autoreload 31988 50892 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:02:51,749 apps 57124 30716 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:51,768 autoreload 57124 30716 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:52,340 wsgi 57124 39520 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:52,657 apps 32600 14180 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:02:52,680 autoreload 32600 14180 Watching for file changes with StatReloader
+INFO 2025-11-27 16:02:53,113 wsgi 32600 52524 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:02:59,643 autoreload 32600 14180 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:00,016 autoreload 57124 30716 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:00,646 apps 9384 46012 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:00,666 autoreload 9384 46012 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:01,026 apps 10292 35748 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:01,054 autoreload 10292 35748 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:01,264 wsgi 9384 33324 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:01,680 wsgi 10292 52564 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:04,738 autoreload 9384 46012 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:04,994 autoreload 10292 35748 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:05,728 apps 30392 31420 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:05,762 autoreload 30392 31420 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:06,003 apps 38800 8492 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:06,025 autoreload 38800 8492 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:06,349 wsgi 30392 45628 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:06,529 wsgi 38800 48404 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:09,810 autoreload 30392 31420 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:09,958 autoreload 38800 8492 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:10,724 apps 12416 8128 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:10,748 autoreload 12416 8128 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:10,842 apps 42480 24644 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:10,861 autoreload 42480 24644 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:11,334 wsgi 12416 19300 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:11,406 wsgi 42480 2544 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:14,803 autoreload 12416 8128 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:14,880 autoreload 42480 24644 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:15,809 apps 7352 13896 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:15,830 autoreload 7352 13896 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:15,842 apps 58040 52996 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:15,866 autoreload 58040 52996 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:16,398 wsgi 7352 56472 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:16,439 wsgi 58040 18216 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:19,913 autoreload 7352 13896 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:19,927 autoreload 58040 52996 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:20,833 apps 35868 12320 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:20,853 autoreload 35868 12320 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:20,856 apps 35988 30184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:20,883 autoreload 35988 30184 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:21,431 wsgi 35868 33388 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:21,449 wsgi 35988 24252 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:25,961 autoreload 35988 30184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:25,961 autoreload 35868 12320 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 16:03:27,039 apps 40556 40948 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:27,050 apps 26340 10716 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 16:03:27,061 autoreload 40556 40948 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:27,069 autoreload 26340 10716 Watching for file changes with StatReloader
+INFO 2025-11-27 16:03:27,590 wsgi 26340 38720 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 16:03:27,590 wsgi 40556 26236 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
