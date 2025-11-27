@@ -147,7 +147,8 @@ class VentaFormTest(TestCase):
     def test_form_valid_venta(self):
         """Test formulario válido de venta"""
         data = {
-            'precio_confirmacion': 100.00,
+            'confirmar_precio': 100.00,
+            'acepto_terminos': True,
         }
         form = VentaForm(
             data,
@@ -159,7 +160,8 @@ class VentaFormTest(TestCase):
     def test_form_invalid_price_mismatch(self):
         """Test formulario con precio diferente"""
         data = {
-            'precio_confirmacion': 50.00,
+            'confirmar_precio': 50.00,
+            'acepto_terminos': True,
         }
         # Simulamos que el precio real es 100
         form = VentaForm(
@@ -176,7 +178,7 @@ class RegaloFormTest(TestCase):
 
     def setUp(self):
         """Configurar datos de prueba"""
-        self.estado = EstadoEmpleado.objects.create(codigo='activo', nombre='Activo')
+        self.estado = EstadoEmpleado.objects.create(codigo='ACTIVO', nombre='Activo')
         self.tipo_doc = TipoDocumento.objects.create(codigo='CC', nombre='Cédula')
         self.sede = Sede.objects.create(codigo='SEDE001', nombre='Sede Principal')
         self.user1 = User.objects.create_user(username='user1', password='pass123')
@@ -275,7 +277,7 @@ class ConversacionFormTest(TestCase):
             'participante_id': self.empleado2.id,
             'contexto': 'general',
         }
-        form = ConversacionForm(data, usuario=self.empleado1)
+        form = ConversacionForm(data)
         self.assertTrue(form.is_valid())
 
     def test_form_self_conversation_not_allowed(self):
@@ -284,7 +286,7 @@ class ConversacionFormTest(TestCase):
             'participante_id': self.empleado1.id,
             'contexto': 'general',
         }
-        form = ConversacionForm(data, usuario=self.empleado1)
+        form = ConversacionForm(data)
         self.assertFalse(form.is_valid())
 
 

@@ -89,3 +89,53 @@ INFO 2025-11-26 13:43:06,358 basehttp 56112 51800 "GET /empleados/periodo-prueba
 INFO 2025-11-26 13:48:06,537 basehttp 56112 17236 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
 INFO 2025-11-26 13:53:06,742 basehttp 56112 39436 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
 INFO 2025-11-26 13:58:07,275 basehttp 56112 13996 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 97531
+INFO 2025-11-26 15:36:50,698 apps 55420 41004 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 15:36:51,185 apps 34500 16668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 15:36:51,201 autoreload 34500 16668 Watching for file changes with StatReloader
+INFO 2025-11-26 15:36:51,589 wsgi 34500 31904 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-26 15:36:53,645 basehttp 34500 43244 "GET / HTTP/1.1" 302 0
+INFO 2025-11-26 15:36:53,795 basehttp 34500 43244 "GET /dashboard/ HTTP/1.1" 200 19253
+INFO 2025-11-26 15:37:00,686 basehttp 34500 43244 "GET /empleados/ HTTP/1.1" 200 100364
+INFO 2025-11-26 15:37:04,095 basehttp 34500 43244 "GET /dashboard/ HTTP/1.1" 200 19253
+INFO 2025-11-26 15:37:06,018 basehttp 34500 43244 "GET /evaluaciones/ HTTP/1.1" 200 28759
+INFO 2025-11-26 15:37:08,945 basehttp 34500 43244 "GET /dashboard/ HTTP/1.1" 200 19253
+INFO 2025-11-26 15:49:08,033 apps 46840 26440 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 15:49:19,057 apps 12356 46888 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 15:55:41,991 apps 24928 56924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 16:01:34,982 apps 32220 12960 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 16:02:12,992 apps 356 29060 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-26 16:04:28,391 apps 42720 28396 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 06:54:47,656 apps 32780 37760 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:14:46,140 apps 30956 53588 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:25:42,940 apps 58320 16020 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:40:11,323 apps 3148 23772 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:40:50,042 apps 29028 19388 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:43:25,475 apps 41176 4832 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:48:47,983 apps 39000 21552 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:48:48,606 apps 13560 428 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 07:48:48,634 autoreload 13560 428 Watching for file changes with StatReloader
+INFO 2025-11-27 07:48:49,556 wsgi 13560 35076 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 07:48:52,826 basehttp 13560 55836 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 07:48:53,100 basehttp 13560 55836 "GET /dashboard/ HTTP/1.1" 200 19310
+WARNING 2025-11-27 07:48:53,289 log 13560 55836 Not Found: /favicon.ico
+WARNING 2025-11-27 07:48:53,289 basehttp 13560 55836 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-27 07:49:23,475 basehttp 13560 55836 "GET /evaluaciones/ HTTP/1.1" 200 28816
+INFO 2025-11-27 07:49:31,875 basehttp 13560 55836 "GET /notificaciones/ HTTP/1.1" 200 10194
+INFO 2025-11-27 07:59:41,422 apps 15604 56340 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:00:51,473 apps 57284 8596 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:05:46,790 apps 15924 29172 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:07:51,206 apps 25016 22248 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:10:59,849 apps 28788 57588 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:12:26,904 apps 17848 29348 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:14:41,061 apps 2288 28724 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:20:36,265 apps 57588 30672 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:20:54,963 apps 54548 33668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:27:21,446 apps 44276 35152 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:33:57,658 apps 19060 9256 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:34:48,898 apps 39496 27452 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:36:12,664 apps 10824 3532 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:37:26,925 apps 30708 11120 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:38:05,841 apps 57828 35204 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:38:53,090 apps 21840 16052 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:39:28,356 apps 17992 33868 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:40:55,793 apps 35256 37924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage

@@ -151,8 +151,7 @@ class VentaModelTest(TestCase):
             creado_por=self.user_comprador
         )
         self.categoria = Categoria.objects.create(
-            nombre='Test',
-            creado_por=self.user_vendedor
+            nombre='Test'
         )
         self.producto = Producto.objects.create(
             titulo='Test Producto',
@@ -170,11 +169,11 @@ class VentaModelTest(TestCase):
             producto=self.producto,
             vendedor=self.vendedor,
             comprador=self.comprador,
-            precio=100.00,
+            precio_final=100.00,
             creado_por=self.user_comprador
         )
         self.assertEqual(venta.producto, self.producto)
-        self.assertEqual(venta.precio, 100.00)
+        self.assertEqual(venta.precio_final, 100.00)
         self.assertEqual(venta.estado, 'pendiente_vendedor')
 
     def test_venta_cambiar_estado(self):
@@ -183,7 +182,7 @@ class VentaModelTest(TestCase):
             producto=self.producto,
             vendedor=self.vendedor,
             comprador=self.comprador,
-            precio=100.00,
+            precio_final=100.00,
             creado_por=self.user_comprador
         )
         venta.estado = 'completada'
