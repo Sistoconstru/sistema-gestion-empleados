@@ -139,3 +139,1286 @@ INFO 2025-11-27 08:38:05,841 apps 57828 35204 [CoreConfig.ready] DEFAULT_FILE_ST
 INFO 2025-11-27 08:38:53,090 apps 21840 16052 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-27 08:39:28,356 apps 17992 33868 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-27 08:40:55,793 apps 35256 37924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:43:37,044 apps 3832 26568 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:44:59,631 apps 23052 23840 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:45:12,856 apps 37512 48620 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:46:02,610 apps 7300 14264 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:46:31,506 apps 19416 47432 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:46:54,218 apps 712 44312 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:47:59,760 apps 22064 42932 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:49:06,390 apps 23364 31132 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:50:15,125 apps 27892 13408 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:53:11,508 apps 18280 20492 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:53:11,994 apps 19584 1668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 08:53:12,017 autoreload 19584 1668 Watching for file changes with StatReloader
+INFO 2025-11-27 08:53:12,391 wsgi 19584 56832 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 08:53:15,973 basehttp 19584 45448 "GET /dashboard/ HTTP/1.1" 200 19310
+INFO 2025-11-27 08:55:00,307 basehttp 19584 45448 "GET /dashboard/ HTTP/1.1" 200 19310
+INFO 2025-11-27 09:00:08,242 basehttp 19584 35452 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:00:12,666 basehttp 19584 35452 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 10245
+INFO 2025-11-27 09:00:24,607 basehttp 19584 35452 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30001
+INFO 2025-11-27 09:00:50,790 basehttp 19584 35452 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30001
+INFO 2025-11-27 09:02:08,893 basehttp 19584 35452 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:02:10,492 basehttp 19584 35452 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 10245
+INFO 2025-11-27 09:02:22,469 basehttp 19584 35452 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:02:24,125 basehttp 19584 35452 "GET /admin/ HTTP/1.1" 200 60674
+INFO 2025-11-27 09:02:24,153 basehttp 19584 39992 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-11-27 09:02:24,153 basehttp 19584 10828 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-11-27 09:02:24,154 basehttp 19584 35452 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-11-27 09:02:24,156 basehttp 19584 15196 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-27 09:02:24,157 basehttp 19584 32328 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-11-27 09:02:24,166 basehttp 19584 6016 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-11-27 09:02:24,180 basehttp 19584 32328 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-27 09:02:24,187 basehttp 19584 6016 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-27 09:02:24,187 basehttp 19584 15196 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-27 09:02:24,188 basehttp 19584 35452 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-11-27 09:02:56,393 basehttp 19584 35452 "GET /admin/employees/categoria/ HTTP/1.1" 200 47078
+INFO 2025-11-27 09:02:56,434 basehttp 19584 35452 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-11-27 09:02:56,447 basehttp 19584 32328 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-27 09:02:56,452 basehttp 19584 39992 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-11-27 09:02:56,455 basehttp 19584 10828 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-11-27 09:02:56,466 basehttp 19584 35452 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-11-27 09:02:56,471 basehttp 19584 32328 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-27 09:02:56,475 basehttp 19584 39992 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-27 09:02:56,481 basehttp 19584 35452 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-11-27 09:02:56,493 basehttp 19584 6016 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-11-27 09:02:56,527 basehttp 19584 15196 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-27 09:02:56,545 basehttp 19584 15196 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-27 09:02:56,559 basehttp 19584 10828 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-11-27 09:02:56,592 basehttp 19584 15196 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-11-27 09:02:56,597 basehttp 19584 10828 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-27 09:02:59,757 basehttp 19584 10828 "GET /admin/employees/categoria/add/ HTTP/1.1" 200 48706
+INFO 2025-11-27 09:02:59,799 basehttp 19584 10828 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-11-27 09:02:59,806 basehttp 19584 15196 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-11-27 09:02:59,811 basehttp 19584 10828 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-11-27 09:02:59,832 basehttp 19584 10828 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-11-27 09:02:59,940 basehttp 19584 6016 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-27 09:05:37,291 basehttp 19584 36404 "GET /admin/employees/producto/ HTTP/1.1" 200 47589
+INFO 2025-11-27 09:05:37,318 basehttp 19584 36404 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-27 09:05:39,491 basehttp 19584 36404 "GET /admin/employees/producto/add/ HTTP/1.1" 200 71835
+INFO 2025-11-27 09:05:39,513 basehttp 19584 36404 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-27 09:05:39,535 basehttp 19584 41684 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+INFO 2025-11-27 09:05:39,535 basehttp 19584 58268 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-11-27 09:05:39,579 basehttp 19584 58268 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+INFO 2025-11-27 09:09:55,819 apps 55612 44572 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:12:16,390 apps 25352 16856 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:12:16,901 apps 8256 10124 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:12:16,920 autoreload 8256 10124 Watching for file changes with StatReloader
+INFO 2025-11-27 09:12:17,290 wsgi 8256 45308 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:12:20,878 basehttp 8256 57160 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:12:23,411 basehttp 8256 57160 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:12:30,907 basehttp 8256 57160 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30463
+ERROR 2025-11-27 09:22:40,123 log 8256 52276 Internal Server Error: /empleados/marketplace/productos/crear/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 182, in post
+    return super().post(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2261, in form_valid
+    form.instance.vendedor = self.request.user.empleado
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:22:40,123 basehttp 8256 52276 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 500 110683
+ERROR 2025-11-27 09:23:54,241 log 8256 52276 Internal Server Error: /empleados/marketplace/productos/crear/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 182, in post
+    return super().post(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2261, in form_valid
+    form.instance.vendedor = self.request.user.empleado
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:23:54,241 basehttp 8256 52276 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 500 110683
+INFO 2025-11-27 09:24:52,209 autoreload 8256 10124 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 09:24:53,070 apps 42340 57632 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:24:53,095 autoreload 42340 57632 Watching for file changes with StatReloader
+INFO 2025-11-27 09:24:53,588 wsgi 42340 17900 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+ERROR 2025-11-27 09:25:37,024 log 42340 13516 Internal Server Error: /empleados/marketplace/productos/crear/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 182, in post
+    return super().post(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2270, in form_valid
+    form.instance.vendedor = self.request.user.empleado
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:25:37,024 basehttp 42340 13516 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 500 110759
+INFO 2025-11-27 09:26:34,558 apps 17264 24372 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:26:35,046 apps 31456 5128 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:26:35,062 autoreload 31456 5128 Watching for file changes with StatReloader
+INFO 2025-11-27 09:26:35,463 wsgi 31456 19680 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:26:37,995 basehttp 31456 25892 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 09:26:38,242 basehttp 31456 25892 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:26:43,798 basehttp 31456 25892 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:26:46,120 basehttp 31456 25892 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:26:46,353 basehttp 31456 25892 "GET /empleados/ HTTP/1.1" 200 100872
+INFO 2025-11-27 09:27:06,604 basehttp 31456 25892 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:27:08,314 basehttp 31456 25892 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:29:03,142 autoreload 31456 5128 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 09:29:03,956 apps 34948 42480 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:29:03,976 autoreload 34948 42480 Watching for file changes with StatReloader
+INFO 2025-11-27 09:29:04,436 wsgi 34948 12432 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:30:35,358 basehttp 34948 23476 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:30:36,908 basehttp 34948 23476 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30463
+ERROR 2025-11-27 09:32:21,390 log 34948 23476 Internal Server Error: /empleados/marketplace/productos/crear/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.NotNullViolation: el valor nulo en la columna «vendedor_id» de la relación «marketplace_productos» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (2025-11-27 14:32:21.326665+00, 2025-11-27 14:32:21.326665+00, 6cafdb64-31fd-4a18-8cf0-f82fb5894826, Celular Infinix Hot 60i 8/256GB 5G, Especificaciones principales
+Capacidad de almacenamiento: 256 G..., venta, 500000.00, marketplace/productos/cel.png, activo, 1, 32b0beb2-71e0-4d6d-9a08-ff36a5f793da, null).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 182, in post
+    return super().post(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 151, in post
+    return self.form_valid(form)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2278, in form_valid
+    return super().form_valid(form)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 133, in form_valid
+    self.object = form.save()
+                  ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\forms\models.py", line 554, in save
+    self.instance.save()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.IntegrityError: el valor nulo en la columna «vendedor_id» de la relación «marketplace_productos» viola la restricción de no nulo
+DETAIL:  La fila que falla contiene (2025-11-27 14:32:21.326665+00, 2025-11-27 14:32:21.326665+00, 6cafdb64-31fd-4a18-8cf0-f82fb5894826, Celular Infinix Hot 60i 8/256GB 5G, Especificaciones principales
+Capacidad de almacenamiento: 256 G..., venta, 500000.00, marketplace/productos/cel.png, activo, 1, 32b0beb2-71e0-4d6d-9a08-ff36a5f793da, null).
+
+ERROR 2025-11-27 09:32:21,424 basehttp 34948 23476 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 500 193961
+INFO 2025-11-27 09:36:26,842 autoreload 34948 42480 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-11-27 09:36:27,732 apps 38632 15184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:36:27,746 autoreload 38632 15184 Watching for file changes with StatReloader
+INFO 2025-11-27 09:36:28,216 wsgi 38632 48972 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:36:49,293 autoreload 38632 15184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 09:36:50,104 apps 43560 55304 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:36:50,126 autoreload 43560 55304 Watching for file changes with StatReloader
+INFO 2025-11-27 09:36:50,710 wsgi 43560 4844 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:37:03,409 autoreload 43560 55304 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 09:37:04,231 apps 25252 8960 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:37:04,251 autoreload 25252 8960 Watching for file changes with StatReloader
+INFO 2025-11-27 09:37:04,709 wsgi 25252 52848 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:38:07,262 apps 51768 41644 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:38:46,409 basehttp 25252 45440 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30463
+INFO 2025-11-27 09:41:23,692 basehttp 25252 45440 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 31027
+WARNING 2025-11-27 09:41:23,715 log 25252 45440 Not Found: /media/cel.png
+WARNING 2025-11-27 09:41:23,716 basehttp 25252 45440 "GET /media/cel.png HTTP/1.1" 404 4925
+INFO 2025-11-27 09:41:57,525 basehttp 25252 45440 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30725
+INFO 2025-11-27 09:42:52,136 apps 52836 42368 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:43:39,428 apps 15740 39888 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:43:40,076 apps 15852 42740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:43:40,097 autoreload 15852 42740 Watching for file changes with StatReloader
+INFO 2025-11-27 09:43:40,579 wsgi 15852 36700 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:43:43,238 basehttp 15852 30224 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 09:43:43,514 basehttp 15852 30224 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:43:47,202 basehttp 15852 30224 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:43:52,207 basehttp 15852 30224 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30463
+INFO 2025-11-27 09:44:21,693 basehttp 15852 30224 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 31027
+WARNING 2025-11-27 09:44:21,717 log 15852 30224 Not Found: /media/cel.png
+WARNING 2025-11-27 09:44:21,718 basehttp 15852 30224 "GET /media/cel.png HTTP/1.1" 404 4925
+WARNING 2025-11-27 09:44:33,865 log 15852 30224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:44:33,865 basehttp 15852 30224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:44:33,946 basehttp 15852 30224 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:47:26,437 autoreload 15852 42740 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-11-27 09:47:27,301 apps 15760 19460 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:47:27,313 autoreload 15760 19460 Watching for file changes with StatReloader
+INFO 2025-11-27 09:47:27,797 wsgi 15760 37032 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:47:51,126 basehttp 15760 4764 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 31027
+WARNING 2025-11-27 09:47:51,178 log 15760 4764 Not Found: /media/cel.png
+WARNING 2025-11-27 09:47:51,178 log 15760 31792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:47:51,179 basehttp 15760 4764 "GET /media/cel.png HTTP/1.1" 404 4925
+WARNING 2025-11-27 09:47:51,179 basehttp 15760 31792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:47:51,199 basehttp 15760 31792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:48:13,374 basehttp 15760 4764 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 31027
+WARNING 2025-11-27 09:48:13,417 log 15760 4764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:48:13,421 log 15760 36248 Not Found: /media/cel.png
+WARNING 2025-11-27 09:48:13,421 basehttp 15760 4764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:48:13,422 basehttp 15760 36248 "GET /media/cel.png HTTP/1.1" 404 4925
+WARNING 2025-11-27 09:48:13,459 basehttp 15760 36248 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:48:31,969 apps 2964 39284 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:48:32,480 apps 12476 50092 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:48:32,499 autoreload 12476 50092 Watching for file changes with StatReloader
+INFO 2025-11-27 09:48:32,890 wsgi 12476 40008 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:48:34,227 basehttp 12476 53820 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 09:48:34,539 basehttp 12476 53820 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 09:48:37,564 basehttp 12476 53820 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+WARNING 2025-11-27 09:48:40,174 log 12476 53820 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:48:40,176 basehttp 12476 53820 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:48:40,193 basehttp 12476 53820 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:48:43,040 basehttp 12476 5560 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 11717
+INFO 2025-11-27 09:48:43,090 basehttp 12476 56352 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-27 09:48:43,092 basehttp 12476 11008 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-27 09:48:43,093 basehttp 12476 32456 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+WARNING 2025-11-27 09:48:43,100 log 12476 11008 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:48:43,101 basehttp 12476 11008 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 09:48:43,101 basehttp 12476 53204 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-27 09:48:43,102 basehttp 12476 5560 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-27 09:48:43,139 basehttp 12476 56352 "GET /static/js/custom.js HTTP/1.1" 200 13589
+WARNING 2025-11-27 09:48:43,146 basehttp 12476 56352 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:48:43,146 basehttp 12476 3792 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-27 09:48:43,187 basehttp 12476 3792 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-27 09:48:43,203 log 12476 3792 Not Found: /favicon.ico
+WARNING 2025-11-27 09:48:43,203 basehttp 12476 3792 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-27 09:48:52,058 basehttp 12476 3792 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 30463
+WARNING 2025-11-27 09:48:52,086 log 12476 3792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:48:52,087 basehttp 12476 3792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:48:52,152 basehttp 12476 3792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:49:23,560 basehttp 12476 5560 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 31027
+WARNING 2025-11-27 09:49:23,599 log 12476 5560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:49:23,600 basehttp 12476 5560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:49:23,603 log 12476 53204 Not Found: /media/cel.png
+WARNING 2025-11-27 09:49:23,604 basehttp 12476 53204 "GET /media/cel.png HTTP/1.1" 404 4925
+WARNING 2025-11-27 09:49:23,648 basehttp 12476 53204 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:49:42,987 apps 18756 26592 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:50:57,308 basehttp 12476 5560 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 37689
+WARNING 2025-11-27 09:50:57,338 log 12476 5560 Not Found: /media/cel.png
+WARNING 2025-11-27 09:50:57,346 log 12476 11008 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:50:57,346 basehttp 12476 5560 "GET /media/cel.png HTTP/1.1" 404 4925
+WARNING 2025-11-27 09:50:57,347 basehttp 12476 11008 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:50:57,397 basehttp 12476 11008 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:51:28,458 basehttp 12476 5560 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+ERROR 2025-11-27 09:51:28,508 log 12476 5560 Internal Server Error: /empleados/marketplace/productos/b133dff9-4391-4479-ae59-a8e3a11052e9/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2241, in get_context_data
+    usuario = self.request.user.empleado
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:51:28,508 basehttp 12476 5560 "GET /empleados/marketplace/productos/b133dff9-4391-4479-ae59-a8e3a11052e9/ HTTP/1.1" 500 104791
+WARNING 2025-11-27 09:51:28,545 log 12476 5560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:51:28,546 basehttp 12476 5560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:51:40,917 log 12476 5560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:51:40,918 basehttp 12476 5560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:51:40,955 basehttp 12476 5560 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:51:54,076 basehttp 12476 32456 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+ERROR 2025-11-27 09:51:54,126 log 12476 32456 Internal Server Error: /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2241, in get_context_data
+    usuario = self.request.user.empleado
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:51:54,126 basehttp 12476 32456 "GET /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/ HTTP/1.1" 500 104791
+WARNING 2025-11-27 09:51:54,161 log 12476 32456 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:51:54,162 basehttp 12476 32456 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:52:01,133 log 12476 32456 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:52:01,134 basehttp 12476 32456 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:52:01,192 basehttp 12476 32456 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:52:40,307 basehttp 12476 18500 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+ERROR 2025-11-27 09:52:40,358 log 12476 18500 Internal Server Error: /empleados/marketplace/productos/3e0026e2-ab3b-4d42-b1b2-b4e7e1a6f803/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\detail.py", line 113, in get
+    context = self.get_context_data(object=self.object)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2241, in get_context_data
+    usuario = self.request.user.empleado
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:52:40,358 basehttp 12476 18500 "GET /empleados/marketplace/productos/3e0026e2-ab3b-4d42-b1b2-b4e7e1a6f803/ HTTP/1.1" 500 104791
+WARNING 2025-11-27 09:52:40,397 log 12476 18500 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:52:40,397 basehttp 12476 18500 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 09:53:30,984 autoreload 12476 50092 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 09:53:31,791 apps 21468 27676 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:53:31,817 autoreload 21468 27676 Watching for file changes with StatReloader
+INFO 2025-11-27 09:53:32,458 wsgi 21468 27020 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+WARNING 2025-11-27 09:53:38,043 log 21468 13392 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:53:38,044 basehttp 21468 13392 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:53:38,111 basehttp 21468 13392 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:54:01,025 basehttp 21468 1284 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 09:54:01,082 basehttp 21468 1284 "GET /empleados/marketplace/productos/9015dfa9-0b95-4950-87c7-c9b20d4c0200/ HTTP/1.1" 200 10628
+WARNING 2025-11-27 09:54:01,111 log 21468 1284 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:54:01,112 basehttp 21468 1284 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:54:01,161 basehttp 21468 1284 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:54:34,679 basehttp 21468 27392 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 19164
+WARNING 2025-11-27 09:54:34,708 log 21468 27392 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:54:34,710 basehttp 21468 27392 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:54:34,765 basehttp 21468 27392 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:54:46,975 basehttp 21468 12612 "GET /empleados/marketplace/productos/9015dfa9-0b95-4950-87c7-c9b20d4c0200/ HTTP/1.1" 200 10628
+WARNING 2025-11-27 09:54:47,009 log 21468 12612 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:54:47,009 basehttp 21468 12612 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:54:47,064 basehttp 21468 12612 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 09:54:53,104 basehttp 21468 5616 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 09:54:53,119 log 21468 45768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:54:53,119 basehttp 21468 45768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:54:53,163 log 21468 45768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:54:53,164 basehttp 21468 45768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:54:53,166 basehttp 21468 3012 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:55:39,990 basehttp 21468 7196 "GET /empleados/marketplace/productos/b133dff9-4391-4479-ae59-a8e3a11052e9/ HTTP/1.1" 200 10628
+WARNING 2025-11-27 09:55:40,021 log 21468 7196 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:40,024 basehttp 21468 7196 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:40,051 basehttp 21468 7196 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 09:55:44,076 basehttp 21468 496 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 09:55:44,082 log 21468 22196 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:44,082 basehttp 21468 22196 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:44,099 log 21468 22196 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:44,101 basehttp 21468 22196 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:44,108 basehttp 21468 48380 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:55:45,725 basehttp 21468 22196 "GET /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/ HTTP/1.1" 200 10626
+WARNING 2025-11-27 09:55:45,763 log 21468 22196 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:45,764 basehttp 21468 22196 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:45,800 basehttp 21468 22196 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+ERROR 2025-11-27 09:55:49,526 log 21468 43892 Internal Server Error: /empleados/mensajeria/iniciar/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 178, in get
+    return super().get(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 142, in get
+    return self.render_to_response(self.get_context_data())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 72, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 37, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2550, in get_form_kwargs
+    kwargs['usuario_actual'] = self.request.user.empleado
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 09:55:49,526 basehttp 21468 43892 "GET /empleados/mensajeria/iniciar/?receptor=183b0213-47fd-4bfa-8c6e-2ac22129a3ab HTTP/1.1" 500 117033
+WARNING 2025-11-27 09:55:49,568 log 21468 43892 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:49,569 basehttp 21468 43892 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:51,600 basehttp 21468 43892 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 09:55:51,605 log 21468 6256 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:51,605 basehttp 21468 6256 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:51,620 log 21468 6256 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:55:51,620 basehttp 21468 6256 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:55:51,635 basehttp 21468 6256 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:57:19,632 apps 11424 1160 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:57:50,659 apps 20592 18856 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:59:08,921 apps 11972 53880 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:59:09,456 apps 17632 12180 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 09:59:09,473 autoreload 17632 12180 Watching for file changes with StatReloader
+INFO 2025-11-27 09:59:09,909 wsgi 17632 42264 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 09:59:10,177 basehttp 17632 53120 "GET /empleados/marketplace/productos/?categoria=1 HTTP/1.1" 200 19172
+WARNING 2025-11-27 09:59:10,203 log 17632 53120 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:59:10,204 basehttp 17632 53120 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:59:10,243 basehttp 17632 53120 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 09:59:23,241 basehttp 17632 18164 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 36867
+WARNING 2025-11-27 09:59:23,270 log 17632 18164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 09:59:23,271 basehttp 17632 18164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 09:59:23,323 basehttp 17632 18164 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:00:12,191 basehttp 17632 23796 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:00:12,233 basehttp 17632 23796 "GET /empleados/marketplace/productos/6551927d-8f81-4fe3-8476-baa318359e02/ HTTP/1.1" 200 10602
+WARNING 2025-11-27 10:00:12,267 log 17632 23796 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:00:12,267 basehttp 17632 23796 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:00:12,281 basehttp 17632 37028 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+WARNING 2025-11-27 10:00:12,297 basehttp 17632 37028 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:00:30,286 basehttp 17632 23796 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 21036
+WARNING 2025-11-27 10:00:30,310 log 17632 23796 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:00:30,311 basehttp 17632 47820 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 10:00:30,311 basehttp 17632 23796 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:00:30,347 basehttp 17632 23796 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:00:36,391 basehttp 17632 47820 "GET /empleados/marketplace/productos/6551927d-8f81-4fe3-8476-baa318359e02/ HTTP/1.1" 200 10602
+WARNING 2025-11-27 10:00:36,419 log 17632 47820 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:00:36,420 basehttp 17632 14980 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 10:00:36,421 basehttp 17632 47820 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:00:36,445 basehttp 17632 47820 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:00:40,551 basehttp 17632 14980 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:00:40,562 log 17632 46248 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:00:40,562 basehttp 17632 46248 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:00:40,584 log 17632 46248 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:00:40,585 basehttp 17632 46248 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:00:40,598 basehttp 17632 46248 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:03:13,708 autoreload 17632 12180 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 10:03:14,565 apps 20132 57620 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:03:14,582 autoreload 20132 57620 Watching for file changes with StatReloader
+INFO 2025-11-27 10:03:28,459 autoreload 20132 57620 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-11-27 10:03:29,123 apps 22576 28992 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:03:29,146 autoreload 22576 28992 Watching for file changes with StatReloader
+INFO 2025-11-27 10:03:29,678 wsgi 22576 23332 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 10:03:56,058 autoreload 22576 28992 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\urls.py changed, reloading.
+INFO 2025-11-27 10:03:56,851 apps 46652 15244 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:03:56,867 autoreload 46652 15244 Watching for file changes with StatReloader
+INFO 2025-11-27 10:03:57,422 wsgi 46652 38896 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 10:06:37,108 basehttp 46652 35276 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 21036
+INFO 2025-11-27 10:06:37,147 basehttp 46652 32400 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 10:06:37,148 log 46652 35276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:06:37,149 basehttp 46652 35276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:06:37,174 basehttp 46652 35276 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:06:49,992 basehttp 46652 32400 "GET /empleados/marketplace/productos/9015dfa9-0b95-4950-87c7-c9b20d4c0200/ HTTP/1.1" 200 11035
+WARNING 2025-11-27 10:06:50,028 log 46652 32400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:06:50,028 basehttp 46652 32400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:06:50,087 basehttp 46652 32400 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:06:56,024 basehttp 46652 44948 "GET /empleados/marketplace/productos/9015dfa9-0b95-4950-87c7-c9b20d4c0200/eliminar/ HTTP/1.1" 200 8834
+WARNING 2025-11-27 10:06:56,053 log 46652 44948 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:06:56,053 basehttp 46652 44948 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:06:56,092 basehttp 46652 44948 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:08,843 basehttp 46652 19588 "POST /empleados/marketplace/productos/9015dfa9-0b95-4950-87c7-c9b20d4c0200/eliminar/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:07:08,858 basehttp 46652 19588 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 19124
+WARNING 2025-11-27 10:07:08,897 log 46652 19588 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:08,897 basehttp 46652 19588 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:08,980 basehttp 46652 19588 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:14,909 basehttp 46652 18252 "GET /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/ HTTP/1.1" 200 11033
+WARNING 2025-11-27 10:07:14,942 log 46652 18252 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:14,943 basehttp 46652 18252 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:14,977 basehttp 46652 18252 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:16,191 basehttp 46652 28196 "GET /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/eliminar/ HTTP/1.1" 200 8834
+WARNING 2025-11-27 10:07:16,223 log 46652 28196 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:16,224 basehttp 46652 28196 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:16,251 basehttp 46652 28196 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:18,024 basehttp 46652 28388 "POST /empleados/marketplace/productos/a5fb81b4-df25-4928-a17d-83cc9ca2e3c6/eliminar/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:07:18,064 basehttp 46652 28388 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 17214
+WARNING 2025-11-27 10:07:18,099 log 46652 28388 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:07:18,100 basehttp 46652 34640 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 10:07:18,101 basehttp 46652 28388 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:18,167 basehttp 46652 28388 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:19,924 basehttp 46652 34640 "GET /empleados/marketplace/productos/3e0026e2-ab3b-4d42-b1b2-b4e7e1a6f803/ HTTP/1.1" 200 11036
+WARNING 2025-11-27 10:07:19,965 log 46652 34640 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:19,965 basehttp 46652 34640 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:20,004 basehttp 46652 34640 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:21,007 basehttp 46652 14768 "GET /empleados/marketplace/productos/3e0026e2-ab3b-4d42-b1b2-b4e7e1a6f803/eliminar/ HTTP/1.1" 200 8834
+WARNING 2025-11-27 10:07:21,048 log 46652 14768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:21,048 basehttp 46652 14768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:21,079 basehttp 46652 14768 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:07:22,974 basehttp 46652 21252 "POST /empleados/marketplace/productos/3e0026e2-ab3b-4d42-b1b2-b4e7e1a6f803/eliminar/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:07:22,992 basehttp 46652 21252 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 15301
+WARNING 2025-11-27 10:07:23,034 log 46652 21252 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:07:23,034 basehttp 46652 21252 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:07:23,071 basehttp 46652 21252 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:08:30,242 basehttp 46652 29548 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 36867
+WARNING 2025-11-27 10:08:30,281 log 46652 29548 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:08:30,282 basehttp 46652 29548 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:08:30,310 basehttp 46652 29548 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:08:49,983 basehttp 46652 43636 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:08:49,991 log 46652 42972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:08:49,992 basehttp 46652 42972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:08:50,014 log 46652 42972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:08:50,014 basehttp 46652 42972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:08:50,028 basehttp 46652 42972 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:13:37,508 basehttp 46652 38704 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 40937
+WARNING 2025-11-27 10:13:37,544 log 46652 38704 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:13:37,545 basehttp 46652 38704 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:13:37,570 basehttp 46652 38704 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:15:47,204 autoreload 46652 15244 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-11-27 10:15:48,084 apps 56864 1924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:15:48,102 autoreload 56864 1924 Watching for file changes with StatReloader
+INFO 2025-11-27 10:15:48,573 wsgi 56864 29028 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 10:17:03,658 basehttp 56864 51016 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+INFO 2025-11-27 10:17:20,790 basehttp 56864 51016 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+INFO 2025-11-27 10:17:22,157 basehttp 56864 51016 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+INFO 2025-11-27 10:17:23,158 basehttp 56864 51016 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+INFO 2025-11-27 10:17:23,392 basehttp 56864 51016 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+INFO 2025-11-27 10:17:51,624 apps 50108 21224 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:17:52,153 apps 29844 25636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:17:52,170 autoreload 29844 25636 Watching for file changes with StatReloader
+INFO 2025-11-27 10:17:52,695 wsgi 29844 24572 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 10:17:53,762 basehttp 29844 9324 "GET / HTTP/1.1" 302 0
+INFO 2025-11-27 10:17:53,943 basehttp 29844 9324 "GET /dashboard/ HTTP/1.1" 200 19814
+INFO 2025-11-27 10:17:57,142 basehttp 29844 9324 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 15301
+INFO 2025-11-27 10:17:57,160 basehttp 29844 9324 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+INFO 2025-11-27 10:18:02,091 basehttp 29844 9324 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+WARNING 2025-11-27 10:19:27,840 log 29844 9324 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:19:27,840 basehttp 29844 9324 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:19:27,851 basehttp 29844 9324 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:19:30,506 basehttp 29844 34592 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 41120
+WARNING 2025-11-27 10:19:30,533 log 29844 34592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:19:30,535 basehttp 29844 34592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:19:30,543 basehttp 29844 15172 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-27 10:19:30,544 basehttp 29844 40680 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-27 10:19:30,544 basehttp 29844 34592 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-27 10:19:30,545 basehttp 29844 7436 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-27 10:19:30,546 basehttp 29844 24980 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-27 10:19:30,547 basehttp 29844 15172 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-27 10:19:30,550 basehttp 29844 45404 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-27 10:19:30,570 basehttp 29844 15172 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-27 10:19:30,597 basehttp 29844 15172 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:19:30,841 log 29844 45404 Not Found: /favicon.ico
+WARNING 2025-11-27 10:19:30,842 basehttp 29844 45404 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-27 10:20:19,824 basehttp 29844 45404 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:20:19,854 log 29844 45404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:20:19,855 basehttp 29844 45404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:20:19,900 basehttp 29844 45404 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:14,911 basehttp 29844 24980 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:24:14,942 basehttp 29844 24980 "GET /empleados/marketplace/productos/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/ HTTP/1.1" 200 11039
+WARNING 2025-11-27 10:24:14,978 log 29844 24980 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:24:14,980 basehttp 29844 24980 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:24:14,996 basehttp 29844 7436 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+WARNING 2025-11-27 10:24:15,020 basehttp 29844 7436 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:28,807 basehttp 29844 24980 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 17128
+WARNING 2025-11-27 10:24:28,834 log 29844 24980 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:24:28,835 basehttp 29844 34592 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:24:28,836 basehttp 29844 24980 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:24:28,836 basehttp 29844 40680 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+WARNING 2025-11-27 10:24:28,869 basehttp 29844 40680 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:36,807 basehttp 29844 24980 "GET /empleados/marketplace/productos/?search=&tipo=&categoria=2 HTTP/1.1" 200 13352
+WARNING 2025-11-27 10:24:36,833 log 29844 24980 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:24:36,834 basehttp 29844 34592 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:24:36,834 basehttp 29844 24980 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:36,887 basehttp 29844 24980 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:41,091 basehttp 29844 34592 "GET /empleados/marketplace/productos/?search=&tipo=&categoria=1 HTTP/1.1" 200 13437
+WARNING 2025-11-27 10:24:41,129 log 29844 34592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:24:41,130 basehttp 29844 34592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:41,161 basehttp 29844 34592 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:43,523 basehttp 29844 45324 "GET /empleados/marketplace/productos/?search=&tipo=&categoria= HTTP/1.1" 200 17128
+WARNING 2025-11-27 10:24:43,550 log 29844 45324 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:24:43,551 basehttp 29844 54200 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:24:43,551 basehttp 29844 45324 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:43,584 basehttp 29844 45324 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:24:50,158 basehttp 29844 54200 "GET /empleados/marketplace/productos/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/ HTTP/1.1" 200 11039
+WARNING 2025-11-27 10:24:50,186 log 29844 54200 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:24:50,187 basehttp 29844 31032 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:24:50,189 basehttp 29844 54200 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:50,219 basehttp 29844 54200 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:24:55,732 basehttp 29844 31032 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:24:55,738 log 29844 45524 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:24:55,738 basehttp 29844 45524 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:55,752 log 29844 45524 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:24:55,752 basehttp 29844 45524 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:24:55,764 basehttp 29844 45524 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:29:55,124 basehttp 29844 42440 "GET /empleados/marketplace/productos/?search=&tipo=&categoria= HTTP/1.1" 200 17128
+WARNING 2025-11-27 10:29:55,157 log 29844 42440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:29:55,161 basehttp 29844 51024 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:29:55,161 basehttp 29844 42440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:29:55,163 basehttp 29844 55908 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 10:29:55,213 basehttp 29844 55908 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+ERROR 2025-11-27 10:29:59,273 log 29844 42440 Internal Server Error: /empleados/marketplace/productos/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'format_price'
+ERROR 2025-11-27 10:29:59,283 basehttp 29844 42440 "GET /empleados/marketplace/productos/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/ HTTP/1.1" 500 271892
+WARNING 2025-11-27 10:29:59,312 log 29844 42440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:29:59,313 basehttp 29844 42440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:01,633 log 29844 51024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:01,634 basehttp 29844 42440 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:30:01,634 basehttp 29844 51024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:01,653 log 29844 51024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:01,655 basehttp 29844 51024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:01,664 basehttp 29844 43512 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+ERROR 2025-11-27 10:30:02,958 log 29844 51024 Internal Server Error: /empleados/marketplace/productos/6551927d-8f81-4fe3-8476-baa318359e02/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'format_price'
+ERROR 2025-11-27 10:30:02,974 basehttp 29844 51024 "GET /empleados/marketplace/productos/6551927d-8f81-4fe3-8476-baa318359e02/ HTTP/1.1" 500 271892
+WARNING 2025-11-27 10:30:03,000 log 29844 51024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:03,001 basehttp 29844 51024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:04,648 log 29844 28428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:04,651 basehttp 29844 28428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:04,651 basehttp 29844 51024 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:30:04,662 log 29844 28428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:04,662 basehttp 29844 28428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:04,662 basehttp 29844 48684 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:30:10,724 basehttp 29844 28428 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:30:10,761 log 29844 28428 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:30:10,762 basehttp 29844 28428 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:30:10,812 basehttp 29844 28428 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:34:43,425 basehttp 29844 23560 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+ERROR 2025-11-27 10:34:43,510 log 29844 23560 Internal Server Error: /empleados/marketplace/productos/a646233f-3a2d-4a2b-b44b-22574eabc123/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'format_price'
+ERROR 2025-11-27 10:34:43,516 basehttp 29844 23560 "GET /empleados/marketplace/productos/a646233f-3a2d-4a2b-b44b-22574eabc123/ HTTP/1.1" 500 272002
+WARNING 2025-11-27 10:34:43,569 log 29844 23560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:34:43,575 basehttp 29844 23560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:34:51,725 basehttp 29844 23560 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:34:51,771 log 29844 23560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:34:51,771 basehttp 29844 23560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:34:51,806 basehttp 29844 23560 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:36:07,824 basehttp 29844 8320 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:36:07,857 log 29844 8320 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:36:07,858 basehttp 29844 8320 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:36:07,898 basehttp 29844 8320 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:36:38,968 basehttp 29844 30656 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+ERROR 2025-11-27 10:36:39,024 log 29844 30656 Internal Server Error: /empleados/marketplace/productos/d76407de-dd83-41db-85d1-7ac844828f32/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'format_price'
+ERROR 2025-11-27 10:36:39,040 basehttp 29844 30656 "GET /empleados/marketplace/productos/d76407de-dd83-41db-85d1-7ac844828f32/ HTTP/1.1" 500 272002
+WARNING 2025-11-27 10:36:39,069 log 29844 30656 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:36:39,070 basehttp 29844 30656 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:39:45,197 basehttp 29844 30656 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:39:45,248 log 29844 30656 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:39:45,249 basehttp 29844 30656 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:39:45,270 basehttp 29844 30656 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:40:00,191 basehttp 29844 17744 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:40:00,249 log 29844 17744 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:40:00,250 basehttp 29844 17744 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:40:00,298 basehttp 29844 17744 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:40:43,358 basehttp 29844 53572 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 43237
+WARNING 2025-11-27 10:40:43,394 log 29844 53572 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:40:43,395 basehttp 29844 53572 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:40:43,399 log 29844 43124 Not Found: /media/silla.jpeg
+WARNING 2025-11-27 10:40:43,399 basehttp 29844 43124 "GET /media/silla.jpeg HTTP/1.1" 404 4937
+WARNING 2025-11-27 10:40:43,449 basehttp 29844 43124 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:40:55,425 basehttp 29844 53572 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:40:55,442 basehttp 29844 53572 "GET /empleados/marketplace/productos/4649af55-be52-48d3-9d31-50e8e3f6b227/ HTTP/1.1" 200 11989
+WARNING 2025-11-27 10:40:55,487 log 29844 53572 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:40:55,488 basehttp 29844 53572 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:40:55,529 basehttp 29844 53572 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:41:14,486 basehttp 29844 22696 "GET /empleados/marketplace/productos/?categoria=2 HTTP/1.1" 200 18857
+WARNING 2025-11-27 10:41:14,515 log 29844 22696 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:41:14,517 basehttp 29844 22696 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:41:14,519 basehttp 29844 29068 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-27 10:41:14,529 basehttp 29844 31460 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-27 10:41:14,529 basehttp 29844 6896 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+WARNING 2025-11-27 10:41:14,570 basehttp 29844 6896 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:45:02,042 basehttp 29844 31460 "GET /empleados/marketplace/productos/4649af55-be52-48d3-9d31-50e8e3f6b227/ HTTP/1.1" 200 11989
+WARNING 2025-11-27 10:45:02,085 log 29844 31460 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:45:02,086 basehttp 29844 31460 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:45:02,124 basehttp 29844 31460 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:45:19,169 basehttp 29844 29068 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 22633
+WARNING 2025-11-27 10:45:19,193 log 29844 29068 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:45:19,199 basehttp 29844 22696 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:45:19,200 basehttp 29844 29068 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:45:19,200 basehttp 29844 35032 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 10:45:19,203 basehttp 29844 3136 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+INFO 2025-11-27 10:45:19,205 basehttp 29844 36532 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:45:19,232 basehttp 29844 36532 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:46:24,108 basehttp 29844 3136 "GET /empleados/marketplace/productos/4649af55-be52-48d3-9d31-50e8e3f6b227/ HTTP/1.1" 200 11989
+WARNING 2025-11-27 10:46:24,134 log 29844 3136 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:46:24,134 basehttp 29844 3136 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:46:24,176 basehttp 29844 3136 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:46:27,476 basehttp 29844 29068 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:46:27,480 log 29844 35032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:46:27,480 basehttp 29844 35032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:46:27,494 log 29844 35032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:46:27,495 basehttp 29844 35032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:46:27,508 basehttp 29844 35032 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:49:27,932 basehttp 29844 22696 "GET /empleados/marketplace/productos/a646233f-3a2d-4a2b-b44b-22574eabc123/ HTTP/1.1" 200 11597
+WARNING 2025-11-27 10:49:27,965 log 29844 22696 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:49:27,966 basehttp 29844 36668 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:49:27,966 basehttp 29844 22696 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:28,008 basehttp 29844 22696 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+ERROR 2025-11-27 10:49:32,457 log 29844 36668 Internal Server Error: /empleados/mensajeria/iniciar/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 178, in get
+    return super().get(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 142, in get
+    return self.render_to_response(self.get_context_data())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 72, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\edit.py", line 37, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py", line 2580, in get_form_kwargs
+    kwargs['usuario_actual'] = self.request.user.empleado
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 534, in __get__
+    raise self.RelatedObjectDoesNotExist(
+apps.authentication.models.Usuario.empleado.RelatedObjectDoesNotExist: Usuario has no empleado.
+ERROR 2025-11-27 10:49:32,458 basehttp 29844 36668 "GET /empleados/mensajeria/iniciar/?receptor=e7a7faf6-9ea9-4852-b038-d4ed62c53246 HTTP/1.1" 500 117033
+WARNING 2025-11-27 10:49:32,493 log 29844 36668 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:49:32,493 basehttp 29844 36668 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:35,148 basehttp 29844 36668 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:49:35,153 log 29844 22932 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:49:35,153 basehttp 29844 22932 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:35,171 log 29844 22932 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:49:35,175 basehttp 29844 22932 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:35,180 basehttp 29844 41404 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:49:47,564 basehttp 29844 22932 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-27 10:49:47,569 log 29844 49748 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:49:47,571 basehttp 29844 49748 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:47,584 log 29844 49748 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:49:47,585 basehttp 29844 49748 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:49:47,596 basehttp 29844 49748 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:50:03,758 basehttp 29844 33316 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 42580
+WARNING 2025-11-27 10:50:03,794 log 29844 33316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:50:03,804 basehttp 29844 33316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:50:03,842 basehttp 29844 33316 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:51:42,675 basehttp 29844 448 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-11-27 10:51:42,708 basehttp 29844 448 "GET /empleados/marketplace/productos/3e30b34f-c93d-4298-9761-7b510e2309b0/ HTTP/1.1" 200 11950
+WARNING 2025-11-27 10:51:42,742 log 29844 448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:51:42,743 basehttp 29844 448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:51:42,758 basehttp 29844 37808 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+WARNING 2025-11-27 10:51:42,780 basehttp 29844 37808 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:51:45,941 basehttp 29844 448 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 24462
+WARNING 2025-11-27 10:51:45,964 log 29844 448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 10:51:45,966 basehttp 29844 448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 10:51:45,966 basehttp 29844 50052 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 10:51:45,971 basehttp 29844 55324 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 10:51:45,971 basehttp 29844 448 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+INFO 2025-11-27 10:51:45,972 basehttp 29844 50052 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-27 10:51:45,972 basehttp 29844 47400 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:51:46,001 basehttp 29844 47400 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 10:55:41,076 autoreload 29844 25636 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-11-27 10:55:41,852 apps 37092 28708 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-27 10:55:41,880 autoreload 37092 28708 Watching for file changes with StatReloader
+INFO 2025-11-27 10:55:42,497 wsgi 37092 35000 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-27 10:56:30,008 basehttp 37092 47612 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 25484
+INFO 2025-11-27 10:56:30,046 basehttp 37092 12696 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 10:56:30,046 basehttp 37092 33600 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:56:30,049 log 37092 47612 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 10:56:30,050 basehttp 37092 33600 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 10:56:30,050 basehttp 37092 12696 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-27 10:56:30,050 basehttp 37092 47612 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 10:56:30,085 basehttp 37092 47612 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:01:47,950 basehttp 37092 20592 "GET /dashboard/ HTTP/1.1" 200 19814
+WARNING 2025-11-27 11:01:47,983 log 37092 20592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:01:47,984 basehttp 37092 20592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:01:48,023 basehttp 37092 20592 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:01:49,764 basehttp 37092 29564 "GET /empleados/ HTTP/1.1" 200 100472
+WARNING 2025-11-27 11:01:49,793 log 37092 29564 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:01:49,793 basehttp 37092 29564 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:01:49,858 basehttp 37092 29564 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:01:59,898 basehttp 37092 30444 "GET /empleados/?search=p&estado=&area=&cargo=&sede= HTTP/1.1" 200 70993
+WARNING 2025-11-27 11:01:59,931 log 37092 30444 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:01:59,932 basehttp 37092 30444 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:01:59,972 basehttp 37092 30444 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:02:43,921 basehttp 37092 43444 "GET /empleados/e7a7faf6-9ea9-4852-b038-d4ed62c53246/ HTTP/1.1" 200 74674
+WARNING 2025-11-27 11:02:43,952 log 37092 43444 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:02:43,952 basehttp 37092 43444 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:02:44,022 basehttp 37092 43444 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:02:56,160 basehttp 37092 3280 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-27 11:02:56,199 basehttp 37092 3280 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-11-27 11:02:56,228 log 37092 3280 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:02:56,228 basehttp 37092 3280 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 11:03:21,987 basehttp 37092 3280 "POST /auth/login/ HTTP/1.1" 200 3898
+WARNING 2025-11-27 11:03:22,016 log 37092 3280 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:03:22,017 basehttp 37092 3280 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 11:03:39,197 basehttp 37092 3280 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-11-27 11:03:39,227 log 37092 3280 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:03:39,228 basehttp 37092 3280 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 11:03:44,757 basehttp 37092 3280 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-27 11:03:44,823 basehttp 37092 3280 "GET /dashboard/ HTTP/1.1" 200 19814
+WARNING 2025-11-27 11:03:44,860 log 37092 3280 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:03:44,861 basehttp 37092 3280 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:03:44,900 basehttp 37092 3280 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:03:47,941 basehttp 37092 49336 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 25484
+WARNING 2025-11-27 11:03:47,979 log 37092 49336 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-27 11:03:47,979 basehttp 37092 47528 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-27 11:03:47,982 basehttp 37092 49336 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 11:03:47,983 basehttp 37092 42448 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 11:03:47,985 basehttp 37092 52908 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 304 0
+INFO 2025-11-27 11:03:47,988 basehttp 37092 42108 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-27 11:03:47,991 basehttp 37092 41300 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 304 0
+WARNING 2025-11-27 11:03:48,037 basehttp 37092 41300 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-27 11:05:05,392 basehttp 37092 42108 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-27 11:05:05,392 basehttp 37092 42108 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-11-27 11:05:05,435 log 37092 42108 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:05:05,436 basehttp 37092 42108 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-27 11:06:09,658 basehttp 37092 21808 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-27 11:06:09,672 basehttp 37092 21808 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-27 11:06:09,808 basehttp 37092 21808 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 26167
+WARNING 2025-11-27 11:06:09,849 log 37092 21808 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-27 11:06:09,849 basehttp 37092 21808 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-27 11:06:09,891 basehttp 37092 21808 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
