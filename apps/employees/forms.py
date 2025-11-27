@@ -501,7 +501,7 @@ class ProductoForm(forms.ModelForm):
 
     class Meta:
         model = Producto
-        fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'imagen', 'visible_para', 'vendedor']
+        fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'cantidad_disponible', 'imagen', 'visible_para', 'vendedor']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -526,6 +526,13 @@ class ProductoForm(forms.ModelForm):
                 'min': '0',
                 'inputmode': 'numeric',
             }),
+            'cantidad_disponible': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Dejar vacío para ilimitado',
+                'step': '1',
+                'min': '0',
+                'inputmode': 'numeric',
+            }),
             'imagen': forms.FileInput(attrs={
                 'class': 'form-control',
                 'accept': 'image/*',
@@ -543,6 +550,7 @@ class ProductoForm(forms.ModelForm):
             'categoria': 'Categoria',
             'tipo': 'Tipo de Oferta',
             'precio_inicial': 'Precio/Valor Inicial',
+            'cantidad_disponible': 'Cantidad Disponible',
             'imagen': 'Imagen del Producto',
             'visible_para': 'Visible para (dejar vacio = todos)',
             'vendedor': 'Vendedor',

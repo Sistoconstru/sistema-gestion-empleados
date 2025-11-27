@@ -184,6 +184,30 @@
                             Ingresa el precio en pesos colombianos. Para ventas o subastas (no aplica para regalos)
                         </small>
                     </div>
+
+                    <!-- Cantidad Disponible -->
+                    <div class="mb-3">
+                        <label for="{{ form.cantidad_disponible.id_for_label }}" class="form-label">
+                            {{ form.cantidad_disponible.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-boxes me-1"></i>Unidades
+                            </span>
+                            {{ form.cantidad_disponible }}
+                        </div>
+                        {% if form.cantidad_disponible.errors %}
+                        <div class="form-error">
+                            {% for error in form.cantidad_disponible.errors %}
+                            {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Cantidad disponible (opcional). Dejar vacío = sin límite de productos disponibles
+                        </small>
+                    </div>
                 </div>
 
                 <!-- Imagen -->

@@ -2256,9 +2256,9 @@ class ProductoDetailView(LoginRequiredMixin, DetailView):
                 context['reservaciones_activas'] = producto.get_cantidad_reservada()
                 context['es_vendedor'] = True
         except Empleado.DoesNotExist:
-            # Los superusuarios/admin pueden ver pero no pueden comprar/recibir
-            context['puede_comprar'] = False
-            context['puede_recibir'] = False
+            # Los superusuarios/admin pueden ver y comprar si es un producto tipo venta
+            context['puede_comprar'] = (self.request.user.is_superuser or self.request.user.is_staff) and producto.tipo == 'venta'
+            context['puede_recibir'] = (self.request.user.is_superuser or self.request.user.is_staff) and producto.tipo == 'regalo'
             context['es_vendedor'] = False
 
         return context
@@ -2290,6 +2290,41 @@ class CrearProductoView(LoginRequiredMixin, CreateView):
         """Validar y procesar el formulario"""
         # El vendedor ya viene del formulario
         form.instance.creado_por = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
+
+
+class EditarProductoView(LoginRequiredMixin, UpdateView):
+    """Editar un producto existente"""
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'employees/marketplace/producto_form.html'
+
+    def get_queryset(self):
+        """Solo el vendedor o admin pueden editar"""
+        user = self.request.user
+        if user.is_superuser or user.is_staff:
+            return Producto.objects.all()
+        try:
+            return Producto.objects.filter(vendedor=user.empleado)
+        except Empleado.DoesNotExist:
+            return Producto.objects.none()
+
+    def get_form(self, form_class=None):
+        """Personalizar el formulario según el tipo de usuario"""
+        form = super().get_form(form_class)
+
+        if not (self.request.user.is_superuser or self.request.user.is_staff):
+            # Para empleados normales: esconder el campo vendedor
+            form.fields['vendedor'].widget = forms.HiddenInput()
+            form.fields['vendedor'].required = False
+
+        return form
+
+    def form_valid(self, form):
+        """Validar y procesar el formulario"""
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -2344,6 +2379,15 @@ class MisProductosView(LoginRequiredMixin, ListView):
         context['total_productos'] = self.get_queryset().count()
         context['productos_activos'] = self.get_queryset().filter(estado='activo').count()
         context['productos_vendidos'] = self.get_queryset().filter(estado='vendido').count()
+
+        # Agregar información de reservas para cada producto
+        from apps.employees.models import Reserva
+        productos_con_reservas = {}
+        for producto in context.get('productos', []):
+            reservas_activas = producto.reservas.filter(estado='activa').select_related('comprador')
+            productos_con_reservas[producto.pk] = reservas_activas
+        context['productos_con_reservas'] = productos_con_reservas
+
         return context
 
 

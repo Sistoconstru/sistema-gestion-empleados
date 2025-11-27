@@ -93,6 +93,44 @@
         color: #ccc;
         margin-bottom: 1rem;
     }
+    .reservas-section {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-top: 1px solid #e9ecef;
+        display: none;
+    }
+    .reservas-section.active {
+        display: block;
+    }
+    .reserva-item {
+        padding: 0.75rem;
+        border: 1px solid #e9ecef;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .reserva-info {
+        flex-grow: 1;
+    }
+    .reserva-nombre {
+        font-weight: 600;
+        color: #333;
+    }
+    .reserva-fecha {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+    .reserva-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .toggle-reservas-btn {
+        cursor: pointer;
+    }
 </style>
 {% endblock %}
 
@@ -153,59 +191,95 @@
                 </div>
                 <div class="card-body p-0">
                     {% for producto in productos %}
-                    <div class="producto-row">
-                        <div class="producto-info">
-                            <div class="producto-titulo">
-                                {{ producto.titulo }}
+                    <div>
+                        <div class="producto-row">
+                            <div class="producto-info">
+                                <div class="producto-titulo">
+                                    {{ producto.titulo }}
+                                </div>
+                                <div class="producto-meta">
+                                    <span class="producto-badge badge-{{ producto.tipo }}">
+                                        {{ producto.get_tipo_display }}
+                                    </span>
+                                    <span class="producto-badge badge-{{ producto.estado }}">
+                                        {{ producto.get_estado_display }}
+                                    </span>
+                                    {% if producto.categoria %}
+                                    <span class="text-muted">
+                                        <i class="fas fa-tag me-1"></i>{{ producto.categoria.nombre }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <div class="producto-meta mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Creado: {{ producto.fecha_creacion|date:"d/m/Y H:i" }}
+                                    </small>
+                                </div>
                             </div>
-                            <div class="producto-meta">
-                                <span class="producto-badge badge-{{ producto.tipo }}">
-                                    {{ producto.get_tipo_display }}
+                            <div class="producto-actions">
+                                {% if producto.tipo == 'venta' %}
+                                <span class="badge bg-success">
+                                    ${{ producto.precio_inicial|floatformat:0 }}
                                 </span>
-                                <span class="producto-badge badge-{{ producto.estado }}">
-                                    {{ producto.get_estado_display }}
+                                {% elif producto.tipo == 'subasta' %}
+                                <span class="badge bg-warning">
+                                    Desde ${{ producto.precio_inicial|floatformat:0 }}
                                 </span>
-                                {% if producto.categoria %}
-                                <span class="text-muted">
-                                    <i class="fas fa-tag me-1"></i>{{ producto.categoria.nombre }}
+                                {% else %}
+                                <span class="badge bg-info">
+                                    Gratis
                                 </span>
                                 {% endif %}
-                            </div>
-                            <div class="producto-meta mt-2">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar me-1"></i>
-                                    Creado: {{ producto.fecha_creacion|date:"d/m/Y H:i" }}
-                                </small>
-                            </div>
-                        </div>
-                        <div class="producto-actions">
-                            {% if producto.tipo == 'venta' %}
-                            <span class="badge bg-success">
-                                ${{ producto.precio_inicial|floatformat:0 }}
-                            </span>
-                            {% elif producto.tipo == 'subasta' %}
-                            <span class="badge bg-warning">
-                                Desde ${{ producto.precio_inicial|floatformat:0 }}
-                            </span>
-                            {% else %}
-                            <span class="badge bg-info">
-                                Gratis
-                            </span>
-                            {% endif %}
 
-                            {% if producto.estado == 'activo' %}
-                            <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-eye me-1"></i>Ver
-                            </a>
-                            <a href="#" class="btn btn-sm btn-outline-secondary" onclick="mostrarConfirmacion('{{ producto.pk }}', 'cancelar')">
-                                <i class="fas fa-times me-1"></i>Cancelar
-                            </a>
-                            {% else %}
-                            <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-eye me-1"></i>Ver
-                            </a>
-                            {% endif %}
+                                {% if producto.estado == 'activo' %}
+                                <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Ver
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-secondary" onclick="mostrarConfirmacion('{{ producto.pk }}', 'cancelar')">
+                                    <i class="fas fa-times me-1"></i>Cancelar
+                                </a>
+                                {% else %}
+                                <a href="{% url 'employees:producto_detail' producto.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i>Ver
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
+
+                        <!-- Sección de Reservas -->
+                        {% if producto.tipo == 'venta' and producto.reservas.all %}
+                        <div class="reservas-section" id="reservas-{{ producto.pk }}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>Empleados que han separado este producto ({{ producto.reservas.all|length }})
+                                </h6>
+                            </div>
+                            {% for reserva in producto.reservas.all %}
+                            <div class="reserva-item">
+                                <div class="reserva-info">
+                                    <div class="reserva-nombre">
+                                        {{ reserva.comprador.nombre_completo }}
+                                    </div>
+                                    <div class="reserva-fecha">
+                                        <i class="fas fa-calendar-check me-1"></i>Separado: {{ reserva.fecha_creacion|date:"d/m/Y H:i" }}
+                                    </div>
+                                </div>
+                                <div class="reserva-actions">
+                                    <a href="{% url 'employees:empleado_perfil_detail' reserva.comprador.id %}" class="btn btn-sm btn-outline-primary" title="Ver perfil de {{ reserva.comprador.nombre_completo }}">
+                                        <i class="fas fa-envelope me-1"></i>Contactar
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem; background-color: #f8f9fa; border-top: 1px solid #e9ecef;">
+                            <button type="button" class="btn btn-sm btn-link toggle-reservas-btn" onclick="toggleReservas('{{ producto.pk }}')">
+                                <i class="fas fa-chevron-down me-1"></i>
+                                <span id="toggle-text-{{ producto.pk }}">Ver separaciones</span>
+                            </button>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -266,6 +340,24 @@ function mostrarConfirmacion(productoId, accion) {
     if (confirm('¿Estás seguro de que deseas ' + accion + ' este producto?')) {
         // TODO: Implementar cancelación de producto
         console.log('Cancelando producto:', productoId);
+    }
+}
+
+function toggleReservas(productoId) {
+    const section = document.getElementById('reservas-' + productoId);
+    const toggleBtn = document.querySelector(`[onclick="toggleReservas('${productoId}')"]`);
+    const toggleText = document.getElementById('toggle-text-' + productoId);
+
+    if (section.classList.contains('active')) {
+        section.classList.remove('active');
+        toggleText.textContent = 'Ver separaciones';
+        toggleBtn.querySelector('i').classList.remove('fa-chevron-up');
+        toggleBtn.querySelector('i').classList.add('fa-chevron-down');
+    } else {
+        section.classList.add('active');
+        toggleText.textContent = 'Ocultar separaciones';
+        toggleBtn.querySelector('i').classList.remove('fa-chevron-down');
+        toggleBtn.querySelector('i').classList.add('fa-chevron-up');
     }
 }
 </script>

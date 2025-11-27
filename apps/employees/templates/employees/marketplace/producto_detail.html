@@ -145,6 +145,13 @@
                 </a>
                 {% endif %}
 
+                <!-- Botón editar (solo para admin o vendedor) -->
+                {% if user.is_superuser or user.is_staff or user.empleado.id == producto.vendedor.id %}
+                <a href="{% url 'employees:editar_producto' producto.pk %}" class="btn btn-warning btn-lg w-100 mb-2">
+                    <i class="fas fa-edit me-2"></i>Editar Producto
+                </a>
+                {% endif %}
+
                 <!-- Botón eliminar (solo para admin o vendedor) -->
                 {% if user.is_superuser or user.is_staff or user.empleado.id == producto.vendedor.id %}
                 <a href="{% url 'employees:eliminar_producto' producto.pk %}" class="btn btn-danger btn-lg w-100 mb-2">
