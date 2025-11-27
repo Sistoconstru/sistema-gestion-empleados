@@ -1,12 +1,17 @@
 # Progreso - Mini Red Social Corporativa (Marketplace MVP)
 
-## Estado Actual: FASE 1 MVP - EN CURSO (40% COMPLETADO) ✅
+## Estado Actual: FASE 1 MVP - EN CURSO (50% COMPLETADO) ✅
 
 **Rama:** `feature/marketplace-mvp`
 
 ---
 
 ## ✅ COMPLETADO
+
+**Fases implementadas:**
+- ✅ FASE 1A: Modelos, Admin, Formularios
+- ✅ FASE 1B: Vistas & URLs (NUEVA)
+- ⏳ FASE 1C: Templates (próxima)
 
 ### 1. Modelos de Base de Datos
 **Commit:** `c51097a` - Crear modelos de Marketplace y Messaging
@@ -160,25 +165,72 @@ LecturaConversacion - Rastreo de quién leyó qué
 - Validaciones a nivel campo y formulario
 - Django check: ✅ Sin errores
 
-### FASE 1B: Vistas & URLs
-**Estimado:** 3-4 días
+### FASE 1B: Vistas & URLs - COMPLETADA
+**Commit:** `b0f8c10` - Agregar vistas y URLs para marketplace y messaging
 
-```
-MARKETPLACE:
-- [ ] ProductoListView (listar con filtros)
-- [ ] ProductoDetailView (ver detalles)
-- [ ] CrearProductoView (crear producto)
-- [ ] MisProductosView (mis anuncios)
-- [ ] MisComprasView (historial compras)
-- [ ] ComprarProductoView (flujo compra)
-- [ ] SubastaListView (listar subastas)
-- [ ] PujarView (realizar puja)
+#### Vistas Implementadas (14 total)
 
-MESSAGING:
-- [ ] InboxView (lista de chats)
-- [ ] ConversacionView (ver chat)
-- [ ] EnviarMensajeView (enviar mensaje)
+**MARKETPLACE - PRODUCTOS (5 views):**
 ```
+✅ ProductoListView (listar con filtros por tipo/categoría/búsqueda)
+✅ ProductoDetailView (ver detalles del producto)
+✅ CrearProductoView (crear producto, asigna vendedor automáticamente)
+✅ MisProductosView (mis productos con estadísticas)
+✅ MisComprasView (historial de compras)
+```
+
+**MARKETPLACE - COMPRAS:**
+```
+✅ ComprarProductoView (flujo de compra con confirmación)
+```
+
+**MARKETPLACE - SUBASTAS (3 views):**
+```
+✅ SubastaListView (listar subastas activas)
+✅ SubastaDetailView (ver detalles con historial de pujas)
+✅ PujarView (realizar puja con actualización automática)
+```
+
+**MARKETPLACE - REGALOS:**
+```
+✅ RegalarProductoView (regalar con selección de receptor)
+```
+
+**MESSAGING - CONVERSACIONES (4 views):**
+```
+✅ InboxView (lista de conversaciones activas)
+✅ ConversacionDetailView (ver conversación con todos los mensajes)
+✅ IniciarConversacionView (crear nueva conversación)
+✅ EnviarMensajeView (enviar mensaje en conversación)
+```
+
+#### URLs Registradas (18 rutas):
+```
+✅ marketplace/productos/ - listar productos
+✅ marketplace/productos/crear/ - crear producto
+✅ marketplace/productos/<uuid>/ - detalle producto
+✅ marketplace/mis-productos/ - mis productos
+✅ marketplace/mis-compras/ - mis compras
+✅ marketplace/productos/<uuid>/comprar/ - comprar
+✅ marketplace/subastas/ - listar subastas
+✅ marketplace/subastas/<uuid>/ - detalle subasta
+✅ marketplace/subastas/<uuid>/pujar/ - realizar puja
+✅ marketplace/productos/<uuid>/regalar/ - regalar
+✅ mensajeria/inbox/ - inbox
+✅ mensajeria/iniciar/ - iniciar chat
+✅ mensajeria/conversacion/<uuid>/ - ver conversación
+✅ mensajeria/conversacion/<uuid>/mensaje/ - enviar mensaje
+```
+
+#### Características Técnicas:
+- ✅ LoginRequiredMixin en todas las vistas
+- ✅ Querysets optimizados (select_related, prefetch_related)
+- ✅ Paginación automática (12-20 items)
+- ✅ Filtros dinámicos (tipo, categoría, búsqueda)
+- ✅ Validación de autorización por usuario
+- ✅ Context data personalizado
+- ✅ Actualización automática de precios en subastas
+- ✅ Django check: Sin errores
 
 ### FASE 1C: Templates
 **Estimado:** 3-4 días
@@ -323,8 +375,8 @@ BACKEND:
 [x] Migraciones
 [x] Admin Django
 [x] Formularios con validación
-[ ] Vistas con lógica de negocio
-[ ] URLs y rutas
+[x] Vistas con lógica de negocio
+[x] URLs y rutas
 [ ] Notificaciones automáticas
 [ ] API REST (opcional)
 
@@ -367,13 +419,13 @@ FEATURES:
 | **Migraciones** | ✅ Completado | 100% |
 | **Admin Django** | ✅ Completado | 100% |
 | **Formularios** | ✅ Completado | 100% |
-| **Vistas & URLs** | ⏳ Próxima | 0% |
+| **Vistas & URLs** | ✅ Completado | 100% |
 | **Templates** | ⏳ Próxima | 0% |
 | **Notificaciones** | ⏳ Próxima | 0% |
-| **TOTAL MVP FASE 1** | 🔄 EN CURSO | **40%** |
+| **TOTAL MVP FASE 1** | 🔄 EN CURSO | **50%** |
 
-**Última actualización:** 2025-11-26
+**Última actualización:** 2025-11-27
 **Rama de trabajo:** `feature/marketplace-mvp`
-**Estado general:** MVP en construcción (40% completado)
+**Estado general:** MVP en construcción (50% completado)
 
-**Siguiente fase:** FASE 1B - Vistas & URLs
+**Siguiente fase:** FASE 1C - Templates
