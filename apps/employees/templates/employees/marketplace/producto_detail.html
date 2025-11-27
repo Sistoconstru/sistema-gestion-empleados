@@ -137,14 +137,34 @@
                 </a>
             </div>
 
-            <!-- Información del vendedor -->
+            <!-- Formulario para enviar mensaje al vendedor -->
             {% if user.is_authenticated %}
                 {% if user.is_superuser or user.is_staff or user.empleado.id != producto.vendedor.id %}
                 <div class="mt-4">
-                    <a href="{% url 'employees:iniciar_conversacion' %}?receptor={{ producto.vendedor.id }}"
-                       class="btn btn-outline-primary w-100">
-                        <i class="fas fa-comments me-2"></i>Contactar al Vendedor
-                    </a>
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-envelope me-2"></i>Enviar Mensaje al Vendedor
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'employees:enviar_mensaje_producto' producto.pk %}" id="mensajeForm">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <textarea class="form-control" name="contenido" rows="4"
+                                              placeholder="Escribe tu pregunta o mensaje al vendedor..."
+                                              required></textarea>
+                                    <small class="form-text text-muted d-block mt-1">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        El vendedor recibirá tu mensaje directamente
+                                    </small>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 {% endif %}
             {% endif %}

@@ -2625,3 +2625,53 @@ class EnviarMensajeView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('employees:conversacion_detail', kwargs={'pk': self.kwargs['conversacion_pk']})
+
+
+@login_required
+@require_POST
+def enviar_mensaje_producto(request, pk):
+    """Enviar mensaje al vendedor desde la página del producto"""
+    try:
+        # Obtener el producto y validar que existe
+        producto = get_object_or_404(Producto, pk=pk)
+
+        # Validar que el usuario sea empleado (no puede ser superusuario sin perfil)
+        try:
+            remitente = request.user.empleado
+        except Empleado.DoesNotExist:
+            messages.error(request, 'Debes tener un perfil de empleado para enviar mensajes.')
+            return redirect('employees:producto_detail', pk=pk)
+
+        # No puede enviarse mensaje a sí mismo
+        if remitente.id == producto.vendedor.id:
+            messages.error(request, 'No puedes enviarte mensajes a ti mismo.')
+            return redirect('employees:producto_detail', pk=pk)
+
+        # Obtener o crear la conversación entre los dos empleados
+        conversacion, creada = Conversacion.objects.get_or_create(
+            entre_usuario1=remitente,
+            entre_usuario2=producto.vendedor
+        )
+
+        # Obtener el contenido del mensaje
+        contenido = request.POST.get('contenido', '').strip()
+
+        if not contenido:
+            messages.error(request, 'El mensaje no puede estar vacío.')
+            return redirect('employees:producto_detail', pk=pk)
+
+        # Crear el mensaje
+        mensaje = Mensaje.objects.create(
+            conversacion=conversacion,
+            remitente=remitente,
+            contenido=contenido,
+            creado_por=request.user
+        )
+
+        messages.success(request, 'Mensaje enviado al vendedor exitosamente.')
+        return redirect('employees:producto_detail', pk=pk)
+
+    except Exception as e:
+        logger.error(f'Error enviando mensaje del producto: {str(e)}')
+        messages.error(request, 'Hubo un error al enviar el mensaje. Intenta de nuevo.')
+        return redirect('employees:producto_detail', pk=pk)
