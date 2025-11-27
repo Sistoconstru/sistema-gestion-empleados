@@ -61,8 +61,11 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{% url 'notifications:list' %}">
                                     <i class="fas fa-bell me-1"></i> Notificaciones
+                                    {% if notificaciones_sin_leer %}
+                                    <span class="badge bg-danger ms-2">{{ notificaciones_sin_leer }}</span>
+                                    {% endif %}
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>

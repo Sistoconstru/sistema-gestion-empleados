@@ -2,7 +2,10 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from .models import HistorialCargo, Empleado
+from .models import (
+    HistorialCargo, Empleado, Producto, Venta, Subasta,
+    PujaSubasta, Regalo, Conversacion, Mensaje
+)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -107,3 +110,143 @@ def registrar_cambio_estado(sender, instance, created, **kwargs):
         
         # Limpiar el estado anterior
         delattr(instance, '_estado_anterior')
+
+
+# ===================== SIGNALS PARA MARKETPLACE Y NOTIFICACIONES =====================
+
+@receiver(post_save, sender=Producto)
+def notificar_nuevo_producto(sender, instance, created, **kwargs):
+    """
+    Notificar cuando se crea un nuevo producto
+    """
+    if created:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif = TipoNotificacion.objects.get(codigo='producto_publicado', activo=True)
+            datos = {
+                'titulo_producto': instance.titulo,
+                'tipo': instance.get_tipo_display(),
+                'vendedor': instance.vendedor.nombre_completo,
+            }
+
+            Notificacion.objects.create(
+                usuario=instance.vendedor.usuario,
+                tipo_notificacion=tipo_notif,
+                titulo=tipo_notif.plantilla_titulo.format(**datos),
+                mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                datos_adicionales=datos
+            )
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de producto: {e}")
+
+
+@receiver(post_save, sender=Venta)
+def notificar_compra_realizada(sender, instance, created, **kwargs):
+    """
+    Notificar al vendedor cuando se realiza una compra
+    """
+    if created:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif = TipoNotificacion.objects.get(codigo='compra_recibida', activo=True)
+            datos = {
+                'titulo_producto': instance.producto.titulo,
+                'comprador': instance.comprador.nombre_completo,
+                'precio': f"${instance.precio:,.0f}",
+            }
+
+            Notificacion.objects.create(
+                usuario=instance.producto.vendedor.usuario,
+                tipo_notificacion=tipo_notif,
+                titulo=tipo_notif.plantilla_titulo.format(**datos),
+                mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                datos_adicionales=datos
+            )
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de compra: {e}")
+
+
+@receiver(post_save, sender=PujaSubasta)
+def notificar_nueva_puja(sender, instance, created, **kwargs):
+    """
+    Notificar cuando se realiza una nueva puja
+    """
+    if created:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif = TipoNotificacion.objects.get(codigo='nueva_puja_recibida', activo=True)
+            datos = {
+                'titulo_producto': instance.subasta.producto.titulo,
+                'monto': f"${instance.monto:,.0f}",
+                'pujador': instance.pujador.nombre_completo,
+            }
+
+            Notificacion.objects.create(
+                usuario=instance.subasta.vendedor.usuario,
+                tipo_notificacion=tipo_notif,
+                titulo=tipo_notif.plantilla_titulo.format(**datos),
+                mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                datos_adicionales=datos
+            )
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de puja: {e}")
+
+
+@receiver(post_save, sender=Regalo)
+def notificar_regalo_recibido(sender, instance, created, **kwargs):
+    """
+    Notificar al receptor cuando recibe un regalo
+    """
+    if created:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif = TipoNotificacion.objects.get(codigo='regalo_recibido', activo=True)
+            datos = {
+                'titulo_producto': instance.producto.titulo,
+                'donante': instance.donante.nombre_completo,
+            }
+
+            Notificacion.objects.create(
+                usuario=instance.receptor.usuario,
+                tipo_notificacion=tipo_notif,
+                titulo=tipo_notif.plantilla_titulo.format(**datos),
+                mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                datos_adicionales=datos
+            )
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de regalo: {e}")
+
+
+@receiver(post_save, sender=Mensaje)
+def notificar_nuevo_mensaje(sender, instance, created, **kwargs):
+    """
+    Notificar a los otros participantes cuando se recibe un mensaje
+    """
+    if created:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif = TipoNotificacion.objects.get(codigo='nuevo_mensaje', activo=True)
+            otros_participantes = instance.conversacion.participantes.exclude(
+                id=instance.remitente.id
+            )
+
+            datos = {
+                'remitente': instance.remitente.nombre_completo,
+                'titulo_conversacion': instance.conversacion.titulo or 'Conversación',
+            }
+
+            for participante in otros_participantes:
+                Notificacion.objects.create(
+                    usuario=participante.usuario,
+                    tipo_notificacion=tipo_notif,
+                    titulo=tipo_notif.plantilla_titulo.format(**datos),
+                    mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                    datos_adicionales=datos
+                )
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de mensaje: {e}")

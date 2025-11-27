@@ -81,6 +81,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',  # Para acceder a MEDIA_URL en templates
+                'apps.notifications.context_processors.notificaciones',  # Context processor de notificaciones
             ],
         },
     },
