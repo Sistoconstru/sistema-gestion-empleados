@@ -13,7 +13,7 @@ import logging
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo,
-    Conversacion, Mensaje
+    Conversacion, Mensaje, Publicacion, Comentario
 )
 from apps.organizational.models import Sede, Cargo, AreaEmpresa
 
@@ -1091,3 +1091,128 @@ class MensajeForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+# ===================== FORMULARIOS PARA FEED/PUBLICACIONES =====================
+
+class PublicacionForm(forms.ModelForm):
+    """Formulario para crear/editar publicaciones normales"""
+
+    class Meta:
+        model = Publicacion
+        fields = ['titulo', 'contenido', 'imagen', 'estilos']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Título de la publicación (opcional)',
+                'maxlength': '200'
+            }),
+            'contenido': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Escribe tu publicación aquí...',
+                'rows': 5
+            }),
+            'imagen': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'estilos': forms.HiddenInput(),
+        }
+
+    def clean_imagen(self):
+        """Validar tamaño de imagen (máx 5MB)"""
+        imagen = self.cleaned_data.get('imagen')
+        if imagen:
+            if imagen.size > 5 * 1024 * 1024:  # 5MB
+                raise ValidationError('La imagen no debe superar 5MB')
+        return imagen
+
+    def clean_contenido(self):
+        """Validar que no esté vacío"""
+        contenido = self.cleaned_data.get('contenido')
+        if not contenido or not contenido.strip():
+            raise ValidationError('El contenido no puede estar vacío')
+        return contenido
+
+
+class AnuncioImportanteForm(forms.ModelForm):
+    """Formulario para crear anuncios importantes (solo admins)"""
+
+    fecha_fin = forms.DateTimeField(
+        required=True,
+        widget=forms.DateTimeInput(attrs={
+            'type': 'datetime-local',
+            'class': 'form-control'
+        }),
+        help_text='Fecha y hora en que el anuncio dejará de ser visible'
+    )
+
+    class Meta:
+        model = Publicacion
+        fields = ['titulo', 'contenido', 'imagen', 'fecha_fin', 'estilos']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Título del anuncio importante',
+                'maxlength': '200'
+            }),
+            'contenido': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contenido del anuncio...',
+                'rows': 5
+            }),
+            'imagen': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'estilos': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Pre-llenar campos para anuncios
+        if not self.instance.pk:
+            self.instance.es_anuncio = True
+            self.instance.es_importante = True
+
+    def clean_titulo(self):
+        """Validar que no esté vacío"""
+        titulo = self.cleaned_data.get('titulo')
+        if not titulo or not titulo.strip():
+            raise ValidationError('El título es requerido para anuncios importantes')
+        return titulo
+
+    def clean_contenido(self):
+        """Validar que no esté vacío"""
+        contenido = self.cleaned_data.get('contenido')
+        if not contenido or not contenido.strip():
+            raise ValidationError('El contenido es requerido')
+        return contenido
+
+    def clean_fecha_fin(self):
+        """Validar que la fecha sea futura"""
+        fecha_fin = self.cleaned_data.get('fecha_fin')
+        if fecha_fin and fecha_fin <= timezone.now():
+            raise ValidationError('La fecha de finalización debe ser futura')
+        return fecha_fin
+
+
+class ComentarioForm(forms.ModelForm):
+    """Formulario para crear comentarios"""
+
+    class Meta:
+        model = Comentario
+        fields = ['contenido']
+        widgets = {
+            'contenido': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Escribe tu comentario...',
+                'rows': 3
+            }),
+        }
+
+    def clean_contenido(self):
+        """Validar que no esté vacío"""
+        contenido = self.cleaned_data.get('contenido')
+        if not contenido or not contenido.strip():
+            raise ValidationError('El comentario no puede estar vacío')
+        return contenido

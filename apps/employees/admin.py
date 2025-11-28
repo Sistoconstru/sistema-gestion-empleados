@@ -15,7 +15,9 @@ from .models import (
     # Marketplace
     Categoria, Producto, Venta, Subasta, PujaSubasta, Regalo,
     # Messaging
-    Conversacion, Mensaje, LecturaConversacion
+    Conversacion, Mensaje, LecturaConversacion,
+    # Feed/Publicaciones
+    Publicacion, Comentario
 )
 
 # Registro del modelo TipoDocumento en el admin de Django
@@ -607,6 +609,114 @@ class LecturaConversacionAdmin(admin.ModelAdmin):
     search_fields = ('empleado__nombre_completo', 'conversacion__participantes__nombre_completo')
     readonly_fields = ('fecha_actualizacion',)
     ordering = ('-fecha_actualizacion',)
+
+
+# ===================== FEED/PUBLICACIONES =====================
+
+class ComentarioInline(admin.TabularInline):
+    """Inline para comentarios en publicaciones"""
+    model = Comentario
+    extra = 0
+    fields = ('autor', 'contenido', 'fecha_creacion')
+    readonly_fields = ('autor', 'fecha_creacion')
+    can_delete = True
+
+
+@admin.register(Publicacion)
+class PublicacionAdmin(admin.ModelAdmin):
+    """Admin para gestionar publicaciones del feed"""
+    list_display = (
+        'titulo_display', 'autor', 'tipo_publicacion',
+        'fecha_creacion', 'tiene_imagen', 'estado_publicacion'
+    )
+    list_filter = (
+        'es_anuncio', 'es_importante', 'fecha_creacion',
+        ('fecha_fin', admin.RelatedOnlyFieldListFilter)
+    )
+    search_fields = ('titulo', 'contenido', 'autor__nombre_completo')
+    readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion')
+
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('id', 'autor', 'titulo', 'contenido', 'imagen')
+        }),
+        ('Tipo de Publicación', {
+            'fields': ('es_anuncio', 'es_importante', 'fecha_fin'),
+            'description': 'Marca es_importante para crear un anuncio destacado con fecha de finalización'
+        }),
+        ('Estilos', {
+            'fields': ('estilos',),
+            'classes': ('collapse',),
+            'description': 'Estilos CSS personalizados (JSON)'
+        }),
+        ('Fechas', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion', 'fecha_eliminacion_automatica'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    inlines = [ComentarioInline]
+    ordering = ('-fecha_creacion',)
+
+    def titulo_display(self, obj):
+        """Muestra título o primeras 50 caracteres del contenido"""
+        titulo = obj.titulo or obj.contenido[:50]
+        return titulo[:50] + '...' if len(titulo) > 50 else titulo
+    titulo_display.short_description = 'Título/Contenido'
+
+    def tipo_publicacion(self, obj):
+        """Muestra el tipo de publicación"""
+        if obj.es_anuncio:
+            if obj.es_importante:
+                return format_html('<span style="color: red; font-weight: bold;">📢 Anuncio Importante</span>')
+            return format_html('<span style="color: orange;">📣 Anuncio</span>')
+        return format_html('<span style="color: blue;">📝 Publicación</span>')
+    tipo_publicacion.short_description = 'Tipo'
+
+    def tiene_imagen(self, obj):
+        """Muestra si tiene imagen"""
+        return '✅' if obj.imagen else '❌'
+    tiene_imagen.short_description = 'Imagen'
+    tiene_imagen.admin_order_field = 'imagen'
+
+    def estado_publicacion(self, obj):
+        """Muestra el estado de la publicación"""
+        from django.utils import timezone
+        if obj.es_anuncio and obj.es_importante and obj.fecha_fin:
+            if timezone.now() > obj.fecha_fin:
+                return format_html('<span style="color: gray;">⏰ Finalizado</span>')
+            else:
+                dias_restantes = (obj.fecha_fin - timezone.now()).days
+                return format_html(f'<span style="color: green;">⏳ {dias_restantes} días</span>')
+        return format_html('<span style="color: green;">✓ Activa</span>')
+    estado_publicacion.short_description = 'Estado'
+
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    """Admin para gestionar comentarios"""
+    list_display = ('autor', 'publicacion', 'contenido_preview', 'fecha_creacion')
+    list_filter = ('fecha_creacion', 'autor')
+    search_fields = ('contenido', 'autor__nombre_completo', 'publicacion__titulo')
+    readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion')
+
+    fieldsets = (
+        ('Información', {
+            'fields': ('id', 'publicacion', 'autor', 'contenido')
+        }),
+        ('Fechas', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    ordering = ('-fecha_creacion',)
+
+    def contenido_preview(self, obj):
+        """Muestra vista previa del contenido"""
+        preview = obj.contenido[:50] + '...' if len(obj.contenido) > 50 else obj.contenido
+        return preview
+    contenido_preview.short_description = 'Contenido'
 
 
 # Personalización del sitio admin

@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo_pagina }} | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+
+    .publicacion-form-card {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .form-section-titulo {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #667eea;
+        color: #333;
+    }
+
+    .editor-estilos {
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .editor-estilos .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .editor-estilos label {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .preview-contenido {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        min-height: 100px;
+    }
+
+    .preview-contenido.con-imagen {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .form-actions .btn {
+        min-width: 150px;
+    }
+
+    @media (max-width: 768px) {
+        .publicacion-form-card {
+            padding: 1rem;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .form-actions .btn {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 pb-5">
+    <div class="form-container">
+        <div class="publicacion-form-card">
+            <h2 class="mb-4">
+                <i class="fas fa-edit me-2"></i>{{ titulo_pagina }}
+            </h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Título -->
+                <div class="form-section">
+                    <label for="{{ form.titulo.id_for_label }}" class="form-label">Título (opcional)</label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.titulo.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Contenido -->
+                <div class="form-section">
+                    <label for="{{ form.contenido.id_for_label }}" class="form-label">Contenido</label>
+                    {{ form.contenido }}
+                    {% if form.contenido.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.contenido.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted">Mínimo 1 carácter requerido</small>
+                </div>
+
+                <!-- Imagen -->
+                <div class="form-section">
+                    <label for="{{ form.imagen.id_for_label }}" class="form-label">
+                        <i class="fas fa-image me-1"></i>Imagen de Fondo (opcional)
+                    </label>
+                    {{ form.imagen }}
+                    {% if form.imagen.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.imagen.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted">
+                        Máximo 5MB. La imagen se mostrará como fondo detrás del contenido.
+                    </small>
+                </div>
+
+                <!-- Editor de Estilos -->
+                <div class="form-section">
+                    <div class="form-section-titulo">
+                        <i class="fas fa-palette me-1"></i>Personalizar Estilos
+                    </div>
+
+                    <div class="editor-estilos">
+                        <div class="form-group">
+                            <label for="font-size" class="form-label">Tamaño de letra</label>
+                            <select id="font-size" class="form-select" onchange="actualizarEstilo('font_size', this.value); actualizarPreview()">
+                                <option value="">Por defecto</option>
+                                <option value="12px">12px (Pequeño)</option>
+                                <option value="14px">14px (Normal)</option>
+                                <option value="16px">16px (Grande)</option>
+                                <option value="18px">18px (Muy grande)</option>
+                                <option value="20px">20px (Extra grande)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="font-family" class="form-label">Tipografía</label>
+                            <select id="font-family" class="form-select" onchange="actualizarEstilo('font_family', this.value); actualizarPreview()">
+                                <option value="">Por defecto</option>
+                                <option value="Arial">Arial</option>
+                                <option value="'Times New Roman'">Times New Roman</option>
+                                <option value="'Courier New'">Courier New</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="text-color" class="form-label">Color del texto</label>
+                            <input type="color" id="text-color" class="form-control form-control-color"
+                                   onchange="actualizarEstilo('text_color', this.value); actualizarPreview()">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="background-opacity" class="form-label">
+                                Opacidad del fondo (imagen)
+                            </label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="range" id="background-opacity" class="form-range flex-grow-1"
+                                       min="0" max="100" value="50"
+                                       onchange="actualizarEstilo('background_opacity', this.value); actualizarPreview()">
+                                <span id="opacity-value" class="text-muted">50%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="preview-contenido" id="preview">
+                        <p class="text-muted text-center py-5">
+                            <i class="fas fa-eye me-1"></i>Vista previa de tu publicación
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Campo oculto para estilos -->
+                {{ form.estilos }}
+
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Acciones -->
+                <div class="form-actions">
+                    <a href="{% url 'employees:feed_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>{{ boton_envio }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let estilos = {};
+
+function actualizarEstilo(propiedad, valor) {
+    if (valor) {
+        estilos[propiedad] = valor;
+    } else {
+        delete estilos[propiedad];
+    }
+
+    // Actualizar campo oculto
+    document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+
+    // Actualizar opacity display
+    if (propiedad === 'background_opacity') {
+        document.getElementById('opacity-value').textContent = valor + '%';
+    }
+}
+
+function actualizarPreview() {
+    const preview = document.getElementById('preview');
+    const contenido = document.querySelector('textarea[name="contenido"]').value || 'Vista previa de tu publicación';
+    const imagen = document.querySelector('input[name="imagen"]').files[0];
+    const titulo = document.querySelector('input[name="titulo"]').value || '';
+
+    let html = `<div style="
+        font-size: ${estilos.font_size || '1rem'};
+        font-family: ${estilos.font_family || 'inherit'};
+        color: ${estilos.text_color || '#333'};
+        padding: 1rem;
+    ">`;
+
+    if (titulo) {
+        html += `<h5 style="margin-bottom: 0.5rem;">${titulo}</h5>`;
+    }
+
+    html += `<p style="white-space: pre-wrap;">${contenido}</p></div>`;
+
+    preview.innerHTML = html;
+
+    // Aplicar imagen como fondo si existe
+    if (imagen) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.style.backgroundImage = `url(${e.target.result})`;
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
+            preview.style.backgroundColor = `rgba(255, 255, 255, ${(100 - (estilos.background_opacity || 50)) / 100})`;
+        };
+        reader.readAsDataURL(imagen);
+    } else {
+        preview.style.backgroundImage = 'none';
+        preview.style.backgroundColor = 'white';
+    }
+}
+
+// Inicializar preview al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar estilos si existen
+    const stilosInput = document.querySelector('input[name="estilos"]');
+    if (stilosInput.value) {
+        try {
+            estilos = JSON.parse(stilosInput.value);
+            // Restaurar valores en los inputs
+            if (estilos.font_size) document.getElementById('font-size').value = estilos.font_size;
+            if (estilos.font_family) document.getElementById('font-family').value = estilos.font_family;
+            if (estilos.text_color) document.getElementById('text-color').value = estilos.text_color;
+            if (estilos.background_opacity) {
+                document.getElementById('background-opacity').value = estilos.background_opacity;
+                document.getElementById('opacity-value').textContent = estilos.background_opacity + '%';
+            }
+        } catch (e) {
+            console.error('Error al parsear estilos:', e);
+        }
+    }
+
+    actualizarPreview();
+
+    // Actualizar preview cuando cambian los inputs
+    document.querySelector('textarea[name="contenido"]').addEventListener('input', actualizarPreview);
+    document.querySelector('input[name="titulo"]').addEventListener('input', actualizarPreview);
+    document.querySelector('input[name="imagen"]').addEventListener('change', actualizarPreview);
+});
+</script>
+{% endblock %}

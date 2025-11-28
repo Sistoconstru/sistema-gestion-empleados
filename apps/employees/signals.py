@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from .models import (
     HistorialCargo, Empleado, Producto, Venta, Subasta,
-    PujaSubasta, Regalo, Conversacion, Mensaje
+    PujaSubasta, Regalo, Conversacion, Mensaje, Publicacion
 )
 import logging
 
@@ -238,6 +238,8 @@ def notificar_nuevo_mensaje(sender, instance, created, **kwargs):
             datos = {
                 'remitente': instance.remitente.nombre_completo,
                 'titulo_conversacion': instance.conversacion.titulo or 'Conversación',
+                'conversacion_id': str(instance.conversacion.id),  # Agregado para navegar desde notificaciones
+                'url': f'/empleados/mensajeria/conversacion/{instance.conversacion.id}/',  # URL directa
             }
 
             for participante in otros_participantes:
@@ -250,3 +252,65 @@ def notificar_nuevo_mensaje(sender, instance, created, **kwargs):
                 )
         except Exception as e:
             logger.warning(f"Error al crear notificación de mensaje: {e}")
+
+
+# ===================== SIGNALS PARA FEED/PUBLICACIONES =====================
+
+@receiver(post_save, sender=Publicacion)
+def establecer_fecha_eliminacion_automatica(sender, instance, created, **kwargs):
+    """Establece la fecha de eliminación automática a los 15 días para publicaciones normales"""
+    if created and not instance.es_anuncio:
+        from django.utils import timezone
+        from datetime import timedelta
+
+        fecha_eliminacion = timezone.now() + timedelta(days=15)
+        Publicacion.objects.filter(pk=instance.pk).update(fecha_eliminacion_automatica=fecha_eliminacion)
+        logger.info(f"Publicación {instance.pk} será eliminada el {fecha_eliminacion}")
+
+
+@receiver(post_save, sender=Publicacion)
+def notificar_anuncio_importante(sender, instance, created, **kwargs):
+    """Notifica a todos los empleados cuando se crea un anuncio importante"""
+    if created and instance.es_anuncio and instance.es_importante:
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+            from django.contrib.auth import get_user_model
+
+            User = get_user_model()
+
+            # Obtener o crear tipo de notificación para anuncios importantes
+            tipo_notif, _ = TipoNotificacion.objects.get_or_create(
+                codigo='anuncio_importante',
+                defaults={
+                    'nombre': 'Anuncio Importante',
+                    'plantilla_titulo': 'Anuncio importante: {titulo}',
+                    'plantilla_mensaje': '{contenido}',
+                    'activo': True
+                }
+            )
+
+            datos = {
+                'titulo': instance.titulo or 'Anuncio importante',
+                'contenido': instance.contenido[:100],
+                'autor': instance.autor.nombre_completo,
+                'fecha_fin': instance.fecha_fin.strftime('%d/%m/%Y %H:%M') if instance.fecha_fin else '',
+            }
+
+            # Notificar a todos los empleados activos (excepto admins que ya lo saben)
+            empleados = Empleado.objects.filter(usuario__is_active=True).select_related('usuario')
+
+            for empleado in empleados:
+                # No notificar al autor ni a admins
+                if empleado != instance.autor and not empleado.usuario.is_staff:
+                    Notificacion.objects.create(
+                        usuario=empleado.usuario,
+                        tipo_notificacion=tipo_notif,
+                        titulo=tipo_notif.plantilla_titulo.format(**datos),
+                        mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                        datos_adicionales=datos
+                    )
+
+            logger.info(f"Anuncio importante '{instance.titulo}' notificado a {empleados.count()} empleados")
+
+        except Exception as e:
+            logger.warning(f"Error al crear notificación de anuncio importante: {e}")

@@ -13,10 +13,13 @@
         border-radius: 0.25rem;
         transition: all 0.2s;
         cursor: pointer;
+        opacity: 1;
+        pointer-events: auto;
     }
     .notificacion-item:hover {
         background-color: #f0f0f0;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transform: translateX(4px);
     }
     .notificacion-item.no-leida {
         background-color: #e3f2fd;
@@ -83,7 +86,10 @@
         <div class="col-12">
             {% for notificacion in notificaciones %}
             <div class="notificacion-item {% if not notificacion.leida %}no-leida{% endif %}"
-                 onclick="marcarLeida('{{ notificacion.id }}')">
+                 data-notificacion-id="{{ notificacion.id }}"
+                 data-tipo-notificacion="{{ notificacion.tipo_notificacion.codigo }}"
+                 data-conversacion-id="{{ notificacion.datos_adicionales.conversacion_id }}"
+                 onclick="navegar_notificacion(this)">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <div class="notificacion-titulo">
@@ -164,8 +170,47 @@
 </div>
 
 <script>
+function navegar_notificacion(element) {
+    const notificacionId = element.dataset.notificacionId;
+    const tipoNotificacion = element.dataset.tipoNotificacion;
+    const conversacionId = element.dataset.conversacionId;
+
+    // Marcar como leída y navegar
+    fetch('/notificaciones/marcar-leida/' + notificacionId + '/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Intentar navegar según el tipo de notificación
+            if (conversacionId) {
+                // Si tenemos el ID de conversación, navegar directamente
+                window.location.href = '/empleados/mensajeria/conversacion/' + conversacionId + '/';
+            } else if (tipoNotificacion === 'nuevo_mensaje') {
+                // Si es una notificación de mensaje pero falta el conversacion_id, ir al inbox
+                console.log('Notificación de mensaje sin conversacion_id, redirigiendo al inbox');
+                window.location.href = '/empleados/mensajeria/inbox/';
+            } else {
+                // Para otros tipos de notificación, solo recargar
+                console.log('Notificación sin conversacion_id, recargando');
+                location.reload();
+            }
+        } else {
+            console.error('Error al marcar notificación como leída');
+        }
+    })
+    .catch(error => {
+        console.error('Error en fetch:', error);
+        location.reload();
+    });
+}
+
 function marcarLeida(notificacionId) {
-    fetch('/notifications/marcar-leida/' + notificacionId + '/', {
+    fetch('/notificaciones/marcar-leida/' + notificacionId + '/', {
         method: 'POST',
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
@@ -182,7 +227,7 @@ function marcarLeida(notificacionId) {
 }
 
 function marcarTodasLeidas() {
-    fetch('/notifications/marcar-todas-leidas/', {
+    fetch('/notificaciones/marcar-todas-leidas/', {
         method: 'POST',
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),

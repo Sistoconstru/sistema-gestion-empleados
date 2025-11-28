@@ -3,7 +3,7 @@
 # =============================================================================
 
 from django.urls import path
-from . import views
+from . import views, feed_views
 
 app_name = 'employees'
 
@@ -72,4 +72,17 @@ urlpatterns = [
     path('mensajeria/iniciar/', views.IniciarConversacionView.as_view(), name='iniciar_conversacion'),
     path('mensajeria/conversacion/<uuid:pk>/', views.ConversacionDetailView.as_view(), name='conversacion_detail'),
     path('mensajeria/conversacion/<uuid:conversacion_pk>/mensaje/', views.EnviarMensajeView.as_view(), name='enviar_mensaje'),
+    path('mensajeria/conversacion/<uuid:conversacion_pk>/marcar-leidos/', views.marcar_mensajes_leidos, name='marcar_mensajes_leidos'),
+
+    # =============================================================================
+    # FEED/PUBLICACIONES (MINIFACEBOOK)
+    # =============================================================================
+    path('feed/', feed_views.FeedListView.as_view(), name='feed_list'),
+    path('feed/publicacion/crear/', feed_views.CrearPublicacionView.as_view(), name='crear_publicacion'),
+    path('feed/publicacion/<uuid:pk>/editar/', feed_views.EditarPublicacionView.as_view(), name='editar_publicacion'),
+    path('feed/publicacion/<uuid:pk>/eliminar/', feed_views.EliminarPublicacionView.as_view(), name='eliminar_publicacion'),
+    path('feed/publicacion/<uuid:publicacion_pk>/comentario/', feed_views.agregar_comentario, name='agregar_comentario'),
+    path('feed/comentario/<uuid:comentario_id>/eliminar/', feed_views.eliminar_comentario, name='eliminar_comentario'),
+    path('feed/anuncio/crear/', feed_views.CrearAnuncioImportanteView.as_view(), name='crear_anuncio'),
+    path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),
 ]

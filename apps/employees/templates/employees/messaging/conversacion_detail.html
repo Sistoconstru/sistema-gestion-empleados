@@ -225,13 +225,67 @@
     </div>
 </div>
 
-<!-- Script para scroll automático -->
+<!-- Script para scroll automático y marcar mensajes como leídos -->
 <script>
+// Bandera para evitar múltiples llamadas
+let mensajesYaMarcados = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     const chatContainer = document.getElementById('chatContainer');
     if (chatContainer) {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
+
+    // Marcar mensajes como leídos cuando se abre la conversación (solo una vez)
+    if (!mensajesYaMarcados) {
+        marcarMensajesLeidos();
+    }
 });
+
+function marcarMensajesLeidos() {
+    // Obtener el ID de la conversación de la URL actual
+    const urlPath = window.location.pathname;
+    const conversacionIdMatch = urlPath.match(/conversacion\/([a-f0-9\-]+)\//);
+
+    if (conversacionIdMatch && !mensajesYaMarcados) {
+        mensajesYaMarcados = true; // Marcar como ya procesado
+        const conversacionId = conversacionIdMatch[1];
+
+        fetch('/empleados/mensajeria/conversacion/' + conversacionId + '/marcar-leidos/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Los mensajes fueron marcados como leídos
+                // NO recargar la página, solo hacer una petición silenciosa
+                // El navbar se actualizará en la próxima carga de página
+                console.log('Mensajes marcados como leídos');
+            }
+        })
+        .catch(error => {
+            console.error('Error al marcar mensajes como leídos:', error);
+        });
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 {% endblock %}

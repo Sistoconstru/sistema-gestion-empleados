@@ -775,3 +775,127 @@ class LecturaConversacion(models.Model):
     def __str__(self):
         return f"{self.empleado.nombre_completo} en {self.conversacion}"
 
+
+# ===================== FEED/PUBLICACIONES (MINIFACEBOOK) =====================
+
+class Publicacion(models.Model):
+    """Publicaciones en el feed del marketplace (minifacebook)"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    autor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mis_publicaciones'
+    )
+    titulo = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text="Título opcional de la publicación"
+    )
+    contenido = models.TextField(
+        help_text="Contenido principal de la publicación"
+    )
+    imagen = models.ImageField(
+        upload_to='publicaciones/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        help_text="Imagen de fondo opcional (máx 5MB)"
+    )
+
+    # Flags de tipo de publicación
+    es_anuncio = models.BooleanField(
+        default=False,
+        help_text="¿Es un anuncio (solo admins pueden crear)?"
+    )
+    es_importante = models.BooleanField(
+        default=False,
+        help_text="¿Es un anuncio importante? (solo si es_anuncio=True)"
+    )
+
+    # Fechas
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    fecha_eliminacion_automatica = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="Fecha cuando se eliminará automáticamente (15 días para publicaciones normales)"
+    )
+
+    # Solo para anuncios importantes
+    fecha_fin = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="Fecha de finalización del anuncio importante"
+    )
+
+    # Estilos (JSON)
+    estilos = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Estilos CSS: font_size, font_family, text_color, background_opacity"
+    )
+
+    class Meta:
+        db_table = 'feed_publicaciones'
+        ordering = ['-fecha_creacion']
+        indexes = [
+            models.Index(fields=['-fecha_creacion']),
+            models.Index(fields=['es_anuncio', '-fecha_creacion']),
+            models.Index(fields=['es_importante', '-fecha_creacion']),
+            models.Index(fields=['fecha_fin']),
+        ]
+        verbose_name = 'Publicación'
+        verbose_name_plural = 'Publicaciones'
+
+    def __str__(self):
+        titulo = self.titulo or self.contenido[:50]
+        tipo = "Anuncio" if self.es_anuncio else "Publicación"
+        return f"{tipo}: {titulo} - {self.autor.nombre_completo}"
+
+    @property
+    def esta_activa(self):
+        """Verifica si la publicación está activa"""
+        from django.utils import timezone
+        if self.es_anuncio and self.es_importante and self.fecha_fin:
+            return timezone.now() < self.fecha_fin
+        return True
+
+    @property
+    def es_del_autor(self, user):
+        """Verifica si el usuario es el autor"""
+        return user.empleado == self.autor
+
+
+class Comentario(models.Model):
+    """Comentarios en las publicaciones"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    publicacion = models.ForeignKey(
+        Publicacion,
+        on_delete=models.CASCADE,
+        related_name='comentarios'
+    )
+    autor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mis_comentarios'
+    )
+    contenido = models.TextField(
+        help_text="Contenido del comentario"
+    )
+
+    # Fechas
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'feed_comentarios'
+        ordering = ['fecha_creacion']
+        indexes = [
+            models.Index(fields=['publicacion', 'fecha_creacion']),
+        ]
+        verbose_name = 'Comentario'
+        verbose_name_plural = 'Comentarios'
+
+    def __str__(self):
+        return f"Comentario de {self.autor.nombre_completo} en {self.publicacion}"
+

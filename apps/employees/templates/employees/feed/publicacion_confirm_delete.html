@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eliminar Publicación | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                    </div>
+
+                    <p>¿Estás seguro de que quieres eliminar esta publicación?</p>
+
+                    <div class="mb-3">
+                        <h6>{{ publicacion.titulo|default:publicacion.contenido|truncatewords:10 }}</h6>
+                        <small class="text-muted">{{ publicacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                    </div>
+
+                    <p class="text-danger">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Se eliminarán también todos los comentarios asociados.
+                    </p>
+
+                    <form method="post" class="d-flex gap-2 justify-content-between">
+                        {% csrf_token %}
+                        <a href="{% url 'employees:feed_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Sí, eliminar publicación
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

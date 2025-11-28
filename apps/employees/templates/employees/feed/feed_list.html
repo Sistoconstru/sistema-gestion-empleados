@@ -1,0 +1,586 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Feed - Marketplace | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .feed-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .feed-header {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 0.5rem;
+        color: white;
+    }
+
+    .feed-header h1 {
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .feed-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: stretch;
+    }
+
+    .feed-search {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .feed-search input {
+        width: 100%;
+    }
+
+    .feed-filtro {
+        flex: 0 1 auto;
+    }
+
+    .btn-nueva-publicacion {
+        background-color: #28a745;
+        border-color: #28a745;
+        white-space: nowrap;
+    }
+
+    .btn-nueva-publicacion:hover {
+        background-color: #218838;
+        border-color: #218838;
+    }
+
+    /* Publicaciones */
+    .publicacion-card {
+        background: white;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.2s;
+    }
+
+    .publicacion-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .publicacion-header {
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .publicacion-autor {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .publicacion-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #667eea;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .publicacion-info h5 {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    .publicacion-info small {
+        color: #999;
+    }
+
+    .publicacion-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .publicacion-body {
+        position: relative;
+        min-height: 100px;
+    }
+
+    .publicacion-imagen {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .publicacion-contenido {
+        padding: 1rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+
+    .publicacion-footer {
+        padding: 1rem;
+        border-top: 1px solid #f0f0f0;
+        background-color: #fafafa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .publicacion-stats {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .publicacion-stats i {
+        margin-right: 0.25rem;
+    }
+
+    .publicacion-acciones {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .publicacion-acciones .btn {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    /* Anuncios importantes */
+    .publicacion-card.anuncio-importante {
+        border-left: 5px solid #dc3545;
+        border-top: 2px solid #dc3545;
+        background: linear-gradient(to right, rgba(220, 53, 69, 0.05), transparent);
+    }
+
+    .anuncio-importante .publicacion-header {
+        background-color: #fff3cd;
+        border-bottom-color: #ffc107;
+    }
+
+    .badge-anuncio-importante {
+        background-color: #dc3545 !important;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Comentarios */
+    .comentarios-section {
+        background-color: #f9f9f9;
+        padding: 1rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .comentarios-titulo {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .comentario-item {
+        background: white;
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        border-left: 3px solid #667eea;
+    }
+
+    .comentario-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .comentario-autor {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .comentario-fecha {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .comentario-contenido {
+        font-size: 0.9rem;
+        color: #333;
+        word-wrap: break-word;
+    }
+
+    .comentario-acciones {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .comentario-acciones a {
+        color: #667eea;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+
+    .comentario-acciones a:hover {
+        text-decoration: underline;
+    }
+
+    .form-comentario {
+        margin-top: 1rem;
+    }
+
+    .form-comentario textarea {
+        font-size: 0.9rem;
+        resize: vertical;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .feed-controls {
+            flex-direction: column;
+        }
+
+        .feed-search {
+            min-width: 100%;
+        }
+
+        .publicacion-footer {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .publicacion-stats {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .publicacion-acciones {
+            width: 100%;
+        }
+
+        .publicacion-acciones .btn {
+            flex: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 pb-5">
+    <div class="feed-container">
+        <!-- Header del Feed -->
+        <div class="feed-header">
+            <h1>
+                <i class="fas fa-comments me-2"></i>Feed del Marketplace
+            </h1>
+
+            <div class="feed-controls">
+                <!-- Búsqueda -->
+                <div class="feed-search">
+                    <form method="get" class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Buscar publicaciones..."
+                               value="{{ search }}" aria-label="Search">
+                        {% if tipo %}
+                        <input type="hidden" name="tipo" value="{{ tipo }}">
+                        {% endif %}
+                        <button class="btn btn-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Filtro -->
+                <div class="feed-filtro">
+                    <select class="form-select" name="tipo" onchange="window.location.href='?tipo=' + this.value + '{% if search %}&search={{ search }}{% endif %}'">
+                        {% for valor, nombre in tipos_filtro %}
+                        <option value="{{ valor }}" {% if tipo == valor %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Botón Nueva Publicación -->
+                {% if user.empleado %}
+                <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-nueva-publicacion">
+                    <i class="fas fa-plus me-1"></i>Nueva Publicación
+                </a>
+                {% endif %}
+
+                <!-- Botón Anuncio (Solo Admin) -->
+                {% if user.is_staff %}
+                <a href="{% url 'employees:crear_anuncio' %}" class="btn btn-danger">
+                    <i class="fas fa-bullhorn me-1"></i>Anuncio
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Lista de Publicaciones -->
+        {% if publicaciones %}
+            {% for publicacion in publicaciones %}
+            <div class="publicacion-card {% if publicacion.es_importante %}anuncio-importante{% endif %}">
+                <!-- Header -->
+                <div class="publicacion-header">
+                    <div class="publicacion-autor">
+                        <div class="publicacion-avatar">
+                            {{ publicacion.autor.nombres|first|upper }}
+                        </div>
+                        <div class="publicacion-info">
+                            <h5>{{ publicacion.autor.nombre_completo }}</h5>
+                            <small>{{ publicacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                        </div>
+                    </div>
+                    <div class="publicacion-badges">
+                        {% if publicacion.es_importante %}
+                        <span class="badge badge-anuncio-importante">
+                            <i class="fas fa-bullhorn me-1"></i>Importante
+                        </span>
+                        {% endif %}
+                        {% if publicacion.es_anuncio %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-megaphone me-1"></i>Anuncio
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="publicacion-body">
+                    {% if publicacion.imagen %}
+                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" class="publicacion-imagen"
+                         style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}1{% endif %}%">
+                    {% endif %}
+
+                    <div class="publicacion-contenido"
+                         style="font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
+                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
+                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
+                        {% if publicacion.titulo %}
+                        <h5>{{ publicacion.titulo }}</h5>
+                        {% endif %}
+                        {{ publicacion.contenido }}
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="publicacion-footer">
+                    <div class="publicacion-stats">
+                        <span>
+                            <i class="fas fa-comments"></i>
+                            {{ publicacion.num_comentarios }} comentario{{ publicacion.num_comentarios|pluralize }}
+                        </span>
+                        {% if publicacion.es_importante and publicacion.fecha_fin %}
+                        <span>
+                            <i class="fas fa-clock"></i>
+                            Hasta: {{ publicacion.fecha_fin|date:"d/m/Y H:i" }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="publicacion-acciones">
+                        {% if publicacion.autor.usuario == user or user.is_staff %}
+                        <a href="{% url 'employees:editar_publicacion' publicacion.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'employees:eliminar_publicacion' publicacion.pk %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Comentarios -->
+                <div class="comentarios-section">
+                    <div class="comentarios-titulo">
+                        <i class="fas fa-comments me-1"></i>Comentarios ({{ publicacion.comentarios.count }})
+                    </div>
+
+                    <!-- Lista de comentarios -->
+                    <div class="comentarios-lista">
+                        {% for comentario in publicacion.comentarios.all %}
+                        <div class="comentario-item" data-comentario-id="{{ comentario.id }}">
+                            <div class="comentario-header">
+                                <span class="comentario-autor">{{ comentario.autor.nombre_completo }}</span>
+                                <span class="comentario-fecha">{{ comentario.fecha_creacion|date:"d/m H:i" }}</span>
+                            </div>
+                            <div class="comentario-contenido">{{ comentario.contenido }}</div>
+                            {% if comentario.autor.usuario == user or user.is_staff %}
+                            <div class="comentario-acciones">
+                                <a onclick="eliminarComentario({{ comentario.id }})">Eliminar</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <p class="text-muted small">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Formulario para agregar comentario -->
+                    {% if user.empleado %}
+                    <div class="form-comentario">
+                        <form method="post" action="{% url 'employees:agregar_comentario' publicacion.pk %}"
+                              onsubmit="return agregarComentarioAjax(event, {{ publicacion.pk }})">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <textarea class="form-control" name="contenido" placeholder="Escribe un comentario..."
+                                          rows="2" required></textarea>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Paginación -->
+            {% if is_paginated %}
+            <nav aria-label="Paginación" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search %}&search={{ search }}{% endif %}{% if tipo %}&tipo={{ tipo }}{% endif %}">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if tipo %}&tipo={{ tipo }}{% endif %}">Anterior</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if tipo %}&tipo={{ tipo }}{% endif %}">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if tipo %}&tipo={{ tipo }}{% endif %}">Última</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        {% else %}
+            <!-- Sin publicaciones -->
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h4>No hay publicaciones</h4>
+                <p class="text-muted">
+                    {% if search %}
+                    No se encontraron publicaciones con "{{ search }}"
+                    {% elif tipo %}
+                    No hay {{ tipo }} disponibles
+                    {% else %}
+                    ¡Sé el primero en publicar algo en el feed!
+                    {% endif %}
+                </p>
+                {% if user.empleado %}
+                <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-2"></i>Nueva Publicación
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function agregarComentarioAjax(event, publicacionId) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(`/empleados/feed/publicacion/${publicacionId}/comentario/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Agregar comentario a la lista
+            const comentariosLista = form.closest('.comentarios-section').querySelector('.comentarios-lista');
+            const nuevoComentario = document.createElement('div');
+            nuevoComentario.className = 'comentario-item';
+            nuevoComentario.dataset.comentarioId = data.comentario.id;
+            nuevoComentario.innerHTML = `
+                <div class="comentario-header">
+                    <span class="comentario-autor">${data.comentario.autor}</span>
+                    <span class="comentario-fecha">${data.comentario.fecha_creacion}</span>
+                </div>
+                <div class="comentario-contenido">${data.comentario.contenido}</div>
+                <div class="comentario-acciones">
+                    <a onclick="eliminarComentario(${data.comentario.id})">Eliminar</a>
+                </div>
+            `;
+            comentariosLista.appendChild(nuevoComentario);
+
+            // Limpiar formulario
+            form.reset();
+        } else {
+            alert('Error al agregar comentario: ' + JSON.stringify(data.errores));
+        }
+    })
+    .catch(error => console.error('Error:', error));
+
+    return false;
+}
+
+function eliminarComentario(comentarioId) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este comentario?')) return;
+
+    fetch(`/empleados/feed/comentario/${comentarioId}/eliminar/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.querySelector(`[data-comentario-id="${comentarioId}"]`).remove();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

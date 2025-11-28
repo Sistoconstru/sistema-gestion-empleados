@@ -11,6 +11,8 @@
         padding: 1rem;
         border-left: 4px solid transparent;
         border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
     }
     .conversacion-item:hover {
         background-color: #f5f5f5;
@@ -24,6 +26,7 @@
         font-weight: 500;
         color: #333;
         margin-bottom: 0.25rem;
+        word-break: break-word;
     }
     .conversacion-preview {
         font-size: 0.9rem;
@@ -31,10 +34,20 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-bottom: 0.5rem;
+    }
+    .conversacion-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
     .conversacion-fecha {
         font-size: 0.85rem;
         color: #999;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
     .badge-contexto {
         display: inline-block;
@@ -42,6 +55,7 @@
         border-radius: 0.25rem;
         font-size: 0.75rem;
         margin-right: 0.5rem;
+        flex-shrink: 0;
     }
     .empty-state {
         text-align: center;
@@ -52,6 +66,49 @@
         color: #ccc;
         margin-bottom: 1rem;
     }
+
+    /* Mobile styles */
+    @media (max-width: 576px) {
+        .conversacion-item {
+            padding: 0.75rem;
+        }
+        .conversacion-titulo {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .conversacion-preview {
+            font-size: 0.85rem;
+        }
+        .conversacion-fecha {
+            font-size: 0.75rem;
+        }
+        .badge-contexto {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.4rem;
+            margin-right: 0.25rem;
+        }
+        .header-inbox {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        .btn-nueva-conversacion {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .conversacion-item {
+            padding: 0.85rem;
+        }
+        .d-flex.w-100 {
+            flex-direction: column;
+        }
+        .text-end {
+            margin-left: 0 !important;
+            margin-top: 0.5rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -60,14 +117,14 @@
     <div class="row">
         <!-- Header -->
         <div class="col-12 mb-4">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 header-inbox">
                 <div>
                     <h1><i class="fas fa-inbox me-2"></i>Mensajes</h1>
                     <p class="text-muted mb-0">
                         Total de conversaciones: <strong>{{ total_conversaciones }}</strong>
                     </p>
                 </div>
-                <a href="{% url 'employees:iniciar_conversacion' %}" class="btn btn-primary btn-lg">
+                <a href="{% url 'employees:iniciar_conversacion' %}" class="btn btn-primary btn-lg btn-nueva-conversacion">
                     <i class="fas fa-plus me-2"></i>Nueva Conversación
                 </a>
             </div>
@@ -83,57 +140,49 @@
                         {% for conversacion in conversaciones %}
                         <a href="{% url 'employees:conversacion_detail' conversacion.pk %}"
                            class="conversacion-item list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <!-- Título o participantes -->
-                                    <h6 class="conversacion-titulo">
-                                        {% if conversacion.titulo %}
-                                        {{ conversacion.titulo }}
-                                        {% else %}
-                                        {% for p in conversacion.participantes.all %}
-                                            {% if p.id != user.empleado.id %}
-                                            {{ p.nombre_completo }}
-                                            {% endif %}
-                                        {% endfor %}
-                                        {% endif %}
-                                    </h6>
-
-                                    <!-- Contexto -->
-                                    <div class="mb-2">
-                                        <span class="badge badge-contexto
-                                            {% if conversacion.contexto == 'venta' %}bg-success
-                                            {% elif conversacion.contexto == 'subasta' %}bg-warning
-                                            {% elif conversacion.contexto == 'regalo' %}bg-info
-                                            {% else %}bg-secondary{% endif %}">
-                                            {{ conversacion.get_contexto_display }}
-                                        </span>
-                                    </div>
-
-                                    <!-- Vista previa del último mensaje -->
-                                    {% if conversacion.mensajes.first %}
-                                    <p class="conversacion-preview mb-0">
-                                        <strong>{{ conversacion.mensajes.first.remitente.nombres }}:</strong>
-                                        {{ conversacion.mensajes.first.contenido|truncatewords:10 }}
-                                    </p>
-                                    {% else %}
-                                    <p class="conversacion-preview mb-0 text-muted">
-                                        <em>Sin mensajes aún</em>
-                                    </p>
+                            <!-- Título o participantes -->
+                            <h6 class="conversacion-titulo">
+                                {% if conversacion.titulo %}
+                                {{ conversacion.titulo }}
+                                {% else %}
+                                {% for p in conversacion.participantes.all %}
+                                    {% if p.id != user.empleado.id %}
+                                    {{ p.nombre_completo }}
                                     {% endif %}
-                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </h6>
 
-                                <!-- Fecha -->
-                                <div class="text-end ms-3">
-                                    <div class="conversacion-fecha">
-                                        {{ conversacion.fecha_ultima_actividad|date:"d/m H:i" }}
-                                    </div>
+                            <!-- Vista previa del último mensaje -->
+                            {% if conversacion.mensajes.first %}
+                            <p class="conversacion-preview">
+                                <strong>{{ conversacion.mensajes.first.remitente.nombres }}:</strong>
+                                {{ conversacion.mensajes.first.contenido|truncatewords:10 }}
+                            </p>
+                            {% else %}
+                            <p class="conversacion-preview text-muted">
+                                <em>Sin mensajes aún</em>
+                            </p>
+                            {% endif %}
 
-                                    <!-- Badge si está archivada -->
+                            <!-- Meta información: Contexto, Fecha y Estado -->
+                            <div class="conversacion-meta">
+                                <div>
+                                    <span class="badge badge-contexto
+                                        {% if conversacion.contexto == 'venta' %}bg-success
+                                        {% elif conversacion.contexto == 'subasta' %}bg-warning
+                                        {% elif conversacion.contexto == 'regalo' %}bg-info
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ conversacion.get_contexto_display }}
+                                    </span>
                                     {% if conversacion.archivada %}
-                                    <span class="badge bg-secondary mt-2">
+                                    <span class="badge bg-secondary">
                                         <i class="fas fa-archive me-1"></i>Archivada
                                     </span>
                                     {% endif %}
+                                </div>
+                                <div class="conversacion-fecha">
+                                    {{ conversacion.fecha_ultima_actividad|date:"d/m H:i" }}
                                 </div>
                             </div>
                         </a>

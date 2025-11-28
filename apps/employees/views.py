@@ -2672,6 +2672,17 @@ class ConversacionDetailView(EmpleadoRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         conversacion = self.object
+
+        # Marcar mensajes como leídos para el usuario actual
+        try:
+            empleado = self.request.user.empleado
+            # Marcar como leído todos los mensajes que no son del usuario actual
+            conversacion.mensajes.filter(leido=False).exclude(remitente=empleado).update(leido=True)
+        except (AttributeError, Empleado.DoesNotExist):
+            # Los admins también pueden marcar como leídos
+            if self.request.user.is_staff or self.request.user.is_superuser:
+                conversacion.mensajes.filter(leido=False).update(leido=True)
+
         context['mensajes'] = conversacion.mensajes.select_related('remitente').order_by('fecha_creacion')
         context['form'] = MensajeForm()
         return context
@@ -2685,7 +2696,12 @@ class IniciarConversacionView(EmpleadoRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['usuario_actual'] = self.request.user.empleado
+        try:
+            kwargs['usuario_actual'] = self.request.user.empleado
+        except (AttributeError, Empleado.DoesNotExist):
+            # Los admins sin empleado no pueden iniciar conversaciones
+            if not (self.request.user.is_staff or self.request.user.is_superuser):
+                kwargs['usuario_actual'] = None
         return kwargs
 
     def form_valid(self, form):
@@ -2694,8 +2710,13 @@ class IniciarConversacionView(EmpleadoRequiredMixin, CreateView):
         response = super().form_valid(form)
 
         # Agregar participantes
-        participante = form.cleaned_data['participante_id']
-        self.object.participantes.add(self.request.user.empleado, participante)
+        try:
+            empleado_actual = self.request.user.empleado
+            participante = form.cleaned_data['participante_id']
+            self.object.participantes.add(empleado_actual, participante)
+        except (AttributeError, Empleado.DoesNotExist):
+            # Los admins sin empleado no pueden agregar participantes
+            pass
 
         return response
 
@@ -2711,28 +2732,78 @@ class EnviarMensajeView(EmpleadoRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['remitente'] = self.request.user.empleado
+        try:
+            kwargs['remitente'] = self.request.user.empleado
+        except (AttributeError, Empleado.DoesNotExist):
+            # Los admins sin empleado no pueden enviar mensajes
+            kwargs['remitente'] = None
         return kwargs
 
     def get_conversacion(self):
         """Obtener conversación"""
         if not hasattr(self, '_conversacion'):
-            self._conversacion = get_object_or_404(
-                Conversacion,
-                pk=self.kwargs['conversacion_pk'],
-                participantes=self.request.user.empleado
-            )
+            try:
+                empleado = self.request.user.empleado
+                self._conversacion = get_object_or_404(
+                    Conversacion,
+                    pk=self.kwargs['conversacion_pk'],
+                    participantes=empleado
+                )
+            except (AttributeError, Empleado.DoesNotExist):
+                # Los admins ven todas las conversaciones
+                if self.request.user.is_staff or self.request.user.is_superuser:
+                    self._conversacion = get_object_or_404(
+                        Conversacion,
+                        pk=self.kwargs['conversacion_pk']
+                    )
+                else:
+                    raise Http404("No tienes acceso a esta conversación")
         return self._conversacion
 
     def form_valid(self, form):
         """Guardar mensaje"""
         form.instance.conversacion = self.get_conversacion()
-        form.instance.remitente = self.request.user.empleado
+        try:
+            form.instance.remitente = self.request.user.empleado
+        except (AttributeError, Empleado.DoesNotExist):
+            # Solo empleados o usuarios con empleado pueden enviar mensajes
+            if not (self.request.user.is_staff or self.request.user.is_superuser):
+                messages.error(
+                    self.request,
+                    'No tienes permiso para enviar mensajes. Debes tener un perfil de empleado.'
+                )
+            # No continuar si no se pudo asignar el remitente
+            return super().form_valid(form)
+
         form.instance.creado_por = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('employees:conversacion_detail', kwargs={'pk': self.kwargs['conversacion_pk']})
+
+
+@login_required
+def marcar_mensajes_leidos(request, conversacion_pk):
+    """Vista AJAX para marcar mensajes de una conversación como leídos"""
+    if request.method == 'POST':
+        try:
+            empleado = request.user.empleado
+            conversacion = get_object_or_404(
+                Conversacion,
+                pk=conversacion_pk,
+                participantes=empleado
+            )
+            # Marcar mensajes como leídos
+            conversacion.mensajes.filter(leido=False).exclude(remitente=empleado).update(leido=True)
+            return JsonResponse({'success': True, 'mensaje': 'Mensajes marcados como leídos'})
+        except (AttributeError, Empleado.DoesNotExist):
+            # Los admins también pueden marcar como leídos
+            if request.user.is_staff or request.user.is_superuser:
+                conversacion = get_object_or_404(Conversacion, pk=conversacion_pk)
+                conversacion.mensajes.filter(leido=False).update(leido=True)
+                return JsonResponse({'success': True, 'mensaje': 'Mensajes marcados como leídos'})
+            return JsonResponse({'success': False, 'error': 'No tienes acceso'}, status=403)
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
 
 
 @login_required
