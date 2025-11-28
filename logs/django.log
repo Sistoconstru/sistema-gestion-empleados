@@ -5071,3 +5071,495 @@ INFO 2025-11-28 09:10:51,904 autoreload 42228 4536 C:\Sisto\SIGHU\sistema-gestio
 INFO 2025-11-28 09:10:57,364 apps 24096 50048 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-28 09:10:57,552 autoreload 24096 50048 Watching for file changes with StatReloader
 INFO 2025-11-28 09:11:01,781 wsgi 24096 53868 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 09:11:14,699 basehttp 24096 45288 "GET /empleados/feed/ HTTP/1.1" 200 31146
+INFO 2025-11-28 09:11:14,742 basehttp 24096 45288 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:11:14,742 basehttp 24096 53032 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:11:16,216 basehttp 24096 53032 "GET /empleados/feed/ HTTP/1.1" 200 31146
+INFO 2025-11-28 09:11:33,855 basehttp 24096 53032 "POST /empleados/feed/publicacion/30aebf61-2285-46c1-952f-fcbe9748b603/comentario/ HTTP/1.1" 200 167
+INFO 2025-11-28 09:13:24,247 basehttp 24096 53032 "GET /empleados/feed/ HTTP/1.1" 200 31784
+INFO 2025-11-28 09:13:24,267 basehttp 24096 45288 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:13:24,268 basehttp 24096 53032 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:15:50,648 basehttp 24096 53032 "POST /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/ HTTP/1.1" 200 165
+INFO 2025-11-28 09:15:57,192 basehttp 24096 53032 "GET /empleados/feed/ HTTP/1.1" 200 33455
+INFO 2025-11-28 09:15:57,211 basehttp 24096 53032 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:15:57,211 basehttp 24096 45288 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:16:15,999 basehttp 24096 45288 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:16:15,999 basehttp 24096 45288 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 09:16:22,741 basehttp 24096 45288 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:16:22,752 basehttp 24096 45288 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:16:22,947 basehttp 24096 45288 "GET /empleados/perfil/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 41851
+INFO 2025-11-28 09:16:25,981 basehttp 24096 45288 "GET /empleados/feed/ HTTP/1.1" 200 31383
+INFO 2025-11-28 09:16:42,283 basehttp 24096 45288 "POST /empleados/feed/publicacion/30aebf61-2285-46c1-952f-fcbe9748b603/comentario/ HTTP/1.1" 200 167
+INFO 2025-11-28 09:17:08,268 basehttp 24096 45288 "POST /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/ HTTP/1.1" 200 166
+INFO 2025-11-28 09:17:29,782 basehttp 24096 45288 "POST /empleados/feed/publicacion/f2481e8d-df51-44f8-a56b-f89a039c49c2/comentario/ HTTP/1.1" 200 174
+INFO 2025-11-28 09:17:42,149 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15834
+INFO 2025-11-28 09:17:48,664 basehttp 24096 45288 "POST /notificaciones/marcar-leida/3ec362d0-57aa-44b9-b5d6-1a05d8bf8b63/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:48,680 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15719
+INFO 2025-11-28 09:17:49,796 basehttp 24096 45288 "POST /notificaciones/marcar-leida/3ec362d0-57aa-44b9-b5d6-1a05d8bf8b63/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:49,815 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15719
+INFO 2025-11-28 09:17:50,430 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:50,449 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:51,166 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:51,183 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:51,747 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:51,766 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:52,330 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:52,353 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:52,964 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:52,983 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:53,447 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:53,473 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:54,020 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:54,039 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:54,664 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:54,689 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:17:55,530 basehttp 24096 45288 "POST /notificaciones/marcar-leida/994c09e2-8f40-4650-8750-f05f8042b0ec/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:17:55,552 basehttp 24096 45288 "GET /notificaciones/list/ HTTP/1.1" 200 15487
+INFO 2025-11-28 09:31:08,067 apps 47744 32188 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 09:35:14,948 basehttp 24096 36664 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:35:15,140 basehttp 24096 36664 "GET /empleados/perfil/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 41339
+INFO 2025-11-28 09:35:18,523 basehttp 24096 36664 "GET /empleados/feed/ HTTP/1.1" 200 34261
+INFO 2025-11-28 09:35:18,540 basehttp 24096 36664 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:35:18,543 basehttp 24096 36664 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:35:21,875 basehttp 24096 36664 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18413
+INFO 2025-11-28 09:37:48,168 apps 34416 11464 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 09:37:48,703 apps 4436 57252 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 09:37:48,719 autoreload 4436 57252 Watching for file changes with StatReloader
+INFO 2025-11-28 09:37:49,129 wsgi 4436 30944 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 09:37:51,191 basehttp 4436 13220 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 09:37:51,316 basehttp 4436 13220 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:37:51,442 basehttp 4436 13220 "GET /empleados/perfil/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 41339
+INFO 2025-11-28 09:37:59,299 basehttp 4436 13220 "GET /empleados/feed/ HTTP/1.1" 200 34261
+INFO 2025-11-28 09:38:08,349 basehttp 4436 13220 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18413
+WARNING 2025-11-28 09:41:31,641 log 4436 13220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:41:31,641 basehttp 4436 13220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 09:41:31,695 basehttp 4436 13220 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 09:41:35,780 basehttp 4436 43516 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18413
+WARNING 2025-11-28 09:41:35,814 log 4436 43516 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:41:35,818 basehttp 4436 43516 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 09:41:35,834 basehttp 4436 54440 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-28 09:41:35,834 basehttp 4436 3532 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-28 09:41:35,837 basehttp 4436 51320 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-28 09:41:35,857 basehttp 4436 17792 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-28 09:41:35,862 basehttp 4436 30792 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-28 09:41:35,884 basehttp 4436 43516 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-28 09:41:35,892 basehttp 4436 54440 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-28 09:41:35,901 basehttp 4436 54440 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-28 09:41:35,926 basehttp 4436 54440 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-28 09:41:36,299 log 4436 43516 Not Found: /favicon.ico
+WARNING 2025-11-28 09:41:36,299 basehttp 4436 43516 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-28 09:41:48,532 basehttp 4436 43516 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:41:48,539 basehttp 4436 43516 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-11-28 09:41:48,567 log 4436 43516 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:41:48,567 basehttp 4436 43516 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 09:41:53,983 basehttp 4436 43516 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:41:54,066 basehttp 4436 43516 "GET /dashboard/ HTTP/1.1" 200 20509
+WARNING 2025-11-28 09:41:54,109 log 4436 43516 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:41:54,110 basehttp 4436 43516 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 09:41:54,176 basehttp 4436 43516 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 09:41:56,264 basehttp 4436 30792 "GET /empleados/feed/ HTTP/1.1" 200 36450
+WARNING 2025-11-28 09:41:56,300 log 4436 30792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-28 09:41:56,301 basehttp 4436 17792 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+INFO 2025-11-28 09:41:56,302 basehttp 4436 51320 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+WARNING 2025-11-28 09:41:56,302 basehttp 4436 30792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 09:41:56,339 basehttp 4436 17792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 09:41:59,634 basehttp 4436 30792 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 24100
+WARNING 2025-11-28 09:41:59,679 log 4436 30792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:41:59,679 basehttp 4436 30792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 09:41:59,716 basehttp 4436 30792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 09:47:55,798 basehttp 4436 14964 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25123
+WARNING 2025-11-28 09:47:55,833 log 4436 14964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 09:47:55,834 basehttp 4436 14964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 09:47:55,895 basehttp 4436 14964 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 09:50:35,364 basehttp 4436 24324 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:50:35,431 basehttp 4436 24324 "GET /empleados/feed/ HTTP/1.1" 200 41196
+INFO 2025-11-28 09:50:35,464 basehttp 4436 40680 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:50:35,468 basehttp 4436 58216 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:50:35,476 basehttp 4436 24324 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 09:53:44,632 basehttp 4436 24324 "GET /empleados/feed/publicacion/9670b867-0493-44a7-b287-b3e3ae5373a3/editar/ HTTP/1.1" 200 18842
+INFO 2025-11-28 09:54:05,616 basehttp 4436 24324 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25123
+INFO 2025-11-28 09:59:53,182 basehttp 4436 9008 "GET /empleados/feed/ HTTP/1.1" 200 41431
+INFO 2025-11-28 09:59:53,203 basehttp 4436 9008 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:59:53,205 basehttp 4436 9008 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:59:53,207 basehttp 4436 9008 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:00:11,916 basehttp 4436 9008 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:00:16,865 basehttp 4436 9008 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:01:23,432 basehttp 4436 9008 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:01:23,497 basehttp 4436 9008 "GET /empleados/feed/ HTTP/1.1" 200 46149
+INFO 2025-11-28 10:01:23,516 basehttp 4436 11112 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:01:23,529 basehttp 4436 9008 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:02:15,347 apps 31416 48952 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:02:15,916 apps 36848 15748 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:02:15,937 autoreload 36848 15748 Watching for file changes with StatReloader
+INFO 2025-11-28 10:02:16,346 wsgi 36848 57328 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 10:02:24,455 basehttp 36848 56916 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 10:02:24,699 basehttp 36848 56916 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 10:02:28,538 basehttp 36848 56916 "GET /empleados/feed/ HTTP/1.1" 200 46149
+INFO 2025-11-28 10:02:28,555 basehttp 36848 56916 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:02:28,558 basehttp 36848 56916 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:02:32,666 basehttp 36848 56916 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:03:43,997 basehttp 36848 56916 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:03:44,032 basehttp 36848 56916 "GET /empleados/feed/ HTTP/1.1" 200 50889
+INFO 2025-11-28 10:03:44,068 basehttp 36848 45740 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:03:44,068 basehttp 36848 30856 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:03:44,078 basehttp 36848 56916 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:07:11,086 apps 34120 29700 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:07:11,649 apps 32844 54044 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:07:11,664 autoreload 32844 54044 Watching for file changes with StatReloader
+INFO 2025-11-28 10:07:12,068 wsgi 32844 37488 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 10:07:13,368 basehttp 32844 6376 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 10:07:13,683 basehttp 32844 6376 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 10:07:16,464 basehttp 32844 6376 "GET /empleados/feed/ HTTP/1.1" 200 51006
+INFO 2025-11-28 10:07:16,485 basehttp 32844 56384 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:07:16,485 basehttp 32844 6376 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:07:16,486 basehttp 32844 19380 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:07:16,489 basehttp 32844 11892 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:07:16,489 basehttp 32844 6540 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:07:21,298 basehttp 32844 6540 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:09:33,114 basehttp 32844 6540 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:09:33,168 basehttp 32844 6540 "GET /empleados/feed/ HTTP/1.1" 200 55811
+INFO 2025-11-28 10:09:33,197 basehttp 32844 11892 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:09:33,198 basehttp 32844 6376 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:09:33,198 basehttp 32844 19380 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:09:33,210 basehttp 32844 6540 "GET /media/publicaciones/2025/11/28/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:09:49,832 basehttp 32844 6540 "GET /empleados/feed/publicacion/cbbfae12-e780-46a5-a4fe-edc531edecd4/editar/ HTTP/1.1" 200 18733
+INFO 2025-11-28 10:10:05,082 basehttp 32844 6540 "POST /empleados/feed/publicacion/cbbfae12-e780-46a5-a4fe-edc531edecd4/editar/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:10:05,115 basehttp 32844 6540 "GET /empleados/feed/ HTTP/1.1" 200 55819
+INFO 2025-11-28 10:10:05,146 basehttp 32844 6540 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:10:11,648 basehttp 32844 6540 "GET /empleados/feed/publicacion/cbbfae12-e780-46a5-a4fe-edc531edecd4/editar/ HTTP/1.1" 200 18733
+INFO 2025-11-28 10:10:19,030 basehttp 32844 6540 "POST /empleados/feed/publicacion/cbbfae12-e780-46a5-a4fe-edc531edecd4/editar/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:10:19,066 basehttp 32844 6540 "GET /empleados/feed/ HTTP/1.1" 200 55823
+INFO 2025-11-28 10:10:19,085 basehttp 32844 6540 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:10:19,089 basehttp 32844 6540 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:10:37,368 basehttp 32844 6540 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:12:08,180 apps 56704 36444 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:12:08,706 apps 25288 49584 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:12:08,719 autoreload 25288 49584 Watching for file changes with StatReloader
+INFO 2025-11-28 10:12:09,136 wsgi 25288 31932 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 10:12:18,687 basehttp 25288 43552 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 10:12:18,832 basehttp 25288 43552 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 10:12:26,817 basehttp 25288 43552 "GET /empleados/feed/ HTTP/1.1" 200 55823
+INFO 2025-11-28 10:12:26,835 basehttp 25288 43552 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:12:26,837 basehttp 25288 43552 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:12:26,839 basehttp 25288 38264 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:12:26,839 basehttp 25288 48216 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:12:29,915 basehttp 25288 48216 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:13:10,248 basehttp 25288 48216 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:13:10,299 basehttp 25288 48216 "GET /empleados/feed/ HTTP/1.1" 200 60627
+INFO 2025-11-28 10:13:10,323 basehttp 25288 38264 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:13:10,332 basehttp 25288 48216 "GET /media/publicaciones/2025/11/28/silla_bxcaYwr.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:16:04,681 basehttp 25288 48216 "GET /empleados/feed/ HTTP/1.1" 200 60640
+INFO 2025-11-28 10:16:04,712 basehttp 25288 48216 "GET /media/publicaciones/2025/11/28/silla_bxcaYwr.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,712 basehttp 25288 38264 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,712 basehttp 25288 43552 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,716 basehttp 25288 47944 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,719 basehttp 25288 41204 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,719 basehttp 25288 38264 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:04,719 basehttp 25288 11292 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:11,765 basehttp 25288 11292 "GET /empleados/feed/ HTTP/1.1" 200 60640
+INFO 2025-11-28 10:16:12,998 basehttp 25288 11292 "GET /empleados/feed/ HTTP/1.1" 200 60640
+INFO 2025-11-28 10:16:43,531 apps 41072 13356 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:16:44,163 apps 12152 3100 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:16:44,184 autoreload 12152 3100 Watching for file changes with StatReloader
+INFO 2025-11-28 10:16:45,100 wsgi 12152 39444 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 10:16:48,699 basehttp 12152 13472 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 10:16:48,854 basehttp 12152 13472 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 10:16:55,028 basehttp 12152 13472 "GET /empleados/feed/ HTTP/1.1" 200 60640
+INFO 2025-11-28 10:16:55,043 basehttp 12152 19996 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:16:55,043 basehttp 12152 13472 "GET /media/publicaciones/2025/11/28/silla_bxcaYwr.jpeg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:17:02,438 log 12152 13472 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:17:02,438 basehttp 12152 13472 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:17:02,495 basehttp 12152 13472 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:17:07,569 basehttp 12152 19996 "GET /empleados/feed/ HTTP/1.1" 200 60640
+WARNING 2025-11-28 10:17:07,593 log 12152 19996 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:17:07,595 basehttp 12152 19996 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:17:07,602 basehttp 12152 7656 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-28 10:17:07,604 basehttp 12152 38852 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-28 10:17:07,608 basehttp 12152 7656 "GET /media/publicaciones/2025/11/28/silla_bxcaYwr.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:17:07,608 basehttp 12152 36388 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-28 10:17:07,609 basehttp 12152 53988 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-28 10:17:07,610 basehttp 12152 38424 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-28 10:17:07,611 basehttp 12152 39128 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-28 10:17:07,611 basehttp 12152 38852 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:17:07,614 basehttp 12152 53988 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:17:07,620 basehttp 12152 53988 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:17:07,622 basehttp 12152 38424 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:17:07,630 basehttp 12152 38424 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-28 10:17:07,630 basehttp 12152 53988 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+INFO 2025-11-28 10:17:07,631 basehttp 12152 38852 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:17:07,638 basehttp 12152 38852 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-28 10:17:07,675 basehttp 12152 38852 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-28 10:17:08,072 log 12152 38424 Not Found: /favicon.ico
+WARNING 2025-11-28 10:17:08,072 basehttp 12152 38424 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-28 10:17:19,132 basehttp 12152 38424 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:17:19,251 basehttp 12152 38424 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 27033
+WARNING 2025-11-28 10:17:19,283 log 12152 38424 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:17:19,284 basehttp 12152 38424 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:17:19,308 basehttp 12152 38424 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:17:26,314 basehttp 12152 53988 "GET /empleados/feed/ HTTP/1.1" 200 60640
+WARNING 2025-11-28 10:17:26,339 log 12152 53988 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:17:26,340 basehttp 12152 53988 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:17:26,390 basehttp 12152 53988 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:19:17,514 basehttp 12152 32096 "GET /empleados/feed/ HTTP/1.1" 200 55930
+INFO 2025-11-28 10:19:17,536 basehttp 12152 17972 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:19:17,536 basehttp 12152 32096 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:19:17,546 basehttp 12152 23120 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:19:20,146 basehttp 12152 23120 "GET /empleados/feed/ HTTP/1.1" 200 55930
+INFO 2025-11-28 10:23:19,563 basehttp 12152 23120 "GET /empleados/feed/ HTTP/1.1" 200 55834
+INFO 2025-11-28 10:23:19,598 basehttp 12152 17972 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:23:19,598 basehttp 12152 23120 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:23:19,598 basehttp 12152 32096 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:23:19,600 basehttp 12152 31888 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:23:21,764 basehttp 12152 31888 "GET /empleados/feed/ HTTP/1.1" 200 55834
+INFO 2025-11-28 10:23:35,603 apps 31468 47692 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:23:36,161 apps 51416 45324 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:23:36,179 autoreload 51416 45324 Watching for file changes with StatReloader
+INFO 2025-11-28 10:23:36,723 wsgi 51416 43136 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 10:23:40,268 basehttp 51416 44328 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 10:23:40,416 basehttp 51416 44328 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 10:23:45,998 basehttp 51416 44328 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31828
+INFO 2025-11-28 10:23:46,020 basehttp 51416 44328 "GET /media/marketplace/productos/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-11-28 10:23:46,028 basehttp 51416 5136 "GET /media/marketplace/productos/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:23:46,029 basehttp 51416 56244 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:23:46,029 basehttp 51416 24220 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:23:46,030 basehttp 51416 1656 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:23:46,032 basehttp 51416 44328 "GET /media/marketplace/productos/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:23:46,032 basehttp 51416 5136 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+INFO 2025-11-28 10:23:46,034 basehttp 51416 712 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+INFO 2025-11-28 10:23:51,130 basehttp 51416 712 "GET /empleados/marketplace/productos/a646233f-3a2d-4a2b-b44b-22574eabc123/ HTTP/1.1" 200 14389
+INFO 2025-11-28 10:23:59,499 basehttp 51416 712 "GET /empleados/feed/ HTTP/1.1" 200 55834
+INFO 2025-11-28 10:24:02,206 basehttp 51416 712 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25089
+INFO 2025-11-28 10:25:06,914 basehttp 51416 712 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:25:06,972 basehttp 51416 712 "GET /empleados/feed/ HTTP/1.1" 200 60570
+INFO 2025-11-28 10:25:06,994 basehttp 51416 5136 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 10:25:06,994 basehttp 51416 44328 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:25:06,995 basehttp 51416 1656 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:25:07,004 basehttp 51416 712 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 200 120941
+WARNING 2025-11-28 10:27:46,687 log 51416 712 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:27:46,688 basehttp 51416 712 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:27:46,704 basehttp 51416 712 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:27:50,999 basehttp 51416 1656 "GET /empleados/feed/ HTTP/1.1" 200 60570
+WARNING 2025-11-28 10:27:51,049 log 51416 1656 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:27:51,052 basehttp 51416 1656 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:27:51,054 basehttp 51416 56244 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-28 10:27:51,055 basehttp 51416 24220 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-28 10:27:51,055 basehttp 51416 5136 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-28 10:27:51,056 basehttp 51416 53480 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-28 10:27:51,058 basehttp 51416 44328 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-28 10:27:51,067 basehttp 51416 5136 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-11-28 10:27:51,068 basehttp 51416 1656 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-28 10:27:51,068 basehttp 51416 24220 "GET /media/publicaciones/2025/11/28/silla_d66QvYL.jpeg HTTP/1.1" 200 27685
+INFO 2025-11-28 10:27:51,081 basehttp 51416 24220 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:27:51,082 basehttp 51416 5136 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:27:51,100 basehttp 51416 44328 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+WARNING 2025-11-28 10:27:51,106 basehttp 51416 5136 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:27:51,106 basehttp 51416 1656 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-28 10:27:51,107 basehttp 51416 53480 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:27:51,107 basehttp 51416 24220 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:27:51,108 basehttp 51416 44328 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-28 10:27:51,516 log 51416 44328 Not Found: /favicon.ico
+WARNING 2025-11-28 10:27:51,517 basehttp 51416 44328 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-28 10:33:34,381 basehttp 51416 44592 "GET /empleados/feed/ HTTP/1.1" 200 55753
+INFO 2025-11-28 10:33:34,426 basehttp 51416 37164 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:33:34,426 basehttp 51416 44592 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:33:34,440 log 51416 5396 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-28 10:33:34,441 basehttp 51416 44592 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:33:34,441 basehttp 51416 37164 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:33:34,442 basehttp 51416 5396 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:33:34,494 basehttp 51416 5396 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:33:36,183 basehttp 51416 37164 "GET /empleados/feed/ HTTP/1.1" 200 55753
+WARNING 2025-11-28 10:33:36,221 log 51416 37164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:33:36,221 basehttp 51416 37164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:33:36,270 basehttp 51416 37164 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:33:42,730 basehttp 51416 44592 "GET /empleados/feed/ HTTP/1.1" 200 55753
+INFO 2025-11-28 10:33:42,753 basehttp 51416 44592 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-28 10:33:42,759 basehttp 51416 48024 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+WARNING 2025-11-28 10:33:42,768 log 51416 48024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-28 10:33:42,768 basehttp 51416 44592 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-28 10:33:42,768 basehttp 51416 31640 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+WARNING 2025-11-28 10:33:42,770 basehttp 51416 48024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:33:42,771 basehttp 51416 53960 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-28 10:33:42,773 basehttp 51416 53420 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-28 10:33:42,774 basehttp 51416 44748 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-11-28 10:33:42,774 basehttp 51416 44592 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:33:42,781 basehttp 51416 44592 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:33:42,782 basehttp 51416 44748 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:33:42,811 basehttp 51416 44748 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+WARNING 2025-11-28 10:33:42,811 basehttp 51416 48024 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:33:42,811 basehttp 51416 53420 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:33:42,813 basehttp 51416 44592 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-28 10:33:42,814 basehttp 51416 53960 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-28 10:33:42,927 log 51416 53960 Not Found: /favicon.ico
+WARNING 2025-11-28 10:33:42,931 basehttp 51416 53960 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-28 10:37:58,570 apps 3436 54040 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:38:30,320 apps 49736 53412 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 10:40:10,797 basehttp 51416 49800 "GET /empleados/feed/ HTTP/1.1" 200 55753
+INFO 2025-11-28 10:40:10,825 basehttp 51416 26576 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:40:10,825 basehttp 51416 49800 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:40:10,834 basehttp 51416 26576 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:40:10,834 basehttp 51416 49800 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:40:11,915 basehttp 51416 49800 "GET /empleados/feed/ HTTP/1.1" 200 55753
+INFO 2025-11-28 10:40:13,131 basehttp 51416 49800 "GET /empleados/feed/ HTTP/1.1" 200 55753
+INFO 2025-11-28 10:43:42,898 basehttp 51416 49800 "GET /empleados/feed/ HTTP/1.1" 200 55755
+INFO 2025-11-28 10:43:42,930 basehttp 51416 26576 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:43:42,930 basehttp 51416 49800 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:43:42,937 basehttp 51416 49800 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:43:43,898 basehttp 51416 49800 "GET /empleados/feed/ HTTP/1.1" 200 55755
+WARNING 2025-11-28 10:43:49,527 log 51416 49800 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:43:49,528 basehttp 51416 49800 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:43:49,582 basehttp 51416 49800 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:43:52,315 basehttp 51416 26576 "GET /empleados/feed/ HTTP/1.1" 200 55755
+WARNING 2025-11-28 10:43:52,345 log 51416 26576 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:43:52,346 basehttp 51416 26576 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:43:52,351 basehttp 51416 14356 "GET /static/css/custom.css HTTP/1.1" 200 11836
+INFO 2025-11-28 10:43:52,352 basehttp 51416 11168 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-11-28 10:43:52,357 basehttp 51416 26576 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-11-28 10:43:52,359 basehttp 51416 1628 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-11-28 10:43:52,361 basehttp 51416 9144 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-11-28 10:43:52,361 basehttp 51416 11168 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-11-28 10:43:52,362 basehttp 51416 14356 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-11-28 10:43:52,362 basehttp 51416 30728 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-11-28 10:43:52,372 basehttp 51416 14356 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:43:52,374 basehttp 51416 30728 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-11-28 10:43:52,381 basehttp 51416 30728 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+INFO 2025-11-28 10:43:52,381 basehttp 51416 14356 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-11-28 10:43:52,382 basehttp 51416 11168 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+INFO 2025-11-28 10:43:52,390 basehttp 51416 11168 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-11-28 10:43:52,436 basehttp 51416 11168 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-11-28 10:43:52,499 log 51416 30728 Not Found: /favicon.ico
+WARNING 2025-11-28 10:43:52,499 basehttp 51416 30728 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-11-28 10:43:56,709 basehttp 51416 30728 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 26021
+WARNING 2025-11-28 10:43:56,739 log 51416 30728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:43:56,739 basehttp 51416 30728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:43:56,807 basehttp 51416 30728 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:44:54,292 basehttp 51416 14356 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:44:54,349 basehttp 51416 14356 "GET /empleados/feed/ HTTP/1.1" 200 60585
+WARNING 2025-11-28 10:44:54,380 log 51416 14356 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:44:54,383 basehttp 51416 14356 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:44:54,395 basehttp 51416 9144 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 200 52457
+WARNING 2025-11-28 10:44:54,442 basehttp 51416 9144 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:47:56,049 basehttp 51416 14356 "GET /empleados/feed/ HTTP/1.1" 200 60547
+WARNING 2025-11-28 10:47:56,090 log 51416 14356 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-28 10:47:56,090 basehttp 51416 1628 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 304 0
+INFO 2025-11-28 10:47:56,090 basehttp 51416 26576 "GET /media/publicaciones/2025/11/28/platanos-verdes.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:47:56,093 basehttp 51416 14356 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:47:56,093 basehttp 51416 30552 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:47:56,129 basehttp 51416 30552 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:48:15,043 basehttp 51416 14356 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 25937
+WARNING 2025-11-28 10:48:15,079 log 51416 14356 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:48:15,082 basehttp 51416 14356 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 10:48:15,116 basehttp 51416 14356 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:50:05,288 basehttp 51416 18952 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 10:50:05,335 basehttp 51416 18952 "GET /empleados/feed/ HTTP/1.1" 200 60661
+WARNING 2025-11-28 10:50:05,373 log 51416 18952 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 10:50:05,375 basehttp 51416 18952 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:50:05,377 basehttp 51416 22020 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:50:05,377 basehttp 51416 33084 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 304 0
+INFO 2025-11-28 10:50:05,379 basehttp 51416 41116 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:50:05,391 basehttp 51416 27920 "GET /media/publicaciones/2025/11/28/comedor.jpg HTTP/1.1" 200 115726
+WARNING 2025-11-28 10:50:05,421 basehttp 51416 27920 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:58:14,047 basehttp 51416 55872 "GET /empleados/feed/ HTTP/1.1" 200 62421
+WARNING 2025-11-28 10:58:14,081 log 51416 55872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-11-28 10:58:14,083 basehttp 51416 44212 "GET /media/publicaciones/2025/11/28/comedor.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:58:14,085 basehttp 51416 55872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-11-28 10:58:14,087 basehttp 51416 53896 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 304 0
+INFO 2025-11-28 10:58:14,089 basehttp 51416 53896 "GET /media/publicaciones/2025/11/28/tamales.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:58:14,090 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:58:14,113 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+WARNING 2025-11-28 10:58:14,121 basehttp 51416 53896 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 10:58:14,122 basehttp 51416 44212 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:58:14,122 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:59:06,081 basehttp 51416 55872 "GET /empleados/feed/ HTTP/1.1" 200 62421
+INFO 2025-11-28 10:59:06,109 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 10:59:08,848 basehttp 51416 55872 "GET /empleados/feed/ HTTP/1.1" 200 62421
+INFO 2025-11-28 11:01:42,814 basehttp 51416 55872 "GET /empleados/feed/ HTTP/1.1" 200 57681
+INFO 2025-11-28 11:01:42,832 basehttp 51416 44212 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:01:42,832 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:02:45,518 basehttp 51416 55872 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18416
+INFO 2025-11-28 11:03:00,929 basehttp 51416 55872 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 26282
+INFO 2025-11-28 11:06:34,632 basehttp 51416 55872 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 11:06:34,684 basehttp 51416 55872 "GET /empleados/feed/ HTTP/1.1" 200 62500
+INFO 2025-11-28 11:06:34,716 basehttp 51416 44212 "GET /media/publicaciones/2025/11/28/comedor.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:06:34,721 basehttp 51416 19544 "GET /media/publicaciones/2025/11/28/cel.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:06:34,723 basehttp 51416 36308 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:06:34,723 basehttp 51416 7436 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:06:34,727 basehttp 51416 55872 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 200 19867
+WARNING 2025-11-28 11:06:56,404 log 51416 55872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 11:06:56,404 basehttp 51416 55872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 11:06:56,449 basehttp 51416 55872 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 11:17:02,212 basehttp 51416 50244 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18416
+INFO 2025-11-28 11:17:31,080 apps 50204 24848 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:21:29,983 basehttp 51416 28852 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:21:30,028 basehttp 51416 28852 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:21:30,028 basehttp 51416 18168 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:21:30,032 basehttp 51416 28852 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:21:30,033 basehttp 51416 18168 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:21:30,035 basehttp 51416 11620 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:26:32,333 basehttp 51416 22096 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 30728
+INFO 2025-11-28 11:28:59,533 basehttp 51416 22096 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:28:59,562 basehttp 51416 22096 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:29:04,297 basehttp 51416 22096 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:30:30,187 apps 18620 13872 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:30:45,249 apps 23120 55844 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:31:04,746 apps 57780 42940 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:31:05,281 apps 24260 57600 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:31:05,298 autoreload 24260 57600 Watching for file changes with StatReloader
+INFO 2025-11-28 11:31:05,714 wsgi 24260 46276 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 11:31:12,664 basehttp 24260 57224 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:31:12,693 basehttp 24260 57224 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:31:12,693 basehttp 24260 2296 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:31:14,226 basehttp 24260 2296 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 30728
+INFO 2025-11-28 11:35:09,782 basehttp 24260 2296 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:35:09,812 basehttp 24260 2296 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:35:11,466 basehttp 24260 2296 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 30728
+INFO 2025-11-28 11:36:12,286 apps 36172 14220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:38:30,015 basehttp 24260 2296 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 28823
+INFO 2025-11-28 11:38:34,515 basehttp 24260 2296 "GET /empleados/feed/ HTTP/1.1" 200 52772
+INFO 2025-11-28 11:38:34,537 basehttp 24260 2296 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:38:34,541 basehttp 24260 41636 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:38:34,541 basehttp 24260 2296 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:38:48,415 basehttp 24260 2296 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 28823
+INFO 2025-11-28 11:40:04,915 basehttp 24260 2296 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 11:40:04,966 basehttp 24260 2296 "GET /empleados/feed/ HTTP/1.1" 200 57614
+INFO 2025-11-28 11:40:05,011 basehttp 24260 2296 "GET /media/publicaciones/2025/11/28/silla_KVNwpu2.jpeg HTTP/1.1" 200 27685
+WARNING 2025-11-28 11:40:18,147 log 24260 2296 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 11:40:18,147 basehttp 24260 2296 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 11:40:18,202 basehttp 24260 2296 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 11:42:50,485 autoreload 24260 57600 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-11-28 11:42:51,314 apps 13232 33716 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:42:51,331 autoreload 13232 33716 Watching for file changes with StatReloader
+INFO 2025-11-28 11:42:51,745 wsgi 13232 58120 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 11:44:24,442 basehttp 13232 12436 "GET /empleados/feed/ HTTP/1.1" 200 53347
+INFO 2025-11-28 11:44:24,469 basehttp 13232 12436 "GET /media/publicaciones/2025/11/28/silla_KVNwpu2.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 11:44:24,469 basehttp 13232 34452 "GET /media/publicaciones/2025/11/28/descanso.png HTTP/1.1" 304 0
+INFO 2025-11-28 11:44:24,474 basehttp 13232 12436 "GET /media/publicaciones/2025/11/28/amanecer_czSTmUB.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:44:24,474 basehttp 13232 34452 "GET /media/publicaciones/2025/11/28/Pollo.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 11:44:48,064 apps 18888 30852 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:44:48,631 apps 5732 54072 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:44:48,650 autoreload 5732 54072 Watching for file changes with StatReloader
+INFO 2025-11-28 11:44:49,064 wsgi 5732 21916 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 11:44:50,516 basehttp 5732 20252 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 11:44:50,728 basehttp 5732 20252 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 11:44:54,131 basehttp 5732 20252 "GET /empleados/feed/ HTTP/1.1" 200 53347
+INFO 2025-11-28 11:44:54,154 basehttp 5732 20252 "GET /media/publicaciones/2025/11/28/silla_KVNwpu2.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 11:44:55,650 basehttp 5732 20252 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 27551
+INFO 2025-11-28 11:46:26,853 basehttp 5732 20252 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 11:46:26,899 basehttp 5732 20252 "GET /empleados/feed/ HTTP/1.1" 200 57672
+INFO 2025-11-28 11:46:26,927 basehttp 5732 44380 "GET /media/publicaciones/2025/11/28/silla_KVNwpu2.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 11:46:26,943 basehttp 5732 20252 "GET /media/publicaciones/2025/11/28/anuncio_renderizado.png HTTP/1.1" 200 145726
+WARNING 2025-11-28 11:47:05,474 log 5732 20252 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 11:47:05,475 basehttp 5732 20252 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 11:47:05,535 basehttp 5732 20252 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 11:48:14,267 basehttp 5732 44380 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 27551
+INFO 2025-11-28 11:49:33,127 basehttp 5732 55888 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 200 27962
+INFO 2025-11-28 11:50:02,148 basehttp 5732 55888 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 11:50:02,195 basehttp 5732 55888 "GET /empleados/feed/ HTTP/1.1" 200 57866
+INFO 2025-11-28 11:50:02,212 basehttp 5732 41344 "GET /media/publicaciones/2025/11/28/silla_KVNwpu2.jpeg HTTP/1.1" 304 0
+INFO 2025-11-28 11:50:02,213 basehttp 5732 55888 "GET /media/publicaciones/2025/11/28/anuncio_renderizado.png HTTP/1.1" 304 0
+WARNING 2025-11-28 11:50:23,413 log 5732 55888 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 11:50:23,415 basehttp 5732 55888 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 11:50:23,472 basehttp 5732 55888 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 11:51:48,975 autoreload 5732 54072 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\image_processing.py changed, reloading.
+INFO 2025-11-28 11:51:49,886 apps 39888 11260 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 11:51:49,903 autoreload 39888 11260 Watching for file changes with StatReloader
+INFO 2025-11-28 11:51:50,381 wsgi 39888 27252 WSGI DJANGO_SETTINGS_MODULE: config.settings.development

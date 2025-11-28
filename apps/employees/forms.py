@@ -1195,6 +1195,47 @@ class AnuncioImportanteForm(forms.ModelForm):
             raise ValidationError('La fecha de finalización debe ser futura')
         return fecha_fin
 
+    def save(self, commit=True):
+        """Procesar imagen y renderizar texto antes de guardar"""
+        instance = super().save(commit=False)
+
+        # Si hay imagen y estilos, renderizar texto en la imagen
+        if instance.imagen and instance.estilos:
+            try:
+                from .image_processing import renderizar_texto_en_imagen, limpiar_estilos_posicionamiento
+                import json
+
+                # Asegurar que estilos es un dict
+                if isinstance(instance.estilos, str):
+                    estilos = json.loads(instance.estilos)
+                else:
+                    estilos = instance.estilos or {}
+
+                # Si hay datos de posicionamiento, renderizar
+                if 'text_position_x_px' in estilos:
+                    # Renderizar texto en imagen
+                    instance.imagen = renderizar_texto_en_imagen(
+                        instance.imagen,
+                        instance.titulo or '',
+                        instance.contenido,
+                        estilos
+                    )
+
+                    # Limpiar estilos de posicionamiento
+                    estilos = limpiar_estilos_posicionamiento(estilos)
+                    instance.estilos = estilos
+
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Error al procesar imagen en formulario: {e}")
+                # Continuar sin procesar si hay error
+
+        if commit:
+            instance.save()
+
+        return instance
+
 
 class ComentarioForm(forms.ModelForm):
     """Formulario para crear comentarios"""

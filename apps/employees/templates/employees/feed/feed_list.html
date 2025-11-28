@@ -419,44 +419,15 @@
                 </div>
 
                 <!-- Body -->
-                {% if publicacion.imagen and publicacion.estilos.text_position_x_px %}
-                <!-- Versión con posicionamiento de texto en píxeles (nueva) -->
-                <div class="publicacion-body-con-imagen" data-imagen-ancho="{{ publicacion.estilos.imagen_ancho }}" data-imagen-alto="{{ publicacion.estilos.imagen_alto }}" data-text-x="{{ publicacion.estilos.text_position_x_px }}" data-text-y="{{ publicacion.estilos.text_position_y_px }}">
-                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
-                    <div class="publicacion-contenido-posicionado"
-                         style="font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
-                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
-                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
-                        {% if publicacion.titulo %}
-                        <h5 style="margin-bottom: 0.5rem;"><strong>📢 {{ publicacion.titulo }}</strong></h5>
-                        {% endif %}
-                        {{ publicacion.contenido }}
-                    </div>
-                </div>
-                {% elif publicacion.imagen and publicacion.estilos.text_position_x %}
-                <!-- Versión con posicionamiento de texto en porcentajes (legacy) -->
+                {% if publicacion.imagen %}
+                <!-- Imagen (texto ya renderizado en servidor si aplica) -->
                 <div class="publicacion-body-con-imagen">
-                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
-                    <div class="publicacion-contenido-posicionado"
-                         style="left: {{ publicacion.estilos.text_position_x|default:0 }}%;
-                                top: {{ publicacion.estilos.text_position_y|default:0 }}%;
-                                font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
-                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
-                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
-                        {% if publicacion.titulo %}
-                        <h5 style="margin-bottom: 0.5rem;"><strong>📢 {{ publicacion.titulo }}</strong></h5>
-                        {% endif %}
-                        {{ publicacion.contenido }}
-                    </div>
+                    <img src="{{ publicacion.imagen.url }}" alt="Imagen"
+                         style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
                 </div>
                 {% else %}
-                <!-- Versión sin posicionamiento (normal) -->
+                <!-- Contenido sin imagen -->
                 <div class="publicacion-body">
-                    {% if publicacion.imagen %}
-                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" class="publicacion-imagen"
-                         style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}1{% endif %}%">
-                    {% endif %}
-
                     <div class="publicacion-contenido"
                          style="font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
                                 font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
@@ -690,45 +661,6 @@ function eliminarComentario(comentarioId) {
     .catch(error => console.error('Error:', error));
 }
 
-// Posicionar texto sobre imágenes usando píxeles escalados
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('[data-imagen-ancho]').forEach(container => {
-        const img = container.querySelector('img');
-        const textDiv = container.querySelector('.publicacion-contenido-posicionado');
-
-        if (!img || !textDiv) return;
-
-        const imagenAnchoOriginal = parseInt(container.dataset.imagenAncho);
-        const imagenAltoOriginal = parseInt(container.dataset.imagenAlto);
-        const textXPx = parseInt(container.dataset.textX);
-        const textYPx = parseInt(container.dataset.textY);
-
-        // Esperar a que la imagen se cargue para obtener sus dimensiones reales
-        const posicionar = () => {
-            const imgRect = img.getBoundingClientRect();
-            const actualAncho = img.offsetWidth;
-            const actualAlto = img.offsetHeight;
-
-            if (actualAncho > 0 && actualAlto > 0) {
-                // Calcular escala de la imagen
-                const scaleX = actualAncho / imagenAnchoOriginal;
-                const scaleY = actualAlto / imagenAltoOriginal;
-
-                // Aplicar posición escalada
-                textDiv.style.left = (textXPx * scaleX) + 'px';
-                textDiv.style.top = (textYPx * scaleY) + 'px';
-            }
-        };
-
-        if (img.complete) {
-            posicionar();
-        } else {
-            img.addEventListener('load', posicionar);
-        }
-
-        // Tambien reposicionar al redimensionar la ventana
-        window.addEventListener('resize', posicionar);
-    });
-});
+// El texto ahora se renderiza en servidor, no se necesita posicionamiento JavaScript
 </script>
 {% endblock %}
