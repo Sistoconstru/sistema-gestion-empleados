@@ -30,6 +30,38 @@
         margin-bottom: 2rem;
     }
 
+    .form-section:last-of-type {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .form-section:last-of-type .form-section-titulo {
+        grid-column: 1;
+    }
+
+    .form-section:last-of-type .editor-estilos {
+        grid-column: 1;
+    }
+
+    .form-section:last-of-type .preview-contenido {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-top: 0;
+    }
+
+    @media (max-width: 1200px) {
+        .form-section:last-of-type {
+            grid-template-columns: 1fr;
+        }
+
+        .form-section:last-of-type .preview-contenido {
+            grid-column: 1;
+            grid-row: auto;
+            margin-top: 1rem;
+        }
+    }
+
     .form-section-titulo {
         font-weight: 600;
         margin-bottom: 1rem;
@@ -42,25 +74,80 @@
         background-color: #f9f9f9;
         border: 1px solid #e0e0e0;
         border-radius: 0.5rem;
-        padding: 1rem;
+        padding: 1.5rem;
+        position: sticky;
+        top: 20px;
     }
 
     .editor-estilos .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .editor-estilos .form-group:last-child {
+        margin-bottom: 0;
     }
 
     .editor-estilos label {
         font-weight: 600;
         font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.5rem;
     }
 
     .preview-contenido {
         background: white;
         border: 2px solid #dc3545;
         border-radius: 0.5rem;
-        padding: 1rem;
+        padding: 2rem;
         margin-top: 1rem;
-        min-height: 100px;
+        min-height: 600px;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
+    }
+
+    .preview-text {
+        padding: 1rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 250px;
+        max-width: 400px;
+        border: 2px dashed #667eea;
+        border-radius: 0.25rem;
+        background-color: transparent;
+        box-shadow: none;
+        transition: none;
+        user-select: none;
+    }
+
+    .preview-text:hover {
+        border-color: #764ba2;
+    }
+
+    .preview-text.dragging {
+        z-index: 100;
+        border-color: #dc3545;
+    }
+
+    .position-indicator {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+        z-index: 50;
+    }
+
+    .position-text {
+        white-space: nowrap;
     }
 
     .form-actions {
@@ -109,7 +196,7 @@
                 <i class="fas fa-bullhorn me-2"></i>{{ titulo_pagina }}
             </h2>
 
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="anuncio-form">
                 {% csrf_token %}
 
                 <!-- Título -->
@@ -220,10 +307,15 @@
                         </div>
                     </div>
 
-                    <!-- Preview -->
+                    <!-- Preview con posicionamiento de texto -->
                     <div class="preview-contenido" id="preview">
-                        <div class="text-center text-muted py-5">
-                            <i class="fas fa-eye me-1"></i>Vista previa de tu anuncio
+                        <div id="preview-text" class="preview-text" style="cursor: move; position: absolute;">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-eye me-1"></i>Vista previa de tu anuncio
+                            </div>
+                        </div>
+                        <div class="position-indicator" id="position-indicator">
+                            <small class="position-text">Posición: <span id="pos-x">0</span>% | <span id="pos-y">0</span>%</small>
                         </div>
                     </div>
                 </div>
@@ -245,7 +337,7 @@
                     <a href="{% url 'employees:feed_list' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-times me-1"></i>Cancelar
                     </a>
-                    <button type="submit" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger" id="submit-btn" onclick="guardarPosicionAntesDSubmit(event)">
                         <i class="fas fa-send me-1"></i>{{ boton_envio }}
                     </button>
                 </div>
@@ -256,6 +348,9 @@
 
 <script>
 let estilos = {};
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
 
 function actualizarEstilo(propiedad, valor) {
     if (valor) {
@@ -273,6 +368,7 @@ function actualizarEstilo(propiedad, valor) {
 
 function actualizarPreview() {
     const preview = document.getElementById('preview');
+    const previewText = document.getElementById('preview-text');
     const contenido = document.querySelector('textarea[name="contenido"]').value || 'Vista previa de tu anuncio';
     const imagen = document.querySelector('input[name="imagen"]').files[0];
     const titulo = document.querySelector('input[name="titulo"]').value || '';
@@ -290,13 +386,21 @@ function actualizarPreview() {
 
     html += `<p style="white-space: pre-wrap;">${contenido}</p></div>`;
 
-    preview.innerHTML = html;
+    previewText.innerHTML = html;
+
+    // Aplicar posición guardada si existe
+    if (estilos.text_position_x !== undefined && estilos.text_position_y !== undefined) {
+        previewText.style.left = estilos.text_position_x + '%';
+        previewText.style.top = estilos.text_position_y + '%';
+        document.getElementById('pos-x').textContent = estilos.text_position_x;
+        document.getElementById('pos-y').textContent = estilos.text_position_y;
+    }
 
     if (imagen) {
         const reader = new FileReader();
         reader.onload = (e) => {
             preview.style.backgroundImage = `url(${e.target.result})`;
-            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundSize = 'contain';
             preview.style.backgroundPosition = 'center';
             preview.style.backgroundColor = `rgba(255, 255, 255, ${(100 - (estilos.background_opacity || 50)) / 100})`;
         };
@@ -305,6 +409,201 @@ function actualizarPreview() {
         preview.style.backgroundImage = 'none';
         preview.style.backgroundColor = 'white';
     }
+}
+
+function inicializarDragDrop() {
+    const previewText = document.getElementById('preview-text');
+    const preview = document.getElementById('preview');
+
+    previewText.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        previewText.classList.add('dragging');
+
+        const rect = previewText.getBoundingClientRect();
+        const previewRect = preview.getBoundingClientRect();
+
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+
+        const preview = document.getElementById('preview');
+        const previewText = document.getElementById('preview-text');
+        const previewRect = preview.getBoundingClientRect();
+
+        let x = e.clientX - previewRect.left - dragOffsetX;
+        let y = e.clientY - previewRect.top - dragOffsetY;
+
+        // Limitar dentro del contenedor
+        x = Math.max(0, Math.min(x, previewRect.width - previewText.offsetWidth));
+        y = Math.max(0, Math.min(y, previewRect.height - previewText.offsetHeight));
+
+        // Convertir a porcentajes relativos al contenedor
+        const xPercent = Math.round((x / previewRect.width) * 100);
+        const yPercent = Math.round((y / previewRect.height) * 100);
+
+        previewText.style.left = x + 'px';
+        previewText.style.top = y + 'px';
+
+        document.getElementById('pos-x').textContent = xPercent;
+        document.getElementById('pos-y').textContent = yPercent;
+    });
+
+    document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        previewText.classList.remove('dragging');
+
+        // Guardar posición en porcentajes
+        const preview = document.getElementById('preview');
+        const previewText = document.getElementById('preview-text');
+        const previewRect = preview.getBoundingClientRect();
+        const textRect = previewText.getBoundingClientRect();
+
+        // Calcular porcentajes relativos al contenedor
+        const xPercent = Math.round(((textRect.left - previewRect.left) / previewRect.width) * 100);
+        const yPercent = Math.round(((textRect.top - previewRect.top) / previewRect.height) * 100);
+
+        estilos.text_position_x = Math.max(0, Math.min(100, xPercent));
+        estilos.text_position_y = Math.max(0, Math.min(100, yPercent));
+
+        document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+    });
+}
+
+function guardarPosicionAntesDSubmit(event) {
+    // Prevenir envío automático del formulario
+    event.preventDefault();
+
+    // Renderizar imagen + texto como una sola imagen unificada
+    const preview = document.getElementById('preview');
+    const previewText = document.getElementById('preview-text');
+    const imagenInput = document.querySelector('input[name="imagen"]');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('anuncio-form');
+
+    // Mostrar indicador de carga
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Procesando...';
+
+    // Si no hay imagen, simplemente enviar el formulario
+    if (!preview || !previewText || !imagenInput.files[0]) {
+        form.submit();
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => {
+            alert('Error al cargar la imagen. Por favor, intenta nuevamente.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        };
+        img.onload = () => {
+            try {
+                // Crear canvas con las dimensiones de la imagen
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+
+                // Dibujar imagen
+                ctx.drawImage(img, 0, 0);
+
+                // Obtener propiedades del texto
+                const previewRect = preview.getBoundingClientRect();
+                const textRect = previewText.getBoundingClientRect();
+                const escalaX = img.width / previewRect.width;
+                const escalaY = img.height / previewRect.height;
+
+                // Calcular posición en píxeles de la imagen original
+                const textXPx = Math.round((textRect.left - previewRect.left) * escalaX);
+                const textYPx = Math.round((textRect.top - previewRect.top) * escalaY);
+
+                // Obtener estilos del texto
+                const fontSize = estilos.font_size || '1rem';
+                const fontFamily = estilos.font_family || 'Arial';
+                const textColor = estilos.text_color || '#333';
+
+                // Convertir fontSize a píxeles
+                let fontSizePx = 16;
+                if (fontSize.includes('px')) {
+                    fontSizePx = parseInt(fontSize);
+                } else if (fontSize.includes('rem')) {
+                    fontSizePx = Math.round(parseFloat(fontSize) * 16);
+                }
+                fontSizePx = Math.round(fontSizePx * escalaX);
+
+                // Preparar texto
+                const titulo = document.querySelector('input[name="titulo"]').value || '';
+                const contenido = document.querySelector('textarea[name="contenido"]').value || '';
+
+                // Dibujar texto en el canvas
+                ctx.font = `bold ${fontSizePx}px ${fontFamily}`;
+                ctx.fillStyle = textColor;
+                ctx.textBaseline = 'top';
+
+                let yOffset = textYPx;
+                if (titulo) {
+                    ctx.font = `bold ${Math.round(fontSizePx * 1.2)}px ${fontFamily}`;
+                    ctx.fillText('📢 ' + titulo, textXPx, yOffset);
+                    yOffset += Math.round(fontSizePx * 1.5);
+                }
+
+                ctx.font = `${fontSizePx}px ${fontFamily}`;
+                const lineas = contenido.split('\n');
+                lineas.forEach(linea => {
+                    ctx.fillText(linea, textXPx, yOffset);
+                    yOffset += Math.round(fontSizePx * 1.3);
+                });
+
+                // Convertir canvas a blob y guardar como imagen
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        alert('Error al procesar la imagen. Por favor, intenta nuevamente.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                        return;
+                    }
+
+                    // Crear un File a partir del blob
+                    const file = new File([blob], 'anuncio_unificado.png', { type: 'image/png' });
+
+                    // Reemplazar el input de imagen con la nueva imagen unificada
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    imagenInput.files = dt.items;
+
+                    // Guardar estilos sin posición (ya está en la imagen)
+                    delete estilos.text_position_x_px;
+                    delete estilos.text_position_y_px;
+                    delete estilos.imagen_ancho;
+                    delete estilos.imagen_alto;
+
+                    document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+
+                    // Enviar formulario
+                    form.submit();
+                }, 'image/png', 0.95);
+            } catch (error) {
+                console.error('Error en Canvas:', error);
+                alert('Error al procesar la imagen: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        };
+        img.src = e.target.result;
+    };
+    reader.onerror = () => {
+        alert('Error al leer la imagen. Por favor, intenta nuevamente.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    };
+    reader.readAsDataURL(imagenInput.files[0]);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -325,6 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     actualizarPreview();
+    inicializarDragDrop();
 
     document.querySelector('textarea[name="contenido"]').addEventListener('input', actualizarPreview);
     document.querySelector('input[name="titulo"]').addEventListener('input', actualizarPreview);

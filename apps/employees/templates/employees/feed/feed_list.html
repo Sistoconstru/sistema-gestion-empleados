@@ -6,8 +6,21 @@
 {% block extra_css %}
 <style>
     .feed-container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    @media (max-width: 992px) {
+        .feed-container {
+            max-width: 900px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .feed-container {
+            max-width: 100%;
+        }
     }
 
     .feed-header {
@@ -115,6 +128,25 @@
         min-height: 100px;
     }
 
+    .publicacion-body-con-imagen {
+        position: relative;
+        width: 100%;
+        overflow: visible;
+    }
+
+    .publicacion-body-con-imagen img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .publicacion-body-con-imagen-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
     .publicacion-imagen {
         width: 100%;
         height: 300px;
@@ -126,6 +158,18 @@
         padding: 1rem;
         word-wrap: break-word;
         white-space: pre-wrap;
+    }
+
+    .publicacion-contenido-posicionado {
+        position: absolute;
+        padding: 1rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        background-color: transparent;
+        border-radius: 0.25rem;
+        box-shadow: none;
+        max-width: 40%;
+        min-width: 200px;
     }
 
     .publicacion-footer {
@@ -375,6 +419,38 @@
                 </div>
 
                 <!-- Body -->
+                {% if publicacion.imagen and publicacion.estilos.text_position_x_px %}
+                <!-- Versión con posicionamiento de texto en píxeles (nueva) -->
+                <div class="publicacion-body-con-imagen" data-imagen-ancho="{{ publicacion.estilos.imagen_ancho }}" data-imagen-alto="{{ publicacion.estilos.imagen_alto }}" data-text-x="{{ publicacion.estilos.text_position_x_px }}" data-text-y="{{ publicacion.estilos.text_position_y_px }}">
+                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
+                    <div class="publicacion-contenido-posicionado"
+                         style="font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
+                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
+                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
+                        {% if publicacion.titulo %}
+                        <h5 style="margin-bottom: 0.5rem;"><strong>📢 {{ publicacion.titulo }}</strong></h5>
+                        {% endif %}
+                        {{ publicacion.contenido }}
+                    </div>
+                </div>
+                {% elif publicacion.imagen and publicacion.estilos.text_position_x %}
+                <!-- Versión con posicionamiento de texto en porcentajes (legacy) -->
+                <div class="publicacion-body-con-imagen">
+                    <img src="{{ publicacion.imagen.url }}" alt="Imagen" style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
+                    <div class="publicacion-contenido-posicionado"
+                         style="left: {{ publicacion.estilos.text_position_x|default:0 }}%;
+                                top: {{ publicacion.estilos.text_position_y|default:0 }}%;
+                                font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
+                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
+                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
+                        {% if publicacion.titulo %}
+                        <h5 style="margin-bottom: 0.5rem;"><strong>📢 {{ publicacion.titulo }}</strong></h5>
+                        {% endif %}
+                        {{ publicacion.contenido }}
+                    </div>
+                </div>
+                {% else %}
+                <!-- Versión sin posicionamiento (normal) -->
                 <div class="publicacion-body">
                     {% if publicacion.imagen %}
                     <img src="{{ publicacion.imagen.url }}" alt="Imagen" class="publicacion-imagen"
@@ -391,6 +467,7 @@
                         {{ publicacion.contenido }}
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- Footer -->
                 <div class="publicacion-footer">
@@ -612,5 +689,46 @@ function eliminarComentario(comentarioId) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+// Posicionar texto sobre imágenes usando píxeles escalados
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-imagen-ancho]').forEach(container => {
+        const img = container.querySelector('img');
+        const textDiv = container.querySelector('.publicacion-contenido-posicionado');
+
+        if (!img || !textDiv) return;
+
+        const imagenAnchoOriginal = parseInt(container.dataset.imagenAncho);
+        const imagenAltoOriginal = parseInt(container.dataset.imagenAlto);
+        const textXPx = parseInt(container.dataset.textX);
+        const textYPx = parseInt(container.dataset.textY);
+
+        // Esperar a que la imagen se cargue para obtener sus dimensiones reales
+        const posicionar = () => {
+            const imgRect = img.getBoundingClientRect();
+            const actualAncho = img.offsetWidth;
+            const actualAlto = img.offsetHeight;
+
+            if (actualAncho > 0 && actualAlto > 0) {
+                // Calcular escala de la imagen
+                const scaleX = actualAncho / imagenAnchoOriginal;
+                const scaleY = actualAlto / imagenAltoOriginal;
+
+                // Aplicar posición escalada
+                textDiv.style.left = (textXPx * scaleX) + 'px';
+                textDiv.style.top = (textYPx * scaleY) + 'px';
+            }
+        };
+
+        if (img.complete) {
+            posicionar();
+        } else {
+            img.addEventListener('load', posicionar);
+        }
+
+        // Tambien reposicionar al redimensionar la ventana
+        window.addEventListener('resize', posicionar);
+    });
+});
 </script>
 {% endblock %}
