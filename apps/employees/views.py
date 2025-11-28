@@ -55,10 +55,15 @@ class EmpleadoRequiredMixin(LoginRequiredMixin):
     """
     Mixin que requiere que el usuario autenticado tenga un registro de Empleado.
     Si no lo tiene, redirige al dashboard con un mensaje de error.
+    Los administradores pueden acceder sin importar si tienen empleado.
     """
     def dispatch(self, request, *args, **kwargs):
+        # Los administradores pueden acceder sin restricción
+        if request.user.is_staff or request.user.is_superuser:
+            return super().dispatch(request, *args, **kwargs)
+
         try:
-            # Intenta acceder al empleado del usuario
+            # Intenta acceder al empleado del usuario regular
             _ = request.user.empleado
             return super().dispatch(request, *args, **kwargs)
         except (AttributeError, Empleado.DoesNotExist):
@@ -2611,8 +2616,24 @@ class InboxView(EmpleadoRequiredMixin, ListView):
 
     def get_queryset(self):
         """Conversaciones del usuario actual"""
+        # Validar que el usuario tiene empleado (por si el mixin no alcanza)
+        try:
+            empleado = self.request.user.empleado
+        except (AttributeError, Empleado.DoesNotExist):
+            if not (self.request.user.is_staff or self.request.user.is_superuser):
+                messages.error(
+                    self.request,
+                    'Tu cuenta de usuario no está asociada a un registro de empleado. '
+                    'Contacta con Recursos Humanos para completar tu perfil.'
+                )
+                return Conversacion.objects.none()
+            # Los admins ven todas las conversaciones
+            return Conversacion.objects.exclude(
+                archivada=True
+            ).select_related('creado_por').prefetch_related('participantes').order_by('-fecha_ultima_actividad')
+
         return Conversacion.objects.filter(
-            participantes=self.request.user.empleado
+            participantes=empleado
         ).exclude(
             archivada=True
         ).select_related('creado_por').prefetch_related('participantes').order_by('-fecha_ultima_actividad')
@@ -2631,8 +2652,21 @@ class ConversacionDetailView(EmpleadoRequiredMixin, DetailView):
 
     def get_queryset(self):
         """Solo conversaciones donde es participante"""
+        try:
+            empleado = self.request.user.empleado
+        except (AttributeError, Empleado.DoesNotExist):
+            if not (self.request.user.is_staff or self.request.user.is_superuser):
+                messages.error(
+                    self.request,
+                    'Tu cuenta de usuario no está asociada a un registro de empleado. '
+                    'Contacta con Recursos Humanos para completar tu perfil.'
+                )
+                return Conversacion.objects.none()
+            # Los admins ven todas las conversaciones
+            return Conversacion.objects.prefetch_related('participantes', 'mensajes')
+
         return Conversacion.objects.filter(
-            participantes=self.request.user.empleado
+            participantes=empleado
         ).prefetch_related('participantes', 'mensajes')
 
     def get_context_data(self, **kwargs):
