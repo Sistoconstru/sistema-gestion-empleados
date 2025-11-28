@@ -4859,3 +4859,215 @@ INFO 2025-11-28 08:24:33,899 autoreload 43420 44740 C:\Sisto\SIGHU\sistema-gesti
 INFO 2025-11-28 08:24:34,702 apps 37740 52252 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-11-28 08:24:34,718 autoreload 37740 52252 Watching for file changes with StatReloader
 INFO 2025-11-28 08:24:35,126 wsgi 37740 32424 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 08:36:59,781 apps 46496 28020 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:39:48,874 apps 42468 8272 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:44:38,745 apps 17704 39156 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:44:54,040 apps 35708 45620 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:45:05,592 apps 2288 34136 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:45:06,136 apps 42228 4536 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 08:45:06,157 autoreload 42228 4536 Watching for file changes with StatReloader
+INFO 2025-11-28 08:45:06,562 wsgi 42228 18596 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-11-28 08:45:14,928 basehttp 42228 56700 "GET / HTTP/1.1" 302 0
+INFO 2025-11-28 08:45:15,074 basehttp 42228 56700 "GET /dashboard/ HTTP/1.1" 200 20173
+INFO 2025-11-28 08:45:20,424 basehttp 42228 56700 "GET /dashboard/ HTTP/1.1" 200 20173
+INFO 2025-11-28 08:45:22,360 basehttp 42228 56700 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31500
+INFO 2025-11-28 08:45:37,665 basehttp 42228 56700 "GET /dashboard/ HTTP/1.1" 200 20173
+INFO 2025-11-28 08:45:39,896 basehttp 42228 56700 "GET /admin/ HTTP/1.1" 200 61932
+INFO 2025-11-28 08:45:39,923 basehttp 42228 26140 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-11-28 08:45:39,923 basehttp 42228 26316 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-11-28 08:45:39,923 basehttp 42228 56700 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-11-28 08:45:39,925 basehttp 42228 37964 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-28 08:45:39,926 basehttp 42228 16164 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-11-28 08:45:39,935 basehttp 42228 37068 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-11-28 08:45:39,948 basehttp 42228 16164 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-28 08:45:39,956 basehttp 42228 56700 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-11-28 08:45:39,956 basehttp 42228 37068 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-28 08:45:39,958 basehttp 42228 37964 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-28 08:46:33,754 basehttp 42228 37964 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58340
+INFO 2025-11-28 08:46:33,778 basehttp 42228 37964 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-11-28 08:46:33,790 basehttp 42228 16164 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-28 08:46:33,797 basehttp 42228 26316 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-11-28 08:46:33,798 basehttp 42228 26140 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-11-28 08:46:33,810 basehttp 42228 37964 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-11-28 08:46:33,817 basehttp 42228 16164 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-28 08:46:33,819 basehttp 42228 26316 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-28 08:46:33,823 basehttp 42228 37964 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-11-28 08:46:33,829 basehttp 42228 16164 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-11-28 08:46:33,836 basehttp 42228 56700 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-11-28 08:46:33,870 basehttp 42228 37068 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 08:46:33,887 basehttp 42228 37068 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-28 08:46:33,912 basehttp 42228 26140 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-11-28 08:46:33,936 basehttp 42228 26140 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-28 08:46:33,937 basehttp 42228 37068 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-11-28 08:47:03,164 basehttp 42228 37068 "GET /admin/notifications/tiponotificacion/add/ HTTP/1.1" 200 51939
+INFO 2025-11-28 08:47:03,200 basehttp 42228 37068 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-11-28 08:47:03,208 basehttp 42228 26140 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-11-28 08:47:03,211 basehttp 42228 37068 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-11-28 08:47:03,225 basehttp 42228 37068 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-11-28 08:47:03,365 basehttp 42228 56700 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 08:48:09,429 basehttp 42228 56700 "POST /admin/notifications/tiponotificacion/add/ HTTP/1.1" 302 0
+INFO 2025-11-28 08:48:09,469 basehttp 42228 56700 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59204
+INFO 2025-11-28 08:48:09,490 basehttp 42228 56700 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 08:48:16,977 basehttp 42228 56700 "GET /admin/notifications/tiponotificacion/14/change/ HTTP/1.1" 200 52346
+INFO 2025-11-28 08:48:17,000 basehttp 42228 56700 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 08:48:32,898 basehttp 42228 19500 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58958
+INFO 2025-11-28 08:49:00,810 basehttp 42228 19500 "GET /admin/employees/categoria/ HTTP/1.1" 200 54623
+INFO 2025-11-28 08:49:00,830 basehttp 42228 19500 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 08:49:00,842 basehttp 42228 18096 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-11-28 08:49:00,856 basehttp 42228 18096 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-11-28 08:49:19,897 basehttp 42228 18096 "GET /dashboard/ HTTP/1.1" 200 20173
+INFO 2025-11-28 08:49:28,382 basehttp 42228 18096 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31500
+INFO 2025-11-28 08:49:30,431 basehttp 42228 18096 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 44090
+INFO 2025-11-28 08:49:51,078 basehttp 42228 18096 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31500
+INFO 2025-11-28 08:50:00,518 basehttp 42228 18096 "GET /dashboard/ HTTP/1.1" 200 20173
+INFO 2025-11-28 08:50:07,898 basehttp 42228 18096 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31500
+INFO 2025-11-28 08:52:07,662 basehttp 42228 18096 "GET /dashboard/ HTTP/1.1" 200 20491
+INFO 2025-11-28 08:52:10,122 basehttp 42228 18096 "GET /empleados/feed/ HTTP/1.1" 200 18088
+INFO 2025-11-28 08:52:22,947 basehttp 42228 18096 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 19536
+INFO 2025-11-28 08:57:35,997 basehttp 42228 42668 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 08:57:36,026 basehttp 42228 42668 "GET /empleados/feed/ HTTP/1.1" 200 21500
+INFO 2025-11-28 08:57:36,059 basehttp 42228 42668 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 200 10650
+WARNING 2025-11-28 08:57:42,261 log 42228 42668 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-11-28 08:57:42,262 basehttp 42228 42668 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-11-28 08:57:42,297 basehttp 42228 42668 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-11-28 08:58:31,458 basehttp 42228 52672 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 08:58:31,482 basehttp 42228 52672 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 08:58:39,125 basehttp 42228 52672 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 08:58:39,130 basehttp 42228 52672 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-28 08:58:39,383 basehttp 42228 52672 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 38184
+INFO 2025-11-28 08:58:41,367 basehttp 42228 52672 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 12963
+INFO 2025-11-28 08:58:43,989 basehttp 42228 52672 "GET /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/ HTTP/1.1" 200 17331
+INFO 2025-11-28 08:58:44,019 basehttp 42228 52672 "POST /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/marcar-leidos/ HTTP/1.1" 200 66
+INFO 2025-11-28 08:58:50,590 basehttp 42228 52672 "GET /empleados/feed/ HTTP/1.1" 200 22146
+INFO 2025-11-28 08:58:50,604 basehttp 42228 52672 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 08:59:08,516 basehttp 42228 52672 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 18539
+INFO 2025-11-28 09:02:14,168 basehttp 42228 52672 "POST /empleados/feed/publicacion/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:02:14,197 basehttp 42228 52672 "GET /empleados/feed/ HTTP/1.1" 200 26100
+INFO 2025-11-28 09:02:14,216 basehttp 42228 29840 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:02:14,227 basehttp 42228 52672 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 200 38709
+ERROR 2025-11-28 09:02:43,273 log 42228 52672 Internal Server Error: /empleados/feed/publicacion/f2481e8d-df51-44f8-a56b-f89a039c49c2/comentario/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: agregar_comentario() got an unexpected keyword argument 'publicacion_pk'
+ERROR 2025-11-28 09:02:43,275 basehttp 42228 52672 "POST /empleados/feed/publicacion/f2481e8d-df51-44f8-a56b-f89a039c49c2/comentario/ HTTP/1.1" 500 78602
+INFO 2025-11-28 09:03:08,182 basehttp 42228 52672 "GET /notificaciones/list/ HTTP/1.1" 200 15888
+INFO 2025-11-28 09:03:16,223 basehttp 42228 52672 "POST /notificaciones/marcar-leida/ab6ab964-dd8a-48ac-bdf7-9da05dadd5c6/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:03:16,268 basehttp 42228 52672 "GET /notificaciones/list/ HTTP/1.1" 200 15773
+INFO 2025-11-28 09:03:19,811 basehttp 42228 52672 "POST /notificaciones/marcar-leida/e47a39b5-1012-45b8-8b00-af24a3dc9a66/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:03:19,840 basehttp 42228 52672 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 12745
+INFO 2025-11-28 09:03:23,084 basehttp 42228 52672 "GET /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/ HTTP/1.1" 200 17214
+INFO 2025-11-28 09:03:23,108 basehttp 42228 52672 "POST /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/marcar-leidos/ HTTP/1.1" 200 66
+INFO 2025-11-28 09:03:32,066 basehttp 42228 52672 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:03:32,066 basehttp 42228 52672 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 09:03:38,046 basehttp 42228 52672 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:03:38,101 basehttp 42228 52672 "GET /dashboard/ HTTP/1.1" 200 20491
+INFO 2025-11-28 09:03:41,673 basehttp 42228 52672 "GET /admin/ HTTP/1.1" 200 61941
+INFO 2025-11-28 09:03:46,709 basehttp 42228 52672 "GET /admin/authentication/usuario/ HTTP/1.1" 200 123660
+INFO 2025-11-28 09:03:46,734 basehttp 42228 52672 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 09:04:00,027 basehttp 42228 52672 "GET /admin/authentication/usuario/8ac1e92b-fff0-4660-9c91-b325dfcf67ea/change/ HTTP/1.1" 200 96597
+INFO 2025-11-28 09:04:00,072 basehttp 42228 52672 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-11-28 09:04:00,072 basehttp 42228 29840 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-11-28 09:04:00,079 basehttp 42228 41200 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+INFO 2025-11-28 09:04:00,080 basehttp 42228 56528 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-11-28 09:04:00,103 basehttp 42228 17824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 09:04:00,154 basehttp 42228 41200 "GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+INFO 2025-11-28 09:04:00,154 basehttp 42228 56528 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-11-28 09:04:00,154 basehttp 42228 17824 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+INFO 2025-11-28 09:04:06,812 basehttp 42228 17824 "POST /admin/authentication/usuario/8ac1e92b-fff0-4660-9c91-b325dfcf67ea/change/ HTTP/1.1" 200 96869
+INFO 2025-11-28 09:04:06,834 basehttp 42228 17824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 09:04:14,981 basehttp 42228 17824 "POST /admin/authentication/usuario/8ac1e92b-fff0-4660-9c91-b325dfcf67ea/change/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:04:15,058 basehttp 42228 17824 "GET /admin/authentication/usuario/ HTTP/1.1" 200 123913
+INFO 2025-11-28 09:04:15,082 basehttp 42228 17824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-11-28 09:04:45,348 basehttp 42228 17824 "GET /dashboard/ HTTP/1.1" 200 20491
+INFO 2025-11-28 09:04:48,665 basehttp 42228 17824 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:04:48,665 basehttp 42228 17824 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 09:04:54,545 basehttp 42228 17824 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:04:54,596 basehttp 42228 17824 "GET /dashboard/ HTTP/1.1" 200 20626
+INFO 2025-11-28 09:04:57,631 basehttp 42228 17824 "GET /empleados/ HTTP/1.1" 200 101276
+INFO 2025-11-28 09:05:02,443 basehttp 42228 17824 "GET /dashboard/ HTTP/1.1" 200 20626
+INFO 2025-11-28 09:05:03,698 basehttp 42228 17824 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31945
+INFO 2025-11-28 09:05:07,623 basehttp 42228 17824 "GET /empleados/feed/ HTTP/1.1" 200 26784
+INFO 2025-11-28 09:05:07,639 basehttp 42228 17824 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:05:07,641 basehttp 42228 17824 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:05:18,190 basehttp 42228 17824 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 19663
+INFO 2025-11-28 09:06:36,411 basehttp 42228 17824 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:06:36,431 basehttp 42228 17824 "GET /empleados/feed/ HTTP/1.1" 200 31263
+INFO 2025-11-28 09:06:36,464 basehttp 42228 17824 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:06:36,465 basehttp 42228 56528 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:06:54,200 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14295
+INFO 2025-11-28 09:06:57,109 basehttp 42228 56528 "POST /notificaciones/marcar-leida/b6756d69-2721-4862-b368-afbbacac7989/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:06:57,133 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14063
+INFO 2025-11-28 09:06:58,436 basehttp 42228 56528 "POST /notificaciones/marcar-leida/b6756d69-2721-4862-b368-afbbacac7989/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:06:58,456 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14063
+INFO 2025-11-28 09:06:59,128 basehttp 42228 56528 "POST /notificaciones/marcar-leida/b6756d69-2721-4862-b368-afbbacac7989/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:06:59,157 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14063
+INFO 2025-11-28 09:06:59,908 basehttp 42228 56528 "POST /notificaciones/marcar-leida/b6756d69-2721-4862-b368-afbbacac7989/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:06:59,936 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14063
+INFO 2025-11-28 09:07:00,459 basehttp 42228 56528 "POST /notificaciones/marcar-leida/b6756d69-2721-4862-b368-afbbacac7989/ HTTP/1.1" 200 17
+INFO 2025-11-28 09:07:00,478 basehttp 42228 56528 "GET /notificaciones/list/ HTTP/1.1" 200 14063
+INFO 2025-11-28 09:07:02,831 basehttp 42228 56528 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:07:02,836 basehttp 42228 56528 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 09:07:07,782 basehttp 42228 56528 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:07:07,799 basehttp 42228 56528 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:07:07,971 basehttp 42228 56528 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 38083
+INFO 2025-11-28 09:07:17,162 basehttp 42228 56528 "GET /empleados/feed/ HTTP/1.1" 200 30072
+INFO 2025-11-28 09:07:17,174 basehttp 42228 56528 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+ERROR 2025-11-28 09:07:41,160 log 42228 56528 Internal Server Error: /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: agregar_comentario() got an unexpected keyword argument 'publicacion_pk'
+ERROR 2025-11-28 09:07:41,160 basehttp 42228 56528 "POST /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/ HTTP/1.1" 500 78604
+ERROR 2025-11-28 09:08:28,881 log 42228 56528 Internal Server Error: /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: agregar_comentario() got an unexpected keyword argument 'publicacion_pk'
+ERROR 2025-11-28 09:08:28,881 basehttp 42228 56528 "POST /empleados/feed/publicacion/d8239c87-c454-4fd0-a114-001cda9b6e3c/comentario/ HTTP/1.1" 500 78604
+INFO 2025-11-28 09:09:38,883 basehttp 42228 56528 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:09:38,886 basehttp 42228 56528 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-11-28 09:09:44,423 basehttp 42228 56528 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-11-28 09:09:44,496 basehttp 42228 56528 "GET /dashboard/ HTTP/1.1" 200 20509
+INFO 2025-11-28 09:09:50,836 basehttp 42228 56528 "GET /empleados/feed/ HTTP/1.1" 200 31146
+INFO 2025-11-28 09:09:50,854 basehttp 42228 56528 "GET /media/publicaciones/2025/11/28/Construinmuniza-300x300.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:09:50,856 basehttp 42228 56528 "GET /media/publicaciones/2025/11/28/amanecer.jpg HTTP/1.1" 304 0
+INFO 2025-11-28 09:09:53,014 basehttp 42228 56528 "GET /empleados/feed/ HTTP/1.1" 200 31146
+ERROR 2025-11-28 09:10:02,532 log 42228 56528 Internal Server Error: /empleados/feed/publicacion/30aebf61-2285-46c1-952f-fcbe9748b603/comentario/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: agregar_comentario() got an unexpected keyword argument 'publicacion_pk'
+ERROR 2025-11-28 09:10:02,532 basehttp 42228 56528 "POST /empleados/feed/publicacion/30aebf61-2285-46c1-952f-fcbe9748b603/comentario/ HTTP/1.1" 500 78594
+INFO 2025-11-28 09:10:51,904 autoreload 42228 4536 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\feed_views.py changed, reloading.
+INFO 2025-11-28 09:10:57,364 apps 24096 50048 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-11-28 09:10:57,552 autoreload 24096 50048 Watching for file changes with StatReloader
+INFO 2025-11-28 09:11:01,781 wsgi 24096 53868 WSGI DJANGO_SETTINGS_MODULE: config.settings.development

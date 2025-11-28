@@ -171,9 +171,9 @@ class CrearAnuncioImportanteView(LoginRequiredMixin, CreateView):
 # ===================== VISTAS DE COMENTARIOS =====================
 
 @login_required
-def agregar_comentario(request, publicacion_id):
+def agregar_comentario(request, publicacion_pk):
     """Vista para agregar comentario a una publicación (AJAX)"""
-    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    publicacion = get_object_or_404(Publicacion, id=publicacion_pk)
     empleado = get_object_or_404(Empleado, usuario=request.user)
 
     if request.method == 'POST':

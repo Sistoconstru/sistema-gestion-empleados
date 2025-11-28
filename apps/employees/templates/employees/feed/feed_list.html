@@ -448,7 +448,7 @@
                     {% if user.empleado %}
                     <div class="form-comentario">
                         <form method="post" action="{% url 'employees:agregar_comentario' publicacion.pk %}"
-                              onsubmit="return agregarComentarioAjax(event, {{ publicacion.pk }})">
+                              onsubmit="return agregarComentarioAjax(event, '{{ publicacion.pk }}')">
                             {% csrf_token %}
                             <div class="input-group">
                                 <textarea class="form-control" name="contenido" placeholder="Escribe un comentario..."
@@ -539,27 +539,57 @@ function agregarComentarioAjax(event, publicacionId) {
             const nuevoComentario = document.createElement('div');
             nuevoComentario.className = 'comentario-item';
             nuevoComentario.dataset.comentarioId = data.comentario.id;
+
+            // Escapar HTML para evitar inyecciones
+            const autor = escapeHtml(data.comentario.autor);
+            const contenido = escapeHtml(data.comentario.contenido);
+            const fecha = escapeHtml(data.comentario.fecha_creacion);
+
             nuevoComentario.innerHTML = `
                 <div class="comentario-header">
-                    <span class="comentario-autor">${data.comentario.autor}</span>
-                    <span class="comentario-fecha">${data.comentario.fecha_creacion}</span>
+                    <span class="comentario-autor">${autor}</span>
+                    <span class="comentario-fecha">${fecha}</span>
                 </div>
-                <div class="comentario-contenido">${data.comentario.contenido}</div>
+                <div class="comentario-contenido">${contenido}</div>
                 <div class="comentario-acciones">
-                    <a onclick="eliminarComentario(${data.comentario.id})">Eliminar</a>
+                    <a onclick="eliminarComentario('${data.comentario.id}')">Eliminar</a>
                 </div>
             `;
             comentariosLista.appendChild(nuevoComentario);
 
             // Limpiar formulario
             form.reset();
+
+            // Mostrar mensaje de éxito
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>Comentario agregado exitosamente
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            form.parentElement.insertBefore(alertDiv, form);
+            setTimeout(() => alertDiv.remove(), 3000);
         } else {
             alert('Error al agregar comentario: ' + JSON.stringify(data.errores));
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar el comentario. Intenta de nuevo.');
+    });
 
     return false;
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
 }
 
 function eliminarComentario(comentarioId) {
