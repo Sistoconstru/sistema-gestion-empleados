@@ -2632,7 +2632,7 @@ class ReceibirRegaloAjaxView(EmpleadoRequiredMixin, View):
             regalo_existente = Regalo.objects.filter(
                 producto=producto,
                 receptor=receptor,
-                estado__in=['solicitado', 'aceptado', 'entregado']
+                estado__in=['pendiente', 'aceptado']
             ).exists()
 
             if regalo_existente:
@@ -2641,12 +2641,12 @@ class ReceibirRegaloAjaxView(EmpleadoRequiredMixin, View):
                     'error': 'Ya has solicitado este regalo'
                 }, status=400)
 
-            # Crear regalo con estado "solicitado"
+            # Crear regalo con estado "pendiente" (usuario solicitó, esperando confirmación del donante)
             regalo = Regalo.objects.create(
                 producto=producto,
                 donante=producto.vendedor,
                 receptor=receptor,
-                estado='solicitado',
+                estado='pendiente',
                 creado_por=request.user
             )
 
