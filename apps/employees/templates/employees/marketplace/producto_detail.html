@@ -289,7 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 btnConfirmar.disabled = true;
                 btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
 
-                const response = await fetch('/empleados/marketplace/productos/' + productoId + '/recibir-regalo/', {
+                const urlRecibir = '{% url "employees:recibir_regalo" producto.pk %}';
+                const response = await fetch(urlRecibir, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
