@@ -640,6 +640,10 @@ class Regalo(BaseModel):
     mensaje = models.TextField(blank=True, help_text="Mensaje del donante")
     fecha_ofrecimiento = models.DateTimeField(auto_now_add=True)
     fecha_aceptacion = models.DateTimeField(null=True, blank=True)
+    confirmado_por_donante = models.BooleanField(
+        default=False,
+        help_text="Si el donante confirmó la entrega del regalo"
+    )
     # Campos heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
 
     class Meta:
@@ -825,7 +829,12 @@ class Publicacion(models.Model):
         help_text="Fecha cuando se eliminará automáticamente (15 días para publicaciones normales)"
     )
 
-    # Solo para anuncios importantes
+    # Fechas de publicación (solo para anuncios importantes o publicaciones programadas)
+    fecha_inicio = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="Fecha de inicio de la publicación (si es nula, se publica inmediatamente)"
+    )
     fecha_fin = models.DateTimeField(
         blank=True,
         null=True,
@@ -868,10 +877,26 @@ class Publicacion(models.Model):
 
     @property
     def esta_activa(self):
-        """Verifica si la publicación está activa"""
+        """Verifica si la publicación está activa (dentro del rango de fechas)"""
         from django.utils import timezone
-        if self.es_anuncio and self.es_importante and self.fecha_fin:
-            return timezone.now() < self.fecha_fin
+        ahora = timezone.now()
+
+        # Si tiene fecha_inicio, debe estar después o igual a ahora
+        if self.fecha_inicio and ahora < self.fecha_inicio:
+            return False
+
+        # Si tiene fecha_fin, debe estar antes de ahora
+        if self.fecha_fin and ahora >= self.fecha_fin:
+            return False
+
+        return True
+
+    @property
+    def esta_publicada(self):
+        """Verifica si la publicación ya ha sido publicada (pasó fecha_inicio)"""
+        from django.utils import timezone
+        if self.fecha_inicio and timezone.now() < self.fecha_inicio:
+            return False
         return True
 
     @property

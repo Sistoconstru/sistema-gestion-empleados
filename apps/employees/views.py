@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
@@ -29,7 +29,7 @@ from django.db import transaction, IntegrityError
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
-    Producto, Venta, Subasta, PujaSubasta, Regalo, Conversacion, Mensaje, Categoria
+    Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
@@ -2601,6 +2601,69 @@ class RegalarProductoView(EmpleadoRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('employees:mis_productos')
+
+
+class ReceibirRegaloAjaxView(EmpleadoRequiredMixin, View):
+    """Vista AJAX para que un usuario solicite un regalo disponible en el marketplace"""
+
+    def post(self, request, *args, **kwargs):
+        """POST: Usuario solicita recibir un regalo"""
+        try:
+            producto_pk = kwargs.get('producto_pk')
+            producto = get_object_or_404(Producto, pk=producto_pk, tipo='regalo', estado='activo')
+
+            receptor = request.user.empleado
+
+            # Validar que no es el donante (vendedor)
+            if producto.vendedor == receptor:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No puedes recibir tu propio regalo'
+                }, status=400)
+
+            # Validar que hay regalos disponibles
+            if not producto.tiene_disponible():
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No hay regalos disponibles'
+                }, status=400)
+
+            # Validar que el usuario no ya solicitó este regalo
+            regalo_existente = Regalo.objects.filter(
+                producto=producto,
+                receptor=receptor,
+                estado__in=['solicitado', 'aceptado', 'entregado']
+            ).exists()
+
+            if regalo_existente:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Ya has solicitado este regalo'
+                }, status=400)
+
+            # Crear regalo con estado "solicitado"
+            regalo = Regalo.objects.create(
+                producto=producto,
+                donante=producto.vendedor,
+                receptor=receptor,
+                estado='solicitado',
+                creado_por=request.user
+            )
+
+            logger.info(f"[REGALO] {receptor.nombre_completo} solicitó el regalo '{producto.titulo}' de {producto.vendedor.nombre_completo}")
+
+            return JsonResponse({
+                'success': True,
+                'message': f'¡Haz solicitado el regalo "{producto.titulo}"! El donante será notificado.',
+                'regalo_id': str(regalo.id)
+            })
+
+        except Exception as e:
+            logger.error(f"[REGALO] Error al solicitar regalo: {e}", exc_info=True)
+            return JsonResponse({
+                'success': False,
+                'error': 'Error al solicitar el regalo'
+            }, status=500)
 
 
 # =============================================================================

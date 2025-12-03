@@ -140,9 +140,15 @@
                 {% endif %}
 
                 {% if producto.tipo == 'regalo' and puede_recibir %}
-                <a href="{% url 'employees:regalar_producto' producto.pk %}" class="btn btn-info btn-lg w-100 mb-2">
+                {% if producto.tiene_disponible %}
+                <button type="button" class="btn btn-info btn-lg w-100 mb-2" data-bs-toggle="modal" data-bs-target="#modalReceibirRegalo">
                     <i class="fas fa-gift me-2"></i>Recibir Regalo
-                </a>
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-danger btn-lg w-100 mb-2" disabled>
+                    <i class="fas fa-ban me-2"></i>Regalo Agotado
+                </button>
+                {% endif %}
                 {% endif %}
 
                 <!-- Botón editar (solo para admin o vendedor) -->
@@ -265,5 +271,119 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// MODAL RECIBIR REGALO
+document.addEventListener('DOMContentLoaded', function() {
+    const btnRecibir = document.querySelector('[data-bs-target="#modalReceibirRegalo"]');
+    const modalElement = document.getElementById('modalReceibirRegalo');
+
+    if (btnRecibir && modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        const btnConfirmar = modalElement.querySelector('#btnConfirmarRegalo');
+
+        btnConfirmar.addEventListener('click', async function() {
+            const productoId = '{{ producto.pk }}';
+            const btnConfirmarOriginal = btnConfirmar.innerHTML;
+
+            try {
+                btnConfirmar.disabled = true;
+                btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+
+                const response = await fetch('/empleados/marketplace/productos/' + productoId + '/recibir-regalo/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Éxito: mostrar mensaje y cerrar modal
+                    modal.hide();
+
+                    // Mostrar toast de éxito
+                    const toastHTML = `
+                        <div class="toast align-items-center text-white bg-success border-0" role="alert">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    <i class="fas fa-check-circle me-2"></i>${data.message}
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                            </div>
+                        </div>
+                    `;
+
+                    const toastContainer = document.getElementById('toastContainer') || document.createElement('div');
+                    if (!document.getElementById('toastContainer')) {
+                        toastContainer.id = 'toastContainer';
+                        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                        document.body.appendChild(toastContainer);
+                    }
+
+                    toastContainer.innerHTML = toastHTML;
+                    const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                    toast.show();
+
+                    // Recarga la página después de 2 segundos
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    // Error
+                    const errorMsg = data.error || 'Error al solicitar el regalo';
+                    alert('Error: ' + errorMsg);
+                    btnConfirmar.disabled = false;
+                    btnConfirmar.innerHTML = btnConfirmarOriginal;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
+                btnConfirmar.disabled = false;
+                btnConfirmar.innerHTML = btnConfirmarOriginal;
+            }
+        });
+    }
+});
 </script>
+
+<!-- MODAL RECIBIR REGALO -->
+<div class="modal fade" id="modalReceibirRegalo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-gift me-2"></i>Confirmar Solicitud de Regalo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">
+                    <strong>¿Deseas recibir este regalo?</strong>
+                </p>
+                <p class="mb-3">
+                    <i class="fas fa-box text-info me-2"></i>
+                    <strong>{{ producto.titulo }}</strong>
+                </p>
+                <p class="mb-3 text-muted">
+                    <i class="fas fa-user me-2"></i>
+                    Donante: <strong>{{ producto.vendedor.nombre_completo }}</strong>
+                </p>
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    El donante será notificado de tu solicitud y confirmará la entrega del regalo.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-info" id="btnConfirmarRegalo">
+                    <i class="fas fa-check me-2"></i>Sí, Recibir Regalo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

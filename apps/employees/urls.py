@@ -64,6 +64,7 @@ urlpatterns = [
     # MARKETPLACE - REGALOS
     # =============================================================================
     path('marketplace/productos/<uuid:producto_pk>/regalar/', views.RegalarProductoView.as_view(), name='regalar_producto'),
+    path('marketplace/productos/<uuid:producto_pk>/recibir-regalo/', views.ReceibirRegaloAjaxView.as_view(), name='recibir_regalo'),
 
     # =============================================================================
     # MESSAGING - CONVERSACIONES
