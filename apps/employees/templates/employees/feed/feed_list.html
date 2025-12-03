@@ -561,6 +561,16 @@
                             <i class="fas fa-megaphone me-1"></i>Anuncio
                         </span>
                         {% endif %}
+                        {% if not publicacion.esta_publicada %}
+                        <span class="badge bg-danger">
+                            <i class="fas fa-clock me-1"></i>Pendiente de publicación
+                        </span>
+                        <br>
+                        <small class="text-danger">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Se publicará el: {{ publicacion.fecha_inicio|date:"d/m/Y H:i" }}
+                        </small>
+                        {% endif %}
                     </div>
                 </div>
 

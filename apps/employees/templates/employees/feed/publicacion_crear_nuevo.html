@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Nueva Publicación{% endblock %}
+{% block title %}{% if es_edicion %}Editar Publicación{% else %}Nueva Publicación{% endif %}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -36,17 +36,21 @@
     #preview-container {
         position: relative;
         width: 100%;
-        height: 600px;
+        min-height: 400px;
+        height: auto;
         background-color: white;
         border: 2px solid #ddd;
         border-radius: 4px;
-        overflow: hidden;
+        overflow: visible;
     }
 
     #preview-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 80vh;
     }
 
     /* Cuadros de texto en preview */
@@ -271,10 +275,38 @@
 
 {% block content %}
 <div class="editor-container">
-    <h1><i class="fas fa-pen me-2"></i>Nueva Publicación</h1>
+    <h1><i class="fas fa-pen me-2"></i>{% if es_edicion %}Editar Publicación{% else %}Nueva Publicación{% endif %}</h1>
 
     <form id="publicacion-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+
+        <!-- Mostrar errores del formulario -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Errores en el formulario:</strong>
+            <ul class="mt-2 mb-0">
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Mostrar errores específicos de cada campo -->
+        {% for field in form %}
+            {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>{{ field.label }}:</strong>
+                <ul class="mt-1 mb-0">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endfor %}
 
         <div class="row-main">
             <!-- COLUMNA IZQUIERDA: PREVIEW -->
@@ -309,6 +341,21 @@
                 <div class="form-group-custom">
                     <label for="id_contenido">Contenido *</label>
                     {{ form.contenido }}
+                </div>
+
+                <!-- FECHA DE PUBLICACIÓN -->
+                <h3>2. Programación (Opcional)</h3>
+                <div class="form-group-custom">
+                    <label for="id_fecha_inicio">Fecha de Publicación</label>
+                    {{ form.fecha_inicio }}
+                    {% if form.fecha_inicio.help_text %}
+                    <small class="form-text text-muted">{{ form.fecha_inicio.help_text|safe }}</small>
+                    {% endif %}
+                    {% if form.fecha_inicio.errors %}
+                    <div class="alert alert-danger mt-2" role="alert">
+                        {{ form.fecha_inicio.errors.0 }}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- ESTILOS -->
@@ -370,7 +417,11 @@
                         <i class="fas fa-times me-2"></i>Cancelar
                     </a>
                     <button type="submit" class="btn-submit">
+                        {% if es_edicion %}
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                        {% else %}
                         <i class="fas fa-send me-2"></i>Publicar
+                        {% endif %}
                     </button>
                 </div>
 
@@ -387,7 +438,8 @@
         imagenCargada: false,
         estilos: {},
         draggingElement: null,
-        resizingElement: null
+        resizingElement: null,
+        imagenBase64: null  // Guardar imagen en base64
     };
 
     // Referencias a elementos
@@ -406,6 +458,52 @@
     const strokeWidthInput = document.getElementById('stroke-width');
     const strokeColorInput = document.getElementById('stroke-color');
 
+    // Restaurar imagen si hay una guardada en sessionStorage (después de error de validación)
+    window.addEventListener('load', function() {
+        const imagenGuardada = sessionStorage.getItem('publicacion_imagen_base64');
+        if (imagenGuardada) {
+            console.log('[PUBLICACION] Restaurando imagen de sessionStorage');
+            state.imagenBase64 = imagenGuardada;
+            previewImage.src = imagenGuardada;
+            state.imagenCargada = true;
+
+            // Cargar dimensiones
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                const maxWidth = previewContainer.offsetWidth;
+                const maxHeight = window.innerHeight * 0.8;
+                const imgWidth = tempImg.width;
+                const imgHeight = tempImg.height;
+                const aspectRatio = imgWidth / imgHeight;
+
+                let displayWidth, displayHeight;
+                if (aspectRatio > 1) {
+                    displayWidth = Math.min(imgWidth, maxWidth);
+                    displayHeight = displayWidth / aspectRatio;
+                    if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                    }
+                } else {
+                    displayHeight = Math.min(imgHeight, maxHeight);
+                    displayWidth = displayHeight * aspectRatio;
+                    if (displayWidth > maxWidth) {
+                        displayWidth = maxWidth;
+                        displayHeight = displayWidth / aspectRatio;
+                    }
+                }
+
+                previewImage.style.width = displayWidth + 'px';
+                previewImage.style.height = displayHeight + 'px';
+                previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+            };
+            tempImg.src = imagenGuardada;
+
+            // Limpiar sessionStorage después de restaurar
+            sessionStorage.removeItem('publicacion_imagen_base64');
+        }
+    });
+
     // Cargar imagen
     imagenInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -413,6 +511,62 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 previewImage.src = event.target.result;
+                // Guardar imagen en base64 para recuperarla si hay error
+                state.imagenBase64 = event.target.result;
+                sessionStorage.setItem('publicacion_imagen_base64', event.target.result);
+
+                // Crear imagen temporal para obtener dimensiones
+                const tempImg = new Image();
+                tempImg.onload = function() {
+                    console.log('[PUBLICACION] Imagen cargada. Dimensiones originales:', tempImg.width, 'x', tempImg.height);
+
+                    // Obtener espacio disponible
+                    const maxWidth = previewContainer.offsetWidth;
+                    const maxHeight = window.innerHeight * 0.8; // 80vh para publicaciones
+
+                    console.log('[PUBLICACION] Espacio disponible:', maxWidth, 'x', maxHeight);
+
+                    // Dimensiones originales
+                    const imgWidth = tempImg.width;
+                    const imgHeight = tempImg.height;
+                    const aspectRatio = imgWidth / imgHeight;
+
+                    console.log('[PUBLICACION] Proporción de aspecto:', aspectRatio.toFixed(2));
+
+                    // Calcular dimensiones escaladas manteniendo proporciones
+                    let displayWidth, displayHeight;
+
+                    if (aspectRatio > 1) {
+                        // Imagen horizontal
+                        displayWidth = Math.min(imgWidth, maxWidth);
+                        displayHeight = displayWidth / aspectRatio;
+
+                        if (displayHeight > maxHeight) {
+                            displayHeight = maxHeight;
+                            displayWidth = displayHeight * aspectRatio;
+                        }
+                    } else {
+                        // Imagen vertical o cuadrada
+                        displayHeight = Math.min(imgHeight, maxHeight);
+                        displayWidth = displayHeight * aspectRatio;
+
+                        if (displayWidth > maxWidth) {
+                            displayWidth = maxWidth;
+                            displayHeight = displayWidth / aspectRatio;
+                        }
+                    }
+
+                    console.log('[PUBLICACION] Dimensiones escaladas aplicadas:', displayWidth.toFixed(0), 'x', displayHeight.toFixed(0));
+
+                    // Aplicar dimensiones
+                    previewImage.style.width = displayWidth + 'px';
+                    previewImage.style.height = displayHeight + 'px';
+
+                    // Guardar factor de escala para conversión de coordenadas
+                    previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+                };
+                tempImg.src = event.target.result;
+
                 state.imagenCargada = true;
                 actualizarPreview();
             };
@@ -662,6 +816,115 @@
         console.log('Campo input name:', estilsInput.name);
         console.log('Campo input id:', estilsInput.id);
     });
+
+    // Cargar datos existentes si es modo edición
+    {% if es_edicion and object.estilos %}
+    window.addEventListener('load', function() {
+        console.log('[PUBLICACION EDIT] Cargando estilos guardados');
+        const estilosGuardados = {{ object.estilos|safe }};
+        console.log('Estilos guardados:', estilosGuardados);
+
+        // Restaurar estilos
+        if (estilosGuardados.font_family) fontFamilySelect.value = estilosGuardados.font_family;
+        if (estilosGuardados.font_size) fontSizeInput.value = estilosGuardados.font_size;
+        if (estilosGuardados.text_color) textColorInput.value = estilosGuardados.text_color;
+        if (estilosGuardados.stroke_width) strokeWidthInput.value = estilosGuardados.stroke_width;
+        if (estilosGuardados.stroke_color) strokeColorInput.value = estilosGuardados.stroke_color;
+
+        // Restaurar posiciones del título
+        if (estilosGuardados.titulo_x !== undefined) document.getElementById('titulo-x').value = estilosGuardados.titulo_x;
+        if (estilosGuardados.titulo_y !== undefined) document.getElementById('titulo-y').value = estilosGuardados.titulo_y;
+        if (estilosGuardados.titulo_width !== undefined) document.getElementById('titulo-width').value = estilosGuardados.titulo_width;
+        if (estilosGuardados.titulo_height !== undefined) document.getElementById('titulo-height').value = estilosGuardados.titulo_height;
+
+        // Restaurar posiciones del contenido
+        if (estilosGuardados.contenido_x !== undefined) document.getElementById('contenido-x').value = estilosGuardados.contenido_x;
+        if (estilosGuardados.contenido_y !== undefined) document.getElementById('contenido-y').value = estilosGuardados.contenido_y;
+        if (estilosGuardados.contenido_width !== undefined) document.getElementById('contenido-width').value = estilosGuardados.contenido_width;
+        if (estilosGuardados.contenido_height !== undefined) document.getElementById('contenido-height').value = estilosGuardados.contenido_height;
+
+        // Restaurar tamaños de fuente específicos
+        if (estilosGuardados.titulo_font_size) state.estilos.titulo_font_size = estilosGuardados.titulo_font_size;
+        if (estilosGuardados.contenido_font_size) state.estilos.contenido_font_size = estilosGuardados.contenido_font_size;
+
+        // Aplicar los cambios al preview
+        actualizarPosiciones();
+        actualizarPreview();
+        console.log('[PUBLICACION EDIT] Estilos cargados y aplicados');
+    });
+    {% endif %}
+
+    {% if es_edicion and object.imagen %}
+    // Cargar imagen existente
+    window.addEventListener('load', function() {
+        console.log('[PUBLICACION EDIT] Cargando imagen existente');
+        const imagenUrl = '{{ object.imagen.url }}';
+        console.log('URL imagen:', imagenUrl);
+
+        previewImage.src = imagenUrl;
+        state.imagenCargada = true;
+
+        // Cargar dimensiones de la imagen
+        const tempImg = new Image();
+        tempImg.onload = function() {
+            console.log('[PUBLICACION EDIT] Imagen cargada. Dimensiones:', tempImg.width, 'x', tempImg.height);
+
+            const maxWidth = previewContainer.offsetWidth;
+            const maxHeight = window.innerHeight * 0.8;
+            const imgWidth = tempImg.width;
+            const imgHeight = tempImg.height;
+            const aspectRatio = imgWidth / imgHeight;
+
+            let displayWidth, displayHeight;
+            if (aspectRatio > 1) {
+                displayWidth = Math.min(imgWidth, maxWidth);
+                displayHeight = displayWidth / aspectRatio;
+                if (displayHeight > maxHeight) {
+                    displayHeight = maxHeight;
+                    displayWidth = displayHeight * aspectRatio;
+                }
+            } else {
+                displayHeight = Math.min(imgHeight, maxHeight);
+                displayWidth = displayHeight * aspectRatio;
+                if (displayWidth > maxWidth) {
+                    displayWidth = maxWidth;
+                    displayHeight = displayWidth / aspectRatio;
+                }
+            }
+
+            previewImage.style.width = displayWidth + 'px';
+            previewImage.style.height = displayHeight + 'px';
+            previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+            console.log('[PUBLICACION EDIT] Imagen escalada a:', displayWidth, 'x', displayHeight);
+        };
+        tempImg.src = imagenUrl;
+    });
+    {% endif %}
+
+    // Función auxiliar para actualizar posiciones
+    function actualizarPosiciones() {
+        // Actualizar título
+        const tituloX = parseInt(document.getElementById('titulo-x').value) || 0;
+        const tituloY = parseInt(document.getElementById('titulo-y').value) || 0;
+        const tituloWidth = parseInt(document.getElementById('titulo-width').value) || 200;
+        const tituloHeight = parseInt(document.getElementById('titulo-height').value) || 80;
+
+        tituloBox.style.left = tituloX + 'px';
+        tituloBox.style.top = tituloY + 'px';
+        tituloBox.style.width = tituloWidth + 'px';
+        tituloBox.style.height = tituloHeight + 'px';
+
+        // Actualizar contenido
+        const contenidoX = parseInt(document.getElementById('contenido-x').value) || 0;
+        const contenidoY = parseInt(document.getElementById('contenido-y').value) || 0;
+        const contenidoWidth = parseInt(document.getElementById('contenido-width').value) || 200;
+        const contenidoHeight = parseInt(document.getElementById('contenido-height').value) || 150;
+
+        contenidoBox.style.left = contenidoX + 'px';
+        contenidoBox.style.top = contenidoY + 'px';
+        contenidoBox.style.width = contenidoWidth + 'px';
+        contenidoBox.style.height = contenidoHeight + 'px';
+    }
 
     // Inicializar
     actualizarPreview();

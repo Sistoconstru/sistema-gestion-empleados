@@ -34,13 +34,39 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
     def get_queryset(self):
         """Obtener publicaciones activas ordenadas por importancia"""
         ahora = timezone.now()
+        es_admin = self.request.user.is_staff
 
-        # Obtener publicaciones activas
-        queryset = Publicacion.objects.filter(
-            Q(es_anuncio=False) |  # Publicaciones normales
-            Q(es_anuncio=True, es_importante=False) |  # Anuncios normales
-            Q(es_anuncio=True, es_importante=True, fecha_fin__gt=ahora)  # Anuncios importantes vigentes
-        ).select_related('autor').prefetch_related('comentarios').annotate(
+        # Publicaciones activas (que cumplan fecha_inicio y fecha_fin)
+        queryset_activas = Publicacion.objects.filter(
+            # Fecha inicio: debe estar NULL o ser <= ahora
+            Q(fecha_inicio__isnull=True) | Q(fecha_inicio__lte=ahora)
+        ).filter(
+            # Fecha fin: debe estar NULL o ser > ahora
+            Q(fecha_fin__isnull=True) | Q(fecha_fin__gt=ahora)
+        ).exclude(
+            # Excluir anuncios importantes que ya no están vigentes
+            es_anuncio=True, es_importante=True, fecha_fin__lte=ahora
+        )
+
+        # Si es admin, también mostrar publicaciones pendientes
+        if es_admin:
+            try:
+                empleado_actual = self.request.user.empleado
+            except:
+                empleado_actual = None
+
+            queryset_pendientes = Publicacion.objects.filter(
+                # Mostrar si es autor
+                Q(autor=empleado_actual) | Q(autor__usuario__is_staff=True)
+            ).filter(
+                # Fecha inicio en el futuro (aún no publicadas)
+                fecha_inicio__gt=ahora
+            )
+            queryset = queryset_activas | queryset_pendientes
+        else:
+            queryset = queryset_activas
+
+        queryset = queryset.select_related('autor').prefetch_related('comentarios').annotate(
             num_comentarios=Count('comentarios')
         ).order_by(
             # Anuncios importantes primero
@@ -108,19 +134,27 @@ class EditarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, UpdateVie
     """Vista para editar una publicación"""
     model = Publicacion
     form_class = PublicacionForm
-    template_name = 'employees/feed/publicacion_form.html'
+    template_name = 'employees/feed/publicacion_crear_nuevo.html'
     success_url = reverse_lazy('employees:feed_list')
 
     def get_queryset(self):
         """Solo el autor o admin puede editar"""
-        return Publicacion.objects.filter(
-            Q(autor=self.request.user.empleado) | Q(autor__usuario__is_staff=True)
-        )
+        # Si el usuario es admin, puede editar cualquier publicación
+        if self.request.user.is_staff:
+            return Publicacion.objects.all()
+
+        # Si no es admin, solo puede editar sus propias publicaciones
+        try:
+            empleado_actual = self.request.user.empleado
+            return Publicacion.objects.filter(autor=empleado_actual)
+        except:
+            # Si no tiene empleado vinculado, no puede editar nada
+            return Publicacion.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo_pagina'] = 'Editar Publicación'
-        context['boton_envio'] = 'Guardar Cambios'
+        context['es_edicion'] = True
         return context
 
 
@@ -132,9 +166,17 @@ class EliminarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, DeleteV
 
     def get_queryset(self):
         """Solo el autor o admin puede eliminar"""
-        return Publicacion.objects.filter(
-            Q(autor=self.request.user.empleado) | Q(autor__usuario__is_staff=True)
-        )
+        # Si el usuario es admin, puede eliminar cualquier publicación
+        if self.request.user.is_staff:
+            return Publicacion.objects.all()
+
+        # Si no es admin, solo puede eliminar sus propias publicaciones
+        try:
+            empleado_actual = self.request.user.empleado
+            return Publicacion.objects.filter(autor=empleado_actual)
+        except:
+            # Si no tiene empleado vinculado, no puede eliminar nada
+            return Publicacion.objects.none()
 
 
 class CrearAnuncioImportanteView(LoginRequiredMixin, CreateView):

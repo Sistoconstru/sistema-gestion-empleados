@@ -1097,9 +1097,18 @@ class MensajeForm(forms.ModelForm):
 class PublicacionForm(forms.ModelForm):
     """Formulario para crear/editar publicaciones normales"""
 
+    fecha_inicio = forms.DateTimeField(
+        required=False,
+        widget=forms.DateTimeInput(attrs={
+            'type': 'datetime-local',
+            'class': 'form-control'
+        }),
+        help_text='(Opcional) Programar publicación para una fecha futura. Si dejas en blanco, se publica inmediatamente.'
+    )
+
     class Meta:
         model = Publicacion
-        fields = ['titulo', 'contenido', 'imagen', 'estilos']
+        fields = ['titulo', 'contenido', 'imagen', 'fecha_inicio', 'estilos']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -1114,6 +1123,10 @@ class PublicacionForm(forms.ModelForm):
             'imagen': forms.FileInput(attrs={
                 'class': 'form-control',
                 'accept': 'image/*'
+            }),
+            'fecha_inicio': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
             }),
             'estilos': forms.HiddenInput(),
         }
@@ -1133,10 +1146,27 @@ class PublicacionForm(forms.ModelForm):
             raise ValidationError('El contenido no puede estar vacío')
         return contenido
 
+    def clean_fecha_inicio(self):
+        """Validar que fecha_inicio sea futura si se proporciona"""
+        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+
+        # Si no se proporciona fecha_inicio, se publica inmediatamente (es opcional)
+        if not fecha_inicio:
+            return fecha_inicio
+
+        # Si se proporciona, debe ser futura
+        if fecha_inicio <= timezone.now():
+            raise ValidationError('La fecha de inicio debe ser futura o está en el pasado. Si quieres publicar ahora, déjalo en blanco.')
+
+        return fecha_inicio
+
     def save(self, commit=True):
         """Renderizar imagen con texto y guardar"""
         import logging
         import json
+        from PIL import Image as PILImage
+        import io
+        from django.core.files.base import ContentFile
         logger = logging.getLogger(__name__)
 
         instance = super().save(commit=False)
@@ -1148,7 +1178,56 @@ class PublicacionForm(forms.ModelForm):
         logger.info(f"[PUBLICACION.SAVE] Estilos type: {type(instance.estilos)}")
         logger.info(f"[PUBLICACION.SAVE] Imagen cargada: {bool(instance.imagen)}")
 
-        # Procesar estilos si existen
+        # --- CONVERTIR PNG A JPG ANTES DE PROCESARLO ---
+        if instance.imagen:
+            try:
+                # Verificar si es PNG
+                if instance.imagen.name.lower().endswith('.png'):
+                    logger.info(f"[PUBLICACION.SAVE] Detectado PNG, convirtiendo a JPG")
+
+                    # Abrir y convertir imagen
+                    img = PILImage.open(instance.imagen)
+                    logger.info(f"[PUBLICACION.SAVE] Modo de imagen PNG: {img.mode}")
+
+                    # Convertir a RGB si es necesario
+                    if img.mode in ('RGBA', 'LA', 'P'):
+                        # Crear fondo blanco y pegar imagen
+                        img_rgba = img.convert('RGBA')
+                        fondo = PILImage.new('RGB', img_rgba.size, (255, 255, 255))
+                        fondo.paste(img_rgba, (0, 0), img_rgba)
+                        img = fondo
+                    elif img.mode != 'RGB':
+                        img = img.convert('RGB')
+
+                    # Guardar imagen convertida
+                    img_io = io.BytesIO()
+                    img.save(img_io, format='JPEG', quality=95)
+                    img_io.seek(0)
+
+                    # Actualizar nombre
+                    nuevo_nombre = instance.imagen.name.rsplit('.', 1)[0] + '.jpg'
+
+                    # Guardar en el campo FileField de Django
+                    # Usar SimpleUploadedFile en lugar de ContentFile para asegurar persistencia
+                    from django.core.files.uploadedfile import SimpleUploadedFile
+                    converted_file = SimpleUploadedFile(
+                        name=nuevo_nombre,
+                        content=img_io.read(),
+                        content_type='image/jpeg'
+                    )
+                    instance.imagen = converted_file
+                    logger.info(f"[PUBLICACION.SAVE] PNG convertido a JPG: {nuevo_nombre}")
+
+            except Exception as e:
+                logger.warning(f"[PUBLICACION.SAVE] Error al convertir PNG: {e}", exc_info=True)
+                # Continuar sin conversión si hay error
+
+        # PASO 1: Guardar la instancia primero para asegurar que la imagen convertida se persiste
+        if commit and instance.imagen:
+            instance.save()
+            logger.info(f"[PUBLICACION.SAVE] Instancia guardada, imagen en: {instance.imagen.name}")
+
+        # PASO 2: Procesar estilos y renderizar después de que la imagen está en el filesystem
         if instance.estilos:
             try:
                 from .renderizado_anuncios import renderizar_anuncio_v2
@@ -1203,6 +1282,7 @@ class PublicacionForm(forms.ModelForm):
                 logger.error(f"[PUBLICACION.SAVE] Error al procesar publicación: {e}", exc_info=True)
                 # Continuar sin procesar si hay error
 
+        # PASO 3: Guardar nuevamente si hubo rendering (para guardar imagen_renderizada)
         if commit:
             instance.save()
 
@@ -1278,14 +1358,21 @@ class AnuncioImportanteForm(forms.ModelForm):
             raise ValidationError('El contenido es requerido')
         return contenido
 
+    def clean_fecha_inicio(self):
+        """Validar que fecha_inicio sea futura"""
+        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+
+        if fecha_inicio and fecha_inicio <= timezone.now():
+            raise ValidationError('La fecha de inicio debe ser futura (posterior a ahora)')
+
+        return fecha_inicio
+
     def clean_fecha_fin(self):
-        """Validar que la fecha sea futura y posterior a fecha_inicio"""
+        """Validar que fecha_fin sea posterior a fecha_inicio"""
         fecha_fin = self.cleaned_data.get('fecha_fin')
         fecha_inicio = self.cleaned_data.get('fecha_inicio')
 
-        if fecha_fin and fecha_fin <= timezone.now():
-            raise ValidationError('La fecha de finalización debe ser futura')
-
+        # Validar que fecha_fin > fecha_inicio
         if fecha_inicio and fecha_fin and fecha_fin <= fecha_inicio:
             raise ValidationError('La fecha de finalización debe ser posterior a la fecha de inicio')
 
