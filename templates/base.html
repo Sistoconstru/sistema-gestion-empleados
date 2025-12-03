@@ -53,10 +53,10 @@
                         </a>
                     </li>
 
-                    <!-- Feed/Marketplace -->
+                    <!-- Cartelera/El Toldo -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'employees:feed_list' %}" title="Ver el feed del marketplace">
-                            <i class="fas fa-comments me-1"></i>Feed
+                        <a class="nav-link" href="{% url 'employees:feed_list' %}" title="Ver la Cartelera del Toldo">
+                            <i class="fas fa-comments me-1"></i>Cartelera
                         </a>
                     </li>
 
@@ -64,6 +64,9 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle me-1"></i>
                             {{ user.get_full_name|default:user.username }}
+                            {% if notificaciones_sin_leer %}
+                            <span class="badge bg-danger notification-badge-navbar">{{ notificaciones_sin_leer }}</span>
+                            {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>

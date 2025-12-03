@@ -7313,3 +7313,308 @@ INFO 2025-12-03 07:03:53,563 basehttp 45136 43784 "GET /notificaciones/list/?pag
 INFO 2025-12-03 07:03:57,197 basehttp 45136 43784 "GET /notificaciones/list/?page=3 HTTP/1.1" 200 30423
 INFO 2025-12-03 07:04:04,545 basehttp 45136 43784 "GET /empleados/feed/ HTTP/1.1" 200 45790
 INFO 2025-12-03 07:10:25,481 basehttp 45136 31596 "GET /empleados/feed/ HTTP/1.1" 200 45786
+INFO 2025-12-03 07:26:59,961 apps 31988 13460 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:41:55,774 apps 39444 39480 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:41:56,421 apps 22268 31976 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:41:56,435 autoreload 22268 31976 Watching for file changes with StatReloader
+INFO 2025-12-03 07:42:01,409 wsgi 22268 18544 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+ERROR 2025-12-03 07:42:08,613 log 22268 52248 Internal Server Error: /empleados/feed/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna feed_publicaciones.es_rapida
+LINE 1: ...s_anuncio", "feed_publicaciones"."es_importante", "feed_publ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 326, in render
+    if match:
+       ^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 398, in __bool__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna feed_publicaciones.es_rapida
+LINE 1: ...s_anuncio", "feed_publicaciones"."es_importante", "feed_publ...
+                                                             ^
+
+ERROR 2025-12-03 07:42:08,631 basehttp 22268 52248 "GET /empleados/feed/ HTTP/1.1" 500 228723
+INFO 2025-12-03 07:42:16,910 basehttp 22268 52248 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:42:17,064 basehttp 22268 52248 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25362
+ERROR 2025-12-03 07:42:20,297 log 22268 52248 Internal Server Error: /empleados/feed/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna feed_publicaciones.es_rapida
+LINE 1: ...s_anuncio", "feed_publicaciones"."es_importante", "feed_publ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 326, in render
+    if match:
+       ^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 398, in __bool__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna feed_publicaciones.es_rapida
+LINE 1: ...s_anuncio", "feed_publicaciones"."es_importante", "feed_publ...
+                                                             ^
+
+ERROR 2025-12-03 07:42:20,297 basehttp 22268 52248 "GET /empleados/feed/ HTTP/1.1" 500 228627
+INFO 2025-12-03 07:43:53,564 apps 19340 41460 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:44:21,013 apps 16992 31328 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:44:34,847 apps 28940 7540 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:45:25,414 apps 29600 9624 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:45:30,599 apps 40372 37340 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:45:35,914 apps 9512 15912 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:45:36,447 apps 34696 50196 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:45:36,466 autoreload 34696 50196 Watching for file changes with StatReloader
+INFO 2025-12-03 07:45:36,846 wsgi 34696 46156 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-03 07:45:44,180 basehttp 34696 29896 "GET /empleados/feed/ HTTP/1.1" 200 41620
+INFO 2025-12-03 07:45:49,173 basehttp 34696 29896 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:45:49,215 basehttp 34696 29896 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-03 07:45:56,163 basehttp 34696 29896 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:45:56,179 basehttp 34696 29896 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:45:56,335 basehttp 34696 29896 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28012
+INFO 2025-12-03 07:46:05,363 basehttp 34696 29896 "GET /empleados/feed/ HTTP/1.1" 200 41861
+INFO 2025-12-03 07:46:21,881 basehttp 34696 29896 "GET /notificaciones/list/ HTTP/1.1" 200 44409
+INFO 2025-12-03 07:46:23,629 basehttp 34696 29896 "POST /notificaciones/marcar-leida/25fd62da-0893-43c2-9ca0-3a680e3c3c5d/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:46:23,664 basehttp 34696 29896 "GET /notificaciones/list/ HTTP/1.1" 200 44294
+INFO 2025-12-03 07:46:24,947 basehttp 34696 29896 "POST /notificaciones/marcar-leida/25fd62da-0893-43c2-9ca0-3a680e3c3c5d/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:46:24,997 basehttp 34696 29896 "GET /notificaciones/list/ HTTP/1.1" 200 44294
+INFO 2025-12-03 07:46:26,380 basehttp 34696 29896 "POST /notificaciones/marcar-leida/25fd62da-0893-43c2-9ca0-3a680e3c3c5d/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:46:26,414 basehttp 34696 29896 "GET /notificaciones/list/ HTTP/1.1" 200 44294
+INFO 2025-12-03 07:49:57,765 autoreload 34696 50196 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\signals.py changed, reloading.
+INFO 2025-12-03 07:49:58,536 apps 7352 5984 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:49:58,557 autoreload 7352 5984 Watching for file changes with StatReloader
+INFO 2025-12-03 07:49:58,946 wsgi 7352 22160 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-03 07:51:42,855 apps 5136 48200 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:51:51,054 apps 30096 50736 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:52:10,766 apps 4008 58164 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:52:11,317 apps 42480 19680 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 07:52:11,343 autoreload 42480 19680 Watching for file changes with StatReloader
+INFO 2025-12-03 07:52:11,743 wsgi 42480 8732 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-03 07:52:15,780 basehttp 42480 30336 "GET /notificaciones/list/ HTTP/1.1" 200 45391
+INFO 2025-12-03 07:52:17,998 basehttp 42480 30336 "GET /notificaciones/list/ HTTP/1.1" 200 45391
+INFO 2025-12-03 07:52:19,723 basehttp 42480 30336 "POST /notificaciones/marcar-leida/3385ecb5-f84a-4b78-97ad-ad36a1b7308d/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:52:19,780 basehttp 42480 30336 "GET /empleados/feed/ HTTP/1.1" 200 42131
+INFO 2025-12-03 07:52:29,731 basehttp 42480 30336 "GET /notificaciones/list/ HTTP/1.1" 200 45276
+INFO 2025-12-03 07:52:31,921 basehttp 42480 30336 "POST /notificaciones/marcar-leida/32ecaaa5-27e3-42b5-b764-cd94f402e42c/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:52:31,968 basehttp 42480 30336 "GET /empleados/feed/ HTTP/1.1" 200 42131
+INFO 2025-12-03 07:52:38,631 basehttp 42480 30336 "GET /notificaciones/list/ HTTP/1.1" 200 45161
+INFO 2025-12-03 07:52:40,843 basehttp 42480 30336 "POST /notificaciones/marcar-todas-leidas/ HTTP/1.1" 200 17
+INFO 2025-12-03 07:52:40,880 basehttp 42480 30336 "GET /notificaciones/list/ HTTP/1.1" 200 42965
+INFO 2025-12-03 07:53:20,180 basehttp 42480 30336 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 12590
+INFO 2025-12-03 07:53:29,562 basehttp 42480 30336 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:53:29,681 basehttp 42480 30336 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27376
+INFO 2025-12-03 07:53:37,247 basehttp 42480 30336 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31855
+INFO 2025-12-03 07:53:37,274 basehttp 42480 12604 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-03 07:53:37,274 basehttp 42480 33512 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-03 07:53:37,274 basehttp 42480 16656 "GET /media/marketplace/productos/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-12-03 07:53:37,275 basehttp 42480 41680 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-03 07:53:37,276 basehttp 42480 46684 "GET /media/marketplace/productos/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-12-03 07:53:37,278 basehttp 42480 30336 "GET /media/marketplace/productos/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-12-03 07:53:37,280 basehttp 42480 16656 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+INFO 2025-12-03 07:53:37,281 basehttp 42480 33512 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+INFO 2025-12-03 07:53:49,182 basehttp 42480 33512 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 07:53:49,296 basehttp 42480 33512 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27376
+INFO 2025-12-03 08:06:44,381 basehttp 42480 12732 "GET /empleados/feed/ HTTP/1.1" 200 41890
+INFO 2025-12-03 08:08:31,714 basehttp 42480 12732 "GET /empleados/feed/ HTTP/1.1" 200 41875
+INFO 2025-12-03 08:09:31,425 basehttp 42480 12732 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:09:31,592 basehttp 42480 12732 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27364
+INFO 2025-12-03 08:09:34,014 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31846
+INFO 2025-12-03 08:10:08,002 basehttp 42480 12732 "GET /empleados/marketplace/productos/2fbb0f35-027a-4236-ad6c-a6db8febc33d/ HTTP/1.1" 200 14361
+INFO 2025-12-03 08:13:09,897 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31846
+INFO 2025-12-03 08:13:20,715 basehttp 42480 12732 "GET /empleados/marketplace/productos/006617df-02ea-452d-b210-6f43f7dd92ca/ HTTP/1.1" 200 14449
+INFO 2025-12-03 08:13:30,214 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31846
+INFO 2025-12-03 08:14:06,661 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31843
+INFO 2025-12-03 08:14:07,798 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31843
+INFO 2025-12-03 08:14:11,814 basehttp 42480 12732 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 38727
+INFO 2025-12-03 08:14:24,331 basehttp 42480 12732 "GET /empleados/marketplace/productos/006617df-02ea-452d-b210-6f43f7dd92ca/ HTTP/1.1" 200 14449
+INFO 2025-12-03 08:16:33,897 basehttp 42480 12732 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:16:34,048 basehttp 42480 12732 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27364
+INFO 2025-12-03 08:16:36,497 basehttp 42480 12732 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31843
+INFO 2025-12-03 08:16:40,581 basehttp 42480 12732 "GET /empleados/feed/ HTTP/1.1" 200 41875
+INFO 2025-12-03 08:38:41,497 basehttp 42480 1008 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:38:41,639 basehttp 42480 1008 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27364
+INFO 2025-12-03 08:39:37,664 basehttp 42480 1008 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:39:37,729 basehttp 42480 1008 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27364
+INFO 2025-12-03 08:39:44,847 basehttp 42480 1008 "GET /empleados/marketplace/mis-productos/ HTTP/1.1" 200 12606
+INFO 2025-12-03 08:39:55,072 basehttp 42480 1008 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:39:55,167 basehttp 42480 1008 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27364
+INFO 2025-12-03 08:45:15,514 basehttp 42480 57568 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27370
+INFO 2025-12-03 08:45:24,165 basehttp 42480 57568 "GET /notificaciones/list/ HTTP/1.1" 200 42985
+INFO 2025-12-03 08:48:30,999 autoreload 42480 19680 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\signals.py changed, reloading.
+INFO 2025-12-03 08:48:31,839 apps 25448 34892 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 08:48:31,862 autoreload 25448 34892 Watching for file changes with StatReloader
+INFO 2025-12-03 08:48:32,297 wsgi 25448 55388 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-03 08:49:01,788 autoreload 25448 34892 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\signals.py changed, reloading.
+INFO 2025-12-03 08:49:02,632 apps 45828 31088 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-03 08:49:02,663 autoreload 45828 31088 Watching for file changes with StatReloader
+INFO 2025-12-03 08:49:03,046 wsgi 45828 33048 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-03 08:49:15,381 basehttp 45828 10000 "GET /notificaciones/list/ HTTP/1.1" 200 42985
+INFO 2025-12-03 08:49:18,514 basehttp 45828 10000 "GET /notificaciones/list/ HTTP/1.1" 200 42985
+INFO 2025-12-03 08:49:22,631 basehttp 45828 10000 "GET /notificaciones/list/?page=2 HTTP/1.1" 200 43289
+INFO 2025-12-03 08:49:26,313 basehttp 45828 10000 "GET /notificaciones/list/?page=2 HTTP/1.1" 200 43289
+INFO 2025-12-03 08:49:30,065 basehttp 45828 10000 "POST /notificaciones/marcar-todas-leidas/ HTTP/1.1" 200 17
+INFO 2025-12-03 08:49:30,097 basehttp 45828 10000 "GET /notificaciones/list/?page=2 HTTP/1.1" 200 43289
+INFO 2025-12-03 08:49:36,478 basehttp 45828 10000 "POST /notificaciones/marcar-leida/600bd301-2924-44a6-977f-74a6f1210142/ HTTP/1.1" 200 17
+INFO 2025-12-03 08:49:36,562 basehttp 45828 10000 "GET /empleados/feed/ HTTP/1.1" 200 41901
+INFO 2025-12-03 08:50:00,927 basehttp 45828 10000 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:50:01,048 basehttp 45828 10000 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27370
+INFO 2025-12-03 08:50:06,139 basehttp 45828 10000 "GET /empleados/feed/ HTTP/1.1" 200 41901
+INFO 2025-12-03 08:50:40,347 basehttp 45828 10000 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-03 08:50:40,448 basehttp 45828 10000 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 27370
+INFO 2025-12-03 08:50:49,397 basehttp 45828 10000 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 31858
+INFO 2025-12-03 08:51:00,542 basehttp 45828 10000 "GET /empleados/feed/ HTTP/1.1" 200 41901

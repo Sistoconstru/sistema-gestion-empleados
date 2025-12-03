@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -294,6 +294,8 @@ def notificar_anuncio_importante(sender, instance, created, **kwargs):
                 'contenido': instance.contenido[:100],
                 'autor': instance.autor.nombre_completo,
                 'fecha_fin': instance.fecha_fin.strftime('%d/%m/%Y %H:%M') if instance.fecha_fin else '',
+                'publicacion_id': str(instance.id),
+                'url': f'/empleados/feed/#publicacion-{instance.id}',
             }
 
             # Notificar a todos los empleados activos (excepto admins que ya lo saben)
@@ -314,3 +316,22 @@ def notificar_anuncio_importante(sender, instance, created, **kwargs):
 
         except Exception as e:
             logger.warning(f"Error al crear notificación de anuncio importante: {e}")
+
+
+@receiver(post_delete, sender=Publicacion)
+def eliminar_notificaciones_publicacion(sender, instance, **kwargs):
+    """Elimina las notificaciones de anuncios cuando se elimina la publicación"""
+    try:
+        from apps.notifications.models import Notificacion
+
+        # Buscar notificaciones que hagan referencia a esta publicación
+        notificaciones = Notificacion.objects.filter(
+            datos_adicionales__publicacion_id=str(instance.id)
+        )
+
+        count = notificaciones.count()
+        if count > 0:
+            notificaciones.delete()
+            logger.info(f"Eliminadas {count} notificaciones de la publicación {instance.id}")
+    except Exception as e:
+        logger.warning(f"Error al eliminar notificaciones de publicación: {e}")

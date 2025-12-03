@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Feed - Marketplace | SIGHU{% endblock %}
+{% block title %}Cartelera - El Toldo | SIGHU{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -454,10 +454,10 @@
 {% block content %}
 <div class="container mt-4 pb-5">
     <div class="feed-container">
-        <!-- Header del Feed -->
+        <!-- Header de Cartelera -->
         <div class="feed-header">
             <h1>
-                <i class="fas fa-comments me-2"></i>Feed del Marketplace
+                <i class="fas fa-comments me-2"></i>Cartelera del Toldo
             </h1>
 
             <div class="feed-controls">
@@ -538,7 +538,7 @@
         <!-- Lista de Publicaciones -->
         {% if publicaciones %}
             {% for publicacion in publicaciones %}
-            <div class="publicacion-card {% if publicacion.es_importante %}anuncio-importante{% endif %}">
+            <div class="publicacion-card {% if publicacion.es_importante %}anuncio-importante{% endif %}" id="publicacion-{{ publicacion.id }}">
                 <!-- Header -->
                 <div class="publicacion-header">
                     <div class="publicacion-autor">
@@ -719,7 +719,7 @@
                     {% elif tipo %}
                     No hay {{ tipo }} disponibles
                     {% else %}
-                    ¡Sé el primero en publicar algo en el feed!
+                    ¡Sé el primero en publicar algo en la Cartelera!
                     {% endif %}
                 </p>
                 {% if user.empleado %}

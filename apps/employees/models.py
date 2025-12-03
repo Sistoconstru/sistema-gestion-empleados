@@ -811,6 +811,10 @@ class Publicacion(models.Model):
         default=False,
         help_text="¿Es un anuncio importante? (solo si es_anuncio=True)"
     )
+    es_rapida = models.BooleanField(
+        default=False,
+        help_text="¿Es una publicación rápida? (sin editor completo, dura 6 meses)"
+    )
 
     # Fechas
     fecha_creacion = models.DateTimeField(auto_now_add=True)

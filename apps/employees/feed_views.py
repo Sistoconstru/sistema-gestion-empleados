@@ -90,9 +90,17 @@ class CrearPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, CreateView
     success_url = reverse_lazy('employees:feed_list')
 
     def form_valid(self, form):
-        """Establecer el autor automáticamente"""
+        """Establecer el autor y fecha de eliminación automáticamente"""
+        from datetime import timedelta
+
         form.instance.autor = self.request.user.empleado
         form.instance.es_anuncio = False
+
+        # Si tiene imagen, se elimina en 15 días
+        if form.instance.imagen:
+            form.instance.fecha_eliminacion_automatica = timezone.now() + timedelta(days=15)
+            logger.info(f"[PUB_CREATE] Publicación con imagen. Eliminación en 15 días.")
+
         return super().form_valid(form)
 
 
@@ -153,6 +161,13 @@ class CrearAnuncioImportanteView(LoginRequiredMixin, CreateView):
         form.instance.autor = empleado
         form.instance.es_anuncio = True
         form.instance.es_importante = True
+
+        # Fecha de eliminación = fecha_fin del anuncio (control manual)
+        # Al terminar la fecha_fin, se elimina automáticamente del sistema
+        if form.instance.fecha_fin:
+            form.instance.fecha_eliminacion_automatica = form.instance.fecha_fin
+            logger.info(f"[ANUNCIO_CREATE] Anuncio importante. Eliminación en fecha_fin: {form.instance.fecha_fin}")
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -268,6 +283,8 @@ def editor_estilos(request):
 def crear_publicacion_rapida(request):
     """Vista para crear una publicación rápida sin estilos avanzados"""
     try:
+        from datetime import timedelta
+
         contenido = request.POST.get('contenido', '').strip()
 
         if not contenido:
@@ -277,16 +294,21 @@ def crear_publicacion_rapida(request):
         if len(contenido) > 1000:
             contenido = contenido[:1000]
 
+        # Calcular fecha de eliminación (6 meses desde ahora)
+        fecha_eliminacion = timezone.now() + timedelta(days=180)
+
         # Crear publicación simple (sin imagen, sin estilos)
         publicacion = Publicacion.objects.create(
             autor=request.user.empleado,
             titulo='',  # Sin título en publicaciones rápidas
             contenido=contenido,
             es_anuncio=False,
-            es_importante=False
+            es_importante=False,
+            es_rapida=True,  # Marcar como publicación rápida
+            fecha_eliminacion_automatica=fecha_eliminacion  # 6 meses
         )
 
-        logger.info(f"[QUICK_POST] Usuario {request.user.username} creó publicación rápida #{publicacion.id}")
+        logger.info(f"[QUICK_POST] Usuario {request.user.username} creó publicación rápida #{publicacion.id} (exp: {fecha_eliminacion})")
 
         return redirect('employees:feed_list')
 

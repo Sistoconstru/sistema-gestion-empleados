@@ -89,6 +89,7 @@
                  data-notificacion-id="{{ notificacion.id }}"
                  data-tipo-notificacion="{{ notificacion.tipo_notificacion.codigo }}"
                  data-conversacion-id="{{ notificacion.datos_adicionales.conversacion_id }}"
+                 data-publicacion-id="{{ notificacion.datos_adicionales.publicacion_id }}"
                  onclick="navegar_notificacion(this)">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
@@ -174,6 +175,7 @@ function navegar_notificacion(element) {
     const notificacionId = element.dataset.notificacionId;
     const tipoNotificacion = element.dataset.tipoNotificacion;
     const conversacionId = element.dataset.conversacionId;
+    const publicacionId = element.dataset.publicacionId;
 
     // Marcar como leída y navegar
     fetch('/notificaciones/marcar-leida/' + notificacionId + '/', {
@@ -190,14 +192,17 @@ function navegar_notificacion(element) {
             if (conversacionId) {
                 // Si tenemos el ID de conversación, navegar directamente
                 window.location.href = '/empleados/mensajeria/conversacion/' + conversacionId + '/';
+            } else if (publicacionId) {
+                // Si tenemos el ID de publicación/anuncio, ir al feed con anchor
+                window.location.href = '/empleados/feed/#publicacion-' + publicacionId;
             } else if (tipoNotificacion === 'nuevo_mensaje') {
                 // Si es una notificación de mensaje pero falta el conversacion_id, ir al inbox
                 console.log('Notificación de mensaje sin conversacion_id, redirigiendo al inbox');
                 window.location.href = '/empleados/mensajeria/inbox/';
             } else {
-                // Para otros tipos de notificación, solo recargar
-                console.log('Notificación sin conversacion_id, recargando');
-                location.reload();
+                // Para otros tipos de notificación, ir a la Cartelera
+                console.log('Notificación sin identificador, redirigiendo a la Cartelera');
+                window.location.href = '/empleados/feed/';
             }
         } else {
             console.error('Error al marcar notificación como leída');

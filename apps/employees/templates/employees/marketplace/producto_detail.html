@@ -44,7 +44,7 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">Marketplace</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">El Toldo</a></li>
             <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}?categoria={{ producto.categoria.id }}">{{ producto.categoria.nombre }}</a></li>
             <li class="breadcrumb-item active">{{ producto.titulo|truncatewords:5 }}</li>
         </ol>
@@ -161,7 +161,7 @@
 
                 <!-- Botón volver -->
                 <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-secondary btn-lg w-100">
-                    <i class="fas fa-arrow-left me-2"></i>Volver al Marketplace
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Toldo
                 </a>
             </div>
 
