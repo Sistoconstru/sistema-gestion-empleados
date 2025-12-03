@@ -5,6 +5,17 @@
 
 {% block extra_css %}
 <style>
+    /* Cargar fuentes personalizadas */
+    @font-face {
+        font-family: 'Twiggy';
+        src: url('{% static "webfonts/Twiggy.ttf" %}') format('truetype');
+    }
+
+    @font-face {
+        font-family: 'Pinewood';
+        src: url('{% static "webfonts/Pinewood.ttf" %}') format('truetype');
+    }
+
     .feed-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -125,13 +136,14 @@
 
     .publicacion-body {
         position: relative;
-        min-height: 100px;
+        /* Sin min-height para ajustarse al contenido */
     }
 
     .publicacion-body-con-imagen {
         position: relative;
         width: 100%;
         overflow: visible;
+        min-height: 100px;
     }
 
     .publicacion-body-con-imagen img {
@@ -155,9 +167,10 @@
     }
 
     .publicacion-contenido {
-        padding: 1rem;
+        padding: 0.75rem;
         word-wrap: break-word;
         white-space: pre-wrap;
+        line-height: 1.4;
     }
 
     .publicacion-contenido-posicionado {
@@ -292,6 +305,106 @@
         resize: vertical;
     }
 
+    /* Formulario rápido de publicación */
+    .quick-post-card {
+        background: white;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .quick-post-header {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .quick-post-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .quick-post-content {
+        flex: 1;
+    }
+
+    .quick-post-input-wrapper {
+        padding: 1rem;
+    }
+
+    .quick-post-textarea {
+        width: 100%;
+        border: 1px solid #e0e0e0;
+        border-radius: 0.25rem;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 80px;
+        transition: border-color 0.2s;
+    }
+
+    .quick-post-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .quick-post-footer {
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-top: 1px solid #f0f0f0;
+        justify-content: flex-end;
+    }
+
+    .quick-post-footer .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 0.25rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-quick-publish {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-quick-publish:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-quick-publish:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-editor-completo {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .btn-editor-completo:hover {
+        background: #e0e0e0;
+    }
+
     /* Empty state */
     .empty-state {
         text-align: center;
@@ -389,6 +502,39 @@
             </div>
         </div>
 
+        <!-- Formulario Rápido de Publicación -->
+        {% if user.empleado %}
+        <div class="quick-post-card">
+            <div class="quick-post-header">
+                <div class="quick-post-avatar">
+                    {{ user.empleado.nombres|first|upper }}
+                </div>
+                <div class="quick-post-content">
+                    <p style="margin: 0; color: #666; font-weight: 500;">
+                        {{ user.empleado.nombre_completo }}
+                    </p>
+                    <small style="color: #999;">¿Qué piensas?</small>
+                </div>
+            </div>
+
+            <form id="quick-post-form" method="POST" action="{% url 'employees:crear_publicacion_rapida' %}">
+                {% csrf_token %}
+                <div class="quick-post-input-wrapper">
+                    <textarea class="quick-post-textarea" name="contenido" placeholder="Escribe o pregunta algo..." maxlength="1000" required></textarea>
+                </div>
+
+                <div class="quick-post-footer">
+                    <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-editor-completo">
+                        <i class="fas fa-palette me-1"></i>Editor Completo
+                    </a>
+                    <button type="submit" class="btn btn-quick-publish">
+                        <i class="fas fa-share me-1"></i>Publicar
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
         <!-- Lista de Publicaciones -->
         {% if publicaciones %}
             {% for publicacion in publicaciones %}
@@ -419,7 +565,12 @@
                 </div>
 
                 <!-- Body -->
-                {% if publicacion.imagen %}
+                {% if publicacion.es_anuncio and publicacion.imagen_renderizada %}
+                <!-- Imagen renderizada con texto (anuncio) -->
+                <div class="publicacion-body-con-imagen">
+                    <img src="{{ publicacion.imagen_renderizada.url }}" alt="Anuncio">
+                </div>
+                {% elif publicacion.imagen %}
                 <!-- Imagen (texto ya renderizado en servidor si aplica) -->
                 <div class="publicacion-body-con-imagen">
                     <img src="{{ publicacion.imagen.url }}" alt="Imagen"
@@ -428,15 +579,31 @@
                 {% else %}
                 <!-- Contenido sin imagen -->
                 <div class="publicacion-body">
+                    {% if publicacion.estilos %}
                     <div class="publicacion-contenido"
-                         style="font-size: {{ publicacion.estilos.font_size|default:'1rem' }};
+                         style="font-size: {{ publicacion.estilos.contenido_font_size|default:publicacion.estilos.font_size|default:'1rem' }}px;
                                 font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
-                                color: {{ publicacion.estilos.text_color|default:'inherit' }};">
+                                color: {{ publicacion.estilos.text_color|default:'inherit' }};
+                                text-align: {{ publicacion.estilos.text_align|default:'left' }};
+                                text-shadow: {{ publicacion.estilos.text_shadow|default:'none' }};">
                         {% if publicacion.titulo %}
-                        <h5>{{ publicacion.titulo }}</h5>
+                        <h5 style="font-size: {{ publicacion.estilos.titulo_font_size|default:publicacion.estilos.font_size|default:'1rem' }}px;
+                                   font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
+                                   color: {{ publicacion.estilos.text_color|default:'inherit' }};
+                                   text-shadow: {{ publicacion.estilos.text_shadow|default:'none' }};
+                                   margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
                         {% endif %}
-                        {{ publicacion.contenido }}
+                        <p style="margin: 0; white-space: normal;">{{ publicacion.contenido }}</p>
                     </div>
+                    {% else %}
+                    <!-- Publicación rápida sin estilos -->
+                    <div class="publicacion-contenido" style="font-size: 1rem; text-align: left;">
+                        {% if publicacion.titulo %}
+                        <h5 style="margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
+                        {% endif %}
+                        <p style="margin: 0; white-space: normal;">{{ publicacion.contenido }}</p>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
 

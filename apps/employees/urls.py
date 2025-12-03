@@ -79,6 +79,7 @@ urlpatterns = [
     # =============================================================================
     path('feed/', feed_views.FeedListView.as_view(), name='feed_list'),
     path('feed/publicacion/crear/', feed_views.CrearPublicacionView.as_view(), name='crear_publicacion'),
+    path('feed/publicacion/rapida/', feed_views.crear_publicacion_rapida, name='crear_publicacion_rapida'),
     path('feed/publicacion/<uuid:pk>/editar/', feed_views.EditarPublicacionView.as_view(), name='editar_publicacion'),
     path('feed/publicacion/<uuid:pk>/eliminar/', feed_views.EliminarPublicacionView.as_view(), name='eliminar_publicacion'),
     path('feed/publicacion/<uuid:publicacion_pk>/comentario/', feed_views.agregar_comentario, name='agregar_comentario'),

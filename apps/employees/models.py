@@ -828,11 +828,21 @@ class Publicacion(models.Model):
         help_text="Fecha de finalización del anuncio importante"
     )
 
-    # Estilos (JSON)
+    # Estilos (JSON) - Nuevo formato mejorado
     estilos = models.JSONField(
         default=dict,
         blank=True,
-        help_text="Estilos CSS: font_size, font_family, text_color, background_opacity"
+        help_text="Estilos: font_family, font_size, text_color, stroke_width, stroke_color, "
+                  "titulo_x, titulo_y, titulo_width, titulo_height, "
+                  "contenido_x, contenido_y, contenido_width, contenido_height"
+    )
+
+    # Imagen renderizada (con texto superpuesto)
+    imagen_renderizada = models.ImageField(
+        upload_to='anuncios_renderizados/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        help_text="Imagen final con texto renderizado"
     )
 
     class Meta:

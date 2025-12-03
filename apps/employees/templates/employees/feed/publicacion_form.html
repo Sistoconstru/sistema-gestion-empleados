@@ -5,6 +5,19 @@
 
 {% block extra_css %}
 <style>
+    /* Cargar fuentes personalizadas */
+    @font-face {
+        font-family: 'Twiggy';
+        src: url('{% static "webfonts/Twiggy.ttf" %}') format('truetype');
+    }
+
+    @font-face {
+        font-family: 'Pinewood';
+        src: url('{% static "webfonts/Pinewood.ttf" %}') format('truetype');
+    }
+
+    /* Love Twist Sans no está disponible, pero la opción existe para cuando se agregue */
+
     .form-container {
         max-width: 700px;
         margin: 2rem auto;
@@ -14,18 +27,59 @@
         background: white;
         border-radius: 0.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-top: 4px solid #667eea;
         padding: 2rem;
+    }
+
+    .publicacion-form-card .card-header-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 2rem;
     }
 
     .form-section {
         margin-bottom: 2rem;
     }
 
+    .form-section:last-of-type {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .form-section:last-of-type .form-section-titulo {
+        grid-column: 1;
+    }
+
+    .form-section:last-of-type .editor-estilos {
+        grid-column: 1;
+    }
+
+    .form-section:last-of-type .preview-contenido {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-top: 0;
+    }
+
+    @media (max-width: 1200px) {
+        .form-section:last-of-type {
+            grid-template-columns: 1fr;
+        }
+
+        .form-section:last-of-type .preview-contenido {
+            grid-column: 1;
+            grid-row: auto;
+            margin-top: 1rem;
+        }
+    }
+
     .form-section-titulo {
         font-weight: 600;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid #667eea;
+        border-bottom: 2px solid #dc3545;
         color: #333;
     }
 
@@ -33,30 +87,219 @@
         background-color: #f9f9f9;
         border: 1px solid #e0e0e0;
         border-radius: 0.5rem;
-        padding: 1rem;
+        padding: 1.5rem;
+        position: sticky;
+        top: 20px;
     }
 
     .editor-estilos .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .editor-estilos .form-group:last-child {
+        margin-bottom: 0;
     }
 
     .editor-estilos label {
         font-weight: 600;
         font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+
+    .zoom-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .zoom-controls button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.85rem;
+        border: 1px solid #dc3545;
+        background: white;
+        color: #dc3545;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .zoom-controls button:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+    .zoom-value {
+        font-size: 0.85rem;
+        min-width: 50px;
+        text-align: center;
+        font-weight: 600;
     }
 
     .preview-contenido {
         background: white;
-        border: 1px solid #e0e0e0;
+        border: 2px solid #dc3545;
         border-radius: 0.5rem;
-        padding: 1rem;
-        margin-top: 1rem;
-        min-height: 100px;
+        padding: 2rem;
+        margin-top: 0;
+        min-height: 600px;
+        height: 600px;
+        position: relative;
+        overflow: auto;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
     }
 
-    .preview-contenido.con-imagen {
-        background-size: cover;
-        background-position: center;
+    .preview-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-origin: top left;
+        transition: transform 0.2s ease;
+    }
+
+    .preview-text {
+        padding: 1rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 200px;
+        width: 300px;
+        min-height: 100px;
+        height: auto;
+        border: 3px dashed #667eea;
+        border-radius: 0.25rem;
+        background-color: transparent;
+        box-shadow: none;
+        transition: none;
+        user-select: none;
+        overflow: visible;
+        cursor: move;
+    }
+
+    /* Asas de redimensionamiento en todos los bordes */
+    .resize-handle {
+        position: absolute;
+        z-index: 10;
+    }
+
+    /* Esquinas */
+    .resize-handle.nw {
+        top: -8px;
+        left: -8px;
+        width: 20px;
+        height: 20px;
+        cursor: nwse-resize;
+    }
+
+    .resize-handle.ne {
+        top: -8px;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        cursor: nesw-resize;
+    }
+
+    .resize-handle.sw {
+        bottom: -8px;
+        left: -8px;
+        width: 20px;
+        height: 20px;
+        cursor: nesw-resize;
+    }
+
+    .resize-handle.se {
+        bottom: -8px;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        cursor: nwse-resize;
+        background: linear-gradient(135deg, transparent 50%, #667eea 50%);
+    }
+
+    /* Bordes */
+    .resize-handle.n {
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 12px;
+        cursor: ns-resize;
+    }
+
+    .resize-handle.s {
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 12px;
+        cursor: ns-resize;
+    }
+
+    .resize-handle.w {
+        top: 50%;
+        left: -6px;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 60px;
+        cursor: ew-resize;
+    }
+
+    .resize-handle.e {
+        top: 50%;
+        right: -6px;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 60px;
+        cursor: ew-resize;
+    }
+
+    .resize-handle:hover {
+        background-color: rgba(102, 126, 234, 0.3);
+        border: 1px solid #667eea;
+    }
+
+    .preview-text:hover {
+        border-color: #764ba2;
+    }
+
+    /* Las asas de redimensionamiento son nativas del navegador con resize: both */
+
+    .preview-text.dragging {
+        z-index: 100;
+        border-color: #dc3545;
+    }
+
+    .preview-text.resizing {
+        border-color: #ffc107;
+    }
+
+    .position-indicator {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+        z-index: 50;
+    }
+
+    .position-text {
+        white-space: nowrap;
     }
 
     .form-actions {
@@ -93,33 +336,37 @@
     <div class="form-container">
         <div class="publicacion-form-card">
             <h2 class="mb-4">
-                <i class="fas fa-edit me-2"></i>{{ titulo_pagina }}
+                <i class="fas fa-newspaper me-2"></i>{{ titulo_pagina }}
             </h2>
 
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="publicacion-form">
                 {% csrf_token %}
 
                 <!-- Título -->
                 <div class="form-section">
-                    <label for="{{ form.titulo.id_for_label }}" class="form-label">Título (opcional)</label>
+                    <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                        <span class="badge bg-danger">Requerido</span> Título del Anuncio
+                    </label>
                     {{ form.titulo }}
                     {% if form.titulo.errors %}
                     <div class="invalid-feedback d-block">
                         {{ form.titulo.errors.0 }}
                     </div>
                     {% endif %}
+                    <small class="form-text text-muted">Títulos claros y concisos funcionan mejor</small>
                 </div>
 
                 <!-- Contenido -->
                 <div class="form-section">
-                    <label for="{{ form.contenido.id_for_label }}" class="form-label">Contenido</label>
+                    <label for="{{ form.contenido.id_for_label }}" class="form-label">
+                        <span class="badge bg-danger">Requerido</span> Contenido del Anuncio
+                    </label>
                     {{ form.contenido }}
                     {% if form.contenido.errors %}
                     <div class="invalid-feedback d-block">
                         {{ form.contenido.errors.0 }}
                     </div>
                     {% endif %}
-                    <small class="form-text text-muted">Mínimo 1 carácter requerido</small>
                 </div>
 
                 <!-- Imagen -->
@@ -133,8 +380,23 @@
                         {{ form.imagen.errors.0 }}
                     </div>
                     {% endif %}
+                    <small class="form-text text-muted">Máximo 5MB. Una imagen atractiva aumenta el impacto.</small>
+                </div>
+
+                <!-- Fecha de Finalización -->
+                <div class="form-section">
+                    <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">
+                        <span class="badge bg-danger">Requerido</span> Fecha de Finalización
+                    </label>
+                    {{ form.fecha_fin }}
+                    {% if form.fecha_fin.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.fecha_fin.errors.0 }}
+                    </div>
+                    {% endif %}
                     <small class="form-text text-muted">
-                        Máximo 5MB. La imagen se mostrará como fondo detrás del contenido.
+                        <i class="fas fa-info-circle me-1"></i>
+                        El anuncio dejará de ser visible en esta fecha y hora.
                     </small>
                 </div>
 
@@ -166,6 +428,9 @@
                                 <option value="'Courier New'">Courier New</option>
                                 <option value="Georgia">Georgia</option>
                                 <option value="Verdana">Verdana</option>
+                                <option value="'Love Twist Sans'">Love Twist Sans</option>
+                                <option value="Twiggy">Twiggy</option>
+                                <option value="Pinewood">Pinewood</option>
                             </select>
                         </div>
 
@@ -186,13 +451,73 @@
                                 <span id="opacity-value" class="text-muted">50%</span>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="text-stroke" class="form-label">Contorno del texto</label>
+                            <select id="text-stroke" class="form-select" onchange="actualizarEstilo('text_stroke', this.value); actualizarPreview()">
+                                <option value="">Sin contorno</option>
+                                <option value="1">Fino (1px)</option>
+                                <option value="2">Medio (2px)</option>
+                                <option value="3">Grueso (3px)</option>
+                                <option value="4">Extra grueso (4px)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stroke-color" class="form-label">Color del contorno</label>
+                            <input type="color" id="stroke-color" class="form-control form-control-color" value="#000000"
+                                   onchange="actualizarEstilo('stroke_color', this.value); actualizarPreview()">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="text-align" class="form-label">Alineación del texto</label>
+                            <select id="text-align" class="form-select" onchange="actualizarEstilo('text_align', this.value); actualizarPreview()">
+                                <option value="center">Centrado (recomendado)</option>
+                                <option value="left">Izquierda</option>
+                                <option value="right">Derecha</option>
+                                <option value="justify">Justificado</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- Preview -->
+                    <!-- Controles de zoom -->
+                    <div class="preview-header">
+                        <span style="font-weight: 600; color: #333;">Vista Previa</span>
+                        <div class="zoom-controls">
+                            <button type="button" onclick="zoomPreview(-20)" title="Reducir (Ctrl+-)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="zoom-value"><span id="zoom-percent">100</span>%</span>
+                            <button type="button" onclick="zoomPreview(20)" title="Aumentar (Ctrl++)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button type="button" onclick="resetZoom()" title="Restablecer (Ctrl+0)">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Preview con posicionamiento de texto -->
                     <div class="preview-contenido" id="preview">
-                        <p class="text-muted text-center py-5">
-                            <i class="fas fa-eye me-1"></i>Vista previa de tu publicación
-                        </p>
+                        <div class="preview-inner" id="preview-inner">
+                            <div id="preview-text" class="preview-text" style="cursor: move; position: absolute;">
+                                <div class="text-center text-muted py-5">
+                                    <i class="fas fa-eye me-1"></i>Vista previa de tu anuncio
+                                </div>
+                                <!-- Resize handles -->
+                                <div class="resize-handle nw" data-direction="nw"></div>
+                                <div class="resize-handle ne" data-direction="ne"></div>
+                                <div class="resize-handle sw" data-direction="sw"></div>
+                                <div class="resize-handle se" data-direction="se"></div>
+                                <div class="resize-handle n" data-direction="n"></div>
+                                <div class="resize-handle s" data-direction="s"></div>
+                                <div class="resize-handle w" data-direction="w"></div>
+                                <div class="resize-handle e" data-direction="e"></div>
+                            </div>
+                            <div class="position-indicator" id="position-indicator">
+                                <small class="position-text">Posición: <span id="pos-x">0</span>% | <span id="pos-y">0</span>%</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -213,8 +538,8 @@
                     <a href="{% url 'employees:feed_list' %}" class="btn btn-outline-secondary">
                         <i class="fas fa-times me-1"></i>Cancelar
                     </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i>{{ boton_envio }}
+                    <button type="button" class="btn btn-danger" id="submit-btn" onclick="guardarPosicionAntesDSubmit(event)">
+                        <i class="fas fa-send me-1"></i>{{ boton_envio }}
                     </button>
                 </div>
             </form>
@@ -224,6 +549,17 @@
 
 <script>
 let estilos = {};
+let isDragging = false;
+let isResizing = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let resizeDirection = null;
+let resizeStartX = 0;
+let resizeStartY = 0;
+let resizeStartWidth = 0;
+let resizeStartHeight = 0;
+let resizeStartTop = 0;
+let resizeStartLeft = 0;
 
 function actualizarEstilo(propiedad, valor) {
     if (valor) {
@@ -232,10 +568,8 @@ function actualizarEstilo(propiedad, valor) {
         delete estilos[propiedad];
     }
 
-    // Actualizar campo oculto
     document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
 
-    // Actualizar opacity display
     if (propiedad === 'background_opacity') {
         document.getElementById('opacity-value').textContent = valor + '%';
     }
@@ -243,31 +577,102 @@ function actualizarEstilo(propiedad, valor) {
 
 function actualizarPreview() {
     const preview = document.getElementById('preview');
-    const contenido = document.querySelector('textarea[name="contenido"]').value || 'Vista previa de tu publicación';
+    const previewText = document.getElementById('preview-text');
+    const contenido = document.querySelector('textarea[name="contenido"]').value || 'Vista previa de tu anuncio';
     const imagen = document.querySelector('input[name="imagen"]').files[0];
     const titulo = document.querySelector('input[name="titulo"]').value || '';
 
+    // Construir estilos de texto con contorno (text-shadow para simular stroke)
+    let textShadow = '';
+    const strokeWidth = estilos.text_stroke ? parseInt(estilos.text_stroke) : 0;
+    const strokeColor = estilos.stroke_color || '#000000';
+
+    if (strokeWidth > 0) {
+        // Crear múltiples sombras para simular contorno
+        const shadows = [];
+        for (let i = -strokeWidth; i <= strokeWidth; i++) {
+            for (let j = -strokeWidth; j <= strokeWidth; j++) {
+                if (i !== 0 || j !== 0) {
+                    shadows.push(`${i}px ${j}px 0 ${strokeColor}`);
+                }
+            }
+        }
+        textShadow = shadows.join(', ');
+    }
+
+    const textAlign = estilos.text_align || 'center';
+
+    // Garantizar que el font-family esté bien formateado
+    let fontFamily = estilos.font_family || 'inherit';
+    // Si no tiene comillas y no es una fuente del sistema, agregarlas
+    if (fontFamily && !fontFamily.includes("'") && !fontFamily.includes('"')) {
+        if (['Twiggy', 'Pinewood', 'Love Twist Sans', 'Georgia', 'Verdana', 'Comic Sans MS'].includes(fontFamily)) {
+            fontFamily = `'${fontFamily}'`;
+        }
+    }
+
     let html = `<div style="
         font-size: ${estilos.font_size || '1rem'};
-        font-family: ${estilos.font_family || 'inherit'};
+        font-family: ${fontFamily};
         color: ${estilos.text_color || '#333'};
         padding: 1rem;
+        text-align: ${textAlign};
+        ${textShadow ? `text-shadow: ${textShadow};` : ''}
     ">`;
 
     if (titulo) {
-        html += `<h5 style="margin-bottom: 0.5rem;">${titulo}</h5>`;
+        html += `<h5 style="margin-bottom: 0.5rem; margin-top: 0;"><strong>📢 ${titulo}</strong></h5>`;
     }
 
-    html += `<p style="white-space: pre-wrap;">${contenido}</p></div>`;
+    html += `<p style="white-space: pre-wrap; margin: 0;">${contenido}</p></div>`;
 
-    preview.innerHTML = html;
+    previewText.innerHTML = html;
 
-    // Aplicar imagen como fondo si existe
+    // Reinsertar los resize handles (se eliminan al hacer innerHTML)
+    insertarResizeHandles(previewText);
+
+    // Aplicar posición guardada si existe
+    if (estilos.text_position_x !== undefined && estilos.text_position_y !== undefined) {
+        previewText.style.left = estilos.text_position_x + '%';
+        previewText.style.top = estilos.text_position_y + '%';
+        document.getElementById('pos-x').textContent = estilos.text_position_x;
+        document.getElementById('pos-y').textContent = estilos.text_position_y;
+    }
+
+    // Aplicar tamaño guardado si existe
+    if (estilos.text_width !== undefined) {
+        previewText.style.width = estilos.text_width + 'px';
+    }
+    if (estilos.text_height !== undefined) {
+        previewText.style.height = estilos.text_height + 'px';
+    }
+
     if (imagen) {
         const reader = new FileReader();
         reader.onload = (e) => {
+            // Crear imagen temporal para obtener dimensiones
+            const img = new Image();
+            img.onload = () => {
+                // Ajustar altura del contenedor según aspecto ratio
+                const aspectRatio = img.width / img.height;
+                const maxWidth = 600;
+
+                let newHeight;
+                if (aspectRatio < 1) {
+                    // Imagen vertical (portrait)
+                    newHeight = maxWidth / aspectRatio;
+                } else {
+                    // Imagen horizontal (landscape)
+                    newHeight = 600;
+                }
+
+                preview.style.height = Math.min(newHeight, 800) + 'px';
+                previewInner.style.height = '100%';
+            };
+            img.src = e.target.result;
+
             preview.style.backgroundImage = `url(${e.target.result})`;
-            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundSize = 'contain';
             preview.style.backgroundPosition = 'center';
             preview.style.backgroundColor = `rgba(255, 255, 255, ${(100 - (estilos.background_opacity || 50)) / 100})`;
         };
@@ -275,17 +680,316 @@ function actualizarPreview() {
     } else {
         preview.style.backgroundImage = 'none';
         preview.style.backgroundColor = 'white';
+        preview.style.height = '600px'; // Restaurar altura por defecto
     }
 }
 
-// Inicializar preview al cargar
+function insertarResizeHandles(elemento) {
+    // Remover handles antiguos si existen
+    const handlesAntigos = elemento.querySelectorAll('.resize-handle');
+    handlesAntigos.forEach(h => h.remove());
+
+    // Insertar nuevos handles
+    const direcciones = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
+    direcciones.forEach(dir => {
+        const handle = document.createElement('div');
+        handle.className = `resize-handle ${dir}`;
+        handle.setAttribute('data-direction', dir);
+        elemento.appendChild(handle);
+    });
+}
+
+function inicializarDragDrop() {
+    const previewText = document.getElementById('preview-text');
+    const preview = document.getElementById('preview');
+
+    if (!previewText || !preview) return;
+
+    // Listener para detectar resize handles
+    previewText.addEventListener('mousedown', function(e) {
+        const resizeHandle = e.target.closest('.resize-handle');
+
+        if (resizeHandle) {
+            // Es un resize handle
+            e.preventDefault();
+            e.stopPropagation();
+
+            isResizing = true;
+            resizeDirection = resizeHandle.getAttribute('data-direction');
+            previewText.classList.add('resizing');
+
+            const rect = previewText.getBoundingClientRect();
+            resizeStartX = e.clientX;
+            resizeStartY = e.clientY;
+            resizeStartWidth = rect.width;
+            resizeStartHeight = rect.height;
+            resizeStartTop = previewText.offsetTop;
+            resizeStartLeft = previewText.offsetLeft;
+
+            return;
+        }
+
+        // Si no es un resize handle, es drag
+        isDragging = true;
+        previewText.classList.add('dragging');
+
+        const rect = previewText.getBoundingClientRect();
+        const previewRect = preview.getBoundingClientRect();
+
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+    });
+
+    const handleMouseMove = function(e) {
+        const preview = document.getElementById('preview');
+        const previewText = document.getElementById('preview-text');
+        if (!preview || !previewText) return;
+
+        const previewRect = preview.getBoundingClientRect();
+
+        if (isResizing) {
+            // Lógica de redimensionamiento
+            const deltaX = e.clientX - resizeStartX;
+            const deltaY = e.clientY - resizeStartY;
+
+            let newWidth = resizeStartWidth;
+            let newHeight = resizeStartHeight;
+            let newTop = resizeStartTop;
+            let newLeft = resizeStartLeft;
+
+            const direction = resizeDirection;
+
+            // Ajustar según la dirección
+            if (direction.includes('e')) {
+                newWidth = Math.max(150, resizeStartWidth + deltaX);
+            }
+            if (direction.includes('w')) {
+                newWidth = Math.max(150, resizeStartWidth - deltaX);
+                newLeft = Math.max(0, resizeStartLeft + deltaX);
+            }
+            if (direction.includes('s')) {
+                newHeight = Math.max(80, resizeStartHeight + deltaY);
+            }
+            if (direction.includes('n')) {
+                newHeight = Math.max(80, resizeStartHeight - deltaY);
+                newTop = Math.max(0, resizeStartTop + deltaY);
+            }
+
+            // Limitar dentro del contenedor
+            newLeft = Math.max(0, Math.min(newLeft, previewRect.width - newWidth));
+            newTop = Math.max(0, Math.min(newTop, previewRect.height - newHeight));
+
+            previewText.style.width = newWidth + 'px';
+            previewText.style.height = newHeight + 'px';
+            previewText.style.left = newLeft + 'px';
+            previewText.style.top = newTop + 'px';
+
+            return;
+        }
+
+        if (!isDragging) return;
+
+        let x = e.clientX - previewRect.left - dragOffsetX;
+        let y = e.clientY - previewRect.top - dragOffsetY;
+
+        // Limitar dentro del contenedor
+        x = Math.max(0, Math.min(x, previewRect.width - previewText.offsetWidth));
+        y = Math.max(0, Math.min(y, previewRect.height - previewText.offsetHeight));
+
+        // Convertir a porcentajes relativos al contenedor
+        const xPercent = Math.round((x / previewRect.width) * 100);
+        const yPercent = Math.round((y / previewRect.height) * 100);
+
+        previewText.style.left = x + 'px';
+        previewText.style.top = y + 'px';
+
+        document.getElementById('pos-x').textContent = xPercent;
+        document.getElementById('pos-y').textContent = yPercent;
+    };
+
+    const handleMouseUp = function() {
+        const previewText = document.getElementById('preview-text');
+        if (!previewText) return;
+
+        if (isResizing) {
+            isResizing = false;
+            resizeDirection = null;
+            previewText.classList.remove('resizing');
+
+            // Guardar tamaño
+            estilos.text_width = previewText.offsetWidth;
+            estilos.text_height = previewText.offsetHeight;
+            document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+            return;
+        }
+
+        if (!isDragging) return;
+        isDragging = false;
+        previewText.classList.remove('dragging');
+
+        // Guardar posición en porcentajes
+        const preview = document.getElementById('preview');
+        if (!preview) return;
+        const previewRect = preview.getBoundingClientRect();
+        const textRect = previewText.getBoundingClientRect();
+
+        // Calcular porcentajes relativos al contenedor
+        const xPercent = Math.round(((textRect.left - previewRect.left) / previewRect.width) * 100);
+        const yPercent = Math.round(((textRect.top - previewRect.top) / previewRect.height) * 100);
+
+        estilos.text_position_x = Math.max(0, Math.min(100, xPercent));
+        estilos.text_position_y = Math.max(0, Math.min(100, yPercent));
+
+        document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+}
+
+function guardarPosicionAntesDSubmit(event) {
+    // Prevenir envío automático del formulario
+    event.preventDefault();
+
+    const preview = document.getElementById('preview');
+    const previewInner = document.getElementById('preview-inner');
+    const previewText = document.getElementById('preview-text');
+    const imagenInput = document.querySelector('input[name="imagen"]');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('publicacion-form');
+
+    // Si hay imagen, calcular posición en píxeles
+    if (preview && previewText && imagenInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+
+            img.onload = () => {
+                // Ajustar altura del contenedor según aspecto ratio de la imagen
+                // Esto previene que la imagen vertical se desborde
+                const aspectRatio = img.width / img.height;
+                const maxWidth = 600; // Ancho máximo del contenedor (aproximado)
+
+                let newHeight;
+                if (aspectRatio < 1) {
+                    // Imagen vertical (portrait)
+                    newHeight = maxWidth / aspectRatio;
+                } else {
+                    // Imagen horizontal (landscape) - usar altura por defecto
+                    newHeight = 600;
+                }
+
+                // Obtener referencia a previewInner dentro del scope
+                const previewInnerElement = document.getElementById('preview-inner');
+
+                // Aplicar la nueva altura al contenedor
+                preview.style.height = Math.min(newHeight, 800) + 'px'; // Máximo 800px
+                previewInnerElement.style.height = '100%';
+
+                // Obtener dimensiones del preview ANTES de cambiar su altura
+                const previewInnerRect = previewInnerElement.getBoundingClientRect();
+                const textRect = previewText.getBoundingClientRect();
+
+                // Usar dimensiones de la imagen original como referencia
+                // El preview se ajustará a la imagen con 'contain'
+                const imgWidth = img.width;
+                const imgHeight = img.height;
+
+                // Calcular cuál será el tamaño de la imagen dentro del contenedor
+                // Asumimos que el contenedor tiene ancho máximo de 600px
+                const maxContainerWidth = 600;
+                const aspectRatio = imgWidth / imgHeight;
+
+                let displayedWidth, displayedHeight;
+                if (aspectRatio >= 1) {
+                    // Imagen horizontal o cuadrada: limita por ancho
+                    displayedWidth = maxContainerWidth;
+                    displayedHeight = displayedWidth / aspectRatio;
+                } else {
+                    // Imagen vertical: limita por ancho también (600px)
+                    displayedWidth = maxContainerWidth;
+                    displayedHeight = displayedWidth / aspectRatio;
+                }
+
+                // Calcular escala: de píxeles de preview a píxeles de imagen
+                const scaleX = imgWidth / displayedWidth;
+                const scaleY = imgHeight / displayedHeight;
+
+                // Extraer posición del estilo (position: absolute)
+                // El style.left y style.top contienen los valores calculados por JavaScript
+                const textLeftInPreview = parseFloat(previewText.style.left) || 0;
+                const textTopInPreview = parseFloat(previewText.style.top) || 0;
+
+                // Convertir a píxeles de imagen
+                const textXPx = Math.round(textLeftInPreview * scaleX);
+                const textYPx = Math.round(textTopInPreview * scaleY);
+
+                // Convertir dimensiones del cuadro a píxeles de imagen
+                const textWidthPx = Math.round(previewText.offsetWidth * scaleX);
+                const textHeightPx = Math.round(previewText.offsetHeight * scaleY);
+
+                // Guardar datos de posicionamiento PARA QUE EL SERVIDOR LOS PROCESE
+                estilos.text_position_x_px = textXPx;
+                estilos.text_position_y_px = textYPx;
+                estilos.text_width_px = textWidthPx;
+                estilos.text_height_px = textHeightPx;
+                estilos.imagen_ancho = imgWidth;
+                estilos.imagen_alto = imgHeight;
+
+                document.querySelector('input[name="estilos"]').value = JSON.stringify(estilos);
+
+                // Enviar formulario - el servidor renderizará el texto en la imagen
+                form.submit();
+            };
+
+            img.onerror = () => {
+                alert('Error al cargar la imagen. Por favor intenta de nuevo.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-send me-1"></i>{{ boton_envio }}';
+            };
+
+            img.src = e.target.result;
+        };
+
+        reader.onerror = () => {
+            alert('Error al leer la imagen. Por favor intenta de nuevo.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-send me-1"></i>{{ boton_envio }}';
+        };
+
+        reader.readAsDataURL(imagenInput.files[0]);
+    } else {
+        // Sin imagen, enviar directo
+        form.submit();
+    }
+}
+
+// ===================== FUNCIONES DE ZOOM =====================
+let currentZoom = 100;
+
+function zoomPreview(delta) {
+    const previewInner = document.getElementById('preview-inner');
+    if (!previewInner) return;
+
+    currentZoom = Math.max(50, Math.min(200, currentZoom + delta)); // Clamp entre 50-200%
+    document.getElementById('zoom-percent').textContent = currentZoom;
+    previewInner.style.transform = `scale(${currentZoom / 100})`;
+}
+
+function resetZoom() {
+    const previewInner = document.getElementById('preview-inner');
+    if (!previewInner) return;
+
+    currentZoom = 100;
+    document.getElementById('zoom-percent').textContent = '100';
+    previewInner.style.transform = 'scale(1)';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Cargar estilos si existen
     const stilosInput = document.querySelector('input[name="estilos"]');
     if (stilosInput.value) {
         try {
             estilos = JSON.parse(stilosInput.value);
-            // Restaurar valores en los inputs
             if (estilos.font_size) document.getElementById('font-size').value = estilos.font_size;
             if (estilos.font_family) document.getElementById('font-family').value = estilos.font_family;
             if (estilos.text_color) document.getElementById('text-color').value = estilos.text_color;
@@ -293,17 +997,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('background-opacity').value = estilos.background_opacity;
                 document.getElementById('opacity-value').textContent = estilos.background_opacity + '%';
             }
+            if (estilos.text_stroke) document.getElementById('text-stroke').value = estilos.text_stroke;
+            if (estilos.stroke_color) document.getElementById('stroke-color').value = estilos.stroke_color;
+            if (estilos.text_align) document.getElementById('text-align').value = estilos.text_align;
         } catch (e) {
             console.error('Error al parsear estilos:', e);
         }
     }
 
-    actualizarPreview();
+    // Establecer valores por defecto
+    if (!estilos.text_align) estilos.text_align = 'center';
+    if (!estilos.stroke_color) estilos.stroke_color = '#000000';
 
-    // Actualizar preview cuando cambian los inputs
+    actualizarPreview();
+    inicializarDragDrop();
+
     document.querySelector('textarea[name="contenido"]').addEventListener('input', actualizarPreview);
     document.querySelector('input[name="titulo"]').addEventListener('input', actualizarPreview);
     document.querySelector('input[name="imagen"]').addEventListener('change', actualizarPreview);
+
+    // Atajos de teclado para zoom
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === '+' || e.key === '=') {
+                e.preventDefault();
+                zoomPreview(20);
+            } else if (e.key === '-') {
+                e.preventDefault();
+                zoomPreview(-20);
+            } else if (e.key === '0') {
+                e.preventDefault();
+                resetZoom();
+            }
+        }
+    });
 });
 </script>
 {% endblock %}

@@ -1,0 +1,669 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Nueva Publicación{% endblock %}
+
+{% block extra_css %}
+<style>
+    .editor-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+
+    .row-main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    /* COLUMNA IZQUIERDA - PREVIEW */
+    .preview-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+
+    .preview-title {
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    #preview-container {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        background-color: white;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    #preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Cuadros de texto en preview */
+    .preview-text-box {
+        position: absolute;
+        padding: 0.5rem;
+        border: 2px dashed #667eea;
+        background: rgba(102, 126, 234, 0.1);
+        cursor: move;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .preview-text-box.titulo {
+        background: rgba(102, 126, 234, 0.15);
+    }
+
+    .preview-text-box.contenido {
+        background: rgba(102, 126, 234, 0.1);
+    }
+
+    .preview-text-content {
+        overflow: hidden;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: inherit;
+        color: inherit;
+        text-shadow: inherit;
+        text-align: center;
+    }
+
+    /* Resize handles */
+    .preview-text-box::after {
+        content: '↘';
+        position: absolute;
+        bottom: -8px;
+        right: -8px;
+        font-size: 16px;
+        cursor: nwse-resize;
+        background: #667eea;
+        color: white;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+    }
+
+    /* COLUMNA DERECHA - EDITOR */
+    .editor-section {
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .editor-section h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 1.1rem;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 0.5rem;
+    }
+
+    .editor-section h3:first-child {
+        margin-top: 0;
+    }
+
+    .form-group-custom {
+        margin-bottom: 1rem;
+    }
+
+    .form-group-custom label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .form-group-custom input[type="text"],
+    .form-group-custom input[type="file"],
+    .form-group-custom textarea,
+    .form-group-custom select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        font-family: inherit;
+    }
+
+    .form-group-custom textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-group-custom input[type="file"] {
+        padding: 0.5rem;
+    }
+
+    .style-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group-custom input[type="range"] {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .form-group-custom small {
+        display: block;
+        margin-top: 0.25rem;
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .color-picker {
+        grid-column: 1;
+    }
+
+    .position-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .position-controls label {
+        margin-bottom: 0;
+        font-weight: normal;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .position-controls input {
+        width: 60px;
+        padding: 0.4rem;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        justify-content: flex-end;
+    }
+
+    .btn-submit,
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-cancel {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+    .btn-cancel:hover {
+        background: #c0c0c0;
+    }
+
+    @media (max-width: 768px) {
+        .row-main {
+            grid-template-columns: 1fr;
+        }
+
+        .preview-section {
+            position: static;
+            margin-bottom: 2rem;
+        }
+
+        .style-controls {
+            grid-template-columns: 1fr;
+        }
+
+        .color-picker {
+            grid-column: 1;
+        }
+
+        .btn-group {
+            flex-direction: column-reverse;
+        }
+
+        .btn-submit,
+        .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="editor-container">
+    <h1><i class="fas fa-pen me-2"></i>Nueva Publicación</h1>
+
+    <form id="publicacion-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row-main">
+            <!-- COLUMNA IZQUIERDA: PREVIEW -->
+            <div class="preview-section">
+                <div class="preview-title">Vista Previa</div>
+                <div id="preview-container">
+                    <img id="preview-image" src="" alt="Preview">
+                    <div id="titulo-box" class="preview-text-box titulo" style="left: 20px; top: 20px; width: 200px; height: 80px;">
+                        <div class="preview-text-content">Título</div>
+                    </div>
+                    <div id="contenido-box" class="preview-text-box contenido" style="left: 20px; top: 120px; width: 200px; height: 150px;">
+                        <div class="preview-text-content">Contenido de la publicación</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: EDITOR -->
+            <div class="editor-section">
+                <!-- IMAGEN -->
+                <h3>1. Selecciona la Imagen</h3>
+                <div class="form-group-custom">
+                    <label for="id_imagen">Imagen de fondo (opcional)</label>
+                    {{ form.imagen }}
+                </div>
+
+                <!-- TÍTULO Y CONTENIDO -->
+                <h3>2. Contenido de la Publicación</h3>
+                <div class="form-group-custom">
+                    <label for="id_titulo">Título (opcional)</label>
+                    {{ form.titulo }}
+                </div>
+                <div class="form-group-custom">
+                    <label for="id_contenido">Contenido *</label>
+                    {{ form.contenido }}
+                </div>
+
+                <!-- ESTILOS -->
+                <h3>3. Estilo del Texto</h3>
+                <div class="style-controls">
+                    <div class="form-group-custom">
+                        <label for="font-family">Fuente</label>
+                        <select id="font-family">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Twiggy">Twiggy</option>
+                            <option value="Pinewood">Pinewood</option>
+                        </select>
+                    </div>
+                    <div class="form-group-custom">
+                        <label for="font-size">Tamaño Base</label>
+                        <input type="range" id="font-size" min="10" max="50" value="20">
+                        <small id="font-size-value">20px</small>
+                    </div>
+                    <div class="form-group-custom color-picker">
+                        <label for="text-color">Color del Texto</label>
+                        <input type="color" id="text-color" value="#000000">
+                    </div>
+                    <div class="form-group-custom">
+                        <label for="stroke-width">Contorno</label>
+                        <input type="range" id="stroke-width" min="0" max="10" value="0">
+                        <small id="stroke-value">0px</small>
+                    </div>
+                    <div class="form-group-custom color-picker">
+                        <label for="stroke-color">Color Contorno</label>
+                        <input type="color" id="stroke-color" value="#000000">
+                    </div>
+                </div>
+
+                <!-- POSICIONAMIENTO TÍTULO -->
+                <h3>4. Posición del Título</h3>
+                <div class="position-controls">
+                    <label>X: <input type="number" id="titulo-x" value="20" min="0"></label>
+                    <label>Y: <input type="number" id="titulo-y" value="20" min="0"></label>
+                    <label>Ancho: <input type="number" id="titulo-width" value="200" min="50"></label>
+                    <label>Alto: <input type="number" id="titulo-height" value="80" min="30"></label>
+                </div>
+
+                <!-- POSICIONAMIENTO CONTENIDO -->
+                <h3>5. Posición del Contenido</h3>
+                <div class="position-controls">
+                    <label>X: <input type="number" id="contenido-x" value="20" min="0"></label>
+                    <label>Y: <input type="number" id="contenido-y" value="120" min="0"></label>
+                    <label>Ancho: <input type="number" id="contenido-width" value="200" min="50"></label>
+                    <label>Alto: <input type="number" id="contenido-height" value="150" min="50"></label>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="btn-group">
+                    <a href="{% url 'employees:feed_list' %}" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-send me-2"></i>Publicar
+                    </button>
+                </div>
+
+                <!-- Campo oculto para estilos -->
+                {{ form.estilos }}
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Estado global
+    const state = {
+        imagenCargada: false,
+        estilos: {},
+        draggingElement: null,
+        resizingElement: null
+    };
+
+    // Referencias a elementos
+    const imagenInput = document.getElementById('id_imagen');
+    const previewImage = document.getElementById('preview-image');
+    const previewContainer = document.getElementById('preview-container');
+    const tituloBox = document.getElementById('titulo-box');
+    const contenidoBox = document.getElementById('contenido-box');
+    const tituloInput = document.getElementById('id_titulo');
+    const contenidoInput = document.getElementById('id_contenido');
+    const form = document.getElementById('publicacion-form');
+    const estilsInput = document.querySelector('input[name="estilos"]');
+    const fontFamilySelect = document.getElementById('font-family');
+    const fontSizeInput = document.getElementById('font-size');
+    const textColorInput = document.getElementById('text-color');
+    const strokeWidthInput = document.getElementById('stroke-width');
+    const strokeColorInput = document.getElementById('stroke-color');
+
+    // Cargar imagen
+    imagenInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImage.src = event.target.result;
+                state.imagenCargada = true;
+                actualizarPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Actualizar preview cuando cambia el título/contenido
+    tituloInput.addEventListener('input', actualizarPreview);
+    contenidoInput.addEventListener('input', actualizarPreview);
+
+    // Controles de estilo
+    fontSizeInput.addEventListener('input', function(e) {
+        document.getElementById('font-size-value').textContent = e.target.value + 'px';
+        state.estilos.font_size = parseInt(e.target.value);
+        console.log('Font size base cambió a:', e.target.value);
+        actualizarPreview();
+    });
+
+    strokeWidthInput.addEventListener('input', function(e) {
+        document.getElementById('stroke-value').textContent = e.target.value + 'px';
+        state.estilos.stroke_width = parseInt(e.target.value);
+        actualizarPreview();
+    });
+
+    fontFamilySelect.addEventListener('change', function(e) {
+        state.estilos.font_family = e.target.value;
+        actualizarPreview();
+    });
+
+    textColorInput.addEventListener('change', function(e) {
+        state.estilos.text_color = e.target.value;
+        actualizarPreview();
+    });
+
+    strokeColorInput.addEventListener('change', function(e) {
+        state.estilos.stroke_color = e.target.value;
+        actualizarPreview();
+    });
+
+    // Controles de posición y dimensiones
+    ['titulo-x', 'titulo-y', 'titulo-width', 'titulo-height'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+            const value = parseInt(e.target.value) || 0;
+            const axis = id.split('-')[1];
+            tituloBox.style[axis === 'x' ? 'left' : axis === 'y' ? 'top' : axis === 'width' ? 'width' : 'height'] = value + 'px';
+            actualizarPreview();
+        });
+    });
+
+    ['contenido-x', 'contenido-y', 'contenido-width', 'contenido-height'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+            const value = parseInt(e.target.value) || 0;
+            const axis = id.split('-')[1];
+            contenidoBox.style[axis === 'x' ? 'left' : axis === 'y' ? 'top' : axis === 'width' ? 'width' : 'height'] = value + 'px';
+            actualizarPreview();
+        });
+    });
+
+    // Hacer cajas arrastables y redimensionables
+    hacerInteractivo(tituloBox, 'titulo');
+    hacerInteractivo(contenidoBox, 'contenido');
+
+    function hacerInteractivo(elemento, prefix) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        let resizeStartX, resizeStartY, resizeStartWidth, resizeStartHeight;
+
+        // Arrastrar
+        elemento.addEventListener('mousedown', function(e) {
+            // Si es el resize handle, ignorar el drag
+            if (e.target.tagName === 'DIV' && e.target.classList.contains('preview-text-content')) {
+                return dragMouseDown(e);
+            }
+        });
+
+        function dragMouseDown(e) {
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            let newTop = elemento.offsetTop - pos2;
+            let newLeft = elemento.offsetLeft - pos1;
+
+            newTop = Math.max(0, Math.min(newTop, previewContainer.offsetHeight - elemento.offsetHeight));
+            newLeft = Math.max(0, Math.min(newLeft, previewContainer.offsetWidth - elemento.offsetWidth));
+
+            elemento.style.top = newTop + "px";
+            elemento.style.left = newLeft + "px";
+
+            // Actualizar inputs
+            document.getElementById(prefix + '-x').value = newLeft;
+            document.getElementById(prefix + '-y').value = newTop;
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+
+        // Redimensionar desde el handle
+        elemento.addEventListener('mousedown', function(e) {
+            if (e.offsetX > elemento.offsetWidth - 30 && e.offsetY > elemento.offsetHeight - 30) {
+                e.preventDefault();
+                resizeStartX = e.clientX;
+                resizeStartY = e.clientY;
+                resizeStartWidth = elemento.offsetWidth;
+                resizeStartHeight = elemento.offsetHeight;
+                document.onmouseup = closeResizeElement;
+                document.onmousemove = elementResize;
+            }
+        });
+
+        function elementResize(e) {
+            e.preventDefault();
+            const dX = e.clientX - resizeStartX;
+            const dY = e.clientY - resizeStartY;
+
+            let newWidth = Math.max(50, resizeStartWidth + dX);
+            let newHeight = Math.max(30, resizeStartHeight + dY);
+
+            newWidth = Math.min(newWidth, previewContainer.offsetWidth - elemento.offsetLeft);
+            newHeight = Math.min(newHeight, previewContainer.offsetHeight - elemento.offsetTop);
+
+            elemento.style.width = newWidth + "px";
+            elemento.style.height = newHeight + "px";
+
+            // Actualizar inputs de dimensiones
+            document.getElementById(prefix + '-width').value = newWidth;
+            document.getElementById(prefix + '-height').value = newHeight;
+
+            // Auto-ajustar tamaño de fuente basado en ancho del cuadro
+            // Cada cuadro tiene su propia escala independiente
+            // Fórmula: más ancho = letra más grande
+            const baseFontSize = parseInt(fontSizeInput.value);
+            const fontSizeRatio = newWidth / 200; // 200px es el ancho base
+            const newFontSize = Math.max(10, Math.min(50, Math.round(baseFontSize * fontSizeRatio)));
+
+            console.log(`Resize ${prefix}: newWidth=${newWidth}, baseFontSize=${baseFontSize}, ratio=${fontSizeRatio}, newFontSize=${newFontSize}`);
+
+            // Guardar el tamaño de fuente específico para este cuadro en el estado
+            if (prefix === 'titulo') {
+                state.estilos.titulo_font_size = newFontSize;
+                console.log('Guardado titulo_font_size:', newFontSize);
+            } else if (prefix === 'contenido') {
+                state.estilos.contenido_font_size = newFontSize;
+                console.log('Guardado contenido_font_size:', newFontSize);
+            }
+
+            console.log('State.estilos después de resize:', state.estilos);
+
+            // Actualizar preview en tiempo real
+            actualizarPreview();
+        }
+
+        function closeResizeElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+
+    function aplicarEstilosEnPreview() {
+        const fontFamily = fontFamilySelect.value;
+        const basefontSize = fontSizeInput.value;
+        const textColor = textColorInput.value;
+        const strokeWidth = strokeWidthInput.value;
+        const strokeColor = strokeColorInput.value;
+
+        // Obtener tamaños específicos de cada cuadro (si existen), si no usar el base
+        const tituloFontSize = state.estilos.titulo_font_size || basefontSize;
+        const contenidoFontSize = state.estilos.contenido_font_size || basefontSize;
+
+        console.log('Preview - titulo_font_size:', tituloFontSize, 'contenido_font_size:', contenidoFontSize);
+
+        // Aplicar a titulo - usar el tamaño específico directamente
+        tituloBox.style.fontFamily = fontFamily;
+        tituloBox.style.fontSize = tituloFontSize + 'px'; // Usar directamente sin escala
+        tituloBox.style.color = textColor;
+        if (strokeWidth > 0) {
+            tituloBox.style.textShadow = generarTextShadow(strokeColor, parseInt(strokeWidth));
+        } else {
+            tituloBox.style.textShadow = 'none';
+        }
+
+        // Aplicar a contenido - usar el tamaño específico directamente
+        contenidoBox.style.fontFamily = fontFamily;
+        contenidoBox.style.fontSize = contenidoFontSize + 'px'; // Usar directamente sin escala
+        contenidoBox.style.color = textColor;
+        if (strokeWidth > 0) {
+            contenidoBox.style.textShadow = generarTextShadow(strokeColor, parseInt(strokeWidth));
+        } else {
+            contenidoBox.style.textShadow = 'none';
+        }
+    }
+
+    function generarTextShadow(color, width) {
+        const shadows = [];
+        for (let x = -width; x <= width; x++) {
+            for (let y = -width; y <= width; y++) {
+                if (x !== 0 || y !== 0) {
+                    shadows.push(`${x}px ${y}px 0 ${color}`);
+                }
+            }
+        }
+        return shadows.join(', ');
+    }
+
+    function actualizarPreview() {
+        tituloBox.querySelector('.preview-text-content').textContent = tituloInput.value || 'Título';
+        contenidoBox.querySelector('.preview-text-content').textContent = contenidoInput.value || 'Contenido de la publicación';
+        aplicarEstilosEnPreview();
+    }
+
+    // Guardar estilos antes de enviar
+    form.addEventListener('submit', function(e) {
+        // Recopilar todas las posiciones y estilos
+        state.estilos = {
+            font_family: fontFamilySelect.value,
+            font_size: parseInt(fontSizeInput.value),
+            text_color: textColorInput.value,
+            stroke_width: parseInt(strokeWidthInput.value),
+            stroke_color: strokeColorInput.value,
+            titulo_x: parseInt(document.getElementById('titulo-x').value),
+            titulo_y: parseInt(document.getElementById('titulo-y').value),
+            titulo_width: parseInt(document.getElementById('titulo-width').value),
+            titulo_height: parseInt(document.getElementById('titulo-height').value),
+            titulo_font_size: state.estilos.titulo_font_size || parseInt(fontSizeInput.value),
+            contenido_x: parseInt(document.getElementById('contenido-x').value),
+            contenido_y: parseInt(document.getElementById('contenido-y').value),
+            contenido_width: parseInt(document.getElementById('contenido-width').value),
+            contenido_height: parseInt(document.getElementById('contenido-height').value),
+            contenido_font_size: state.estilos.contenido_font_size || parseInt(fontSizeInput.value),
+        };
+
+        estilsInput.value = JSON.stringify(state.estilos);
+        console.log('Estilos a enviar al servidor:', state.estilos);
+        console.log('JSON string:', estilsInput.value);
+        console.log('Campo input name:', estilsInput.name);
+        console.log('Campo input id:', estilsInput.id);
+    });
+
+    // Inicializar
+    actualizarPreview();
+</script>
+{% endblock %}

@@ -86,7 +86,7 @@ class CrearPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, CreateView
     """Vista para crear una nueva publicación"""
     model = Publicacion
     form_class = PublicacionForm
-    template_name = 'employees/feed/publicacion_form.html'
+    template_name = 'employees/feed/publicacion_crear_nuevo.html'
     success_url = reverse_lazy('employees:feed_list')
 
     def form_valid(self, form):
@@ -94,12 +94,6 @@ class CrearPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, CreateView
         form.instance.autor = self.request.user.empleado
         form.instance.es_anuncio = False
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo_pagina'] = 'Nueva Publicación'
-        context['boton_envio'] = 'Publicar'
-        return context
 
 
 class EditarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, UpdateView):
@@ -139,7 +133,7 @@ class CrearAnuncioImportanteView(LoginRequiredMixin, CreateView):
     """Vista para crear anuncios importantes (solo admins)"""
     model = Publicacion
     form_class = AnuncioImportanteForm
-    template_name = 'employees/feed/anuncio_form.html'
+    template_name = 'employees/feed/anuncio_crear_nuevo.html'
     success_url = reverse_lazy('employees:feed_list')
 
     def dispatch(self, request, *args, **kwargs):
@@ -265,3 +259,37 @@ def editor_estilos(request):
         return JsonResponse({'html': html})
 
     return JsonResponse({'error': 'Método no permitido'})
+
+
+# ===================== PUBLICACIÓN RÁPIDA =====================
+
+@login_required
+@require_POST
+def crear_publicacion_rapida(request):
+    """Vista para crear una publicación rápida sin estilos avanzados"""
+    try:
+        contenido = request.POST.get('contenido', '').strip()
+
+        if not contenido:
+            return redirect('employees:feed_list')
+
+        # Limitar longitud
+        if len(contenido) > 1000:
+            contenido = contenido[:1000]
+
+        # Crear publicación simple (sin imagen, sin estilos)
+        publicacion = Publicacion.objects.create(
+            autor=request.user.empleado,
+            titulo='',  # Sin título en publicaciones rápidas
+            contenido=contenido,
+            es_anuncio=False,
+            es_importante=False
+        )
+
+        logger.info(f"[QUICK_POST] Usuario {request.user.username} creó publicación rápida #{publicacion.id}")
+
+        return redirect('employees:feed_list')
+
+    except Exception as e:
+        logger.error(f"[QUICK_POST] Error al crear publicación rápida: {e}", exc_info=True)
+        return redirect('employees:feed_list')

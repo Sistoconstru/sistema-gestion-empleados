@@ -1133,9 +1133,93 @@ class PublicacionForm(forms.ModelForm):
             raise ValidationError('El contenido no puede estar vacío')
         return contenido
 
+    def save(self, commit=True):
+        """Renderizar imagen con texto y guardar"""
+        import logging
+        import json
+        logger = logging.getLogger(__name__)
+
+        instance = super().save(commit=False)
+
+        logger.info(f"[PUBLICACION.SAVE] Iniciando guardado de publicación")
+        logger.info(f"[PUBLICACION.SAVE] Título: {instance.titulo}")
+        logger.info(f"[PUBLICACION.SAVE] Contenido: {instance.contenido[:50]}..." if instance.contenido else "")
+        logger.info(f"[PUBLICACION.SAVE] Estilos raw: {instance.estilos}")
+        logger.info(f"[PUBLICACION.SAVE] Estilos type: {type(instance.estilos)}")
+        logger.info(f"[PUBLICACION.SAVE] Imagen cargada: {bool(instance.imagen)}")
+
+        # Procesar estilos si existen
+        if instance.estilos:
+            try:
+                from .renderizado_anuncios import renderizar_anuncio_v2
+
+                # Asegurar que estilos es un dict
+                if isinstance(instance.estilos, str):
+                    estilos = json.loads(instance.estilos)
+                else:
+                    estilos = instance.estilos or {}
+
+                # Generar text-shadow CSS si hay contorno
+                if estilos.get('stroke_width', 0) > 0:
+                    stroke_width = int(estilos.get('stroke_width', 0))
+                    stroke_color = estilos.get('stroke_color', '#000000')
+                    shadows = []
+                    for x in range(-stroke_width, stroke_width + 1):
+                        for y in range(-stroke_width, stroke_width + 1):
+                            if x != 0 or y != 0:
+                                shadows.append(f"{x}px {y}px 0 {stroke_color}")
+                    estilos['text_shadow'] = ', '.join(shadows)
+                    logger.info(f"[PUBLICACION.SAVE] Text-shadow generado: {estilos['text_shadow'][:100]}...")
+
+                # Actualizar estilos en la instancia
+                instance.estilos = estilos
+
+                logger.info(f"[PUBLICACION.SAVE] Estilos parseados: {estilos}")
+                logger.info(f"[PUBLICACION.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
+                logger.info(f"[PUBLICACION.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
+
+                # Renderizar imagen con texto SI hay imagen
+                if instance.imagen:
+                    imagen_renderizada = renderizar_anuncio_v2(
+                        instance.imagen,
+                        instance.titulo or '',
+                        instance.contenido,
+                        estilos
+                    )
+                    instance.imagen_renderizada = imagen_renderizada
+                    logger.info(f"[PUBLICACION.SAVE] Publicación renderizada exitosamente")
+                else:
+                    logger.info(f"[PUBLICACION.SAVE] Sin imagen cargada, se guardan solo los estilos")
+
+            except Exception as e:
+                logger.error(f"[PUBLICACION.SAVE] Error al procesar publicación: {e}", exc_info=True)
+                # Continuar sin procesar si hay error
+
+        if commit:
+            instance.save()
+
+        return instance
+
 
 class AnuncioImportanteForm(forms.ModelForm):
     """Formulario para crear anuncios importantes (solo admins)"""
+
+    fecha_inicio = forms.DateTimeField(
+        required=True,
+        widget=forms.DateTimeInput(attrs={
+            'type': 'datetime-local',
+            'class': 'form-control'
+        }),
+        help_text='Fecha y hora en que el anuncio comienza a ser visible'
+    )
 
     fecha_fin = forms.DateTimeField(
         required=True,
@@ -1148,7 +1232,7 @@ class AnuncioImportanteForm(forms.ModelForm):
 
     class Meta:
         model = Publicacion
-        fields = ['titulo', 'contenido', 'imagen', 'fecha_fin', 'estilos']
+        fields = ['titulo', 'contenido', 'imagen', 'fecha_inicio', 'fecha_fin', 'estilos']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -1164,6 +1248,14 @@ class AnuncioImportanteForm(forms.ModelForm):
                 'class': 'form-control',
                 'accept': 'image/*'
             }),
+            'fecha_inicio': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'fecha_fin': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
             'estilos': forms.HiddenInput(),
         }
 
@@ -1175,10 +1267,8 @@ class AnuncioImportanteForm(forms.ModelForm):
             self.instance.es_importante = True
 
     def clean_titulo(self):
-        """Validar que no esté vacío"""
+        """El título es opcional"""
         titulo = self.cleaned_data.get('titulo')
-        if not titulo or not titulo.strip():
-            raise ValidationError('El título es requerido para anuncios importantes')
         return titulo
 
     def clean_contenido(self):
@@ -1189,21 +1279,37 @@ class AnuncioImportanteForm(forms.ModelForm):
         return contenido
 
     def clean_fecha_fin(self):
-        """Validar que la fecha sea futura"""
+        """Validar que la fecha sea futura y posterior a fecha_inicio"""
         fecha_fin = self.cleaned_data.get('fecha_fin')
+        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+
         if fecha_fin and fecha_fin <= timezone.now():
             raise ValidationError('La fecha de finalización debe ser futura')
+
+        if fecha_inicio and fecha_fin and fecha_fin <= fecha_inicio:
+            raise ValidationError('La fecha de finalización debe ser posterior a la fecha de inicio')
+
         return fecha_fin
 
     def save(self, commit=True):
-        """Procesar imagen y renderizar texto antes de guardar"""
+        """Renderizar imagen con texto y guardar"""
+        import logging
+        import json
+        logger = logging.getLogger(__name__)
+
         instance = super().save(commit=False)
 
-        # Si hay imagen y estilos, renderizar texto en la imagen
-        if instance.imagen and instance.estilos:
+        logger.info(f"[FORM.SAVE] Iniciando guardado de anuncio")
+        logger.info(f"[FORM.SAVE] Título: {instance.titulo}")
+        logger.info(f"[FORM.SAVE] Contenido: {instance.contenido[:50]}..." if instance.contenido else "")
+        logger.info(f"[FORM.SAVE] Estilos raw: {instance.estilos}")
+        logger.info(f"[FORM.SAVE] Estilos type: {type(instance.estilos)}")
+        logger.info(f"[FORM.SAVE] Imagen cargada: {bool(instance.imagen)}")
+
+        # Procesar estilos si existen
+        if instance.estilos:
             try:
-                from .image_processing import renderizar_texto_en_imagen, limpiar_estilos_posicionamiento
-                import json
+                from .renderizado_anuncios import renderizar_anuncio_v2
 
                 # Asegurar que estilos es un dict
                 if isinstance(instance.estilos, str):
@@ -1211,24 +1317,48 @@ class AnuncioImportanteForm(forms.ModelForm):
                 else:
                     estilos = instance.estilos or {}
 
-                # Si hay datos de posicionamiento, renderizar
-                if 'text_position_x_px' in estilos:
-                    # Renderizar texto en imagen
-                    instance.imagen = renderizar_texto_en_imagen(
+                # Generar text-shadow CSS si hay contorno
+                if estilos.get('stroke_width', 0) > 0:
+                    stroke_width = int(estilos.get('stroke_width', 0))
+                    stroke_color = estilos.get('stroke_color', '#000000')
+                    shadows = []
+                    for x in range(-stroke_width, stroke_width + 1):
+                        for y in range(-stroke_width, stroke_width + 1):
+                            if x != 0 or y != 0:
+                                shadows.append(f"{x}px {y}px 0 {stroke_color}")
+                    estilos['text_shadow'] = ', '.join(shadows)
+                    logger.info(f"[FORM.SAVE] Text-shadow generado: {estilos['text_shadow'][:100]}...")
+
+                # Actualizar estilos en la instancia
+                instance.estilos = estilos
+
+                logger.info(f"[FORM.SAVE] Estilos parseados: {estilos}")
+                logger.info(f"[FORM.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
+                logger.info(f"[FORM.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
+
+                # Renderizar imagen con texto SI hay imagen
+                if instance.imagen:
+                    imagen_renderizada = renderizar_anuncio_v2(
                         instance.imagen,
                         instance.titulo or '',
                         instance.contenido,
                         estilos
                     )
-
-                    # Limpiar estilos de posicionamiento
-                    estilos = limpiar_estilos_posicionamiento(estilos)
-                    instance.estilos = estilos
+                    instance.imagen_renderizada = imagen_renderizada
+                    logger.info(f"[FORM.SAVE] Anuncio renderizado exitosamente")
+                else:
+                    logger.info(f"[FORM.SAVE] Sin imagen cargada, se guardan solo los estilos")
 
             except Exception as e:
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.error(f"Error al procesar imagen en formulario: {e}")
+                logger.error(f"[FORM.SAVE] Error al procesaranuncio: {e}", exc_info=True)
                 # Continuar sin procesar si hay error
 
         if commit:
