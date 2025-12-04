@@ -177,59 +177,178 @@ class Command(BaseCommand):
             # Limpiar preguntas existentes para recrearlas
             PreguntaEvaluacion.objects.filter(evaluacion=evaluacion).delete()
         
-        # 7 PREGUNTAS EXACTAS DEL EXCEL
+        # 7 PREGUNTAS CON RESPUESTAS DINÁMICAS DEL DOCUMENTO
         preguntas_periodo_prueba = [
             {
                 'categoria': 'Competencias Interpersonales',
                 'pregunta': 'Trabajo en equipo',
                 'descripcion': 'Desarrolla labores con sus compañeros, es conciliador y respetuoso de las diferencias.',
-                'peso_porcentual': 14.29,  # 1/7 = 14.29%
-                'orden': 1
+                'peso_porcentual': 14.29,
+                'orden': 1,
+                'respuestas': {
+                    1: {
+                        'observacion': 'Se presentan dificultades para integrarse plenamente con el equipo. En algunas ocasiones surgen desacuerdos debido a la falta de escucha activa o a una disposición limitada para colaborar.',
+                        'recomendacion': 'Fortalecer la comunicación y la participación dentro del equipo, solicitando apoyo cuando sea necesario y brindándolo igualmente. Involucrarse de manera más activa en actividades grupales contribuirá a un mejor clima laboral.',
+                        'ejemplo': 'Iniciar ofreciendo apoyo en tareas sencillas para generar confianza y mejorar la relación con los compañeros'
+                    },
+                    2: {
+                        'observacion': 'Participa en el trabajo en equipo, aunque a veces resulta difícil mantener una actitud conciliadora o abierta frente a diferentes puntos de vista.',
+                        'recomendacion': 'Trabajar en una actitud más constante y equilibrada, especialmente en situaciones de presión, fomentando el diálogo y el respeto mutuo.',
+                        'ejemplo': 'Antes de responder en una discusión laboral, tomar un momento para escuchar plenamente la opinión del compañero y reflexionar antes de intervenir.'
+                    },
+                    3: {
+                        'observacion': 'Se integra adecuadamente al equipo, respeta las diferencias y contribuye a un ambiente armonioso.',
+                        'recomendacion': 'Mantener esta actitud colaborativa y continuar siendo un referente positivo y un apoyo para los compañeros.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Actitud Laboral',
                 'pregunta': 'Compromiso',
-                'descripcion': 'Se muestra colaborador y abierto a ayudar a conseguir objetivos generales del proceso, aunque deba invertir más tiempo y esfuerzo en ello, asume de manera autónoma actividades que pueda hacer para lograr una meta.',
+                'descripcion': 'Colabora y ayuda a lograr los objetivos del proceso, incluso si requiere mayor esfuerzo, y asume actividades autónomamente.',
                 'peso_porcentual': 14.29,
-                'orden': 2
+                'orden': 2,
+                'respuestas': {
+                    1: {
+                        'observacion': 'Actualmente no se evidencia disposición para asumir tareas adicionales ni un compromiso claro con los objetivos del área.',
+                        'recomendacion': 'Desarrollar mayor iniciativa y asumir responsabilidades acordes al cargo. Es importante actuar de manera proactiva, sin esperar instrucciones para realizar tareas necesarias.',
+                        'ejemplo': 'Puede empezar completando tareas sin necesidad de recordatorios constantes.'
+                    },
+                    2: {
+                        'observacion': 'Muestra compromiso en algunas ocasiones, pero este no es constante y requiere acompañamiento para asumir determinadas actividades.',
+                        'recomendacion': 'Fortalecer la constancia y demostrar mayor autonomía en las labores diarias. Atender con diligencia aquellas tareas no contempladas explícitamente en las funciones, pero que surgen de manera cotidiana y son importantes para garantizar la calidad del trabajo.',
+                        'ejemplo': 'Identificar tareas pendientes y gestionarlas de manera autónoma, sin esperar instrucciones directas.'
+                    },
+                    3: {
+                        'observacion': 'Demuestra compromiso constante, disposición al esfuerzo adicional y autonomía para asumir actividades que aportan al logro de objetivos.',
+                        'recomendacion': 'Continuar manteniendo esta actitud proactiva, siendo referente de compromiso para el equipo.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Competencias Interpersonales',
                 'pregunta': 'Comunicación',
-                'descripcion': 'Tiene la capacidad de expresarse coherentemente, darse a entender y llegar a un acuerdo, sabe escuchar.',
+                'descripcion': 'Se expresa coherentemente, logra darse a entender, llegar a acuerdos y sabe escuchar.',
                 'peso_porcentual': 14.29,
-                'orden': 3
+                'orden': 3,
+                'respuestas': {
+                    1: {
+                        'observacion': 'La información que proporciona no siempre es clara o precisa, y en algunas ocasiones interrumpe o no escucha activamente a los demás.',
+                        'recomendacion': 'Fortalecer la capacidad de escuchar y comunicar de manera clara y oportuna, asegurando que la información requerida llegue correctamente a los demás para alcanzar los objetivos del equipo.',
+                        'ejemplo': 'Antes de actuar, repetir brevemente lo entendido para confirmar la información y evitar errores.'
+                    },
+                    2: {
+                        'observacion': 'Se comunica adecuadamente en la mayoría de las situaciones, aunque en ocasiones surgen malentendidos por falta de claridad o retroalimentación.',
+                        'recomendacion': 'Promover un intercambio de información constante y efectivo, asegurando que todos los miembros del equipo estén correctamente informados.',
+                        'ejemplo': 'Organizar las ideas antes de explicar un proceso o procedimiento.'
+                    },
+                    3: {
+                        'observacion': 'Se comunica de forma clara, escucha activamente y facilita la resolución de acuerdos.',
+                        'recomendacion': 'Mantener y fortalecer esta habilidad, continuando como un referente de comunicación efectiva.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Competencias Técnicas',
                 'pregunta': 'Atención al detalle',
-                'descripcion': 'Tiene una actitud de observación constante para mejorar su proceso o tarea sin pasar por alto detalles que podrían mejorar una actividad, se muestra interesado en atender pequeños detalles.',
+                'descripcion': 'Observa permanentemente su proceso para mejorar y atiende pequeños detalles que pueden optimizar resultados.',
                 'peso_porcentual': 14.29,
-                'orden': 4
+                'orden': 4,
+                'respuestas': {
+                    1: {
+                        'observacion': 'Se han identificado oportunidades de mejora en la revisión de tareas, ya que en ocasiones algunos detalles pasan inadvertidos y pueden influir en la calidad final del trabajo.',
+                        'recomendacion': 'Se sugiere revisar cuidadosamente el trabajo antes de su entrega y apoyarse en herramientas como listas de verificación o recordatorios para asegurar que no se omitan aspectos relevantes.',
+                        'ejemplo': 'Tomar 2 minutos para revisar documentos antes de enviarlos o contar con una lista de verificación.'
+                    },
+                    2: {
+                        'observacion': 'Suele mostrar una buena atención en sus tareas; sin embargo, en algunas ocasiones ciertos detalles pueden pasar desapercibidos.',
+                        'recomendacion': 'Se sugiere fortalecer la concentración, especialmente en tareas críticas, para asegurar que todos los elementos relevantes sean considerados.',
+                        'ejemplo': 'Subrayar o marcar los puntos importantes de cada actividad antes de ejecutarla.'
+                    },
+                    3: {
+                        'observacion': 'Tiene una actitud constante de observación y cuidado del detalle.',
+                        'recomendacion': 'Se recomienda mantener este buen nivel de precisión en sus tareas.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Competencias Organizacionales',
-                'pregunta': 'Cumplimiento de las normas y procedimientos',
-                'descripcion': 'Su actuar se encamina a cumplir de manera diligente, rápida y eficiente las obligaciones, normas y procedimientos establecidos por la empresa, no tiene amonestaciones por incumplimientos relacionados con este tema.',
+                'pregunta': 'Cumplimiento de normas y procedimientos',
+                'descripcion': 'Cumple de manera rápida y eficiente las normas, sin incurrir en incumplimientos.',
                 'peso_porcentual': 14.29,
-                'orden': 5
+                'orden': 5,
+                'respuestas': {
+                    1: {
+                        'observacion': 'Actualmente tiene dificultades para seguir los procedimientos establecidos y requiere recordatorios frecuentes para completar las tareas de acuerdo con los protocolos.',
+                        'recomendacion': 'Se sugiere revisar nuevamente los protocolos del área y practicarlos de forma constante para lograr una aplicación más segura y uniforme.',
+                        'ejemplo': 'Revisar el manual del área antes de realizar procedimientos clave.'
+                    },
+                    2: {
+                        'observacion': 'En general sigue las normas y procedimientos; sin embargo, se han presentado algunas inconsistencias puntuales. Mejorar la consistencia en la ejecución contribuirá a resultados más confiables.',
+                        'recomendacion': 'Se recomienda reforzar la disciplina en el cumplimiento de procesos para mantener un desempeño estable y sin omisiones.',
+                        'ejemplo': 'Crear un paso a paso personal para evitar saltarse etapas.'
+                    },
+                    3: {
+                        'observacion': 'Cumple de forma eficiente todas las normas y procedimientos establecidos.',
+                        'recomendacion': 'Continuar siendo referente de cumplimiento y orden.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Actitud Laboral',
                 'pregunta': 'Actitud respecto al trabajo',
-                'descripcion': 'Tiene una actitud positiva respecto a su trabajo, a la empresa y para el desarrollo del trabajo.',
+                'descripcion': 'Tiene una actitud positiva hacia sus funciones, la empresa y el desarrollo del trabajo.',
                 'peso_porcentual': 14.29,
-                'orden': 6
+                'orden': 6,
+                'respuestas': {
+                    1: {
+                        'observacion': 'En algunas tareas se ha notado poca disposición o actitudes que pueden afectar el desarrollo del trabajo.',
+                        'recomendacion': 'Fomentar una actitud más abierta y receptiva que permita aprovechar mejor las oportunidades de aprendizaje y colaboración.',
+                        'ejemplo': 'Antes de rechazar una tarea, consultar sobre su propósito o impacto para comprender mejor su importancia.'
+                    },
+                    2: {
+                        'observacion': 'Generalmente muestra buena actitud, pero en situaciones de presión se ve afectada su disposición.',
+                        'recomendacion': 'Fortalecer su manejo emocional en situaciones de alta demanda para mantener la estabilidad y el enfoque.',
+                        'ejemplo': 'Aplicar técnicas breves de respiración o pausas conscientes cuando surja el estrés.'
+                    },
+                    3: {
+                        'observacion': 'Mantiene una actitud positiva, colaborativa y dispuesta.',
+                        'recomendacion': 'Seguir impulsando esta actitud, ya que genera un ambiente laboral favorable y motiva al equipo.',
+                        'ejemplo': ''
+                    }
+                }
             },
             {
                 'categoria': 'Competencias Técnicas',
                 'pregunta': 'Calidad',
-                'descripcion': 'Los trabajos que desarrolla están acordes a lo exigido, sin errores repetitivos y con una evidente muestra de cuidado y esmero.',
+                'descripcion': 'Entrega trabajos acordes a lo exigido, sin errores repetitivos y con cuidado y esmero.',
                 'peso_porcentual': 14.29,
-                'orden': 7
+                'orden': 7,
+                'respuestas': {
+                    1: {
+                        'observacion': 'Se han identificado errores recurrentes en las tareas o falta de una revisión final antes de entregarlas.',
+                        'recomendacion': 'Fortalecer el control de calidad para asegurar resultados más precisos y completos.',
+                        'ejemplo': 'Antes de finalizar, revisar tres aspectos clave: formato, exactitud de la información y coherencia del contenido.'
+                    },
+                    2: {
+                        'observacion': 'La calidad del trabajo suele ser buena, aunque ocasionalmente se presentan fallas por descuidos puntuales.',
+                        'recomendacion': 'Incrementar la atención en actividades repetitivas o que requieren mayor detalle para evitar errores menores.',
+                        'ejemplo': 'Solicitar retroalimentación sobre las entregas para identificar oportunidades de mejora continua.'
+                    },
+                    3: {
+                        'observacion': 'Entregas de excelente calidad, sin errores y con evidente cuidado.',
+                        'recomendacion': 'Mantener este nivel de dedicación y precisión en todas las tareas asignadas, ya que aporta significativamente a la calidad del trabajo del equipo.',
+                        'ejemplo': ''
+                    }
+                }
             }
         ]
-        
+
         # Crear preguntas
         for pregunta_data in preguntas_periodo_prueba:
             pregunta = PreguntaEvaluacion.objects.create(
@@ -243,36 +362,49 @@ class Command(BaseCommand):
                 obligatoria=True,
                 activa=True
             )
-            
-            # Crear las 3 opciones de respuesta exactas del Excel
+
+            # Crear las 3 opciones de respuesta con contenido del documento
+            respuestas_por_nivel = pregunta_data['respuestas']
+
             opciones_respuesta = [
                 {
-                    'opcion': 'No cumple',
-                    'valor_numerico': 1.00,
-                    'orden': 1
+                    'valor': 1,
+                    'etiqueta': 'No cumple',
+                    'observacion': respuestas_por_nivel[1]['observacion'],
+                    'recomendacion': respuestas_por_nivel[1]['recomendacion'],
+                    'ejemplo': respuestas_por_nivel[1]['ejemplo']
                 },
                 {
-                    'opcion': 'Cumple parcialmente', 
-                    'valor_numerico': 2.00,
-                    'orden': 2
+                    'valor': 2,
+                    'etiqueta': 'Cumple parcialmente',
+                    'observacion': respuestas_por_nivel[2]['observacion'],
+                    'recomendacion': respuestas_por_nivel[2]['recomendacion'],
+                    'ejemplo': respuestas_por_nivel[2]['ejemplo']
                 },
                 {
-                    'opcion': 'Cumple totalmente',
-                    'valor_numerico': 3.00,
-                    'orden': 3
+                    'valor': 3,
+                    'etiqueta': 'Cumple totalmente',
+                    'observacion': respuestas_por_nivel[3]['observacion'],
+                    'recomendacion': respuestas_por_nivel[3]['recomendacion'],
+                    'ejemplo': respuestas_por_nivel[3]['ejemplo']
                 }
             ]
-            
-            for opcion_data in opciones_respuesta:
+
+            for idx, opcion_data in enumerate(opciones_respuesta, 1):
+                # Crear opción con contenido dinámico
+                opcion_texto = f"{opcion_data['etiqueta']}\n\nObservación: {opcion_data['observacion']}\n\nRecomendación: {opcion_data['recomendacion']}"
+                if opcion_data['ejemplo']:
+                    opcion_texto += f"\n\nEjemplo: {opcion_data['ejemplo']}"
+
                 OpcionEvaluacion.objects.create(
                     pregunta=pregunta,
-                    opcion=opcion_data['opcion'],
-                    valor_numerico=opcion_data['valor_numerico'],
-                    orden=opcion_data['orden'],
+                    opcion=opcion_texto,
+                    valor_numerico=float(opcion_data['valor']),
+                    orden=idx,
                     activa=True
                 )
-            
-            self.stdout.write(f'  ✓ Pregunta creada: {pregunta.pregunta}')
+
+            self.stdout.write(f'  ✓ Pregunta creada: {pregunta.pregunta} (con 3 respuestas dinámicas)')
         
         self.stdout.write(
             self.style.SUCCESS(f'✅ Evaluación de período de prueba configurada con {len(preguntas_periodo_prueba)} preguntas')
