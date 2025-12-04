@@ -340,12 +340,28 @@ def notificar_anuncio_importante(sender, instance, created, **kwargs):
 
 
 @receiver(post_delete, sender=Publicacion)
-def eliminar_notificaciones_publicacion(sender, instance, **kwargs):
-    """Elimina las notificaciones de anuncios cuando se elimina la publicación"""
+def eliminar_recursos_publicacion(sender, instance, **kwargs):
+    """
+    Elimina los recursos asociados a una publicación:
+    - Imagen de S3/almacenamiento
+    - Notificaciones relacionadas
+    """
     try:
+        # Eliminar imagen de S3/almacenamiento si existe
+        if instance.imagen:
+            try:
+                from django.core.files.storage import storages
+                # Obtener el nombre del archivo desde el ImageField
+                imagen_path = instance.imagen.name
+                if imagen_path:
+                    storages["default"].delete(imagen_path)
+                    logger.info(f"[PUBLICACION] Imagen eliminada de S3: {imagen_path}")
+            except Exception as e:
+                logger.warning(f"[PUBLICACION] Error al eliminar imagen de S3: {e}")
+
+        # Eliminar notificaciones que hagan referencia a esta publicación
         from apps.notifications.models import Notificacion
 
-        # Buscar notificaciones que hagan referencia a esta publicación
         notificaciones = Notificacion.objects.filter(
             datos_adicionales__publicacion_id=str(instance.id)
         )
@@ -353,6 +369,30 @@ def eliminar_notificaciones_publicacion(sender, instance, **kwargs):
         count = notificaciones.count()
         if count > 0:
             notificaciones.delete()
-            logger.info(f"Eliminadas {count} notificaciones de la publicación {instance.id}")
+            logger.info(f"[PUBLICACION] Eliminadas {count} notificaciones de la publicación {instance.id}")
+
     except Exception as e:
-        logger.warning(f"Error al eliminar notificaciones de publicación: {e}")
+        logger.warning(f"[PUBLICACION] Error al eliminar recursos de publicación: {e}")
+
+
+@receiver(post_delete, sender=Producto)
+def eliminar_recursos_producto(sender, instance, **kwargs):
+    """
+    Elimina los recursos asociados a un producto:
+    - Imagen de S3/almacenamiento
+    """
+    try:
+        # Eliminar imagen de S3/almacenamiento si existe
+        if instance.imagen:
+            try:
+                from django.core.files.storage import storages
+                # Obtener el nombre del archivo desde el ImageField
+                imagen_path = instance.imagen.name
+                if imagen_path:
+                    storages["default"].delete(imagen_path)
+                    logger.info(f"[PRODUCTO] Imagen eliminada de S3: {imagen_path}")
+            except Exception as e:
+                logger.warning(f"[PRODUCTO] Error al eliminar imagen de S3: {e}")
+
+    except Exception as e:
+        logger.warning(f"[PRODUCTO] Error al eliminar recursos del producto: {e}")
