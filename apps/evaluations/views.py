@@ -892,40 +892,94 @@ def aprobar_evaluacion(request, asignacion_id):
 
 
 def _generar_aspectos_mejora_periodo_prueba(asignacion):
-    """Generar aspectos de mejora automáticamente para evaluaciones de período de prueba"""
+    """Generar plan de mejora basado en las respuestas del documento"""
     respuestas = RespuestaEvaluacion.objects.filter(
-        asignacion=asignacion,
-        puntaje_obtenido__lt=3  # Respuestas con puntaje menor a 3 (No cumple totalmente)
-    ).select_related('pregunta')
-    
+        asignacion=asignacion
+    ).select_related('pregunta', 'opcion_seleccionada').order_by('pregunta__orden')
+
+    if not respuestas.exists():
+        return 'El empleado cumple satisfactoriamente con todos los aspectos evaluados.'
+
     aspectos_mejora = []
-    
+    numero = 1
+
     for respuesta in respuestas:
-        categoria = respuesta.pregunta.categoria
-        pregunta = respuesta.pregunta.pregunta
-        
-        # Generar recomendación basada en la pregunta
-        if 'Trabajo en equipo' in pregunta:
-            aspectos_mejora.append('• Fortalecer habilidades de colaboración y comunicación en equipo')
-        elif 'Compromiso' in pregunta:
-            aspectos_mejora.append('• Desarrollar mayor compromiso y proactividad hacia los objetivos organizacionales')
-        elif 'Comunicación' in pregunta:
-            aspectos_mejora.append('• Mejorar habilidades de comunicación efectiva y escucha activa')
-        elif 'Atención al detalle' in pregunta:
-            aspectos_mejora.append('• Incrementar la atención al detalle y precisión en las tareas asignadas')
-        elif 'Cumplimiento' in pregunta:
-            aspectos_mejora.append('• Reforzar el cumplimiento de normas, procedimientos y estándares de la empresa')
-        elif 'Actitud' in pregunta:
-            aspectos_mejora.append('• Mantener una actitud más positiva y constructiva hacia el trabajo')
-        elif 'Calidad' in pregunta:
-            aspectos_mejora.append('• Mejorar la calidad y precisión en la ejecución de trabajos asignados')
-        else:
-            aspectos_mejora.append(f'• Fortalecer competencias en: {categoria}')
-    
+        pregunta_nombre = respuesta.pregunta.pregunta
+        opcion = respuesta.opcion_seleccionada
+        calificacion = int(respuesta.puntaje_obtenido)
+
+        if opcion:
+            # El texto de opcion contiene: "etiqueta\n\nObservación: ...\n\nRecomendación: ...\n\nEjemplo: ..."
+            opcion_texto = opcion.opcion
+
+            # Mapeo de calificación a etiqueta
+            etiqueta_map = {
+                1: "No cumple",
+                2: "Cumple parcialmente",
+                3: "Cumple totalmente"
+            }
+            etiqueta = etiqueta_map.get(calificacion, "Sin información")
+
+            # Parsear el texto para extraer Observación, Recomendación y Ejemplo
+            observacion = ""
+            recomendacion = ""
+            ejemplo = ""
+
+            lineas = opcion_texto.split('\n')
+            seccion_actual = None
+
+            for linea in lineas:
+                linea_limpia = linea.strip()
+                if not linea_limpia:
+                    continue
+
+                if linea_limpia.startswith('Observación:'):
+                    seccion_actual = 'observacion'
+                    texto = linea_limpia.replace('Observación:', '').strip()
+                    if texto:
+                        observacion += texto
+                elif linea_limpia.startswith('Recomendación:'):
+                    seccion_actual = 'recomendacion'
+                    texto = linea_limpia.replace('Recomendación:', '').strip()
+                    if texto:
+                        recomendacion += texto
+                elif linea_limpia.startswith('Ejemplo:'):
+                    seccion_actual = 'ejemplo'
+                    texto = linea_limpia.replace('Ejemplo:', '').strip()
+                    if texto:
+                        ejemplo += texto
+                elif seccion_actual == 'observacion':
+                    if not linea_limpia.startswith(('Recomendación:', 'Ejemplo:')):
+                        observacion += " " + linea_limpia
+                elif seccion_actual == 'recomendacion':
+                    if not linea_limpia.startswith(('Observación:', 'Ejemplo:')):
+                        recomendacion += " " + linea_limpia
+                elif seccion_actual == 'ejemplo':
+                    if not linea_limpia.startswith(('Observación:', 'Recomendación:')):
+                        ejemplo += " " + linea_limpia
+
+            # Limpiar espacios múltiples
+            observacion = " ".join(observacion.split())
+            recomendacion = " ".join(recomendacion.split())
+            ejemplo = " ".join(ejemplo.split())
+
+            # Construir la sección en el formato esperado
+            seccion = f"{numero}. {pregunta_nombre}: ⭐ Calificación {calificacion} – {etiqueta}\n"
+            if observacion:
+                seccion += f"Observación:\n{observacion}\n\n"
+            if recomendacion:
+                seccion += f"Recomendación:\n{recomendacion}\n\n"
+            if ejemplo:
+                seccion += f"Plan de mejora:\n{ejemplo}.\n"
+
+            aspectos_mejora.append(seccion)
+            numero += 1
+
     if not aspectos_mejora:
         return 'El empleado cumple satisfactoriamente con todos los aspectos evaluados.'
-    
-    return '\n'.join(aspectos_mejora)
+
+    plan_texto = "\n".join(aspectos_mejora)
+    return plan_texto
 
 
 @login_required 
@@ -1125,22 +1179,24 @@ def revisar_plan_predefinido(request, plan_id):
     """
     from .models import PlanMejoraPredefinido, SeguimientoBimensual
     from .utils.respuestas_predefinidas import crear_seguimientos_bimensuales
-    
+
     try:
         plan = get_object_or_404(PlanMejoraPredefinido, id=plan_id)
-        
-        # Verificar permisos - solo evaluador/jefe inmediato/admin
-        try:
-            empleado_usuario = Empleado.objects.get(usuario=request.user)
-        except Empleado.DoesNotExist:
-            # Usuario admin puede revisar
-            if not request.user.is_staff:
-                messages.error(request, 'No tiene permisos para revisar este plan.')
-                return redirect('evaluations:admin_pendientes_aprobacion')
+
+        # Verificar permisos - solo evaluador/jefe inmediato/admin/superuser
+        # Primero permitir a admins y superusers
+        if request.user.is_staff or request.user.is_superuser:
+            # El admin puede revisar todos los planes
+            pass
         else:
-            if (plan.asignacion_evaluacion.evaluador != empleado_usuario and 
-                plan.asignacion_evaluacion.empleado_evaluado.jefe_inmediato != empleado_usuario and
-                not request.user.is_staff):
+            # Para usuarios normales, verificar si es evaluador o jefe inmediato
+            try:
+                empleado_usuario = Empleado.objects.get(usuario=request.user)
+                if (plan.asignacion_evaluacion.evaluador != empleado_usuario and
+                    plan.asignacion_evaluacion.empleado_evaluado.jefe_inmediato != empleado_usuario):
+                    messages.error(request, 'No tiene permisos para revisar este plan.')
+                    return redirect('evaluations:admin_pendientes_aprobacion')
+            except Empleado.DoesNotExist:
                 messages.error(request, 'No tiene permisos para revisar este plan.')
                 return redirect('evaluations:admin_pendientes_aprobacion')
         
