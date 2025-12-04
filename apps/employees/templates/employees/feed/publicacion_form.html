@@ -152,22 +152,43 @@
         border-radius: 0.5rem;
         padding: 2rem;
         margin-top: 0;
-        min-height: 600px;
-        height: 600px;
         position: relative;
-        overflow: auto;
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
+        overflow: visible;
         width: 100%;
+        /* Sin alturas fijas: se ajustará dinámicamente al cargar la imagen */
+        min-height: 400px; /* Mínimo para cuando no hay imagen */
+        /* Cuando hay imagen, la altura se ajusta automáticamente */
+        height: auto;
+        max-height: calc(80vh + 4rem); /* Limita la altura máxima (80vh + padding) */
     }
 
     .preview-inner {
         position: relative;
         width: 100%;
-        height: 100%;
+        height: auto;
         transform-origin: top left;
         transition: transform 0.2s ease;
+        overflow: visible;
+    }
+
+    /* Cuando la imagen está cargada, el contenedor tendrá altura dinámica */
+    .preview-contenido.con-imagen {
+        height: auto;
+    }
+
+    /* Imagen dentro del preview */
+    #preview-image {
+        display: none;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 80vh;
+    }
+
+    .preview-contenido.con-imagen #preview-image {
+        display: block;
     }
 
     .preview-text {
@@ -187,6 +208,7 @@
         user-select: none;
         overflow: visible;
         cursor: move;
+        z-index: 10;
     }
 
     /* Asas de redimensionamiento en todos los bordes */
@@ -342,6 +364,19 @@
             <form method="post" enctype="multipart/form-data" id="publicacion-form">
                 {% csrf_token %}
 
+                <!-- Mostrar errores generales del formulario -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Errores en el formulario:</strong>
+                    <ul class="mt-2 mb-0">
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
                 <!-- Título -->
                 <div class="form-section">
                     <label for="{{ form.titulo.id_for_label }}" class="form-label">
@@ -381,6 +416,23 @@
                     </div>
                     {% endif %}
                     <small class="form-text text-muted">Máximo 5MB. Una imagen atractiva aumenta el impacto.</small>
+                </div>
+
+                <!-- Fecha de Inicio de Publicación -->
+                <div class="form-section">
+                    <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-alt me-1"></i>Fecha de Publicación (Opcional)
+                    </label>
+                    {{ form.fecha_inicio }}
+                    {% if form.fecha_inicio.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.fecha_inicio.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Deja en blanco para publicar inmediatamente. Si especificas una fecha futura, solo tú (el editor) la verás hasta esa fecha.
+                    </small>
                 </div>
 
                 <!-- Fecha de Finalización -->
@@ -500,6 +552,9 @@
                     <!-- Preview con posicionamiento de texto -->
                     <div class="preview-contenido" id="preview">
                         <div class="preview-inner" id="preview-inner">
+                            <!-- Imagen de la publicación (se muestra sin recortes) -->
+                            <img id="preview-image" src="" alt="Vista previa de imagen">
+
                             <div id="preview-text" class="preview-text" style="cursor: move; position: absolute;">
                                 <div class="text-center text-muted py-5">
                                     <i class="fas fa-eye me-1"></i>Vista previa de tu anuncio
@@ -549,6 +604,7 @@
 
 <script>
 let estilos = {};
+let imagenBase64 = null;  // Guardar imagen en base64
 let isDragging = false;
 let isResizing = false;
 let dragOffsetX = 0;
@@ -560,6 +616,55 @@ let resizeStartWidth = 0;
 let resizeStartHeight = 0;
 let resizeStartTop = 0;
 let resizeStartLeft = 0;
+
+// Restaurar imagen si hay una guardada en sessionStorage (después de error de validación)
+window.addEventListener('load', function() {
+    const imagenGuardada = sessionStorage.getItem('publicacion_form_imagen_base64');
+    if (imagenGuardada) {
+        console.log('[FORM] Restaurando imagen de sessionStorage');
+        imagenBase64 = imagenGuardada;
+        const previewImg = document.getElementById('preview-image');
+        previewImg.src = imagenGuardada;
+        previewImg.style.display = 'block';
+
+        // Cargar dimensiones
+        const tempImg = new Image();
+        tempImg.onload = function() {
+            const preview = document.getElementById('preview');
+            const maxWidth = preview.parentElement.offsetWidth - 64;
+            const maxHeight = window.innerHeight * 0.8;
+            const imgWidth = tempImg.width;
+            const imgHeight = tempImg.height;
+            const aspectRatio = imgWidth / imgHeight;
+
+            let displayWidth, displayHeight;
+            if (aspectRatio > 1) {
+                displayWidth = Math.min(imgWidth, maxWidth);
+                displayHeight = displayWidth / aspectRatio;
+                if (displayHeight > maxHeight) {
+                    displayHeight = maxHeight;
+                    displayWidth = displayHeight * aspectRatio;
+                }
+            } else {
+                displayHeight = Math.min(imgHeight, maxHeight);
+                displayWidth = displayHeight * aspectRatio;
+                if (displayWidth > maxWidth) {
+                    displayWidth = maxWidth;
+                    displayHeight = displayWidth / aspectRatio;
+                }
+            }
+
+            previewImg.style.width = displayWidth + 'px';
+            previewImg.style.height = displayHeight + 'px';
+            previewImg.dataset.scaleFactor = displayWidth / imgWidth;
+            preview.classList.add('con-imagen');
+        };
+        tempImg.src = imagenGuardada;
+
+        // Limpiar sessionStorage después de restaurar
+        sessionStorage.removeItem('publicacion_form_imagen_base64');
+    }
+});
 
 function actualizarEstilo(propiedad, valor) {
     if (valor) {
@@ -576,11 +681,14 @@ function actualizarEstilo(propiedad, valor) {
 }
 
 function actualizarPreview() {
+    console.log('[PREVIEW] Función actualizarPreview() ejecutada');
     const preview = document.getElementById('preview');
     const previewText = document.getElementById('preview-text');
     const contenido = document.querySelector('textarea[name="contenido"]').value || 'Vista previa de tu anuncio';
     const imagen = document.querySelector('input[name="imagen"]').files[0];
     const titulo = document.querySelector('input[name="titulo"]').value || '';
+
+    console.log('[PREVIEW] Imagen seleccionada:', imagen ? imagen.name : 'NINGUNA');
 
     // Construir estilos de texto con contorno (text-shadow para simular stroke)
     let textShadow = '';
@@ -648,39 +756,101 @@ function actualizarPreview() {
     }
 
     if (imagen) {
+        console.log('[DEBUG] Imagen detectada, iniciando FileReader...');
         const reader = new FileReader();
         reader.onload = (e) => {
-            // Crear imagen temporal para obtener dimensiones
-            const img = new Image();
-            img.onload = () => {
-                // Ajustar altura del contenedor según aspecto ratio
-                const aspectRatio = img.width / img.height;
-                const maxWidth = 600;
+            console.log('[DEBUG] FileReader.onload ejecutado');
+            // Guardar imagen en base64 para recuperarla si hay error
+            imagenBase64 = e.target.result;
+            sessionStorage.setItem('publicacion_form_imagen_base64', e.target.result);
 
-                let newHeight;
-                if (aspectRatio < 1) {
-                    // Imagen vertical (portrait)
-                    newHeight = maxWidth / aspectRatio;
+            // Usar la etiqueta <img> real
+            const previewImg = document.getElementById('preview-image');
+            if (!previewImg) {
+                console.error('[ERROR] No se encontró elemento #preview-image');
+                return;
+            }
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            console.log('[DEBUG] Imagen src establecida, esperando que cargue...');
+
+            // Crear imagen temporal para obtener dimensiones
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                console.log('[DEBUG] Imagen temporal cargada. Dimensiones:', tempImg.width, 'x', tempImg.height);
+                // Obtener el espacio disponible
+                const maxWidth = preview.parentElement.offsetWidth - 64; // 2rem padding
+                const maxHeight = window.innerHeight * 0.8; // 80vh
+                console.log('[DEBUG] Espacio disponible:', maxWidth, 'x', maxHeight);
+
+                // Dimensiones originales
+                const imgWidth = tempImg.width;
+                const imgHeight = tempImg.height;
+                const aspectRatio = imgWidth / imgHeight;
+                console.log('[DEBUG] Proporción de aspecto:', aspectRatio);
+
+                // Calcular dimensiones escaladas manteniendo proporciones
+                // La imagen debe caber completamente en el espacio disponible
+                let displayWidth, displayHeight;
+
+                if (aspectRatio > 1) {
+                    console.log('[DEBUG] Imagen HORIZONTAL');
+                    // Imagen horizontal (ancho > alto)
+                    // Limitar por ancho
+                    displayWidth = Math.min(imgWidth, maxWidth);
+                    displayHeight = displayWidth / aspectRatio;
+
+                    // Si la altura aún excede el máximo, escalar también por altura
+                    if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                    }
                 } else {
-                    // Imagen horizontal (landscape)
-                    newHeight = 600;
+                    console.log('[DEBUG] Imagen VERTICAL o CUADRADA');
+                    // Imagen vertical o cuadrada (alto >= ancho)
+                    // Limitar por altura
+                    displayHeight = Math.min(imgHeight, maxHeight);
+                    displayWidth = displayHeight * aspectRatio;
+
+                    // Si el ancho aún excede el máximo, escalar también por ancho
+                    if (displayWidth > maxWidth) {
+                        displayWidth = maxWidth;
+                        displayHeight = displayWidth / aspectRatio;
+                    }
                 }
 
-                preview.style.height = Math.min(newHeight, 800) + 'px';
-                previewInner.style.height = '100%';
-            };
-            img.src = e.target.result;
+                console.log('[DEBUG] Dimensiones finales aplicadas:', displayWidth, 'x', displayHeight);
+                // Aplicar dimensiones escaladas a la imagen
+                previewImg.style.width = displayWidth + 'px';
+                previewImg.style.height = displayHeight + 'px';
+                console.log('[DEBUG] Estilos width/height aplicados a la imagen');
 
-            preview.style.backgroundImage = `url(${e.target.result})`;
-            preview.style.backgroundSize = 'contain';
-            preview.style.backgroundPosition = 'center';
+                // Guardar la escala para uso posterior
+                previewImg.dataset.scaleFactor = displayWidth / imgWidth;
+            };
+            tempImg.onerror = () => {
+                console.error('[ERROR] Error al cargar imagen temporal');
+            };
+            tempImg.src = e.target.result;
+            console.log('[DEBUG] Imagen temporal src establecida');
+
+            // La imagen se ajustará con dimensiones escaladas
+            preview.classList.add('con-imagen');
+
+            // Mantener el fondo blanco
             preview.style.backgroundColor = `rgba(255, 255, 255, ${(100 - (estilos.background_opacity || 50)) / 100})`;
         };
         reader.readAsDataURL(imagen);
     } else {
-        preview.style.backgroundImage = 'none';
         preview.style.backgroundColor = 'white';
-        preview.style.height = '600px'; // Restaurar altura por defecto
+        preview.classList.remove('con-imagen');
+
+        // Limpiar imagen
+        const previewImg = document.getElementById('preview-image');
+        previewImg.src = '';
+        previewImg.style.display = 'none';
+        previewImg.style.width = '';
+        previewImg.style.height = '';
     }
 }
 
@@ -865,55 +1035,44 @@ function guardarPosicionAntesDSubmit(event) {
             const img = new Image();
 
             img.onload = () => {
-                // Ajustar altura del contenedor según aspecto ratio de la imagen
-                // Esto previene que la imagen vertical se desborde
+                // Obtener espacio disponible
+                const maxWidth = preview.parentElement.offsetWidth - 64;
+                const maxHeight = window.innerHeight * 0.8;
                 const aspectRatio = img.width / img.height;
-                const maxWidth = 600; // Ancho máximo del contenedor (aproximado)
 
-                let newHeight;
-                if (aspectRatio < 1) {
-                    // Imagen vertical (portrait)
-                    newHeight = maxWidth / aspectRatio;
-                } else {
-                    // Imagen horizontal (landscape) - usar altura por defecto
-                    newHeight = 600;
-                }
-
-                // Obtener referencia a previewInner dentro del scope
-                const previewInnerElement = document.getElementById('preview-inner');
-
-                // Aplicar la nueva altura al contenedor
-                preview.style.height = Math.min(newHeight, 800) + 'px'; // Máximo 800px
-                previewInnerElement.style.height = '100%';
-
-                // Obtener dimensiones del preview ANTES de cambiar su altura
-                const previewInnerRect = previewInnerElement.getBoundingClientRect();
-                const textRect = previewText.getBoundingClientRect();
-
-                // Usar dimensiones de la imagen original como referencia
-                // El preview se ajustará a la imagen con 'contain'
+                // Dimensiones originales
                 const imgWidth = img.width;
                 const imgHeight = img.height;
 
-                // Calcular cuál será el tamaño de la imagen dentro del contenedor
-                // Asumimos que el contenedor tiene ancho máximo de 600px
-                const maxContainerWidth = 600;
-                const aspectRatio = imgWidth / imgHeight;
+                // Calcular dimensiones escaladas manteniendo proporciones
+                let displayWidth, displayHeight;
 
-                let displayedWidth, displayedHeight;
-                if (aspectRatio >= 1) {
-                    // Imagen horizontal o cuadrada: limita por ancho
-                    displayedWidth = maxContainerWidth;
-                    displayedHeight = displayedWidth / aspectRatio;
+                if (aspectRatio > 1) {
+                    // Imagen horizontal
+                    displayWidth = Math.min(imgWidth, maxWidth);
+                    displayHeight = displayWidth / aspectRatio;
+
+                    if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                    }
                 } else {
-                    // Imagen vertical: limita por ancho también (600px)
-                    displayedWidth = maxContainerWidth;
-                    displayedHeight = displayedWidth / aspectRatio;
+                    // Imagen vertical o cuadrada
+                    displayHeight = Math.min(imgHeight, maxHeight);
+                    displayWidth = displayHeight * aspectRatio;
+
+                    if (displayWidth > maxWidth) {
+                        displayWidth = maxWidth;
+                        displayHeight = displayWidth / aspectRatio;
+                    }
                 }
 
-                // Calcular escala: de píxeles de preview a píxeles de imagen
-                const scaleX = imgWidth / displayedWidth;
-                const scaleY = imgHeight / displayedHeight;
+                // Calcular el factor de escala real que se aplicó
+                const scaleFactor = displayWidth / imgWidth;
+
+                // Escala inversa: de píxeles de preview a píxeles de imagen
+                const scaleX = imgWidth / displayWidth;  // Factor inverso
+                const scaleY = imgHeight / displayHeight;  // Factor inverso
 
                 // Extraer posición del estilo (position: absolute)
                 // El style.left y style.top contienen los valores calculados por JavaScript
@@ -1009,12 +1168,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!estilos.text_align) estilos.text_align = 'center';
     if (!estilos.stroke_color) estilos.stroke_color = '#000000';
 
+    console.log('[INIT] Inicializando preview...');
     actualizarPreview();
     inicializarDragDrop();
 
     document.querySelector('textarea[name="contenido"]').addEventListener('input', actualizarPreview);
     document.querySelector('input[name="titulo"]').addEventListener('input', actualizarPreview);
-    document.querySelector('input[name="imagen"]').addEventListener('change', actualizarPreview);
+
+    const imagenInput = document.querySelector('input[name="imagen"]');
+    imagenInput.addEventListener('change', function(e) {
+        console.log('[EVENT] Change event en input imagen detectado');
+        console.log('[EVENT] Archivos seleccionados:', this.files.length);
+        actualizarPreview();
+    });
 
     // Atajos de teclado para zoom
     document.addEventListener('keydown', function(e) {

@@ -2654,7 +2654,7 @@ class ReceibirRegaloAjaxView(EmpleadoRequiredMixin, View):
 
             return JsonResponse({
                 'success': True,
-                'message': f'¡Haz solicitado el regalo "{producto.titulo}"! El donante será notificado.',
+                'message': f'¡Has solicitado el regalo "{producto.titulo}"! El donante será notificado.',
                 'regalo_id': str(regalo.id)
             })
 
@@ -2663,6 +2663,117 @@ class ReceibirRegaloAjaxView(EmpleadoRequiredMixin, View):
             return JsonResponse({
                 'success': False,
                 'error': 'Error al solicitar el regalo'
+            }, status=500)
+
+
+class MisRegalosView(EmpleadoRequiredMixin, ListView):
+    """Vista para que donantes vean y gestionen solicitudes de regalo"""
+    model = Regalo
+    paginate_by = 12
+    context_object_name = 'regalos'
+    template_name = 'employees/marketplace/mis_regalos.html'
+
+    def get_queryset(self):
+        """Regalos donde el usuario es donante"""
+        empleado = self.request.user.empleado
+        return Regalo.objects.filter(
+            donante=empleado
+        ).select_related('producto', 'receptor').order_by('-fecha_ofrecimiento')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        # Estadísticas
+        context['total_regalos'] = queryset.count()
+        context['regalos_pendientes'] = queryset.filter(estado='pendiente').count()
+        context['regalos_entregados'] = queryset.filter(estado='aceptado').count()
+        context['regalos_cancelados'] = queryset.filter(estado='cancelado').count()
+
+        # Agrupar por producto para mostrar quién ha solicitado qué
+        regalos_por_producto = {}
+        for regalo in queryset.filter(estado__in=['pendiente', 'aceptado']):
+            if regalo.producto.pk not in regalos_por_producto:
+                regalos_por_producto[regalo.producto.pk] = {
+                    'producto': regalo.producto,
+                    'solicitantes': []
+                }
+            regalos_por_producto[regalo.producto.pk]['solicitantes'].append(regalo)
+
+        context['regalos_por_producto'] = regalos_por_producto
+
+        return context
+
+
+class ConfirmarEntregaRegaloAjaxView(EmpleadoRequiredMixin, View):
+    """Vista AJAX para que donante confirme la entrega del regalo"""
+
+    def post(self, request, **kwargs):
+        """POST: Donante confirma entrega del regalo"""
+        try:
+            regalo_id = kwargs.get('regalo_id')
+            regalo = get_object_or_404(Regalo, id=regalo_id)
+
+            # Validar que el usuario es el donante
+            if regalo.donante != request.user.empleado:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No tienes permiso para confirmar este regalo'
+                }, status=403)
+
+            # Cambiar estado a 'aceptado' y marcar como confirmado
+            regalo.estado = 'aceptado'
+            regalo.confirmado_por_donante = True
+            regalo.fecha_aceptacion = timezone.now()
+            regalo.save()
+
+            logger.info(f"[REGALO] {request.user.empleado.nombre_completo} confirmó entrega del regalo a {regalo.receptor.nombre_completo}")
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Entrega confirmada para {regalo.receptor.nombre_completo}'
+            })
+
+        except Exception as e:
+            logger.error(f"[REGALO] Error al confirmar entrega: {e}", exc_info=True)
+            return JsonResponse({
+                'success': False,
+                'error': 'Error al confirmar la entrega'
+            }, status=500)
+
+
+class RevertirSolicitudRegaloAjaxView(EmpleadoRequiredMixin, View):
+    """Vista AJAX para que donante revierta solicitud de regalo"""
+
+    def post(self, request, **kwargs):
+        """POST: Donante revierte solicitud de regalo"""
+        try:
+            regalo_id = kwargs.get('regalo_id')
+            regalo = get_object_or_404(Regalo, id=regalo_id)
+
+            # Validar que el usuario es el donante
+            if regalo.donante != request.user.empleado:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No tienes permiso para revertir este regalo'
+                }, status=403)
+
+            # Cambiar estado a 'cancelado'
+            regalo.estado = 'cancelado'
+            regalo.save()
+
+            logger.info(f"[REGALO] {request.user.empleado.nombre_completo} revirtió solicitud de {regalo.receptor.nombre_completo}")
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Solicitud de {regalo.receptor.nombre_completo} revertida'
+            })
+
+        except Exception as e:
+            logger.error(f"[REGALO] Error al revertir solicitud: {e}", exc_info=True)
+            return JsonResponse({
+                'success': False,
+                'error': 'Error al revertir la solicitud'
             }, status=500)
 
 

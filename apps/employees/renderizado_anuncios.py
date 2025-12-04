@@ -208,14 +208,14 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
 
     try:
         logger.info(f"Renderizando anuncio con estilos: {estilos}")
-        # Abrir imagen original
+        # Abrir imagen original (ya debe estar en RGB/JPG gracias a clean_imagen del formulario)
         img = Image.open(imagen_file)
+        logger.info(f"Modo de imagen original: {img.mode}")
 
-        # Convertir a RGB si es necesario
-        if img.mode in ('RGBA', 'LA', 'P'):
-            rgb_img = Image.new('RGB', img.size, (255, 255, 255))
-            rgb_img.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
-            img = rgb_img
+        # Por seguridad, convertir a RGB si no lo está (en caso de que venga de otra fuente)
+        if img.mode != 'RGB':
+            logger.warning(f"Imagen no está en RGB, convirtiendo de {img.mode}")
+            img = img.convert('RGB')
 
         ancho_original, alto_original = img.size
 
@@ -235,6 +235,26 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
         text_color = hex_a_rgb(estilos.get('text_color', '#000000'))
         stroke_width = int(estilos.get('stroke_width', 0))
         stroke_color = hex_a_rgb(estilos.get('stroke_color', '#000000'))
+
+        # --- COMPATIBILIDAD: Convertir formato antiguo (text_position_x_px) al nuevo (titulo_x, contenido_x) ---
+        # Si vienen estilos en el formato antiguo de publicacion_form.html, convertirlos
+        if 'text_position_x_px' in estilos and 'titulo_x' not in estilos:
+            logger.info("Detectado formato antiguo de estilos, convirtiendo a nuevo formato")
+            text_x = int(estilos.get('text_position_x_px', 20))
+            text_y = int(estilos.get('text_position_y_px', 20))
+            text_width = int(estilos.get('text_width_px', 300))
+            text_height = int(estilos.get('text_height_px', 300))
+
+            # En formato antiguo, todo va al contenido, título está vacío
+            estilos['titulo_x'] = 20
+            estilos['titulo_y'] = 20
+            estilos['titulo_width'] = 300
+            estilos['titulo_height'] = 100
+
+            estilos['contenido_x'] = text_x
+            estilos['contenido_y'] = text_y
+            estilos['contenido_width'] = text_width
+            estilos['contenido_height'] = text_height
 
         # --- RENDERIZAR TÍTULO ---
         if titulo and titulo.strip():

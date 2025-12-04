@@ -359,18 +359,34 @@ class Producto(BaseModel):
         """Obtiene la cantidad de productos reservados"""
         return self.reservas.filter(estado='activa').count()
 
+    def get_cantidad_regalos_solicitados(self):
+        """Obtiene la cantidad de regalos solicitados (pendientes o aceptados)"""
+        if self.tipo == 'regalo':
+            return self.regalos.filter(estado__in=['pendiente', 'aceptado']).count()
+        return 0
+
     def tiene_disponible(self):
-        """Verifica si hay cantidad disponible para reservar"""
+        """Verifica si hay cantidad disponible para reservar o regalar"""
         if self.cantidad_disponible is None:
             return True  # Sin límite
-        return self.get_cantidad_reservada() < self.cantidad_disponible
+
+        # Contar reservas y regalos solicitados
+        cantidad_usada = self.get_cantidad_reservada() + self.get_cantidad_regalos_solicitados()
+        return cantidad_usada < self.cantidad_disponible
 
     def get_disponible_texto(self):
         """Retorna texto de disponibilidad"""
         if self.cantidad_disponible is None:
             return "Sin límite"
-        reservadas = self.get_cantidad_reservada()
-        disponible = self.cantidad_disponible - reservadas
+
+        # Para regalos, contar solo los regalos. Para otros, contar solo las reservas
+        if self.tipo == 'regalo':
+            regalos_solicitados = self.get_cantidad_regalos_solicitados()
+            disponible = self.cantidad_disponible - regalos_solicitados
+        else:
+            reservadas = self.get_cantidad_reservada()
+            disponible = self.cantidad_disponible - reservadas
+
         return f"{disponible} de {self.cantidad_disponible}"
 
 

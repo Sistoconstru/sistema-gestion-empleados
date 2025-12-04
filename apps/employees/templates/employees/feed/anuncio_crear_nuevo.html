@@ -36,17 +36,21 @@
     #preview-container {
         position: relative;
         width: 100%;
-        height: 600px;
+        min-height: 400px;
+        height: auto;
         background-color: white;
         border: 2px solid #ddd;
         border-radius: 4px;
-        overflow: hidden;
+        overflow: visible;
     }
 
     #preview-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 80vh;
     }
 
     /* Cuadros de texto en preview */
@@ -242,6 +246,34 @@
     <form id="anuncio-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
+        <!-- Mostrar errores del formulario -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Errores en el formulario:</strong>
+            <ul class="mt-2 mb-0">
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Mostrar errores específicos de cada campo -->
+        {% for field in form %}
+            {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>{{ field.label }}:</strong>
+                <ul class="mt-1 mb-0">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endfor %}
+
         <div class="row-main">
             <!-- COLUMNA IZQUIERDA: PREVIEW -->
             <div class="preview-section">
@@ -364,7 +396,8 @@
         imagenCargada: false,
         estilos: {},
         draggingElement: null,
-        resizingElement: null
+        resizingElement: null,
+        imagenBase64: null  // Guardar imagen en base64
     };
 
     // Referencias a elementos
@@ -383,13 +416,115 @@
     const strokeWidthInput = document.getElementById('stroke-width');
     const strokeColorInput = document.getElementById('stroke-color');
 
-    // Cargar imagen
+    // Restaurar imagen si hay una guardada en sessionStorage (después de error de validación)
+    window.addEventListener('load', function() {
+        const imagenGuardada = sessionStorage.getItem('anuncio_imagen_base64');
+        if (imagenGuardada) {
+            console.log('[ANUNCIO] Restaurando imagen de sessionStorage');
+            state.imagenBase64 = imagenGuardada;
+            previewImage.src = imagenGuardada;
+            state.imagenCargada = true;
+
+            // Cargar dimensiones
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                const maxWidth = previewContainer.offsetWidth;
+                const maxHeight = window.innerHeight * 0.6;
+                const imgWidth = tempImg.width;
+                const imgHeight = tempImg.height;
+                const aspectRatio = imgWidth / imgHeight;
+
+                let displayWidth, displayHeight;
+                if (aspectRatio > 1) {
+                    displayWidth = Math.min(imgWidth, maxWidth);
+                    displayHeight = displayWidth / aspectRatio;
+                    if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                    }
+                } else {
+                    displayHeight = Math.min(imgHeight, maxHeight);
+                    displayWidth = displayHeight * aspectRatio;
+                    if (displayWidth > maxWidth) {
+                        displayWidth = maxWidth;
+                        displayHeight = displayWidth / aspectRatio;
+                    }
+                }
+
+                previewImage.style.width = displayWidth + 'px';
+                previewImage.style.height = displayHeight + 'px';
+                previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+            };
+            tempImg.src = imagenGuardada;
+
+            // Limpiar sessionStorage después de restaurar
+            sessionStorage.removeItem('anuncio_imagen_base64');
+        }
+    });
+
+    // Cargar imagen con escalado proporcional
     imagenInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
                 previewImage.src = event.target.result;
+                // Guardar imagen en base64 para recuperarla si hay error
+                state.imagenBase64 = event.target.result;
+                sessionStorage.setItem('anuncio_imagen_base64', event.target.result);
+
+                // Crear imagen temporal para obtener dimensiones
+                const tempImg = new Image();
+                tempImg.onload = function() {
+                    console.log('[ANUNCIO] Imagen cargada. Dimensiones originales:', tempImg.width, 'x', tempImg.height);
+
+                    // Obtener espacio disponible
+                    const maxWidth = previewContainer.offsetWidth;
+                    const maxHeight = window.innerHeight * 0.6; // 60vh para anuncios
+
+                    console.log('[ANUNCIO] Espacio disponible:', maxWidth, 'x', maxHeight);
+
+                    // Dimensiones originales
+                    const imgWidth = tempImg.width;
+                    const imgHeight = tempImg.height;
+                    const aspectRatio = imgWidth / imgHeight;
+
+                    console.log('[ANUNCIO] Proporción de aspecto:', aspectRatio.toFixed(2));
+
+                    // Calcular dimensiones escaladas manteniendo proporciones
+                    let displayWidth, displayHeight;
+
+                    if (aspectRatio > 1) {
+                        // Imagen horizontal
+                        displayWidth = Math.min(imgWidth, maxWidth);
+                        displayHeight = displayWidth / aspectRatio;
+
+                        if (displayHeight > maxHeight) {
+                            displayHeight = maxHeight;
+                            displayWidth = displayHeight * aspectRatio;
+                        }
+                    } else {
+                        // Imagen vertical o cuadrada
+                        displayHeight = Math.min(imgHeight, maxHeight);
+                        displayWidth = displayHeight * aspectRatio;
+
+                        if (displayWidth > maxWidth) {
+                            displayWidth = maxWidth;
+                            displayHeight = displayWidth / aspectRatio;
+                        }
+                    }
+
+                    console.log('[ANUNCIO] Dimensiones escaladas aplicadas:', displayWidth.toFixed(0), 'x', displayHeight.toFixed(0));
+
+                    // Aplicar dimensiones
+                    previewImage.style.width = displayWidth + 'px';
+                    previewImage.style.height = displayHeight + 'px';
+
+                    // Guardar factor de escala para conversión de coordenadas
+                    previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+                };
+                tempImg.src = event.target.result;
+
                 state.imagenCargada = true;
                 actualizarPreview();
             };

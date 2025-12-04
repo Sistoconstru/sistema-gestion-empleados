@@ -65,6 +65,9 @@ urlpatterns = [
     # =============================================================================
     path('marketplace/productos/<uuid:producto_pk>/regalar/', views.RegalarProductoView.as_view(), name='regalar_producto'),
     path('marketplace/productos/<uuid:producto_pk>/recibir-regalo/', views.ReceibirRegaloAjaxView.as_view(), name='recibir_regalo'),
+    path('marketplace/mis-regalos/', views.MisRegalosView.as_view(), name='mis_regalos'),
+    path('regalos/<uuid:regalo_id>/confirmar-entrega/', views.ConfirmarEntregaRegaloAjaxView.as_view(), name='confirmar_entrega_regalo'),
+    path('regalos/<uuid:regalo_id>/revertir/', views.RevertirSolicitudRegaloAjaxView.as_view(), name='revertir_regalo'),
 
     # =============================================================================
     # MESSAGING - CONVERSACIONES

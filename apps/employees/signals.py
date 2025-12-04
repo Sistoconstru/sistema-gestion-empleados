@@ -198,12 +198,31 @@ def notificar_nueva_puja(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Regalo)
 def notificar_regalo_recibido(sender, instance, created, **kwargs):
     """
-    Notificar al receptor cuando recibe un regalo
+    Notificar al donante cuando alguien solicita un regalo (estado='pendiente')
+    Notificar al receptor cuando el donante confirma entrega (estado='aceptado')
     """
-    if created:
-        try:
-            from apps.notifications.models import Notificacion, TipoNotificacion
+    try:
+        from apps.notifications.models import Notificacion, TipoNotificacion
 
+        if created and instance.estado == 'pendiente':
+            # Notificar al donante que alguien solicitó su regalo
+            tipo_notif = TipoNotificacion.objects.get(codigo='regalo_aceptado', activo=True)
+            datos = {
+                'titulo_producto': instance.producto.titulo,
+                'receptor': instance.receptor.nombre_completo,
+            }
+
+            Notificacion.objects.create(
+                usuario=instance.donante.usuario,
+                tipo_notificacion=tipo_notif,
+                titulo=f'{instance.receptor.nombre_completo} solicitó tu regalo',
+                mensaje=f'{instance.receptor.nombre_completo} solicitó tu regalo "{instance.producto.titulo}"',
+                datos_adicionales=datos
+            )
+            logger.info(f"[NOTIF] Notificación enviada a {instance.donante.nombre_completo} sobre solicitud de regalo")
+
+        elif not created and instance.estado == 'aceptado' and instance.confirmado_por_donante:
+            # Notificar al receptor que el donante confirmó entrega
             tipo_notif = TipoNotificacion.objects.get(codigo='regalo_recibido', activo=True)
             datos = {
                 'titulo_producto': instance.producto.titulo,
@@ -213,12 +232,14 @@ def notificar_regalo_recibido(sender, instance, created, **kwargs):
             Notificacion.objects.create(
                 usuario=instance.receptor.usuario,
                 tipo_notificacion=tipo_notif,
-                titulo=tipo_notif.plantilla_titulo.format(**datos),
-                mensaje=tipo_notif.plantilla_mensaje.format(**datos),
+                titulo=f'{instance.donante.nombre_completo} confirmó tu regalo',
+                mensaje=f'{instance.donante.nombre_completo} confirmó la entrega de tu regalo "{instance.producto.titulo}"',
                 datos_adicionales=datos
             )
-        except Exception as e:
-            logger.warning(f"Error al crear notificación de regalo: {e}")
+            logger.info(f"[NOTIF] Notificación enviada a {instance.receptor.nombre_completo} sobre confirmación de regalo")
+
+    except Exception as e:
+        logger.warning(f"Error al crear notificación de regalo: {e}")
 
 
 @receiver(post_save, sender=Mensaje)

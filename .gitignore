@@ -117,3 +117,11 @@ tipos_*_backup.json
 # Scripts de desarrollo temporal
 scripts/development/
 scripts/temp/
+
+# Archivos de planificación y notas internas
+PLAN_*.md
+*_PLAN.md
+
+# Archivos de sistema Windows
+nul
+NUL
