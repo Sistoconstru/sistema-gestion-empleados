@@ -258,13 +258,13 @@
                                             <small class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Bloqueado</small>
                                         {% endif %}
                                     </div>
-                                    <strong class="d-block text-dark">
-                                        {{ plan.asignacion_evaluacion.empleado_evaluado.primer_nombre }} {{ plan.asignacion_evaluacion.empleado_evaluado.primer_apellido }}
+                                    <strong class="d-block text-dark" style="font-size: 1.05rem;">
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}
                                     </strong>
                                     <small class="text-muted d-block">
-                                        {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_cargo_actual|default:"Sin cargo" }}
-                                        {% if plan.asignacion_evaluacion.empleado_evaluado.area_actual %}
-                                            • {{ plan.asignacion_evaluacion.empleado_evaluado.area_actual.nombre }}
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                                        {% if plan.asignacion_evaluacion.empleado_evaluado.cargo_actual %}
+                                            • {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.area.nombre }}
                                         {% endif %}
                                     </small>
                                 </div>

@@ -610,7 +610,6 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                 # NO generar plan si el puntaje es 21/21 (desempeño excelente)
                 try:
                     from .models import PlanMejoraPredefinido
-                    from .utils.respuestas_predefinidas import generar_plan_automatico
 
                     # Solo si no existe ya un plan para esta asignación
                     if not PlanMejoraPredefinido.objects.filter(asignacion_evaluacion=asignacion).exists():
@@ -620,12 +619,20 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                             import logging
                             logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo puntaje máximo (21/21). No se genera plan de mejora.')
                         else:
-                            # Generar plan de mejora normal
+                            # Generar plan de mejora usando el método apropiado según tipo de evaluación
                             respuestas = RespuestaEvaluacion.objects.filter(
                                 asignacion=asignacion
                             ).select_related('pregunta', 'opcion_seleccionada')
-                            respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
-                            plan_mejora_texto = generar_plan_automatico(respuestas_para_plan)
+
+                            # Usar método específico para período de prueba
+                            if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
+                                plan_mejora_texto = _generar_aspectos_mejora_periodo_prueba(asignacion)
+                            else:
+                                # Usar método genérico para otras evaluaciones
+                                from .utils.respuestas_predefinidas import generar_plan_automatico
+                                respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
+                                plan_mejora_texto = generar_plan_automatico(respuestas_para_plan)
+
                             PlanMejoraPredefinido.objects.create(
                                 asignacion_evaluacion=asignacion,
                                 plan_mejora=plan_mejora_texto,
@@ -892,7 +899,46 @@ def aprobar_evaluacion(request, asignacion_id):
 
 
 def _generar_aspectos_mejora_periodo_prueba(asignacion):
-    """Generar plan de mejora basado en las respuestas del documento"""
+    """Generar plan de mejora basado en las respuestas del documento de período de prueba"""
+    # Documento de respuestas posibles - mismo contenido que en actualizar_opciones_documento.py
+    RESPUESTAS_DOCUMENTO = {
+        'Trabajo en equipo': {
+            1: {'observacion': 'Se presentan dificultades para integrarse plenamente con el equipo. En algunas ocasiones surgen desacuerdos debido a la falta de escucha activa o a una disposición limitada para colaborar.', 'recomendacion': 'Fortalecer la comunicación y la participación dentro del equipo, solicitando apoyo cuando sea necesario y brindándolo igualmente. Involucrarse de manera más activa en actividades grupales contribuirá a un mejor clima laboral.', 'ejemplo': 'Iniciar ofreciendo apoyo en tareas sencillas para generar confianza y mejorar la relación con los compañeros'},
+            2: {'observacion': 'Muestra disposición para colaborar en algunas situaciones, aunque de manera inconstante. En ocasiones se requiere que se involucre más activamente en la consecución de objetivos comunes.', 'recomendacion': 'Incrementar la participación proactiva en las tareas grupales, promoviendo el diálogo y la búsqueda de acuerdos.', 'ejemplo': 'Proponer soluciones en reuniones de equipo y mostrar apertura a las ideas de otros'},
+            3: {'observacion': 'Demuestra una actitud colaborativa constante, valora las opiniones de otros y contribuye activamente al logro de objetivos comunes.', 'recomendacion': 'Mantener esta actitud positiva y fortalecer el liderazgo informal en el equipo.', 'ejemplo': 'Continuar apoyando a sus compañeros'}
+        },
+        'Compromiso': {
+            1: {'observacion': 'No siempre evidencia constancia o disposición para apoyar las metas del proceso. En ocasiones, evita asumir responsabilidades adicionales.', 'recomendacion': 'Fortalecer el sentido de pertenencia y compromiso hacia el área, mostrando iniciativa en la resolución de tareas diarias.', 'ejemplo': 'Buscar oportunidades diarias para contribuir de manera proactiva, sin esperar indicaciones'},
+            2: {'observacion': 'Muestra compromiso en algunas ocasiones, pero este no es constante y requiere acompañamiento para asumir determinadas actividades.', 'recomendacion': 'Fortalecer la constancia y demostrar mayor autonomía en las labores diarias. Atender con diligencia aquellas tareas no contempladas explícitamente en las funciones, pero que surgen de manera cotidiana y son importantes para garantizar la calidad del trabajo.', 'ejemplo': 'Identificar tareas pendientes y gestionarlas de manera autónoma, sin esperar instrucciones directas'},
+            3: {'observacion': 'Demuestra constancia, disposición al esfuerzo y capacidad para asumir actividades adicionales cuando se requiere.', 'recomendacion': 'Mantener este nivel de compromiso y aprovechar oportunidades de liderazgo.', 'ejemplo': 'Continuar siendo un ejemplo de dedicación'}
+        },
+        'Comunicación': {
+            1: {'observacion': 'Se presentan dificultades para expresar ideas de manera comprensible o para mantener una escucha activa, lo cual afecta la coordinación.', 'recomendacion': 'Fortalecer la habilidad comunicativa practicando la expresión clara y la escucha atenta. Asegurar que la información transmitida sea completa y oportuna.', 'ejemplo': 'Resumir los puntos clave antes de finalizar una conversación'},
+            2: {'observacion': 'Generalmente se comunica de forma adecuada, aunque en algunas ocasiones puede haber falta de claridad o malentendidos.', 'recomendacion': 'Continuar fortaleciendo la expresión y la escucha, asegurando que la comunicación sea asertiva y oportuna.', 'ejemplo': 'Preguntar para confirmar que la información fue comprendida correctamente'},
+            3: {'observacion': 'Se comunica de forma clara, escucha activamente y facilita la resolución de acuerdos.', 'recomendacion': 'Mantener y fortalecer esta habilidad, continuando como un referente de comunicación efectiva.', 'ejemplo': 'Mantener este nivel de comunicación'}
+        },
+        'Atención al detalle': {
+            1: {'observacion': 'Presenta omisiones o errores que afectan la calidad de las tareas realizadas, lo que requiere supervisión constante.', 'recomendacion': 'Incrementar la concentración al realizar actividades para reducir errores. Verificar cada actividad antes de considerarla terminada.', 'ejemplo': 'Utilizar listas de verificación antes de entregar cualquier tarea'},
+            2: {'observacion': 'Suele mostrar una buena atención en sus tareas; sin embargo, en algunas ocasiones ciertos detalles pueden pasar desapercibidos.', 'recomendacion': 'Se sugiere fortalecer la concentración, especialmente en tareas críticas, para asegurar que todos los elementos relevantes sean considerados.', 'ejemplo': 'Subrayar o marcar los puntos importantes de cada actividad antes de ejecutarla'},
+            3: {'observacion': 'Demuestra excelente atención al detalle, revisa su trabajo antes de entregarlo y rara vez comete errores.', 'recomendacion': 'Mantener este nivel de precisión y continuar siendo un ejemplo para otros.', 'ejemplo': 'Mantener este nivel de calidad'}
+        },
+        'Cumplimiento de las normas y procedimientos': {
+            1: {'observacion': 'Actualmente tiene dificultades para seguir los procedimientos establecidos y requiere recordatorios frecuentes para completar las tareas de acuerdo con los protocolos.', 'recomendacion': 'Se sugiere revisar nuevamente los protocolos del área y practicarlos de forma constante para lograr una aplicación más segura y uniforme.', 'ejemplo': 'Revisar el manual del área antes de realizar procedimientos clave'},
+            2: {'observacion': 'Cumple la mayoría de las normas, aunque en ocasiones puede olvidar ciertos aspectos o requerir recordatorios.', 'recomendacion': 'Fortalecer la consistencia en la aplicación de procedimientos y normas institucionales.', 'ejemplo': 'Aplicar recordatorios diarios o listas de chequeo para protocolos clave'},
+            3: {'observacion': 'Demuestra un cumplimiento estricto de normas y procedimientos, lo que garantiza calidad y seguridad.', 'recomendacion': 'Mantener esta disciplina y servir como referente para otros compañeros.', 'ejemplo': 'Continuar siendo un ejemplo de cumplimiento'}
+        },
+        'Actitud respecto al trabajo': {
+            1: {'observacion': 'Se observa falta de motivación o actitud poco positiva en diversas situaciones laborales.', 'recomendacion': 'Identificar factores que afectan la motivación y trabajar en fortalecer una actitud más proactiva y constructiva.', 'ejemplo': 'Establecer objetivos personales diarios para aumentar la motivación'},
+            2: {'observacion': 'Generalmente muestra buena actitud, pero en situaciones de presión se ve afectada su disposición.', 'recomendacion': 'Fortalecer su manejo emocional en situaciones de alta demanda para mantener la estabilidad y el enfoque.', 'ejemplo': 'Aplicar técnicas breves de respiración o pausas conscientes cuando surja el estrés'},
+            3: {'observacion': 'Mantiene una actitud positiva, proactiva y orientada al crecimiento, contribuyendo a un buen ambiente laboral.', 'recomendacion': 'Mantener esta disposición y servir como ejemplo positivo para el equipo.', 'ejemplo': 'Continuar con esta actitud positiva'}
+        },
+        'Calidad': {
+            1: {'observacion': 'Se han identificado errores recurrentes en las tareas o falta de una revisión final antes de entregarlas.', 'recomendacion': 'Fortalecer el control de calidad para asegurar resultados más precisos y completos.', 'ejemplo': 'Antes de finalizar, revisar tres aspectos clave: formato, exactitud de la información y coherencia del contenido'},
+            2: {'observacion': 'La calidad del trabajo suele ser buena, aunque ocasionalmente se presentan fallas por descuidos puntuales.', 'recomendacion': 'Incrementar la atención en actividades repetitivas o que requieran mayor detalle para evitar errores menores.', 'ejemplo': 'Solicitar retroalimentación sobre las entregas para identificar oportunidades de mejora continua'},
+            3: {'observacion': 'Entregas de excelente calidad, sin errores y con evidente cuidado.', 'recomendacion': 'Mantener este nivel de dedicación y precisión en todas las tareas asignadas, ya que aporta significativamente a la calidad del trabajo del equipo.', 'ejemplo': 'Mantener este nivel de calidad'}
+        }
+    }
+
     respuestas = RespuestaEvaluacion.objects.filter(
         asignacion=asignacion
     ).select_related('pregunta', 'opcion_seleccionada').order_by('pregunta__orden')
@@ -903,77 +949,40 @@ def _generar_aspectos_mejora_periodo_prueba(asignacion):
     aspectos_mejora = []
     numero = 1
 
+    # Mapeo de calificación a etiqueta
+    etiqueta_map = {
+        1: "No cumple",
+        2: "Cumple parcialmente",
+        3: "Cumple totalmente"
+    }
+
     for respuesta in respuestas:
         pregunta_nombre = respuesta.pregunta.pregunta
-        opcion = respuesta.opcion_seleccionada
         calificacion = int(respuesta.puntaje_obtenido)
+        etiqueta = etiqueta_map.get(calificacion, "Sin información")
 
-        if opcion:
-            # El texto de opcion contiene: "etiqueta\n\nObservación: ...\n\nRecomendación: ...\n\nEjemplo: ..."
-            opcion_texto = opcion.opcion
+        # Buscar en el documento de respuestas
+        datos = None
+        if pregunta_nombre in RESPUESTAS_DOCUMENTO:
+            datos = RESPUESTAS_DOCUMENTO[pregunta_nombre].get(calificacion)
 
-            # Mapeo de calificación a etiqueta
-            etiqueta_map = {
-                1: "No cumple",
-                2: "Cumple parcialmente",
-                3: "Cumple totalmente"
-            }
-            etiqueta = etiqueta_map.get(calificacion, "Sin información")
+        # Construir la sección
+        seccion = f"{numero}. {pregunta_nombre}: ⭐ Calificación {calificacion} – {etiqueta}\n"
 
-            # Parsear el texto para extraer Observación, Recomendación y Ejemplo
-            observacion = ""
-            recomendacion = ""
-            ejemplo = ""
+        if datos:
+            seccion += f"Observación:\n{datos['observacion']}\n\n"
+            seccion += f"Recomendación:\n{datos['recomendacion']}\n\n"
+            if calificacion in [1, 2]:
+                seccion += f"Ejemplo: {datos['ejemplo']}\n"
+                seccion += "Requiere seguimiento\n"
+            else:
+                seccion += f"Ejemplo: {datos['ejemplo']}\n"
+        else:
+            # Fallback si no se encuentra en el documento
+            seccion += f"Observación: [No disponible para {pregunta_nombre}]\n\n"
 
-            lineas = opcion_texto.split('\n')
-            seccion_actual = None
-
-            for linea in lineas:
-                linea_limpia = linea.strip()
-                if not linea_limpia:
-                    continue
-
-                if linea_limpia.startswith('Observación:'):
-                    seccion_actual = 'observacion'
-                    texto = linea_limpia.replace('Observación:', '').strip()
-                    if texto:
-                        observacion += texto
-                elif linea_limpia.startswith('Recomendación:'):
-                    seccion_actual = 'recomendacion'
-                    texto = linea_limpia.replace('Recomendación:', '').strip()
-                    if texto:
-                        recomendacion += texto
-                elif linea_limpia.startswith('Ejemplo:'):
-                    seccion_actual = 'ejemplo'
-                    texto = linea_limpia.replace('Ejemplo:', '').strip()
-                    if texto:
-                        ejemplo += texto
-                elif seccion_actual == 'observacion':
-                    if not linea_limpia.startswith(('Recomendación:', 'Ejemplo:')):
-                        observacion += " " + linea_limpia
-                elif seccion_actual == 'recomendacion':
-                    if not linea_limpia.startswith(('Observación:', 'Ejemplo:')):
-                        recomendacion += " " + linea_limpia
-                elif seccion_actual == 'ejemplo':
-                    if not linea_limpia.startswith(('Observación:', 'Recomendación:')):
-                        ejemplo += " " + linea_limpia
-
-            # Limpiar espacios múltiples
-            observacion = " ".join(observacion.split())
-            recomendacion = " ".join(recomendacion.split())
-            ejemplo = " ".join(ejemplo.split())
-
-            # Construir la sección en el formato esperado
-            seccion = f"{numero}. {pregunta_nombre}: ⭐ Calificación {calificacion} – {etiqueta}\n"
-            if observacion:
-                seccion += f"Observación:\n{observacion}\n\n"
-            if recomendacion:
-                seccion += f"Recomendación:\n{recomendacion}\n\n"
-            if ejemplo:
-                seccion += f"Plan de mejora:\n{ejemplo}.\n"
-
-            aspectos_mejora.append(seccion)
-            numero += 1
+        aspectos_mejora.append(seccion)
+        numero += 1
 
     if not aspectos_mejora:
         return 'El empleado cumple satisfactoriamente con todos los aspectos evaluados.'
@@ -1127,17 +1136,21 @@ def generar_plan_predefinido(request, asignacion_id):
             return redirect('evaluations:admin_pendientes_aprobacion')
         
         if request.method == 'POST':
-            # Obtener todas las respuestas de la evaluación
-            respuestas = RespuestaEvaluacion.objects.filter(
-                asignacion=asignacion
-            ).select_related('pregunta', 'opcion_seleccionada')
-            
-            # Filtrar solo las respuestas que requieren plan (valores 1, 2, 3)
-            respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
-            
-            # Generar el plan automáticamente
-            plan_mejora_texto = generar_plan_automatico(respuestas_para_plan)
-            
+            # Generar el plan automáticamente usando el método apropiado según tipo de evaluación
+            if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
+                plan_mejora_texto = _generar_aspectos_mejora_periodo_prueba(asignacion)
+            else:
+                # Obtener todas las respuestas de la evaluación
+                respuestas = RespuestaEvaluacion.objects.filter(
+                    asignacion=asignacion
+                ).select_related('pregunta', 'opcion_seleccionada')
+
+                # Filtrar solo las respuestas que requieren plan (valores 1, 2, 3)
+                respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
+
+                # Generar el plan automáticamente
+                plan_mejora_texto = generar_plan_automatico(respuestas_para_plan)
+
             # Crear el plan predefinido
             plan_mejora = PlanMejoraPredefinido.objects.create(
                 asignacion_evaluacion=asignacion,
@@ -1145,21 +1158,25 @@ def generar_plan_predefinido(request, asignacion_id):
                 generado_por=request.user,
                 estado='pendiente_aprobacion'
             )
-            
+
             messages.success(request, 'Plan de mejora generado exitosamente. Está pendiente de aprobación.')
             return redirect('evaluations:revisar_plan_predefinido', plan_id=plan_mejora.id)
-        
+
         # GET - Mostrar formulario de confirmación
-        # Obtener respuestas para preview
-        respuestas = RespuestaEvaluacion.objects.filter(
-            asignacion=asignacion
-        ).select_related('pregunta', 'opcion_seleccionada')
-        
-        # Filtrar solo las respuestas que requieren plan (valores 1, 2, 3)
-        respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
-        
-        # Generar preview del plan
-        plan_preview = generar_plan_automatico(respuestas_para_plan)
+        # Generar preview del plan usando el método apropiado
+        if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
+            plan_preview = _generar_aspectos_mejora_periodo_prueba(asignacion)
+        else:
+            # Obtener respuestas para preview
+            respuestas = RespuestaEvaluacion.objects.filter(
+                asignacion=asignacion
+            ).select_related('pregunta', 'opcion_seleccionada')
+
+            # Filtrar solo las respuestas que requieren plan (valores 1, 2, 3)
+            respuestas_para_plan = respuestas.filter(opcion_seleccionada__valor_numerico__in=[1, 2, 3])
+
+            # Generar preview del plan
+            plan_preview = generar_plan_automatico(respuestas_para_plan)
         
         return render(request, 'evaluations/admin/generar_plan_predefinido.html', {
             'asignacion': asignacion,

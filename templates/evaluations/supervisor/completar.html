@@ -7,45 +7,45 @@
 <style>
 .evaluation-form {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
 }
 
 .question-card {
-    border: 2px solid #f8f9fa;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    transition: all 0.3s;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 20px;
     background: white;
-}
-
-.question-card:hover {
-    border-color: #007bff;
-    box-shadow: 0 3px 10px rgba(0,123,255,0.1);
+    padding: 15px;
 }
 
 .question-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px 8px 0 0;
-    margin: -1px -1px 20px -1px;
+    background: #f8f9fa;
+    color: #333;
+    padding: 10px 15px;
+    border-bottom: 2px solid #ddd;
+    margin: -15px -15px 15px -15px;
+    border-radius: 6px 6px 0 0;
+}
+
+.question-header h6 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 .scale-options {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     margin: 15px 0;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
+    gap: 10px;
 }
 
 .scale-option {
     text-align: center;
     flex: 1;
-    margin: 0 5px;
 }
 
 .scale-option input[type="radio"] {
@@ -54,13 +54,13 @@
 
 .scale-option label {
     display: block;
-    padding: 15px 10px;
+    padding: 10px 8px;
     background: white;
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s;
     font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .scale-option label:hover {
@@ -69,25 +69,36 @@
 }
 
 .scale-option input[type="radio"]:checked + label {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: #007bff;
     color: white;
     border-color: #0056b3;
-    transform: scale(1.05);
 }
 
 .employee-info {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 30px;
+    background: #f8f9fa;
+    color: #333;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.employee-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.employee-info h5 {
+    font-size: 1rem;
+    margin-bottom: 8px;
 }
 
 .progress-indicator {
     background: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: 6px;
+    padding: 12px 15px;
     margin-bottom: 20px;
+    border: 1px solid #ddd;
 }
 
 .required-indicator {
@@ -96,49 +107,35 @@
 }
 
 .category-separator {
-    border-top: 3px solid #007bff;
-    margin: 40px 0 30px 0;
+    border-top: 2px solid #007bff;
+    margin: 30px 0 20px 0;
     position: relative;
 }
 
 .category-label {
     position: absolute;
-    top: -15px;
+    top: -12px;
     left: 20px;
     background: white;
-    padding: 5px 15px;
+    padding: 4px 12px;
     font-weight: bold;
     color: #007bff;
-    border-radius: 20px;
-    border: 2px solid #007bff;
-}
-
-.btn-save {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    border: none;
-    padding: 12px 30px;
-    font-weight: bold;
-}
-
-.btn-finish {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    border: none;
-    padding: 12px 30px;
-    font-weight: bold;
+    font-size: 0.9rem;
+    border: 1px solid #007bff;
+    border-radius: 4px;
 }
 
 /* Estilos para escala de 3 puntos */
 .scale-3 {
     display: flex;
     justify-content: space-around;
-    gap: 20px;
+    gap: 15px;
     margin: 20px 0;
 }
 
 .scale-option-3 {
     flex: 1;
     text-align: center;
-    position: relative;
 }
 
 .scale-option-3 input[type="radio"] {
@@ -147,49 +144,46 @@
 
 .scale-option-3 label {
     display: block;
-    padding: 20px 10px;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
+    padding: 15px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
     background: white;
-    min-height: 100px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .scale-option-3 label:hover {
     border-color: #007bff;
-    box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+    background: #f0f8ff;
 }
 
 .scale-option-3 input[type="radio"]:checked + label {
-    border-color: #007bff;
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #0056b3;
+    background: #007bff;
     color: white;
-    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
 }
 
 .scale-option-3 .scale-value {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .scale-option-3 .scale-text {
-    font-size: 0.9rem;
-    line-height: 1.3;
+    font-size: 0.85rem;
+    line-height: 1.2;
     font-weight: 500;
 }
 
-/* Estilos para el indicador de puntaje en tiempo real */
+/* Estilos para el indicador de puntaje */
 .score-indicator {
-    transition: all 0.3s ease;
-    border: 2px solid #e3f2fd;
-    box-shadow: 0 2px 8px rgba(0,123,255,0.1);
-}
-
-.score-indicator:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
 }
 
 .score-indicator .card-title {
@@ -198,75 +192,63 @@
 }
 
 .score-indicator h4 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
     margin: 0;
 }
 
 .score-indicator .progress {
-    height: 10px;
-    border-radius: 10px;
+    height: 8px;
+    border-radius: 4px;
     background-color: #e9ecef;
-    overflow: hidden;
 }
 
 .score-indicator .progress-bar {
+    border-radius: 4px;
     transition: width 0.4s ease, background-color 0.3s ease;
-    border-radius: 10px;
+}
+
+.score-indicator .progress-bar.bg-success {
+    background-color: #28a745 !important;
+}
+
+.score-indicator .progress-bar.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.score-indicator .progress-bar.bg-danger {
+    background-color: #dc3545 !important;
 }
 
 #current-score {
-    color: #2196f3 !important;
-    text-shadow: 0 1px 3px rgba(33,150,243,0.3);
+    color: #2196f3;
 }
 
 #current-percentage {
-    color: #4caf50 !important;
-    text-shadow: 0 1px 3px rgba(76,175,80,0.3);
-}
-
-/* Animación de pulso para cambios de puntaje */
-@keyframes scorePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.score-updated {
-    animation: scorePulse 0.3s ease-in-out;
+    color: #4caf50;
 }
 
 /* Estilos para validación de preguntas sin responder */
 .border-danger {
     border: 2px solid #dc3545 !important;
-    animation: shake 0.5s ease-in-out;
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* Estilos para el botón de completar según el estado */
+/* Estilos básicos para botones */
 .btn-finish {
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: #28a745;
     border: none;
     color: white;
-    transition: all 0.3s ease;
 }
 
 .btn-finish:hover {
-    background: linear-gradient(135deg, #218838, #1abc9c);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    background: #218838;
+    color: white;
 }
 
 .btn-secondary {
     background: #6c757d;
     border: none;
     color: white;
-    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
@@ -282,7 +264,13 @@
     <div class="employee-info">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h3><i class="fas fa-user-check"></i> Evaluación de Desempeño</h3>
+                <h3><i class="fas fa-user-check"></i>
+                    {% if evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                        Evaluación de Período de Prueba
+                    {% else %}
+                        Evaluación de Desempeño
+                    {% endif %}
+                </h3>
                 <h5>{{ empleado.nombre_completo }}</h5>
                 <p class="mb-0">
                     <i class="fas fa-id-card"></i> {{ empleado.numero_documento }} | 
@@ -573,84 +561,33 @@
 <script>
 // Función para validar que todas las preguntas estén respondidas
 function validarYConfirmar() {
-    console.log('validarYConfirmar called'); // Debug
     const form = document.getElementById('evaluationForm');
     const totalQuestions = {{ preguntas.count }};
     const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
     const answeredQuestions = radioButtons.length;
-    
-    console.log('Total questions:', totalQuestions); // Debug
-    console.log('Answered questions:', answeredQuestions); // Debug
-    
+
     // Verificar si todas las preguntas están respondidas
     if (answeredQuestions < totalQuestions) {
         const preguntasFaltantes = totalQuestions - answeredQuestions;
         const mensaje = `Aún faltan ${preguntasFaltantes} pregunta${preguntasFaltantes > 1 ? 's' : ''} por responder. ` +
                       `Por favor, complete toda la evaluación antes de finalizar.`;
-        
-        // Mostrar alerta de error
         alert(mensaje);
-        
-        // Opcional: resaltar las preguntas sin responder
-        resaltarPreguntasSinResponder();
-        
-        return false; // Cancelar el envío del formulario
+        return false;
     }
-    
+
     // Si todas las preguntas están respondidas, mostrar confirmación normal
     return confirm('¿Está seguro de completar esta evaluación? Se calcularán los resultados automáticamente y se notificará al empleado.');
 }
 
-// Función para resaltar preguntas sin responder
-function resaltarPreguntasSinResponder() {
-    const form = document.getElementById('evaluationForm');
-    // Obtener todas las preguntas
-    const preguntasCards = form.querySelectorAll('.card.mb-4');
-    
-    preguntasCards.forEach((card, index) => {
-        // Verificar si esta pregunta tiene una respuesta seleccionada
-        const radioButtons = card.querySelectorAll('input[type="radio"]');
-        const hasAnswer = Array.from(radioButtons).some(radio => radio.checked);
-        
-        // Remover resaltado previo
-        card.classList.remove('border-danger');
-        
-        // Si no tiene respuesta, resaltar con borde rojo
-        if (!hasAnswer) {
-            card.classList.add('border-danger');
-            
-            // Opcional: scroll a la primera pregunta sin responder
-            if (index === 0 || !card.previousElementSibling.classList.contains('border-danger')) {
-                card.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }
-        }
-    });
-    
-    // Remover el resaltado después de unos segundos
-    setTimeout(() => {
-        preguntasCards.forEach(card => {
-            card.classList.remove('border-danger');
-        });
-    }, 5000);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Validación del formulario - simplificada
     const form = document.getElementById('evaluationForm');
     const completarBtn = document.getElementById('completar-btn');
-    
-    console.log('Form found:', form); // Debug
-    console.log('Button found:', completarBtn); // Debug
-    
+
     // Agregar event listener al botón de completar
     if (completarBtn) {
         completarBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Button clicked!'); // Debug
-            
+
             if (validarYConfirmar()) {
                 // Si la validación pasa, agregar campo finalizar y enviar el formulario
                 const finalizarInput = document.createElement('input');
@@ -658,42 +595,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 finalizarInput.name = 'finalizar';
                 finalizarInput.value = 'true';
                 form.appendChild(finalizarInput);
-                
+
                 form.submit();
             }
         });
     }
-    
-    // Cargar respuestas existentes
-    {% if respuestas_existentes %}
-        // Procesar respuestas existentes
-        {% for pregunta_id, respuesta in respuestas_existentes.items %}
-            {% if respuesta.opcion_seleccionada %}
-                // Marcar radio button seleccionado para pregunta {{ pregunta_id }}
-                (function() {
-                    const radioEl = document.querySelector('input[name="pregunta_{{ pregunta_id }}"][value="{{ respuesta.opcion_seleccionada.id }}"]');
-                    if (radioEl) radioEl.checked = true;
-                })();
-            {% endif %}
-            
-            {% if respuesta.respuesta_texto %}
-                // Llenar textarea con respuesta de texto para pregunta {{ pregunta_id }}
-                (function() {
-                    const textareaEl = document.querySelector('textarea[name="pregunta_{{ pregunta_id }}"]');
-                    if (textareaEl) textareaEl.value = `{{ respuesta.respuesta_texto|escapejs }}`;
-                })();
-            {% endif %}
-            
-            {% if respuesta.comentarios_evaluador %}
-                // Llenar comentario para pregunta {{ pregunta_id }}
-                (function() {
-                    const comentarioEl = document.querySelector('textarea[name="comentario_{{ pregunta_id }}"]');
-                    if (comentarioEl) comentarioEl.value = `{{ respuesta.comentarios_evaluador|escapejs }}`;
-                })();
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-    
+
     // Función para calcular puntaje en tiempo real
     function updateScoreProgress() {
         const radioButtons = form.querySelectorAll('input[type="radio"]:checked');

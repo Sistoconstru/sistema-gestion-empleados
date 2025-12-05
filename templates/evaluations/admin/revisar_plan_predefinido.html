@@ -55,10 +55,10 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</p>
-                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
-                    <p><strong>Departamento:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"Sin departamento" }}</p>
-                    <p><strong>Evaluador:</strong> {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}</p>
+                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Área:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.area.nombre|default:"Sin área" }}</p>
+                    <p><strong>Evaluador:</strong> {{ plan.asignacion_evaluacion.evaluador.nombre_completo|default:"Sistema" }}</p>
                 </div>
             </div>
 
@@ -71,25 +71,25 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Estado:</strong>
-                        <span class="badge badge-warning">{{ plan.get_estado_display }}</span>
+                        <span class="badge" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;">{{ plan.get_estado_display }}</span>
                     </p>
                     <p><strong>Generado por:</strong> {{ plan.generado_por.get_full_name }}</p>
                     <p><strong>Fecha de generación:</strong> {{ plan.fecha_creacion|date:"d/m/Y H:i" }}</p>
                     <p><strong>Tipo de evaluación:</strong> {{ plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}</p>
                     <p><strong>Período:</strong> {{ plan.asignacion_evaluacion.periodo_evaluacion }}</p>
                     <p><strong>Puntaje obtenido:</strong>
-                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                        <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
                             {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
                         </span>
                     </p>
                     <p><strong>Aceptación del Empleado:</strong>
                         {% if plan.aceptado_por_empleado %}
-                            <span class="badge badge-success">
+                            <span class="badge" style="background-color: #d4edda; color: #155724; border: 1px solid #28a745;">
                                 <i class="fas fa-check-circle"></i> Aceptado
                             </span>
                             <br><small class="text-muted">{{ plan.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}</small>
                         {% else %}
-                            <span class="badge badge-warning">
+                            <span class="badge" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;">
                                 <i class="fas fa-clock"></i> Pendiente
                             </span>
                         {% endif %}

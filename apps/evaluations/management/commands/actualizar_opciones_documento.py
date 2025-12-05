@@ -50,7 +50,12 @@ class Command(BaseCommand):
 
         actualizadas = 0
         for pregunta_nombre, respuestas_por_calificacion in respuestas_documento.items():
-            pregunta = PreguntaEvaluacion.objects.filter(pregunta__contains=pregunta_nombre).first()
+            # Solo actualizar preguntas que NO sean de período de prueba
+            # Buscar en evaluaciones de desempeño, no en período de prueba
+            pregunta = PreguntaEvaluacion.objects.filter(
+                pregunta__contains=pregunta_nombre,
+                evaluacion__tipo_evaluacion__codigo__iexact='DESEMPEÑO'
+            ).first()
 
             if pregunta:
                 for calificacion, datos in respuestas_por_calificacion.items():
@@ -68,5 +73,7 @@ class Command(BaseCommand):
                         opcion.save()
                         self.stdout.write(f'✓ Actualizada: {pregunta_nombre} - Calificación {calificacion}')
                         actualizadas += 1
+            else:
+                self.stdout.write(f'⚠️ Pregunta no encontrada en evaluación de desempeño: {pregunta_nombre}')
 
         self.stdout.write(self.style.SUCCESS(f'\n✅ Total actualizadas: {actualizadas}'))
