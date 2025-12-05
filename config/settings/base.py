@@ -176,7 +176,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Login URLs
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/empleados/feed/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
 # Email Configuration (Para notificaciones)

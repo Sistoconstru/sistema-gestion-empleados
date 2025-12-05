@@ -10226,3 +10226,41 @@ INFO 2025-12-05 08:19:21,964 basehttp 35384 15288 "GET /dashboard/ HTTP/1.1" 200
 INFO 2025-12-05 08:19:26,237 basehttp 35384 15288 "GET /empleados/ HTTP/1.1" 200 101245
 INFO 2025-12-05 08:19:39,452 basehttp 35384 15288 "GET /empleados/?page=2 HTTP/1.1" 200 101939
 INFO 2025-12-05 08:19:42,371 basehttp 35384 15288 "GET /empleados/771b54ef-3aae-4d15-835b-3613b4e49105/ HTTP/1.1" 200 74002
+INFO 2025-12-05 08:40:36,470 apps 52492 27748 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-05 08:40:37,003 apps 23560 11196 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-05 08:40:37,024 autoreload 23560 11196 Watching for file changes with StatReloader
+INFO 2025-12-05 08:40:37,596 wsgi 23560 17832 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-05 08:40:43,841 basehttp 23560 50288 "GET / HTTP/1.1" 302 0
+INFO 2025-12-05 08:40:44,437 basehttp 23560 50288 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-05 08:40:53,606 basehttp 23560 50288 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-05 08:41:01,637 basehttp 23560 50288 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:41:01,663 basehttp 23560 50288 "GET /media/publicaciones/2025/12/03/cel.jpg HTTP/1.1" 200 61455
+INFO 2025-12-05 08:41:08,820 basehttp 23560 50288 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 11322
+INFO 2025-12-05 08:41:10,097 basehttp 23560 50288 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:41:11,754 basehttp 23560 50288 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-05 08:41:15,856 basehttp 23560 50288 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:41:18,540 basehttp 23560 50288 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 38484
+INFO 2025-12-05 08:41:19,970 basehttp 23560 50288 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:41:30,487 basehttp 23560 50288 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 38484
+INFO 2025-12-05 08:41:33,622 basehttp 23560 50288 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 38484
+INFO 2025-12-05 08:41:38,961 basehttp 23560 50288 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:47:19,027 autoreload 23560 11196 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\base.py changed, reloading.
+INFO 2025-12-05 08:47:19,799 apps 28048 13136 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-05 08:47:19,821 autoreload 28048 13136 Watching for file changes with StatReloader
+INFO 2025-12-05 08:47:20,552 wsgi 28048 21488 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-05 08:47:58,777 basehttp 28048 40616 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:48:00,090 basehttp 28048 40616 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:48:04,155 basehttp 28048 40616 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:48:04,168 basehttp 28048 40616 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-05 08:48:07,352 basehttp 28048 40616 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:48:07,370 basehttp 28048 40616 "GET /empleados/feed/ HTTP/1.1" 200 36014
+INFO 2025-12-05 08:48:13,537 basehttp 28048 40616 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:48:13,537 basehttp 28048 40616 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-05 08:48:17,722 basehttp 28048 40616 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:48:17,736 basehttp 28048 40616 "GET /empleados/feed/ HTTP/1.1" 200 34423
+INFO 2025-12-05 08:48:21,446 basehttp 28048 40616 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:48:21,710 basehttp 28048 40616 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 40692
+INFO 2025-12-05 08:50:03,921 basehttp 28048 40616 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:50:03,921 basehttp 28048 40616 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-05 08:50:08,917 basehttp 28048 40616 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-05 08:50:08,978 basehttp 28048 40616 "GET /empleados/feed/ HTTP/1.1" 200 36014
