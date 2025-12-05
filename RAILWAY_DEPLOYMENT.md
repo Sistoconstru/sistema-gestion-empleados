@@ -35,27 +35,48 @@ El comando `configurar_evaluaciones_iniciales` crea:
 
 ## Configuración en Railway
 
-1. **Conectar GitHub:**
+### 1. Conectar GitHub
    - Dashboard de Railway → Settings → Source → GitHub
    - Seleccionar repositorio
 
-2. **Variables de entorno necesarias:**
-   ```
-   DEBUG=False
-   SECRET_KEY=tu-clave-secreta
-   ALLOWED_HOSTS=tu-app.railway.app
-   DATABASE_URL=postgresql://...
-   AWS_ACCESS_KEY_ID=...
-   AWS_SECRET_ACCESS_KEY=...
-   AWS_STORAGE_BUCKET_NAME=...
-   ```
+### 2. Configurar Base de Datos PostgreSQL
 
-3. **Base de datos:**
-   - Agregar PostgreSQL plugin → Railway configura `DATABASE_URL` automáticamente
+**IMPORTANTE:** Si PostgreSQL aparece "En línea" pero no conectado a tu app:
 
-4. **Deploy automático:**
-   - Cada push a `main` o `feature/*` dispara un nuevo deploy
+1. En Railway, haz clic en tu servicio PostgreSQL
+2. Ve a la pestaña **"Variables"**
+3. Verás la variable `DATABASE_URL` - copia el valor con el icono de copiar
+4. Ahora ve a tu servicio Django (sistema-gestion-empleados)
+5. Ve a **"Variables"** en el servicio Django
+6. Haz clic en **"+ Nueva Variable"** o **"Referencia de Variable"**
+7. En el dropdown, selecciona: **Postgres → DATABASE_URL**
+8. Esto creará automáticamente una referencia: `${{ Postgres.DATABASE_URL }}`
+
+**Alternativa:** Si no aparece la opción de referencia:
+1. Copia manualmente el valor de `DATABASE_URL` del servicio Postgres
+2. Agrégala como nueva variable en tu servicio Django
+3. Nombre: `DATABASE_URL`
+4. Valor: `postgresql://usuario:contraseña@host:puerto/base_de_datos`
+
+### 3. Variables de entorno necesarias
+
+En tu servicio Django, configura estas variables:
+
+```
+DATABASE_URL=${{ Postgres.DATABASE_URL }}  (referencia automática)
+DEBUG=False
+SECRET_KEY=tu-clave-secreta-aleatoria
+ALLOWED_HOSTS=tu-app.railway.app,empleados.sistemaconstruinmuniza.com
+AWS_ACCESS_KEY_ID=tu-aws-key
+AWS_SECRET_ACCESS_KEY=tu-aws-secret
+AWS_STORAGE_BUCKET_NAME=tu-bucket-s3
+AWS_S3_REGION_NAME=sa-east-1
+```
+
+### 4. Deploy automático
+   - Cada push a `main` o ramas configuradas dispara un nuevo deploy
    - Railway ejecuta `start.sh` automáticamente
+   - El script verificará que `DATABASE_URL` esté configurada
 
 ## Validar que funcionó
 
