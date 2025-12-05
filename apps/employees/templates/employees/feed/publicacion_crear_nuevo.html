@@ -568,6 +568,27 @@
                 tempImg.src = event.target.result;
 
                 state.imagenCargada = true;
+
+                // Inicializar estilos con valores actuales de los inputs
+                state.estilos = {
+                    font_family: fontFamilySelect.value,
+                    font_size: parseInt(fontSizeInput.value),
+                    text_color: textColorInput.value,
+                    stroke_width: parseInt(strokeWidthInput.value),
+                    stroke_color: strokeColorInput.value,
+                    titulo_x: parseInt(document.getElementById('titulo-x').value),
+                    titulo_y: parseInt(document.getElementById('titulo-y').value),
+                    titulo_width: parseInt(document.getElementById('titulo-width').value),
+                    titulo_height: parseInt(document.getElementById('titulo-height').value),
+                    titulo_font_size: parseInt(fontSizeInput.value),
+                    contenido_x: parseInt(document.getElementById('contenido-x').value),
+                    contenido_y: parseInt(document.getElementById('contenido-y').value),
+                    contenido_width: parseInt(document.getElementById('contenido-width').value),
+                    contenido_height: parseInt(document.getElementById('contenido-height').value),
+                    contenido_font_size: parseInt(fontSizeInput.value)
+                };
+                console.log('[PUBLICACION] Estilos inicializados:', state.estilos);
+
                 actualizarPreview();
             };
             reader.readAsDataURL(file);
@@ -669,6 +690,15 @@
             // Actualizar inputs
             document.getElementById(prefix + '-x').value = newLeft;
             document.getElementById(prefix + '-y').value = newTop;
+
+            // Actualizar state.estilos
+            if (prefix === 'titulo') {
+                state.estilos.titulo_x = newLeft;
+                state.estilos.titulo_y = newTop;
+            } else {
+                state.estilos.contenido_x = newLeft;
+                state.estilos.contenido_y = newTop;
+            }
         }
 
         function closeDragElement() {
@@ -716,12 +746,16 @@
 
             console.log(`Resize ${prefix}: newWidth=${newWidth}, baseFontSize=${baseFontSize}, ratio=${fontSizeRatio}, newFontSize=${newFontSize}`);
 
-            // Guardar el tamaño de fuente específico para este cuadro en el estado
+            // Guardar el tamaño de fuente específico y dimensiones para este cuadro en el estado
             if (prefix === 'titulo') {
                 state.estilos.titulo_font_size = newFontSize;
+                state.estilos.titulo_width = newWidth;
+                state.estilos.titulo_height = newHeight;
                 console.log('Guardado titulo_font_size:', newFontSize);
             } else if (prefix === 'contenido') {
                 state.estilos.contenido_font_size = newFontSize;
+                state.estilos.contenido_width = newWidth;
+                state.estilos.contenido_height = newHeight;
                 console.log('Guardado contenido_font_size:', newFontSize);
             }
 
@@ -791,23 +825,56 @@
 
     // Guardar estilos antes de enviar
     form.addEventListener('submit', function(e) {
-        // Recopilar todas las posiciones y estilos
+        // Capturar valores de font_size antes de sobrescribir state.estilos
+        const tituloFontSizePrevio = state.estilos.titulo_font_size;
+        const contenidoFontSizePrevio = state.estilos.contenido_font_size;
+
+        // Obtener factor de escala para convertir coordenadas del preview a imagen original
+        const scaleFactor = parseFloat(previewImage.dataset.scaleFactor) || 1;
+        const scaleMultiplier = 1 / scaleFactor; // Para convertir de preview a original
+
+        console.log(`[SUBMIT] scaleFactor: ${scaleFactor}, scaleMultiplier: ${scaleMultiplier}`);
+
+        // Leer valores del preview (en píxeles del preview)
+        const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
+        const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
+        const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
+        const tituloHeightPreview = parseInt(document.getElementById('titulo-height').value);
+        const contenidoXPreview = parseInt(document.getElementById('contenido-x').value);
+        const contenidoYPreview = parseInt(document.getElementById('contenido-y').value);
+        const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
+        const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
+
+        // Convertir coordenadas del preview a la imagen original
+        const tituloX = Math.round(tituloXPreview * scaleMultiplier);
+        const tituloY = Math.round(tituloYPreview * scaleMultiplier);
+        const tituloWidth = Math.round(tituloWidthPreview * scaleMultiplier);
+        const tituloHeight = Math.round(tituloHeightPreview * scaleMultiplier);
+        const contenidoX = Math.round(contenidoXPreview * scaleMultiplier);
+        const contenidoY = Math.round(contenidoYPreview * scaleMultiplier);
+        const contenidoWidth = Math.round(contenidoWidthPreview * scaleMultiplier);
+        const contenidoHeight = Math.round(contenidoHeightPreview * scaleMultiplier);
+
+        console.log(`[SUBMIT] Conversión - Título: (${tituloXPreview},${tituloYPreview}) → (${tituloX},${tituloY})`);
+        console.log(`[SUBMIT] Conversión - Contenido: (${contenidoXPreview},${contenidoYPreview}) → (${contenidoX},${contenidoY})`);
+
+        // Recopilar todas las posiciones y estilos (con coordenadas convertidas)
         state.estilos = {
             font_family: fontFamilySelect.value,
             font_size: parseInt(fontSizeInput.value),
             text_color: textColorInput.value,
             stroke_width: parseInt(strokeWidthInput.value),
             stroke_color: strokeColorInput.value,
-            titulo_x: parseInt(document.getElementById('titulo-x').value),
-            titulo_y: parseInt(document.getElementById('titulo-y').value),
-            titulo_width: parseInt(document.getElementById('titulo-width').value),
-            titulo_height: parseInt(document.getElementById('titulo-height').value),
-            titulo_font_size: state.estilos.titulo_font_size || parseInt(fontSizeInput.value),
-            contenido_x: parseInt(document.getElementById('contenido-x').value),
-            contenido_y: parseInt(document.getElementById('contenido-y').value),
-            contenido_width: parseInt(document.getElementById('contenido-width').value),
-            contenido_height: parseInt(document.getElementById('contenido-height').value),
-            contenido_font_size: state.estilos.contenido_font_size || parseInt(fontSizeInput.value),
+            titulo_x: tituloX,
+            titulo_y: tituloY,
+            titulo_width: tituloWidth,
+            titulo_height: tituloHeight,
+            titulo_font_size: tituloFontSizePrevio || parseInt(fontSizeInput.value),
+            contenido_x: contenidoX,
+            contenido_y: contenidoY,
+            contenido_width: contenidoWidth,
+            contenido_height: contenidoHeight,
+            contenido_font_size: contenidoFontSizePrevio || parseInt(fontSizeInput.value),
         };
 
         estilsInput.value = JSON.stringify(state.estilos);

@@ -575,13 +575,13 @@
                 </div>
 
                 <!-- Body -->
-                {% if publicacion.es_anuncio and publicacion.imagen_renderizada %}
-                <!-- Imagen renderizada con texto (anuncio) -->
+                {% if publicacion.imagen_renderizada %}
+                <!-- Imagen renderizada con texto (publicación con estilos) -->
                 <div class="publicacion-body-con-imagen">
-                    <img src="{{ publicacion.imagen_renderizada.url }}" alt="Anuncio">
+                    <img src="{{ publicacion.imagen_renderizada.url }}" alt="{% if publicacion.es_anuncio %}Anuncio{% else %}Publicación{% endif %}">
                 </div>
                 {% elif publicacion.imagen %}
-                <!-- Imagen (texto ya renderizado en servidor si aplica) -->
+                <!-- Imagen sin renderizar (sin estilos de texto) -->
                 <div class="publicacion-body-con-imagen">
                     <img src="{{ publicacion.imagen.url }}" alt="Imagen"
                          style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
