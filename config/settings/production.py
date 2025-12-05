@@ -80,9 +80,20 @@ LOGGING = {
 }
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
-}
+# Database configuration for Railway
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if not DATABASE_URL:
+    import logging
+    logging.warning('WARNING: DATABASE_URL environment variable is not set, databases will not be configured')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.dummy',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL)
+    }
 
 
 INSTALLED_APPS += ['storages']

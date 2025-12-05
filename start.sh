@@ -3,6 +3,17 @@ set -e
 
 export DJANGO_SETTINGS_MODULE=config.settings.production
 
+# Verificar que DATABASE_URL esté configurada
+if [ -z "$DATABASE_URL" ]; then
+    echo "❌ ERROR: DATABASE_URL no está configurada."
+    echo "Por favor configura la variable DATABASE_URL en Railway:"
+    echo "1. Ve a tu proyecto en Railway"
+    echo "2. Settings → Variables"
+    echo "3. Asegúrate de que el servicio PostgreSQL está conectado"
+    echo "4. La variable debe estar disponible como: \${{ Postgres.DATABASE_URL }}"
+    exit 1
+fi
+
 # Ejecuta migraciones
 python manage.py migrate
 
