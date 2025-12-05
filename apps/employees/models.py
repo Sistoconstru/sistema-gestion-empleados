@@ -7,6 +7,7 @@ from django.db import models
 import uuid
 from django.db import models
 from apps.core.models import BaseModel as CoreBaseModel
+from custom_storage.media import MediaStorage
 
 # ===================== MODELO BASE PARA AUDITORÍA =====================
 
@@ -317,6 +318,7 @@ class Producto(BaseModel):
     )
     imagen = models.ImageField(
         upload_to='marketplace/productos/',
+        storage=MediaStorage(),
         null=True,
         blank=True,
         help_text="Imagen principal del producto"
@@ -817,6 +819,7 @@ class Publicacion(models.Model):
     )
     imagen = models.ImageField(
         upload_to='publicaciones/%Y/%m/%d/',
+        storage=MediaStorage(),
         blank=True,
         null=True,
         help_text="Imagen de fondo opcional (máx 5MB)"
@@ -869,6 +872,7 @@ class Publicacion(models.Model):
     # Imagen renderizada (con texto superpuesto)
     imagen_renderizada = models.ImageField(
         upload_to='anuncios_renderizados/%Y/%m/%d/',
+        storage=MediaStorage(),
         blank=True,
         null=True,
         help_text="Imagen final con texto renderizado"
