@@ -1273,7 +1273,13 @@ class PublicacionForm(forms.ModelForm):
                         instance.contenido,
                         estilos
                     )
-                    instance.imagen_renderizada = imagen_renderizada
+                    # Guardar la imagen renderizada usando el método .save() del campo
+                    # para asegurar que se guarde en S3
+                    instance.imagen_renderizada.save(
+                        f'anuncio_{instance.id}.png',
+                        imagen_renderizada,
+                        save=False  # No guardar el modelo todavía
+                    )
                     logger.info(f"[PUBLICACION.SAVE] Publicación renderizada exitosamente")
                 else:
                     logger.info(f"[PUBLICACION.SAVE] Sin imagen cargada, se guardan solo los estilos")
