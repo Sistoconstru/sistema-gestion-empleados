@@ -12176,3 +12176,69 @@ WARNING 2025-12-10 11:40:46,973 basehttp 39608 35064 "GET /.well-known/appspecif
 INFO 2025-12-10 11:40:46,973 basehttp 39608 25172 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
 INFO 2025-12-10 11:40:46,975 basehttp 39608 16088 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
 WARNING 2025-12-10 11:40:46,996 basehttp 39608 16088 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:43:02,462 apps 49008 25004 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 11:43:03,059 apps 39980 48960 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 11:43:03,076 autoreload 39980 48960 Watching for file changes with StatReloader
+INFO 2025-12-10 11:43:03,529 wsgi 39980 37800 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 11:43:06,693 basehttp 39980 54480 "GET /empleados/feed/ HTTP/1.1" 200 52257
+INFO 2025-12-10 11:43:06,736 basehttp 39980 9792 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:43:06,736 basehttp 39980 24968 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+WARNING 2025-12-10 11:43:06,738 log 39980 54480 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:43:06,738 basehttp 39980 54480 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:43:06,772 basehttp 39980 54480 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:43:33,976 basehttp 39980 24968 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+INFO 2025-12-10 11:44:19,252 basehttp 39980 24968 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 11:44:19,295 basehttp 39980 24968 "GET /empleados/feed/ HTTP/1.1" 200 57076
+INFO 2025-12-10 11:44:19,321 basehttp 39980 9792 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:44:19,322 basehttp 39980 10144 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:44:19,345 basehttp 39980 24968 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_mxcN31M.png HTTP/1.1" 200 1507316
+INFO 2025-12-10 11:47:22,893 basehttp 39980 24968 "GET /empleados/feed/ HTTP/1.1" 200 56712
+INFO 2025-12-10 11:47:22,929 basehttp 39980 9792 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:47:22,929 basehttp 39980 10144 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:47:22,929 basehttp 39980 24968 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_mxcN31M.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:47:50,109 basehttp 39980 24968 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+INFO 2025-12-10 11:48:29,958 basehttp 39980 24968 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 11:48:30,041 basehttp 39980 24968 "GET /empleados/feed/ HTTP/1.1" 200 61531
+INFO 2025-12-10 11:48:30,068 basehttp 39980 10144 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:48:30,068 basehttp 39980 9792 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_mxcN31M.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:48:30,069 basehttp 39980 52100 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:48:30,093 basehttp 39980 24968 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_CPnsW1h.png HTTP/1.1" 200 2702592
+INFO 2025-12-10 11:52:45,020 basehttp 39980 24968 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 11:52:47,500 basehttp 39980 24968 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-10 11:52:51,742 basehttp 39980 24968 "GET /evaluaciones/supervisor/seguimientos-pendientes/ HTTP/1.1" 200 13100
+INFO 2025-12-10 11:52:53,945 basehttp 39980 24968 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-10 11:53:01,426 basehttp 39980 24968 "GET /evaluaciones/admin/pendientes-aprobacion/ HTTP/1.1" 200 109980
+INFO 2025-12-10 11:53:03,949 basehttp 39980 24968 "GET /evaluaciones/admin/revisar-plan-predefinido/4cf2cc54-d1c2-4dd9-9357-4f8f34f7a1b2/ HTTP/1.1" 200 19845
+INFO 2025-12-10 11:53:15,241 basehttp 39980 24968 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-10 12:08:13,842 autoreload 39980 48960 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\renderizado_anuncios.py changed, reloading.
+INFO 2025-12-10 12:08:14,713 apps 46148 8220 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 12:08:14,736 autoreload 46148 8220 Watching for file changes with StatReloader
+INFO 2025-12-10 12:08:15,247 wsgi 46148 42292 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 14:01:12,660 basehttp 46148 13664 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 14:01:14,606 basehttp 46148 13664 "GET /empleados/ HTTP/1.1" 200 101251
+INFO 2025-12-10 14:01:21,374 basehttp 46148 13664 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 74479
+INFO 2025-12-10 14:01:27,844 basehttp 46148 13664 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21432
+INFO 2025-12-10 14:06:06,928 basehttp 46148 13664 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:06:06,928 basehttp 46148 13664 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-10 14:06:12,670 basehttp 46148 13664 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:06:12,751 basehttp 46148 13664 "GET /empleados/feed/ HTTP/1.1" 200 45091
+INFO 2025-12-10 14:06:12,772 basehttp 46148 13664 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:06:12,772 basehttp 46148 58284 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:06:14,577 basehttp 46148 58284 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 13122
+INFO 2025-12-10 14:06:16,092 basehttp 46148 58284 "GET /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/ HTTP/1.1" 200 18087
+INFO 2025-12-10 14:06:16,135 basehttp 46148 58284 "POST /empleados/mensajeria/conversacion/630f5fdb-eb09-4c24-9fc9-5a1f5a8639c6/marcar-leidos/ HTTP/1.1" 200 66
+INFO 2025-12-10 14:06:21,261 basehttp 46148 58284 "GET /notificaciones/list/ HTTP/1.1" 200 45724
+INFO 2025-12-10 14:06:28,859 basehttp 46148 58284 "GET /notificaciones/list/ HTTP/1.1" 200 45724
+INFO 2025-12-10 14:06:30,832 basehttp 46148 58284 "POST /notificaciones/marcar-todas-leidas/ HTTP/1.1" 200 17
+INFO 2025-12-10 14:06:30,862 basehttp 46148 58284 "GET /notificaciones/list/ HTTP/1.1" 200 43758
+INFO 2025-12-10 14:06:33,675 basehttp 46148 58284 "GET /notificaciones/list/ HTTP/1.1" 200 43758
+INFO 2025-12-10 14:06:39,456 basehttp 46148 58284 "GET /empleados/feed/ HTTP/1.1" 200 44749
+INFO 2025-12-10 14:07:09,159 basehttp 46148 58284 "GET /empleados/feed/ HTTP/1.1" 200 44749
+INFO 2025-12-10 14:07:14,860 basehttp 46148 58284 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:07:14,860 basehttp 46148 58284 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-10 14:07:20,866 basehttp 46148 58284 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:07:20,925 basehttp 46148 58284 "GET /empleados/feed/ HTTP/1.1" 200 47962
+INFO 2025-12-10 14:07:23,913 basehttp 46148 58284 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 43118
+INFO 2025-12-10 14:08:33,209 basehttp 46148 58284 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:08:33,256 basehttp 46148 58284 "GET /empleados/feed/ HTTP/1.1" 200 52781
+INFO 2025-12-10 14:08:33,294 basehttp 46148 58284 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_AiRpDtM.png HTTP/1.1" 200 1190101

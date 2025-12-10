@@ -887,6 +887,15 @@
             contenido_width: contenidoWidth,
             contenido_height: contenidoHeight,
             contenido_font_size: contenidoFontSizeReal,
+            // DEBUG: Información para diagnosticar problemas de escala
+            _debug_naturalWidth: realWidth,
+            _debug_naturalHeight: realHeight,
+            _debug_offsetWidth: previewWidth,
+            _debug_offsetHeight: previewHeight,
+            _debug_scaleX: scaleX,
+            _debug_scaleY: scaleY,
+            _debug_tituloXPreview: tituloXPreview,
+            _debug_contenidoXPreview: contenidoXPreview,
         };
 
         estilsInput.value = JSON.stringify(state.estilos);

@@ -903,13 +903,19 @@
         const tituloFontSizePrevio = state.estilos.titulo_font_size;
         const contenidoFontSizePrevio = state.estilos.contenido_font_size;
 
-        // Obtener scaleFactor para convertir coordenadas del preview a la imagen real
-        const scaleFactor = parseFloat(previewImage.dataset.scaleFactor) || 1;
-        const scaleMultiplier = 1 / scaleFactor;
+        // Obtener dimensiones reales de la imagen y del preview
+        const realWidth = previewImage.naturalWidth;
+        const realHeight = previewImage.naturalHeight;
+        const previewWidth = previewImage.offsetWidth;
+        const previewHeight = previewImage.offsetHeight;
+        const scaleX = realWidth / previewWidth;
+        const scaleY = realHeight / previewHeight;
 
-        console.log('[SUBMIT] scaleFactor:', scaleFactor, 'multiplier:', scaleMultiplier);
+        console.log('[SUBMIT] Imagen real:', realWidth, 'x', realHeight);
+        console.log('[SUBMIT] Preview:', previewWidth, 'x', previewHeight);
+        console.log('[SUBMIT] Escalas:', scaleX.toFixed(2), 'x', scaleY.toFixed(2));
 
-        // Leer coordenadas del preview
+        // Leer coordenadas del preview (píxeles relativos al preview)
         const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
         const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
         const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
@@ -919,21 +925,25 @@
         const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
         const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
 
-        // Convertir a coordenadas de la imagen real
-        const tituloX = Math.round(tituloXPreview * scaleMultiplier);
-        const tituloY = Math.round(tituloYPreview * scaleMultiplier);
-        const tituloWidth = Math.round(tituloWidthPreview * scaleMultiplier);
-        const tituloHeight = Math.round(tituloHeightPreview * scaleMultiplier);
-        const contenidoX = Math.round(contenidoXPreview * scaleMultiplier);
-        const contenidoY = Math.round(contenidoYPreview * scaleMultiplier);
-        const contenidoWidth = Math.round(contenidoWidthPreview * scaleMultiplier);
-        const contenidoHeight = Math.round(contenidoHeightPreview * scaleMultiplier);
+        // Convertir a coordenadas reales de la imagen
+        const tituloX = Math.round(tituloXPreview * scaleX);
+        const tituloY = Math.round(tituloYPreview * scaleY);
+        const tituloWidth = Math.round(tituloWidthPreview * scaleX);
+        const tituloHeight = Math.round(tituloHeightPreview * scaleY);
+        const contenidoX = Math.round(contenidoXPreview * scaleX);
+        const contenidoY = Math.round(contenidoYPreview * scaleY);
+        const contenidoWidth = Math.round(contenidoWidthPreview * scaleX);
+        const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
 
-        // También escalar los font sizes
-        const tituloFontSizeReal = tituloFontSizePrevio ? Math.round(tituloFontSizePrevio * scaleMultiplier) : Math.round(parseInt(fontSizeInput.value) * scaleMultiplier);
-        const contenidoFontSizeReal = contenidoFontSizePrevio ? Math.round(contenidoFontSizePrevio * scaleMultiplier) : Math.round(parseInt(fontSizeInput.value) * scaleMultiplier);
+        console.log('[SUBMIT] Título:', tituloXPreview, tituloYPreview, '→', tituloX, tituloY);
+        console.log('[SUBMIT] Contenido:', contenidoXPreview, contenidoYPreview, '→', contenidoX, contenidoY);
 
-        console.log('[SUBMIT] Conversión de coordenadas completada');
+        // Escalar font sizes usando la escala promedio
+        const scaleFactor = (scaleX + scaleY) / 2;
+        const tituloFontSizeReal = tituloFontSizePrevio ? Math.round(tituloFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+        const contenidoFontSizeReal = contenidoFontSizePrevio ? Math.round(contenidoFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+
+        console.log('[SUBMIT] Font sizes:', tituloFontSizePrevio, '→', tituloFontSizeReal, ',', contenidoFontSizePrevio, '→', contenidoFontSizeReal);
 
         // Recopilar todas las posiciones y estilos (con coordenadas reales)
         state.estilos = {
@@ -952,6 +962,15 @@
             contenido_width: contenidoWidth,
             contenido_height: contenidoHeight,
             contenido_font_size: contenidoFontSizeReal,
+            // DEBUG: Información para diagnosticar problemas de escala
+            _debug_naturalWidth: realWidth,
+            _debug_naturalHeight: realHeight,
+            _debug_offsetWidth: previewWidth,
+            _debug_offsetHeight: previewHeight,
+            _debug_scaleX: scaleX,
+            _debug_scaleY: scaleY,
+            _debug_tituloXPreview: tituloXPreview,
+            _debug_contenidoXPreview: contenidoXPreview,
         };
 
         estilsInput.value = JSON.stringify(state.estilos);
