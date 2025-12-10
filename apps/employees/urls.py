@@ -89,5 +89,6 @@ urlpatterns = [
     path('feed/publicacion/<uuid:publicacion_pk>/comentario/', feed_views.agregar_comentario, name='agregar_comentario'),
     path('feed/comentario/<uuid:comentario_id>/eliminar/', feed_views.eliminar_comentario, name='eliminar_comentario'),
     path('feed/anuncio/crear/', feed_views.CrearAnuncioImportanteView.as_view(), name='crear_anuncio'),
+    path('feed/preview-renderizado/', feed_views.preview_renderizado_anuncio, name='preview_renderizado_anuncio'),
     path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),
 ]

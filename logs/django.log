@@ -12242,3 +12242,20 @@ INFO 2025-12-10 14:07:23,913 basehttp 46148 58284 "GET /empleados/feed/anuncio/c
 INFO 2025-12-10 14:08:33,209 basehttp 46148 58284 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
 INFO 2025-12-10 14:08:33,256 basehttp 46148 58284 "GET /empleados/feed/ HTTP/1.1" 200 52781
 INFO 2025-12-10 14:08:33,294 basehttp 46148 58284 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_AiRpDtM.png HTTP/1.1" 200 1190101
+INFO 2025-12-10 14:38:57,411 basehttp 46148 43396 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 43118
+INFO 2025-12-10 14:39:36,342 basehttp 46148 43396 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 14:39:36,377 basehttp 46148 43396 "GET /empleados/feed/ HTTP/1.1" 200 57156
+INFO 2025-12-10 14:39:36,404 basehttp 46148 52160 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_AiRpDtM.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:39:36,405 basehttp 46148 17008 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:39:36,414 basehttp 46148 43396 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_y5Aigmw.png HTTP/1.1" 200 1187185
+INFO 2025-12-10 14:54:04,627 autoreload 46148 8220 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\feed_views.py changed, reloading.
+INFO 2025-12-10 14:54:05,488 apps 18648 8024 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 14:54:05,515 autoreload 18648 8024 Watching for file changes with StatReloader
+INFO 2025-12-10 14:56:09,760 autoreload 18648 8024 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\feed_views.py changed, reloading.
+INFO 2025-12-10 14:56:10,493 apps 43708 21380 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 14:56:10,513 autoreload 43708 21380 Watching for file changes with StatReloader
+INFO 2025-12-10 14:56:11,114 wsgi 43708 45136 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 14:56:45,193 autoreload 43708 21380 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\urls.py changed, reloading.
+INFO 2025-12-10 14:56:45,991 apps 15724 24068 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 14:56:46,010 autoreload 15724 24068 Watching for file changes with StatReloader
+INFO 2025-12-10 14:56:46,575 wsgi 15724 6316 WSGI DJANGO_SETTINGS_MODULE: config.settings.development

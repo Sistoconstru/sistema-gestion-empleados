@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.db.models import Q, Count
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from datetime import timedelta
 import json
 import logging
@@ -357,3 +357,60 @@ def crear_publicacion_rapida(request):
     except Exception as e:
         logger.error(f"[QUICK_POST] Error al crear publicación rápida: {e}", exc_info=True)
         return redirect('employees:feed_list')
+
+
+@login_required
+@require_http_methods(["POST"])
+def preview_renderizado_anuncio(request):
+    """
+    Vista AJAX para preview del renderizado de anuncio/publicación.
+    Renderiza la imagen temporalmente y devuelve la URL.
+    """
+    import json
+    import tempfile
+    from django.core.files.uploadedfile import InMemoryUploadedFile
+    from .renderizado_anuncios import renderizar_anuncio_v2
+    from django.core.files.storage import default_storage
+
+    try:
+        # Obtener datos del request
+        imagen = request.FILES.get('imagen')
+        titulo = request.POST.get('titulo', '')
+        contenido = request.POST.get('contenido', '')
+        estilos_json = request.POST.get('estilos', '{}')
+        estilos = json.loads(estilos_json)
+
+        logger.info(f"[PREVIEW] Usuario {request.user.username} solicitó preview")
+        logger.info(f"[PREVIEW] Estilos: {estilos}")
+
+        if not imagen:
+            return JsonResponse({'success': False, 'error': 'No se proporcionó imagen'})
+
+        # Renderizar la imagen
+        imagen_renderizada = renderizar_anuncio_v2(
+            imagen_file=imagen,
+            titulo=titulo,
+            contenido=contenido,
+            estilos=estilos
+        )
+
+        # Guardar temporalmente en S3 con prefijo temporal
+        import uuid
+        temp_filename = f'temp/preview_{uuid.uuid4().hex[:8]}.png'
+        temp_path = default_storage.save(temp_filename, imagen_renderizada)
+        temp_url = default_storage.url(temp_path)
+
+        logger.info(f"[PREVIEW] Imagen renderizada guardada temporalmente: {temp_url}")
+
+        return JsonResponse({
+            'success': True,
+            'url': temp_url,
+            'temp_path': temp_path  # Para limpiar después si es necesario
+        })
+
+    except Exception as e:
+        logger.error(f"[PREVIEW] Error al generar preview: {e}", exc_info=True)
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })

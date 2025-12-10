@@ -396,6 +396,9 @@
                     <button type="button" class="btn-cancel" onclick="window.history.back()">
                         <i class="fas fa-times me-2"></i>Cancelar
                     </button>
+                    <button type="button" class="btn-preview" id="btn-preview-render" style="background: #48bb78; color: white; flex: 1;">
+                        <i class="fas fa-eye me-2"></i>Vista Previa Renderizado
+                    </button>
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-send me-2"></i>Publicar Anuncio
                     </button>
@@ -406,6 +409,19 @@
             </div>
         </div>
     </form>
+</div>
+
+<!-- Modal para Vista Previa del Renderizado -->
+<div id="preview-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 90%; max-height: 90%; overflow: auto; position: relative;">
+        <button onclick="document.getElementById('preview-modal').style.display='none'" style="position: absolute; top: 1rem; right: 1rem; background: #e53e3e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-times"></i> Cerrar
+        </button>
+        <h2 style="margin-bottom: 1rem;">Vista Previa del Renderizado</h2>
+        <div id="preview-render-content" style="text-align: center;">
+            <p>Cargando...</p>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -903,6 +919,105 @@
         console.log('JSON string:', estilsInput.value);
         console.log('Campo input name:', estilsInput.name);
         console.log('Campo input id:', estilsInput.id);
+    });
+
+    // Botón de Vista Previa del Renderizado
+    document.getElementById('btn-preview-render').addEventListener('click', async function() {
+        if (!state.imagenCargada) {
+            alert('Por favor, carga una imagen primero');
+            return;
+        }
+
+        const modal = document.getElementById('preview-modal');
+        const content = document.getElementById('preview-render-content');
+
+        // Mostrar modal con loading
+        modal.style.display = 'flex';
+        content.innerHTML = '<p style="padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Renderizando imagen...</p>';
+
+        try {
+            // Preparar datos para enviar (igual que en submit)
+            const realWidth = previewImage.naturalWidth;
+            const realHeight = previewImage.naturalHeight;
+            const previewWidth = previewImage.offsetWidth;
+            const previewHeight = previewImage.offsetHeight;
+            const scaleX = realWidth / previewWidth;
+            const scaleY = realHeight / previewHeight;
+
+            const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
+            const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
+            const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
+            const tituloHeightPreview = parseInt(document.getElementById('titulo-height').value);
+            const contenidoXPreview = parseInt(document.getElementById('contenido-x').value);
+            const contenidoYPreview = parseInt(document.getElementById('contenido-y').value);
+            const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
+            const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
+
+            const tituloX = Math.round(tituloXPreview * scaleX);
+            const tituloY = Math.round(tituloYPreview * scaleY);
+            const tituloWidth = Math.round(tituloWidthPreview * scaleX);
+            const tituloHeight = Math.round(tituloHeightPreview * scaleY);
+            const contenidoX = Math.round(contenidoXPreview * scaleX);
+            const contenidoY = Math.round(contenidoYPreview * scaleY);
+            const contenidoWidth = Math.round(contenidoWidthPreview * scaleX);
+            const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
+
+            const scaleFactor = (scaleX + scaleY) / 2;
+            const tituloFontSizeReal = state.estilos.titulo_font_size ? Math.round(state.estilos.titulo_font_size * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+            const contenidoFontSizeReal = state.estilos.contenido_font_size ? Math.round(state.estilos.contenido_font_size * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+
+            const estilos = {
+                font_family: fontFamilySelect.value,
+                font_size: parseInt(fontSizeInput.value),
+                text_color: textColorInput.value,
+                stroke_width: parseInt(strokeWidthInput.value),
+                stroke_color: strokeColorInput.value,
+                titulo_x: tituloX,
+                titulo_y: tituloY,
+                titulo_width: tituloWidth,
+                titulo_height: tituloHeight,
+                titulo_font_size: tituloFontSizeReal,
+                contenido_x: contenidoX,
+                contenido_y: contenidoY,
+                contenido_width: contenidoWidth,
+                contenido_height: contenidoHeight,
+                contenido_font_size: contenidoFontSizeReal,
+            };
+
+            // Crear FormData con la imagen y datos
+            const formData = new FormData();
+            formData.append('imagen', imagenInput.files[0]);
+            formData.append('titulo', tituloInput.value);
+            formData.append('contenido', contenidoInput.value);
+            formData.append('estilos', JSON.stringify(estilos));
+
+            // Enviar request AJAX para renderizar
+            const response = await fetch('{% url "employees:preview_renderizado_anuncio" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al renderizar: ' + response.statusText);
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                content.innerHTML = `
+                    <img src="${result.url}" style="max-width: 800px; max-height: 800px; border: 2px solid #ddd; border-radius: 4px;" alt="Preview renderizado">
+                    <p style="margin-top: 1rem; color: #666;">Si el texto no se ve bien, ajusta el tamaño de fuente y vuelve a previsualizar.</p>
+                `;
+            } else {
+                content.innerHTML = `<p style="color: #e53e3e; padding: 2rem;">Error: ${result.error}</p>`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            content.innerHTML = `<p style="color: #e53e3e; padding: 2rem;">Error al generar preview: ${error.message}</p>`;
+        }
     });
 
     // Inicializar
