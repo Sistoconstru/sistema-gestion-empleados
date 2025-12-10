@@ -374,16 +374,24 @@ def preview_renderizado_anuncio(request):
 
     try:
         # Obtener datos del request
+        logger.info(f"[PREVIEW] Usuario {request.user.username} solicitó preview")
+        logger.info(f"[PREVIEW] FILES: {request.FILES.keys()}")
+        logger.info(f"[PREVIEW] POST: {request.POST.keys()}")
+
         imagen = request.FILES.get('imagen')
         titulo = request.POST.get('titulo', '')
         contenido = request.POST.get('contenido', '')
         estilos_json = request.POST.get('estilos', '{}')
-        estilos = json.loads(estilos_json)
 
-        logger.info(f"[PREVIEW] Usuario {request.user.username} solicitó preview")
+        logger.info(f"[PREVIEW] Imagen recibida: {imagen}")
+        logger.info(f"[PREVIEW] Titulo: {titulo[:50] if titulo else 'None'}")
+        logger.info(f"[PREVIEW] Contenido: {contenido[:50] if contenido else 'None'}")
+
+        estilos = json.loads(estilos_json)
         logger.info(f"[PREVIEW] Estilos: {estilos}")
 
         if not imagen:
+            logger.error("[PREVIEW] No se proporcionó imagen en request.FILES")
             return JsonResponse({'success': False, 'error': 'No se proporcionó imagen'})
 
         # Renderizar la imagen

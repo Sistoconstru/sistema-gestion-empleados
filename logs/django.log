@@ -12259,3 +12259,24 @@ INFO 2025-12-10 14:56:45,193 autoreload 43708 21380 C:\Sisto\SIGHU\sistema-gesti
 INFO 2025-12-10 14:56:45,991 apps 15724 24068 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-12-10 14:56:46,010 autoreload 15724 24068 Watching for file changes with StatReloader
 INFO 2025-12-10 14:56:46,575 wsgi 15724 6316 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 14:57:11,610 basehttp 15724 34036 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 14:57:14,059 basehttp 15724 34036 "GET /empleados/feed/ HTTP/1.1" 200 52337
+INFO 2025-12-10 14:57:14,085 basehttp 15724 34036 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_AiRpDtM.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:57:14,089 basehttp 15724 34036 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+INFO 2025-12-10 14:57:16,295 basehttp 15724 34036 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 49516
+INFO 2025-12-10 14:59:06,209 basehttp 15724 39968 "POST /empleados/feed/preview-renderizado/ HTTP/1.1" 200 102
+INFO 2025-12-10 14:59:06,230 basehttp 15724 39968 "GET /media/temp/preview_9f1a5447.png HTTP/1.1" 200 1192974
+INFO 2025-12-10 15:02:17,209 basehttp 15724 39968 "POST /empleados/feed/preview-renderizado/ HTTP/1.1" 200 102
+INFO 2025-12-10 15:02:17,258 basehttp 15724 39968 "GET /media/temp/preview_d984761c.png HTTP/1.1" 200 1192974
+INFO 2025-12-10 15:02:56,242 basehttp 15724 39968 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:02:56,326 basehttp 15724 39968 "GET /empleados/feed/ HTTP/1.1" 200 57156
+INFO 2025-12-10 15:02:56,364 basehttp 15724 45952 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_AiRpDtM.png HTTP/1.1" 304 0
+INFO 2025-12-10 15:02:56,368 basehttp 15724 45952 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+INFO 2025-12-10 15:02:56,386 basehttp 15724 39968 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_oM3PFTh.png HTTP/1.1" 200 1192974
+INFO 2025-12-10 15:05:04,845 basehttp 15724 39968 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 15:05:06,576 basehttp 15724 39968 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-10 15:05:28,311 basehttp 15724 39968 "GET /evaluaciones/listado-completo/ HTTP/1.1" 200 121311
+INFO 2025-12-10 15:11:59,511 autoreload 15724 24068 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\feed_views.py changed, reloading.
+INFO 2025-12-10 15:12:00,380 apps 47908 57848 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 15:12:00,399 autoreload 47908 57848 Watching for file changes with StatReloader
+INFO 2025-12-10 15:12:00,942 wsgi 47908 43496 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
