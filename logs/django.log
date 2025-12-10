@@ -12280,3 +12280,19 @@ INFO 2025-12-10 15:11:59,511 autoreload 15724 24068 C:\Sisto\SIGHU\sistema-gesti
 INFO 2025-12-10 15:12:00,380 apps 47908 57848 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
 INFO 2025-12-10 15:12:00,399 autoreload 47908 57848 Watching for file changes with StatReloader
 INFO 2025-12-10 15:12:00,942 wsgi 47908 43496 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 15:14:36,933 basehttp 47908 30304 "GET /evaluaciones/ HTTP/1.1" 200 37503
+INFO 2025-12-10 15:14:39,949 basehttp 47908 30304 "GET /evaluaciones/ver-resultados/adf2086e-7102-45fa-b5cd-b7a3515822b5/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:14:39,978 basehttp 47908 30304 "GET /evaluaciones/ver-plan-mejora/5a2cf79d-c91e-469f-a9ea-15d5dfe50d5a/ HTTP/1.1" 200 32552
+INFO 2025-12-10 15:14:48,061 basehttp 47908 30304 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:14:48,061 basehttp 47908 30304 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-10 15:14:56,670 basehttp 47908 30304 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:14:56,731 basehttp 47908 30304 "GET /empleados/feed/ HTTP/1.1" 200 44988
+INFO 2025-12-10 15:15:03,915 basehttp 47908 30304 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:15:04,084 basehttp 47908 30304 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 40826
+INFO 2025-12-10 15:15:05,928 basehttp 47908 30304 "GET /evaluaciones/ HTTP/1.1" 200 27588
+INFO 2025-12-10 15:15:08,560 basehttp 47908 30304 "GET /evaluaciones/ver-resultados/dd1f79c8-5f41-4ccf-9a73-1089acef97bf/ HTTP/1.1" 302 0
+INFO 2025-12-10 15:15:08,582 basehttp 47908 30304 "GET /evaluaciones/ver-plan-mejora/262b3f2f-c103-44b3-a1f5-f26da61c7e97/ HTTP/1.1" 200 20687
+INFO 2025-12-10 15:24:13,531 autoreload 47908 57848 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\feed_views.py changed, reloading.
+INFO 2025-12-10 15:24:14,294 apps 1060 52128 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 15:24:14,317 autoreload 1060 52128 Watching for file changes with StatReloader
+INFO 2025-12-10 15:24:14,817 wsgi 1060 46340 WSGI DJANGO_SETTINGS_MODULE: config.settings.development

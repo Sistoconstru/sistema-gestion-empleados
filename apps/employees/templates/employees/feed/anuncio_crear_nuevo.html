@@ -1005,13 +1005,17 @@
             }
 
             const result = await response.json();
+            console.log('[PREVIEW] Respuesta del servidor:', result);
 
             if (result.success) {
+                console.log('[PREVIEW] URL de imagen:', result.url);
                 content.innerHTML = `
-                    <img src="${result.url}" style="max-width: 800px; max-height: 800px; border: 2px solid #ddd; border-radius: 4px;" alt="Preview renderizado">
+                    <img src="${result.url}" style="max-width: 800px; max-height: 800px; border: 2px solid #ddd; border-radius: 4px;" alt="Preview renderizado" onload="console.log('[PREVIEW] Imagen cargada correctamente')" onerror="console.error('[PREVIEW] Error al cargar imagen')">
                     <p style="margin-top: 1rem; color: #666;">Si el texto no se ve bien, ajusta el tamaño de fuente y vuelve a previsualizar.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">URL: ${result.url}</p>
                 `;
             } else {
+                console.error('[PREVIEW] Error en respuesta:', result.error);
                 content.innerHTML = `<p style="color: #e53e3e; padding: 2rem;">Error: ${result.error}</p>`;
             }
         } catch (error) {

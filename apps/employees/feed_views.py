@@ -402,18 +402,37 @@ def preview_renderizado_anuncio(request):
             estilos=estilos
         )
 
-        # Guardar temporalmente en S3 con prefijo temporal
+        # Guardar temporalmente en S3 con prefijo temporal y metadata CORS
         import uuid
+        from storages.backends.s3boto3 import S3Boto3Storage
+
         temp_filename = f'temp/preview_{uuid.uuid4().hex[:8]}.png'
-        temp_path = default_storage.save(temp_filename, imagen_renderizada)
-        temp_url = default_storage.url(temp_path)
+
+        # Guardar con metadata explícita para CORS
+        if hasattr(default_storage, 'bucket'):
+            # Es S3Storage, usar método directo con ExtraArgs
+            from django.core.files.base import ContentFile
+            imagen_renderizada.seek(0)
+
+            default_storage.bucket.put_object(
+                Key=temp_filename,
+                Body=imagen_renderizada.read(),
+                ContentType='image/png',
+                CacheControl='public, max-age=300',
+                ACL='public-read'
+            )
+            temp_url = default_storage.url(temp_filename)
+        else:
+            # Fallback para storage local
+            temp_path = default_storage.save(temp_filename, imagen_renderizada)
+            temp_url = default_storage.url(temp_path)
 
         logger.info(f"[PREVIEW] Imagen renderizada guardada temporalmente: {temp_url}")
 
         return JsonResponse({
             'success': True,
             'url': temp_url,
-            'temp_path': temp_path  # Para limpiar después si es necesario
+            'temp_path': temp_filename
         })
 
     except Exception as e:
