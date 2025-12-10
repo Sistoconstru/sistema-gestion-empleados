@@ -18,10 +18,12 @@ fi
 python manage.py migrate
 
 # Popula datos iniciales de evaluaciones (estructura base)
-python manage.py configurar_evaluaciones_iniciales
+# DESHABILITADO: Ya se ejecutó una vez, datos ya están en la base de datos
+# python manage.py configurar_evaluaciones_iniciales
 
 # Actualiza opciones con contenido del documento completo
-python manage.py actualizar_opciones_documento
+# DESHABILITADO: Ya se ejecutó una vez, datos ya están en la base de datos
+# python manage.py actualizar_opciones_documento
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

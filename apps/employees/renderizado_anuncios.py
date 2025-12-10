@@ -242,6 +242,8 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
         stroke_width = int(estilos.get('stroke_width', 0))
         stroke_color = hex_a_rgb(estilos.get('stroke_color', '#000000'))
 
+        logger.info(f"[RENDERIZADO] Estilos recibidos: {estilos}")
+
         # --- COMPATIBILIDAD: Convertir formato antiguo (text_position_x_px) al nuevo (titulo_x, contenido_x) ---
         # Si vienen estilos en el formato antiguo de publicacion_form.html, convertirlos
         if 'text_position_x_px' in estilos and 'titulo_x' not in estilos:
@@ -264,12 +266,15 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
 
         # --- RENDERIZAR TÍTULO ---
         if titulo and titulo.strip():
+            # Las coordenadas vienen en píxeles del tamaño original de la imagen
+            # Si se aplicó escala temporal, debemos escalar las coordenadas también
             titulo_x = int(estilos.get('titulo_x', 20)) * escala_temporal
             titulo_y = int(estilos.get('titulo_y', 20)) * escala_temporal
             titulo_width = int(estilos.get('titulo_width', 300)) * escala_temporal
             titulo_height = int(estilos.get('titulo_height', 100)) * escala_temporal
 
-            logger.info(f"TÍTULO: x={titulo_x}, y={titulo_y}, width={titulo_width}, height={titulo_height}")
+            logger.info(f"[RENDERIZADO] TÍTULO coords originales: x={estilos.get('titulo_x')}, y={estilos.get('titulo_y')}, w={estilos.get('titulo_width')}, h={estilos.get('titulo_height')}")
+            logger.info(f"[RENDERIZADO] TÍTULO coords escaladas (x{escala_temporal}): x={titulo_x}, y={titulo_y}, w={titulo_width}, h={titulo_height}")
 
             # Usar el font size específico del título si existe, sino calcular
             titulo_font_size = estilos.get('titulo_font_size')
@@ -301,12 +306,15 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
 
         # --- RENDERIZAR CONTENIDO ---
         if contenido and contenido.strip():
+            # Las coordenadas vienen en píxeles del tamaño original de la imagen
+            # Si se aplicó escala temporal, debemos escalar las coordenadas también
             contenido_x = int(estilos.get('contenido_x', 20)) * escala_temporal
             contenido_y = int(estilos.get('contenido_y', 150)) * escala_temporal
             contenido_width = int(estilos.get('contenido_width', 300)) * escala_temporal
             contenido_height = int(estilos.get('contenido_height', 300)) * escala_temporal
 
-            logger.info(f"CONTENIDO: x={contenido_x}, y={contenido_y}, width={contenido_width}, height={contenido_height}")
+            logger.info(f"[RENDERIZADO] CONTENIDO coords originales: x={estilos.get('contenido_x')}, y={estilos.get('contenido_y')}, w={estilos.get('contenido_width')}, h={estilos.get('contenido_height')}")
+            logger.info(f"[RENDERIZADO] CONTENIDO coords escaladas (x{escala_temporal}): x={contenido_x}, y={contenido_y}, w={contenido_width}, h={contenido_height}")
 
             # Usar el font size específico del contenido si existe, sino calcular
             contenido_font_size = estilos.get('contenido_font_size')
