@@ -11323,3 +11323,856 @@ WARNING 2025-12-05 16:05:19,253 log 9548 39964 Not Found: /.well-known/appspecif
 WARNING 2025-12-05 16:05:19,255 basehttp 9548 39964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
 INFO 2025-12-05 16:05:19,266 basehttp 9548 52672 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 200 1282959
 WARNING 2025-12-05 16:05:19,301 basehttp 9548 52672 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-05 16:07:43,741 apps 43504 9464 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-05 16:07:44,322 apps 33252 26488 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-05 16:07:44,344 autoreload 33252 26488 Watching for file changes with StatReloader
+INFO 2025-12-05 16:07:44,771 wsgi 33252 31828 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-05 16:07:45,216 basehttp 33252 52244 "GET /empleados/feed/ HTTP/1.1" 200 39792
+INFO 2025-12-05 16:07:45,238 basehttp 33252 52244 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:24,901 apps 45196 13136 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 06:28:25,788 apps 49240 47824 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 06:28:25,811 autoreload 49240 47824 Watching for file changes with StatReloader
+INFO 2025-12-10 06:28:26,361 wsgi 49240 16176 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 06:28:30,610 basehttp 49240 46676 "GET / HTTP/1.1" 302 0
+INFO 2025-12-10 06:28:30,697 basehttp 49240 46676 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:28:30,745 basehttp 49240 46676 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-12-10 06:28:30,768 basehttp 49240 46676 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-12-10 06:28:30,991 log 49240 9688 Not Found: /favicon.ico
+WARNING 2025-12-10 06:28:30,993 basehttp 49240 9688 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 06:28:38,160 basehttp 49240 29816 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:28:38,299 basehttp 49240 29816 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 06:28:38,316 basehttp 49240 29816 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,319 basehttp 49240 29816 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,319 basehttp 49240 8624 "GET /static/css/document-viewer.css HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,320 basehttp 49240 31660 "GET /static/css/corporativo.css HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,322 basehttp 49240 8624 "GET /static/js/custom.js HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,322 basehttp 49240 29816 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:38,342 basehttp 49240 29816 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:49,148 basehttp 49240 29816 "GET /empleados/feed/ HTTP/1.1" 200 39792
+INFO 2025-12-10 06:28:49,175 basehttp 49240 8624 "GET /media/anuncios_renderizados/2025/12/03/anuncio_renderizado_QVjcY46.png HTTP/1.1" 304 0
+INFO 2025-12-10 06:28:49,175 basehttp 49240 29816 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 304 0
+INFO 2025-12-10 06:29:21,825 basehttp 49240 29816 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:29:21,825 basehttp 49240 29816 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-10 06:29:27,134 basehttp 49240 29816 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:29:27,167 basehttp 49240 29816 "GET /empleados/feed/ HTTP/1.1" 200 34147
+INFO 2025-12-10 06:29:35,753 basehttp 49240 29816 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:29:35,753 basehttp 49240 29816 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-10 06:29:45,249 basehttp 49240 29816 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:29:45,320 basehttp 49240 29816 "GET /empleados/feed/ HTTP/1.1" 200 39792
+INFO 2025-12-10 06:29:48,046 basehttp 49240 29816 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:29:48,187 basehttp 49240 29816 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 27068
+INFO 2025-12-10 06:29:53,339 basehttp 49240 29816 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 35488
+INFO 2025-12-10 06:29:53,364 basehttp 49240 29816 "GET /media/marketplace/productos/silla_8qutLhM.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 06:29:53,364 basehttp 49240 46252 "GET /media/marketplace/productos/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-12-10 06:29:53,366 basehttp 49240 21124 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 06:29:53,369 basehttp 49240 31660 "GET /media/marketplace/productos/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-12-10 06:29:53,370 basehttp 49240 27952 "GET /media/marketplace/productos/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-12-10 06:29:53,372 basehttp 49240 29816 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 06:29:53,373 basehttp 49240 46252 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 06:29:53,374 basehttp 49240 8624 "GET /media/marketplace/productos/reloj_bestia.png HTTP/1.1" 200 204638
+INFO 2025-12-10 06:29:53,375 basehttp 49240 21124 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+INFO 2025-12-10 06:29:53,376 basehttp 49240 31660 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+INFO 2025-12-10 06:30:04,080 basehttp 49240 31660 "GET /empleados/feed/ HTTP/1.1" 200 39792
+INFO 2025-12-10 06:30:49,469 basehttp 49240 46520 "GET /empleados/feed/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:30:49,478 basehttp 49240 46520 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:30:49,494 basehttp 49240 46520 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+WARNING 2025-12-10 06:30:49,569 log 49240 46520 Not Found: /favicon.ico
+WARNING 2025-12-10 06:30:49,570 basehttp 49240 46520 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 06:39:19,257 basehttp 49240 12068 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 06:40:25,861 basehttp 49240 12068 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:40:25,935 basehttp 49240 12068 "GET /empleados/feed/ HTTP/1.1" 200 44603
+INFO 2025-12-10 06:40:25,980 basehttp 49240 12068 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 200 1283019
+INFO 2025-12-10 06:43:15,378 basehttp 49240 12068 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 06:44:47,053 basehttp 49240 12068 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 06:44:47,108 basehttp 49240 12068 "GET /empleados/feed/ HTTP/1.1" 200 48978
+INFO 2025-12-10 06:44:47,132 basehttp 49240 42404 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 06:44:47,152 basehttp 49240 12068 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 200 1284877
+INFO 2025-12-10 06:54:14,559 autoreload 49240 47824 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-12-10 06:54:20,674 apps 55284 41728 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 06:54:20,923 autoreload 55284 41728 Watching for file changes with StatReloader
+INFO 2025-12-10 06:54:25,290 wsgi 55284 6992 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 07:00:00,875 basehttp 55284 33636 "GET /empleados/feed/ HTTP/1.1" 200 49056
+INFO 2025-12-10 07:00:00,905 basehttp 55284 33636 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:00:00,905 basehttp 55284 47952 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:00:12,875 basehttp 55284 47952 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:01:43,364 basehttp 55284 56180 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:01:43,409 basehttp 55284 56180 "GET /empleados/feed/ HTTP/1.1" 200 53875
+INFO 2025-12-10 07:01:43,446 basehttp 55284 57616 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:01:43,463 basehttp 55284 56180 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 200 1285916
+INFO 2025-12-10 07:02:17,425 basehttp 55284 56180 "GET /empleados/feed/publicacion/7390c37e-921e-4903-a6b6-65057b4d7445/editar/ HTTP/1.1" 200 47604
+INFO 2025-12-10 07:02:17,481 basehttp 55284 56180 "GET /media/publicaciones/2025/12/10/eucalipto_mPrf4dJ.jpg HTTP/1.1" 200 662742
+INFO 2025-12-10 07:02:47,992 basehttp 55284 56180 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 41363
+INFO 2025-12-10 07:03:48,824 basehttp 55284 56180 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:11:23,086 autoreload 55284 41728 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\forms.py changed, reloading.
+INFO 2025-12-10 07:11:23,874 apps 41768 40996 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 07:11:23,902 autoreload 41768 40996 Watching for file changes with StatReloader
+INFO 2025-12-10 07:11:24,336 wsgi 41768 31680 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 07:11:36,710 basehttp 41768 25320 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:11:38,045 basehttp 41768 25320 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:11:39,953 basehttp 41768 25320 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:12:40,058 basehttp 41768 25320 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:12:40,144 basehttp 41768 25320 "GET /empleados/feed/ HTTP/1.1" 200 58250
+INFO 2025-12-10 07:12:40,166 basehttp 41768 9020 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:12:40,166 basehttp 41768 27800 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:12:40,168 basehttp 41768 45168 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:12:40,188 basehttp 41768 25320 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 200 2446545
+INFO 2025-12-10 07:17:47,716 autoreload 41768 40996 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\renderizado_anuncios.py changed, reloading.
+INFO 2025-12-10 07:17:48,492 apps 30076 12468 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 07:17:48,516 autoreload 30076 12468 Watching for file changes with StatReloader
+INFO 2025-12-10 07:17:48,968 wsgi 30076 58244 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 07:18:12,331 basehttp 30076 17224 "GET /empleados/feed/ HTTP/1.1" 200 57806
+INFO 2025-12-10 07:18:12,367 basehttp 30076 38376 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:18:12,367 basehttp 30076 17224 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:18:12,381 basehttp 30076 40184 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:18:12,384 basehttp 30076 6680 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:18:15,191 basehttp 30076 6680 "GET /empleados/feed/ HTTP/1.1" 200 57806
+INFO 2025-12-10 07:18:28,559 basehttp 30076 6680 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 42886
+INFO 2025-12-10 07:18:43,335 basehttp 30076 6680 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:19:44,900 basehttp 30076 6680 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:19:44,958 basehttp 30076 6680 "GET /empleados/feed/ HTTP/1.1" 200 62625
+INFO 2025-12-10 07:19:44,983 basehttp 30076 40184 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:19:45,010 basehttp 30076 6680 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 200 2612798
+INFO 2025-12-10 07:22:55,476 basehttp 30076 6680 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:25:01,730 basehttp 30076 6680 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 200 37485
+INFO 2025-12-10 07:25:11,993 basehttp 30076 6680 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:25:12,046 basehttp 30076 6680 "GET /empleados/feed/ HTTP/1.1" 200 67652
+INFO 2025-12-10 07:25:12,067 basehttp 30076 6680 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:25:12,071 basehttp 30076 54684 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:25:12,071 basehttp 30076 6680 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:25:12,074 basehttp 30076 17892 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:25:12,074 basehttp 30076 11512 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:25:20,192 basehttp 30076 11512 "GET /empleados/feed/publicacion/bbc22f64-7ab6-4ba0-b6d3-4e540e6ef063/eliminar/ HTTP/1.1" 200 9201
+INFO 2025-12-10 07:25:22,107 basehttp 30076 11512 "POST /empleados/feed/publicacion/bbc22f64-7ab6-4ba0-b6d3-4e540e6ef063/eliminar/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:25:22,160 basehttp 30076 11512 "GET /empleados/feed/ HTTP/1.1" 200 62181
+INFO 2025-12-10 07:25:24,157 basehttp 30076 11512 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 36453
+INFO 2025-12-10 07:26:42,360 basehttp 30076 11512 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:26:42,430 basehttp 30076 11512 "GET /empleados/feed/ HTTP/1.1" 200 67000
+INFO 2025-12-10 07:26:42,453 basehttp 30076 17892 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:26:42,453 basehttp 30076 6680 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:26:42,465 basehttp 30076 11512 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 200 1285449
+INFO 2025-12-10 07:29:36,026 basehttp 30076 20712 "GET /empleados/feed/ HTTP/1.1" 200 66556
+INFO 2025-12-10 07:29:36,071 basehttp 30076 20712 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:29:36,071 basehttp 30076 23764 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:29:36,081 basehttp 30076 23764 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:29:36,081 basehttp 30076 20712 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:29:36,083 basehttp 30076 14668 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:29:42,759 basehttp 30076 14668 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38822
+INFO 2025-12-10 07:31:23,418 basehttp 30076 14668 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 07:31:23,476 basehttp 30076 14668 "GET /empleados/feed/ HTTP/1.1" 200 68087
+INFO 2025-12-10 07:31:23,508 basehttp 30076 23764 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:31:23,508 basehttp 30076 20712 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:31:23,511 basehttp 30076 16248 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:31:23,513 basehttp 30076 57752 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:31:23,534 basehttp 30076 14668 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 200 1546135
+INFO 2025-12-10 07:35:34,725 basehttp 30076 14668 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38822
+INFO 2025-12-10 07:37:30,792 basehttp 30076 14668 "GET /empleados/feed/ HTTP/1.1" 200 67643
+INFO 2025-12-10 07:37:30,830 basehttp 30076 14668 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,835 basehttp 30076 1584 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,836 basehttp 30076 14668 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,838 basehttp 30076 11920 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,838 basehttp 30076 57808 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,839 basehttp 30076 14708 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:30,842 basehttp 30076 11284 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 304 0
+INFO 2025-12-10 07:37:51,408 basehttp 30076 11284 "GET /empleados/feed/ HTTP/1.1" 200 67643
+INFO 2025-12-10 07:38:38,725 apps 48580 32532 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 07:38:40,047 apps 53712 55780 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 07:38:40,073 autoreload 53712 55780 Watching for file changes with StatReloader
+INFO 2025-12-10 07:38:44,612 wsgi 53712 36948 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 07:39:23,035 basehttp 53712 55760 "GET / HTTP/1.1" 302 0
+INFO 2025-12-10 07:39:23,341 basehttp 53712 55760 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 07:39:23,384 basehttp 53712 44712 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-10 07:39:23,386 basehttp 53712 41616 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-10 07:39:23,386 basehttp 53712 22676 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-10 07:39:23,387 basehttp 53712 55760 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-10 07:39:23,387 basehttp 53712 39196 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-10 07:39:23,414 basehttp 53712 44712 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-10 07:39:23,415 basehttp 53712 44380 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-10 07:39:23,490 basehttp 53712 44380 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-10 07:39:23,536 log 53712 44380 Not Found: /favicon.ico
+WARNING 2025-12-10 07:39:23,536 basehttp 53712 44380 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 07:39:28,173 basehttp 53712 44380 "GET /empleados/feed/ HTTP/1.1" 200 67643
+INFO 2025-12-10 07:39:28,215 basehttp 53712 22676 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 200 1285916
+INFO 2025-12-10 07:39:28,215 basehttp 53712 44712 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 200 1285449
+INFO 2025-12-10 07:39:28,217 basehttp 53712 41616 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xFbuFyJ.png HTTP/1.1" 200 1284877
+INFO 2025-12-10 07:39:28,220 basehttp 53712 44380 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 200 1546135
+INFO 2025-12-10 07:39:28,230 basehttp 53712 22676 "GET /media/anuncios_renderizados/2025/12/03/anuncio_renderizado_QVjcY46.png HTTP/1.1" 200 193066
+INFO 2025-12-10 07:39:28,234 basehttp 53712 39196 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 200 2612798
+INFO 2025-12-10 07:39:28,235 basehttp 53712 55760 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 200 2446545
+INFO 2025-12-10 07:39:28,238 basehttp 53712 41616 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 200 1282959
+INFO 2025-12-10 07:39:28,238 basehttp 53712 44712 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado.png HTTP/1.1" 200 1283019
+INFO 2025-12-10 07:39:31,208 basehttp 53712 41616 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38886
+INFO 2025-12-10 07:39:55,709 basehttp 53712 41616 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 42950
+INFO 2025-12-10 07:40:49,027 basehttp 53712 41616 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38886
+INFO 2025-12-10 07:43:10,158 basehttp 53712 41616 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38902
+INFO 2025-12-10 07:43:11,558 basehttp 53712 41616 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38902
+INFO 2025-12-10 07:49:36,641 basehttp 53712 1140 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38975
+INFO 2025-12-10 07:50:25,965 basehttp 53712 1140 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 38975
+INFO 2025-12-10 08:00:00,020 basehttp 53712 37024 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 39292
+INFO 2025-12-10 08:00:17,148 basehttp 53712 37024 "GET /empleados/feed/ HTTP/1.1" 200 62189
+INFO 2025-12-10 08:00:17,180 basehttp 53712 41048 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:00:17,180 basehttp 53712 37024 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:00:17,186 basehttp 53712 30832 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:00:17,191 basehttp 53712 15180 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:00:17,197 basehttp 53712 58128 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_zZg24F4.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:00:19,343 basehttp 53712 58128 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 43356
+INFO 2025-12-10 08:00:37,247 basehttp 53712 58128 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 39292
+INFO 2025-12-10 08:08:17,258 basehttp 53712 50900 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 41410
+INFO 2025-12-10 08:09:48,163 basehttp 53712 50900 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 08:09:48,227 basehttp 53712 50900 "GET /empleados/feed/ HTTP/1.1" 200 62633
+INFO 2025-12-10 08:09:48,242 basehttp 53712 19268 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:09:48,250 basehttp 53712 14536 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7HV1CVS.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:09:48,251 basehttp 53712 19268 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:09:48,252 basehttp 53712 29196 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_cCjNPMT.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:09:48,267 basehttp 53712 50900 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 200 2691631
+INFO 2025-12-10 08:10:05,309 basehttp 53712 50900 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 43154
+INFO 2025-12-10 08:10:53,712 basehttp 53712 50900 "POST /empleados/feed/publicacion/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 08:10:53,788 basehttp 53712 50900 "GET /empleados/feed/ HTTP/1.1" 200 66417
+INFO 2025-12-10 08:10:53,811 basehttp 53712 50900 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:10:53,832 basehttp 53712 50900 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 200 2108212
+INFO 2025-12-10 08:19:33,992 basehttp 53712 52252 "GET /empleados/feed/ HTTP/1.1" 200 57223
+INFO 2025-12-10 08:19:34,041 basehttp 53712 52252 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:19:34,041 basehttp 53712 24796 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_9TlrXjr.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:19:34,052 basehttp 53712 24796 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_8Cj6TQf.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:19:34,052 basehttp 53712 52252 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:19:54,947 basehttp 53712 52252 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 41984
+INFO 2025-12-10 08:22:07,173 basehttp 53712 52252 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 08:22:07,225 basehttp 53712 52252 "GET /empleados/feed/ HTTP/1.1" 200 62042
+INFO 2025-12-10 08:22:07,249 basehttp 53712 24796 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:22:07,249 basehttp 53712 15440 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:22:07,275 basehttp 53712 52252 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xs7iVqj.png HTTP/1.1" 200 2384234
+INFO 2025-12-10 08:40:37,941 apps 20256 45444 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 08:40:38,491 apps 39608 8252 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 08:40:38,511 autoreload 39608 8252 Watching for file changes with StatReloader
+INFO 2025-12-10 08:40:39,152 wsgi 39608 12632 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-10 08:40:41,658 basehttp 39608 16316 "GET / HTTP/1.1" 302 0
+INFO 2025-12-10 08:40:41,924 basehttp 39608 16316 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-10 08:40:45,265 log 39608 16316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:40:45,273 basehttp 39608 16316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 08:40:45,286 basehttp 39608 16316 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:40:46,063 basehttp 39608 53540 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-10 08:40:46,097 log 39608 53540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:40:46,097 basehttp 39608 53540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 08:40:46,140 basehttp 39608 53540 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:40:47,940 basehttp 39608 3976 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-10 08:40:47,967 log 39608 3976 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:40:47,968 basehttp 39608 3976 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 08:40:47,978 basehttp 39608 26908 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-10 08:40:47,979 basehttp 39608 20432 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-10 08:40:47,979 basehttp 39608 3976 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-10 08:40:47,980 basehttp 39608 15916 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-10 08:40:47,982 basehttp 39608 14432 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-10 08:40:47,983 basehttp 39608 26908 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-10 08:40:47,983 basehttp 39608 15108 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-10 08:40:48,007 basehttp 39608 15108 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-10 08:40:48,033 basehttp 39608 15108 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-10 08:40:48,069 log 39608 26908 Not Found: /favicon.ico
+WARNING 2025-12-10 08:40:48,070 basehttp 39608 26908 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 08:40:55,625 basehttp 39608 26908 "GET /empleados/feed/ HTTP/1.1" 200 52848
+WARNING 2025-12-10 08:40:55,663 log 39608 26908 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:40:55,668 basehttp 39608 26908 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 08:40:55,680 basehttp 39608 41588 "GET /media/anuncios_renderizados/2025/12/03/anuncio_renderizado_QVjcY46.png HTTP/1.1" 200 193066
+INFO 2025-12-10 08:40:55,691 basehttp 39608 20432 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 200 1282959
+INFO 2025-12-10 08:40:55,701 basehttp 39608 3976 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 200 2108212
+INFO 2025-12-10 08:40:55,705 basehttp 39608 14432 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xs7iVqj.png HTTP/1.1" 200 2384234
+WARNING 2025-12-10 08:40:55,738 basehttp 39608 14432 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:40:55,738 basehttp 39608 15916 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 200 2691631
+INFO 2025-12-10 08:40:58,216 basehttp 39608 15916 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 41984
+WARNING 2025-12-10 08:40:58,238 log 39608 15916 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:40:58,239 basehttp 39608 15916 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 08:40:58,292 basehttp 39608 15916 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:42:53,057 basehttp 39608 3976 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 08:42:53,104 basehttp 39608 3976 "GET /empleados/feed/ HTTP/1.1" 200 57667
+WARNING 2025-12-10 08:42:53,139 log 39608 41588 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-10 08:42:53,139 basehttp 39608 20432 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xs7iVqj.png HTTP/1.1" 304 0
+WARNING 2025-12-10 08:42:53,139 basehttp 39608 41588 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 08:42:53,173 basehttp 39608 41588 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:42:53,179 basehttp 39608 3976 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7tVy24G.png HTTP/1.1" 200 2691631
+INFO 2025-12-10 08:44:50,209 basehttp 39608 3976 "GET /empleados/feed/ HTTP/1.1" 200 57223
+WARNING 2025-12-10 08:44:50,250 log 39608 3976 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-10 08:44:50,254 basehttp 39608 26908 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_uiUrQlC.png HTTP/1.1" 304 0
+INFO 2025-12-10 08:44:50,254 basehttp 39608 20432 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7tVy24G.png HTTP/1.1" 304 0
+WARNING 2025-12-10 08:44:50,255 basehttp 39608 3976 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 08:44:50,257 basehttp 39608 17980 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+WARNING 2025-12-10 08:44:50,278 basehttp 39608 17980 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:44:53,361 basehttp 39608 3976 "GET /empleados/feed/publicacion/b3ddd3c1-5e3c-4edb-a123-9d4778460b4d/editar/ HTTP/1.1" 200 51901
+WARNING 2025-12-10 08:44:53,398 log 39608 3976 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 08:44:53,400 basehttp 39608 3976 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 08:44:53,450 basehttp 39608 3976 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 08:44:53,475 basehttp 39608 20432 "GET /media/publicaciones/2025/12/10/eucalipto_jxY5cSB.jpg HTTP/1.1" 200 684749
+INFO 2025-12-10 08:59:28,391 apps 45452 416 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-10 09:10:36,741 basehttp 39608 30432 "GET /empleados/feed/publicacion/b3ddd3c1-5e3c-4edb-a123-9d4778460b4d/editar/ HTTP/1.1" 200 51901
+WARNING 2025-12-10 09:10:36,787 log 39608 30432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 09:10:36,788 basehttp 39608 30432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 09:10:36,830 basehttp 39608 30432 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 09:10:36,837 basehttp 39608 47468 "GET /media/publicaciones/2025/12/10/eucalipto_jxY5cSB.jpg HTTP/1.1" 304 0
+INFO 2025-12-10 09:10:40,520 basehttp 39608 47468 "GET /empleados/feed/ HTTP/1.1" 200 52848
+WARNING 2025-12-10 09:10:40,547 log 39608 47468 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 09:10:40,551 basehttp 39608 47468 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 09:10:40,551 basehttp 39608 41612 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_7tVy24G.png HTTP/1.1" 304 0
+INFO 2025-12-10 09:10:40,553 basehttp 39608 22272 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_xs7iVqj.png HTTP/1.1" 304 0
+INFO 2025-12-10 09:10:40,553 basehttp 39608 13612 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 304 0
+WARNING 2025-12-10 09:10:40,603 basehttp 39608 13612 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 09:10:42,042 basehttp 39608 22272 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42188
+WARNING 2025-12-10 09:10:42,069 log 39608 22272 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 09:10:42,069 basehttp 39608 22272 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 09:10:42,114 basehttp 39608 22272 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 09:11:52,297 basehttp 39608 41612 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 09:11:52,342 basehttp 39608 41612 "GET /empleados/feed/ HTTP/1.1" 200 57667
+WARNING 2025-12-10 09:11:52,389 log 39608 47468 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 09:11:52,390 basehttp 39608 47468 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 09:11:52,405 basehttp 39608 41612 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_aRnib9i.png HTTP/1.1" 200 2691631
+WARNING 2025-12-10 09:11:52,430 basehttp 39608 41612 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 09:13:51,585 basehttp 39608 47468 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 09:14:44,394 basehttp 39608 47468 "GET /admin/ HTTP/1.1" 200 63004
+INFO 2025-12-10 09:14:44,422 basehttp 39608 15584 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-12-10 09:14:44,423 basehttp 39608 47468 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-12-10 09:14:44,428 basehttp 39608 31152 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-12-10 09:14:44,429 basehttp 39608 45980 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-12-10 09:14:44,429 basehttp 39608 51968 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-12-10 09:14:44,443 basehttp 39608 19776 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-12-10 09:14:44,464 basehttp 39608 19776 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-12-10 09:14:44,741 basehttp 39608 45980 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-12-10 09:14:44,741 basehttp 39608 19776 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-12-10 09:14:57,867 basehttp 39608 19776 "GET /admin/auth/group/ HTTP/1.1" 200 48635
+INFO 2025-12-10 09:14:57,898 basehttp 39608 19776 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-12-10 09:14:57,912 basehttp 39608 31152 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-10 09:14:57,921 basehttp 39608 47468 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-10 09:14:57,923 basehttp 39608 15584 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-10 09:14:57,933 basehttp 39608 19776 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-10 09:14:57,937 basehttp 39608 31152 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-10 09:14:57,947 basehttp 39608 47468 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-10 09:14:57,951 basehttp 39608 19776 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-12-10 09:14:57,964 basehttp 39608 51968 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-10 09:14:57,992 basehttp 39608 45980 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:14:58,010 basehttp 39608 45980 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-12-10 09:14:58,018 basehttp 39608 15584 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-10 09:14:58,046 basehttp 39608 15584 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-12-10 09:15:10,841 basehttp 39608 15584 "GET /admin/authentication/modulosistema/ HTTP/1.1" 200 50258
+INFO 2025-12-10 09:15:10,873 basehttp 39608 15584 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:15:10,884 basehttp 39608 45980 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-12-10 09:15:10,904 basehttp 39608 45980 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-12-10 09:15:56,308 basehttp 39608 45980 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 48123
+INFO 2025-12-10 09:15:56,346 basehttp 39608 45980 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:15:58,308 basehttp 39608 45980 "GET /admin/core/logactividad/ HTTP/1.1" 200 47930
+INFO 2025-12-10 09:15:58,335 basehttp 39608 45980 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:16:10,591 basehttp 39608 45980 "GET /admin/employees/categoria/ HTTP/1.1" 200 54624
+INFO 2025-12-10 09:16:10,615 basehttp 39608 45980 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:16:10,644 basehttp 39608 45980 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-12-10 09:18:43,227 basehttp 39608 45980 "GET /admin/employees/categoria/8/change/ HTTP/1.1" 200 49890
+INFO 2025-12-10 09:18:43,255 basehttp 39608 45980 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-12-10 09:18:43,263 basehttp 39608 15584 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-10 09:18:43,270 basehttp 39608 45980 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-12-10 09:18:43,287 basehttp 39608 45980 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-10 09:18:43,408 basehttp 39608 51968 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:18:47,724 basehttp 39608 51968 "POST /admin/employees/categoria/8/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 09:18:47,766 basehttp 39608 51968 "GET /admin/employees/categoria/ HTTP/1.1" 200 54837
+INFO 2025-12-10 09:18:47,789 basehttp 39608 51968 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:18:51,917 basehttp 39608 51968 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 09:18:57,956 basehttp 39608 51968 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 35488
+INFO 2025-12-10 09:18:57,978 basehttp 39608 51968 "GET /media/marketplace/productos/silla_8qutLhM.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 09:18:57,979 basehttp 39608 31152 "GET /media/marketplace/productos/silla_xWzjaIq.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 09:18:57,980 basehttp 39608 19776 "GET /media/marketplace/productos/Pollo.jpg HTTP/1.1" 200 40654
+INFO 2025-12-10 09:18:57,980 basehttp 39608 47468 "GET /media/marketplace/productos/tamales.jpg HTTP/1.1" 200 89499
+INFO 2025-12-10 09:18:57,981 basehttp 39608 15584 "GET /media/marketplace/productos/platanos-verdes.jpg HTTP/1.1" 200 120941
+INFO 2025-12-10 09:18:57,985 basehttp 39608 51968 "GET /media/marketplace/productos/silla_VcXF53H.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 09:18:57,986 basehttp 39608 45980 "GET /media/marketplace/productos/reloj_bestia.png HTTP/1.1" 200 204638
+INFO 2025-12-10 09:18:57,986 basehttp 39608 47468 "GET /media/marketplace/productos/silla.jpeg HTTP/1.1" 200 27685
+INFO 2025-12-10 09:18:57,986 basehttp 39608 31152 "GET /media/marketplace/productos/cel_mCShhwD.png HTTP/1.1" 200 52457
+INFO 2025-12-10 09:18:57,988 basehttp 39608 19776 "GET /media/marketplace/productos/comedor.jpg HTTP/1.1" 200 115726
+INFO 2025-12-10 09:19:00,576 basehttp 39608 19776 "GET /empleados/marketplace/productos/crear/ HTTP/1.1" 200 44740
+INFO 2025-12-10 09:22:01,042 basehttp 39608 19776 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 200 45373
+WARNING 2025-12-10 09:22:01,069 log 39608 19776 Not Found: /media/logan.jpg
+WARNING 2025-12-10 09:22:01,069 basehttp 39608 19776 "GET /media/logan.jpg HTTP/1.1" 404 4933
+INFO 2025-12-10 09:22:31,427 basehttp 39608 19776 "POST /empleados/marketplace/productos/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 09:22:31,475 basehttp 39608 19776 "GET /empleados/marketplace/productos/071906b7-8412-453e-b4ac-96e92ad2440c/ HTTP/1.1" 200 20743
+INFO 2025-12-10 09:22:31,511 basehttp 39608 19776 "GET /media/marketplace/productos/logan.jpg HTTP/1.1" 200 25863
+INFO 2025-12-10 09:22:46,292 basehttp 39608 19776 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 09:22:52,441 basehttp 39608 19776 "GET /admin/ HTTP/1.1" 200 62884
+INFO 2025-12-10 09:22:54,900 basehttp 39608 19776 "GET /admin/employees/categoria/ HTTP/1.1" 200 54624
+INFO 2025-12-10 09:22:54,918 basehttp 39608 19776 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:23:54,169 basehttp 39608 19776 "GET /admin/employees/escolaridad/ HTTP/1.1" 200 49835
+INFO 2025-12-10 09:23:54,199 basehttp 39608 19776 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:25:07,758 basehttp 39608 19776 "GET /admin/employees/lecturaconversacion/ HTTP/1.1" 200 47846
+INFO 2025-12-10 09:25:07,784 basehttp 39608 19776 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:25:21,424 basehttp 39608 19776 "GET /admin/employees/mensaje/ HTTP/1.1" 200 58555
+INFO 2025-12-10 09:25:21,463 basehttp 39608 19776 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:25:21,474 basehttp 39608 12656 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-12-10 09:25:30,175 basehttp 39608 12656 "GET /admin/employees/producto/ HTTP/1.1" 200 60535
+INFO 2025-12-10 09:25:30,195 basehttp 39608 12656 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:25:42,108 basehttp 39608 12656 "GET /admin/employees/producto/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/change/ HTTP/1.1" 200 74405
+INFO 2025-12-10 09:25:42,164 basehttp 39608 12656 "GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+INFO 2025-12-10 09:25:42,165 basehttp 39608 19776 "GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+INFO 2025-12-10 09:25:42,176 basehttp 39608 19776 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-12-10 09:25:42,186 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:25:42,232 basehttp 39608 15004 "GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+ERROR 2025-12-10 09:25:55,718 log 39608 15004 Internal Server Error: /admin/employees/publicacion/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 867, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 145, in __init__
+    self.queryset = self.get_queryset(request)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 545, in get_queryset
+    ) = self.get_filters(request)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 216, in get_filters
+    spec = field_list_filter_class(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\filters.py", line 224, in __init__
+    other_model = get_model_from_relation(field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\utils.py", line 497, in get_model_from_relation
+    raise NotRelationField
+django.contrib.admin.utils.NotRelationField
+ERROR 2025-12-10 09:25:55,722 basehttp 39608 15004 "GET /admin/employees/publicacion/ HTTP/1.1" 500 150434
+INFO 2025-12-10 09:25:58,628 basehttp 39608 15004 "GET /admin/employees/producto/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/change/ HTTP/1.1" 200 74405
+ERROR 2025-12-10 09:26:19,325 log 39608 15004 Internal Server Error: /admin/employees/publicacion/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 867, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 145, in __init__
+    self.queryset = self.get_queryset(request)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 545, in get_queryset
+    ) = self.get_filters(request)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\views\main.py", line 216, in get_filters
+    spec = field_list_filter_class(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\filters.py", line 224, in __init__
+    other_model = get_model_from_relation(field)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\utils.py", line 497, in get_model_from_relation
+    raise NotRelationField
+django.contrib.admin.utils.NotRelationField
+ERROR 2025-12-10 09:26:19,325 basehttp 39608 15004 "GET /admin/employees/publicacion/ HTTP/1.1" 500 150434
+INFO 2025-12-10 09:26:21,708 basehttp 39608 15004 "GET /admin/employees/producto/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/change/ HTTP/1.1" 200 74405
+INFO 2025-12-10 09:26:24,358 basehttp 39608 15004 "GET /admin/employees/pujasubasta/ HTTP/1.1" 200 48030
+INFO 2025-12-10 09:26:24,389 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:26:26,491 basehttp 39608 15004 "GET /admin/employees/producto/be3ee1e6-4b44-4aa7-9b85-a8ec0a39ff1c/change/ HTTP/1.1" 200 74405
+INFO 2025-12-10 09:26:30,475 basehttp 39608 15004 "GET /admin/employees/regalo/ HTTP/1.1" 200 51971
+INFO 2025-12-10 09:26:30,518 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:27:15,611 basehttp 39608 15004 "GET /admin/employees/subasta/ HTTP/1.1" 200 48823
+INFO 2025-12-10 09:27:15,644 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:27:21,291 basehttp 39608 15004 "GET /admin/employees/tipodocumento/ HTTP/1.1" 200 51899
+INFO 2025-12-10 09:27:21,314 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:27:58,708 basehttp 39608 15004 "GET /admin/employees/venta/ HTTP/1.1" 200 48179
+INFO 2025-12-10 09:27:58,738 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:28:16,462 basehttp 39608 15004 "GET /admin/organizational/sede/ HTTP/1.1" 200 55136
+INFO 2025-12-10 09:28:16,483 basehttp 39608 15004 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:28:38,058 basehttp 39608 44824 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 54331
+INFO 2025-12-10 09:28:38,085 basehttp 39608 44824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:28:42,588 basehttp 39608 44824 "GET /admin/organizational/areaempresa/ HTTP/1.1" 200 54331
+INFO 2025-12-10 09:28:42,605 basehttp 39608 44824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:36:37,030 basehttp 39608 19968 "GET /admin/evaluations/evaluaciondesempe%C3%B1o/ HTTP/1.1" 200 50578
+INFO 2025-12-10 09:36:37,049 basehttp 39608 19968 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:36:39,052 basehttp 39608 19968 "GET /admin/evaluations/evaluaciondesempe%C3%B1o/c458831b-ce32-4060-8bfa-30dae754749a/change/ HTTP/1.1" 200 107817
+INFO 2025-12-10 09:36:39,105 basehttp 39608 19968 "GET /static/admin/js/inlines.js HTTP/1.1" 200 15628
+INFO 2025-12-10 09:36:39,236 basehttp 39608 31944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:36:39,301 basehttp 39608 31944 "GET /static/admin/img/inline-delete.svg HTTP/1.1" 200 537
+INFO 2025-12-10 09:40:14,986 basehttp 39608 31944 "POST /admin/evaluations/evaluaciondesempe%C3%B1o/c458831b-ce32-4060-8bfa-30dae754749a/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 09:40:15,027 basehttp 39608 31944 "GET /admin/evaluations/evaluaciondesempe%C3%B1o/ HTTP/1.1" 200 50881
+INFO 2025-12-10 09:40:15,051 basehttp 39608 31944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:40:28,364 basehttp 39608 31944 "GET /admin/evaluations/opcionevaluacion/ HTTP/1.1" 200 63308
+INFO 2025-12-10 09:40:28,386 basehttp 39608 31944 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:48:30,298 basehttp 39608 37824 "GET /admin/evaluations/tipoevaluacion/ HTTP/1.1" 200 52385
+INFO 2025-12-10 09:48:30,322 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:49:41,724 basehttp 39608 37824 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 52970
+INFO 2025-12-10 09:49:41,740 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:51:56,058 basehttp 39608 37824 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 52970
+INFO 2025-12-10 09:51:56,079 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:51:58,718 basehttp 39608 37824 "GET /admin/evaluations/tipopregunta/6/change/ HTTP/1.1" 200 49760
+INFO 2025-12-10 09:51:58,739 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:52:22,569 basehttp 39608 37824 "GET /admin/evaluations/tipopregunta/ HTTP/1.1" 200 52970
+INFO 2025-12-10 09:52:22,591 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:53:01,891 basehttp 39608 37824 "GET /admin/evaluations/valoracion/ HTTP/1.1" 200 47691
+INFO 2025-12-10 09:53:01,917 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:54:37,877 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:54:37,913 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:54:50,570 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/16/change/ HTTP/1.1" 200 52285
+INFO 2025-12-10 09:54:50,591 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:55:38,123 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:55:42,324 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/15/change/ HTTP/1.1" 200 52391
+INFO 2025-12-10 09:55:42,340 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:56:45,357 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:56:47,659 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/14/change/ HTTP/1.1" 200 52347
+INFO 2025-12-10 09:56:47,679 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:57:25,694 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:57:32,996 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/13/change/ HTTP/1.1" 200 52371
+INFO 2025-12-10 09:57:33,016 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:58:19,925 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:58:24,747 basehttp 39608 37824 "GET /admin/notifications/tiponotificacion/12/change/ HTTP/1.1" 200 52356
+INFO 2025-12-10 09:58:24,769 basehttp 39608 37824 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:59:03,774 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 09:59:08,764 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/11/change/ HTTP/1.1" 200 52404
+INFO 2025-12-10 09:59:08,782 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 09:59:52,641 basehttp 39608 22260 "POST /admin/notifications/tiponotificacion/11/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 09:59:52,668 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59200
+INFO 2025-12-10 09:59:52,694 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:00:04,528 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/10/change/ HTTP/1.1" 200 52397
+INFO 2025-12-10 10:00:04,548 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:00:39,138 basehttp 39608 22260 "POST /admin/notifications/tiponotificacion/10/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:00:39,165 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59203
+INFO 2025-12-10 10:00:39,190 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:00:52,403 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/9/change/ HTTP/1.1" 200 52380
+INFO 2025-12-10 10:00:52,428 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:01:35,167 basehttp 39608 22260 "POST /admin/notifications/tiponotificacion/9/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:01:35,208 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59198
+INFO 2025-12-10 10:01:35,231 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:01:56,375 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/8/change/ HTTP/1.1" 200 52375
+INFO 2025-12-10 10:01:56,398 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:03:45,341 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:03:49,641 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/7/change/ HTTP/1.1" 200 52362
+INFO 2025-12-10 10:03:49,662 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:04:41,441 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:04:59,325 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/6/change/ HTTP/1.1" 200 52393
+INFO 2025-12-10 10:04:59,346 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:06:15,620 basehttp 39608 22260 "POST /admin/notifications/tiponotificacion/6/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:06:15,665 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59200
+INFO 2025-12-10 10:06:15,696 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:06:28,108 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/5/change/ HTTP/1.1" 200 52386
+INFO 2025-12-10 10:06:28,129 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:07:39,220 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:08:18,739 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/4/change/ HTTP/1.1" 200 52391
+INFO 2025-12-10 10:08:18,763 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:10:04,395 basehttp 39608 22260 "POST /admin/notifications/tiponotificacion/4/change/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:10:04,437 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 59199
+INFO 2025-12-10 10:10:04,460 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:10:13,811 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/3/change/ HTTP/1.1" 200 52528
+INFO 2025-12-10 10:10:13,832 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:11:33,342 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:11:45,042 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/2/change/ HTTP/1.1" 200 52290
+INFO 2025-12-10 10:11:45,062 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:12:24,809 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:12:28,042 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/1/change/ HTTP/1.1" 200 52276
+INFO 2025-12-10 10:12:28,061 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:13:01,226 basehttp 39608 22260 "GET /admin/notifications/tiponotificacion/ HTTP/1.1" 200 58959
+INFO 2025-12-10 10:14:25,042 basehttp 39608 22260 "GET /admin/recognition/historialpuntos/ HTTP/1.1" 200 54463
+INFO 2025-12-10 10:14:25,060 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:14:33,319 basehttp 39608 22260 "GET /admin/recognition/reconocimiento/ HTTP/1.1" 200 46959
+INFO 2025-12-10 10:14:33,342 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:14:51,725 basehttp 39608 22260 "GET /admin/recognition/tipoactividad/ HTTP/1.1" 200 57237
+INFO 2025-12-10 10:14:51,763 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:16:23,149 basehttp 39608 22260 "GET /admin/recognition/tipoactividad/add/ HTTP/1.1" 200 50883
+INFO 2025-12-10 10:16:23,172 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:16:29,208 basehttp 39608 22260 "GET /admin/recognition/tipoactividad/ HTTP/1.1" 200 57237
+INFO 2025-12-10 10:17:09,725 basehttp 39608 22260 "GET /admin/recognition/tipobeneficio/ HTTP/1.1" 200 53928
+INFO 2025-12-10 10:17:09,747 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:21:10,173 basehttp 39608 22260 "GET /admin/reports/tiporeporte/ HTTP/1.1" 200 49960
+INFO 2025-12-10 10:21:10,201 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:21:17,641 basehttp 39608 22260 "GET /admin/reports/tiporeporte/1/change/ HTTP/1.1" 200 64633
+INFO 2025-12-10 10:21:17,661 basehttp 39608 22260 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:24:02,658 basehttp 39608 37048 "GET /admin/training/capacitacioncargo/ HTTP/1.1" 200 51777
+INFO 2025-12-10 10:24:02,688 basehttp 39608 37048 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:27:14,958 basehttp 39608 37048 "GET /admin/surveys/tipoencuesta/ HTTP/1.1" 200 50283
+INFO 2025-12-10 10:27:14,995 basehttp 39608 37048 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:27:33,291 basehttp 39608 37048 "GET /admin/surveys/tipoencuesta/1/change/ HTTP/1.1" 200 50762
+INFO 2025-12-10 10:27:33,319 basehttp 39608 37048 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-10 10:27:57,191 basehttp 39608 37048 "GET /admin/surveys/tipoencuesta/ HTTP/1.1" 200 50283
+INFO 2025-12-10 10:28:01,280 basehttp 39608 37048 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 10:28:05,858 basehttp 39608 37048 "GET /encuestas/ HTTP/1.1" 200 16437
+INFO 2025-12-10 10:28:29,508 basehttp 39608 37048 "GET /encuestas/lista/ HTTP/1.1" 200 9465
+INFO 2025-12-10 10:28:33,075 basehttp 39608 48232 "GET /encuestas/ HTTP/1.1" 200 16437
+ERROR 2025-12-10 10:28:43,743 log 39608 48232 Internal Server Error: /encuestas/mis-encuestas/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 682, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse some characters: participaciones|first|.tiempo_empleado_minutos||default:"--"
+ERROR 2025-12-10 10:28:43,743 basehttp 39608 48232 "GET /encuestas/mis-encuestas/ HTTP/1.1" 500 240596
+INFO 2025-12-10 10:28:55,467 basehttp 39608 48232 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 10:36:07,525 basehttp 39608 46648 "GET /empleados/ HTTP/1.1" 200 101251
+INFO 2025-12-10 10:36:18,625 basehttp 39608 46648 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 76493
+INFO 2025-12-10 10:36:25,560 basehttp 39608 46648 "GET /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 17351
+INFO 2025-12-10 10:36:59,181 basehttp 39608 46648 "GET /empleados/?page=2 HTTP/1.1" 200 101945
+INFO 2025-12-10 10:37:06,973 basehttp 39608 46648 "GET /empleados/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 80088
+INFO 2025-12-10 10:37:15,421 basehttp 39608 46648 "GET /documentos/empleado/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 33741
+INFO 2025-12-10 10:37:50,558 basehttp 39608 46648 "GET /empleados/?page=3 HTTP/1.1" 200 102113
+INFO 2025-12-10 10:37:54,408 basehttp 39608 46648 "GET /empleados/?page=4 HTTP/1.1" 200 65379
+INFO 2025-12-10 10:38:12,051 basehttp 39608 46648 "GET /empleados/?page=3 HTTP/1.1" 200 102113
+INFO 2025-12-10 10:38:26,589 basehttp 39608 46648 "GET /empleados/?page=1 HTTP/1.1" 200 101251
+INFO 2025-12-10 10:38:29,829 basehttp 39608 46648 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 74247
+INFO 2025-12-10 10:38:33,876 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 17344
+INFO 2025-12-10 10:38:36,255 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/subir/ HTTP/1.1" 200 15678
+INFO 2025-12-10 10:39:00,259 models 39608 46648 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-10 10:39:00,262 basehttp 39608 46648 "POST /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/subir/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:39:00,295 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 19705
+INFO 2025-12-10 10:39:08,200 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/subir/ HTTP/1.1" 200 15625
+INFO 2025-12-10 10:39:18,227 models 39608 46648 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-10 10:39:18,233 basehttp 39608 46648 "POST /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/subir/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:39:18,246 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 22225
+INFO 2025-12-10 10:39:21,759 basehttp 39608 46648 "GET /documentos/documento/4750370b-1e6c-413d-81b4-483d32eb833e/ver/ HTTP/1.1" 200 28358
+INFO 2025-12-10 10:39:21,816 basehttp 39608 46648 "GET /media/documentos/753357753/REF_PERSONAL/REF_PERSONAL_20251210_153918.pdf HTTP/1.1" 200 110822
+INFO 2025-12-10 10:39:41,927 models 39608 46648 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-10 10:39:41,932 basehttp 39608 46648 "POST /documentos/documento/4750370b-1e6c-413d-81b4-483d32eb833e/ver/ HTTP/1.1" 302 0
+INFO 2025-12-10 10:39:41,980 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21830
+INFO 2025-12-10 10:39:59,986 basehttp 39608 46648 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 10:40:09,892 basehttp 39608 46648 "GET /documentos/ HTTP/1.1" 200 32766
+INFO 2025-12-10 10:40:50,726 basehttp 39608 46648 "GET /documentos/documento/3ed2e796-db0f-43e0-84d8-d6adc8ed8c4d/aprobar/ HTTP/1.1" 200 28358
+INFO 2025-12-10 10:40:50,762 basehttp 39608 46648 "GET /media/documentos/753357753/CERT_LABORAL/CERT_LABORAL_20251210_153900.pdf HTTP/1.1" 200 1007138
+INFO 2025-12-10 10:42:13,658 basehttp 39608 46648 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-10 10:42:15,335 basehttp 39608 46648 "GET /empleados/ HTTP/1.1" 200 101251
+INFO 2025-12-10 10:42:17,440 basehttp 39608 46648 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 74479
+INFO 2025-12-10 10:42:26,242 basehttp 39608 46648 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21413
+INFO 2025-12-10 11:03:58,675 basehttp 39608 46440 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21413
+INFO 2025-12-10 11:04:10,259 basehttp 39608 46440 "GET /documentos/documento/4750370b-1e6c-413d-81b4-483d32eb833e/ver/ HTTP/1.1" 200 29723
+INFO 2025-12-10 11:04:10,297 basehttp 39608 46440 "GET /media/documentos/753357753/REF_PERSONAL/REF_PERSONAL_20251210_153918.pdf HTTP/1.1" 304 0
+INFO 2025-12-10 11:04:30,078 basehttp 39608 46440 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21413
+WARNING 2025-12-10 11:04:33,307 log 39608 46440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:04:33,307 basehttp 39608 46440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:04:33,346 basehttp 39608 46440 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:04:40,409 basehttp 39608 56032 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21413
+WARNING 2025-12-10 11:04:40,439 log 39608 56032 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:04:40,441 basehttp 39608 56032 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:04:40,450 basehttp 39608 12456 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-10 11:04:40,450 basehttp 39608 25144 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-10 11:04:40,451 basehttp 39608 56032 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-10 11:04:40,454 basehttp 39608 17096 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-10 11:04:40,454 basehttp 39608 43928 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-10 11:04:40,455 basehttp 39608 16652 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-10 11:04:40,455 basehttp 39608 25144 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-10 11:04:40,480 basehttp 39608 25144 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-10 11:04:40,507 basehttp 39608 25144 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-10 11:04:40,552 log 39608 16652 Not Found: /favicon.ico
+WARNING 2025-12-10 11:04:40,552 basehttp 39608 16652 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 11:15:32,408 basehttp 39608 22292 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21430
+WARNING 2025-12-10 11:15:32,450 log 39608 22292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:15:32,450 basehttp 39608 22292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:15:32,498 basehttp 39608 22292 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:23:31,909 basehttp 39608 33456 "GET /documentos/empleado/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 21432
+WARNING 2025-12-10 11:23:31,944 log 39608 33456 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:23:31,945 basehttp 39608 33456 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:23:32,001 basehttp 39608 33456 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:24:16,576 basehttp 39608 39840 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 74479
+WARNING 2025-12-10 11:24:16,603 log 39608 39840 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:24:16,603 basehttp 39608 39840 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:24:16,654 basehttp 39608 39840 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:30:07,161 basehttp 39608 30336 "GET /empleados/feed/ HTTP/1.1" 200 44098
+WARNING 2025-12-10 11:30:07,202 log 39608 6708 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:30:07,204 basehttp 39608 6708 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:30:07,216 basehttp 39608 14076 "GET /media/anuncios_renderizados/2025/12/03/anuncio_renderizado_QVjcY46.png HTTP/1.1" 200 193066
+INFO 2025-12-10 11:30:07,221 basehttp 39608 28548 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 200 1282959
+INFO 2025-12-10 11:30:07,231 basehttp 39608 30336 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 200 2108212
+WARNING 2025-12-10 11:30:07,265 basehttp 39608 30336 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:21,375 basehttp 39608 27096 "GET /empleados/feed/ HTTP/1.1" 200 44098
+WARNING 2025-12-10 11:35:21,418 log 39608 27096 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:21,419 basehttp 39608 27096 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:21,469 basehttp 39608 27096 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:24,841 basehttp 39608 25076 "GET /empleados/feed/ HTTP/1.1" 200 44098
+WARNING 2025-12-10 11:35:24,870 log 39608 25076 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:24,870 basehttp 39608 25076 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:24,919 basehttp 39608 25076 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:26,992 basehttp 39608 57136 "GET /empleados/feed/ HTTP/1.1" 200 44098
+WARNING 2025-12-10 11:35:27,023 log 39608 57136 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:27,023 basehttp 39608 57136 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:27,065 basehttp 39608 57136 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:28,261 basehttp 39608 37744 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+WARNING 2025-12-10 11:35:28,295 log 39608 37744 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:28,297 basehttp 39608 37744 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:28,334 basehttp 39608 37744 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:34,144 basehttp 39608 29808 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+WARNING 2025-12-10 11:35:34,178 log 39608 29808 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:34,179 basehttp 39608 29808 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:34,213 basehttp 39608 29808 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:35,418 basehttp 39608 38560 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+WARNING 2025-12-10 11:35:35,455 log 39608 38560 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:35,455 basehttp 39608 38560 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:35,502 basehttp 39608 38560 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:36,527 basehttp 39608 49852 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+WARNING 2025-12-10 11:35:36,562 log 39608 49852 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:36,564 basehttp 39608 49852 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:35:36,619 basehttp 39608 49852 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:35:40,692 basehttp 39608 35064 "GET /empleados/feed/anuncio/crear/ HTTP/1.1" 200 42683
+WARNING 2025-12-10 11:35:40,731 log 39608 35064 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:35:40,731 basehttp 39608 35064 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:35:40,740 basehttp 39608 39080 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-10 11:35:40,741 basehttp 39608 35064 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-10 11:35:40,742 basehttp 39608 27276 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-10 11:35:40,743 basehttp 39608 29500 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-10 11:35:40,744 basehttp 39608 6628 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-10 11:35:40,746 basehttp 39608 39080 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-10 11:35:40,747 basehttp 39608 51372 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-10 11:35:40,766 basehttp 39608 51372 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-10 11:35:40,797 basehttp 39608 51372 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-10 11:35:40,909 log 39608 39080 Not Found: /favicon.ico
+WARNING 2025-12-10 11:35:40,911 basehttp 39608 39080 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-10 11:38:04,667 basehttp 39608 39080 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 200 43704
+WARNING 2025-12-10 11:38:04,704 log 39608 39080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:38:04,705 basehttp 39608 39080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:38:04,733 basehttp 39608 39080 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:38:50,790 basehttp 39608 6628 "POST /empleados/feed/anuncio/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 11:38:50,828 basehttp 39608 6628 "GET /empleados/feed/ HTTP/1.1" 200 48917
+WARNING 2025-12-10 11:38:50,870 log 39608 27276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:38:50,872 basehttp 39608 27276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:38:50,877 basehttp 39608 2012 "GET /media/anuncios_renderizados/2025/12/03/anuncio_renderizado_QVjcY46.png HTTP/1.1" 200 193066
+INFO 2025-12-10 11:38:50,898 basehttp 39608 35064 "GET /media/anuncios_renderizados/2025/12/05/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b.png HTTP/1.1" 200 1282959
+INFO 2025-12-10 11:38:50,900 basehttp 39608 6628 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 200 1191804
+INFO 2025-12-10 11:38:50,910 basehttp 39608 29500 "GET /media/anuncios_renderizados/2025/12/10/anuncio_d569a993-b1e4-49dc-a5c7-3584d555edfc.png HTTP/1.1" 200 2108212
+WARNING 2025-12-10 11:38:50,918 basehttp 39608 29500 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:39:43,196 basehttp 39608 6628 "GET /empleados/feed/publicacion/crear/ HTTP/1.1" 200 46139
+WARNING 2025-12-10 11:39:43,235 log 39608 6628 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:39:43,236 basehttp 39608 6628 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:39:43,273 basehttp 39608 6628 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:40:23,348 basehttp 39608 35064 "POST /empleados/feed/publicacion/crear/ HTTP/1.1" 302 0
+INFO 2025-12-10 11:40:23,391 basehttp 39608 35064 "GET /empleados/feed/ HTTP/1.1" 200 52257
+WARNING 2025-12-10 11:40:23,438 log 39608 27276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-10 11:40:23,439 basehttp 39608 35064 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+WARNING 2025-12-10 11:40:23,439 basehttp 39608 27276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:40:23,449 basehttp 39608 2012 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 200 1181748
+WARNING 2025-12-10 11:40:23,483 basehttp 39608 2012 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:40:42,825 basehttp 39608 27276 "GET /empleados/feed/publicacion/cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b/eliminar/ HTTP/1.1" 200 9227
+WARNING 2025-12-10 11:40:42,865 log 39608 27276 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:40:42,865 basehttp 39608 27276 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-10 11:40:42,904 basehttp 39608 27276 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-10 11:40:46,929 basehttp 39608 35064 "GET /empleados/feed/ HTTP/1.1" 200 52257
+WARNING 2025-12-10 11:40:46,971 log 39608 35064 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-10 11:40:46,973 basehttp 39608 35064 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-10 11:40:46,973 basehttp 39608 25172 "GET /media/anuncios_renderizados/2025/12/10/anuncio_renderizado_4d3wX8O.png HTTP/1.1" 304 0
+INFO 2025-12-10 11:40:46,975 basehttp 39608 16088 "GET /media/anuncios_renderizados/2025/12/10/anuncio_27efa0b3-78e3-4a34-b6d7-d883c2c92df8.png HTTP/1.1" 304 0
+WARNING 2025-12-10 11:40:46,996 basehttp 39608 16088 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023

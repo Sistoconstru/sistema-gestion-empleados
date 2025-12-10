@@ -144,13 +144,27 @@
         width: 100%;
         overflow: visible;
         min-height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
     }
 
     .publicacion-body-con-imagen img {
         display: block;
-        width: 100%;
+        /* Mantener tamaño postal estándar (máximo) */
+        max-width: 1772px;  /* Ancho máximo para imágenes horizontales */
+        max-height: 1772px; /* Alto máximo para imágenes verticales */
+        width: auto;
         height: auto;
         object-fit: contain;
+    }
+
+    /* Responsive: en pantallas pequeñas, escalar proporcionalmente */
+    @media (max-width: 1900px) {
+        .publicacion-body-con-imagen img {
+            max-width: 100%;
+            max-height: 1000px;
+        }
     }
 
     .publicacion-body-con-imagen-wrapper {

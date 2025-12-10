@@ -33,24 +33,38 @@
         color: #333;
     }
 
+    .preview-wrapper {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
     #preview-container {
         position: relative;
         width: 100%;
-        min-height: 400px;
-        height: auto;
-        background-color: white;
+        max-width: 450px;
+        height: 550px;
+        background-color: #f5f5f5;
         border: 2px solid #ddd;
         border-radius: 4px;
-        overflow: visible;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #image-wrapper {
+        position: relative;
+        display: inline-block;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     #preview-image {
         display: block;
-        margin: 0 auto;
-        position: relative;
-        object-fit: contain;
         max-width: 100%;
-        max-height: 80vh;
+        max-height: 100%;
+        object-fit: contain;
     }
 
     /* Cuadros de texto en preview */
@@ -278,13 +292,17 @@
             <!-- COLUMNA IZQUIERDA: PREVIEW -->
             <div class="preview-section">
                 <div class="preview-title">Vista Previa</div>
-                <div id="preview-container">
-                    <img id="preview-image" src="" alt="Preview">
-                    <div id="titulo-box" class="preview-text-box titulo" style="left: 20px; top: 20px; width: 200px; height: 80px;">
-                        <div class="preview-text-content">Título</div>
-                    </div>
-                    <div id="contenido-box" class="preview-text-box contenido" style="left: 20px; top: 120px; width: 200px; height: 150px;">
-                        <div class="preview-text-content">Contenido del anuncio</div>
+                <div class="preview-wrapper">
+                    <div id="preview-container">
+                        <div id="image-wrapper">
+                            <img id="preview-image" src="" alt="Preview">
+                            <div id="titulo-box" class="preview-text-box titulo" style="left: 20px; top: 20px; width: 200px; height: 80px;">
+                                <div class="preview-text-content">Título</div>
+                            </div>
+                            <div id="contenido-box" class="preview-text-box contenido" style="left: 20px; top: 120px; width: 200px; height: 150px;">
+                                <div class="preview-text-content">Contenido del anuncio</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -468,60 +486,111 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function(event) {
-                previewImage.src = event.target.result;
-                // Guardar imagen en base64 para recuperarla si hay error
-                state.imagenBase64 = event.target.result;
-                sessionStorage.setItem('anuncio_imagen_base64', event.target.result);
-
-                // Crear imagen temporal para obtener dimensiones
+                // Crear imagen temporal para redimensionar
                 const tempImg = new Image();
                 tempImg.onload = function() {
-                    console.log('[ANUNCIO] Imagen cargada. Dimensiones originales:', tempImg.width, 'x', tempImg.height);
-
-                    // Obtener espacio disponible
-                    const maxWidth = previewContainer.offsetWidth;
-                    const maxHeight = window.innerHeight * 0.6; // 60vh para anuncios
-
-                    console.log('[ANUNCIO] Espacio disponible:', maxWidth, 'x', maxHeight);
-
-                    // Dimensiones originales
                     const imgWidth = tempImg.width;
                     const imgHeight = tempImg.height;
-                    const aspectRatio = imgWidth / imgHeight;
 
-                    console.log('[ANUNCIO] Proporción de aspecto:', aspectRatio.toFixed(2));
+                    console.log('[ANUNCIO] Imagen original cargada:', imgWidth, 'x', imgHeight);
 
-                    // Calcular dimensiones escaladas manteniendo proporciones
-                    let displayWidth, displayHeight;
+                    // Determinar orientación de la imagen original
+                    const esHorizontal = imgWidth > imgHeight;
 
-                    if (aspectRatio > 1) {
-                        // Imagen horizontal
-                        displayWidth = Math.min(imgWidth, maxWidth);
-                        displayHeight = displayWidth / aspectRatio;
-
-                        if (displayHeight > maxHeight) {
-                            displayHeight = maxHeight;
-                            displayWidth = displayHeight * aspectRatio;
-                        }
+                    // Tamaño postal: 10x15 cm a 300 DPI
+                    // Horizontal (landscape): 15x10 cm = 1772x1181 px
+                    // Vertical (portrait): 10x15 cm = 1181x1772 px
+                    let targetWidth, targetHeight;
+                    if (esHorizontal) {
+                        targetWidth = 1772;  // 15 cm
+                        targetHeight = 1181; // 10 cm
                     } else {
-                        // Imagen vertical o cuadrada
-                        displayHeight = Math.min(imgHeight, maxHeight);
-                        displayWidth = displayHeight * aspectRatio;
-
-                        if (displayWidth > maxWidth) {
-                            displayWidth = maxWidth;
-                            displayHeight = displayWidth / aspectRatio;
-                        }
+                        targetWidth = 1181;  // 10 cm
+                        targetHeight = 1772; // 15 cm
                     }
 
-                    console.log('[ANUNCIO] Dimensiones escaladas aplicadas:', displayWidth.toFixed(0), 'x', displayHeight.toFixed(0));
+                    console.log('[ANUNCIO] Orientación:', esHorizontal ? 'Horizontal' : 'Vertical');
+                    console.log('[ANUNCIO] Tamaño postal:', targetWidth, 'x', targetHeight);
 
-                    // Aplicar dimensiones
-                    previewImage.style.width = displayWidth + 'px';
-                    previewImage.style.height = displayHeight + 'px';
+                    // Crear canvas del tamaño postal
+                    const canvas = document.createElement('canvas');
+                    canvas.width = targetWidth;
+                    canvas.height = targetHeight;
+                    const ctx = canvas.getContext('2d');
 
-                    // Guardar factor de escala para conversión de coordenadas
-                    previewImage.dataset.scaleFactor = displayWidth / imgWidth;
+                    // Fondo blanco
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+                    // Escalar la imagen para que llene el canvas manteniendo proporción
+                    const imgRatio = imgWidth / imgHeight;
+                    const targetRatio = targetWidth / targetHeight;
+
+                    let drawWidth, drawHeight, offsetX, offsetY;
+
+                    if (imgRatio > targetRatio) {
+                        // Imagen más ancha que el target: ajustar por ancho
+                        drawWidth = targetWidth;
+                        drawHeight = targetWidth / imgRatio;
+                        offsetX = 0;
+                        offsetY = (targetHeight - drawHeight) / 2;
+                    } else {
+                        // Imagen más alta que el target: ajustar por alto
+                        drawHeight = targetHeight;
+                        drawWidth = targetHeight * imgRatio;
+                        offsetX = (targetWidth - drawWidth) / 2;
+                        offsetY = 0;
+                    }
+
+                    console.log('[ANUNCIO] Escalado:', Math.round(drawWidth), 'x', Math.round(drawHeight), 'offset:', Math.round(offsetX), Math.round(offsetY));
+
+                    // Dibujar imagen centrada y escalada en el canvas
+                    ctx.drawImage(tempImg, offsetX, offsetY, drawWidth, drawHeight);
+
+                    // Convertir canvas a Blob para enviar al servidor
+                    canvas.toBlob(function(blob) {
+                        // Crear un nuevo archivo con el blob redimensionado
+                        const fileName = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+                        const resizedFile = new File([blob], fileName, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        // Crear un nuevo DataTransfer para reemplazar el archivo en el input
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(resizedFile);
+                        imagenInput.files = dataTransfer.files;
+
+                        console.log('[ANUNCIO] Archivo redimensionado reemplazado en input:', fileName);
+                    }, 'image/jpeg', 0.95);
+
+                    // Convertir canvas a base64 para preview
+                    const resizedBase64 = canvas.toDataURL('image/jpeg', 0.95);
+                    state.imagenBase64 = resizedBase64;
+
+                    // Guardar en sessionStorage
+                    sessionStorage.setItem('anuncio_imagen_base64', resizedBase64);
+
+                    // Mostrar imagen en preview (escalada para caber en contenedor fijo)
+                    previewImage.src = resizedBase64;
+                    // Dejar que CSS maneje el escalado con max-width/max-height
+                    previewImage.style.width = '';
+                    previewImage.style.height = '';
+
+                    // Esperar a que la imagen se cargue para calcular el scaleFactor
+                    previewImage.onload = function() {
+                        // La imagen real es targetWidth x targetHeight
+                        // La imagen mostrada es previewImage.offsetWidth x previewImage.offsetHeight
+                        const displayWidth = previewImage.offsetWidth;
+                        const scaleFactor = displayWidth / targetWidth;
+                        previewImage.dataset.scaleFactor = scaleFactor.toString();
+
+                        console.log('[ANUNCIO] Imagen postal:', targetWidth, 'x', targetHeight);
+                        console.log('[ANUNCIO] Imagen display:', displayWidth, 'x', previewImage.offsetHeight);
+                        console.log('[ANUNCIO] Scale factor:', scaleFactor);
+                    };
+
+                    console.log('[ANUNCIO] Preview configurado con ventana fija');
                 };
                 tempImg.src = event.target.result;
 
@@ -620,13 +689,17 @@
             let newTop = elemento.offsetTop - pos2;
             let newLeft = elemento.offsetLeft - pos1;
 
-            newTop = Math.max(0, Math.min(newTop, previewContainer.offsetHeight - elemento.offsetHeight));
-            newLeft = Math.max(0, Math.min(newLeft, previewContainer.offsetWidth - elemento.offsetWidth));
+            // Limitar movimiento dentro del wrapper de la imagen
+            const imageWrapper = document.getElementById('image-wrapper');
+            newTop = Math.max(0, Math.min(newTop, imageWrapper.offsetHeight - elemento.offsetHeight));
+            newLeft = Math.max(0, Math.min(newLeft, imageWrapper.offsetWidth - elemento.offsetWidth));
 
             elemento.style.top = newTop + "px";
             elemento.style.left = newLeft + "px";
 
-            // Actualizar inputs
+            // Ahora las coordenadas ya son relativas a la imagen (el wrapper)
+            console.log(`[DRAG ${prefix}] Position relative to image: (${newLeft}, ${newTop})`);
+
             document.getElementById(prefix + '-x').value = newLeft;
             document.getElementById(prefix + '-y').value = newTop;
         }
@@ -751,23 +824,69 @@
 
     // Guardar estilos antes de enviar
     form.addEventListener('submit', function(e) {
-        // Recopilar todas las posiciones y estilos
+        // Capturar valores de font_size antes de sobrescribir state.estilos
+        const tituloFontSizePrevio = state.estilos.titulo_font_size;
+        const contenidoFontSizePrevio = state.estilos.contenido_font_size;
+
+        // Obtener dimensiones reales de la imagen y del preview
+        const realWidth = previewImage.naturalWidth;
+        const realHeight = previewImage.naturalHeight;
+        const previewWidth = previewImage.offsetWidth;
+        const previewHeight = previewImage.offsetHeight;
+        const scaleX = realWidth / previewWidth;
+        const scaleY = realHeight / previewHeight;
+
+        console.log('[SUBMIT] Imagen real:', realWidth, 'x', realHeight);
+        console.log('[SUBMIT] Preview:', previewWidth, 'x', previewHeight);
+        console.log('[SUBMIT] Escalas:', scaleX.toFixed(2), 'x', scaleY.toFixed(2));
+
+        // Leer coordenadas del preview (píxeles relativos al preview)
+        const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
+        const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
+        const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
+        const tituloHeightPreview = parseInt(document.getElementById('titulo-height').value);
+        const contenidoXPreview = parseInt(document.getElementById('contenido-x').value);
+        const contenidoYPreview = parseInt(document.getElementById('contenido-y').value);
+        const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
+        const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
+
+        // Convertir a coordenadas reales de la imagen
+        const tituloX = Math.round(tituloXPreview * scaleX);
+        const tituloY = Math.round(tituloYPreview * scaleY);
+        const tituloWidth = Math.round(tituloWidthPreview * scaleX);
+        const tituloHeight = Math.round(tituloHeightPreview * scaleY);
+        const contenidoX = Math.round(contenidoXPreview * scaleX);
+        const contenidoY = Math.round(contenidoYPreview * scaleY);
+        const contenidoWidth = Math.round(contenidoWidthPreview * scaleX);
+        const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
+
+        console.log('[SUBMIT] Título:', tituloXPreview, tituloYPreview, '→', tituloX, tituloY);
+        console.log('[SUBMIT] Contenido:', contenidoXPreview, contenidoYPreview, '→', contenidoX, contenidoY);
+
+        // Escalar font sizes usando la escala promedio
+        const scaleFactor = (scaleX + scaleY) / 2;
+        const tituloFontSizeReal = tituloFontSizePrevio ? Math.round(tituloFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+        const contenidoFontSizeReal = contenidoFontSizePrevio ? Math.round(contenidoFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+
+        console.log('[SUBMIT] Font sizes:', tituloFontSizePrevio, '→', tituloFontSizeReal, ',', contenidoFontSizePrevio, '→', contenidoFontSizeReal);
+
+        // Recopilar todas las posiciones y estilos (con coordenadas reales)
         state.estilos = {
             font_family: fontFamilySelect.value,
             font_size: parseInt(fontSizeInput.value),
             text_color: textColorInput.value,
             stroke_width: parseInt(strokeWidthInput.value),
             stroke_color: strokeColorInput.value,
-            titulo_x: parseInt(document.getElementById('titulo-x').value),
-            titulo_y: parseInt(document.getElementById('titulo-y').value),
-            titulo_width: parseInt(document.getElementById('titulo-width').value),
-            titulo_height: parseInt(document.getElementById('titulo-height').value),
-            titulo_font_size: state.estilos.titulo_font_size || parseInt(fontSizeInput.value),
-            contenido_x: parseInt(document.getElementById('contenido-x').value),
-            contenido_y: parseInt(document.getElementById('contenido-y').value),
-            contenido_width: parseInt(document.getElementById('contenido-width').value),
-            contenido_height: parseInt(document.getElementById('contenido-height').value),
-            contenido_font_size: state.estilos.contenido_font_size || parseInt(fontSizeInput.value),
+            titulo_x: tituloX,
+            titulo_y: tituloY,
+            titulo_width: tituloWidth,
+            titulo_height: tituloHeight,
+            titulo_font_size: tituloFontSizeReal,
+            contenido_x: contenidoX,
+            contenido_y: contenidoY,
+            contenido_width: contenidoWidth,
+            contenido_height: contenidoHeight,
+            contenido_font_size: contenidoFontSizeReal,
         };
 
         estilsInput.value = JSON.stringify(state.estilos);

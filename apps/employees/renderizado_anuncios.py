@@ -218,15 +218,21 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
             img = img.convert('RGB')
 
         ancho_original, alto_original = img.size
+        logger.info(f"[RENDERIZADO] Tamaño imagen: {ancho_original}x{alto_original}")
 
         # Upscale para mejor calidad si es necesaria
+        # Con imágenes postales (1181x1772 o 1772x1181) nunca se hará upscale
         escala_temporal = 1
         if ancho_original < 800:
+            logger.info(f"[RENDERIZADO] Aplicando upscale 2x (imagen pequeña)")
             escala_temporal = 2
             img = img.resize((ancho_original * escala_temporal, alto_original * escala_temporal),
                            Image.Resampling.LANCZOS)
+        else:
+            logger.info(f"[RENDERIZADO] Sin upscale (escala_temporal=1)")
 
         ancho, alto = img.size
+        logger.info(f"[RENDERIZADO] Tamaño final para renderizado: {ancho}x{alto}, escala={escala_temporal}")
         draw = ImageDraw.Draw(img)
 
         # Extraer estilos

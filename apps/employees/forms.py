@@ -1178,20 +1178,53 @@ class PublicacionForm(forms.ModelForm):
         logger.info(f"[PUBLICACION.SAVE] Estilos type: {type(instance.estilos)}")
         logger.info(f"[PUBLICACION.SAVE] Imagen cargada: {bool(instance.imagen)}")
 
-        # --- CONVERTIR PNG A JPG ANTES DE PROCESARLO ---
+        # --- CONVERTIR A RGB SI ES NECESARIO (el frontend ya redimensionó) ---
         if instance.imagen:
             try:
-                # Verificar si es PNG
-                if instance.imagen.name.lower().endswith('.png'):
-                    logger.info(f"[PUBLICACION.SAVE] Detectado PNG, convirtiendo a JPG")
+                # Abrir imagen
+                img = PILImage.open(instance.imagen)
+                ancho_orig, alto_orig = img.size
+                logger.info(f"[PUBLICACION.SAVE] Imagen recibida: {img.size}, modo: {img.mode}")
 
-                    # Abrir y convertir imagen
-                    img = PILImage.open(instance.imagen)
-                    logger.info(f"[PUBLICACION.SAVE] Modo de imagen PNG: {img.mode}")
+                # Verificar si ya está en tamaño postal (frontend ya la procesó)
+                es_postal_horizontal = (ancho_orig == 1772 and alto_orig == 1181)
+                es_postal_vertical = (ancho_orig == 1181 and alto_orig == 1772)
+                ya_es_postal = es_postal_horizontal or es_postal_vertical
+
+                if ya_es_postal:
+                    logger.info(f"[PUBLICACION.SAVE] Imagen ya está en tamaño postal, solo convertir a RGB si es necesario")
+                    # Solo convertir a RGB si es necesario
+                    if img.mode in ('RGBA', 'LA', 'P'):
+                        img_rgba = img.convert('RGBA')
+                        fondo = PILImage.new('RGB', img_rgba.size, (255, 255, 255))
+                        fondo.paste(img_rgba, (0, 0), img_rgba)
+                        img = fondo
+                        logger.info(f"[PUBLICACION.SAVE] Convertida a RGB")
+                    elif img.mode != 'RGB':
+                        img = img.convert('RGB')
+
+                    # Guardar imagen (ya está en tamaño correcto)
+                    img_io = io.BytesIO()
+                    img.save(img_io, format='JPEG', quality=95)
+                    img_io.seek(0)
+
+                    nombre_base = instance.imagen.name.rsplit('.', 1)[0]
+                    nuevo_nombre = nombre_base if nombre_base.endswith(('.jpg', '.jpeg')) else nombre_base + '.jpg'
+
+                    from django.core.files.uploadedfile import SimpleUploadedFile
+                    processed_file = SimpleUploadedFile(
+                        name=nuevo_nombre,
+                        content=img_io.read(),
+                        content_type='image/jpeg'
+                    )
+                    instance.imagen = processed_file
+                    logger.info(f"[PUBLICACION.SAVE] Imagen postal guardada sin redimensionar")
+                else:
+                    # Imagen NO está en tamaño postal (fallback por si viene del admin u otra fuente)
+                    logger.info(f"[PUBLICACION.SAVE] Imagen NO está en tamaño postal, redimensionando...")
 
                     # Convertir a RGB si es necesario
                     if img.mode in ('RGBA', 'LA', 'P'):
-                        # Crear fondo blanco y pegar imagen
                         img_rgba = img.convert('RGBA')
                         fondo = PILImage.new('RGB', img_rgba.size, (255, 255, 255))
                         fondo.paste(img_rgba, (0, 0), img_rgba)
@@ -1199,28 +1232,47 @@ class PublicacionForm(forms.ModelForm):
                     elif img.mode != 'RGB':
                         img = img.convert('RGB')
 
-                    # Guardar imagen convertida
+                    # Redimensionar a tamaño postal
+                    if ancho_orig > alto_orig:
+                        target_width, target_height = 1772, 1181
+                    else:
+                        target_width, target_height = 1181, 1772
+
+                    img_ratio = ancho_orig / alto_orig
+                    target_ratio = target_width / target_height
+
+                    if img_ratio > target_ratio:
+                        new_width = target_width
+                        new_height = int(target_width / img_ratio)
+                    else:
+                        new_height = target_height
+                        new_width = int(target_height * img_ratio)
+
+                    img_resized = img.resize((new_width, new_height), PILImage.Resampling.LANCZOS)
+                    canvas = PILImage.new('RGB', (target_width, target_height), (255, 255, 255))
+                    offset_x = (target_width - new_width) // 2
+                    offset_y = (target_height - new_height) // 2
+                    canvas.paste(img_resized, (offset_x, offset_y))
+
                     img_io = io.BytesIO()
-                    img.save(img_io, format='JPEG', quality=95)
+                    canvas.save(img_io, format='JPEG', quality=95)
                     img_io.seek(0)
 
-                    # Actualizar nombre
-                    nuevo_nombre = instance.imagen.name.rsplit('.', 1)[0] + '.jpg'
+                    nombre_base = instance.imagen.name.rsplit('.', 1)[0]
+                    nuevo_nombre = nombre_base if nombre_base.endswith(('.jpg', '.jpeg')) else nombre_base + '.jpg'
 
-                    # Guardar en el campo FileField de Django
-                    # Usar SimpleUploadedFile en lugar de ContentFile para asegurar persistencia
                     from django.core.files.uploadedfile import SimpleUploadedFile
-                    converted_file = SimpleUploadedFile(
+                    processed_file = SimpleUploadedFile(
                         name=nuevo_nombre,
                         content=img_io.read(),
                         content_type='image/jpeg'
                     )
-                    instance.imagen = converted_file
-                    logger.info(f"[PUBLICACION.SAVE] PNG convertido a JPG: {nuevo_nombre}")
+                    instance.imagen = processed_file
+                    logger.info(f"[PUBLICACION.SAVE] Imagen redimensionada a tamaño postal")
 
             except Exception as e:
-                logger.warning(f"[PUBLICACION.SAVE] Error al convertir PNG: {e}", exc_info=True)
-                # Continuar sin conversión si hay error
+                logger.warning(f"[PUBLICACION.SAVE] Error al procesar imagen: {e}", exc_info=True)
+                # Continuar sin procesamiento si hay error
 
         # PASO 1: Guardar la instancia primero para asegurar que la imagen convertida se persiste
         if commit and instance.imagen:
