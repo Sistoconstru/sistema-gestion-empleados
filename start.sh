@@ -3,6 +3,10 @@ set -e
 
 export DJANGO_SETTINGS_MODULE=config.settings.production
 
+# Instalar fuentes TrueType necesarias para renderizado de texto
+echo "📦 Instalando fuentes TrueType..."
+apt-get update -qq && apt-get install -y -qq fonts-liberation fonts-dejavu-core > /dev/null 2>&1 || echo "⚠️  No se pudieron instalar fuentes (puede que ya estén instaladas)"
+
 # Verificar que DATABASE_URL esté configurada
 if [ -z "$DATABASE_URL" ]; then
     echo "❌ ERROR: DATABASE_URL no está configurada."
