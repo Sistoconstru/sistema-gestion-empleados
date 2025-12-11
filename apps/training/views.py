@@ -1153,7 +1153,7 @@ class PlayerView(LoginRequiredMixin, TemplateView):
             # Verificar estado de evaluaciones
             leccion_actual = contenido_actual.leccion
             evaluacion_pendiente = False
-            if leccion_actual.evaluacion:
+            if hasattr(leccion_actual, 'evaluacion'):
                 # Verificar si ya aprobó la evaluación
                 intentos_aprobados = IntentoQuiz.objects.filter(
                     quiz=leccion_actual.evaluacion,

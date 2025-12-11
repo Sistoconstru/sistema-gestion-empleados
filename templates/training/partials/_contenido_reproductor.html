@@ -1,10 +1,15 @@
 {% load training_extras %}
-{# Mostrar visor de video funcional #}
-{% if contenido_actual.url_externa and contenido_actual.url_externa|contains:'youtube.com' %}
-{% elif contenido_actual.url_externa and contenido_actual.url_externa|contains:'youtu.be' %}
+
+{# YouTube Videos #}
+{% if contenido_actual.url_externa and 'youtube.com' in contenido_actual.url_externa or contenido_actual.url_externa and 'youtu.be' in contenido_actual.url_externa or contenido_actual.url_externa and 'youtube-nocookie.com' in contenido_actual.url_externa or contenido_actual.tipo_contenido.codigo == 'YOUTUBE' %}
     <div class="video-container mb-4">
+        <div id="youtube-error-message" class="alert alert-warning" style="display: none; margin-bottom: 15px;">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Video no disponible para reproducción embebida</strong>
+            <p class="mb-2 mt-2">El propietario de este video ha deshabilitado la reproducción en otros sitios web. Por favor, haz clic en el botón de abajo para ver el video directamente en YouTube.</p>
+        </div>
         <iframe id="youtubePlayer"
-            src="{% if 'embed' in contenido_actual.url_externa %}{{ contenido_actual.url_externa }}{% elif 'youtu.be' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://youtu.be/' }}{% elif 'watch?v=' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://www.youtube.com/watch?v=' }}{% else %}{{ contenido_actual.url_externa }}{% endif %}?enablejsapi=1"
+            src="{% if 'embed' in contenido_actual.url_externa or 'youtube-nocookie.com' in contenido_actual.url_externa %}{{ contenido_actual.url_externa }}{% elif 'youtu.be' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://youtu.be/' }}{% elif 'watch?v=' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://www.youtube.com/watch?v=' }}{% else %}{{ contenido_actual.url_externa }}{% endif %}{% if '?' not in contenido_actual.url_externa %}?enablejsapi=1{% else %}&enablejsapi=1{% endif %}"
             title="{{ contenido_actual.titulo|default:contenido_actual.nombre }}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -19,28 +24,64 @@
             </a>
         </div>
     </div>
-    <div class="video-container mb-4">
-        <iframe id="youtubePlayer"
-            src="{% if 'embed' in contenido_actual.url_externa %}{{ contenido_actual.url_externa }}{% elif 'youtu.be' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://youtu.be/' }}{% elif 'watch?v=' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://www.youtube.com/watch?v=' }}{% else %}{{ contenido_actual.url_externa }}{% endif %}?enablejsapi=1"
-            title="{{ contenido_actual.titulo|default:contenido_actual.nombre }}"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            class="rounded"
-            data-contenido-id="{{ contenido_actual.id }}"
-            style="width:100%; min-height:350px; max-height:60vh; border:2px solid #bbb; background:#111; display:block;">
-        </iframe>
-        <div class="mt-2 text-center">
-            <a href="{{ contenido_actual.url_externa }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
-                <i class="fab fa-youtube me-1"></i> Ver en YouTube
-            </a>
-        </div>
-    </div>
+
+    <script>
+    // Detectar errores del reproductor de YouTube
+    var errorShown = false;
+
+    // Método 1: Escuchar mensajes del iframe de YouTube
+    window.addEventListener('message', function(event) {
+        if ((event.origin === 'https://www.youtube.com' || event.origin === 'https://www.youtube-nocookie.com') && !errorShown) {
+            var data = event.data;
+            if (typeof data === 'string') {
+                try {
+                    data = JSON.parse(data);
+                } catch(e) {
+                    return;
+                }
+            }
+
+            // Detectar errores de YouTube (códigos: 2, 5, 100, 101, 150, 153)
+            if (data.event === 'onError' || (data.info && data.info.errorCode)) {
+                var errorCode = data.info ? data.info.errorCode : data.data;
+                console.log('YouTube Error Code:', errorCode);
+
+                // Error 150 y 153 son errores de embedding deshabilitado
+                if (errorCode === 150 || errorCode === 153 || errorCode === 101) {
+                    showYouTubeError();
+                }
+            }
+        }
+    });
+
+    // Método 2: Timeout - Si después de 5 segundos aún muestra el mensaje de error de YouTube
+    setTimeout(function() {
+        var iframe = document.getElementById('youtubePlayer');
+        if (iframe && !errorShown) {
+            // Verificar si el iframe tiene contenido de error visible
+            showYouTubeError();
+        }
+    }, 5000);
+
+    function showYouTubeError() {
+        if (!errorShown) {
+            errorShown = true;
+            document.getElementById('youtube-error-message').style.display = 'block';
+            var iframe = document.getElementById('youtubePlayer');
+            if (iframe) {
+                iframe.style.minHeight = '150px';
+                iframe.style.opacity = '0.5';
+            }
+        }
+    }
+    </script>
+
+{# Video Files #}
 {% elif contenido_actual.tipo_contenido.codigo == 'VIDEO' %}
     <div class="video-container mb-4">
-        <video id="videoPlayer" 
-               class="rounded w-100" 
-               controls 
+        <video id="videoPlayer"
+               class="rounded w-100"
+               controls
                preload="metadata"
                data-contenido-id="{{ contenido_actual.id }}"
                data-tiempo-visto="{{ progreso_actual.tiempo_dedicado_segundos }}"
@@ -48,112 +89,95 @@
             <source src="{{ contenido_actual.archivo.url }}" type="video/mp4">
             Tu navegador no soporta el elemento video.
         </video>
-        <div class="progress-info">
+        <div class="progress-info mt-2">
             <span id="tiempoVisto">0:00</span> / <span id="tiempoTotal">0:00</span>
         </div>
     </div>
-{% endif %}
-{# Video subido #}
-{% if False %}
-    <div class="video-container mb-4">
-        <video id="videoPlayer" 
-               class="rounded w-100" 
-               controls 
-               preload="metadata"
-               data-contenido-id="{{ contenido_actual.id }}"
-               data-tiempo-visto="{{ progreso_actual.tiempo_dedicado_segundos }}"
-               data-porcentaje-visto="{{ progreso_actual.porcentaje_visto }}">
-            <source src="{{ contenido_actual.archivo.url }}" type="video/mp4">
-            Tu navegador no soporta el elemento video.
-        </video>
-        <div class="progress-info">
-            <span id="tiempoVisto">0:00</span> / <span id="tiempoTotal">0:00</span>
-        </div>
-    </div>
-{# Video de YouTube por tipo o por url_externa #}
 
-{# Documentos PDF, etc #}
-{% else %}
-    {% if contenido_actual.tipo_contenido.codigo == 'DOCUMENTO' or contenido_actual.tipo_contenido.codigo == 'pdfrrrr' %}
-    <div class="document-container" style="overflow: visible; padding: 0; background: none;">
-            {% if contenido_actual.archivo %}
-                <!-- Debug info -->
-                <div class="debug-info" style="background: #f8f9fa; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-                    
-                </div>
-                {% with url_lower=contenido_actual.archivo.url|lower %}
-                    {% if '.pdf' in url_lower or contenido_actual.tipo_contenido.codigo == 'pdfrrrr' %}
-                        <div class="pdf-container" style="position:relative; background:#222; border-radius:8px; padding:0 10px 10px 10px; overflow:visible;">
-                            <iframe 
-                                id="visorPDF"
-                                src="/static/pdfjs/web/viewer.html?file={{ request.scheme }}://{{ request.get_host }}/documents/proxy-pdf/?file={{ contenido_actual.archivo.url|urlencode }}"
-                                width="100%" 
-                                style="height:55vh; min-height:300px; max-height:60vh; border-radius:8px; border:1px solid #333; background:#fff; display:block; margin-bottom:0;"
-                                allowfullscreen
-                                title="Visor PDF avanzado">
-                            </iframe>
-                            <div class="text-center mt-2 mb-2">
-                                <button type="button" class="btn btn-secondary btn-sm me-2" onclick="fullscreenPDF()">
-                                    <i class="fas fa-expand me-1"></i> Pantalla completa
-                                </button>
-                                <a href="{{ contenido_actual.archivo.url }}" target="_blank" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-download me-2"></i> Descargar PDF
-                                </a>
-                            </div>
-                        </div>
-                        <script>
-                        function fullscreenPDF() {
-                            var iframe = document.getElementById('visorPDF');
-                            if (iframe.requestFullscreen) {
-                                iframe.requestFullscreen();
-                            } else if (iframe.mozRequestFullScreen) { /* Firefox */
-                                iframe.mozRequestFullScreen();
-                            } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-                                iframe.webkitRequestFullscreen();
-                            } else if (iframe.msRequestFullscreen) { /* IE/Edge */
-                                iframe.msRequestFullscreen();
-                            }
-                        }
-                        </script>
-                        </div>
-                    {% else %}
-                        {% if '.pptx' in url_lower or '.ppt' in url_lower %}
-                            <div class="text-center py-4">
-                                <i class="fas fa-file-powerpoint fa-4x text-danger mb-3"></i>
-                                <h4>Presentación de PowerPoint</h4>
-                                <p class="text-muted mb-4">Esta presentación debe ser descargada para su visualización</p>
-                                <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-danger">
-                                    <i class="fas fa-download me-2"></i>
-                                    Descargar Presentación
-                                </a>
-                            </div>
-                        {% else %}
-                            <div class="text-center py-4">
-                                <i class="fas fa-file-alt fa-4x text-primary mb-3"></i>
-                                <h4>Documento</h4>
-                                <p class="text-muted mb-4">Este documento debe ser descargado para su visualización</p>
-                                <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-primary">
-                                    <i class="fas fa-download me-2"></i>
-                                    Descargar Documento
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endwith %}
-            {% endif %}
-    {% else %}
-        {% if contenido_actual.tipo_contenido.codigo == 'YOUTUBE' %}
-            <div class="video-container mb-4">
-                <iframe id="youtubePlayer"
-                        src="{{ contenido_actual.url_externa }}?enablejsapi=1" 
-                        title="{{ contenido_actual.titulo }}"
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+{# PDF Documents #}
+{% elif contenido_actual.tipo_contenido.codigo == 'DOCUMENTO' or contenido_actual.tipo_contenido.codigo == 'PDF' %}
+    {% if contenido_actual.archivo %}
+        {% with url_lower=contenido_actual.archivo.url|lower %}
+            {% if '.pdf' in url_lower %}
+                <div class="pdf-container mb-4" style="position:relative; background:#f8f9fa; border-radius:8px; padding:10px;">
+                    <iframe
+                        id="visorPDF"
+                        src="/static/pdfjs/web/viewer.html?file={{ request.scheme }}://{{ request.get_host }}/documentos/proxy-pdf/?file={{ contenido_actual.archivo.url|urlencode }}"
+                        width="100%"
+                        style="height:60vh; min-height:400px; border-radius:8px; border:1px solid #dee2e6; background:#fff; display:block;"
                         allowfullscreen
-                        class="rounded"
-                        data-contenido-id="{{ contenido_actual.id }}">
-                </iframe>
-            </div>
-        {% endif %}
+                        title="Visor PDF">
+                    </iframe>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" onclick="fullscreenPDF()">
+                            <i class="fas fa-expand me-1"></i> Pantalla completa
+                        </button>
+                        <a href="{{ contenido_actual.archivo.url }}" target="_blank" class="btn btn-primary btn-sm">
+                            <i class="fas fa-download me-1"></i> Descargar PDF
+                        </a>
+                    </div>
+                </div>
+
+                <script>
+                function fullscreenPDF() {
+                    var iframe = document.getElementById('visorPDF');
+                    if (iframe.requestFullscreen) {
+                        iframe.requestFullscreen();
+                    } else if (iframe.mozRequestFullScreen) {
+                        iframe.mozRequestFullScreen();
+                    } else if (iframe.webkitRequestFullscreen) {
+                        iframe.webkitRequestFullscreen();
+                    } else if (iframe.msRequestFullscreen) {
+                        iframe.msRequestFullscreen();
+                    }
+                }
+                </script>
+
+            {% elif '.pptx' in url_lower or '.ppt' in url_lower %}
+                <div class="text-center py-5">
+                    <i class="fas fa-file-powerpoint fa-4x text-danger mb-3"></i>
+                    <h4>Presentación de PowerPoint</h4>
+                    <p class="text-muted mb-4">Esta presentación debe ser descargada para su visualización</p>
+                    <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-danger">
+                        <i class="fas fa-download me-2"></i>
+                        Descargar Presentación
+                    </a>
+                </div>
+
+            {% elif '.docx' in url_lower or '.doc' in url_lower %}
+                <div class="text-center py-5">
+                    <i class="fas fa-file-word fa-4x text-primary mb-3"></i>
+                    <h4>Documento de Word</h4>
+                    <p class="text-muted mb-4">Este documento debe ser descargado para su visualización</p>
+                    <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-primary">
+                        <i class="fas fa-download me-2"></i>
+                        Descargar Documento
+                    </a>
+                </div>
+
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-file-alt fa-4x text-secondary mb-3"></i>
+                    <h4>Documento</h4>
+                    <p class="text-muted mb-4">Este documento debe ser descargado para su visualización</p>
+                    <a href="{{ contenido_actual.archivo.url }}" download class="btn btn-secondary">
+                        <i class="fas fa-download me-2"></i>
+                        Descargar Documento
+                    </a>
+                </div>
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No hay archivo disponible para este contenido.
+        </div>
     {% endif %}
+
+{# Fallback for other content types #}
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Tipo de contenido no soportado: {{ contenido_actual.tipo_contenido.nombre }}
+    </div>
 {% endif %}
