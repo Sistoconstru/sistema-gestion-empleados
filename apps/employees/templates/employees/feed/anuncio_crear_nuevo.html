@@ -963,8 +963,14 @@
             const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
 
             const scaleFactor = (scaleX + scaleY) / 2;
-            const tituloFontSizeReal = state.estilos.titulo_font_size ? Math.round(state.estilos.titulo_font_size * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
-            const contenidoFontSizeReal = state.estilos.contenido_font_size ? Math.round(state.estilos.contenido_font_size * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+
+            // SIEMPRE usar el valor actual del input, no state.estilos (que puede ser viejo)
+            const baseFontSize = parseInt(fontSizeInput.value);
+            const tituloFontSizeReal = Math.round(baseFontSize * scaleFactor);
+            const contenidoFontSizeReal = Math.round(baseFontSize * scaleFactor);
+
+            console.log('[PREVIEW] Font size base actual:', baseFontSize);
+            console.log('[PREVIEW] Font size escalado para renderizado:', tituloFontSizeReal);
 
             const estilos = {
                 font_family: fontFamilySelect.value,

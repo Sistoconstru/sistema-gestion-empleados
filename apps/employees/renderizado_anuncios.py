@@ -74,18 +74,26 @@ def obtener_fuente(font_family, font_size_px, sistema='win'):
         font_path = buscar_fuente_case_insensitive(search_path, font_names)
         if font_path:
             try:
-                return ImageFont.truetype(font_path, font_size_px)
+                font = ImageFont.truetype(font_path, font_size_px)
+                logger.info(f"[FUENTE] Cargada: {font_path} (tamaño: {font_size_px}px)")
+                return font
             except:
                 continue
 
     # Fallback a DejaVuSans
     try:
-        return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_px)
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_px)
+        logger.info(f"[FUENTE] Fallback a DejaVuSans (tamaño: {font_size_px}px)")
+        return font
     except:
         try:
-            return ImageFont.truetype("C:\\Windows\\Fonts\\arial.ttf", font_size_px)
+            font = ImageFont.truetype("C:\\Windows\\Fonts\\arial.ttf", font_size_px)
+            logger.info(f"[FUENTE] Fallback a Arial Windows (tamaño: {font_size_px}px)")
+            return font
         except:
-            return ImageFont.load_default()
+            font = ImageFont.load_default()
+            logger.warning(f"[FUENTE] Usando fuente por defecto (bitmap)")
+            return font
 
 
 def hex_a_rgb(hex_color):
