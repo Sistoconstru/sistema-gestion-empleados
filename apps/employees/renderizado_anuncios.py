@@ -280,13 +280,17 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
             titulo_font_size = estilos.get('titulo_font_size')
             logger.info(f"titulo_font_size del estilos: {titulo_font_size}")
 
+            # CORRECCIÓN: Pillow renderiza fuentes más pequeñas que navegadores
+            # Multiplicar por 1.5 para compensar la diferencia
+            FONT_SIZE_CORRECTION = 1.5
+
             if titulo_font_size:
-                font_size = int(titulo_font_size) * escala_temporal
-                logger.info(f"Usando titulo_font_size específico: {font_size}px")
+                font_size = int(int(titulo_font_size) * escala_temporal * FONT_SIZE_CORRECTION)
+                logger.info(f"Usando titulo_font_size específico: {int(titulo_font_size)}px → {font_size}px (con corrección {FONT_SIZE_CORRECTION}x)")
             else:
                 # Calcular font size basado en ancho del cuadro
-                font_size = calcular_font_size(titulo_width, font_family, font_size_base)
-                logger.info(f"Calculando font_size: {font_size}px")
+                font_size = int(calcular_font_size(titulo_width, font_family, font_size_base) * FONT_SIZE_CORRECTION)
+                logger.info(f"Calculando font_size: {font_size}px (con corrección)")
 
             font = obtener_fuente(font_family, font_size)
 
@@ -320,13 +324,14 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
             contenido_font_size = estilos.get('contenido_font_size')
             logger.info(f"contenido_font_size del estilos: {contenido_font_size}")
 
+            # Usar el mismo factor de corrección que el título
             if contenido_font_size:
-                font_size = int(contenido_font_size) * escala_temporal
-                logger.info(f"Usando contenido_font_size específico: {font_size}px")
+                font_size = int(int(contenido_font_size) * escala_temporal * FONT_SIZE_CORRECTION)
+                logger.info(f"Usando contenido_font_size específico: {int(contenido_font_size)}px → {font_size}px (con corrección {FONT_SIZE_CORRECTION}x)")
             else:
                 # Calcular font size basado en ancho del cuadro
-                font_size = calcular_font_size(contenido_width, font_family, font_size_base)
-                logger.info(f"Calculando font_size: {font_size}px")
+                font_size = int(calcular_font_size(contenido_width, font_family, font_size_base) * FONT_SIZE_CORRECTION)
+                logger.info(f"Calculando font_size: {font_size}px (con corrección)")
 
             font = obtener_fuente(font_family, font_size)
 
