@@ -31,6 +31,43 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
     context_object_name = 'publicaciones'
     paginate_by = 10
 
+    def _limpiar_notificaciones_expiradas(self):
+        """Limpia notificaciones de anuncios que ya no existen o están expirados"""
+        try:
+            from apps.notifications.models import Notificacion
+            ahora = timezone.now()
+
+            # Obtener todas las notificaciones de anuncios importantes del usuario actual
+            notificaciones_anuncios = Notificacion.objects.filter(
+                usuario=self.request.user,
+                tipo_notificacion__codigo='anuncio_importante'
+            ).select_related('tipo_notificacion')
+
+            notificaciones_a_eliminar = []
+
+            for notif in notificaciones_anuncios:
+                # Obtener ID de publicación desde datos_adicionales
+                publicacion_id = notif.datos_adicionales.get('publicacion_id') if notif.datos_adicionales else None
+
+                if publicacion_id:
+                    # Verificar si el anuncio existe y está vigente
+                    try:
+                        anuncio = Publicacion.objects.get(id=publicacion_id, es_anuncio=True)
+                        # Si el anuncio expiró, marcar para eliminar
+                        if anuncio.fecha_fin and anuncio.fecha_fin <= ahora:
+                            notificaciones_a_eliminar.append(notif.id)
+                    except Publicacion.DoesNotExist:
+                        # El anuncio ya no existe, marcar para eliminar
+                        notificaciones_a_eliminar.append(notif.id)
+
+            # Eliminar notificaciones en lote
+            if notificaciones_a_eliminar:
+                count = Notificacion.objects.filter(id__in=notificaciones_a_eliminar).delete()[0]
+                logger.info(f"[FEED] Limpiadas {count} notificaciones expiradas para usuario {self.request.user.username}")
+
+        except Exception as e:
+            logger.warning(f"[FEED] Error al limpiar notificaciones expiradas: {e}")
+
     def get_queryset(self):
         """Obtener publicaciones activas ordenadas por importancia"""
         ahora = timezone.now()
@@ -96,6 +133,9 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        # Limpiar notificaciones expiradas antes de renderizar
+        self._limpiar_notificaciones_expiradas()
+
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('search', '')
         context['tipo'] = self.request.GET.get('tipo', '')

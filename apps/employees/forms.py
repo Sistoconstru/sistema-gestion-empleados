@@ -1350,13 +1350,23 @@ class PublicacionForm(forms.ModelForm):
 class AnuncioImportanteForm(forms.ModelForm):
     """Formulario para crear anuncios importantes (solo admins)"""
 
+    publicar_inmediatamente = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'id': 'id_publicar_inmediatamente'
+        }),
+        help_text='Marcar para publicar el anuncio inmediatamente'
+    )
+
     fecha_inicio = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.DateTimeInput(attrs={
             'type': 'datetime-local',
             'class': 'form-control'
         }),
-        help_text='Fecha y hora en que el anuncio comienza a ser visible'
+        help_text='Fecha y hora en que el anuncio comienza a ser visible (si no se publica inmediatamente)'
     )
 
     fecha_fin = forms.DateTimeField(
@@ -1416,25 +1426,36 @@ class AnuncioImportanteForm(forms.ModelForm):
             raise ValidationError('El contenido es requerido')
         return contenido
 
-    def clean_fecha_inicio(self):
-        """Validar que fecha_inicio sea futura"""
-        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+    def clean(self):
+        """Validación conjunta de campos relacionados con fechas"""
+        cleaned_data = super().clean()
+        publicar_inmediatamente = cleaned_data.get('publicar_inmediatamente')
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
 
-        if fecha_inicio and fecha_inicio <= timezone.now():
-            raise ValidationError('La fecha de inicio debe ser futura (posterior a ahora)')
+        # Si se marca publicar inmediatamente, establecer fecha_inicio a ahora
+        if publicar_inmediatamente:
+            cleaned_data['fecha_inicio'] = timezone.now()
+        else:
+            # Si no es inmediato, fecha_inicio es requerida y debe ser futura
+            if not fecha_inicio:
+                raise ValidationError({
+                    'fecha_inicio': 'Debes proporcionar una fecha de inicio o marcar "Publicar inmediatamente"'
+                })
 
-        return fecha_inicio
+            if fecha_inicio <= timezone.now():
+                raise ValidationError({
+                    'fecha_inicio': 'La fecha de inicio debe ser futura. Si quieres publicar ahora, marca "Publicar inmediatamente"'
+                })
 
-    def clean_fecha_fin(self):
-        """Validar que fecha_fin sea posterior a fecha_inicio"""
-        fecha_fin = self.cleaned_data.get('fecha_fin')
-        fecha_inicio = self.cleaned_data.get('fecha_inicio')
+        # Validar que fecha_fin sea posterior a fecha_inicio
+        fecha_inicio_final = cleaned_data.get('fecha_inicio')
+        if fecha_inicio_final and fecha_fin and fecha_fin <= fecha_inicio_final:
+            raise ValidationError({
+                'fecha_fin': 'La fecha de finalización debe ser posterior a la fecha de inicio'
+            })
 
-        # Validar que fecha_fin > fecha_inicio
-        if fecha_inicio and fecha_fin and fecha_fin <= fecha_inicio:
-            raise ValidationError('La fecha de finalización debe ser posterior a la fecha de inicio')
-
-        return fecha_fin
+        return cleaned_data
 
     def save(self, commit=True):
         """Renderizar imagen con texto y guardar"""

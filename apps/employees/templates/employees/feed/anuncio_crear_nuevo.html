@@ -240,6 +240,34 @@
         background: #dee2e6;
     }
 
+    /* Estilos para checkbox de publicar inmediatamente */
+    .checkbox-publicar-inmediatamente {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0.75rem;
+        background: #f0f4ff;
+        border-radius: 6px;
+        border: 1px solid #d0dff9;
+    }
+
+    .checkbox-publicar-inmediatamente input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .checkbox-publicar-inmediatamente label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #4a5568;
+        user-select: none;
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
         .row-main {
@@ -382,13 +410,26 @@
 
                 <!-- FECHAS -->
                 <h3>6. Fechas de Publicación</h3>
-                <div class="form-group-custom">
-                    <label for="id_fecha_inicio">Fecha de Inicio *</label>
-                    {{ form.fecha_inicio }}
+
+                <!-- Checkbox para publicar inmediatamente -->
+                <div class="checkbox-publicar-inmediatamente">
+                    {{ form.publicar_inmediatamente }}
+                    <label for="id_publicar_inmediatamente">
+                        <i class="fas fa-bolt" style="color: #667eea;"></i> Publicar inmediatamente
+                    </label>
                 </div>
+
+                <!-- Fecha de inicio (se oculta si está marcado publicar inmediatamente) -->
+                <div class="form-group-custom" id="fecha-inicio-group">
+                    <label for="id_fecha_inicio">Fecha de Inicio</label>
+                    {{ form.fecha_inicio }}
+                    <small style="color: #666; font-size: 0.875rem;">Solo si no publicas inmediatamente</small>
+                </div>
+
                 <div class="form-group-custom">
                     <label for="id_fecha_fin">Fecha de Finalización *</label>
                     {{ form.fecha_fin }}
+                    <small style="color: #666; font-size: 0.875rem;">Fecha en que el anuncio dejará de mostrarse</small>
                 </div>
 
                 <!-- BOTONES -->
@@ -1032,5 +1073,26 @@
 
     // Inicializar
     actualizarPreview();
+
+    // Manejar checkbox de publicar inmediatamente
+    const publicarInmediatamenteCheckbox = document.getElementById('id_publicar_inmediatamente');
+    const fechaInicioGroup = document.getElementById('fecha-inicio-group');
+    const fechaInicioInput = document.getElementById('id_fecha_inicio');
+
+    function toggleFechaInicio() {
+        if (publicarInmediatamenteCheckbox.checked) {
+            fechaInicioGroup.style.display = 'none';
+            fechaInicioInput.removeAttribute('required');
+        } else {
+            fechaInicioGroup.style.display = 'block';
+            fechaInicioInput.setAttribute('required', 'required');
+        }
+    }
+
+    // Inicializar estado
+    toggleFechaInicio();
+
+    // Escuchar cambios en el checkbox
+    publicarInmediatamenteCheckbox.addEventListener('change', toggleFechaInicio);
 </script>
 {% endblock %}

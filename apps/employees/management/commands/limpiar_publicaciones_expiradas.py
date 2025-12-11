@@ -29,20 +29,48 @@ class Command(BaseCommand):
             fecha_eliminacion_automatica__lte=ahora
         ).exclude(fecha_eliminacion_automatica__isnull=True)
 
-        if not publicaciones_expiradas.exists():
+        # También obtener anuncios importantes expirados (fecha_fin pasada)
+        anuncios_expirados = Publicacion.objects.filter(
+            es_anuncio=True,
+            es_importante=True,
+            fecha_fin__lte=ahora
+        )
+
+        # Combinar ambos querysets
+        todas_expiradas = (publicaciones_expiradas | anuncios_expirados).distinct()
+
+        if not todas_expiradas.exists():
             self.stdout.write(self.style.SUCCESS('No hay publicaciones expiradas para limpiar'))
             logger.info("[CLEANUP] No hay publicaciones expiradas para limpiar")
             return
 
         # Agrupar por tipo para logging detallado
-        rapidas = publicaciones_expiradas.filter(es_rapida=True).count()
-        con_imagen = publicaciones_expiradas.filter(imagen__isnull=False, es_rapida=False).count()
-        anuncios = publicaciones_expiradas.filter(es_anuncio=True).count()
+        rapidas = todas_expiradas.filter(es_rapida=True).count()
+        con_imagen = todas_expiradas.filter(imagen__isnull=False, es_rapida=False, es_anuncio=False).count()
+        anuncios = todas_expiradas.filter(es_anuncio=True).count()
 
-        total = publicaciones_expiradas.count()
+        total = todas_expiradas.count()
+
+        # Limpiar notificaciones asociadas a anuncios expirados
+        from apps.notifications.models import Notificacion
+        notificaciones_eliminadas = 0
+
+        for pub in todas_expiradas.filter(es_anuncio=True):
+            notificaciones = Notificacion.objects.filter(
+                datos_adicionales__publicacion_id=str(pub.id)
+            )
+            count = notificaciones.count()
+            if count > 0:
+                notificaciones.delete()
+                notificaciones_eliminadas += count
+                logger.info(f"[CLEANUP] Eliminadas {count} notificaciones del anuncio ID {pub.id}")
+
+        if notificaciones_eliminadas > 0:
+            self.stdout.write(self.style.SUCCESS(f'✓ Eliminadas {notificaciones_eliminadas} notificaciones de anuncios expirados'))
+            logger.info(f"[CLEANUP] Total notificaciones eliminadas: {notificaciones_eliminadas}")
 
         # Eliminar archivos de imagen si existen
-        for pub in publicaciones_expiradas:
+        for pub in todas_expiradas:
             if pub.imagen:
                 try:
                     pub.imagen.delete(save=False)
@@ -57,8 +85,8 @@ class Command(BaseCommand):
                 except Exception as e:
                     logger.error(f"[CLEANUP] Error al eliminar imagen renderizada {pub.imagen_renderizada.name}: {e}")
 
-        # Eliminar publicaciones de la BD
-        publicaciones_expiradas.delete()
+        # Eliminar publicaciones de la BD (esto también disparará el signal post_delete)
+        todas_expiradas.delete()
 
         # Mensaje de éxito
         mensaje = (
@@ -66,11 +94,12 @@ class Command(BaseCommand):
             f'  - Publicaciones rápidas eliminadas: {rapidas}\n'
             f'  - Publicaciones con imagen eliminadas: {con_imagen}\n'
             f'  - Anuncios eliminados: {anuncios}\n'
-            f'  - Total: {total}'
+            f'  - Notificaciones eliminadas: {notificaciones_eliminadas}\n'
+            f'  - Total publicaciones: {total}'
         )
 
         self.stdout.write(self.style.SUCCESS(mensaje))
         logger.info(
             f"[CLEANUP] Limpieza completada. Rápidas: {rapidas}, Con imagen: {con_imagen}, "
-            f"Anuncios: {anuncios}, Total: {total}"
+            f"Anuncios: {anuncios}, Notificaciones: {notificaciones_eliminadas}, Total: {total}"
         )
