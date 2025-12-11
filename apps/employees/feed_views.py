@@ -402,37 +402,19 @@ def preview_renderizado_anuncio(request):
             estilos=estilos
         )
 
-        # Guardar temporalmente en S3 con prefijo temporal y metadata CORS
-        import uuid
-        from storages.backends.s3boto3 import S3Boto3Storage
+        # Convertir imagen a base64 para evitar problemas de CORS
+        import base64
+        imagen_renderizada.seek(0)
+        imagen_bytes = imagen_renderizada.read()
+        imagen_base64 = base64.b64encode(imagen_bytes).decode('utf-8')
+        data_url = f"data:image/png;base64,{imagen_base64}"
 
-        temp_filename = f'temp/preview_{uuid.uuid4().hex[:8]}.png'
-
-        # Guardar con metadata explícita para CORS
-        if hasattr(default_storage, 'bucket'):
-            # Es S3Storage, usar método directo con ExtraArgs
-            from django.core.files.base import ContentFile
-            imagen_renderizada.seek(0)
-
-            default_storage.bucket.put_object(
-                Key=temp_filename,
-                Body=imagen_renderizada.read(),
-                ContentType='image/png',
-                CacheControl='public, max-age=300',
-                ACL='public-read'
-            )
-            temp_url = default_storage.url(temp_filename)
-        else:
-            # Fallback para storage local
-            temp_path = default_storage.save(temp_filename, imagen_renderizada)
-            temp_url = default_storage.url(temp_path)
-
-        logger.info(f"[PREVIEW] Imagen renderizada guardada temporalmente: {temp_url}")
+        logger.info(f"[PREVIEW] Imagen renderizada convertida a base64 (tamaño: {len(imagen_base64)} chars)")
 
         return JsonResponse({
             'success': True,
-            'url': temp_url,
-            'temp_path': temp_filename
+            'url': data_url,
+            'is_base64': True
         })
 
     except Exception as e:
