@@ -17,55 +17,66 @@ def format_plan_with_checkboxes(plan_content):
     """
     if not plan_content:
         return ""
-    
+
     # Separar por líneas y limpiar
     lines = [line.strip() for line in plan_content.split('\n') if line.strip()]
     html_content = []
     in_plan_section = False
+    in_recomendacion_section = False
     plan_item_counter = 1
     current_section = None
     requiere_seguimiento = False
     categoria_actual = ""
-    
+
     for line in lines:
         # Detectar títulos de categorías (números seguidos de punto y nombre)
         if re.match(r'^\d+\.\s+[^:]+:\s*⭐', line):
             # Cerrar sección anterior si existe
-            if current_section:
-                if in_plan_section:
-                    html_content.append('</div>')  # Cerrar plan-items
-                    html_content.append('</div>')  # Cerrar plan-section
-                html_content.append('</div>')  # Cerrar categoria-section
-                
+            if in_plan_section:
+                html_content.append('</div>')  # Cerrar plan-items
+                html_content.append('</div>')  # Cerrar plan-section
+                in_plan_section = False
+            if in_recomendacion_section:
+                html_content.append('</div>')  # Cerrar recomendacion-section
+                in_recomendacion_section = False
+            if current_section == 'categoria':
+                html_content.append('</div>')  # Cerrar categoria-section anterior
+
             # Determinar si esta categoría requiere seguimiento basado en la calificación
             requiere_seguimiento = "Calificación 1" in line or "Calificación 2" in line
             categoria_actual = line
-                
-            html_content.append('<div class="categoria-section mb-4">')
-            html_content.append(f'<h6 class="text-primary mb-3">{line}</h6>')
-            in_plan_section = False
+
+            html_content.append('<div class="categoria-section">')
+            html_content.append(f'<h6 class="mb-3">{line}</h6>')
             current_section = 'categoria'
-            
+
         # Detectar sección "Recomendación:"
-        elif line.startswith("Recomendación:"):
-            html_content.append('<div class="recomendacion-section mb-3">')
+        elif line.startswith("Recomendación:") or line.startswith("💡 Recomendación:"):
+            if in_recomendacion_section:
+                html_content.append('</div>')  # Cerrar recomendacion-section anterior
+            html_content.append('<div class="recomendacion-section">')
             html_content.append('<h6 class="text-success mb-2"><i class="fas fa-lightbulb me-2"></i>Recomendación:</h6>')
+            in_recomendacion_section = True
             current_section = 'recomendacion'
-            
+
         # Detectar sección "Plan de mejora:"
         elif line.startswith("Plan de mejora:"):
-            if current_section == 'recomendacion':
+            if in_recomendacion_section:
                 html_content.append('</div>')  # Cerrar recomendación
-            html_content.append('<div class="plan-section mb-3">')
+                in_recomendacion_section = False
+            if in_plan_section:
+                html_content.append('</div>')  # Cerrar plan-items previo
+                html_content.append('</div>')  # Cerrar plan-section previo
+            html_content.append('<div class="plan-section">')
             html_content.append('<h6 class="text-warning mb-3"><i class="fas fa-tasks me-2"></i>Plan de mejora:</h6>')
             html_content.append('<div class="plan-items">')
             in_plan_section = True
             current_section = 'plan'
-        
+
         # Detectar marcador de seguimiento
         elif line.startswith("REQUIERE_SEGUIMIENTO"):
             continue  # Saltar esta línea, no mostrarla
-            
+
         # Detectar "Observaciones del evaluador:"
         elif line.startswith("Observaciones"):
             # Cerrar secciones anteriores
@@ -73,9 +84,12 @@ def format_plan_with_checkboxes(plan_content):
                 html_content.append('</div>')  # Cerrar plan-items
                 html_content.append('</div>')  # Cerrar plan-section
                 in_plan_section = False
+            if in_recomendacion_section:
+                html_content.append('</div>')  # Cerrar recomendacion-section
+                in_recomendacion_section = False
             if current_section == 'categoria':
                 html_content.append('</div>')  # Cerrar categoria-section
-                
+
             html_content.append('<div class="observaciones-section mt-4">')
             html_content.append('<h6 class="text-info mb-3"><i class="fas fa-comment-alt me-2"></i>Observaciones del evaluador:</h6>')
             html_content.append('<div class="alert alert-light border-info">')
@@ -83,13 +97,13 @@ def format_plan_with_checkboxes(plan_content):
             html_content.append('</div>')
             html_content.append('</div>')
             current_section = 'observaciones'
-            
+
         # Líneas de contenido
         else:
             if current_section == 'recomendacion' and line:
                 html_content.append(f'<p class="mb-2">{line}</p>')
-                
-            elif current_section == 'plan' and line and line.endswith('.'):
+
+            elif current_section == 'plan' and line:
                 # Elementos del plan de mejora
                 if requiere_seguimiento:
                     # Con checkbox para seguimiento (puntajes 1 y 2)
@@ -101,14 +115,16 @@ def format_plan_with_checkboxes(plan_content):
                 else:
                     # Sin checkbox (puntaje 3 - mantener nivel)
                     html_content.append(f'<div class="plan-item-info mb-2"><i class="fas fa-star text-warning me-2"></i>{line}</div>')
-    
-    # Cerrar divs pendientes
+
+    # Cerrar divs pendientes al final
     if in_plan_section:
         html_content.append('</div>')  # Cerrar plan-items
         html_content.append('</div>')  # Cerrar plan-section
-    if current_section in ['categoria', 'recomendacion']:
-        html_content.append('</div>')  # Cerrar categoria-section o recomendacion-section
-    
+    if in_recomendacion_section:
+        html_content.append('</div>')  # Cerrar recomendacion-section
+    if current_section == 'categoria':
+        html_content.append('</div>')  # Cerrar categoria-section final
+
     return mark_safe(''.join(html_content))
 
 @register.filter

@@ -22,12 +22,11 @@
 }
 
 .plan-content {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
+    background: white;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     margin: 20px 0;
-    white-space: pre-wrap;
     line-height: 1.6;
 }
 
@@ -128,68 +127,128 @@
 
 /* Estilos para el plan de mejora con checkboxes */
 .categoria-section {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: 30px;
 }
 
 .categoria-section h6 {
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 8px;
-    margin-bottom: 15px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white !important;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.categoria-section h6 * {
+    color: white !important;
 }
 
 .recomendacion-section {
-    background: #d1ecf1;
-    border: 1px solid #bee5eb;
-    border-radius: 6px;
-    padding: 15px;
+    background: #e7f3ff;
+    border-left: 4px solid #007bff;
+    padding: 15px 20px;
     margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.recomendacion-section h6 {
+    background: none;
+    color: #28a745 !important;
+    padding: 0;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.recomendacion-section h6 * {
+    color: #28a745 !important;
+}
+
+.recomendacion-section p {
+    color: #333;
+    line-height: 1.6;
 }
 
 .plan-section {
-    background: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 6px;
-    padding: 15px;
+    background: #fffbf0;
+    border-left: 4px solid #ffc107;
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.plan-section h6 {
+    background: none;
+    color: #856404 !important;
+    padding: 0;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.plan-section h6 * {
+    color: #856404 !important;
 }
 
 .plan-items {
-    padding-left: 10px;
+    padding-left: 5px;
 }
 
 .plan-item {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-bottom: 8px;
-    transition: all 0.3s ease;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+}
+
+.plan-item label {
+    color: #333 !important;
+    line-height: 1.6;
 }
 
 .plan-item:hover {
-    background-color: #f8f9fa;
-    border-color: #007bff;
+    background-color: rgba(255, 193, 7, 0.1);
 }
 
 .plan-checkbox {
     margin-right: 10px;
-    transform: scale(1.2);
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
 .plan-checkbox:checked + label {
     text-decoration: line-through;
-    color: #6c757d;
-    opacity: 0.8;
+    color: #6c757d !important;
+    opacity: 0.7;
+}
+
+.plan-item-info {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    color: #495057;
+    line-height: 1.6;
 }
 
 .observaciones-section {
-    background: #e2e3e5;
-    border: 1px solid #d6d8db;
-    border-radius: 8px;
-    padding: 20px;
+    background: #f8f9fa;
+    border-left: 4px solid #6c757d;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-top: 30px;
+}
+
+.observaciones-section h6 {
+    background: none;
+    color: #6c757d;
+    padding: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
 }
 </style>
 {% endblock extra_css %}
