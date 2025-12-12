@@ -170,34 +170,6 @@ class CrearPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, CreateView
         return super().form_valid(form)
 
 
-class EditarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, UpdateView):
-    """Vista para editar una publicación"""
-    model = Publicacion
-    form_class = PublicacionForm
-    template_name = 'employees/feed/publicacion_crear_nuevo.html'
-    success_url = reverse_lazy('employees:feed_list')
-
-    def get_queryset(self):
-        """Solo el autor o admin puede editar"""
-        # Si el usuario es admin, puede editar cualquier publicación
-        if self.request.user.is_staff:
-            return Publicacion.objects.all()
-
-        # Si no es admin, solo puede editar sus propias publicaciones
-        try:
-            empleado_actual = self.request.user.empleado
-            return Publicacion.objects.filter(autor=empleado_actual)
-        except:
-            # Si no tiene empleado vinculado, no puede editar nada
-            return Publicacion.objects.none()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo_pagina'] = 'Editar Publicación'
-        context['es_edicion'] = True
-        return context
-
-
 class EliminarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, DeleteView):
     """Vista para eliminar una publicación"""
     model = Publicacion

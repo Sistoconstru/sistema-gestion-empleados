@@ -98,7 +98,7 @@
         text-align: center;
     }
 
-    /* Resize handles */
+    /* Resize handles - Solo visibles al hacer hover */
     .preview-text-box::after {
         content: '↘';
         position: absolute;
@@ -114,6 +114,13 @@
         align-items: center;
         justify-content: center;
         border-radius: 2px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    /* Mostrar resize handle solo al hacer hover */
+    .preview-text-box:hover::after {
+        opacity: 1;
     }
 
     /* COLUMNA DERECHA - EDITOR */
@@ -437,9 +444,6 @@
                     <button type="button" class="btn-cancel" onclick="window.history.back()">
                         <i class="fas fa-times me-2"></i>Cancelar
                     </button>
-                    <button type="button" class="btn-preview" id="btn-preview-render" style="background: #48bb78; color: white; flex: 1;">
-                        <i class="fas fa-eye me-2"></i>Vista Previa Renderizado
-                    </button>
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-send me-2"></i>Publicar Anuncio
                     </button>
@@ -452,18 +456,30 @@
     </form>
 </div>
 
-<!-- Modal para Vista Previa del Renderizado -->
-<div id="preview-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 90%; max-height: 90%; overflow: auto; position: relative;">
-        <button onclick="document.getElementById('preview-modal').style.display='none'" style="position: absolute; top: 1rem; right: 1rem; background: #e53e3e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
-            <i class="fas fa-times"></i> Cerrar
-        </button>
-        <h2 style="margin-bottom: 1rem;">Vista Previa del Renderizado</h2>
-        <div id="preview-render-content" style="text-align: center;">
-            <p>Cargando...</p>
+<!-- Modal de Confirmación con Vista Previa -->
+<div id="modal-confirmacion" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 90%; max-height: 90%; overflow: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <h2 style="margin-bottom: 1.5rem; color: #2d3748; font-size: 1.5rem;">
+            <i class="fas fa-eye me-2" style="color: #4299e1;"></i>Vista Previa del Anuncio
+        </h2>
+
+        <div id="preview-content" style="text-align: center; margin-bottom: 1.5rem; min-height: 200px;">
+            <p style="color: #718096;"><i class="fas fa-spinner fa-spin me-2"></i>Generando vista previa...</p>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button id="btn-cancelar-modal" type="button" style="background: #e53e3e; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button id="btn-confirmar-publicar" type="button" style="background: #48bb78; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s;">
+                <i class="fas fa-check"></i> Confirmar y Publicar
+            </button>
         </div>
     </div>
 </div>
+
+<!-- html2canvas para captura WYSIWYG del preview -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
     // Estado global
@@ -879,196 +895,169 @@
         aplicarEstilosEnPreview();
     }
 
-    // Guardar estilos antes de enviar
-    form.addEventListener('submit', function(e) {
-        // Capturar valores de font_size antes de sobrescribir state.estilos
-        const tituloFontSizePrevio = state.estilos.titulo_font_size;
-        const contenidoFontSizePrevio = state.estilos.contenido_font_size;
+    // Variables globales para el modal
+    let capturedCanvas = null;
+    let capturedBlob = null;
 
-        // Obtener dimensiones reales de la imagen y del preview
+    // Mostrar modal de confirmación con vista previa
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();  // Prevenir envío inmediato
+
+        console.log('[SUBMIT] Iniciando captura de vista previa con html2canvas...');
+
+        if (!state.imagenCargada) {
+            alert('Por favor carga una imagen primero');
+            return;
+        }
+
+        // Mostrar modal con loading
+        const modal = document.getElementById('modal-confirmacion');
+        const previewContent = document.getElementById('preview-content');
+        modal.style.display = 'flex';
+        previewContent.innerHTML = '<p style="color: #718096;"><i class="fas fa-spinner fa-spin me-2"></i>Generando vista previa...</p>';
+
+        // CAPTURAR EXACTAMENTE LA VISTA PREVIA VISUAL CON HTML2CANVAS (WYSIWYG 100%)
+        const imageWrapper = document.getElementById('image-wrapper');
+
+        // Guardar estilos originales
+        const originalTituloStyle = tituloBox.style.cssText;
+        const originalContenidoStyle = contenidoBox.style.cssText;
+
+        // Ocultar bordes y backgrounds
+        tituloBox.style.border = 'none';
+        tituloBox.style.background = 'transparent';
+        contenidoBox.style.border = 'none';
+        contenidoBox.style.background = 'transparent';
+
+        // Ocultar cuadro de título completo si está vacío
+        const tituloVacio = !tituloInput.value || tituloInput.value.trim() === '';
+        if (tituloVacio) {
+            tituloBox.style.display = 'none';
+        }
+
+        // Ocultar texto placeholder si el campo real está vacío
+        const tituloTextElement = tituloBox.querySelector('.preview-text-content');
+        const contenidoTextElement = contenidoBox.querySelector('.preview-text-content');
+
+        if (tituloVacio && tituloTextElement) {
+            tituloTextElement.style.display = 'none';
+        }
+
+        const contenidoVacio = !contenidoInput.value || contenidoInput.value.trim() === '';
+        if (contenidoVacio && contenidoTextElement) {
+            contenidoTextElement.textContent = '';  // Limpiar placeholder
+        }
+
+        // Obtener dimensiones reales de la imagen
         const realWidth = previewImage.naturalWidth;
         const realHeight = previewImage.naturalHeight;
         const previewWidth = previewImage.offsetWidth;
         const previewHeight = previewImage.offsetHeight;
-        const scaleX = realWidth / previewWidth;
-        const scaleY = realHeight / previewHeight;
+        const scale = realWidth / previewWidth;
 
-        console.log('[SUBMIT] Imagen real:', realWidth, 'x', realHeight);
-        console.log('[SUBMIT] Preview:', previewWidth, 'x', previewHeight);
-        console.log('[SUBMIT] Escalas:', scaleX.toFixed(2), 'x', scaleY.toFixed(2));
+        console.log('[SUBMIT] Escala para renderizado:', scale.toFixed(3));
+        console.log('[SUBMIT] Dimensiones finales:', realWidth, 'x', realHeight);
+        console.log('[SUBMIT] Capturando image-wrapper (dimensiones preview):', previewWidth, 'x', previewHeight);
 
-        // Leer coordenadas del preview (píxeles relativos al preview)
-        const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
-        const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
-        const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
-        const tituloHeightPreview = parseInt(document.getElementById('titulo-height').value);
-        const contenidoXPreview = parseInt(document.getElementById('contenido-x').value);
-        const contenidoYPreview = parseInt(document.getElementById('contenido-y').value);
-        const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
-        const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
+        // Usar html2canvas para capturar EXACTAMENTE lo que se ve
+        // Capturamos image-wrapper que se ajusta al tamaño exacto de la imagen
+        html2canvas(imageWrapper, {
+            scale: scale,  // Escalar al tamaño real de la imagen
+            useCORS: true,  // Permitir imágenes cross-origin
+            allowTaint: true,
+            backgroundColor: null,  // Fondo transparente
+            logging: false,
+            width: previewWidth,
+            height: previewHeight
+        }).then(canvas => {
+            console.log('[SUBMIT] Captura completada:', canvas.width, 'x', canvas.height);
 
-        // Convertir a coordenadas reales de la imagen
-        const tituloX = Math.round(tituloXPreview * scaleX);
-        const tituloY = Math.round(tituloYPreview * scaleY);
-        const tituloWidth = Math.round(tituloWidthPreview * scaleX);
-        const tituloHeight = Math.round(tituloHeightPreview * scaleY);
-        const contenidoX = Math.round(contenidoXPreview * scaleX);
-        const contenidoY = Math.round(contenidoYPreview * scaleY);
-        const contenidoWidth = Math.round(contenidoWidthPreview * scaleX);
-        const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
+            // Restaurar estilos originales
+            tituloBox.style.cssText = originalTituloStyle;
+            contenidoBox.style.cssText = originalContenidoStyle;
 
-        console.log('[SUBMIT] Título:', tituloXPreview, tituloYPreview, '→', tituloX, tituloY);
-        console.log('[SUBMIT] Contenido:', contenidoXPreview, contenidoYPreview, '→', contenidoX, contenidoY);
+            // Guardar canvas para usar después
+            capturedCanvas = canvas;
 
-        // Escalar font sizes usando la escala promedio
-        const scaleFactor = (scaleX + scaleY) / 2;
-        const tituloFontSizeReal = tituloFontSizePrevio ? Math.round(tituloFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
-        const contenidoFontSizeReal = contenidoFontSizePrevio ? Math.round(contenidoFontSizePrevio * scaleFactor) : Math.round(parseInt(fontSizeInput.value) * scaleFactor);
+            // Mostrar imagen en el modal
+            const imgDataUrl = canvas.toDataURL('image/png');
+            previewContent.innerHTML = `
+                <img src="${imgDataUrl}" style="max-width: 100%; max-height: 70vh; border: 2px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" alt="Vista previa">
+                <p style="margin-top: 1rem; color: #4a5568; font-size: 0.95rem;">
+                    <i class="fas fa-info-circle me-1" style="color: #4299e1;"></i>
+                    Revisa que el texto y el diseño sean correctos antes de publicar
+                </p>
+            `;
 
-        console.log('[SUBMIT] Font sizes:', tituloFontSizePrevio, '→', tituloFontSizeReal, ',', contenidoFontSizePrevio, '→', contenidoFontSizeReal);
+        }).catch(error => {
+            console.error('[SUBMIT] Error al capturar:', error);
+            previewContent.innerHTML = `
+                <p style="color: #e53e3e; padding: 2rem;">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Error al generar vista previa: ${error.message}
+                </p>
+            `;
 
-        // Recopilar todas las posiciones y estilos (con coordenadas reales)
-        state.estilos = {
-            font_family: fontFamilySelect.value,
-            font_size: parseInt(fontSizeInput.value),
-            text_color: textColorInput.value,
-            stroke_width: parseInt(strokeWidthInput.value),
-            stroke_color: strokeColorInput.value,
-            titulo_x: tituloX,
-            titulo_y: tituloY,
-            titulo_width: tituloWidth,
-            titulo_height: tituloHeight,
-            titulo_font_size: tituloFontSizeReal,
-            contenido_x: contenidoX,
-            contenido_y: contenidoY,
-            contenido_width: contenidoWidth,
-            contenido_height: contenidoHeight,
-            contenido_font_size: contenidoFontSizeReal,
-            // DEBUG: Información para diagnosticar problemas de escala
-            _debug_naturalWidth: realWidth,
-            _debug_naturalHeight: realHeight,
-            _debug_offsetWidth: previewWidth,
-            _debug_offsetHeight: previewHeight,
-            _debug_scaleX: scaleX,
-            _debug_scaleY: scaleY,
-            _debug_tituloXPreview: tituloXPreview,
-            _debug_contenidoXPreview: contenidoXPreview,
-        };
-
-        estilsInput.value = JSON.stringify(state.estilos);
-        console.log('Estilos a enviar al servidor:', state.estilos);
-        console.log('JSON string:', estilsInput.value);
-        console.log('Campo input name:', estilsInput.name);
-        console.log('Campo input id:', estilsInput.id);
+            // Restaurar estilos en caso de error
+            tituloBox.style.cssText = originalTituloStyle;
+            contenidoBox.style.cssText = originalContenidoStyle;
+        });
     });
 
-    // Botón de Vista Previa del Renderizado
-    document.getElementById('btn-preview-render').addEventListener('click', async function() {
-        if (!state.imagenCargada) {
-            alert('Por favor, carga una imagen primero');
+    // Botón cancelar modal
+    document.getElementById('btn-cancelar-modal').addEventListener('click', function() {
+        document.getElementById('modal-confirmacion').style.display = 'none';
+        capturedCanvas = null;
+        capturedBlob = null;
+    });
+
+    // Botón confirmar y publicar
+    document.getElementById('btn-confirmar-publicar').addEventListener('click', function() {
+        if (!capturedCanvas) {
+            alert('No hay vista previa generada');
             return;
         }
 
-        const modal = document.getElementById('preview-modal');
-        const content = document.getElementById('preview-render-content');
+        console.log('[CONFIRM] Confirmando publicación...');
 
-        // Mostrar modal con loading
-        modal.style.display = 'flex';
-        content.innerHTML = '<p style="padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Renderizando imagen...</p>';
+        // Convertir canvas a blob y enviar
+        capturedCanvas.toBlob(function(blob) {
+            console.log('[CONFIRM] Imagen capturada, tamaño:', (blob.size / 1024).toFixed(2), 'KB');
 
-        try {
-            // Preparar datos para enviar (igual que en submit)
-            const realWidth = previewImage.naturalWidth;
-            const realHeight = previewImage.naturalHeight;
-            const previewWidth = previewImage.offsetWidth;
-            const previewHeight = previewImage.offsetHeight;
-            const scaleX = realWidth / previewWidth;
-            const scaleY = realHeight / previewHeight;
+            // Crear archivo con la imagen renderizada
+            const fileName = 'anuncio_renderizado_' + Date.now() + '.png';
+            const renderedFile = new File([blob], fileName, {
+                type: 'image/png',
+                lastModified: Date.now()
+            });
 
-            const tituloXPreview = parseInt(document.getElementById('titulo-x').value);
-            const tituloYPreview = parseInt(document.getElementById('titulo-y').value);
-            const tituloWidthPreview = parseInt(document.getElementById('titulo-width').value);
-            const tituloHeightPreview = parseInt(document.getElementById('titulo-height').value);
-            const contenidoXPreview = parseInt(document.getElementById('contenido-x').value);
-            const contenidoYPreview = parseInt(document.getElementById('contenido-y').value);
-            const contenidoWidthPreview = parseInt(document.getElementById('contenido-width').value);
-            const contenidoHeightPreview = parseInt(document.getElementById('contenido-height').value);
+            // Reemplazar archivo en el input de imagen
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(renderedFile);
+            imagenInput.files = dataTransfer.files;
 
-            const tituloX = Math.round(tituloXPreview * scaleX);
-            const tituloY = Math.round(tituloYPreview * scaleY);
-            const tituloWidth = Math.round(tituloWidthPreview * scaleX);
-            const tituloHeight = Math.round(tituloHeightPreview * scaleY);
-            const contenidoX = Math.round(contenidoXPreview * scaleX);
-            const contenidoY = Math.round(contenidoYPreview * scaleY);
-            const contenidoWidth = Math.round(contenidoWidthPreview * scaleX);
-            const contenidoHeight = Math.round(contenidoHeightPreview * scaleY);
+            console.log('[CONFIRM] Archivo reemplazado en input:', fileName);
 
-            const scaleFactor = (scaleX + scaleY) / 2;
-
-            // SIEMPRE usar el valor actual del input, no state.estilos (que puede ser viejo)
-            const baseFontSize = parseInt(fontSizeInput.value);
-            const tituloFontSizeReal = Math.round(baseFontSize * scaleFactor);
-            const contenidoFontSizeReal = Math.round(baseFontSize * scaleFactor);
-
-            console.log('[PREVIEW] Font size base actual:', baseFontSize);
-            console.log('[PREVIEW] Font size escalado para renderizado:', tituloFontSizeReal);
-
-            const estilos = {
+            // Guardar estilos básicos
+            state.estilos = {
                 font_family: fontFamilySelect.value,
                 font_size: parseInt(fontSizeInput.value),
                 text_color: textColorInput.value,
                 stroke_width: parseInt(strokeWidthInput.value),
                 stroke_color: strokeColorInput.value,
-                titulo_x: tituloX,
-                titulo_y: tituloY,
-                titulo_width: tituloWidth,
-                titulo_height: tituloHeight,
-                titulo_font_size: tituloFontSizeReal,
-                contenido_x: contenidoX,
-                contenido_y: contenidoY,
-                contenido_width: contenidoWidth,
-                contenido_height: contenidoHeight,
-                contenido_font_size: contenidoFontSizeReal,
+                _client_rendered: true
             };
 
-            // Crear FormData con la imagen y datos
-            const formData = new FormData();
-            formData.append('imagen', imagenInput.files[0]);
-            formData.append('titulo', tituloInput.value);
-            formData.append('contenido', contenidoInput.value);
-            formData.append('estilos', JSON.stringify(estilos));
+            estilsInput.value = JSON.stringify(state.estilos);
+            console.log('[CONFIRM] Estilos guardados (imagen ya renderizada):', state.estilos);
 
-            // Enviar request AJAX para renderizar
-            const response = await fetch('{% url "employees:preview_renderizado_anuncio" %}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: formData
-            });
+            // Cerrar modal y enviar formulario
+            document.getElementById('modal-confirmacion').style.display = 'none';
 
-            if (!response.ok) {
-                throw new Error('Error al renderizar: ' + response.statusText);
-            }
-
-            const result = await response.json();
-            console.log('[PREVIEW] Respuesta del servidor:', result);
-
-            if (result.success) {
-                console.log('[PREVIEW] URL de imagen:', result.url);
-                content.innerHTML = `
-                    <img src="${result.url}" style="max-width: 800px; max-height: 800px; border: 2px solid #ddd; border-radius: 4px;" alt="Preview renderizado" onload="console.log('[PREVIEW] Imagen cargada correctamente')" onerror="console.error('[PREVIEW] Error al cargar imagen')">
-                    <p style="margin-top: 1rem; color: #666;">Si el texto no se ve bien, ajusta el tamaño de fuente y vuelve a previsualizar.</p>
-                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">URL: ${result.url}</p>
-                `;
-            } else {
-                console.error('[PREVIEW] Error en respuesta:', result.error);
-                content.innerHTML = `<p style="color: #e53e3e; padding: 2rem;">Error: ${result.error}</p>`;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            content.innerHTML = `<p style="color: #e53e3e; padding: 2rem;">Error al generar preview: ${error.message}</p>`;
-        }
+            // Enviar el formulario SIN trigger de submit (para evitar loop)
+            form.removeEventListener('submit', arguments.callee);
+            form.submit();
+        }, 'image/png');
     });
 
     // Inicializar

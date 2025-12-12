@@ -1,47 +1,83 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Eliminar Publicación | SIGHU{% endblock %}
+{% block title %}Confirmar Eliminación - {{ block.super }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-danger">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
                 <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">
+                    <h4 class="mb-0">
                         <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación
-                    </h5>
+                    </h4>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
-                        <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                <div class="card-body p-4">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>¿Estás seguro que deseas eliminar esta publicación?</strong>
                     </div>
 
-                    <p>¿Estás seguro de que quieres eliminar esta publicación?</p>
+                    <div class="publicacion-preview border rounded p-3 mb-4" style="background-color: #f8f9fa;">
+                        {% if object.titulo %}
+                        <h5 class="mb-2">
+                            <i class="fas fa-file-alt me-2 text-primary"></i>{{ object.titulo }}
+                        </h5>
+                        {% endif %}
 
-                    <div class="mb-3">
-                        <h6>{{ publicacion.titulo|default:publicacion.contenido|truncatewords:10 }}</h6>
-                        <small class="text-muted">{{ publicacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                        <p class="text-muted mb-2">
+                            <i class="fas fa-user me-1"></i>
+                            <strong>Autor:</strong> {{ object.autor.usuario.get_full_name }}
+                        </p>
+
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-calendar me-1"></i>
+                            <strong>Publicado:</strong> {{ object.fecha_creacion|date:"d/m/Y H:i" }}
+                        </p>
                     </div>
 
-                    <p class="text-danger">
-                        <i class="fas fa-info-circle me-1"></i>
-                        Se eliminarán también todos los comentarios asociados.
-                    </p>
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Esta acción <strong>no se puede deshacer</strong>.
+                        {% if object.comentarios.count > 0 %}
+                        También se eliminarán <strong>{{ object.comentarios.count }} comentario{{ object.comentarios.count|pluralize }}</strong> asociado{{ object.comentarios.count|pluralize }} a esta publicación.
+                        {% endif %}
+                    </div>
 
-                    <form method="post" class="d-flex gap-2 justify-content-between">
+                    <form method="post" class="mt-4">
                         {% csrf_token %}
-                        <a href="{% url 'employees:feed_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-times me-1"></i>Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-1"></i>Sí, eliminar publicación
-                        </button>
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="{% url 'employees:feed_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Eliminar Publicación
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.publicacion-preview {
+    transition: all 0.2s ease;
+}
+
+.publicacion-preview:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+</style>
 {% endblock %}

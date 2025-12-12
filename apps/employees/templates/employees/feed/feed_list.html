@@ -649,9 +649,6 @@
                     </div>
                     <div class="publicacion-acciones">
                         {% if publicacion.autor.usuario == user or user.is_staff %}
-                        <a href="{% url 'employees:editar_publicacion' publicacion.pk %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
                         <a href="{% url 'employees:eliminar_publicacion' publicacion.pk %}" class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-trash"></i> Eliminar
                         </a>

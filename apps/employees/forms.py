@@ -1306,35 +1306,61 @@ class PublicacionForm(forms.ModelForm):
                 instance.estilos = estilos
 
                 logger.info(f"[PUBLICACION.SAVE] Estilos parseados: {estilos}")
-                logger.info(f"[PUBLICACION.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
-                logger.info(f"[PUBLICACION.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
 
-                # Renderizar imagen con texto SI hay imagen
-                if instance.imagen:
-                    imagen_renderizada = renderizar_anuncio_v2(
-                        instance.imagen,
-                        instance.titulo or '',
-                        instance.contenido,
-                        estilos
-                    )
-                    # Guardar la imagen renderizada usando el método .save() del campo
-                    # para asegurar que se guarde en S3
-                    instance.imagen_renderizada.save(
-                        f'anuncio_{instance.id}.png',
-                        imagen_renderizada,
-                        save=False  # No guardar el modelo todavía
-                    )
-                    logger.info(f"[PUBLICACION.SAVE] Publicación renderizada exitosamente")
+                # VERIFICAR SI LA IMAGEN YA FUE RENDERIZADA EN EL CLIENTE
+                client_rendered = estilos.get('_client_rendered', False)
+                logger.info(f"[PUBLICACION.SAVE] ¿Renderizado en cliente?: {client_rendered}")
+
+                if client_rendered:
+                    # La imagen ya viene renderizada desde el navegador (WYSIWYG)
+                    # Solo copiarla a imagen_renderizada
+                    logger.info(f"[PUBLICACION.SAVE] Imagen ya renderizada en cliente, copiando a imagen_renderizada...")
+
+                    if instance.imagen:
+                        # Copiar la imagen directamente a imagen_renderizada
+                        from django.core.files.base import ContentFile
+                        img_content = instance.imagen.read()
+                        instance.imagen.seek(0)  # Resetear para que no se corrompa
+
+                        instance.imagen_renderizada.save(
+                            f'anuncio_cliente_{instance.id}.png',
+                            ContentFile(img_content),
+                            save=False
+                        )
+                        logger.info(f"[PUBLICACION.SAVE] Imagen renderizada copiada exitosamente")
+                    else:
+                        logger.warning(f"[PUBLICACION.SAVE] Client rendered marcado pero sin imagen")
                 else:
-                    logger.info(f"[PUBLICACION.SAVE] Sin imagen cargada, se guardan solo los estilos")
+                    # Renderizado tradicional en servidor (backward compatibility)
+                    logger.info(f"[PUBLICACION.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
+                    logger.info(f"[PUBLICACION.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
+
+                    # Renderizar imagen con texto SI hay imagen
+                    if instance.imagen:
+                        imagen_renderizada = renderizar_anuncio_v2(
+                            instance.imagen,
+                            instance.titulo or '',
+                            instance.contenido,
+                            estilos
+                        )
+                        # Guardar la imagen renderizada usando el método .save() del campo
+                        # para asegurar que se guarde en S3
+                        instance.imagen_renderizada.save(
+                            f'anuncio_{instance.id}.png',
+                            imagen_renderizada,
+                            save=False  # No guardar el modelo todavía
+                        )
+                        logger.info(f"[PUBLICACION.SAVE] Publicación renderizada exitosamente (servidor)")
+                    else:
+                        logger.info(f"[PUBLICACION.SAVE] Sin imagen cargada, se guardan solo los estilos")
 
             except Exception as e:
                 logger.error(f"[PUBLICACION.SAVE] Error al procesar publicación: {e}", exc_info=True)
@@ -1499,29 +1525,55 @@ class AnuncioImportanteForm(forms.ModelForm):
                 instance.estilos = estilos
 
                 logger.info(f"[FORM.SAVE] Estilos parseados: {estilos}")
-                logger.info(f"[FORM.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
-                logger.info(f"[FORM.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
 
-                # Renderizar imagen con texto SI hay imagen
-                if instance.imagen:
-                    imagen_renderizada = renderizar_anuncio_v2(
-                        instance.imagen,
-                        instance.titulo or '',
-                        instance.contenido,
-                        estilos
-                    )
-                    instance.imagen_renderizada = imagen_renderizada
-                    logger.info(f"[FORM.SAVE] Anuncio renderizado exitosamente")
+                # VERIFICAR SI LA IMAGEN YA FUE RENDERIZADA EN EL CLIENTE
+                client_rendered = estilos.get('_client_rendered', False)
+                logger.info(f"[FORM.SAVE] ¿Renderizado en cliente?: {client_rendered}")
+
+                if client_rendered:
+                    # La imagen ya viene renderizada desde el navegador (WYSIWYG)
+                    # Solo copiarla a imagen_renderizada
+                    logger.info(f"[FORM.SAVE] Imagen ya renderizada en cliente, copiando a imagen_renderizada...")
+
+                    if instance.imagen:
+                        # Copiar la imagen directamente a imagen_renderizada
+                        from django.core.files.base import ContentFile
+                        img_content = instance.imagen.read()
+                        instance.imagen.seek(0)  # Resetear para que no se corrompa
+
+                        instance.imagen_renderizada.save(
+                            f'anuncio_cliente_{instance.id}.png',
+                            ContentFile(img_content),
+                            save=False
+                        )
+                        logger.info(f"[FORM.SAVE] Imagen renderizada copiada exitosamente")
+                    else:
+                        logger.warning(f"[FORM.SAVE] Client rendered marcado pero sin imagen")
                 else:
-                    logger.info(f"[FORM.SAVE] Sin imagen cargada, se guardan solo los estilos")
+                    # Renderizado tradicional en servidor (backward compatibility)
+                    logger.info(f"[FORM.SAVE] titulo_x: {estilos.get('titulo_x', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] titulo_y: {estilos.get('titulo_y', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] titulo_width: {estilos.get('titulo_width', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] titulo_height: {estilos.get('titulo_height', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] titulo_font_size: {estilos.get('titulo_font_size', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] contenido_x: {estilos.get('contenido_x', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] contenido_y: {estilos.get('contenido_y', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] contenido_width: {estilos.get('contenido_width', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] contenido_height: {estilos.get('contenido_height', 'NO ENCONTRADO')}")
+                    logger.info(f"[FORM.SAVE] contenido_font_size: {estilos.get('contenido_font_size', 'NO ENCONTRADO')}")
+
+                    # Renderizar imagen con texto SI hay imagen
+                    if instance.imagen:
+                        imagen_renderizada = renderizar_anuncio_v2(
+                            instance.imagen,
+                            instance.titulo or '',
+                            instance.contenido,
+                            estilos
+                        )
+                        instance.imagen_renderizada = imagen_renderizada
+                        logger.info(f"[FORM.SAVE] Anuncio renderizado exitosamente (servidor)")
+                    else:
+                        logger.info(f"[FORM.SAVE] Sin imagen cargada, se guardan solo los estilos")
 
             except Exception as e:
                 logger.error(f"[FORM.SAVE] Error al procesaranuncio: {e}", exc_info=True)
