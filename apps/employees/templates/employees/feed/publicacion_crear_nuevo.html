@@ -983,37 +983,99 @@
     // Cargar datos existentes si es modo edición
     {% if es_edicion and object.estilos %}
     window.addEventListener('load', function() {
-        console.log('[PUBLICACION EDIT] Cargando estilos guardados');
-        const estilosGuardados = {{ object.estilos|safe }};
-        console.log('Estilos guardados:', estilosGuardados);
+        // Esperar a que la imagen se cargue primero
+        setTimeout(function() {
+            console.log('[PUBLICACION EDIT] Cargando estilos guardados');
+            const estilosGuardados = {{ object.estilos|safe }};
+            console.log('Estilos guardados (escala de imagen real):', estilosGuardados);
 
-        // Restaurar estilos
-        if (estilosGuardados.font_family) fontFamilySelect.value = estilosGuardados.font_family;
-        if (estilosGuardados.font_size) fontSizeInput.value = estilosGuardados.font_size;
-        if (estilosGuardados.text_color) textColorInput.value = estilosGuardados.text_color;
-        if (estilosGuardados.stroke_width) strokeWidthInput.value = estilosGuardados.stroke_width;
-        if (estilosGuardados.stroke_color) strokeColorInput.value = estilosGuardados.stroke_color;
+            // Obtener dimensiones reales de la imagen y del preview para escalar
+            const realWidth = previewImage.naturalWidth || 1181;  // Default a postal vertical
+            const realHeight = previewImage.naturalHeight || 1772;
+            const previewWidth = previewImage.offsetWidth;
+            const previewHeight = previewImage.offsetHeight;
+            const scaleX = previewWidth / realWidth;
+            const scaleY = previewHeight / realHeight;
 
-        // Restaurar posiciones del título
-        if (estilosGuardados.titulo_x !== undefined) document.getElementById('titulo-x').value = estilosGuardados.titulo_x;
-        if (estilosGuardados.titulo_y !== undefined) document.getElementById('titulo-y').value = estilosGuardados.titulo_y;
-        if (estilosGuardados.titulo_width !== undefined) document.getElementById('titulo-width').value = estilosGuardados.titulo_width;
-        if (estilosGuardados.titulo_height !== undefined) document.getElementById('titulo-height').value = estilosGuardados.titulo_height;
+            console.log('[PUBLICACION EDIT] Imagen real:', realWidth, 'x', realHeight);
+            console.log('[PUBLICACION EDIT] Preview:', previewWidth, 'x', previewHeight);
+            console.log('[PUBLICACION EDIT] Escalas para convertir a preview:', scaleX.toFixed(3), 'x', scaleY.toFixed(3));
 
-        // Restaurar posiciones del contenido
-        if (estilosGuardados.contenido_x !== undefined) document.getElementById('contenido-x').value = estilosGuardados.contenido_x;
-        if (estilosGuardados.contenido_y !== undefined) document.getElementById('contenido-y').value = estilosGuardados.contenido_y;
-        if (estilosGuardados.contenido_width !== undefined) document.getElementById('contenido-width').value = estilosGuardados.contenido_width;
-        if (estilosGuardados.contenido_height !== undefined) document.getElementById('contenido-height').value = estilosGuardados.contenido_height;
+            // Restaurar estilos básicos
+            if (estilosGuardados.font_family) fontFamilySelect.value = estilosGuardados.font_family;
+            if (estilosGuardados.font_size) {
+                fontSizeInput.value = estilosGuardados.font_size;
+                document.getElementById('font-size-value').textContent = estilosGuardados.font_size + 'px';
+            }
+            if (estilosGuardados.text_color) textColorInput.value = estilosGuardados.text_color;
+            if (estilosGuardados.stroke_width) {
+                strokeWidthInput.value = estilosGuardados.stroke_width;
+                document.getElementById('stroke-value').textContent = estilosGuardados.stroke_width + 'px';
+            }
+            if (estilosGuardados.stroke_color) strokeColorInput.value = estilosGuardados.stroke_color;
 
-        // Restaurar tamaños de fuente específicos
-        if (estilosGuardados.titulo_font_size) state.estilos.titulo_font_size = estilosGuardados.titulo_font_size;
-        if (estilosGuardados.contenido_font_size) state.estilos.contenido_font_size = estilosGuardados.contenido_font_size;
+            // IMPORTANTE: Convertir coordenadas de imagen real a preview
+            // Los valores guardados están en píxeles de imagen real, debemos escalarlos al preview
+            if (estilosGuardados.titulo_x !== undefined) {
+                const tituloXPreview = Math.round(estilosGuardados.titulo_x * scaleX);
+                document.getElementById('titulo-x').value = tituloXPreview;
+                console.log('[EDIT] titulo_x:', estilosGuardados.titulo_x, '→', tituloXPreview);
+            }
+            if (estilosGuardados.titulo_y !== undefined) {
+                const tituloYPreview = Math.round(estilosGuardados.titulo_y * scaleY);
+                document.getElementById('titulo-y').value = tituloYPreview;
+                console.log('[EDIT] titulo_y:', estilosGuardados.titulo_y, '→', tituloYPreview);
+            }
+            if (estilosGuardados.titulo_width !== undefined) {
+                const tituloWidthPreview = Math.round(estilosGuardados.titulo_width * scaleX);
+                document.getElementById('titulo-width').value = tituloWidthPreview;
+                console.log('[EDIT] titulo_width:', estilosGuardados.titulo_width, '→', tituloWidthPreview);
+            }
+            if (estilosGuardados.titulo_height !== undefined) {
+                const tituloHeightPreview = Math.round(estilosGuardados.titulo_height * scaleY);
+                document.getElementById('titulo-height').value = tituloHeightPreview;
+                console.log('[EDIT] titulo_height:', estilosGuardados.titulo_height, '→', tituloHeightPreview);
+            }
 
-        // Aplicar los cambios al preview
-        actualizarPosiciones();
-        actualizarPreview();
-        console.log('[PUBLICACION EDIT] Estilos cargados y aplicados');
+            if (estilosGuardados.contenido_x !== undefined) {
+                const contenidoXPreview = Math.round(estilosGuardados.contenido_x * scaleX);
+                document.getElementById('contenido-x').value = contenidoXPreview;
+                console.log('[EDIT] contenido_x:', estilosGuardados.contenido_x, '→', contenidoXPreview);
+            }
+            if (estilosGuardados.contenido_y !== undefined) {
+                const contenidoYPreview = Math.round(estilosGuardados.contenido_y * scaleY);
+                document.getElementById('contenido-y').value = contenidoYPreview;
+                console.log('[EDIT] contenido_y:', estilosGuardados.contenido_y, '→', contenidoYPreview);
+            }
+            if (estilosGuardados.contenido_width !== undefined) {
+                const contenidoWidthPreview = Math.round(estilosGuardados.contenido_width * scaleX);
+                document.getElementById('contenido-width').value = contenidoWidthPreview;
+                console.log('[EDIT] contenido_width:', estilosGuardados.contenido_width, '→', contenidoWidthPreview);
+            }
+            if (estilosGuardados.contenido_height !== undefined) {
+                const contenidoHeightPreview = Math.round(estilosGuardados.contenido_height * scaleY);
+                document.getElementById('contenido-height').value = contenidoHeightPreview;
+                console.log('[EDIT] contenido_height:', estilosGuardados.contenido_height, '→', contenidoHeightPreview);
+            }
+
+            // Escalar tamaños de fuente específicos también
+            const scaleFactor = (scaleX + scaleY) / 2;
+            if (estilosGuardados.titulo_font_size) {
+                const tituloFontSizePreview = Math.round(estilosGuardados.titulo_font_size * scaleFactor);
+                state.estilos.titulo_font_size = tituloFontSizePreview;
+                console.log('[EDIT] titulo_font_size:', estilosGuardados.titulo_font_size, '→', tituloFontSizePreview);
+            }
+            if (estilosGuardados.contenido_font_size) {
+                const contenidoFontSizePreview = Math.round(estilosGuardados.contenido_font_size * scaleFactor);
+                state.estilos.contenido_font_size = contenidoFontSizePreview;
+                console.log('[EDIT] contenido_font_size:', estilosGuardados.contenido_font_size, '→', contenidoFontSizePreview);
+            }
+
+            // Aplicar los cambios al preview
+            actualizarPosiciones();
+            actualizarPreview();
+            console.log('[PUBLICACION EDIT] Estilos cargados y aplicados (escalados a preview)');
+        }, 500);  // Esperar 500ms para que la imagen termine de cargar
     });
     {% endif %}
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test YouTube Embed</title>
+</head>
+<body>
+    <h1>Test de reproducción de YouTube</h1>
+
+    <h2>Prueba 1: Iframe básico sin parámetros</h2>
+    <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/UtOxJh90xj4"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+
+    <hr>
+
+    <h2>Prueba 2: Iframe con parámetros completos</h2>
+    <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/UtOxJh90xj4?enablejsapi=1&rel=0"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+    </iframe>
+
+    <hr>
+
+    <h2>Prueba 3: Iframe con origin (localhost)</h2>
+    <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/UtOxJh90xj4?enablejsapi=1&origin=http://127.0.0.1:8000&rel=0"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+    </iframe>
+
+    <script>
+    console.log('Test YouTube page loaded');
+    </script>
+</body>
+</html>

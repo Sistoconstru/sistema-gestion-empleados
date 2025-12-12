@@ -296,18 +296,32 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
                 font_size = calcular_font_size(titulo_width, font_family, font_size_base)
                 logger.info(f"Calculando font_size: {font_size}px")
 
-            font = obtener_fuente(font_family, font_size)
+            # AJUSTE AUTOMÁTICO: Reducir font_size si el texto no cabe en altura
+            max_intentos = 10
+            font_size_ajustado = font_size
 
-            # Ajustar texto al ancho
-            lineas_titulo = ajustar_texto_a_ancho(titulo, font, titulo_width - 20, draw)
+            for intento in range(max_intentos):
+                font = obtener_fuente(font_family, font_size_ajustado)
+                lineas_titulo = ajustar_texto_a_ancho(titulo, font, titulo_width - 20, draw)
+                line_height = int(font_size_ajustado * 1.5)
+                altura_necesaria = len(lineas_titulo) * line_height + 20  # +20 para padding
+
+                if altura_necesaria <= titulo_height or font_size_ajustado <= 8:
+                    # Cabe perfecto o llegamos al tamaño mínimo
+                    logger.info(f"[TÍTULO] Font size ajustado a {font_size_ajustado}px (original: {font_size}px, intentos: {intento+1})")
+                    break
+
+                # Reducir tamaño de fuente proporcionalmente
+                font_size_ajustado = int(font_size_ajustado * 0.85)
 
             # Dibujar líneas de título
             y_offset = titulo_y + 10
-            line_height = int(font_size * 1.5)
+            line_height = int(font_size_ajustado * 1.5)
 
             for linea in lineas_titulo:
                 if y_offset + line_height > titulo_y + titulo_height:
-                    break  # No cabe más texto
+                    logger.warning(f"[TÍTULO] Línea cortada por límite de altura: '{linea[:30]}...'")
+                    break  # No cabe más texto (por seguridad)
                 dibujar_texto_con_contorno(draw, (titulo_x + 10, y_offset), linea, font,
                                          text_color, stroke_width, stroke_color)
                 y_offset += line_height
@@ -336,18 +350,32 @@ def renderizar_anuncio_v2(imagen_file, titulo, contenido, estilos):
                 font_size = calcular_font_size(contenido_width, font_family, font_size_base)
                 logger.info(f"Calculando font_size: {font_size}px")
 
-            font = obtener_fuente(font_family, font_size)
+            # AJUSTE AUTOMÁTICO: Reducir font_size si el texto no cabe en altura
+            max_intentos = 10
+            font_size_ajustado = font_size
 
-            # Ajustar texto al ancho
-            lineas_contenido = ajustar_texto_a_ancho(contenido, font, contenido_width - 20, draw)
+            for intento in range(max_intentos):
+                font = obtener_fuente(font_family, font_size_ajustado)
+                lineas_contenido = ajustar_texto_a_ancho(contenido, font, contenido_width - 20, draw)
+                line_height = int(font_size_ajustado * 1.3)
+                altura_necesaria = len(lineas_contenido) * line_height + 20  # +20 para padding
+
+                if altura_necesaria <= contenido_height or font_size_ajustado <= 8:
+                    # Cabe perfecto o llegamos al tamaño mínimo
+                    logger.info(f"[CONTENIDO] Font size ajustado a {font_size_ajustado}px (original: {font_size}px, intentos: {intento+1})")
+                    break
+
+                # Reducir tamaño de fuente proporcionalmente
+                font_size_ajustado = int(font_size_ajustado * 0.85)
 
             # Dibujar líneas de contenido
             y_offset = contenido_y + 10
-            line_height = int(font_size * 1.3)
+            line_height = int(font_size_ajustado * 1.3)
 
             for linea in lineas_contenido:
                 if y_offset + line_height > contenido_y + contenido_height:
-                    break  # No cabe más texto
+                    logger.warning(f"[CONTENIDO] Línea cortada por límite de altura: '{linea[:30]}...'")
+                    break  # No cabe más texto (por seguridad)
                 dibujar_texto_con_contorno(draw, (contenido_x + 10, y_offset), linea, font,
                                          text_color, stroke_width, stroke_color)
                 y_offset += line_height
