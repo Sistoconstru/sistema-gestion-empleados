@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
+from django.views.decorators.clickjacking import xframe_options_exempt
+from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.utils.safestring import mark_safe
 from django.db.models import Q, Count, Avg, Sum
@@ -1000,6 +1002,10 @@ def inscribir_capacitacion(request, pk):
 class PlayerView(LoginRequiredMixin, TemplateView):
     """Vista para reproducir el contenido de una capacitación"""
     template_name = 'training/player.html'
+
+    @method_decorator(xframe_options_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
