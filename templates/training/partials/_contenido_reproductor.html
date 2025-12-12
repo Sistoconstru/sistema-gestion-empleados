@@ -65,8 +65,13 @@
             if (videoId) {
                 // Limpiar cualquier parámetro extra del videoId
                 videoId = videoId.split('?')[0].split('&')[0].split('#')[0];
-                // Usar youtube.com normal (nocookie también da error 153)
-                return 'https://www.youtube.com/embed/' + videoId;
+                // Agregar parámetros que ayudan a evitar el error 153
+                // origin: identifica el sitio que hace el embed
+                // enablejsapi: habilita la API de JavaScript de YouTube
+                // modestbranding: reduce el branding de YouTube
+                var currentOrigin = window.location.protocol + '//' + window.location.host;
+                return 'https://www.youtube.com/embed/' + videoId +
+                       '?enablejsapi=1&origin=' + encodeURIComponent(currentOrigin);
             }
 
             return url;
@@ -182,7 +187,9 @@
 
             // Usar un video público conocido que permite embedding
             var testVideoId = 'dQw4w9WgXcQ';
-            var testUrl = 'https://www.youtube.com/embed/' + testVideoId;
+            var currentOrigin = window.location.protocol + '//' + window.location.host;
+            var testUrl = 'https://www.youtube.com/embed/' + testVideoId +
+                         '?enablejsapi=1&origin=' + encodeURIComponent(currentOrigin);
 
             iframe.src = testUrl;
             if (debugElement) {
@@ -198,6 +205,7 @@
             iframe.style.opacity = '1';
 
             console.log('Probando con video de ejemplo:', testUrl);
+            console.log('Origin actual:', currentOrigin);
         };
     })();
     </script>
