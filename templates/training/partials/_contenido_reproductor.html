@@ -24,7 +24,11 @@
         </iframe>
         <div class="alert alert-info mt-2" style="font-size:0.85rem;">
             <strong>URL original:</strong> <code>{{ contenido_actual.url_externa }}</code><br>
-            <strong>URL embed:</strong> <code id="youtube-url-debug"></code>
+            <strong>URL embed:</strong> <code id="youtube-url-debug"></code><br>
+            <button class="btn btn-sm btn-secondary mt-2" onclick="testYouTubeEmbedding()">
+                <i class="fas fa-vial me-1"></i> Probar con video de ejemplo
+            </button>
+            <small class="d-block mt-1 text-muted">Si el video de ejemplo funciona, el problema es del video específico que intentas usar.</small>
         </div>
         <div class="mt-2 text-center">
             <a href="{{ contenido_actual.url_externa }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
@@ -143,9 +147,9 @@
                 // Personalizar mensaje según el código de error
                 if (errorCode === 153) {
                     errorTitle.textContent = 'Restricción de reproducción (Error 153)';
-                    errorText.innerHTML = '<strong>Causa probable:</strong> YouTube bloquea la reproducción en localhost o dominios no verificados.<br>' +
-                                         '<strong>Solución temporal:</strong> Utiliza el botón "Ver en YouTube" para ver el video.<br>' +
-                                         '<strong>Nota:</strong> Este error suele desaparecer en producción (con dominio HTTPS).';
+                    errorText.innerHTML = '<strong>Causa probable:</strong> Este video específico tiene restricciones de embedding.<br>' +
+                                         '<strong>Solución:</strong> Utiliza el botón "Ver en YouTube" o prueba con otro video.<br>' +
+                                         '<strong>Sugerencia:</strong> Usa el botón "Probar con video de ejemplo" para verificar que el sistema funciona correctamente.';
                 } else if (errorCode === 150) {
                     errorTitle.textContent = 'Embedding deshabilitado (Error 150)';
                     errorText.textContent = 'El propietario de este video ha deshabilitado la reproducción embebida.';
@@ -170,6 +174,31 @@
                 }
             }
         }
+
+        // Función global para probar embedding
+        window.testYouTubeEmbedding = function() {
+            var iframe = document.getElementById('youtubePlayer');
+            var debugElement = document.getElementById('youtube-url-debug');
+
+            // Usar un video público conocido que permite embedding
+            var testVideoId = 'dQw4w9WgXcQ';
+            var testUrl = 'https://www.youtube.com/embed/' + testVideoId;
+
+            iframe.src = testUrl;
+            if (debugElement) {
+                debugElement.textContent = testUrl + ' (VIDEO DE PRUEBA)';
+            }
+
+            // Resetear el estado de error
+            errorShown = false;
+            var errorMsg = document.getElementById('youtube-error-message');
+            if (errorMsg) {
+                errorMsg.style.display = 'none';
+            }
+            iframe.style.opacity = '1';
+
+            console.log('Probando con video de ejemplo:', testUrl);
+        };
     })();
     </script>
 
