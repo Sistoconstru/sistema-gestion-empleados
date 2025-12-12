@@ -123,22 +123,27 @@
                     }
                 }
 
+                // Log completo de todos los eventos para debugging
+                console.log('YouTube event:', data);
+
                 // Detectar que el video cargó correctamente
                 if (data.event === 'onReady' || data.event === 'initialDelivery') {
                     videoLoaded = true;
                     console.log('YouTube video loaded successfully');
+                    // Ocultar mensaje de error si el video cargó bien
+                    var errorMsg = document.getElementById('youtube-error-message');
+                    if (errorMsg) {
+                        errorMsg.style.display = 'none';
+                    }
                 }
 
-                // Detectar errores de YouTube solo si realmente hay un error
-                if (!errorShown && (data.event === 'onError' || (data.info && data.info.errorCode))) {
-                    var errorCode = data.info ? data.info.errorCode : data.data;
-                    console.log('YouTube Error Code:', errorCode);
+                // Detectar errores de YouTube
+                if (data.event === 'onError') {
+                    var errorCode = data.data;
+                    console.log('YouTube onError event, código:', errorCode);
 
-                    // Solo mostrar error si hay un código válido (no undefined, no null)
-                    if (errorCode && (errorCode === 150 || errorCode === 153 || errorCode === 101 || errorCode === 2 || errorCode === 5 || errorCode === 100)) {
+                    if (errorCode === 150 || errorCode === 153 || errorCode === 101 || errorCode === 2 || errorCode === 5 || errorCode === 100) {
                         showYouTubeError(errorCode);
-                    } else if (errorCode) {
-                        console.log('YouTube error detectado pero no crítico, código:', errorCode);
                     }
                 }
             }
