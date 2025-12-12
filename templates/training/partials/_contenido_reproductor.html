@@ -22,13 +22,18 @@
             data-url-original="{{ contenido_actual.url_externa }}"
             style="width:100%; min-height:350px; max-height:60vh; border:2px solid #bbb; background:#111; display:block;">
         </iframe>
-        <div class="alert alert-info mt-2" style="font-size:0.85rem;">
+        <div class="alert alert-info mt-2" style="font-size:0.85rem; display:none;" id="youtube-debug-info">
             <strong>URL original:</strong> <code>{{ contenido_actual.url_externa }}</code><br>
             <strong>URL embed:</strong> <code id="youtube-url-debug"></code><br>
             <button class="btn btn-sm btn-secondary mt-2" onclick="testYouTubeEmbedding()">
                 <i class="fas fa-vial me-1"></i> Probar con video de ejemplo
             </button>
             <small class="d-block mt-1 text-muted">Si el video de ejemplo funciona, el problema es del video específico que intentas usar.</small>
+        </div>
+        <div class="text-center mt-2">
+            <button class="btn btn-link btn-sm text-muted" onclick="document.getElementById('youtube-debug-info').style.display='block'; this.style.display='none';">
+                <i class="fas fa-info-circle me-1"></i> Mostrar información de debug
+            </button>
         </div>
         <div class="mt-2 text-center">
             <a href="{{ contenido_actual.url_externa }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
@@ -129,10 +134,11 @@
                     var errorCode = data.info ? data.info.errorCode : data.data;
                     console.log('YouTube Error Code:', errorCode);
 
-                    // Error 150 y 153 son errores de embedding deshabilitado
-                    // Error 101 es video no encontrado
-                    if (errorCode === 150 || errorCode === 153 || errorCode === 101) {
+                    // Solo mostrar error si hay un código válido (no undefined, no null)
+                    if (errorCode && (errorCode === 150 || errorCode === 153 || errorCode === 101 || errorCode === 2 || errorCode === 5 || errorCode === 100)) {
                         showYouTubeError(errorCode);
+                    } else if (errorCode) {
+                        console.log('YouTube error detectado pero no crítico, código:', errorCode);
                     }
                 }
             }
