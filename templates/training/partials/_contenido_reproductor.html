@@ -5,19 +5,27 @@
     <div class="video-container mb-4">
         <div id="youtube-error-message" class="alert alert-warning" style="display: none; margin-bottom: 15px;">
             <i class="fas fa-exclamation-triangle me-2"></i>
-            <strong>Video no disponible para reproducción embebida</strong>
-            <p class="mb-2 mt-2">El propietario de este video ha deshabilitado la reproducción en otros sitios web. Por favor, haz clic en el botón de abajo para ver el video directamente en YouTube.</p>
+            <strong id="youtube-error-title">Video no disponible para reproducción embebida</strong>
+            <p class="mb-2 mt-2" id="youtube-error-text">El propietario de este video ha deshabilitado la reproducción en otros sitios web. Por favor, haz clic en el botón de abajo para ver el video directamente en YouTube.</p>
+            <p class="mb-0 mt-2 small" id="youtube-error-details" style="display:none;">
+                <strong>Información técnica:</strong> <span id="youtube-error-code"></span>
+            </p>
         </div>
         <iframe id="youtubePlayer"
-            src="{% if 'embed' in contenido_actual.url_externa or 'youtube-nocookie.com' in contenido_actual.url_externa %}{{ contenido_actual.url_externa }}{% elif 'youtu.be' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://youtu.be/' }}{% elif 'watch?v=' in contenido_actual.url_externa %}https://www.youtube.com/embed/{{ contenido_actual.url_externa|cut:'https://www.youtube.com/watch?v=' }}{% else %}{{ contenido_actual.url_externa }}{% endif %}{% if '?' not in contenido_actual.url_externa %}?enablejsapi=1{% else %}&enablejsapi=1{% endif %}"
+            src=""
             title="{{ contenido_actual.titulo|default:contenido_actual.nombre }}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
             class="rounded"
             data-contenido-id="{{ contenido_actual.id }}"
+            data-url-original="{{ contenido_actual.url_externa }}"
             style="width:100%; min-height:350px; max-height:60vh; border:2px solid #bbb; background:#111; display:block;">
         </iframe>
+        <div class="alert alert-info mt-2" style="font-size:0.85rem;">
+            <strong>URL original:</strong> <code>{{ contenido_actual.url_externa }}</code><br>
+            <strong>URL embed:</strong> <code id="youtube-url-debug"></code>
+        </div>
         <div class="mt-2 text-center">
             <a href="{{ contenido_actual.url_externa }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
                 <i class="fab fa-youtube me-1"></i> Ver en YouTube
@@ -26,54 +34,143 @@
     </div>
 
     <script>
-    // Detectar errores del reproductor de YouTube
-    var errorShown = false;
+    (function() {
+        // Convertir URL de YouTube a formato embed
+        function convertToEmbedUrl(url) {
+            if (!url) return '';
 
-    // Método 1: Escuchar mensajes del iframe de YouTube
-    window.addEventListener('message', function(event) {
-        if ((event.origin === 'https://www.youtube.com' || event.origin === 'https://www.youtube-nocookie.com') && !errorShown) {
-            var data = event.data;
-            if (typeof data === 'string') {
-                try {
-                    data = JSON.parse(data);
-                } catch(e) {
-                    return;
-                }
+            var videoId = null;
+
+            // Caso 1: Ya es URL de embed (https://www.youtube.com/embed/VIDEO_ID)
+            if (url.includes('/embed/')) {
+                videoId = url.split('/embed/')[1].split('?')[0].split('&')[0];
+            }
+            // Caso 2: URL de watch (https://www.youtube.com/watch?v=VIDEO_ID)
+            else if (url.includes('watch?v=')) {
+                videoId = url.split('watch?v=')[1].split('&')[0];
+            }
+            // Caso 3: URL corta (https://youtu.be/VIDEO_ID)
+            else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
+            }
+            // Caso 4: Si es solo el ID del video
+            else if (!url.includes('/') && !url.includes('?')) {
+                videoId = url;
             }
 
-            // Detectar errores de YouTube (códigos: 2, 5, 100, 101, 150, 153)
-            if (data.event === 'onError' || (data.info && data.info.errorCode)) {
-                var errorCode = data.info ? data.info.errorCode : data.data;
-                console.log('YouTube Error Code:', errorCode);
-
-                // Error 150 y 153 son errores de embedding deshabilitado
-                if (errorCode === 150 || errorCode === 153 || errorCode === 101) {
-                    showYouTubeError();
-                }
+            if (videoId) {
+                // Limpiar cualquier parámetro extra del videoId
+                videoId = videoId.split('?')[0].split('&')[0].split('#')[0];
+                // Usar youtube.com normal (nocookie también da error 153)
+                return 'https://www.youtube.com/embed/' + videoId;
             }
+
+            return url;
         }
-    });
 
-    // Método 2: Timeout - Si después de 5 segundos aún muestra el mensaje de error de YouTube
-    setTimeout(function() {
+        // Obtener la URL original del data attribute
         var iframe = document.getElementById('youtubePlayer');
-        if (iframe && !errorShown) {
-            // Verificar si el iframe tiene contenido de error visible
-            showYouTubeError();
-        }
-    }, 5000);
+        if (iframe) {
+            var originalUrl = iframe.getAttribute('data-url-original');
+            var embedUrl = convertToEmbedUrl(originalUrl);
 
-    function showYouTubeError() {
-        if (!errorShown) {
-            errorShown = true;
-            document.getElementById('youtube-error-message').style.display = 'block';
-            var iframe = document.getElementById('youtubePlayer');
-            if (iframe) {
-                iframe.style.minHeight = '150px';
-                iframe.style.opacity = '0.5';
+            console.log('URL original:', originalUrl);
+            console.log('URL embed:', embedUrl);
+
+            // Establecer la URL del iframe
+            iframe.src = embedUrl;
+
+            // Mostrar en el debug
+            var debugElement = document.getElementById('youtube-url-debug');
+            if (debugElement) {
+                debugElement.textContent = embedUrl;
+            }
+
+            // Ocultar mensaje de error por defecto
+            var errorMsg = document.getElementById('youtube-error-message');
+            if (errorMsg) {
+                errorMsg.style.display = 'none';
             }
         }
-    }
+
+        // Detectar errores del reproductor de YouTube
+        var errorShown = false;
+        var videoLoaded = false;
+
+        // Método 1: Escuchar mensajes del iframe de YouTube
+        window.addEventListener('message', function(event) {
+            if ((event.origin === 'https://www.youtube.com' || event.origin === 'https://www.youtube-nocookie.com')) {
+                var data = event.data;
+                if (typeof data === 'string') {
+                    try {
+                        data = JSON.parse(data);
+                    } catch(e) {
+                        return;
+                    }
+                }
+
+                // Detectar que el video cargó correctamente
+                if (data.event === 'onReady' || data.event === 'initialDelivery') {
+                    videoLoaded = true;
+                    console.log('YouTube video loaded successfully');
+                }
+
+                // Detectar errores de YouTube solo si realmente hay un error
+                if (!errorShown && (data.event === 'onError' || (data.info && data.info.errorCode))) {
+                    var errorCode = data.info ? data.info.errorCode : data.data;
+                    console.log('YouTube Error Code:', errorCode);
+
+                    // Error 150 y 153 son errores de embedding deshabilitado
+                    // Error 101 es video no encontrado
+                    if (errorCode === 150 || errorCode === 153 || errorCode === 101) {
+                        showYouTubeError(errorCode);
+                    }
+                }
+            }
+        });
+
+        function showYouTubeError(errorCode) {
+            if (!errorShown) {
+                errorShown = true;
+                console.log('Showing YouTube error message for code:', errorCode);
+
+                var errorMsg = document.getElementById('youtube-error-message');
+                var errorTitle = document.getElementById('youtube-error-title');
+                var errorText = document.getElementById('youtube-error-text');
+                var errorDetails = document.getElementById('youtube-error-details');
+                var errorCodeSpan = document.getElementById('youtube-error-code');
+
+                // Personalizar mensaje según el código de error
+                if (errorCode === 153) {
+                    errorTitle.textContent = 'Restricción de reproducción (Error 153)';
+                    errorText.innerHTML = '<strong>Causa probable:</strong> YouTube bloquea la reproducción en localhost o dominios no verificados.<br>' +
+                                         '<strong>Solución temporal:</strong> Utiliza el botón "Ver en YouTube" para ver el video.<br>' +
+                                         '<strong>Nota:</strong> Este error suele desaparecer en producción (con dominio HTTPS).';
+                } else if (errorCode === 150) {
+                    errorTitle.textContent = 'Embedding deshabilitado (Error 150)';
+                    errorText.textContent = 'El propietario de este video ha deshabilitado la reproducción embebida.';
+                } else if (errorCode === 101) {
+                    errorTitle.textContent = 'Video no encontrado (Error 101)';
+                    errorText.textContent = 'El video no existe o fue eliminado. Verifica la URL.';
+                }
+
+                if (errorDetails && errorCodeSpan) {
+                    errorDetails.style.display = 'block';
+                    errorCodeSpan.textContent = 'Código de error: ' + errorCode;
+                }
+
+                if (errorMsg) {
+                    errorMsg.style.display = 'block';
+                }
+
+                var iframe = document.getElementById('youtubePlayer');
+                if (iframe) {
+                    iframe.style.minHeight = '150px';
+                    iframe.style.opacity = '0.5';
+                }
+            }
+        }
+    })();
     </script>
 
 {# Video Files #}
