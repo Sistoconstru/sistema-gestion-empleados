@@ -34,5 +34,14 @@ python manage.py collectstatic --noinput
 
 # Crea un superusuario si no existe
 
+# Inicia el scheduler de tareas automáticas en segundo plano (modo daemon)
+echo "🔄 Iniciando scheduler de evaluaciones automáticas..."
+python manage.py start_scheduler --daemon > /dev/null 2>&1 &
+SCHEDULER_PID=$!
+echo "✅ Scheduler iniciado (PID: $SCHEDULER_PID)"
+echo "  - 02:00 AM: Asignar evaluaciones de período de prueba"
+echo "  - 02:15 AM: Activar empleados completados"
+
 # Inicia Gunicorn en modo producción
+echo "🚀 Iniciando Gunicorn..."
 exec gunicorn config.wsgi:application --bind 0.0.0.0:8000

@@ -16146,3 +16146,119 @@ WARNING 2025-12-15 08:37:07,489 log 12736 3292 Not Found: /.well-known/appspecif
 WARNING 2025-12-15 08:37:07,490 basehttp 12736 3292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
 INFO 2025-12-15 08:37:07,509 basehttp 12736 3292 "POST /empleados/mensajeria/conversacion/c180e750-88f4-4239-974e-2b201e3b2813/marcar-leidos/ HTTP/1.1" 200 66
 WARNING 2025-12-15 08:37:07,526 basehttp 12736 3292 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 08:51:04,286 apps 42832 14752 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 08:51:04,957 apps 23792 22032 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 08:51:04,975 autoreload 23792 22032 Watching for file changes with StatReloader
+INFO 2025-12-15 08:51:05,437 wsgi 23792 48336 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 08:51:05,643 basehttp 23792 27880 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 08:51:05,780 basehttp 23792 27880 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 27807
+WARNING 2025-12-15 08:51:05,812 log 23792 27880 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 08:51:05,812 basehttp 23792 27880 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 08:51:05,845 basehttp 23792 27880 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 08:51:09,403 basehttp 23792 32400 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 37082
+WARNING 2025-12-15 08:51:09,439 log 23792 32400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-15 08:51:09,440 basehttp 23792 7636 "GET /media/marketplace/productos/ChatGPT_Image_25_nov_2025_15_31_44.png HTTP/1.1" 304 0
+WARNING 2025-12-15 08:51:09,441 basehttp 23792 32400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 08:51:09,441 basehttp 23792 51620 "GET /media/marketplace/productos/ChatGPT_Image_25_nov_2025_15_43_27.png HTTP/1.1" 304 0
+WARNING 2025-12-15 08:51:09,497 basehttp 23792 32400 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 08:52:15,719 basehttp 23792 51620 "GET /empleados/feed/ HTTP/1.1" 200 34927
+INFO 2025-12-15 08:55:27,684 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 08:55:27,785 basehttp 23792 51620 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 28202
+INFO 2025-12-15 08:55:30,568 basehttp 23792 51620 "GET /evaluaciones/ HTTP/1.1" 200 27341
+INFO 2025-12-15 08:55:42,901 basehttp 23792 51620 "GET /evaluaciones/supervisor/pendientes/ HTTP/1.1" 200 12083
+INFO 2025-12-15 08:58:23,319 basehttp 23792 51620 "GET /evaluaciones/ HTTP/1.1" 200 23943
+INFO 2025-12-15 08:58:36,286 basehttp 23792 51620 "GET /evaluaciones/supervisor/pendientes/ HTTP/1.1" 200 12083
+INFO 2025-12-15 08:58:39,151 basehttp 23792 51620 "GET /evaluaciones/supervisor/seguimientos-pendientes/ HTTP/1.1" 200 13098
+INFO 2025-12-15 08:58:42,268 basehttp 23792 51620 "GET /evaluaciones/mis-evaluaciones/ HTTP/1.1" 200 20505
+INFO 2025-12-15 08:58:54,063 basehttp 23792 51620 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 08:58:54,157 basehttp 23792 51620 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 27807
+INFO 2025-12-15 08:59:27,868 basehttp 23792 51620 "GET /documentos/empleado/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 17089
+INFO 2025-12-15 09:03:09,635 basehttp 23792 51620 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 09:03:25,069 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:03:25,132 basehttp 23792 51620 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 09:03:28,406 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:03:28,459 basehttp 23792 51620 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 09:03:31,586 basehttp 23792 51620 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:03:31,595 basehttp 23792 51620 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-15 09:03:47,281 basehttp 23792 51620 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:03:47,331 basehttp 23792 51620 "GET /empleados/feed/ HTTP/1.1" 200 35918
+INFO 2025-12-15 09:03:49,405 basehttp 23792 51620 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:03:49,449 basehttp 23792 51620 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+INFO 2025-12-15 09:03:52,435 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 200 21842
+INFO 2025-12-15 09:04:24,597 basehttp 23792 51620 "GET /evaluaciones/ HTTP/1.1" 200 34105
+INFO 2025-12-15 09:04:52,871 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 200 21842
+INFO 2025-12-15 09:05:13,618 basehttp 23792 51620 "GET /empleados/ HTTP/1.1" 200 101263
+INFO 2025-12-15 09:05:20,218 basehttp 23792 51620 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 74480
+INFO 2025-12-15 09:05:31,416 basehttp 23792 51620 "GET /dashboard/ HTTP/1.1" 200 21842
+INFO 2025-12-15 09:07:36,099 basehttp 23792 51620 - Broken pipe from ('127.0.0.1', 59865)
+INFO 2025-12-15 09:07:36,172 basehttp 23792 43904 "GET /capacitaciones/admin/ HTTP/1.1" 200 21987
+INFO 2025-12-15 09:07:39,926 basehttp 23792 43904 "GET /evaluaciones/ HTTP/1.1" 200 34105
+INFO 2025-12-15 09:07:45,092 basehttp 23792 43904 "GET /evaluaciones/ver-resultados/adf2086e-7102-45fa-b5cd-b7a3515822b5/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:07:45,160 basehttp 23792 43904 "GET /evaluaciones/ver-plan-mejora/5a2cf79d-c91e-469f-a9ea-15d5dfe50d5a/ HTTP/1.1" 200 33334
+INFO 2025-12-15 09:08:45,662 basehttp 23792 37656 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:08:45,669 basehttp 23792 37656 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-15 09:08:51,773 basehttp 23792 37656 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:08:51,840 basehttp 23792 37656 "GET /empleados/feed/ HTTP/1.1" 200 34943
+INFO 2025-12-15 09:08:54,181 basehttp 23792 37656 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:08:54,302 basehttp 23792 37656 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+INFO 2025-12-15 09:08:56,285 basehttp 23792 37656 "GET /evaluaciones/ HTTP/1.1" 200 23951
+INFO 2025-12-15 09:08:58,805 basehttp 23792 37656 "GET /evaluaciones/ver-resultados/dd1f79c8-5f41-4ccf-9a73-1089acef97bf/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:08:58,818 basehttp 23792 37656 "GET /evaluaciones/ver-plan-mejora/262b3f2f-c103-44b3-a1f5-f26da61c7e97/ HTTP/1.1" 200 21301
+INFO 2025-12-15 09:09:41,158 basehttp 23792 37656 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:09:41,248 basehttp 23792 37656 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+INFO 2025-12-15 09:09:58,206 basehttp 23792 37656 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:09:58,206 basehttp 23792 37656 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-15 09:10:05,501 basehttp 23792 37656 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:10:05,568 basehttp 23792 37656 "GET /empleados/feed/ HTTP/1.1" 200 34927
+INFO 2025-12-15 09:10:13,461 basehttp 23792 37656 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:10:13,554 basehttp 23792 37656 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 09:11:06,818 basehttp 23792 37656 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29079
+INFO 2025-12-15 09:11:14,884 basehttp 23792 37656 "GET /capacitaciones/capacitacion/e2c09385-84fa-4957-8cb6-eb832c6f12e7/ HTTP/1.1" 200 10445
+INFO 2025-12-15 09:11:42,451 basehttp 23792 37656 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 14885
+INFO 2025-12-15 09:11:58,862 basehttp 23792 37656 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29079
+INFO 2025-12-15 09:15:18,479 basehttp 23792 37656 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 09:15:18,589 basehttp 23792 37656 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 09:15:20,521 basehttp 23792 37656 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 37082
+INFO 2025-12-15 09:15:20,538 basehttp 23792 37656 "GET /media/marketplace/productos/ChatGPT_Image_25_nov_2025_15_31_44.png HTTP/1.1" 304 0
+INFO 2025-12-15 09:15:20,543 basehttp 23792 37656 "GET /media/marketplace/productos/ChatGPT_Image_25_nov_2025_15_43_27.png HTTP/1.1" 304 0
+INFO 2025-12-15 09:18:47,603 basehttp 23792 37656 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 38342
+INFO 2025-12-15 09:19:01,708 basehttp 23792 37656 "GET /empleados/marketplace/productos/ HTTP/1.1" 200 38342
+INFO 2025-12-15 09:19:09,906 basehttp 23792 37656 "GET /empleados/marketplace/productos/?page=2 HTTP/1.1" 200 23661
+INFO 2025-12-15 09:19:14,152 basehttp 23792 37656 "GET /empleados/marketplace/productos/?page=1 HTTP/1.1" 200 38342
+INFO 2025-12-15 09:35:59,151 apps 32332 54552 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 09:36:23,085 apps 4020 20660 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 09:39:55,901 apps 35048 18660 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 09:40:11,939 apps 39512 20252 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 09:40:57,070 apps 19156 54664 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 10:12:13,517 apps 46312 38476 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 10:12:14,271 apps 17148 58216 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 10:12:14,292 autoreload 17148 58216 Watching for file changes with StatReloader
+INFO 2025-12-15 10:12:20,537 wsgi 17148 50136 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 10:12:32,218 basehttp 17148 1056 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 10:12:32,690 basehttp 17148 1056 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 26187
+INFO 2025-12-15 10:12:38,087 basehttp 17148 1056 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 10:12:38,119 basehttp 17148 1056 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25792
+INFO 2025-12-15 10:12:41,869 basehttp 17148 1056 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 10:12:41,934 basehttp 17148 1056 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-15 10:12:47,185 basehttp 17148 1056 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 10:12:47,307 basehttp 17148 1056 "GET /empleados/feed/ HTTP/1.1" 200 35918
+INFO 2025-12-15 10:12:50,179 basehttp 17148 1056 "GET /dashboard/ HTTP/1.1" 200 21842
+INFO 2025-12-15 10:12:51,495 basehttp 17148 1056 "GET /empleados/ HTTP/1.1" 200 101263
+INFO 2025-12-15 10:12:52,652 basehttp 17148 1056 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 106734
+INFO 2025-12-15 10:13:08,468 basehttp 17148 1056 "GET /empleados/periodo-prueba/ HTTP/1.1" 200 106734
+WARNING 2025-12-15 10:13:16,596 log 17148 1056 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:13:16,597 basehttp 17148 1056 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:13:16,642 basehttp 17148 1056 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:13:51,869 basehttp 17148 53356 "POST /empleados/1dcbaeca-b354-4f24-a48f-5ffb3850a1f7/activar/ HTTP/1.1" 200 134
+INFO 2025-12-15 10:14:03,706 basehttp 17148 53356 "GET /empleados/a27360e6-2670-4eba-8244-f56a78782b84/ HTTP/1.1" 200 74277
+WARNING 2025-12-15 10:14:03,743 log 17148 53356 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:14:03,744 basehttp 17148 53356 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:14:03,792 basehttp 17148 53356 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:14:31,533 basehttp 17148 13532 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 10:14:31,564 log 17148 13532 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:14:31,565 basehttp 17148 13532 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:14:31,671 basehttp 17148 13532 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:14:36,059 basehttp 17148 17728 "GET /evaluaciones/ HTTP/1.1" 200 34105
+WARNING 2025-12-15 10:14:36,093 log 17148 17728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:14:36,094 basehttp 17148 17728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:14:36,140 basehttp 17148 17728 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023

@@ -13,6 +13,7 @@ ejecuta automáticamente:
 from django.core.management.base import BaseCommand
 from apps.core.scheduler import start_scheduler, get_scheduler_status
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +27,19 @@ class Command(BaseCommand):
             action='store_true',
             help='Muestra el estado actual del scheduler sin iniciarlo',
         )
+        parser.add_argument(
+            '--daemon',
+            action='store_true',
+            help='Mantiene el scheduler ejecutándose como daemon',
+        )
 
     def handle(self, *args, **options):
         if options['status']:
             self._mostrar_status()
         else:
-            self._iniciar_scheduler()
+            self._iniciar_scheduler(daemon=options.get('daemon', False))
 
-    def _iniciar_scheduler(self):
+    def _iniciar_scheduler(self, daemon=False):
         """Inicia el scheduler."""
         self.stdout.write(self.style.WARNING('>> Iniciando scheduler de tareas automaticas...'))
 
@@ -58,8 +64,22 @@ class Command(BaseCommand):
             self.stdout.write('='*60)
             self.stdout.write('\nEl scheduler se ejecutara en segundo plano')
             self.stdout.write('Consulta los logs en: logs/django.log')
-            self.stdout.write('Nota: El scheduler se detiene si Django se reinicia')
-            self.stdout.write('='*60)
+
+            if daemon:
+                self.stdout.write('Modo daemon: El scheduler permanecera ejecutandose...')
+                self.stdout.write('='*60)
+                logger.info('Scheduler iniciado en modo daemon')
+
+                # Mantener el proceso vivo en modo daemon
+                try:
+                    while True:
+                        time.sleep(60)  # Dormir por 1 minuto
+                except KeyboardInterrupt:
+                    self.stdout.write('\n\nDeteniendo scheduler...')
+                    logger.info('Scheduler detenido por usuario')
+            else:
+                self.stdout.write('Nota: El scheduler se detiene si Django se reinicia')
+                self.stdout.write('='*60)
         else:
             self.stdout.write(
                 self.style.ERROR('\n[ERROR] Error al iniciar el scheduler')
