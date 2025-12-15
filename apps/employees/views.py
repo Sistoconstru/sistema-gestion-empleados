@@ -60,14 +60,26 @@ class EmpleadoRequiredMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         # Los administradores pueden acceder sin restricción
         if request.user.is_staff or request.user.is_superuser:
+            logger.info(f"[EmpleadoRequiredMixin] Usuario staff/super accediendo: {request.user.username}")
             return super().dispatch(request, *args, **kwargs)
 
         try:
             # Intenta acceder al empleado del usuario regular
-            _ = request.user.empleado
+            empleado = request.user.empleado
+            logger.info(f"[EmpleadoRequiredMixin] Usuario con empleado accediendo: {request.user.username} -> {empleado.nombre_completo}")
             return super().dispatch(request, *args, **kwargs)
-        except (AttributeError, Empleado.DoesNotExist):
-            # Si no existe empleado, mostrar mensaje y redirigir
+        except AttributeError as e:
+            # No tiene el atributo 'empleado'
+            logger.error(f"[EmpleadoRequiredMixin] AttributeError para usuario {request.user.username}: {str(e)}")
+            messages.error(
+                request,
+                'Tu cuenta de usuario no está asociada a un registro de empleado. '
+                'Contacta con Recursos Humanos para completar tu perfil.'
+            )
+            return redirect('core:dashboard')
+        except Empleado.DoesNotExist as e:
+            # El empleado no existe en la BD
+            logger.error(f"[EmpleadoRequiredMixin] Empleado.DoesNotExist para usuario {request.user.username}: {str(e)}")
             messages.error(
                 request,
                 'Tu cuenta de usuario no está asociada a un registro de empleado. '
@@ -2264,6 +2276,31 @@ class ProductoDetailView(EmpleadoRequiredMixin, DetailView):
     def get_queryset(self):
         return Producto.objects.select_related('vendedor', 'categoria')
 
+    def get(self, request, *args, **kwargs):
+        """Redirigir a subasta_detail si el producto es tipo subasta"""
+        self.object = self.get_object()
+
+        # Si el producto es tipo subasta, redirigir a la vista de subasta
+        if self.object.tipo == 'subasta':
+            logger.info(f"[PRODUCTO_DETAIL] Producto tipo subasta detectado: {self.object.titulo}")
+            subasta = self.object.subastas.filter(estado='activa').first()
+
+            if subasta:
+                logger.info(f"[PRODUCTO_DETAIL] Redirigiendo a subasta activa: {subasta.pk}")
+                return redirect('employees:subasta_detail', pk=subasta.pk)
+            else:
+                # No hay subasta activa, verificar si hay alguna subasta
+                todas_subastas = self.object.subastas.all()
+                logger.warning(f"[PRODUCTO_DETAIL] No hay subasta activa. Total subastas: {todas_subastas.count()}")
+                if todas_subastas.exists():
+                    logger.warning(f"[PRODUCTO_DETAIL] Estados de subastas: {[s.estado for s in todas_subastas]}")
+
+                messages.warning(request, 'Este producto está configurado como subasta pero no tiene una subasta activa.')
+
+        # Si no es subasta o no tiene subasta activa, mostrar vista normal
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         producto = self.object
@@ -2275,10 +2312,16 @@ class ProductoDetailView(EmpleadoRequiredMixin, DetailView):
             # Agregar información según tipo
             if producto.tipo == 'venta':
                 context['puede_comprar'] = usuario.id != producto.vendedor.id
+                # Si es el vendedor, mostrar lista de reservas
+                if usuario.id == producto.vendedor.id:
+                    context['reservas_activas'] = producto.reservas.filter(estado='activa').select_related('comprador').order_by('-fecha_creacion')
             elif producto.tipo == 'subasta':
                 context['subasta'] = producto.subastas.filter(estado='activa').first()
             elif producto.tipo == 'regalo':
                 context['puede_recibir'] = usuario.id != producto.vendedor.id
+                # Si es el vendedor/donante, mostrar solicitudes de regalo
+                if usuario.id == producto.vendedor.id:
+                    context['solicitudes_regalo'] = producto.regalos.all().order_by('-fecha_ofrecimiento')
 
             # Agregar información de reservaciones (solo para el vendedor)
             if usuario.id == producto.vendedor.id:
@@ -2319,7 +2362,32 @@ class CrearProductoView(EmpleadoRequiredMixin, CreateView):
         """Validar y procesar el formulario"""
         # El vendedor ya viene del formulario
         form.instance.creado_por = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Si el producto es tipo subasta, crear automáticamente la subasta
+        if self.object.tipo == 'subasta':
+            from datetime import timedelta
+            from django.utils import timezone
+
+            # Usar precio_inicial del producto o un valor por defecto
+            precio = self.object.precio_inicial or 10000
+
+            # Crear subasta con valores por defecto
+            subasta = Subasta.objects.create(
+                producto=self.object,
+                vendedor=self.object.vendedor,
+                precio_inicial=precio,
+                precio_actual=precio,
+                incremento_minimo=1000,  # $1,000 de incremento mínimo por defecto
+                fecha_inicio=timezone.now(),
+                fecha_fin=timezone.now() + timedelta(days=7),  # 7 días por defecto
+                estado='activa',
+                creado_por=self.request.user
+            )
+            logger.info(f"[CREAR_PRODUCTO] Subasta creada automáticamente: {subasta.pk} para producto {self.object.titulo}")
+            messages.success(self.request, f'Producto creado como subasta. Finaliza en 7 días.')
+
+        return response
 
     def get_success_url(self):
         return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
@@ -2354,7 +2422,33 @@ class EditarProductoView(EmpleadoRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """Validar y procesar el formulario"""
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Si el producto es tipo subasta y no tiene subasta activa, crearla
+        if self.object.tipo == 'subasta':
+            if not self.object.subastas.filter(estado='activa').exists():
+                from datetime import timedelta
+                from django.utils import timezone
+
+                # Usar precio_inicial del producto o un valor por defecto
+                precio = self.object.precio_inicial or 10000
+
+                # Crear subasta con valores por defecto
+                subasta = Subasta.objects.create(
+                    producto=self.object,
+                    vendedor=self.object.vendedor,
+                    precio_inicial=precio,
+                    precio_actual=precio,
+                    incremento_minimo=1000,  # $1,000 de incremento mínimo por defecto
+                    fecha_inicio=timezone.now(),
+                    fecha_fin=timezone.now() + timedelta(days=7),  # 7 días por defecto
+                    estado='activa',
+                    creado_por=self.request.user
+                )
+                logger.info(f"[EDITAR_PRODUCTO] Subasta creada para producto existente: {subasta.pk}")
+                messages.success(self.request, f'Subasta activada. Finaliza en 7 días.')
+
+        return response
 
     def get_success_url(self):
         return reverse('employees:producto_detail', kwargs={'pk': self.object.pk})
@@ -2559,10 +2653,27 @@ class SubastaDetailView(EmpleadoRequiredMixin, DetailView):
         subasta = self.object
         context['pujas'] = subasta.pujas.select_related('pujador').order_by('-fecha_creacion')
         context['precio_minimo'] = subasta.precio_actual + subasta.incremento_minimo
-        context['puede_pujar'] = (
-            self.request.user.empleado.id != subasta.vendedor.id and
-            self.request.user.empleado.estado.codigo in ['999', 'ACTIVO']
-        )
+
+        # Verificar si el usuario puede pujar
+        puede_pujar = False
+        try:
+            empleado_actual = self.request.user.empleado
+            # No es el vendedor y está activo
+            puede_pujar = (
+                empleado_actual.id != subasta.vendedor.id and
+                empleado_actual.estado.codigo in ['999', 'ACTIVO']
+            )
+        except (AttributeError, Empleado.DoesNotExist):
+            # Usuario sin empleado asociado no puede pujar
+            puede_pujar = False
+
+        context['puede_pujar'] = puede_pujar
+
+        # Agregar formulario de puja si puede pujar
+        if puede_pujar:
+            from .forms import PujaForm
+            context['form'] = PujaForm()
+
         return context
 
 
@@ -2978,6 +3089,55 @@ def marcar_mensajes_leidos(request, conversacion_pk):
                 return JsonResponse({'success': True, 'mensaje': 'Mensajes marcados como leídos'})
             return JsonResponse({'success': False, 'error': 'No tienes acceso'}, status=403)
     return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+
+@login_required
+def contactar_empleado(request, empleado_id):
+    """
+    Iniciar o abrir conversación existente con un empleado específico.
+    Si ya existe una conversación entre los dos, redirige a ella.
+    Si no existe, crea una nueva conversación.
+    """
+    try:
+        empleado_actual = request.user.empleado
+        empleado_destino = get_object_or_404(Empleado, id=empleado_id)
+
+        # No puede iniciar conversación consigo mismo
+        if empleado_actual == empleado_destino:
+            messages.warning(request, 'No puedes iniciar una conversación contigo mismo.')
+            return redirect('employees:inbox')
+
+        # Buscar conversación existente entre estos dos empleados
+        # Una conversación entre dos personas específicas
+        conversaciones_comunes = Conversacion.objects.filter(
+            participantes=empleado_actual
+        ).filter(
+            participantes=empleado_destino
+        ).annotate(
+            num_participantes=models.Count('participantes')
+        ).filter(
+            num_participantes=2  # Solo conversaciones 1 a 1
+        ).order_by('-fecha_actualizacion')
+
+        if conversaciones_comunes.exists():
+            # Ya existe una conversación, redirigir a ella
+            conversacion = conversaciones_comunes.first()
+            return redirect('employees:conversacion_detail', pk=conversacion.pk)
+
+        # No existe conversación, crear una nueva
+        conversacion = Conversacion.objects.create(
+            titulo=f"Chat con {empleado_destino.nombre_completo}",
+            contexto='general',
+            creado_por=request.user
+        )
+        conversacion.participantes.add(empleado_actual, empleado_destino)
+
+        messages.success(request, f'Conversación iniciada con {empleado_destino.nombre_completo}')
+        return redirect('employees:conversacion_detail', pk=conversacion.pk)
+
+    except Empleado.DoesNotExist:
+        messages.error(request, 'No tienes un perfil de empleado asociado.')
+        return redirect('employees:inbox')
 
 
 @login_required

@@ -75,6 +75,14 @@
         border-radius: 0 0 0.5rem 0.5rem;
         border-top: 1px solid #e0e0e0;
     }
+    .chat-vacio {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 120px !important;
+        height: auto !important;
+        padding: 1rem !important;
+    }
 </style>
 {% endblock %}
 
@@ -134,7 +142,7 @@
                 </div>
 
                 <!-- Chat -->
-                <div class="chat-container" id="chatContainer">
+                <div class="chat-container {% if not mensajes %}chat-vacio{% endif %}" id="chatContainer">
                     {% if mensajes %}
                         {% for mensaje in mensajes %}
                         <div class="mensaje-item {% if mensaje.remitente.id == user.empleado.id %}propio{% else %}otro{% endif %}">
@@ -160,10 +168,9 @@
                         </div>
                         {% endfor %}
                     {% else %}
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-envelope-open fa-3x mb-3"></i>
-                        <p>No hay mensajes aún</p>
-                        <p class="small">Sé el primero en enviar un mensaje</p>
+                    <div class="text-center text-muted">
+                        <i class="fas fa-envelope-open" style="opacity: 0.25; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                        <p class="mb-0" style="font-size: 0.9rem; color: #999;">No hay mensajes. Escribe abajo para comenzar.</p>
                     </div>
                     {% endif %}
                 </div>

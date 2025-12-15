@@ -77,6 +77,7 @@ urlpatterns = [
     path('mensajeria/conversacion/<uuid:pk>/', views.ConversacionDetailView.as_view(), name='conversacion_detail'),
     path('mensajeria/conversacion/<uuid:conversacion_pk>/mensaje/', views.EnviarMensajeView.as_view(), name='enviar_mensaje'),
     path('mensajeria/conversacion/<uuid:conversacion_pk>/marcar-leidos/', views.marcar_mensajes_leidos, name='marcar_mensajes_leidos'),
+    path('mensajeria/contactar/<uuid:empleado_id>/', views.contactar_empleado, name='contactar_empleado'),
 
     # =============================================================================
     # FEED/PUBLICACIONES (MINIFACEBOOK)

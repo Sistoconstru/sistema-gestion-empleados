@@ -215,8 +215,8 @@
                             </div>
                         </div>
                         <div class="solicitante-actions">
-                            <a href="{% url 'employees:empleado_perfil_detail' regalo.receptor.id %}" class="btn btn-sm btn-outline-primary" title="Ver perfil">
-                                <i class="fas fa-user me-1"></i>Perfil
+                            <a href="{% url 'employees:contactar_empleado' regalo.receptor.id %}" class="btn btn-sm btn-outline-primary" title="Enviar mensaje a {{ regalo.receptor.nombre_completo }}">
+                                <i class="fas fa-envelope me-1"></i>Contactar
                             </a>
                             {% if regalo.estado == 'pendiente' and not regalo.confirmado_por_donante %}
                             <button type="button" class="btn btn-sm btn-success" onclick="confirmarEntrega('{{ regalo.id }}', '{{ regalo.receptor.nombre_completo }}')">

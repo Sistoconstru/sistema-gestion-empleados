@@ -122,13 +122,24 @@
             <!-- Pujador líder -->
             {% if subasta.pujador_actual %}
             <div class="alert alert-success" role="alert">
-                <h6 class="alert-heading">
-                    <i class="fas fa-crown me-2"></i>Líder Actual
-                </h6>
-                <p class="mb-0">
-                    <strong>{{ subasta.pujador_actual.nombre_completo }}</strong>
-                    con una puja de <strong>${{ subasta.precio_actual|floatformat:0 }}</strong>
-                </p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="alert-heading">
+                            <i class="fas fa-crown me-2"></i>Líder Actual
+                        </h6>
+                        <p class="mb-0">
+                            <strong>{{ subasta.pujador_actual.nombre_completo }}</strong>
+                            con una puja de <strong>${{ subasta.precio_actual|floatformat:0 }}</strong>
+                        </p>
+                    </div>
+                    {% if subasta.vendedor.usuario == user %}
+                    <div>
+                        <a href="{% url 'employees:contactar_empleado' subasta.pujador_actual.id %}" class="btn btn-sm btn-primary" title="Enviar mensaje a {{ subasta.pujador_actual.nombre_completo }}">
+                            <i class="fas fa-envelope me-1"></i>Contactar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
 

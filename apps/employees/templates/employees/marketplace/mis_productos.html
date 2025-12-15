@@ -266,7 +266,7 @@
                                     </div>
                                 </div>
                                 <div class="reserva-actions">
-                                    <a href="{% url 'employees:empleado_perfil_detail' reserva.comprador.id %}" class="btn btn-sm btn-outline-primary" title="Ver perfil de {{ reserva.comprador.nombre_completo }}">
+                                    <a href="{% url 'employees:contactar_empleado' reserva.comprador.id %}" class="btn btn-sm btn-outline-primary" title="Enviar mensaje a {{ reserva.comprador.nombre_completo }}">
                                         <i class="fas fa-envelope me-1"></i>Contactar
                                     </a>
                                 </div>
