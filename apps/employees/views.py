@@ -378,15 +378,141 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
         cargo_actual_id = None
         if cargo_actual and cargo_actual.cargo:
             cargo_actual_id = cargo_actual.cargo.id
-        
+
         if cargo_actual_id:
             context['cargos'] = Cargo.objects.filter(activo=True).exclude(id=cargo_actual_id).order_by('nombre')
         else:
             context['cargos'] = Cargo.objects.filter(activo=True).order_by('nombre')
-            
+
         context['sedes'] = Sede.objects.filter(activa=True).order_by('nombre')
-        
+
+        # === EMPLEADOS A CARGO ===
+        # Usar el mismo método que EmpleadoPerfilView
+        context.update(self.get_empleados_a_cargo(empleado))
+
         return context
+
+    def get_empleados_a_cargo(self, empleado):
+        """
+        Obtener empleados a cargo que tienen a este empleado como jefe directo.
+        Solo busca por el campo jefe_directo en HistorialCargo.
+        """
+        try:
+            # Buscar empleados que tienen a este empleado como jefe directo
+            empleados_subordinados = Empleado.objects.filter(
+                historialcargo__activo=True,
+                historialcargo__jefe_directo=empleado
+            ).distinct()
+
+            # Si no hay empleados a cargo, retornar estructura vacía
+            if empleados_subordinados.count() == 0:
+                return {
+                    'empleados_a_cargo': {
+                        'total': 0,
+                        'activos': 0,
+                        'en_prueba': 0,
+                        'con_alertas': 0,
+                        'lista_empleados': [],
+                        'es_jefe': False,
+                        'tipo_jefe': None
+                    }
+                }
+
+            # Determinar tipo de jefe según nombre del cargo actual
+            cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
+            tipo_jefe = 'jefe'  # Default
+
+            if cargo_actual and cargo_actual.cargo:
+                cargo_nombre = cargo_actual.cargo.nombre.lower()
+                if 'gerente' in cargo_nombre:
+                    tipo_jefe = 'gerente'
+                elif 'director' in cargo_nombre:
+                    tipo_jefe = 'director'
+                elif 'coordinador' in cargo_nombre:
+                    tipo_jefe = 'coordinador'
+                elif 'supervisor' in cargo_nombre:
+                    tipo_jefe = 'supervisor'
+
+            # Calcular estadísticas
+            total = empleados_subordinados.count()
+            activos = empleados_subordinados.filter(estado__codigo='ACTIVO').count()
+            en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
+
+            # Preparar lista de empleados con detalles
+            lista_empleados = []
+            con_alertas = 0
+
+            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo')[:10]:
+                # Verificar si tiene alertas
+                tiene_alertas = False
+                alertas = []
+
+                # Verificar documentos vencidos/pendientes
+                try:
+                    from apps.documents.models import DocumentoEmpleado
+                    docs_vencidos = DocumentoEmpleado.objects.filter(
+                        empleado=emp,
+                        fecha_vencimiento__lt=date.today()
+                    ).count()
+                    if docs_vencidos > 0:
+                        tiene_alertas = True
+                        alertas.append(f"{docs_vencidos} doc. vencidos")
+                except ImportError:
+                    pass
+
+                # Verificar evaluaciones pendientes
+                try:
+                    from apps.evaluations.models import AsignacionEvaluacion
+                    eval_pendientes = AsignacionEvaluacion.objects.filter(
+                        empleado_evaluado=emp,
+                        estado__in=['asignada', 'en_progreso'],
+                        fecha_vencimiento__lt=date.today()
+                    ).count()
+                    if eval_pendientes > 0:
+                        tiene_alertas = True
+                        alertas.append(f"{eval_pendientes} eval. vencidas")
+                except ImportError:
+                    pass
+
+                if tiene_alertas:
+                    con_alertas += 1
+
+                # Obtener cargo actual del subordinado
+                cargo_subordinado = emp.historialcargo_set.filter(activo=True).first()
+
+                lista_empleados.append({
+                    'empleado': emp,
+                    'cargo_actual': cargo_subordinado,
+                    'tiene_alertas': tiene_alertas,
+                    'alertas': alertas,
+                    'dias_empresa': (date.today() - emp.fecha_ingreso).days
+                })
+
+            return {
+                'empleados_a_cargo': {
+                    'total': total,
+                    'activos': activos,
+                    'en_prueba': en_prueba,
+                    'con_alertas': con_alertas,
+                    'lista_empleados': lista_empleados,
+                    'es_jefe': True,
+                    'tipo_jefe': tipo_jefe
+                }
+            }
+
+        except Exception as e:
+            logger.error(f"Error al obtener empleados a cargo: {e}")
+            return {
+                'empleados_a_cargo': {
+                    'total': 0,
+                    'activos': 0,
+                    'en_prueba': 0,
+                    'con_alertas': 0,
+                    'lista_empleados': [],
+                    'es_jefe': False,
+                    'tipo_jefe': None
+                }
+            }
 
 
 class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):

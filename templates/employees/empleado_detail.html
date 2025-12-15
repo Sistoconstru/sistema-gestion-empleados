@@ -266,6 +266,99 @@
                 </div>
             </div>
         </div>
+
+        <!-- Empleados a Cargo -->
+        {% if empleados_a_cargo.es_jefe %}
+        <div class="card mb-4 border-corporativo">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Mi Equipo
+                    <span class="badge bg-light text-corporativo ms-2">{{ empleados_a_cargo.tipo_jefe|capfirst }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center mb-3">
+                    <div class="col-4">
+                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.total }}</div>
+                        <small class="text-muted">Total</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.activos }}</div>
+                        <small class="text-muted">Activos</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-{% if empleados_a_cargo.con_alertas > 0 %}warning{% else %}corporativo{% endif %} fs-5 fw-bold">{{ empleados_a_cargo.con_alertas }}</div>
+                        <small class="text-muted">Con alertas</small>
+                    </div>
+                </div>
+
+                {% if empleados_a_cargo.en_prueba > 0 %}
+                <div class="alert alert-warning alert-sm mb-3">
+                    <i class="fas fa-clock me-1"></i>
+                    <strong>{{ empleados_a_cargo.en_prueba }} empleado{{ empleados_a_cargo.en_prueba|pluralize }}</strong> en período de prueba
+                </div>
+                {% endif %}
+
+                {% if empleados_a_cargo.lista_empleados %}
+                <div class="empleados-cargo-list">
+                    {% for item in empleados_a_cargo.lista_empleados %}
+                    <div class="d-flex align-items-center border-bottom py-2 {% if item.tiene_alertas %}bg-warning bg-opacity-10{% endif %}">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-sm bg-corporativo bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                <i class="fas fa-user text-corporativo"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">
+                                <a href="{% url 'employees:empleado_detail' pk=item.empleado.pk %}" class="text-decoration-none">
+                                    {{ item.empleado.nombre_completo }}
+                                </a>
+                                {% if item.tiene_alertas %}
+                                    <i class="fas fa-exclamation-triangle text-warning ms-1" title="Tiene alertas"></i>
+                                {% endif %}
+                            </h6>
+                            <small class="text-muted">
+                                {% if item.cargo_actual %}
+                                    {{ item.cargo_actual.cargo.nombre }}
+                                {% else %}
+                                    Sin cargo asignado
+                                {% endif %}
+                                • {{ item.dias_empresa }} días en empresa
+                            </small>
+                            {% if item.alertas %}
+                                <div class="mt-1">
+                                    {% for alerta in item.alertas %}
+                                        <span class="badge bg-warning text-dark me-1">{{ alerta }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="badge bg-{% if item.empleado.estado.codigo == '999' %}success{% elif item.empleado.estado.codigo == 'p-prue' %}warning{% else %}secondary{% endif %}">
+                                {{ item.empleado.estado.nombre }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if empleados_a_cargo.total > empleados_a_cargo.lista_empleados|length %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-sm btn-outline-corporativo">
+                            <i class="fas fa-users me-1"></i>
+                            Ver todos ({{ empleados_a_cargo.total }} empleados)
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center py-3">
+                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-0">No hay empleados asignados</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
 <!-- Pestañas de Contenido -->
