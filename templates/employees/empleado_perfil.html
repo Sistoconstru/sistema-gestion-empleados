@@ -59,7 +59,7 @@
     </div>
 </div>
 
-<!-- Resumen de Estado -->
+{% comment %} <!-- Resumen de Estado -->
 <div class="row mb-4">
     <div class="col-md-3">
     <div class="card border-corporativo shadow-sm">
@@ -118,7 +118,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
 <!-- Alertas y Acciones Rápidas -->
 {% if documentos.vencidos > 0 or documentos.por_vencer > 0 or evaluaciones.vencidas > 0 or evaluaciones.proximas > 0 %}
