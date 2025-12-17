@@ -24,14 +24,12 @@
                             <div>
                                 <h2 class="mb-1">{{ empleado.nombre_completo }}</h2>
                                 <p class="mb-1">
-                                    {% with empleado.historialcargo_set.all|first as cargo_actual %}
-                                        {% if cargo_actual %}
-                                            <span class="fw-bold">{{ cargo_actual.cargo.nombre }}</span>
-                                            <span class="text-white-50">• {{ cargo_actual.cargo.area.nombre }}</span>
-                                        {% else %}
-                                            <span class="text-white-50">Sin cargo asignado</span>
-                                        {% endif %}
-                                    {% endwith %}
+                                    {% if cargo_actual %}
+                                        <span class="fw-bold">{{ cargo_actual.cargo.nombre }}</span>
+                                        <span class="text-white-50">• {{ cargo_actual.cargo.area.nombre }}</span>
+                                    {% else %}
+                                        <span class="text-white-50">Sin cargo asignado</span>
+                                    {% endif %}
                                 </p>
                                 <div class="d-flex align-items-center gap-3">
                                     {% if empleado.estado.codigo|lower == 'activo' %}

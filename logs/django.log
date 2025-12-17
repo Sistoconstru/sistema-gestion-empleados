@@ -16262,3 +16262,659 @@ INFO 2025-12-15 10:14:36,059 basehttp 17148 17728 "GET /evaluaciones/ HTTP/1.1" 
 WARNING 2025-12-15 10:14:36,093 log 17148 17728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2025-12-15 10:14:36,094 basehttp 17148 17728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
 WARNING 2025-12-15 10:14:36,140 basehttp 17148 17728 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:18:53,171 apps 40420 46652 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 10:18:53,800 apps 49240 51668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 10:18:53,823 autoreload 49240 51668 Watching for file changes with StatReloader
+INFO 2025-12-15 10:18:54,361 wsgi 49240 17668 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 10:18:58,552 basehttp 49240 44152 "GET /evaluaciones/ HTTP/1.1" 200 34105
+WARNING 2025-12-15 10:18:58,596 log 49240 44152 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:18:58,596 basehttp 49240 44152 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:18:58,623 basehttp 49240 44152 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:23:04,304 basehttp 49240 28992 "GET /evaluaciones/asignar-evaluacion-manual/ HTTP/1.1" 200 11450
+INFO 2025-12-15 10:23:13,717 basehttp 49240 28992 "POST /evaluaciones/asignar-evaluacion-manual/ HTTP/1.1" 200 27785
+WARNING 2025-12-15 10:43:04,854 log 49240 13520 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:04,855 basehttp 49240 13520 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:04,915 basehttp 49240 13520 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:43:13,000 basehttp 49240 48632 "GET /reportes/ HTTP/1.1" 200 29721
+WARNING 2025-12-15 10:43:13,027 log 49240 48632 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:13,028 basehttp 49240 48632 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:13,051 basehttp 49240 48632 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 10:43:15,607 basehttp 49240 39568 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 10:43:15,614 log 49240 54508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:15,616 basehttp 49240 54508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:15,642 log 49240 54508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:15,642 basehttp 49240 54508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:15,659 basehttp 49240 54508 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:43:19,618 basehttp 49240 7516 "GET /encuestas/ HTTP/1.1" 200 16437
+WARNING 2025-12-15 10:43:19,656 log 49240 7516 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:19,664 basehttp 49240 7516 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:19,691 basehttp 49240 7516 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+ERROR 2025-12-15 10:43:22,380 log 49240 8396 Internal Server Error: /encuestas/mis-encuestas/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 682, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse some characters: participaciones|first|.tiempo_empleado_minutos||default:"--"
+ERROR 2025-12-15 10:43:22,384 basehttp 49240 8396 "GET /encuestas/mis-encuestas/ HTTP/1.1" 500 239925
+WARNING 2025-12-15 10:43:22,408 log 49240 8396 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:22,409 basehttp 49240 8396 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:26,091 basehttp 49240 8396 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 10:43:26,094 log 49240 45248 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:26,095 basehttp 49240 45248 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:26,112 log 49240 45248 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:26,112 basehttp 49240 45248 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:26,128 basehttp 49240 45248 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:43:38,487 basehttp 49240 1296 "GET /encuestas/lista/ HTTP/1.1" 200 9465
+WARNING 2025-12-15 10:43:38,514 log 49240 1296 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:38,514 basehttp 49240 1296 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:38,542 basehttp 49240 1296 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 10:43:43,305 basehttp 49240 19672 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 10:43:43,311 log 49240 44124 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:43,311 basehttp 49240 44124 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:43,336 log 49240 44124 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:43:43,337 basehttp 49240 44124 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:43:43,342 basehttp 49240 21284 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:44:17,868 basehttp 49240 44124 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 10:44:17,902 log 49240 44124 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:44:17,904 basehttp 49240 44124 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 10:44:17,962 basehttp 49240 44124 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 10:44:20,384 basehttp 49240 49860 "GET /admin/ HTTP/1.1" 200 62865
+WARNING 2025-12-15 10:44:20,409 log 49240 49860 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:44:20,412 basehttp 49240 49860 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:44:20,419 basehttp 49240 38744 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-12-15 10:44:20,420 basehttp 49240 41700 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-12-15 10:44:20,427 basehttp 49240 50964 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-12-15 10:44:20,432 basehttp 49240 47964 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-12-15 10:44:20,432 basehttp 49240 17616 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-12-15 10:44:20,435 basehttp 49240 49860 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-12-15 10:44:20,439 basehttp 49240 17616 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-12-15 10:44:20,450 basehttp 49240 17616 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-12-15 10:44:20,451 basehttp 49240 49860 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-12-15 10:44:26,085 basehttp 49240 49860 "GET /admin/surveys/encuesta/ HTTP/1.1" 200 49656
+WARNING 2025-12-15 10:44:26,126 log 49240 49860 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:44:26,129 basehttp 49240 49860 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:44:26,135 basehttp 49240 17616 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-12-15 10:44:26,150 basehttp 49240 41700 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-15 10:44:26,166 basehttp 49240 38744 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-15 10:44:26,175 basehttp 49240 38744 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-15 10:44:26,178 basehttp 49240 17616 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-15 10:44:26,188 basehttp 49240 41700 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-15 10:44:26,196 basehttp 49240 17616 "GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+INFO 2025-12-15 10:44:26,198 basehttp 49240 49860 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-15 10:44:26,210 basehttp 49240 50964 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-15 10:44:26,267 basehttp 49240 47964 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-15 10:44:26,296 basehttp 49240 47964 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-12-15 10:44:26,315 basehttp 49240 38744 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-15 10:44:26,339 basehttp 49240 47964 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-12-15 10:44:26,353 basehttp 49240 38744 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-12-15 10:44:49,202 basehttp 49240 38744 "GET /admin/surveys/tipoencuesta/ HTTP/1.1" 200 50283
+WARNING 2025-12-15 10:44:49,240 log 49240 38744 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:44:49,242 basehttp 49240 38744 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:44:49,244 basehttp 49240 47964 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-15 10:44:49,256 basehttp 49240 50964 "GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+INFO 2025-12-15 10:45:04,035 basehttp 49240 50964 "GET /admin/surveys/encuesta/ HTTP/1.1" 200 49656
+WARNING 2025-12-15 10:45:04,075 log 49240 50964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:45:04,076 basehttp 49240 50964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:45:04,078 basehttp 49240 47964 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-15 10:45:05,756 basehttp 49240 47964 "GET /admin/surveys/encuesta/09e106a8-e068-4fcd-bf90-7ef40899244f/change/ HTTP/1.1" 200 64559
+WARNING 2025-12-15 10:45:05,788 log 49240 47964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:45:05,791 basehttp 49240 47964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:45:05,806 basehttp 49240 50964 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-12-15 10:45:05,814 basehttp 49240 17616 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-15 10:45:05,838 basehttp 49240 38744 "GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+INFO 2025-12-15 10:45:05,838 basehttp 49240 49860 "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+INFO 2025-12-15 10:45:05,855 basehttp 49240 50964 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-12-15 10:45:05,867 basehttp 49240 41700 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-15 10:45:05,876 basehttp 49240 50964 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-15 10:45:05,911 basehttp 49240 50964 "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+INFO 2025-12-15 10:46:07,719 basehttp 49240 50964 "POST /admin/surveys/encuesta/09e106a8-e068-4fcd-bf90-7ef40899244f/change/ HTTP/1.1" 302 0
+INFO 2025-12-15 10:46:07,784 basehttp 49240 50964 "GET /admin/surveys/encuesta/ HTTP/1.1" 200 49909
+WARNING 2025-12-15 10:46:07,819 log 49240 50964 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 10:46:07,820 basehttp 49240 50964 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 10:46:07,864 basehttp 49240 41700 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-15 14:35:56,616 apps 55320 52356 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 14:35:57,514 apps 39908 58188 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 14:35:57,537 autoreload 39908 58188 Watching for file changes with StatReloader
+INFO 2025-12-15 14:36:04,060 wsgi 39908 44224 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 14:36:12,002 basehttp 39908 14352 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 14:36:12,068 log 39908 14352 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:36:12,069 basehttp 39908 14352 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:36:12,078 basehttp 39908 14352 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:36:18,123 basehttp 39908 17784 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:36:18,323 basehttp 39908 17784 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+WARNING 2025-12-15 14:36:18,353 log 39908 17784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:36:18,353 basehttp 39908 17784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:36:18,433 basehttp 39908 17784 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:36:24,824 basehttp 39908 40740 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:36:24,895 basehttp 39908 40740 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:36:24,921 log 39908 40740 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:36:24,922 basehttp 39908 40740 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:36:30,008 basehttp 39908 40740 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:36:30,111 basehttp 39908 40740 "GET /empleados/feed/ HTTP/1.1" 200 34943
+WARNING 2025-12-15 14:36:30,142 log 39908 40740 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:36:30,143 basehttp 39908 40740 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:36:30,197 basehttp 39908 40740 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:36:33,623 basehttp 39908 10984 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:36:33,793 basehttp 39908 10984 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+WARNING 2025-12-15 14:36:33,814 log 39908 10984 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:36:33,814 basehttp 39908 10984 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:36:33,865 basehttp 39908 10984 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:41:07,994 autoreload 39908 58188 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-12-15 14:41:09,020 apps 12740 33932 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 14:41:09,046 autoreload 12740 33932 Watching for file changes with StatReloader
+INFO 2025-12-15 14:41:09,591 wsgi 12740 50596 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 14:43:37,970 basehttp 12740 34904 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:43:37,986 basehttp 12740 34904 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:43:38,021 log 12740 34904 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:43:38,022 basehttp 12740 34904 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:43:43,695 basehttp 12740 34904 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:43:43,802 basehttp 12740 34904 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-15 14:43:43,840 log 12740 34904 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:43:43,840 basehttp 12740 34904 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:43:43,908 basehttp 12740 34904 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:43:52,519 basehttp 12740 57764 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 14:43:52,543 log 12740 57764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:43:52,544 basehttp 12740 57764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:43:52,597 basehttp 12740 57764 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:43:55,670 basehttp 12740 1296 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:43:55,694 log 12740 1296 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:43:55,695 basehttp 12740 1296 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:43:55,752 basehttp 12740 1296 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:00,940 basehttp 12740 18380 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 77941
+WARNING 2025-12-15 14:44:00,976 log 12740 18380 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:00,978 basehttp 12740 18380 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:01,023 basehttp 12740 18380 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:13,289 basehttp 12740 3336 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:44:13,318 log 12740 3336 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:13,318 basehttp 12740 3336 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:13,382 basehttp 12740 3336 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:18,836 basehttp 12740 36960 "GET /empleados/?page=2 HTTP/1.1" 200 101929
+WARNING 2025-12-15 14:44:18,869 log 12740 36960 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:18,870 basehttp 12740 36960 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:18,936 basehttp 12740 36960 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:27,879 basehttp 12740 8484 "GET /empleados/236f38c4-5dab-48b3-ae67-0963c95d3ba7/ HTTP/1.1" 200 80904
+WARNING 2025-12-15 14:44:27,903 log 12740 8484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:27,905 basehttp 12740 8484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:27,950 basehttp 12740 8484 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:35,770 basehttp 12740 3468 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:44:35,802 log 12740 3468 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:35,803 basehttp 12740 3468 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:35,868 basehttp 12740 3468 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:42,452 basehttp 12740 37936 "GET /empleados/?page=3 HTTP/1.1" 200 102107
+WARNING 2025-12-15 14:44:42,491 log 12740 37936 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:42,493 basehttp 12740 37936 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:42,548 basehttp 12740 37936 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:48,313 basehttp 12740 10496 "GET /empleados/?page=4 HTTP/1.1" 200 65366
+WARNING 2025-12-15 14:44:48,342 log 12740 10496 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:48,342 basehttp 12740 10496 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:48,389 basehttp 12740 10496 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:44:55,569 basehttp 12740 38096 "GET /empleados/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 85024
+WARNING 2025-12-15 14:44:55,596 log 12740 38096 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:44:55,596 basehttp 12740 38096 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:44:55,643 basehttp 12740 38096 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:45:18,120 basehttp 12740 29724 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:45:18,122 basehttp 12740 29724 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:45:18,152 log 12740 29724 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:45:18,153 basehttp 12740 29724 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:45:22,902 basehttp 12740 29724 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:45:22,976 basehttp 12740 29724 "GET /empleados/feed/ HTTP/1.1" 200 34943
+WARNING 2025-12-15 14:45:23,006 log 12740 29724 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-15 14:45:23,007 basehttp 12740 9228 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 304 0
+WARNING 2025-12-15 14:45:23,007 basehttp 12740 29724 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:45:23,054 basehttp 12740 29724 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:45:25,061 basehttp 12740 9228 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:45:25,219 basehttp 12740 9228 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+WARNING 2025-12-15 14:45:25,254 log 12740 9228 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:45:25,254 basehttp 12740 9228 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:45:25,293 basehttp 12740 9228 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:48:42,537 basehttp 12740 37616 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:48:42,542 basehttp 12740 37616 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:48:42,575 log 12740 37616 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:48:42,575 basehttp 12740 37616 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:48:55,769 basehttp 12740 37616 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:48:55,843 basehttp 12740 37616 "GET /empleados/feed/ HTTP/1.1" 200 34927
+WARNING 2025-12-15 14:48:55,876 log 12740 37616 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:48:55,876 basehttp 12740 37616 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:48:55,899 basehttp 12740 37616 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:48:58,070 basehttp 12740 49592 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:48:58,171 basehttp 12740 49592 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-15 14:48:58,195 log 12740 49592 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:48:58,196 basehttp 12740 49592 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:48:58,250 basehttp 12740 49592 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:49:10,379 basehttp 12740 5004 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:49:10,387 basehttp 12740 5004 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:49:10,415 log 12740 5004 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:49:10,416 basehttp 12740 5004 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:49:26,132 basehttp 12740 5004 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:49:26,200 basehttp 12740 5004 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-15 14:49:26,228 log 12740 5004 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:49:26,229 basehttp 12740 5004 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:49:26,280 basehttp 12740 5004 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:49:27,950 basehttp 12740 17528 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:49:28,074 basehttp 12740 17528 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+WARNING 2025-12-15 14:49:28,100 log 12740 17528 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:49:28,100 basehttp 12740 17528 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:49:28,151 basehttp 12740 17528 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:49:31,671 basehttp 12740 23784 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 14:49:31,754 log 12740 23784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:49:31,780 basehttp 12740 23784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:49:31,789 basehttp 12740 13092 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:49:57,212 basehttp 12740 23784 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:49:57,241 log 12740 23784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:49:57,242 basehttp 12740 23784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:49:57,338 basehttp 12740 23784 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:50:23,652 basehttp 12740 55736 "GET /empleados/?search=&estado=&area=&cargo=12&sede= HTTP/1.1" 200 27676
+WARNING 2025-12-15 14:50:23,686 log 12740 55736 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:50:23,688 basehttp 12740 55736 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:50:23,735 basehttp 12740 55736 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:50:33,936 basehttp 12740 13972 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 81166
+WARNING 2025-12-15 14:50:33,962 log 12740 13972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:50:33,962 basehttp 12740 13972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:50:33,972 basehttp 12740 49916 "GET /media/insignias/puntualidad.png HTTP/1.1" 200 4793
+WARNING 2025-12-15 14:50:34,053 basehttp 12740 49916 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:52:21,038 autoreload 12740 33932 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-12-15 14:52:21,929 apps 46696 30944 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 14:52:21,957 autoreload 46696 30944 Watching for file changes with StatReloader
+INFO 2025-12-15 14:52:22,593 wsgi 46696 50600 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 14:52:34,535 basehttp 46696 55420 "GET /empleados/a3fa886d-4321-45eb-a576-b9aca04fbc98/ HTTP/1.1" 200 82507
+WARNING 2025-12-15 14:52:34,575 log 46696 55420 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:52:34,576 basehttp 46696 55420 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:52:34,648 basehttp 46696 55420 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:52:59,381 basehttp 46696 6884 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:52:59,403 basehttp 46696 6884 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:52:59,433 log 46696 6884 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:52:59,434 basehttp 46696 6884 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:53:06,225 basehttp 46696 6884 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:06,305 basehttp 46696 6884 "GET /empleados/feed/ HTTP/1.1" 200 34943
+WARNING 2025-12-15 14:53:06,334 log 46696 6884 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:06,336 basehttp 46696 6884 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:06,390 basehttp 46696 6884 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:08,403 basehttp 46696 7632 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:08,607 basehttp 46696 7632 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+WARNING 2025-12-15 14:53:08,633 log 46696 7632 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:08,633 basehttp 46696 7632 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:08,681 basehttp 46696 7632 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:19,213 basehttp 46696 15384 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:19,419 basehttp 46696 15384 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37520
+WARNING 2025-12-15 14:53:19,474 log 46696 15384 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:19,474 basehttp 46696 15384 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:19,508 basehttp 46696 15384 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:29,311 basehttp 46696 16696 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:29,514 basehttp 46696 16696 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+WARNING 2025-12-15 14:53:29,549 log 46696 16696 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:29,550 basehttp 46696 16696 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:29,601 basehttp 46696 16696 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:41,170 basehttp 46696 38400 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:41,195 basehttp 46696 38400 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 14:53:41,230 log 46696 38400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:41,231 basehttp 46696 38400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 14:53:45,835 basehttp 46696 38400 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 14:53:45,886 basehttp 46696 38400 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-15 14:53:45,924 log 46696 38400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:45,924 basehttp 46696 38400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:45,959 basehttp 46696 38400 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:48,070 basehttp 46696 48740 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 14:53:48,096 log 46696 48740 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:48,104 basehttp 46696 48740 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:48,183 basehttp 46696 48740 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:51,888 basehttp 46696 2832 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:53:51,921 log 46696 2832 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:51,922 basehttp 46696 2832 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:51,979 basehttp 46696 2832 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:55,291 basehttp 46696 51796 "GET /empleados/?page=2 HTTP/1.1" 200 101929
+WARNING 2025-12-15 14:53:55,321 log 46696 51796 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:55,322 basehttp 46696 51796 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:55,382 basehttp 46696 51796 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:53:58,020 basehttp 46696 47148 "GET /empleados/?page=4 HTTP/1.1" 200 65366
+WARNING 2025-12-15 14:53:58,051 log 46696 47148 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:53:58,051 basehttp 46696 47148 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:53:58,100 basehttp 46696 47148 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:54:01,686 basehttp 46696 21072 "GET /empleados/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 93486
+WARNING 2025-12-15 14:54:01,713 log 46696 21072 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:54:01,713 basehttp 46696 21072 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:54:01,764 basehttp 46696 21072 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:55:57,138 basehttp 46696 39684 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:55:57,176 log 46696 39684 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:55:57,177 basehttp 46696 39684 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:55:57,237 basehttp 46696 39684 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:55:59,674 basehttp 46696 45616 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 77482
+WARNING 2025-12-15 14:55:59,714 log 46696 45616 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:55:59,714 basehttp 46696 45616 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:55:59,762 basehttp 46696 45616 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:56:29,695 basehttp 46696 56056 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:56:29,724 log 46696 56056 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:56:29,725 basehttp 46696 56056 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:56:29,805 basehttp 46696 56056 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:56:33,206 basehttp 46696 36444 "GET /empleados/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 78329
+WARNING 2025-12-15 14:56:33,235 log 46696 36444 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:56:33,236 basehttp 46696 36444 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:56:33,284 basehttp 46696 36444 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:56:47,629 basehttp 46696 2304 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:56:47,646 log 46696 6440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:56:47,647 basehttp 46696 6440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:56:47,669 log 46696 6440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:56:47,670 basehttp 46696 6440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:56:47,688 basehttp 46696 6440 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:56:52,711 basehttp 46696 45700 "GET /empleados/b704d056-f696-41a6-8e15-1afcadeb72e2/ HTTP/1.1" 200 78329
+WARNING 2025-12-15 14:56:52,742 log 46696 45700 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:56:52,742 basehttp 46696 45700 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:56:52,782 basehttp 46696 45700 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:05,570 basehttp 46696 37116 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:57:05,612 log 46696 37116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:05,612 basehttp 46696 37116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:05,734 basehttp 46696 37116 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:12,120 basehttp 46696 56260 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 79282
+WARNING 2025-12-15 14:57:12,160 log 46696 56260 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:12,160 basehttp 46696 56260 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:12,258 basehttp 46696 56260 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:34,436 basehttp 46696 32812 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 14:57:34,466 log 46696 32812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:34,466 basehttp 46696 32812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:34,524 basehttp 46696 32812 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:38,738 basehttp 46696 49116 "GET /empleados/c348161d-a1cd-40bb-9ad2-70737b2ced0c/ HTTP/1.1" 200 82469
+WARNING 2025-12-15 14:57:38,773 log 46696 49116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:38,774 basehttp 46696 49116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:38,820 basehttp 46696 49116 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:57:42,059 basehttp 46696 48676 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:57:42,065 log 46696 51016 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:42,065 basehttp 46696 51016 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:42,086 log 46696 51016 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:42,089 basehttp 46696 51016 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:42,111 basehttp 46696 51016 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:51,493 basehttp 46696 22120 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 79946
+WARNING 2025-12-15 14:57:51,525 log 46696 22120 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:51,525 basehttp 46696 22120 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:51,626 basehttp 46696 22120 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:57:54,991 basehttp 46696 44020 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 14:57:54,998 log 46696 11408 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:54,998 basehttp 46696 11408 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:55,022 log 46696 11408 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:55,023 basehttp 46696 11408 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:55,040 basehttp 46696 11408 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 14:57:59,420 basehttp 46696 53400 "GET /empleados/3f69040e-efe9-44b7-b8f1-6fa3fab3a531/ HTTP/1.1" 200 84513
+WARNING 2025-12-15 14:57:59,447 log 46696 53400 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 14:57:59,448 basehttp 46696 53400 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 14:57:59,499 basehttp 46696 53400 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:01:45,817 basehttp 46696 56388 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:01:45,846 log 46696 56388 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:01:45,846 basehttp 46696 56388 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:01:45,939 basehttp 46696 56388 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:02:59,891 basehttp 46696 39508 "GET /empleados/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 90399
+WARNING 2025-12-15 15:02:59,922 log 46696 39508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:02:59,922 basehttp 46696 39508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:02:59,975 basehttp 46696 39508 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:03:52,937 basehttp 46696 16440 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:03:52,988 log 46696 16440 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:03:52,989 basehttp 46696 16440 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:03:53,041 basehttp 46696 16440 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:04:20,060 basehttp 46696 58004 "GET /empleados/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 90399
+WARNING 2025-12-15 15:04:20,089 log 46696 58004 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:04:20,089 basehttp 46696 58004 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:04:20,146 basehttp 46696 58004 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:05:04,186 basehttp 46696 36476 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:05:04,223 log 46696 36476 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:05:04,224 basehttp 46696 36476 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:05:04,292 basehttp 46696 36476 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 15:05:09,293 basehttp 46696 53344 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 15:05:09,297 log 46696 23920 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:05:09,297 basehttp 46696 23920 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:05:09,316 log 46696 23920 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:05:09,317 basehttp 46696 23920 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:05:09,365 basehttp 46696 23920 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:11:19,386 basehttp 46696 57796 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:11:19,425 log 46696 57796 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:11:19,425 basehttp 46696 57796 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:11:19,490 basehttp 46696 57796 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:13:06,336 basehttp 46696 56540 "GET /empleados/?page=2 HTTP/1.1" 200 101929
+WARNING 2025-12-15 15:13:06,366 log 46696 56540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:13:06,366 basehttp 46696 56540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:13:06,431 basehttp 46696 56540 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:13:11,318 basehttp 46696 52500 "GET /empleados/771b54ef-3aae-4d15-835b-3613b4e49105/ HTTP/1.1" 200 81329
+WARNING 2025-12-15 15:13:11,348 log 46696 52500 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:13:11,349 basehttp 46696 52500 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:13:11,395 basehttp 46696 52500 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:13:36,325 basehttp 46696 56484 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 15:13:36,355 log 46696 56484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:13:36,358 basehttp 46696 56484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:13:36,392 basehttp 46696 56484 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:14:18,354 basehttp 46696 30532 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:14:18,456 basehttp 46696 30532 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+WARNING 2025-12-15 15:14:18,480 log 46696 30532 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:14:18,480 basehttp 46696 30532 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:14:18,529 basehttp 46696 30532 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:14:30,618 basehttp 46696 15448 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 15:14:30,646 log 46696 15448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:14:30,647 basehttp 46696 15448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:14:30,693 basehttp 46696 15448 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:14:32,436 basehttp 46696 31620 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:14:32,472 log 46696 31620 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:14:32,473 basehttp 46696 31620 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:14:32,562 basehttp 46696 31620 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:14:39,335 basehttp 46696 27556 "GET /empleados/?page=2 HTTP/1.1" 200 101929
+WARNING 2025-12-15 15:14:39,372 log 46696 27556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:14:39,372 basehttp 46696 27556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:14:39,437 basehttp 46696 27556 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:15:19,970 basehttp 46696 19420 "GET /empleados/236f38c4-5dab-48b3-ae67-0963c95d3ba7/ HTTP/1.1" 200 82451
+WARNING 2025-12-15 15:15:20,001 log 46696 19420 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:15:20,001 basehttp 46696 19420 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:15:20,060 basehttp 46696 19420 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:20:18,670 basehttp 46696 24880 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:20:18,705 log 46696 24880 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:20:18,707 basehttp 46696 24880 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:20:18,783 basehttp 46696 24880 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:20:52,587 basehttp 46696 58300 "GET /empleados/?page=2 HTTP/1.1" 200 101929
+WARNING 2025-12-15 15:20:52,624 log 46696 58300 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:20:52,625 basehttp 46696 58300 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:20:52,691 basehttp 46696 58300 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:21:05,757 basehttp 46696 31212 "GET /empleados/?page=3 HTTP/1.1" 200 102107
+WARNING 2025-12-15 15:21:05,794 log 46696 31212 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:21:05,794 basehttp 46696 31212 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:21:05,850 basehttp 46696 31212 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:23:18,186 basehttp 46696 21848 "GET /empleados/a2cd7cf5-e3cc-40bb-b622-789f124412dc/ HTTP/1.1" 200 93450
+WARNING 2025-12-15 15:23:18,212 log 46696 21848 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:23:18,212 basehttp 46696 21848 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:23:18,275 basehttp 46696 21848 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:35:56,008 autoreload 46696 30944 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\employees\views.py changed, reloading.
+INFO 2025-12-15 15:35:56,965 apps 34660 12000 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 15:35:56,992 autoreload 34660 12000 Watching for file changes with StatReloader
+INFO 2025-12-15 15:35:57,468 wsgi 34660 22728 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 15:37:24,502 basehttp 34660 1648 "GET /empleados/a2cd7cf5-e3cc-40bb-b622-789f124412dc/ HTTP/1.1" 200 77409
+WARNING 2025-12-15 15:37:24,536 log 34660 1648 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:37:24,537 basehttp 34660 1648 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:37:24,566 basehttp 34660 1648 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:37:40,906 basehttp 34660 9452 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:37:41,033 basehttp 34660 9452 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+WARNING 2025-12-15 15:37:41,060 log 34660 9452 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:37:41,062 basehttp 34660 9452 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:37:41,104 basehttp 34660 9452 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:37:47,847 basehttp 34660 49224 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:37:47,870 basehttp 34660 49224 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 15:37:47,897 log 34660 49224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:37:47,897 basehttp 34660 49224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 15:37:52,132 basehttp 34660 49224 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:37:52,197 basehttp 34660 49224 "GET /empleados/feed/ HTTP/1.1" 200 34943
+WARNING 2025-12-15 15:37:52,226 log 34660 49224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:37:52,226 basehttp 34660 49224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:37:52,277 basehttp 34660 49224 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:37:55,159 basehttp 34660 6464 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:37:55,307 basehttp 34660 6464 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37121
+WARNING 2025-12-15 15:37:55,333 log 34660 6464 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:37:55,334 basehttp 34660 6464 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:37:55,370 basehttp 34660 6464 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:09,542 basehttp 34660 33060 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:38:09,546 basehttp 34660 33060 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-15 15:38:09,575 log 34660 33060 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:09,576 basehttp 34660 33060 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-15 15:38:13,957 basehttp 34660 33060 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:38:14,015 basehttp 34660 33060 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-15 15:38:14,054 log 34660 33060 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:14,055 basehttp 34660 33060 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:14,096 basehttp 34660 33060 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:16,205 basehttp 34660 32540 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 15:38:16,230 log 34660 32540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:16,235 basehttp 34660 32540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:16,281 basehttp 34660 32540 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:19,693 basehttp 34660 3772 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:38:19,719 log 34660 3772 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:19,720 basehttp 34660 3772 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:19,780 basehttp 34660 3772 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:26,958 basehttp 34660 40548 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 76539
+WARNING 2025-12-15 15:38:26,992 log 34660 40548 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:26,993 basehttp 34660 40548 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:27,042 basehttp 34660 40548 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:34,154 basehttp 34660 29508 "GET /empleados/ HTTP/1.1" 200 101263
+WARNING 2025-12-15 15:38:34,193 log 34660 29508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:34,193 basehttp 34660 29508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:34,306 basehttp 34660 29508 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:38:45,703 basehttp 34660 8160 "GET /empleados/3f69040e-efe9-44b7-b8f1-6fa3fab3a531/ HTTP/1.1" 200 80225
+WARNING 2025-12-15 15:38:45,742 log 34660 8160 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:38:45,743 basehttp 34660 8160 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:38:45,792 basehttp 34660 8160 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:39:05,077 basehttp 34660 42380 "GET /empleados/de6d16c7-ba07-40f0-8781-322a1104eb89/ HTTP/1.1" 200 78864
+WARNING 2025-12-15 15:39:05,104 log 34660 42380 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:39:05,104 basehttp 34660 42380 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:39:05,161 basehttp 34660 42380 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 15:39:19,629 basehttp 34660 29656 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-15 15:39:19,635 log 34660 27928 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:39:19,636 basehttp 34660 27928 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:39:19,657 log 34660 27928 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:39:19,658 basehttp 34660 27928 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:39:19,675 basehttp 34660 27928 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:41:58,639 apps 43336 30748 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 15:41:59,227 apps 23496 1776 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-15 15:41:59,243 autoreload 23496 1776 Watching for file changes with StatReloader
+INFO 2025-12-15 15:41:59,797 wsgi 23496 11436 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-15 15:42:07,471 basehttp 23496 4832 "GET /empleados/3f69040e-efe9-44b7-b8f1-6fa3fab3a531/ HTTP/1.1" 200 80225
+WARNING 2025-12-15 15:42:07,511 log 23496 4832 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:42:07,513 basehttp 23496 4832 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:42:07,559 basehttp 23496 4832 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:42:09,537 basehttp 23496 36088 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 15:42:09,573 log 23496 36088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:42:09,573 basehttp 23496 36088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:42:09,621 basehttp 23496 36088 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:42:14,971 basehttp 23496 48696 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-15 15:42:15,089 basehttp 23496 48696 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+WARNING 2025-12-15 15:42:15,116 log 23496 48696 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:42:15,117 basehttp 23496 48696 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:42:15,173 basehttp 23496 48696 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-15 15:42:38,152 basehttp 23496 54224 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-15 15:42:38,191 log 23496 54224 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-15 15:42:38,192 basehttp 23496 54224 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-15 15:42:38,232 basehttp 23496 54224 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 07:50:24,071 apps 35976 16708 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 07:50:24,898 apps 7472 24280 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 07:50:24,898 autoreload 7472 24280 Watching for file changes with StatReloader
+INFO 2025-12-17 07:50:32,118 wsgi 7472 20832 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 07:50:44,640 basehttp 7472 47576 "GET / HTTP/1.1" 302 0
+INFO 2025-12-17 07:50:44,674 basehttp 7472 47576 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:50:44,773 basehttp 7472 47576 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-12-17 07:50:44,813 basehttp 7472 47576 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-12-17 07:50:44,884 log 7472 47576 Not Found: /favicon.ico
+WARNING 2025-12-17 07:50:44,884 basehttp 7472 47576 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-17 07:50:50,037 basehttp 7472 47576 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:50:50,289 basehttp 7472 47576 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 07:50:52,948 basehttp 7472 47576 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 07:51:01,523 basehttp 7472 47576 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 79946
+INFO 2025-12-17 07:51:49,623 basehttp 7472 47576 "POST /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/cambiar-cargo/ HTTP/1.1" 200 88
+INFO 2025-12-17 07:51:53,307 basehttp 7472 47576 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82591
+INFO 2025-12-17 07:52:00,357 basehttp 7472 47576 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82591
+INFO 2025-12-17 07:53:50,959 basehttp 7472 47576 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:53:50,974 basehttp 7472 47576 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-17 07:54:04,590 basehttp 7472 47576 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:54:04,799 basehttp 7472 47576 "GET /empleados/feed/ HTTP/1.1" 200 35164
+INFO 2025-12-17 07:54:04,811 basehttp 7472 47576 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 304 0
+INFO 2025-12-17 07:54:10,191 basehttp 7472 47576 "GET /notificaciones/list/ HTTP/1.1" 200 45524
+INFO 2025-12-17 07:54:12,591 basehttp 7472 47576 "POST /notificaciones/marcar-todas-leidas/ HTTP/1.1" 200 17
+INFO 2025-12-17 07:54:12,642 basehttp 7472 47576 "GET /notificaciones/list/ HTTP/1.1" 200 42983
+INFO 2025-12-17 07:54:19,173 basehttp 7472 47576 "GET /notificaciones/list/ HTTP/1.1" 200 42983
+INFO 2025-12-17 07:54:23,189 basehttp 7472 47576 "GET /notificaciones/list/ HTTP/1.1" 200 42983
+INFO 2025-12-17 07:54:32,162 basehttp 7472 47576 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:54:32,378 basehttp 7472 47576 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 31365
+INFO 2025-12-17 07:54:54,873 basehttp 7472 47576 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:54:55,011 basehttp 7472 47576 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 31760
+INFO 2025-12-17 07:55:22,757 basehttp 7472 47576 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:55:22,764 basehttp 7472 47576 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-17 07:55:25,612 basehttp 7472 47576 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-17 07:55:25,662 basehttp 7472 47576 "GET /empleados/feed/ HTTP/1.1" 200 35918
+INFO 2025-12-17 07:55:28,004 basehttp 7472 47576 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 07:55:29,541 basehttp 7472 47576 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 07:55:44,540 basehttp 7472 47576 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82591
+INFO 2025-12-17 08:04:06,632 basehttp 7472 49496 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82514
