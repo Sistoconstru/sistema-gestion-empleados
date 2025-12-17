@@ -24,12 +24,12 @@ class CoreConfig(AppConfig):
             from django.core.management import execute_from_command_line
             import sys
 
-            # No iniciar si se está ejecutando manage.py (evita inicios duplicados)
-            if 'manage.py' in sys.argv:
-                return
-
             # No iniciar si se está ejecutando migraciones o test
             if any(cmd in sys.argv for cmd in ['migrate', 'test', 'makemigrations']):
+                return
+
+            # No iniciar si se está ejecutando manage.py (evita inicios duplicados)
+            if 'manage.py' in sys.argv:
                 return
 
             # Iniciar el scheduler

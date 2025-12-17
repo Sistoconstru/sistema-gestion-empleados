@@ -67,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.core.middleware.AuditLogMiddleware',  # Auditoría automática de todas las operaciones
     #'apps.core.middleware.ActivityLogMiddleware', # Descomentar cuando esté implementado muestra actividad de usuarios
 ]
 

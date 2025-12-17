@@ -57,13 +57,14 @@ class LogActividad(models.Model):
     accion = models.CharField(max_length=100)  # Acción realizada
     modelo = models.CharField(max_length=50)  # Modelo afectado
     objeto_id = models.UUIDField(null=True, blank=True)  # ID del objeto afectado
+    descripcion = models.TextField(blank=True)  # Descripción legible de la acción
     cambios_realizados = models.JSONField(null=True, blank=True)  # Cambios realizados en formato JSON
     ip_address = models.GenericIPAddressField()  # IP desde donde se realizó la acción
     user_agent = models.TextField(blank=True)  # Información del navegador/dispositivo
     metodo_http = models.CharField(max_length=10, blank=True)  # Método HTTP usado
     url_accedida = models.CharField(max_length=500, blank=True)  # URL accedida
     fecha_accion = models.DateTimeField(auto_now_add=True)  # Fecha y hora de la acción
-    
+
     class Meta:
         db_table = 'log_actividades'  # Nombre de la tabla en la BD
         indexes = [
@@ -72,3 +73,6 @@ class LogActividad(models.Model):
         ]
         verbose_name = 'Log de Actividad'
         verbose_name_plural = 'Logs de Actividad'
+
+    def __str__(self):
+        return self.descripcion or f"{self.usuario} - {self.accion} - {self.modelo}"

@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.core.middleware.MediaCORSMiddleware',
+    'apps.core.middleware.AuditLogMiddleware',  # Auditoría automática
 ]
 # Permitir que el sitio se muestre en iframes
 X_FRAME_OPTIONS = 'SAMEORIGIN'

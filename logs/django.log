@@ -16918,3 +16918,717 @@ INFO 2025-12-17 07:55:28,004 basehttp 7472 47576 "GET /dashboard/ HTTP/1.1" 200 
 INFO 2025-12-17 07:55:29,541 basehttp 7472 47576 "GET /empleados/ HTTP/1.1" 200 101257
 INFO 2025-12-17 07:55:44,540 basehttp 7472 47576 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82591
 INFO 2025-12-17 08:04:06,632 basehttp 7472 49496 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82514
+INFO 2025-12-17 08:16:56,873 apps 27468 10772 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:17:35,473 apps 45996 23120 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:17:59,202 apps 25364 23580 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:18:20,723 apps 37112 50432 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:33:24,361 apps 25772 51264 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:36:43,548 apps 50728 16592 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:36:44,207 apps 52664 40400 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:36:44,229 autoreload 52664 40400 Watching for file changes with StatReloader
+INFO 2025-12-17 08:36:44,810 wsgi 52664 33804 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 08:36:51,409 basehttp 52664 42600 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82514
+INFO 2025-12-17 08:36:54,125 basehttp 52664 42600 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:37:05,421 basehttp 52664 42600 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 08:37:09,690 basehttp 52664 42600 "GET /admin/core/logactividad/ HTTP/1.1" 200 61296
+INFO 2025-12-17 08:37:09,734 basehttp 52664 8028 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-12-17 08:37:09,779 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:37:11,940 basehttp 52664 42600 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 48123
+INFO 2025-12-17 08:37:11,971 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:37:14,590 basehttp 52664 42600 "GET /admin/core/configuracionsistema/add/ HTTP/1.1" 200 51439
+INFO 2025-12-17 08:37:14,621 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:37:50,457 basehttp 52664 42600 "GET /admin/core/logactividad/ HTTP/1.1" 200 61296
+INFO 2025-12-17 08:37:50,480 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:38:03,274 basehttp 52664 42600 "GET /admin/reports/tiporeporte/ HTTP/1.1" 200 49960
+INFO 2025-12-17 08:38:03,305 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:38:13,591 basehttp 52664 42600 "GET /admin/reports/tiporeporte/1/change/ HTTP/1.1" 200 64633
+INFO 2025-12-17 08:38:13,620 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:38:57,557 basehttp 52664 42600 "GET /admin/reports/reportegenerado/ HTTP/1.1" 200 47888
+INFO 2025-12-17 08:38:57,580 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:39:28,973 basehttp 52664 42600 "GET /admin/core/logactividad/ HTTP/1.1" 200 61296
+INFO 2025-12-17 08:39:28,996 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:39:38,890 basehttp 52664 42600 "GET /admin/core/logactividad/?fecha_accion__gte=2025-12-10+00%3A00%3A00-05%3A00&fecha_accion__lt=2025-12-18+00%3A00%3A00-05%3A00 HTTP/1.1" 200 75233
+INFO 2025-12-17 08:39:38,921 basehttp 52664 42600 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:43:04,791 apps 12936 48332 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:43:55,589 apps 25848 47852 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:44:46,788 apps 24164 19332 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:44:47,422 apps 18832 6172 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:44:47,451 autoreload 18832 6172 Watching for file changes with StatReloader
+INFO 2025-12-17 08:44:47,887 wsgi 18832 16708 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 08:45:47,107 basehttp 18832 57508 "GET /admin/core/logactividad/?fecha_accion__gte=2025-12-10+00%3A00%3A00-05%3A00&fecha_accion__lt=2025-12-18+00%3A00%3A00-05%3A00 HTTP/1.1" 200 79874
+INFO 2025-12-17 08:45:47,147 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:45:47,197 basehttp 18832 57508 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-12-17 08:46:08,274 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:46:11,739 basehttp 18832 57508 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 08:46:15,057 basehttp 18832 57508 "GET /empleados/c6ee81c6-4a18-4b47-b5de-8cd74166ce19/ HTTP/1.1" 200 77611
+INFO 2025-12-17 08:46:22,725 basehttp 18832 57508 "GET /documentos/empleado/c6ee81c6-4a18-4b47-b5de-8cd74166ce19/ HTTP/1.1" 200 17355
+INFO 2025-12-17 08:46:28,525 basehttp 18832 57508 "GET /documentos/empleado/c6ee81c6-4a18-4b47-b5de-8cd74166ce19/subir/ HTTP/1.1" 200 15678
+INFO 2025-12-17 08:46:48,142 models 18832 57508 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-17 08:46:48,161 basehttp 18832 57508 "POST /documentos/empleado/c6ee81c6-4a18-4b47-b5de-8cd74166ce19/subir/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:46:48,213 basehttp 18832 57508 "GET /documentos/empleado/c6ee81c6-4a18-4b47-b5de-8cd74166ce19/ HTTP/1.1" 200 19715
+INFO 2025-12-17 08:46:58,577 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:47:01,306 basehttp 18832 57508 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 08:47:03,924 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64619
+INFO 2025-12-17 08:47:03,951 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:47:06,673 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64619
+INFO 2025-12-17 08:47:06,698 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:47:13,507 basehttp 18832 57508 "GET /admin/core/logactividad/0fb5937e-adf1-4d3d-8335-f033550d4378/change/ HTTP/1.1" 200 52762
+INFO 2025-12-17 08:47:13,545 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:47:33,723 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64619
+INFO 2025-12-17 08:47:43,164 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:47:44,950 basehttp 18832 57508 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 08:47:56,674 basehttp 18832 57508 "GET /empleados/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 81704
+INFO 2025-12-17 08:48:20,475 basehttp 18832 57508 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 17353
+INFO 2025-12-17 08:48:32,542 basehttp 18832 57508 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 200 15678
+INFO 2025-12-17 08:48:52,875 models 18832 57508 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-17 08:48:52,893 basehttp 18832 57508 "POST /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/subir/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:48:52,909 basehttp 18832 57508 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 19697
+INFO 2025-12-17 08:48:59,551 basehttp 18832 57508 "GET /documentos/documento/28a43da4-c3ed-4390-89ba-b74c970a439e/ver/ HTTP/1.1" 200 28327
+INFO 2025-12-17 08:48:59,602 basehttp 18832 57508 "GET /media/documentos/10352125/CONTRATO/CONTRATO_20251217_134852.pdf HTTP/1.1" 200 110734
+INFO 2025-12-17 08:49:09,612 models 18832 57508 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-17 08:49:09,617 basehttp 18832 57508 "POST /documentos/documento/28a43da4-c3ed-4390-89ba-b74c970a439e/ver/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:49:09,656 basehttp 18832 57508 "GET /documentos/empleado/5cb9d1d2-8450-4f09-943d-43aa005a4ab6/ HTTP/1.1" 200 19481
+INFO 2025-12-17 08:49:20,733 basehttp 18832 57508 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:49:20,823 basehttp 18832 57508 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26492
+INFO 2025-12-17 08:49:26,324 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:49:28,373 basehttp 18832 57508 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 08:49:31,106 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64619
+INFO 2025-12-17 08:49:31,129 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:49:37,340 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64619
+INFO 2025-12-17 08:49:37,362 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:49:44,977 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:49:47,486 basehttp 18832 57508 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 08:50:05,177 basehttp 18832 57508 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 76449
+INFO 2025-12-17 08:50:11,792 basehttp 18832 57508 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/editar/ HTTP/1.1" 200 212125
+INFO 2025-12-17 08:50:11,835 basehttp 18832 57508 "GET /empleados/api/jefes-potenciales/12/ HTTP/1.1" 200 149
+INFO 2025-12-17 08:50:48,659 basehttp 18832 57508 "POST /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/editar/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:50:48,759 basehttp 18832 57508 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 76847
+INFO 2025-12-17 08:51:11,690 basehttp 18832 57508 "GET /empleados/ HTTP/1.1" 200 101257
+INFO 2025-12-17 08:51:27,375 basehttp 18832 57508 "GET /empleados/?search=&estado=&area=&cargo=42&sede= HTTP/1.1" 200 20238
+INFO 2025-12-17 08:51:31,879 basehttp 18832 57508 "GET /empleados/crear/ HTTP/1.1" 200 210441
+INFO 2025-12-17 08:52:25,100 basehttp 18832 57508 "GET /empleados/api/jefes-potenciales/42/ HTTP/1.1" 200 141
+INFO 2025-12-17 08:53:12,947 basehttp 18832 57508 "POST /empleados/crear/ HTTP/1.1" 200 211469
+INFO 2025-12-17 08:53:12,980 basehttp 18832 57508 "GET /empleados/api/jefes-potenciales/42/ HTTP/1.1" 200 141
+INFO 2025-12-17 08:53:27,428 basehttp 18832 57508 "POST /empleados/crear/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:53:27,790 basehttp 18832 57508 "GET /empleados/ HTTP/1.1" 200 102077
+INFO 2025-12-17 08:53:46,125 basehttp 18832 57508 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:53:47,948 basehttp 18832 57508 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 08:53:50,657 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+INFO 2025-12-17 08:53:50,695 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:53:52,973 basehttp 18832 57508 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+INFO 2025-12-17 08:53:53,007 basehttp 18832 57508 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:54:06,691 apps 43112 7240 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:54:07,369 apps 29904 2740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 08:54:07,402 autoreload 29904 2740 Watching for file changes with StatReloader
+INFO 2025-12-17 08:54:07,999 wsgi 29904 36752 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 08:54:09,476 basehttp 29904 47052 "GET / HTTP/1.1" 302 0
+INFO 2025-12-17 08:54:09,660 basehttp 29904 47052 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-17 08:54:33,662 log 29904 47052 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:54:33,663 basehttp 29904 47052 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 08:54:33,679 basehttp 29904 47052 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:54:39,590 basehttp 29904 444 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 08:54:39,617 basehttp 29904 41268 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-17 08:54:39,617 basehttp 29904 39024 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-17 08:54:39,619 basehttp 29904 33052 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+WARNING 2025-12-17 08:54:39,630 log 29904 41268 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:54:39,630 basehttp 29904 41268 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:54:39,631 basehttp 29904 27056 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-17 08:54:39,633 basehttp 29904 39024 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-17 08:54:39,634 basehttp 29904 15784 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-17 08:54:39,636 basehttp 29904 444 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-17 08:54:39,678 basehttp 29904 444 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-17 08:54:39,694 basehttp 29904 444 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-17 08:54:39,905 log 29904 15784 Not Found: /favicon.ico
+WARNING 2025-12-17 08:54:39,907 basehttp 29904 15784 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-17 08:54:45,459 basehttp 29904 15784 "GET /admin/ HTTP/1.1" 200 62887
+WARNING 2025-12-17 08:54:45,502 log 29904 39024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:54:45,505 basehttp 29904 39024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:54:45,513 basehttp 29904 33052 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-12-17 08:54:45,514 basehttp 29904 41268 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-12-17 08:54:45,515 basehttp 29904 15784 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-12-17 08:54:45,520 basehttp 29904 51220 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-12-17 08:54:45,521 basehttp 29904 27056 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-12-17 08:54:45,530 basehttp 29904 39024 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-12-17 08:54:45,541 basehttp 29904 27056 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-12-17 08:54:45,592 basehttp 29904 39024 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-12-17 08:54:45,592 basehttp 29904 51220 "GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+INFO 2025-12-17 08:54:45,604 basehttp 29904 27056 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-12-17 08:54:48,174 basehttp 29904 27056 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:54:48,212 log 29904 27056 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:54:48,216 basehttp 29904 27056 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:54:48,231 basehttp 29904 51220 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-12-17 08:54:48,234 basehttp 29904 41268 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-12-17 08:54:48,248 basehttp 29904 33052 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-12-17 08:54:48,257 basehttp 29904 27056 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-12-17 08:54:48,280 basehttp 29904 51220 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-12-17 08:54:48,280 basehttp 29904 41268 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-12-17 08:54:48,282 basehttp 29904 33052 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-12-17 08:54:48,283 basehttp 29904 41268 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-12-17 08:54:48,288 basehttp 29904 15784 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-12-17 08:54:48,303 basehttp 29904 39024 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:54:48,329 basehttp 29904 39024 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-12-17 08:54:48,402 basehttp 29904 27056 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-12-17 08:54:48,431 basehttp 29904 27056 "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+INFO 2025-12-17 08:55:12,740 basehttp 29904 27056 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-17 08:55:12,768 log 29904 27056 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:12,769 basehttp 29904 27056 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 08:55:12,817 basehttp 29904 27056 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:55:16,323 basehttp 29904 39024 "GET /admin/ HTTP/1.1" 200 62887
+WARNING 2025-12-17 08:55:16,362 log 29904 39024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:16,362 basehttp 29904 39024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:20,273 basehttp 29904 39024 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:55:20,312 log 29904 39024 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:20,313 basehttp 29904 39024 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:20,315 basehttp 29904 15784 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:55:36,597 basehttp 29904 15784 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:55:36,604 basehttp 29904 15784 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-17 08:55:36,635 log 29904 15784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:36,636 basehttp 29904 15784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:42,015 basehttp 29904 15784 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:55:42,040 basehttp 29904 15784 "GET /empleados/feed/ HTTP/1.1" 200 31273
+WARNING 2025-12-17 08:55:42,087 log 29904 15784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:42,088 basehttp 29904 15784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:42,126 basehttp 29904 39024 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 200 2895014
+WARNING 2025-12-17 08:55:42,183 basehttp 29904 39024 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:55:45,807 basehttp 29904 15784 "GET /dashboard/ HTTP/1.1" 200 20523
+WARNING 2025-12-17 08:55:45,846 log 29904 15784 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:45,846 basehttp 29904 15784 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 08:55:45,889 basehttp 29904 15784 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:55:47,473 basehttp 29904 41268 "GET /admin/ HTTP/1.1" 200 61988
+WARNING 2025-12-17 08:55:47,504 log 29904 41268 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:47,506 basehttp 29904 41268 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:47,518 basehttp 29904 33052 "GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+INFO 2025-12-17 08:55:52,190 basehttp 29904 33052 "GET /admin/core/logactividad/ HTTP/1.1" 200 64829
+WARNING 2025-12-17 08:55:52,219 log 29904 33052 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:55:52,226 basehttp 29904 33052 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:55:52,230 basehttp 29904 41268 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:56:06,968 basehttp 29904 41268 "POST /admin/logout/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:56:06,972 basehttp 29904 41268 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-17 08:56:07,002 log 29904 41268 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:56:07,002 basehttp 29904 41268 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:56:12,994 basehttp 29904 41268 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-17 08:56:13,057 basehttp 29904 41268 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-17 08:56:13,092 log 29904 41268 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:56:13,093 basehttp 29904 41268 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 08:56:13,146 basehttp 29904 41268 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:56:15,448 basehttp 29904 33052 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-17 08:56:15,479 log 29904 33052 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:56:15,479 basehttp 29904 33052 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 08:56:15,536 basehttp 29904 33052 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 08:56:17,507 basehttp 29904 51220 "GET /admin/ HTTP/1.1" 200 62887
+WARNING 2025-12-17 08:56:17,542 log 29904 51220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:56:17,544 basehttp 29904 51220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:56:20,140 basehttp 29904 51220 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:56:20,186 log 29904 51220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:56:20,186 basehttp 29904 51220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:56:20,233 basehttp 29904 41164 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:58:21,340 basehttp 29904 41164 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:58:21,381 log 29904 41164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:58:21,382 basehttp 29904 41164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:58:21,430 basehttp 29904 51220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:58:22,540 basehttp 29904 51220 "GET /admin/core/configuracionsistema/ HTTP/1.1" 200 48123
+WARNING 2025-12-17 08:58:22,581 log 29904 51220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:58:22,583 basehttp 29904 51220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:58:22,588 basehttp 29904 41164 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:58:22,644 basehttp 29904 41164 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-12-17 08:58:27,573 basehttp 29904 41164 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:58:27,609 log 29904 41164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:58:27,610 basehttp 29904 41164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:58:27,613 basehttp 29904 51220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:58:40,457 basehttp 29904 51220 "GET /admin/reports/reportegenerado/ HTTP/1.1" 200 47888
+WARNING 2025-12-17 08:58:40,493 log 29904 51220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:58:40,494 basehttp 29904 51220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:58:40,495 basehttp 29904 41164 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 08:59:05,007 basehttp 29904 41164 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+WARNING 2025-12-17 08:59:05,044 log 29904 41164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 08:59:05,046 basehttp 29904 41164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 08:59:05,047 basehttp 29904 51220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:00:39,593 basehttp 29904 51220 "GET /dashboard/ HTTP/1.1" 200 21205
+WARNING 2025-12-17 09:00:39,627 log 29904 51220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:00:39,629 basehttp 29904 51220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 09:00:39,678 basehttp 29904 51220 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 09:00:50,174 basehttp 29904 41164 "GET /reportes/ HTTP/1.1" 200 29721
+WARNING 2025-12-17 09:00:50,209 log 29904 41164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:00:50,210 basehttp 29904 41164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 09:00:50,237 basehttp 29904 41164 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-17 09:01:15,953 basehttp 29904 31300 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-17 09:01:15,959 log 29904 42644 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:01:15,960 basehttp 29904 42644 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 09:01:15,980 log 29904 42644 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:01:15,980 basehttp 29904 42644 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-17 09:01:16,019 basehttp 29904 42644 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-17 09:01:27,941 basehttp 29904 34876 "GET /admin/ HTTP/1.1" 200 62887
+WARNING 2025-12-17 09:01:27,972 log 29904 34876 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:01:27,973 basehttp 29904 34876 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 09:03:51,094 apps 23832 20896 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:04:17,523 apps 45960 32260 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:06:03,807 autoreload 29904 2740 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\config\settings\base.py changed, reloading.
+INFO 2025-12-17 09:06:04,640 apps 39132 40856 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:06:04,661 autoreload 39132 40856 Watching for file changes with StatReloader
+INFO 2025-12-17 09:06:05,160 wsgi 39132 10032 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:06:17,606 apps 18340 45692 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:10:50,340 apps 21372 37360 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:11:41,091 basehttp 39132 50220 "GET /admin/ HTTP/1.1" 200 62887
+WARNING 2025-12-17 09:11:41,132 log 39132 50220 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-17 09:11:41,133 basehttp 39132 50220 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-17 09:11:49,879 basehttp 39132 50220 "GET /admin/core/logactividad/ HTTP/1.1" 200 64830
+INFO 2025-12-17 09:11:49,904 basehttp 39132 50220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:11:54,709 basehttp 39132 50220 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:11:58,262 basehttp 39132 50220 "GET /empleados/ HTTP/1.1" 200 101241
+INFO 2025-12-17 09:12:02,582 basehttp 39132 50220 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 77392
+INFO 2025-12-17 09:12:05,541 basehttp 39132 50220 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/editar/ HTTP/1.1" 200 212458
+INFO 2025-12-17 09:12:13,441 basehttp 39132 50220 "POST /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/editar/ HTTP/1.1" 302 0
+INFO 2025-12-17 09:12:13,558 basehttp 39132 50220 "GET /empleados/827648fc-904b-4057-8bdc-0c44d5a9b843/ HTTP/1.1" 200 77784
+INFO 2025-12-17 09:12:19,336 basehttp 39132 50220 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:12:22,009 basehttp 39132 50220 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:12:24,920 basehttp 39132 50220 "GET /admin/core/logactividad/ HTTP/1.1" 200 65835
+INFO 2025-12-17 09:12:24,939 basehttp 39132 50220 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:12:45,002 basehttp 39132 50220 "GET /admin/core/logactividad/f6d1d198-7e20-422a-b100-d0b7aef49869/change/ HTTP/1.1" 200 54045
+INFO 2025-12-17 09:12:45,035 basehttp 39132 50220 "GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+INFO 2025-12-17 09:12:45,045 basehttp 39132 31304 "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+INFO 2025-12-17 09:12:45,049 basehttp 39132 50220 "GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+INFO 2025-12-17 09:12:45,065 basehttp 39132 50220 "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+INFO 2025-12-17 09:12:45,188 basehttp 39132 56052 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:14:14,174 basehttp 39132 56052 "GET /admin/core/logactividad/ HTTP/1.1" 200 65835
+INFO 2025-12-17 09:14:17,995 basehttp 39132 56052 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:14:23,907 basehttp 39132 56052 "GET /empleados/ HTTP/1.1" 200 101241
+INFO 2025-12-17 09:14:27,941 basehttp 39132 56052 "GET /empleados/de6d16c7-ba07-40f0-8781-322a1104eb89/ HTTP/1.1" 200 78774
+INFO 2025-12-17 09:15:20,597 basehttp 39132 56052 "POST /empleados/de6d16c7-ba07-40f0-8781-322a1104eb89/cambiar-cargo/ HTTP/1.1" 200 78
+INFO 2025-12-17 09:15:23,641 basehttp 39132 56052 "GET /empleados/de6d16c7-ba07-40f0-8781-322a1104eb89/ HTTP/1.1" 200 79947
+INFO 2025-12-17 09:15:29,796 basehttp 39132 56052 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:15:31,540 basehttp 39132 56052 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:15:33,707 basehttp 39132 56052 "GET /admin/core/logactividad/ HTTP/1.1" 200 66726
+INFO 2025-12-17 09:15:33,731 basehttp 39132 56052 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:15:38,174 basehttp 39132 56052 "GET /admin/core/logactividad/0e6590a2-f5fd-4f7b-8f68-3d0d47856deb/change/ HTTP/1.1" 200 53263
+INFO 2025-12-17 09:15:38,197 basehttp 39132 56052 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:16:09,473 basehttp 39132 56052 "GET /admin/core/logactividad/ HTTP/1.1" 200 66726
+INFO 2025-12-17 09:16:09,498 basehttp 39132 56052 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:21:23,549 autoreload 39132 40856 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\models.py changed, reloading.
+INFO 2025-12-17 09:21:31,082 apps 7752 9740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:21:31,282 autoreload 7752 9740 Watching for file changes with StatReloader
+INFO 2025-12-17 09:21:36,240 wsgi 7752 42180 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:21:45,195 autoreload 7752 9740 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\middleware.py changed, reloading.
+INFO 2025-12-17 09:21:46,011 apps 54396 19184 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:21:46,029 autoreload 54396 19184 Watching for file changes with StatReloader
+INFO 2025-12-17 09:21:46,607 wsgi 54396 39964 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:22:51,840 autoreload 54396 19184 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\middleware.py changed, reloading.
+INFO 2025-12-17 09:22:52,645 apps 49216 50772 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:22:52,665 autoreload 49216 50772 Watching for file changes with StatReloader
+INFO 2025-12-17 09:22:53,145 wsgi 49216 56760 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:23:13,574 autoreload 49216 50772 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\admin.py changed, reloading.
+INFO 2025-12-17 09:23:14,378 apps 38400 42792 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:23:14,397 autoreload 38400 42792 Watching for file changes with StatReloader
+INFO 2025-12-17 09:23:34,150 autoreload 38400 42792 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\admin.py changed, reloading.
+INFO 2025-12-17 09:23:34,907 apps 46476 37032 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:23:34,929 autoreload 46476 37032 Watching for file changes with StatReloader
+INFO 2025-12-17 09:23:49,429 autoreload 46476 37032 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\admin.py changed, reloading.
+INFO 2025-12-17 09:23:50,192 apps 12524 7784 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:23:50,223 autoreload 12524 7784 Watching for file changes with StatReloader
+INFO 2025-12-17 09:25:15,363 autoreload 12524 7784 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\admin.py changed, reloading.
+INFO 2025-12-17 09:25:16,131 apps 46664 42892 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:25:16,151 autoreload 46664 42892 Watching for file changes with StatReloader
+INFO 2025-12-17 09:25:30,623 autoreload 46664 42892 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\core\admin.py changed, reloading.
+INFO 2025-12-17 09:25:31,358 apps 48064 29356 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:25:31,380 autoreload 48064 29356 Watching for file changes with StatReloader
+INFO 2025-12-17 09:25:31,885 wsgi 48064 8092 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+ERROR 2025-12-17 09:27:12,285 log 48064 55572 Internal Server Error: /admin/core/logactividad/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+ERROR 2025-12-17 09:27:12,297 basehttp 48064 55572 "GET /admin/core/logactividad/ HTTP/1.1" 500 178974
+ERROR 2025-12-17 09:27:16,905 log 48064 55572 Internal Server Error: /admin/core/logactividad/0e6590a2-f5fd-4f7b-8f68-3d0d47856deb/change/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 1840, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 1863, in _changeform_view
+    obj = self.get_object(request, unquote(object_id), to_field)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 897, in get_object
+    return queryset.get(**{field.name: object_id})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 629, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+ERROR 2025-12-17 09:27:16,905 basehttp 48064 55572 "GET /admin/core/logactividad/0e6590a2-f5fd-4f7b-8f68-3d0d47856deb/change/ HTTP/1.1" 500 197861
+INFO 2025-12-17 09:27:18,907 basehttp 48064 55572 "GET /admin/ HTTP/1.1" 200 62887
+ERROR 2025-12-17 09:27:26,585 log 48064 55572 Internal Server Error: /admin/core/logactividad/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+ERROR 2025-12-17 09:27:26,592 basehttp 48064 55572 "GET /admin/core/logactividad/ HTTP/1.1" 500 178775
+INFO 2025-12-17 09:27:28,509 basehttp 48064 55572 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:30:52,239 apps 25292 24776 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:32:29,051 apps 8016 36728 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:32:29,738 apps 13128 54912 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:32:29,759 autoreload 13128 54912 Watching for file changes with StatReloader
+INFO 2025-12-17 09:32:30,256 wsgi 13128 13364 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:32:45,890 basehttp 13128 31904 "GET /admin/ HTTP/1.1" 200 62887
+ERROR 2025-12-17 09:32:49,340 log 13128 31904 Internal Server Error: /admin/core/logactividad/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\admin\options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: no existe la columna log_actividades.descripcion
+LINE 1: ...vidades"."modelo", "log_actividades"."objeto_id", "log_activ...
+                                                             ^
+
+ERROR 2025-12-17 09:32:49,357 basehttp 13128 31904 "GET /admin/core/logactividad/ HTTP/1.1" 500 178775
+INFO 2025-12-17 09:32:51,073 basehttp 13128 31904 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:34:45,551 apps 50624 7136 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:34:59,173 apps 27276 6208 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:35:04,245 apps 26032 35464 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:35:04,863 apps 27120 11604 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 09:35:04,894 autoreload 27120 11604 Watching for file changes with StatReloader
+INFO 2025-12-17 09:35:05,357 wsgi 27120 15068 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 09:35:10,847 basehttp 27120 38640 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:35:13,774 basehttp 27120 38640 "GET /admin/core/logactividad/ HTTP/1.1" 200 65851
+INFO 2025-12-17 09:35:13,821 basehttp 27120 38640 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:35:19,192 basehttp 27120 38640 "GET /admin/core/logactividad/0e6590a2-f5fd-4f7b-8f68-3d0d47856deb/change/ HTTP/1.1" 200 53813
+INFO 2025-12-17 09:35:19,218 basehttp 27120 38640 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:35:32,297 basehttp 27120 38640 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:35:36,418 basehttp 27120 38640 "GET /empleados/ HTTP/1.1" 200 101241
+INFO 2025-12-17 09:36:01,723 basehttp 27120 38640 "GET /empleados/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 82514
+INFO 2025-12-17 09:36:48,528 basehttp 27120 38640 "GET /empleados/0647bcd8-edb3-4ced-a1f7-9942be4e68fd/ HTTP/1.1" 200 75131
+INFO 2025-12-17 09:37:45,191 basehttp 27120 38640 "POST /empleados/0647bcd8-edb3-4ced-a1f7-9942be4e68fd/cambiar-cargo/ HTTP/1.1" 200 74
+INFO 2025-12-17 09:37:46,658 basehttp 27120 38640 "GET /empleados/0647bcd8-edb3-4ced-a1f7-9942be4e68fd/ HTTP/1.1" 200 76297
+INFO 2025-12-17 09:37:50,493 basehttp 27120 38640 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 09:37:52,490 basehttp 27120 38640 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 09:37:54,524 basehttp 27120 38640 "GET /admin/core/logactividad/ HTTP/1.1" 200 66605
+INFO 2025-12-17 09:37:54,552 basehttp 27120 38640 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:38:10,855 basehttp 27120 19548 "GET /admin/core/logactividad/8637d8e3-9eaf-42e6-936e-f342e342cf5e/change/ HTTP/1.1" 200 53871
+INFO 2025-12-17 09:38:10,876 basehttp 27120 19548 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 09:40:28,541 basehttp 27120 19548 "GET /admin/core/logactividad/ HTTP/1.1" 200 66605
+INFO 2025-12-17 09:40:28,581 basehttp 27120 19548 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:08:04,940 apps 23164 57040 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:12:26,573 apps 1592 50716 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:14:25,789 apps 6800 12076 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:19:10,109 apps 29364 26348 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:20:59,458 apps 51248 23452 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:27:20,523 apps 55176 13740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:27:28,073 apps 39552 56444 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:39:26,182 apps 22016 29924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:42:07,304 apps 20312 13032 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:42:07,966 apps 23200 17248 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-17 10:42:07,984 autoreload 23200 17248 Watching for file changes with StatReloader
+INFO 2025-12-17 10:42:08,406 wsgi 23200 41544 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-17 10:42:18,589 basehttp 23200 57540 "GET /admin/core/logactividad/ HTTP/1.1" 200 66605
+INFO 2025-12-17 10:42:18,616 basehttp 23200 57540 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:42:21,610 basehttp 23200 57540 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 10:42:24,474 basehttp 23200 57540 "GET /empleados/ HTTP/1.1" 200 101241
+INFO 2025-12-17 10:42:29,890 basehttp 23200 57540 "GET /empleados/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 76451
+INFO 2025-12-17 10:42:35,228 basehttp 23200 57540 "GET /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 17351
+INFO 2025-12-17 10:42:37,924 basehttp 23200 57540 "GET /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/subir/ HTTP/1.1" 200 15678
+INFO 2025-12-17 10:42:50,023 models 23200 57540 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-17 10:42:50,042 basehttp 23200 57540 "POST /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/subir/ HTTP/1.1" 302 0
+INFO 2025-12-17 10:42:50,060 basehttp 23200 57540 "GET /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 19711
+INFO 2025-12-17 10:42:54,540 basehttp 23200 57540 "GET /documentos/documento/248ea3ca-53a7-4ff7-b3f8-bf3fd8f68fdf/aprobar/ HTTP/1.1" 200 28342
+INFO 2025-12-17 10:42:54,593 basehttp 23200 57540 "GET /media/documentos/45236589/ESTUDIOS/ESTUDIOS_20251217_154250.pdf HTTP/1.1" 200 1007138
+INFO 2025-12-17 10:43:03,363 models 23200 57540 [DocumentoEmpleado.save] Backend de almacenamiento usado: FileSystemStorage
+INFO 2025-12-17 10:43:03,376 basehttp 23200 57540 "POST /documentos/documento/248ea3ca-53a7-4ff7-b3f8-bf3fd8f68fdf/aprobar/ HTTP/1.1" 302 0
+INFO 2025-12-17 10:43:03,409 basehttp 23200 57540 "GET /documentos/empleado/7bb55458-60d9-4003-994c-7bd9465a6a24/ HTTP/1.1" 200 19494
+INFO 2025-12-17 10:43:11,114 basehttp 23200 57540 "GET /dashboard/ HTTP/1.1" 200 21205
+INFO 2025-12-17 10:43:13,556 basehttp 23200 57540 "GET /admin/ HTTP/1.1" 200 62887
+INFO 2025-12-17 10:43:16,855 basehttp 23200 57540 "GET /admin/core/logactividad/ HTTP/1.1" 200 68047
+INFO 2025-12-17 10:43:16,879 basehttp 23200 57540 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:43:36,774 basehttp 23200 57540 "GET /admin/core/logactividad/7d40234d-4ddb-44b4-9d39-18776a67b7e5/change/ HTTP/1.1" 200 53667
+INFO 2025-12-17 10:43:36,804 basehttp 23200 57540 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:43:56,457 basehttp 23200 57540 "GET /admin/core/logactividad/ HTTP/1.1" 200 68047
+INFO 2025-12-17 10:44:17,257 basehttp 23200 57540 "GET /admin/core/logactividad/8637d8e3-9eaf-42e6-936e-f342e342cf5e/change/ HTTP/1.1" 200 53871
+INFO 2025-12-17 10:44:17,280 basehttp 23200 57540 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:44:36,088 basehttp 23200 57540 "GET /admin/core/logactividad/ HTTP/1.1" 200 68047
+INFO 2025-12-17 10:57:23,040 basehttp 23200 45720 "GET /admin/core/logactividad/7d40234d-4ddb-44b4-9d39-18776a67b7e5/change/ HTTP/1.1" 200 53667
+INFO 2025-12-17 10:57:23,078 basehttp 23200 45720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110
+INFO 2025-12-17 10:57:30,991 basehttp 23200 45720 "GET /admin/core/logactividad/7d40234d-4ddb-44b4-9d39-18776a67b7e5/history/ HTTP/1.1" 200 45192
+INFO 2025-12-17 10:57:46,007 basehttp 23200 45720 "GET /admin/core/logactividad/7d40234d-4ddb-44b4-9d39-18776a67b7e5/change/ HTTP/1.1" 200 53667
+INFO 2025-12-17 10:57:52,674 basehttp 23200 45720 "GET /admin/core/logactividad/ HTTP/1.1" 200 68047
+INFO 2025-12-17 10:57:52,696 basehttp 23200 45720 "GET /admin/jsi18n/ HTTP/1.1" 200 9110

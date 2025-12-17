@@ -59,12 +59,27 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 3: Limpiar logs antiguos el 1ro de cada mes a las 3:00 AM
+        scheduler.add_job(
+            _limpiar_logs_antiguos,
+            'cron',
+            day=1,
+            hour=3,
+            minute=0,
+            id='limpiar_logs',
+            name='Limpiar logs de auditoría mayores a 2 años',
+            replace_existing=True,
+            misfire_grace_time=3600,  # 1 hora de tolerancia
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
         logger.info('Tareas programadas:')
         logger.info('  - 02:00 AM: Asignar evaluaciones de período de prueba')
         logger.info('  - 02:15 AM: Activar empleados completados')
+        logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
 
         return scheduler
 
@@ -136,6 +151,32 @@ def _activar_empleados_prueba():
     except Exception as e:
         logger.error(
             f'❌ Error en activación de empleados: {e}',
+            exc_info=True
+        )
+
+
+def _limpiar_logs_antiguos():
+    """
+    Ejecuta el comando de limpieza de logs de auditoría antiguos.
+
+    Este comando:
+    - Busca logs con más de 730 días (2 años) de antigüedad
+    - Elimina los registros antiguos para mantener la BD optimizada
+    - Registra estadísticas de la operación
+    """
+    try:
+        logger.info('🔄 Iniciando limpieza de logs de auditoría antiguos...')
+
+        call_command(
+            'limpiar_logs_antiguos',
+            '--dias', '730'
+        )
+
+        logger.info('✅ Limpieza de logs completada')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error en limpieza de logs: {e}',
             exc_info=True
         )
 
