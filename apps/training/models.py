@@ -224,24 +224,43 @@ class Capacitacion(models.Model):
     fecha_vigencia_fin = models.DateField(null=True, blank=True)
     version = models.CharField(max_length=10, default='1.0')
     
-    # Proveedor externo (NUEVOS CAMPOS)
-    proveedor_externo = models.ForeignKey(
-        ProveedorExterno, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True,
-        help_text="Solo para capacitaciones externas"
+    # Capacitaciones Externas (SIMPLIFICADO)
+    es_capacitacion_externa = models.BooleanField(
+        default=False,
+        verbose_name="Es capacitación externa",
+        help_text="Marcar si es ofrecida por un proveedor externo"
     )
-    url_inscripcion_externa = models.URLField(
-        blank=True, 
-        help_text="URL para inscripción directa en el proveedor"
+    url_curso_externo = models.URLField(
+        blank=True,
+        verbose_name="URL del curso externo",
+        help_text="URL donde el empleado puede ver el contenido del curso externo"
+    )
+    nombre_proveedor = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Nombre del proveedor",
+        help_text="Nombre del proveedor externo (ej: Coursera, Udemy, LinkedIn Learning)"
     )
     requiere_certificado_externo = models.BooleanField(
-        default=False, 
-        help_text="Requiere subir certificado del proveedor al finalizar"
+        default=True,
+        verbose_name="Requiere certificado",
+        help_text="El empleado debe presentar certificado de aprobación"
+    )
+
+    # Campos antiguos (mantener por compatibilidad)
+    proveedor_externo = models.ForeignKey(
+        ProveedorExterno,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="(Obsoleto) Solo para capacitaciones externas"
+    )
+    url_inscripcion_externa = models.URLField(
+        blank=True,
+        help_text="(Obsoleto) URL para inscripción directa en el proveedor"
     )
     permite_autocompletado = models.BooleanField(
-        default=False, 
+        default=False,
         help_text="El empleado puede marcar como completada sin evaluación"
     )
     
@@ -293,6 +312,10 @@ class Capacitacion(models.Model):
     # MÉTODOS HELPER (NUEVOS)
     def es_externa(self):
         """Verifica si es una capacitación externa"""
+        # Priorizar el nuevo campo booleano
+        if self.es_capacitacion_externa:
+            return True
+        # Mantener compatibilidad con el campo antiguo
         return self.proveedor_externo is not None
     
     def es_obligatoria_por_cargo(self):

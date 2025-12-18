@@ -118,8 +118,94 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- Listado de Empleados Inscritos -->
+        {% if user.is_staff %}
+        <div class="card mb-4">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-graduate me-2"></i>Empleados Inscritos
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if empleados_inscritos_list %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Empleado</th>
+                                <th>Estado</th>
+                                <th>Progreso</th>
+                                <th>Fecha Inscripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inscripcion in empleados_inscritos_list %}
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="fw-bold">{{ inscripcion.empleado.nombre_completo }}</div>
+                                        <small class="text-muted">
+                                            {% if inscripcion.empleado.cargo_actual %}
+                                                {{ inscripcion.empleado.cargo_actual.cargo.nombre }}
+                                            {% else %}
+                                                Sin cargo asignado
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if inscripcion.estado == 'pendiente_validacion' %}
+                                    <span class="badge bg-warning">Pendiente</span>
+                                    {% elif inscripcion.estado == 'en_progreso' %}
+                                    <span class="badge bg-info">En Progreso</span>
+                                    {% elif inscripcion.estado == 'completado' or inscripcion.estado == 'aprobado' %}
+                                    <span class="badge bg-success">Completado</span>
+                                    {% elif inscripcion.estado == 'cancelado' %}
+                                    <span class="badge bg-danger">Cancelado</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ inscripcion.get_estado_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 style="width: {{ inscripcion.porcentaje_completado|default:0 }}%"
+                                                 aria-valuenow="{{ inscripcion.porcentaje_completado|default:0 }}"
+                                                 aria-valuemin="0" aria-valuemax="100">
+                                                {{ inscripcion.porcentaje_completado|default:0|floatformat:0 }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</small>
+                                </td>
+                                <td>
+                                    <a href="{% url 'employees:empleado_detail' inscripcion.empleado.id %}"
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="Ver perfil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-info-circle text-muted fa-2x mb-2"></i>
+                    <p class="text-muted mb-0">No hay empleados inscritos en esta capacitación</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
-    
+
     <div class="col-md-4">
         <!-- Estadísticas -->
         <div class="card mb-4">
@@ -162,41 +248,83 @@
         </div>
         
         {% if capacitacion.es_externa and user.is_staff %}
-        <!-- Inscripciones Pendientes de Validación -->
+        <!-- Solicitudes Pendientes de Aprobación -->
         <div class="card mb-4">
             <div class="card-header bg-warning bg-opacity-10">
                 <h5 class="card-title mb-0">
-                    <i class="fas fa-clock text-warning me-2"></i>Pendientes de Validación
+                    <i class="fas fa-hourglass-half text-warning me-2"></i>Solicitudes Pendientes
                 </h5>
             </div>
             <div class="card-body">
-                {% for inscripcion in inscripciones_pendientes %}
+                {% for inscripcion in inscripciones_pendientes_aprobacion %}
                 <div class="mb-3 border-bottom pb-3">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <h6 class="mb-1">{{ inscripcion.empleado.nombre_completo }}</h6>
                             <small class="text-muted d-block">
-                                Inscrito el: {{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}
+                                <i class="fas fa-calendar me-1"></i>
+                                Solicitó el: {{ inscripcion.fecha_inscripcion|date:"d/m/Y H:i" }}
                             </small>
                         </div>
-                        <span class="badge bg-amarillo text-corporativo">Pendiente</span>
+                        <span class="badge bg-warning">Esperando aprobación</span>
                     </div>
-                    
+
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-sm btn-corporativo" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalValidarInscripcion{{ inscripcion.id }}">
-                            <i class="fas fa-check me-1"></i>Validar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger" 
-                                data-bs-toggle="modal" 
+                        <form method="post" action="{% url 'training:aprobar_solicitud_inscripcion' inscripcion.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-check me-1"></i>Aprobar solicitud
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-sm btn-danger"
+                                data-bs-toggle="modal"
                                 data-bs-target="#modalRechazarInscripcion{{ inscripcion.id }}">
                             <i class="fas fa-times me-1"></i>Rechazar
                         </button>
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-muted mb-0">No hay inscripciones pendientes de validación</p>
+                <p class="text-muted mb-0 small">No hay solicitudes pendientes de aprobación</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Esperando Certificado -->
+        <div class="card mb-4">
+            <div class="card-header bg-info bg-opacity-10">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-certificate text-info me-2"></i>Esperando Certificado
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for inscripcion in inscripciones_esperando_certificado %}
+                <div class="mb-3 border-bottom pb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="mb-1">{{ inscripcion.empleado.nombre_completo }}</h6>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-play-circle me-1"></i>
+                                Iniciado: {{ inscripcion.fecha_inicio|date:"d/m/Y" }}
+                            </small>
+                            {% if capacitacion.url_curso_externo %}
+                            <small class="text-muted d-block mt-1">
+                                <a href="{{ capacitacion.url_curso_externo }}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-external-link-alt me-1"></i>Ver curso
+                                </a>
+                            </small>
+                            {% endif %}
+                        </div>
+                        <span class="badge bg-info">En curso</span>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalValidarCertificado{{ inscripcion.id }}">
+                        <i class="fas fa-certificate me-1"></i>Validar certificado
+                    </button>
+                </div>
+                {% empty %}
+                <p class="text-muted mb-0 small">No hay empleados cursando actualmente</p>
                 {% endfor %}
             </div>
         </div>
@@ -356,6 +484,61 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-danger">
                             <i class="fas fa-times me-1"></i>Rechazar Inscripción
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Modales para validar certificados -->
+    {% for inscripcion in inscripciones_esperando_certificado %}
+    <div class="modal fade" id="modalValidarCertificado{{ inscripcion.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-certificate me-2"></i>
+                        Validar Certificado
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{% url 'training:validar_certificado_externo' inscripcion.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Validar el certificado presentado por <strong>{{ inscripcion.empleado.nombre_completo }}</strong>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Capacitación:</strong> {{ capacitacion.nombre }}<br>
+                            <strong>Proveedor:</strong> {{ capacitacion.nombre_proveedor|default:"No especificado" }}<br>
+                            <strong>Fecha de inicio:</strong> {{ inscripcion.fecha_inicio|date:"d/m/Y" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Subir Certificado (opcional)</label>
+                            <input type="file" class="form-control" name="certificado" accept=".pdf,.jpg,.jpeg,.png">
+                            <small class="text-muted">Formatos: PDF, JPG, PNG</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Puntaje Final (opcional)</label>
+                            <input type="number" class="form-control" name="puntaje_final" min="0" max="100" value="100">
+                            <small class="text-muted">Si el curso proporciona calificación</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <textarea class="form-control" name="observaciones" rows="3" placeholder="Notas adicionales..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check-circle me-1"></i>Validar y Aprobar
                         </button>
                     </div>
                 </form>

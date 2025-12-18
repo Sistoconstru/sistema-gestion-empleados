@@ -71,12 +71,12 @@
                     {% endif %}
                 </div>
 
-                <button type="button" 
+                <button type="button"
                    class="btn btn-corporativo w-100"
-                   data-bs-toggle="modal" 
+                   data-bs-toggle="modal"
                    data-bs-target="#{% if capacitacion.es_externa %}modalExterno{% else %}modalInterno{% endif %}{{ capacitacion.id }}">
                     {% if capacitacion.es_externa %}
-                    <i class="fas fa-external-link-alt me-1"></i>Ver detalles
+                    <i class="fas fa-hand-point-up me-1"></i>Solicitar inscripción
                     {% else %}
                     <i class="fas fa-user-plus me-1"></i>Inscribirme
                     {% endif %}
@@ -179,25 +179,42 @@
     {% if capacitacion.es_externa %}
     <!-- Modal para capacitación externa -->
     <div class="modal fade" id="modalExterno{{ capacitacion.id }}" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Capacitación Externa: {{ capacitacion.nombre }}</h5>
+                <div class="modal-header bg-info bg-opacity-10">
+                    <h5 class="modal-title">
+                        <i class="fas fa-globe me-2"></i>
+                        {{ capacitacion.nombre }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Esta es una capacitación externa. Serás redirigido al sitio del proveedor.
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Capacitación Externa</strong> - Requiere aprobación del administrador
                     </div>
-                    
-                    <h6 class="fw-bold mb-3">Detalles de la capacitación</h6>
+
+                    {% if capacitacion.nombre_proveedor %}
                     <div class="mb-3">
-                        {{ capacitacion.descripcion }}
+                        <strong>Proveedor:</strong> {{ capacitacion.nombre_proveedor }}
                     </div>
-                    
+                    {% endif %}
+
+                    <h6 class="fw-bold mb-2">Descripción</h6>
+                    <p class="mb-3">{{ capacitacion.descripcion }}</p>
+
+                    {% if capacitacion.url_curso_externo %}
                     <div class="mb-3">
-                        <h6 class="fw-bold">Información importante:</h6>
+                        <strong>URL del curso:</strong><br>
+                        <a href="{{ capacitacion.url_curso_externo }}" target="_blank" class="text-break">
+                            {{ capacitacion.url_curso_externo }}
+                            <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Información del curso:</h6>
                         <ul class="mb-0">
                             <li>Duración: {{ capacitacion.get_duracion_display }}</li>
                             <li>Nivel: {{ capacitacion.get_nivel_dificultad_display }}</li>
@@ -206,13 +223,31 @@
                             {% endif %}
                         </ul>
                     </div>
+
+                    <div class="alert alert-info">
+                        <h6 class="fw-bold"><i class="fas fa-clipboard-check me-2"></i>Proceso de inscripción:</h6>
+                        <ol class="mb-0">
+                            <li>Solicitas la inscripción (requiere aprobación del administrador)</li>
+                            <li>Una vez aprobado, realizas el curso en la plataforma del proveedor</li>
+                            <li>Al finalizar, presentas tu certificado de aprobación al administrador</li>
+                            <li>El administrador valida tu certificado y marca el curso como completado</li>
+                        </ol>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-corporativo">
-                        <i class="fas fa-external-link-alt me-1"></i>
-                        Ir al sitio externo
+                    {% if capacitacion.url_curso_externo %}
+                    <a href="{{ capacitacion.url_curso_externo }}" target="_blank" class="btn btn-info">
+                        <i class="fas fa-eye me-1"></i>
+                        Ver curso
                     </a>
+                    {% endif %}
+                    <form method="post" action="{% url 'training:inscribir_capacitacion' capacitacion.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-hand-point-up me-1"></i>Solicitar inscripción
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

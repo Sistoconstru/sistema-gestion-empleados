@@ -680,10 +680,19 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
             ).order_by(
                 '-fecha_inscripcion'
             )
-            # Inicializar porcentaje_completado en 0 si es None
+            # Inicializar porcentaje_completado en 0 si es None y calcular total de lecciones
             for insc in context['capacitaciones']:
                 if insc.porcentaje_completado is None:
                     insc.porcentaje_completado = 0
+
+                # Calcular total de lecciones para capacitaciones internas
+                if not insc.capacitacion.es_externa():
+                    total_lecciones = 0
+                    for modulo in insc.capacitacion.modulocapacitacion_set.all():
+                        total_lecciones += modulo.leccion_set.count()
+                    insc.total_lecciones = total_lecciones
+                else:
+                    insc.total_lecciones = 0
         except Exception as e:
             logger.error(f"Error obteniendo capacitaciones: {e}")
             context['capacitaciones'] = []
@@ -780,17 +789,39 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
             context['total_inscritos'] = inscripciones.count()
             context['inscritos_pendientes'] = inscripciones.filter(estado='pendiente_validacion').count()
             context['inscritos_activos'] = inscripciones.exclude(
-                estado__in=['pendiente_validacion', 'cancelado']
+                estado__in=['pendiente_validacion', 'cancelado', 'completado', 'aprobado']
             ).count()
+            context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
             
             # Lista de inscripciones pendientes para cursos externos
             if capacitacion.es_externa():
-                context['inscripciones_pendientes'] = inscripciones.filter(
+                # Solicitudes pendientes de aprobación inicial
+                context['inscripciones_pendientes_aprobacion'] = inscripciones.filter(
                     estado='pendiente_validacion'
-                ).select_related('empleado')
+                ).select_related('empleado').order_by('-fecha_inscripcion')
+
+                # Inscripciones en progreso esperando certificado
+                context['inscripciones_esperando_certificado'] = inscripciones.filter(
+                    estado='en_progreso'
+                ).select_related('empleado').order_by('fecha_inicio')
+
+            # Listado completo de empleados inscritos para la tabla
+            context['empleados_inscritos_list'] = InscripcionCapacitacion.objects.filter(
+                capacitacion=capacitacion
+            ).select_related(
+                'empleado',
+                'empleado__estado'
+            ).prefetch_related(
+                'empleado__historialcargo_set__cargo',
+                'empleado__historialcargo_set__cargo__area'
+            ).order_by('-fecha_inscripcion')
+
             context['total_inscritos'] = inscripciones.count()
             context['inscritos_pendientes'] = inscripciones.filter(estado='pendiente_validacion').count()
-            context['inscritos_activos'] = inscripciones.exclude(estado__in=['pendiente_validacion', 'cancelado']).count()
+            context['inscritos_activos'] = inscripciones.exclude(
+                estado__in=['pendiente_validacion', 'cancelado', 'completado', 'aprobado']
+            ).count()
+            context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
         else:
             # Obtener la inscripción del empleado si existe
             try:
@@ -843,37 +874,85 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
 
 @login_required
 @require_http_methods(["POST"])
-def validar_inscripcion(request, inscripcion_id):
-    """Validar inscripción en capacitación externa"""
+def aprobar_solicitud_inscripcion(request, pk):
+    """Aprobar solicitud inicial de inscripción en capacitación externa"""
     if not request.user.is_staff:
         messages.error(request, 'No tienes permiso para realizar esta acción')
         return redirect('training:catalogo')
-        
-    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=inscripcion_id)
-    
+
+    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=pk)
+
+    if inscripcion.estado != 'pendiente_validacion':
+        messages.warning(request, 'Esta inscripción no está pendiente de aprobación')
+        return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
+
+    try:
+        with transaction.atomic():
+            # Cambiar estado a en_progreso para que el empleado pueda acceder al curso
+            inscripcion.estado = 'en_progreso'
+            inscripcion.fecha_inicio = timezone.now()
+            inscripcion.aprobada_supervisor = True
+            inscripcion.aprobado_por = request.user
+            inscripcion.observaciones_admin = request.POST.get('observaciones', '')
+            inscripcion.save()
+
+            messages.success(
+                request,
+                f'✅ Solicitud aprobada. {inscripcion.empleado.nombre_completo} ya puede acceder al curso externo.'
+            )
+
+    except Exception as e:
+        logger.error(f'Error al aprobar solicitud {pk}: {str(e)}')
+        messages.error(request, 'Ocurrió un error al aprobar la solicitud')
+
+    return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
+
+@login_required
+@require_http_methods(["POST"])
+def validar_certificado_externo(request, pk):
+    """Validar certificado de finalización de capacitación externa"""
+    if not request.user.is_staff:
+        messages.error(request, 'No tienes permiso para realizar esta acción')
+        return redirect('training:catalogo')
+
+    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=pk)
+
+    if inscripcion.estado not in ['en_progreso', 'no_iniciado']:
+        messages.warning(request, 'Esta inscripción no está en estado válido para certificar')
+        return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
+
     try:
         with transaction.atomic():
             # Guardar el certificado si se proporcionó
             if request.FILES.get('certificado'):
                 inscripcion.certificado_externo = request.FILES['certificado']
-            
-            # Actualizar estado y datos
-            inscripcion.estado = 'no_iniciado'
+
+            # Actualizar estado a completado/aprobado
+            inscripcion.estado = 'aprobado'
+            inscripcion.fecha_finalizacion = timezone.now()
+            inscripcion.porcentaje_completado = 100
+            inscripcion.puntaje_final = request.POST.get('puntaje_final', 100)
             inscripcion.validado_por_admin = True
-            inscripcion.aprobado_por = request.user
             inscripcion.observaciones_admin = request.POST.get('observaciones', '')
             inscripcion.save()
-            
+
             messages.success(
-                request, 
-                f'Se ha validado la inscripción de {inscripcion.empleado.nombre_completo}'
+                request,
+                f'✅ Certificado validado. {inscripcion.empleado.nombre_completo} ha completado la capacitación.'
             )
-            
+
     except Exception as e:
-        logger.error(f'Error al validar inscripción {inscripcion_id}: {str(e)}')
-        messages.error(request, 'Ocurrió un error al validar la inscripción')
-        
+        logger.error(f'Error al validar certificado {pk}: {str(e)}')
+        messages.error(request, 'Ocurrió un error al validar el certificado')
+
     return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
+
+@login_required
+@require_http_methods(["POST"])
+def validar_inscripcion(request, pk):
+    """DEPRECATED: Usar aprobar_solicitud_inscripcion o validar_certificado_externo"""
+    # Mantener por compatibilidad, redirigir a aprobar_solicitud_inscripcion
+    return aprobar_solicitud_inscripcion(request, pk)
 
 @login_required
 @require_http_methods(["POST"])
@@ -966,20 +1045,17 @@ def inscribir_capacitacion(request, pk):
                     messages.success(
                         request,
                         f'Se ha registrado la inscripción de {empleado.nombre_completo}. '
-                        f'El estado quedará pendiente hasta que presente el certificado del proveedor.'
+                        f'El estado quedará pendiente de validación hasta que apruebes la solicitud.'
                     )
                     return redirect('training:capacitacion_detail', pk=pk)
                 else:
                     messages.success(
                         request,
                         mark_safe(
-                            'Tu inscripción ha sido registrada como pendiente. '
-                            'Por favor realiza la inscripción en el sitio del proveedor '
-                            'y presenta el certificado para validar tu participación.'
+                            '✅ Tu solicitud de inscripción ha sido enviada y está pendiente de aprobación por el administrador. '
+                            'Una vez aprobada, podrás acceder al curso desde "Mis Capacitaciones".'
                         )
                     )
-                    if capacitacion.url_inscripcion_externa:
-                        return redirect(capacitacion.url_inscripcion_externa)
                     return redirect('training:mis_capacitaciones')
             else:
                 if request.user.is_staff:

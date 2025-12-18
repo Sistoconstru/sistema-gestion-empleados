@@ -43,7 +43,9 @@ urlpatterns = [
     path('mis-certificados/', MisCertificadosView.as_view(), name='mis_certificados'),
     
     # Validación de inscripciones
-    path('inscripcion/<uuid:pk>/validar/', views.validar_inscripcion, name='validar_inscripcion'),
+    path('inscripcion/<uuid:pk>/aprobar-solicitud/', views.aprobar_solicitud_inscripcion, name='aprobar_solicitud_inscripcion'),
+    path('inscripcion/<uuid:pk>/validar-certificado/', views.validar_certificado_externo, name='validar_certificado_externo'),
+    path('inscripcion/<uuid:pk>/validar/', views.validar_inscripcion, name='validar_inscripcion'),  # Deprecated
     path('inscripcion/<uuid:pk>/rechazar/', views.rechazar_inscripcion, name='rechazar_inscripcion'),
     
     # Quizzes y valoraciones

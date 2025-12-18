@@ -14,24 +14,40 @@ class TipoCapacitacionAdmin(admin.ModelAdmin):
 
 @admin.register(Capacitacion)
 class CapacitacionAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'tipo', 'duracion_estimada_horas', 'activa', 'fecha_creacion')
-    list_filter = ('activa', 'tipo', 'fecha_creacion')
-    search_fields = ('codigo', 'nombre')
-    
+    list_display = ('codigo', 'nombre', 'tipo', 'es_externa_display', 'duracion_estimada_horas', 'activa', 'fecha_creacion')
+    list_filter = ('activa', 'tipo', 'es_capacitacion_externa', 'fecha_creacion')
+    search_fields = ('codigo', 'nombre', 'nombre_proveedor')
+
     fieldsets = (
         ('Información Básica', {
-            'fields': ('codigo', 'nombre', 'descripcion', 'tipo', 'activa')
+            'fields': ('codigo', 'nombre', 'descripcion', 'tipo', 'activa', 'nivel_dificultad')
+        }),
+        ('Capacitación Externa', {
+            'fields': ('es_capacitacion_externa', 'nombre_proveedor', 'url_curso_externo', 'requiere_certificado_externo'),
+            'description': 'Marcar "Es capacitación externa" si es ofrecida por un proveedor externo (Coursera, Udemy, etc.). Esto simplifica la gestión: solo necesitas la URL del curso.',
+            'classes': ('collapse',)
         }),
         ('Configuración', {
-            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos')
+            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion')
         }),
         ('Vigencia', {
             'fields': ('fecha_vigencia_inicio', 'fecha_vigencia_fin', 'version')
         }),
+        ('Opciones Avanzadas', {
+            'fields': ('visible_en_catalogo', 'permite_certificacion_manual', 'requiere_prerequisitos'),
+            'classes': ('collapse',)
+        }),
     )
-    
-    exclude = ('creada_por',)
-    
+
+    exclude = ('creada_por', 'proveedor_externo', 'url_inscripcion_externa', 'permite_autocompletado')
+
+    def es_externa_display(self, obj):
+        """Muestra si es externa con ícono"""
+        if obj.es_externa():
+            return '🌐 Externa'
+        return '📚 Interna'
+    es_externa_display.short_description = 'Tipo'
+
     def save_model(self, request, obj, form, change):
         # Asigna el usuario que crea la capacitación solo al crear
         if not change:

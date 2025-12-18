@@ -272,42 +272,74 @@
                         
                         <!-- Action Buttons -->
                         <div class="d-flex gap-2">
-                            {% if inscripcion.estado == 'en_progreso' %}
-                                <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-corporativo">
-                                    <i class="fas fa-play"></i>
-                                    Continuar Capacitación
-                                </a>
-                                <a href="{% url 'training:player' pk=inscripcion.pk %}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-chart-line"></i>
-                                    Ver Progreso
-                                </a>
-                            {% elif inscripcion.estado == 'aprobado' %}
-                                {# Enlace a certificado eliminado temporalmente porque la vista no existe #}
-                                <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-redo"></i>
-                                    Repetir Curso
-                                </a>
-                            {% elif inscripcion.estado == 'no_iniciado' %}
-                                {% if inscripcion.aprobada_supervisor %}
+                            {% if inscripcion.capacitacion.es_externa %}
+                                {# Capacitaciones Externas #}
+                                {% if inscripcion.estado == 'pendiente_validacion' %}
+                                    <button class="btn btn-warning" disabled>
+                                        <i class="fas fa-hourglass-half"></i>
+                                        Pendiente de aprobación
+                                    </button>
+                                {% elif inscripcion.estado == 'en_progreso' or inscripcion.estado == 'no_iniciado' %}
+                                    {% if inscripcion.capacitacion.url_curso_externo %}
+                                        <a href="{{ inscripcion.capacitacion.url_curso_externo }}" target="_blank" class="btn btn-corporativo">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Ir al curso
+                                        </a>
+                                    {% endif %}
+                                    <div class="alert alert-info mb-0 p-2 small">
+                                        <i class="fas fa-info-circle"></i>
+                                        Completa el curso y presenta el certificado al administrador
+                                    </div>
+                                {% elif inscripcion.estado == 'completado' or inscripcion.estado == 'aprobado' %}
+                                    <span class="badge bg-success p-2">
+                                        <i class="fas fa-check-circle"></i>
+                                        Certificado validado
+                                    </span>
+                                    {% if inscripcion.capacitacion.url_curso_externo %}
+                                        <a href="{{ inscripcion.capacitacion.url_curso_externo }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Ver curso nuevamente
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                {# Capacitaciones Internas #}
+                                {% if inscripcion.estado == 'en_progreso' %}
                                     <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-corporativo">
                                         <i class="fas fa-play"></i>
-                                        Iniciar Capacitación
+                                        Continuar Capacitación
                                     </a>
-                                {% else %}
-                                    <button class="btn btn-secondary" disabled>
+                                    <a href="{% url 'training:player' pk=inscripcion.pk %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-chart-line"></i>
+                                        Ver Progreso
+                                    </a>
+                                {% elif inscripcion.estado == 'aprobado' %}
+                                    <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-redo"></i>
+                                        Repetir Curso
+                                    </a>
+                                {% elif inscripcion.estado == 'no_iniciado' %}
+                                    {% if inscripcion.aprobada_supervisor %}
+                                        <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-corporativo">
+                                            <i class="fas fa-play"></i>
+                                            Iniciar Capacitación
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-secondary" disabled>
+                                            <i class="fas fa-clock"></i>
+                                            Pendiente Aprobación
+                                        </button>
+                                    {% endif %}
+                                    <a href="{% url 'training:capacitacion_detail' inscripcion.capacitacion.pk %}" class="btn btn-outline-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Ver Detalles
+                                    </a>
+                                {% elif inscripcion.estado == 'vencido' %}
+                                    <button class="btn btn-outline-amarillo text-corporativo" onclick="requestExtension('{{ inscripcion.pk }}')">
                                         <i class="fas fa-clock"></i>
-                                        Pendiente Aprobación
+                                        Solicitar Extensión
                                     </button>
                                 {% endif %}
-                                <a href="{% url 'training:capacitacion_detail' inscripcion.capacitacion.pk %}" class="btn btn-outline-info">
-                                    <i class="fas fa-info-circle"></i>
-                                    Ver Detalles
-                                </a>
-                            {% elif inscripcion.estado == 'vencido' %}
-                                <button class="btn btn-outline-amarillo text-corporativo" onclick="requestExtension('{{ inscripcion.pk }}')">
-                                    <i class="fas fa-clock"></i>
-                                    Solicitar Extensión
-                                </button>
                             {% endif %}
                             
                             <div class="dropdown">
@@ -348,14 +380,33 @@
                         
                         <!-- Course Stats -->
                         <div class="small text-muted">
+                            {% if not inscripcion.capacitacion.es_externa %}
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Módulos:</span>
                                 <span>{{ inscripcion.capacitacion.modulocapacitacion_set.count }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Lecciones:</span>
-                                <span>{{ total_lecciones|default:12 }}</span>
+                                <span>{{ inscripcion.total_lecciones|default:0 }}</span>
                             </div>
+                            {% else %}
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Proveedor:</span>
+                                <span class="text-truncate" style="max-width: 150px;" title="{{ inscripcion.capacitacion.nombre_proveedor }}">
+                                    {{ inscripcion.capacitacion.nombre_proveedor|default:"Externo" }}
+                                </span>
+                            </div>
+                            {% if inscripcion.capacitacion.url_curso_externo %}
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Curso:</span>
+                                <span>
+                                    <a href="{{ inscripcion.capacitacion.url_curso_externo }}" target="_blank" class="text-decoration-none small">
+                                        <i class="fas fa-external-link-alt"></i> Ver
+                                    </a>
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% endif %}
                             {% if inscripcion.fecha_inicio %}
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Iniciado:</span>
