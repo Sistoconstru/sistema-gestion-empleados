@@ -693,6 +693,40 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
                     insc.total_lecciones = total_lecciones
                 else:
                     insc.total_lecciones = 0
+
+                # Calcular calificación final real como promedio de todas las valoraciones (quizzes)
+                from apps.training.models import IntentoQuiz, QuizLeccion
+                if insc.estado == 'aprobado':
+                    # Obtener todos los quizzes de la capacitación
+                    quizzes_ids = []
+                    for modulo in insc.capacitacion.modulocapacitacion_set.all():
+                        for leccion in modulo.leccion_set.all():
+                            # Quizzes de los contenidos de la lección
+                            for contenido in leccion.contenidoleccion_set.all():
+                                if hasattr(contenido, 'evaluacion') and contenido.evaluacion:
+                                    quizzes_ids.append(contenido.evaluacion.id)
+                            # Quiz directo de la lección
+                            if hasattr(leccion, 'evaluacion') and leccion.evaluacion:
+                                quizzes_ids.append(leccion.evaluacion.id)
+
+                    # Obtener intentos aprobados del empleado
+                    intentos_aprobados = IntentoQuiz.objects.filter(
+                        quiz_id__in=quizzes_ids,
+                        usuario=insc.empleado.usuario,
+                        aprobado=True
+                    ).values_list('puntaje_obtenido', flat=True)
+
+                    if intentos_aprobados:
+                        # Calcular promedio
+                        promedio = sum(intentos_aprobados) / len(intentos_aprobados)
+                        insc.calificacion_final_real = round(promedio, 2)
+                        insc.todas_valoraciones_completas = len(intentos_aprobados) == len(quizzes_ids)
+                    else:
+                        insc.calificacion_final_real = None
+                        insc.todas_valoraciones_completas = False
+                else:
+                    insc.calificacion_final_real = None
+                    insc.todas_valoraciones_completas = False
         except Exception as e:
             logger.error(f"Error obteniendo capacitaciones: {e}")
             context['capacitaciones'] = []
@@ -1264,7 +1298,22 @@ class PlayerView(LoginRequiredMixin, TemplateView):
                 puede_ver = leccion_actual.leccion_prerequisito.esta_completada(inscripcion)
             
             progreso_actual.puede_ver = puede_ver
-            
+
+            # Obtener el resultado de la valoración de la lección si existe
+            valoracion_resultado = None
+            leccion_actual = contenido_actual.leccion
+            if hasattr(leccion_actual, 'evaluacion') and leccion_actual.evaluacion:
+                intento_aprobado = IntentoQuiz.objects.filter(
+                    quiz=leccion_actual.evaluacion,
+                    usuario=self.request.user,
+                    aprobado=True
+                ).first()
+                if intento_aprobado:
+                    valoracion_resultado = {
+                        'puntaje': intento_aprobado.puntaje_obtenido,
+                        'aprobado': intento_aprobado.aprobado
+                    }
+
             context.update({
                 'object': inscripcion,
                 'contenido_actual': contenido_actual,
@@ -1274,7 +1323,8 @@ class PlayerView(LoginRequiredMixin, TemplateView):
                 'contenidos_completados': contenidos_completados,
                 'progreso_actual': progreso_actual,
                 'evaluacion_pendiente': evaluacion_pendiente,
-                'modulos_evaluacion': modulos_evaluacion
+                'modulos_evaluacion': modulos_evaluacion,
+                'valoracion_resultado': valoracion_resultado
             })
         else:
             context.update({
@@ -1289,9 +1339,11 @@ class PlayerView(LoginRequiredMixin, TemplateView):
 @require_http_methods(["POST"])
 def completar_contenido(request, pk):
     """Marcar un contenido como completado"""
+    from apps.training.models import IntentoQuiz
+
     try:
         logger.info(f'Iniciando proceso de completar contenido {pk}')
-        
+
         # Verificar el contenido y sus relaciones
         contenido = get_object_or_404(
             ContenidoLeccion.objects.select_related('leccion__modulo__capacitacion'),
@@ -1313,7 +1365,8 @@ def completar_contenido(request, pk):
         # Verificar si la lección y el módulo están activos
         leccion = contenido.leccion
         modulo = leccion.modulo
-        
+        capacitacion = modulo.capacitacion
+
         if not leccion.activa:
             return JsonResponse({
                 'success': False,
@@ -1429,9 +1482,52 @@ def completar_contenido(request, pk):
 
         inscripcion.porcentaje_completado = (contenidos_completados_capacitacion * 100) // total_contenidos_capacitacion
 
-        # Si es la última lección (o única) y todos los contenidos están completos, pasar a 'aprobado'
+        # Si todos los contenidos están completos, verificar también las valoraciones antes de aprobar
         if contenidos_completados_capacitacion == total_contenidos_capacitacion and total_contenidos_capacitacion > 0:
-            inscripcion.estado = 'aprobado'
+            # Obtener todos los quizzes de la capacitación
+            quizzes_ids = []
+            for modulo in capacitacion.modulocapacitacion_set.all():
+                for leccion in modulo.leccion_set.all():
+                    # Quizzes de los contenidos de la lección
+                    for cont in leccion.contenidoleccion_set.all():
+                        if hasattr(cont, 'evaluacion') and cont.evaluacion:
+                            quizzes_ids.append(cont.evaluacion.id)
+                    # Quiz directo de la lección
+                    if hasattr(leccion, 'evaluacion') and leccion.evaluacion:
+                        quizzes_ids.append(leccion.evaluacion.id)
+
+            # Verificar cuántos quizzes aprobó el empleado
+            if quizzes_ids:
+                intentos_aprobados = IntentoQuiz.objects.filter(
+                    quiz_id__in=quizzes_ids,
+                    usuario=inscripcion.empleado.usuario,
+                    aprobado=True
+                ).count()
+
+                # Solo aprobar si completó TODAS las valoraciones Y el promedio supera el mínimo
+                if intentos_aprobados == len(quizzes_ids):
+                    # Calcular puntaje final como promedio de todas las evaluaciones
+                    puntajes = IntentoQuiz.objects.filter(
+                        quiz_id__in=quizzes_ids,
+                        usuario=inscripcion.empleado.usuario,
+                        aprobado=True
+                    ).values_list('puntaje_obtenido', flat=True)
+
+                    if puntajes:
+                        promedio_final = round(sum(puntajes) / len(puntajes), 2)
+                        inscripcion.puntaje_final = promedio_final
+
+                        # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
+                        if promedio_final >= capacitacion.puntaje_aprobacion:
+                            inscripcion.estado = 'aprobado'
+                            inscripcion.fecha_finalizacion = timezone.now()
+                        # Si no alcanza el puntaje mínimo, mantener en progreso
+                        else:
+                            inscripcion.estado = 'en_progreso'
+            else:
+                # Si no hay quizzes, aprobar directamente
+                inscripcion.estado = 'aprobado'
+
         inscripcion.save()
 
         # Si es la última lección (o única) y todos los contenidos están completos, habilitar evaluación
@@ -1459,6 +1555,21 @@ def completar_contenido(request, pk):
         if not siguiente_contenido_url:
             siguiente_contenido_url = None
 
+        # Verificar si existe resultado de valoración para esta lección
+        valoracion_info = None
+        leccion_actual = contenido.leccion
+        if hasattr(leccion_actual, 'evaluacion') and leccion_actual.evaluacion:
+            intento_aprobado = IntentoQuiz.objects.filter(
+                quiz=leccion_actual.evaluacion,
+                usuario=request.user,
+                aprobado=True
+            ).first()
+            if intento_aprobado:
+                valoracion_info = {
+                    'puntaje': float(intento_aprobado.puntaje_obtenido),
+                    'aprobado': intento_aprobado.aprobado
+                }
+
         # Preparar respuesta
         response_data = {
             'success': True,
@@ -1470,7 +1581,8 @@ def completar_contenido(request, pk):
             'evaluacion_pendiente': necesita_evaluacion and not evaluacion_aprobada,
             'puede_continuar': leccion_completada,
             'puede_valorar_modulo': puede_valorar_modulo,
-            'siguiente_contenido': siguiente_contenido_url
+            'siguiente_contenido': siguiente_contenido_url,
+            'valoracion_resultado': valoracion_info
         }
 
         return JsonResponse(response_data)

@@ -19120,3 +19120,1109 @@ INFO 2025-12-18 14:52:25,394 basehttp 33468 22800 "GET /documentos/proxy-pdf/?fi
 INFO 2025-12-18 14:52:48,448 basehttp 33468 22800 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37335
 INFO 2025-12-18 14:52:48,553 basehttp 33468 22800 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
 INFO 2025-12-18 14:52:49,528 basehttp 33468 22800 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 52762
+INFO 2025-12-19 08:35:49,973 apps 33104 10908 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 08:35:50,752 apps 32920 3260 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 08:35:50,770 autoreload 32920 3260 Watching for file changes with StatReloader
+INFO 2025-12-19 08:35:56,507 wsgi 32920 19324 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 08:37:21,514 basehttp 32920 54488 "GET / HTTP/1.1" 302 0
+INFO 2025-12-19 08:37:21,850 basehttp 32920 54488 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-19 08:37:22,358 basehttp 32920 54488 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37712
+WARNING 2025-12-19 08:37:22,530 log 32920 54488 Not Found: /favicon.ico
+WARNING 2025-12-19 08:37:22,530 basehttp 32920 54488 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 08:37:25,380 basehttp 32920 54488 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 08:37:25,508 basehttp 32920 54488 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37313
+INFO 2025-12-19 08:37:27,502 basehttp 32920 54488 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 52762
+INFO 2025-12-19 08:37:31,727 basehttp 32920 54488 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/ HTTP/1.1" 200 37406
+INFO 2025-12-19 08:37:31,865 basehttp 32920 54488 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 08:37:48,862 basehttp 32920 54488 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37335
+INFO 2025-12-19 08:37:48,961 basehttp 32920 54488 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 08:45:01,397 basehttp 32920 23684 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37503
+INFO 2025-12-19 08:45:01,491 basehttp 32920 23684 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 08:45:20,998 basehttp 32920 23684 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 52762
+INFO 2025-12-19 08:52:55,526 autoreload 32920 3260 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 08:52:56,358 apps 53216 3816 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 08:52:56,385 autoreload 53216 3816 Watching for file changes with StatReloader
+INFO 2025-12-19 08:52:56,811 wsgi 53216 51728 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 08:59:41,731 basehttp 53216 41140 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:00:02,192 basehttp 53216 41140 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/ HTTP/1.1" 200 37574
+INFO 2025-12-19 09:00:02,317 basehttp 53216 41140 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:00:07,963 basehttp 53216 41140 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37503
+INFO 2025-12-19 09:00:08,055 basehttp 53216 41140 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:00:09,826 basehttp 53216 41140 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 12800
+INFO 2025-12-19 09:00:09,914 basehttp 53216 41140 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 38
+INFO 2025-12-19 09:00:12,978 basehttp 53216 41140 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 13464
+INFO 2025-12-19 09:00:21,494 basehttp 53216 42672 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/ HTTP/1.1" 200 37574
+INFO 2025-12-19 09:00:21,591 basehttp 53216 42672 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:00:23,625 basehttp 53216 42672 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=c9f8a5be-fa21-487e-8833-5f80172ad7af HTTP/1.1" 200 37574
+INFO 2025-12-19 09:00:23,710 basehttp 53216 42672 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:00:27,566 basehttp 53216 42672 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 12800
+INFO 2025-12-19 09:00:27,594 basehttp 53216 42672 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 38
+INFO 2025-12-19 09:00:29,314 basehttp 53216 42672 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 13467
+INFO 2025-12-19 09:00:56,762 basehttp 53216 42672 "GET /capacitaciones/player/6adee893-25e5-42e0-8a01-7e0679f1125a/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37503
+INFO 2025-12-19 09:00:56,895 basehttp 53216 42672 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:01:00,268 basehttp 53216 42672 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:05:54,220 autoreload 53216 3816 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:05:55,092 apps 50112 50472 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:05:55,114 autoreload 50112 50472 Watching for file changes with StatReloader
+INFO 2025-12-19 09:05:55,629 wsgi 50112 20684 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:06:03,567 basehttp 50112 56180 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:06:05,182 basehttp 50112 56180 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:07:57,942 apps 52144 41620 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:10:01,039 apps 55144 32740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:11:19,515 apps 17684 42528 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:11:20,226 apps 21280 14304 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:11:20,249 autoreload 21280 14304 Watching for file changes with StatReloader
+INFO 2025-12-19 09:11:20,725 wsgi 21280 39544 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:11:24,843 basehttp 21280 39844 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:13:08,504 apps 54040 44740 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:13:09,159 apps 37336 14760 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:13:09,180 autoreload 37336 14760 Watching for file changes with StatReloader
+INFO 2025-12-19 09:13:09,608 wsgi 37336 17784 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:13:11,662 basehttp 37336 31592 "GET / HTTP/1.1" 302 0
+INFO 2025-12-19 09:13:11,760 basehttp 37336 31592 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:13:11,910 basehttp 37336 31592 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37313
+INFO 2025-12-19 09:13:17,333 basehttp 37336 31592 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 53059
+INFO 2025-12-19 09:13:24,516 basehttp 37336 31592 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:13:24,576 basehttp 37336 31592 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-19 09:13:29,375 basehttp 37336 31592 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:13:29,483 basehttp 37336 31592 "GET /empleados/feed/ HTTP/1.1" 200 35918
+INFO 2025-12-19 09:13:29,503 basehttp 37336 31592 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 304 0
+INFO 2025-12-19 09:13:31,307 basehttp 37336 31592 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:13:31,376 basehttp 37336 31592 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26683
+INFO 2025-12-19 09:13:32,395 basehttp 37336 31592 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44374
+INFO 2025-12-19 09:13:46,520 basehttp 37336 31592 "GET /capacitaciones/player/6d3e74c6-27fe-43fd-8c35-dedfda9285c9/ HTTP/1.1" 200 37362
+INFO 2025-12-19 09:13:46,644 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:13:52,683 basehttp 37336 31592 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14970
+INFO 2025-12-19 09:13:52,720 basehttp 37336 31592 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 38
+INFO 2025-12-19 09:13:58,942 basehttp 37336 31592 "POST /capacitaciones/quiz/intento/7/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 09:14:00,559 basehttp 37336 31592 "POST /capacitaciones/quiz/intento/7/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 09:14:00,590 basehttp 37336 31592 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11472
+INFO 2025-12-19 09:14:03,185 basehttp 37336 31592 "GET /capacitaciones/player/6d3e74c6-27fe-43fd-8c35-dedfda9285c9/ HTTP/1.1" 200 37682
+INFO 2025-12-19 09:14:03,276 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:14:06,425 basehttp 37336 31592 "GET /capacitaciones/player/6d3e74c6-27fe-43fd-8c35-dedfda9285c9/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37611
+INFO 2025-12-19 09:14:06,516 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:14:17,676 basehttp 37336 31592 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 14968
+INFO 2025-12-19 09:14:17,711 basehttp 37336 31592 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 38
+INFO 2025-12-19 09:14:23,438 basehttp 37336 31592 "POST /capacitaciones/quiz/intento/8/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 09:14:25,915 basehttp 37336 31592 "POST /capacitaciones/quiz/intento/8/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 09:14:25,950 basehttp 37336 31592 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 11469
+INFO 2025-12-19 09:14:29,378 basehttp 37336 31592 "GET /capacitaciones/player/6d3e74c6-27fe-43fd-8c35-dedfda9285c9/ HTTP/1.1" 200 37568
+INFO 2025-12-19 09:14:29,475 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:14:43,696 basehttp 37336 31592 "GET /capacitaciones/player/6d3e74c6-27fe-43fd-8c35-dedfda9285c9/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37497
+INFO 2025-12-19 09:14:43,804 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:14:49,106 basehttp 37336 31592 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44374
+INFO 2025-12-19 09:15:02,971 basehttp 37336 31592 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:15:03,042 basehttp 37336 31592 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26683
+INFO 2025-12-19 09:15:04,082 basehttp 37336 31592 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44374
+INFO 2025-12-19 09:15:15,798 basehttp 37336 31592 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-19 09:15:18,595 basehttp 37336 31592 "GET /capacitaciones/admin/ HTTP/1.1" 200 28489
+INFO 2025-12-19 09:15:23,718 basehttp 37336 31592 "GET /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/ HTTP/1.1" 200 30529
+INFO 2025-12-19 09:15:43,143 basehttp 37336 31592 "POST /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:15:43,189 basehttp 37336 31592 "GET /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/ HTTP/1.1" 200 32984
+INFO 2025-12-19 09:15:46,076 basehttp 37336 31592 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:15:46,076 basehttp 37336 31592 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-19 09:15:51,058 basehttp 37336 31592 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:15:51,095 basehttp 37336 31592 "GET /empleados/feed/ HTTP/1.1" 200 34927
+INFO 2025-12-19 09:16:07,230 basehttp 37336 31592 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:16:07,310 basehttp 37336 31592 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+INFO 2025-12-19 09:16:12,272 basehttp 37336 31592 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+INFO 2025-12-19 09:16:34,228 basehttp 37336 31592 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37836
+INFO 2025-12-19 09:16:34,334 basehttp 37336 31592 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+WARNING 2025-12-19 09:17:07,841 log 37336 31592 Bad Request: /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/
+WARNING 2025-12-19 09:17:07,842 basehttp 37336 31592 "POST /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/ HTTP/1.1" 400 175
+INFO 2025-12-19 09:18:19,651 autoreload 37336 14760 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:18:20,577 apps 43648 44320 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:18:20,594 autoreload 43648 44320 Watching for file changes with StatReloader
+INFO 2025-12-19 09:18:21,163 wsgi 43648 30496 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:19:16,431 autoreload 43648 44320 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:19:17,225 apps 27928 7536 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:19:17,246 autoreload 27928 7536 Watching for file changes with StatReloader
+INFO 2025-12-19 09:19:17,809 wsgi 27928 36096 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:19:29,221 basehttp 27928 21632 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37350
+INFO 2025-12-19 09:19:29,334 basehttp 27928 21632 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:19:34,229 basehttp 27928 21632 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14968
+INFO 2025-12-19 09:19:34,269 basehttp 27928 21632 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 38
+INFO 2025-12-19 09:19:36,109 basehttp 27928 21632 "POST /capacitaciones/quiz/intento/9/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 09:19:36,976 basehttp 27928 21632 "POST /capacitaciones/quiz/intento/9/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 09:19:37,007 basehttp 27928 21632 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11470
+INFO 2025-12-19 09:19:39,174 basehttp 27928 21632 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37670
+INFO 2025-12-19 09:19:39,260 basehttp 27928 21632 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:19:40,936 basehttp 27928 21632 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 38095
+INFO 2025-12-19 09:19:41,030 basehttp 27928 21632 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+WARNING 2025-12-19 09:20:46,975 log 27928 21632 Bad Request: /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/
+WARNING 2025-12-19 09:20:46,975 basehttp 27928 21632 "POST /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/ HTTP/1.1" 400 127
+INFO 2025-12-19 09:21:45,170 autoreload 27928 7536 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:21:46,009 apps 45272 47436 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:21:46,037 autoreload 45272 47436 Watching for file changes with StatReloader
+INFO 2025-12-19 09:21:46,573 wsgi 45272 20904 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:22:15,427 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37609
+INFO 2025-12-19 09:22:15,509 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:22:22,649 basehttp 45272 52432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+INFO 2025-12-19 09:22:30,119 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37680
+INFO 2025-12-19 09:22:30,211 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:22:36,592 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=c9f8a5be-fa21-487e-8833-5f80172ad7af HTTP/1.1" 200 37680
+INFO 2025-12-19 09:22:36,690 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:22:38,472 basehttp 45272 52432 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 12792
+INFO 2025-12-19 09:22:38,512 basehttp 45272 52432 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 09:22:40,609 basehttp 45272 52432 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 13459
+INFO 2025-12-19 09:22:47,313 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37680
+INFO 2025-12-19 09:22:47,423 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:22:49,396 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37609
+INFO 2025-12-19 09:22:49,500 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:22:52,509 basehttp 45272 52432 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 14966
+INFO 2025-12-19 09:22:52,547 basehttp 45272 52432 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 39
+INFO 2025-12-19 09:22:54,693 basehttp 45272 52432 "POST /capacitaciones/quiz/intento/11/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 09:22:55,528 basehttp 45272 52432 "POST /capacitaciones/quiz/intento/11/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 09:22:55,554 basehttp 45272 52432 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 11467
+INFO 2025-12-19 09:22:57,444 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+INFO 2025-12-19 09:22:57,548 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:22:59,505 basehttp 45272 52432 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37495
+INFO 2025-12-19 09:22:59,597 basehttp 45272 52432 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:23:15,667 basehttp 45272 52432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+INFO 2025-12-19 09:23:34,292 basehttp 45272 52432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:23:37,484 log 45272 52432 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:23:37,484 basehttp 45272 52432 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:23:37,610 basehttp 45272 52432 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:23:41,310 basehttp 45272 46684 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:23:41,368 log 45272 46684 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:23:41,372 basehttp 45272 46684 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:23:41,413 basehttp 45272 46684 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:23:41,632 basehttp 45272 14960 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:23:44,283 basehttp 45272 14960 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=c9f8a5be-fa21-487e-8833-5f80172ad7af HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:23:44,337 log 45272 14960 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:23:44,340 basehttp 45272 14960 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:23:44,379 basehttp 45272 14960 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:23:44,603 basehttp 45272 57112 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:27:58,600 autoreload 45272 47436 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:27:59,415 apps 49648 15004 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:27:59,438 autoreload 49648 15004 Watching for file changes with StatReloader
+INFO 2025-12-19 09:27:59,973 wsgi 49648 6136 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:28:23,682 autoreload 49648 15004 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:28:24,515 apps 46192 48644 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:28:24,538 autoreload 46192 48644 Watching for file changes with StatReloader
+INFO 2025-12-19 09:28:25,010 wsgi 46192 11404 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:28:58,925 apps 43180 28880 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:30:56,843 basehttp 46192 29112 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:30:57,036 basehttp 46192 29112 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-19 09:30:57,091 log 46192 29112 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:30:57,092 basehttp 46192 29112 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:30:57,148 basehttp 46192 29112 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:30:59,823 basehttp 46192 41872 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-19 09:30:59,874 log 46192 41872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:30:59,875 basehttp 46192 41872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:30:59,948 basehttp 46192 41872 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:31:02,300 basehttp 46192 49028 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-19 09:31:02,353 log 46192 49028 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:31:02,355 basehttp 46192 49028 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:31:02,359 basehttp 46192 25844 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-19 09:31:02,370 basehttp 46192 17132 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-19 09:31:02,374 basehttp 46192 28328 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-19 09:31:02,377 basehttp 46192 17956 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-19 09:31:02,378 basehttp 46192 51416 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-19 09:31:02,398 basehttp 46192 25844 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-19 09:31:02,398 basehttp 46192 49028 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-19 09:31:02,423 basehttp 46192 49028 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-19 09:31:02,441 basehttp 46192 49028 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 09:31:02,466 log 46192 25844 Not Found: /favicon.ico
+WARNING 2025-12-19 09:31:02,467 basehttp 46192 25844 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 09:31:04,386 basehttp 46192 25844 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:31:04,440 log 46192 25844 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:31:04,444 basehttp 46192 25844 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:31:04,503 basehttp 46192 25844 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:31:07,037 basehttp 46192 17956 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:31:07,091 log 46192 17956 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:31:07,093 basehttp 46192 17956 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:31:07,139 basehttp 46192 17956 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:31:07,139 basehttp 46192 51416 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 31788
+INFO 2025-12-19 09:31:07,165 basehttp 46192 28328 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-12-19 09:31:07,186 basehttp 46192 28328 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-12-19 09:31:07,191 basehttp 46192 33068 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-12-19 09:31:07,197 basehttp 46192 22420 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-12-19 09:31:07,198 basehttp 46192 48204 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-12-19 09:31:07,205 basehttp 46192 28328 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-12-19 09:31:07,218 basehttp 46192 33068 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-12-19 09:31:07,218 basehttp 46192 48204 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-12-19 09:31:07,223 basehttp 46192 22420 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-12-19 09:31:07,223 basehttp 46192 28328 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-12-19 09:31:07,237 basehttp 46192 33068 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-12-19 09:31:07,237 basehttp 46192 48204 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-12-19 09:31:07,237 basehttp 46192 22420 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-12-19 09:31:07,248 basehttp 46192 17132 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-12-19 09:31:07,252 basehttp 46192 48204 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-12-19 09:31:07,254 basehttp 46192 33068 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-12-19 09:31:07,255 basehttp 46192 28328 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-12-19 09:31:07,255 basehttp 46192 22420 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-12-19 09:31:07,256 basehttp 46192 51416 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 664927
+INFO 2025-12-19 09:31:07,288 basehttp 46192 51416 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-12-19 09:31:07,305 basehttp 46192 22420 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-12-19 09:31:07,317 basehttp 46192 51416 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-12-19 09:31:07,326 basehttp 46192 22420 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-12-19 09:31:07,352 basehttp 46192 22420 "GET /static/pdfjs/web/locale/es-ES/viewer.ftl HTTP/1.1" 200 16262
+INFO 2025-12-19 09:31:07,391 basehttp 46192 22420 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-12-19 09:31:07,558 basehttp 46192 51416 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2217960
+INFO 2025-12-19 09:31:07,621 basehttp 46192 22420 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:31:07,670 basehttp 46192 51416 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-12-19 09:31:07,683 basehttp 46192 22420 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-12-19 09:31:07,829 basehttp 46192 22420 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-12-19 09:31:13,322 basehttp 46192 22420 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37495
+WARNING 2025-12-19 09:31:13,358 log 46192 22420 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-19 09:31:13,361 basehttp 46192 51416 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 31788
+WARNING 2025-12-19 09:31:13,363 basehttp 46192 22420 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:31:13,402 basehttp 46192 22420 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:31:13,607 basehttp 46192 51416 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:31:16,631 basehttp 46192 51416 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:31:16,673 log 46192 51416 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:31:16,673 basehttp 46192 51416 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:31:16,710 basehttp 46192 51416 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:31:24,095 basehttp 46192 28328 "GET /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/ HTTP/1.1" 200 11870
+WARNING 2025-12-19 09:31:24,143 log 46192 28328 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:31:24,144 basehttp 46192 28328 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:31:24,187 basehttp 46192 28328 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:47,088 basehttp 46192 33068 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:32:47,199 basehttp 46192 33068 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-19 09:32:47,239 log 46192 33068 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:32:47,239 basehttp 46192 33068 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:32:47,300 basehttp 46192 33068 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:48,353 basehttp 46192 48204 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:32:48,394 log 46192 48204 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:32:48,395 basehttp 46192 48204 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:32:48,432 basehttp 46192 48204 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:52,039 basehttp 46192 17132 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:32:52,083 log 46192 17132 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:32:52,083 basehttp 46192 17132 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:32:52,138 basehttp 46192 17132 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:52,293 basehttp 46192 13140 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:32:54,767 basehttp 46192 13140 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 12792
+WARNING 2025-12-19 09:32:54,819 log 46192 13140 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:32:54,819 basehttp 46192 13140 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:32:54,855 basehttp 46192 13140 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+WARNING 2025-12-19 09:32:54,868 basehttp 46192 13140 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:56,785 basehttp 46192 24764 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 14202
+WARNING 2025-12-19 09:32:56,835 log 46192 24764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:32:56,836 basehttp 46192 24764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:32:56,868 basehttp 46192 12104 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:32:56,883 basehttp 46192 24764 "GET /static/css/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 24948
+INFO 2025-12-19 09:33:04,465 basehttp 46192 24764 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:33:04,518 log 46192 24764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:04,519 basehttp 46192 24764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:04,566 basehttp 46192 24764 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:04,731 basehttp 46192 13792 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:33:07,166 basehttp 46192 13792 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37495
+WARNING 2025-12-19 09:33:07,243 log 46192 13792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:07,243 basehttp 46192 13792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:07,281 basehttp 46192 13792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:07,425 basehttp 46192 21040 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:33:08,384 basehttp 46192 21040 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 12792
+WARNING 2025-12-19 09:33:08,436 log 46192 21040 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:08,438 basehttp 46192 21040 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:08,482 basehttp 46192 21040 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:08,531 basehttp 46192 14484 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 39
+INFO 2025-12-19 09:33:10,118 basehttp 46192 14484 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 13456
+WARNING 2025-12-19 09:33:10,167 log 46192 14484 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:10,168 basehttp 46192 14484 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:10,201 basehttp 46192 14484 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:17,984 basehttp 46192 22772 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/ HTTP/1.1" 200 37566
+WARNING 2025-12-19 09:33:18,036 log 46192 22772 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:18,037 basehttp 46192 22772 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:18,082 basehttp 46192 22772 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:18,228 basehttp 46192 54012 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:33:28,309 basehttp 46192 54012 "GET /capacitaciones/player/01ac9d5f-3c1f-4c21-a7e7-6be670f12659/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37495
+WARNING 2025-12-19 09:33:28,362 log 46192 54012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:33:28,363 basehttp 46192 54012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:33:28,403 basehttp 46192 54012 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:33:28,562 basehttp 46192 57980 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 09:40:07,975 basehttp 46192 11996 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:40:08,115 basehttp 46192 11996 "GET /empleados/perfil/0e881b6d-bdcc-41b9-8012-829947d0855c/ HTTP/1.1" 200 28038
+WARNING 2025-12-19 09:40:08,176 log 46192 11996 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:40:08,177 basehttp 46192 11996 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:40:08,218 basehttp 46192 11996 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:40:09,884 basehttp 46192 7184 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:40:09,940 log 46192 7184 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:40:09,940 basehttp 46192 7184 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:40:10,002 basehttp 46192 7184 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:48:44,841 apps 6192 24324 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:49:11,647 apps 17456 33636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:49:50,836 autoreload 46192 48644 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:49:51,733 apps 21116 28992 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:49:51,746 autoreload 21116 28992 Watching for file changes with StatReloader
+INFO 2025-12-19 09:49:52,368 wsgi 21116 44856 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:50:09,631 autoreload 21116 28992 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 09:50:10,462 apps 28836 5680 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:50:10,481 autoreload 28836 5680 Watching for file changes with StatReloader
+INFO 2025-12-19 09:50:10,992 wsgi 28836 32664 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 09:51:04,260 apps 40364 16624 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 09:51:28,763 basehttp 28836 32396 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:51:38,014 log 28836 32396 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:51:38,015 basehttp 28836 32396 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:51:38,022 basehttp 28836 32396 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:51:43,408 basehttp 28836 33260 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29649
+WARNING 2025-12-19 09:51:43,438 log 28836 33260 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:51:43,442 basehttp 28836 33260 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:51:43,443 basehttp 28836 340 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-19 09:51:43,447 basehttp 28836 45848 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-19 09:51:43,448 basehttp 28836 33260 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-19 09:51:43,449 basehttp 28836 340 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-19 09:51:43,449 basehttp 28836 49340 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-19 09:51:43,452 basehttp 28836 57372 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-19 09:51:43,454 basehttp 28836 32076 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-19 09:51:43,471 basehttp 28836 32076 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-19 09:51:43,498 basehttp 28836 32076 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 09:51:43,546 log 28836 57372 Not Found: /favicon.ico
+WARNING 2025-12-19 09:51:43,549 basehttp 28836 57372 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 09:52:39,772 basehttp 28836 57372 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:52:39,785 basehttp 28836 57372 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 09:52:39,813 log 28836 57372 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:39,814 basehttp 28836 57372 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:52:44,754 basehttp 28836 57372 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:52:44,816 basehttp 28836 57372 "GET /empleados/feed/ HTTP/1.1" 200 34923
+WARNING 2025-12-19 09:52:44,846 log 28836 340 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:44,847 basehttp 28836 340 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:52:44,870 basehttp 28836 57372 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 200 2895014
+WARNING 2025-12-19 09:52:44,919 basehttp 28836 57372 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:52:49,625 basehttp 28836 340 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:52:49,763 basehttp 28836 340 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 25591
+WARNING 2025-12-19 09:52:49,787 log 28836 340 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:49,789 basehttp 28836 340 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:52:49,840 basehttp 28836 340 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:52:51,843 basehttp 28836 49340 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 16900
+WARNING 2025-12-19 09:52:51,868 log 28836 49340 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:51,869 basehttp 28836 49340 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:52:51,918 basehttp 28836 49340 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:52:54,592 basehttp 28836 33260 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:52:54,704 basehttp 28836 33260 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 25591
+WARNING 2025-12-19 09:52:54,738 log 28836 33260 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:54,739 basehttp 28836 33260 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:52:54,782 basehttp 28836 33260 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:52:55,974 basehttp 28836 45848 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 29475
+WARNING 2025-12-19 09:52:56,001 log 28836 45848 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:52:56,002 basehttp 28836 45848 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:52:56,037 basehttp 28836 45848 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:53:05,796 basehttp 28836 49176 "POST /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:53:05,829 basehttp 28836 49176 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23198
+WARNING 2025-12-19 09:53:05,860 log 28836 49176 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:53:05,862 basehttp 28836 49176 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:53:05,915 basehttp 28836 49176 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:53:44,661 basehttp 28836 21724 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37834
+WARNING 2025-12-19 09:53:44,685 log 28836 21724 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:53:44,688 basehttp 28836 21724 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:53:44,692 basehttp 28836 34612 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 31788
+WARNING 2025-12-19 09:53:44,740 basehttp 28836 34612 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:53:44,745 basehttp 28836 42088 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-12-19 09:53:44,766 basehttp 28836 21724 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 664927
+INFO 2025-12-19 09:53:44,773 basehttp 28836 21724 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-12-19 09:53:44,773 basehttp 28836 29552 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-12-19 09:53:44,773 basehttp 28836 6668 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-12-19 09:53:44,775 basehttp 28836 42088 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-12-19 09:53:44,787 basehttp 28836 21724 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-12-19 09:53:44,787 basehttp 28836 29552 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-12-19 09:53:44,787 basehttp 28836 45832 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-12-19 09:53:44,787 basehttp 28836 6668 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-12-19 09:53:44,787 basehttp 28836 9864 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-12-19 09:53:44,788 basehttp 28836 42088 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-12-19 09:53:44,790 basehttp 28836 21724 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-12-19 09:53:44,793 basehttp 28836 6668 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-12-19 09:53:44,793 basehttp 28836 45832 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-12-19 09:53:44,795 basehttp 28836 29552 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-12-19 09:53:44,796 basehttp 28836 42088 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-12-19 09:53:44,797 basehttp 28836 9864 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-12-19 09:53:44,798 basehttp 28836 21724 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-12-19 09:53:44,810 basehttp 28836 6668 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-12-19 09:53:44,835 basehttp 28836 21724 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-12-19 09:53:44,838 basehttp 28836 6668 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-12-19 09:53:44,850 basehttp 28836 6668 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-12-19 09:53:44,869 basehttp 28836 6668 "GET /static/pdfjs/web/locale/es-ES/viewer.ftl HTTP/1.1" 200 16262
+INFO 2025-12-19 09:53:44,878 basehttp 28836 6668 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-12-19 09:53:44,880 basehttp 28836 21724 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2217960
+INFO 2025-12-19 09:53:44,982 basehttp 28836 6668 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:53:45,044 basehttp 28836 6668 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-12-19 09:53:45,075 basehttp 28836 21724 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-12-19 09:53:45,232 basehttp 28836 21724 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-12-19 09:54:17,649 basehttp 28836 57148 "POST /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/ HTTP/1.1" 200 252
+INFO 2025-12-19 09:54:20,797 basehttp 28836 57148 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37348
+WARNING 2025-12-19 09:54:20,843 log 28836 57148 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:20,846 basehttp 28836 57148 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:20,885 basehttp 28836 57148 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:21,132 basehttp 28836 8812 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:54:27,364 basehttp 28836 8812 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14966
+WARNING 2025-12-19 09:54:27,403 log 28836 8812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:27,403 basehttp 28836 8812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:27,440 basehttp 28836 8812 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:27,519 basehttp 28836 30676 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 09:54:31,802 basehttp 28836 30676 "POST /capacitaciones/quiz/intento/14/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 09:54:33,086 basehttp 28836 30676 "POST /capacitaciones/quiz/intento/14/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 09:54:33,125 basehttp 28836 30676 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11468
+WARNING 2025-12-19 09:54:33,157 log 28836 30676 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:33,159 basehttp 28836 30676 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 09:54:33,167 basehttp 28836 30676 "GET /static/css/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 24948
+WARNING 2025-12-19 09:54:33,205 basehttp 28836 30676 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:35,594 basehttp 28836 57000 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37668
+WARNING 2025-12-19 09:54:35,640 log 28836 57000 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:35,641 basehttp 28836 57000 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:35,694 basehttp 28836 57000 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:35,847 basehttp 28836 41168 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 09:54:39,350 basehttp 28836 41168 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 09:54:39,439 basehttp 28836 41168 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+WARNING 2025-12-19 09:54:39,485 log 28836 41168 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:39,485 basehttp 28836 41168 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:39,532 basehttp 28836 41168 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:41,490 basehttp 28836 7816 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23503
+WARNING 2025-12-19 09:54:41,538 log 28836 7816 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:41,539 basehttp 28836 7816 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:41,574 basehttp 28836 7816 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:52,231 basehttp 28836 53644 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37668
+WARNING 2025-12-19 09:54:52,282 log 28836 53644 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 09:54:52,283 basehttp 28836 53644 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 09:54:52,321 basehttp 28836 53644 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 09:54:52,522 basehttp 28836 23884 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:01:27,791 basehttp 28836 39336 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37085
+WARNING 2025-12-19 10:01:27,854 log 28836 39336 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 10:01:27,854 basehttp 28836 39336 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 10:01:27,905 basehttp 28836 39336 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 10:01:28,084 basehttp 28836 13932 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:01:41,307 basehttp 28836 13932 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37085
+WARNING 2025-12-19 10:01:41,374 log 28836 13932 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 10:01:41,377 basehttp 28836 13932 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 10:01:41,382 basehttp 28836 2908 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-19 10:01:41,383 basehttp 28836 47088 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-19 10:01:41,383 basehttp 28836 13932 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-19 10:01:41,386 basehttp 28836 16516 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-19 10:01:41,386 basehttp 28836 40988 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-19 10:01:41,387 basehttp 28836 2908 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-19 10:01:41,387 basehttp 28836 26972 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-19 10:01:41,402 basehttp 28836 2908 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 31788
+INFO 2025-12-19 10:01:41,406 basehttp 28836 2908 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-19 10:01:41,431 basehttp 28836 2908 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 10:01:41,437 basehttp 28836 40988 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-12-19 10:01:41,444 basehttp 28836 16516 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-12-19 10:01:41,444 basehttp 28836 26972 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 664927
+INFO 2025-12-19 10:01:41,469 basehttp 28836 26972 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-12-19 10:01:41,478 basehttp 28836 40988 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-12-19 10:01:41,478 basehttp 28836 47088 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-12-19 10:01:41,478 basehttp 28836 16516 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-12-19 10:01:41,478 basehttp 28836 13932 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-12-19 10:01:41,478 basehttp 28836 26972 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-12-19 10:01:41,486 basehttp 28836 40988 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-12-19 10:01:41,487 basehttp 28836 33320 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-12-19 10:01:41,490 basehttp 28836 47088 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-12-19 10:01:41,492 basehttp 28836 13932 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-12-19 10:01:41,491 basehttp 28836 16516 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-12-19 10:01:41,492 basehttp 28836 40988 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-12-19 10:01:41,493 basehttp 28836 33320 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-12-19 10:01:41,493 basehttp 28836 26972 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-12-19 10:01:41,501 basehttp 28836 13932 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-12-19 10:01:41,501 basehttp 28836 47088 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-12-19 10:01:41,504 basehttp 28836 16516 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-12-19 10:01:41,515 basehttp 28836 40988 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-12-19 10:01:41,531 basehttp 28836 40988 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-12-19 10:01:41,537 basehttp 28836 40988 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-12-19 10:01:41,567 basehttp 28836 40988 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2217960
+INFO 2025-12-19 10:01:41,583 basehttp 28836 16516 "GET /static/pdfjs/web/locale/es-ES/viewer.ftl HTTP/1.1" 200 16262
+INFO 2025-12-19 10:01:41,596 basehttp 28836 16516 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-12-19 10:01:41,695 basehttp 28836 16516 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+WARNING 2025-12-19 10:01:41,731 log 28836 16516 Not Found: /favicon.ico
+WARNING 2025-12-19 10:01:41,736 basehttp 28836 16516 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 10:01:41,752 basehttp 28836 16516 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-12-19 10:01:41,773 basehttp 28836 40988 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-12-19 10:01:41,929 basehttp 28836 40988 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-12-19 10:02:03,092 apps 28484 1668 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:02:03,751 apps 47148 31288 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:02:03,756 autoreload 47148 31288 Watching for file changes with StatReloader
+INFO 2025-12-19 10:02:04,273 wsgi 47148 38072 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 10:02:06,956 basehttp 47148 16456 "GET / HTTP/1.1" 302 0
+INFO 2025-12-19 10:02:07,067 basehttp 47148 16456 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:02:07,163 basehttp 47148 16456 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27435
+INFO 2025-12-19 10:02:14,918 basehttp 47148 16456 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23503
+INFO 2025-12-19 10:02:17,028 basehttp 47148 16456 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37085
+INFO 2025-12-19 10:02:17,175 basehttp 47148 16456 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:02:26,933 basehttp 47148 16456 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37510
+INFO 2025-12-19 10:02:26,953 basehttp 47148 16456 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 31788
+INFO 2025-12-19 10:02:27,033 basehttp 47148 16456 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 10:11:03,952 basehttp 47148 8252 "POST /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/ HTTP/1.1" 200 253
+INFO 2025-12-19 10:11:07,116 basehttp 47148 8252 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37024
+INFO 2025-12-19 10:11:07,211 basehttp 47148 8252 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 10:11:14,206 basehttp 47148 8252 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/?contenido=c9f8a5be-fa21-487e-8833-5f80172ad7af HTTP/1.1" 200 37095
+INFO 2025-12-19 10:11:14,296 basehttp 47148 8252 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:16:54,716 basehttp 47148 25976 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/?contenido=c9f8a5be-fa21-487e-8833-5f80172ad7af HTTP/1.1" 200 35706
+INFO 2025-12-19 10:16:54,810 basehttp 47148 25976 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:17:12,058 basehttp 47148 25976 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:17:12,162 basehttp 47148 25976 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+INFO 2025-12-19 10:17:13,361 basehttp 47148 25976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+INFO 2025-12-19 10:17:16,717 basehttp 47148 25976 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 35706
+INFO 2025-12-19 10:17:16,807 basehttp 47148 25976 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:17:51,603 apps 39792 22256 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:17:52,281 apps 31200 36844 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:17:52,302 autoreload 31200 36844 Watching for file changes with StatReloader
+INFO 2025-12-19 10:17:52,856 wsgi 31200 58004 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 10:17:54,335 basehttp 31200 21868 "GET / HTTP/1.1" 302 0
+INFO 2025-12-19 10:17:54,455 basehttp 31200 21868 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:17:54,593 basehttp 31200 21868 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+WARNING 2025-12-19 10:18:00,733 log 31200 21868 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 10:18:00,734 basehttp 31200 21868 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 10:18:00,773 basehttp 31200 21868 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 10:18:02,611 basehttp 31200 3012 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+WARNING 2025-12-19 10:18:02,643 log 31200 3012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 10:18:02,645 basehttp 31200 3012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 10:18:02,652 basehttp 31200 34376 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-19 10:18:02,652 basehttp 31200 25284 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-19 10:18:02,652 basehttp 31200 23164 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-19 10:18:02,657 basehttp 31200 34376 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-19 10:18:02,653 basehttp 31200 51012 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-19 10:18:02,653 basehttp 31200 3012 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-19 10:18:02,653 basehttp 31200 25628 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-19 10:18:02,677 basehttp 31200 34376 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-19 10:18:02,704 basehttp 31200 34376 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 10:18:02,957 log 31200 3012 Not Found: /favicon.ico
+WARNING 2025-12-19 10:18:02,958 basehttp 31200 3012 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 10:18:04,033 basehttp 31200 3012 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+WARNING 2025-12-19 10:18:04,063 log 31200 3012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 10:18:04,064 basehttp 31200 3012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 10:18:04,131 basehttp 31200 3012 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 10:18:23,140 basehttp 31200 25628 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 35706
+INFO 2025-12-19 10:18:23,158 basehttp 31200 25628 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 31788
+INFO 2025-12-19 10:18:23,173 basehttp 31200 51012 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-12-19 10:18:23,177 basehttp 31200 25284 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-12-19 10:18:23,181 basehttp 31200 25628 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 664927
+INFO 2025-12-19 10:18:23,191 basehttp 31200 25628 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-12-19 10:18:23,202 basehttp 31200 51012 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-12-19 10:18:23,202 basehttp 31200 25284 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-12-19 10:18:23,202 basehttp 31200 52968 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-12-19 10:18:23,202 basehttp 31200 23164 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-12-19 10:18:23,204 basehttp 31200 25628 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-12-19 10:18:23,207 basehttp 31200 51012 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-12-19 10:18:23,208 basehttp 31200 47660 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-12-19 10:18:23,209 basehttp 31200 25284 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-12-19 10:18:23,211 basehttp 31200 52968 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-12-19 10:18:23,211 basehttp 31200 51012 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-12-19 10:18:23,211 basehttp 31200 23164 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-12-19 10:18:23,212 basehttp 31200 25628 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-12-19 10:18:23,216 basehttp 31200 47660 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-12-19 10:18:23,216 basehttp 31200 25284 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-12-19 10:18:23,217 basehttp 31200 52968 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-12-19 10:18:23,218 basehttp 31200 52968 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-12-19 10:18:23,225 basehttp 31200 52968 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-12-19 10:18:23,246 basehttp 31200 52968 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2217960
+INFO 2025-12-19 10:18:23,250 basehttp 31200 25284 "GET /static/pdfjs/web/locale/es-ES/viewer.ftl HTTP/1.1" 200 16262
+INFO 2025-12-19 10:18:23,255 basehttp 31200 52968 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-12-19 10:18:23,294 basehttp 31200 52968 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:18:23,324 basehttp 31200 52968 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-12-19 10:18:23,464 basehttp 31200 52968 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-12-19 10:26:31,882 autoreload 31200 36844 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 10:26:32,813 apps 46996 10464 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:26:32,835 autoreload 46996 10464 Watching for file changes with StatReloader
+INFO 2025-12-19 10:26:33,370 wsgi 46996 26060 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 10:28:12,270 basehttp 46996 1432 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:28:12,418 basehttp 46996 1432 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+INFO 2025-12-19 10:28:13,613 basehttp 46996 1432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+INFO 2025-12-19 10:28:56,580 apps 22204 31032 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:30:01,926 basehttp 46996 1432 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+INFO 2025-12-19 10:30:27,284 basehttp 46996 38756 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 35708
+INFO 2025-12-19 10:30:27,409 basehttp 46996 38756 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:30:37,779 basehttp 46996 38756 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:30:37,788 basehttp 46996 38756 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-19 10:30:47,223 basehttp 46996 38756 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:30:47,252 basehttp 46996 38756 "GET /empleados/feed/ HTTP/1.1" 200 35918
+INFO 2025-12-19 10:30:47,295 basehttp 46996 38756 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 200 2895014
+INFO 2025-12-19 10:30:52,834 basehttp 46996 38756 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:30:52,914 basehttp 46996 38756 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26691
+INFO 2025-12-19 10:30:54,042 basehttp 46996 38756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44374
+INFO 2025-12-19 10:31:03,560 basehttp 46996 38756 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:31:03,566 basehttp 46996 38756 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-19 10:31:08,732 basehttp 46996 38756 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:31:08,790 basehttp 46996 38756 "GET /empleados/feed/ HTTP/1.1" 200 35193
+INFO 2025-12-19 10:31:10,650 basehttp 46996 38756 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:31:10,695 basehttp 46996 38756 "GET /empleados/perfil/83390c80-0c9a-4a1d-a85e-4aaf9e09137b/ HTTP/1.1" 200 25599
+INFO 2025-12-19 10:31:12,047 basehttp 46996 38756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 16901
+INFO 2025-12-19 10:31:15,751 basehttp 46996 38756 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 29476
+INFO 2025-12-19 10:31:19,153 basehttp 46996 38756 "POST /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 10:31:19,180 basehttp 46996 38756 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23199
+INFO 2025-12-19 10:31:44,745 basehttp 46996 38756 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 35865
+INFO 2025-12-19 10:31:44,902 basehttp 46996 38756 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:32:30,766 basehttp 46996 38756 "POST /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/ HTTP/1.1" 200 252
+INFO 2025-12-19 10:32:30,889 basehttp 46996 38756 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 35379
+INFO 2025-12-19 10:32:30,989 basehttp 46996 38756 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:36:39,405 basehttp 46996 38756 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 35261
+INFO 2025-12-19 10:36:39,537 basehttp 46996 38756 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:40:26,488 apps 55284 45596 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:41:29,189 apps 20724 4080 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:43:11,200 basehttp 46996 49896 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 35747
+INFO 2025-12-19 10:43:11,334 basehttp 46996 49896 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:43:53,015 basehttp 46996 49896 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14967
+INFO 2025-12-19 10:43:53,056 basehttp 46996 49896 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 10:43:59,079 basehttp 46996 49896 "POST /capacitaciones/quiz/intento/15/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 10:44:00,183 basehttp 46996 49896 "POST /capacitaciones/quiz/intento/15/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 10:44:00,217 basehttp 46996 49896 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11469
+INFO 2025-12-19 10:44:00,240 basehttp 46996 49896 "GET /static/css/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 24948
+INFO 2025-12-19 10:44:02,003 basehttp 46996 49896 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 36067
+INFO 2025-12-19 10:44:02,098 basehttp 46996 49896 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:48:34,193 autoreload 46996 10464 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 10:48:35,109 apps 45436 7924 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:48:35,151 autoreload 45436 7924 Watching for file changes with StatReloader
+INFO 2025-12-19 10:48:35,724 wsgi 45436 49584 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 10:52:08,350 autoreload 45436 7924 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 10:52:09,364 apps 11096 11788 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:52:09,396 autoreload 11096 11788 Watching for file changes with StatReloader
+INFO 2025-12-19 10:52:09,989 wsgi 11096 14488 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+ERROR 2025-12-19 10:53:44,342 log 11096 16408 Internal Server Error: /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\decorators\clickjacking.py", line 86, in _view_wrapper
+    response = view_func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py", line 1118, in dispatch
+    return super().dispatch(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 144, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\views\generic\base.py", line 228, in get
+    context = self.get_context_data(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py", line 1308, in get_context_data
+    usuario=request.user,
+            ^^^^^^^
+NameError: name 'request' is not defined. Did you mean: 'self.request'?
+ERROR 2025-12-19 10:53:44,342 basehttp 11096 16408 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 500 119205
+INFO 2025-12-19 10:54:25,866 autoreload 11096 11788 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-19 10:54:26,842 apps 20508 50644 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 10:54:26,862 autoreload 20508 50644 Watching for file changes with StatReloader
+INFO 2025-12-19 10:54:27,417 wsgi 20508 41376 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 10:54:40,003 basehttp 20508 39504 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 12791
+INFO 2025-12-19 10:54:40,042 basehttp 20508 39504 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 10:54:42,501 basehttp 20508 39504 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23504
+INFO 2025-12-19 10:54:44,884 basehttp 20508 39504 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 36362
+INFO 2025-12-19 10:54:45,001 basehttp 20508 39504 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 10:54:55,218 basehttp 20508 39504 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 36229
+INFO 2025-12-19 10:54:55,235 basehttp 20508 39504 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 31788
+INFO 2025-12-19 10:54:55,315 basehttp 20508 39504 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 10:59:25,647 basehttp 20508 39504 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37126
+INFO 2025-12-19 10:59:25,742 basehttp 20508 39504 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 10:59:58,085 basehttp 20508 39504 "POST /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/ HTTP/1.1" 200 283
+INFO 2025-12-19 11:00:02,268 basehttp 20508 39504 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 14965
+INFO 2025-12-19 11:00:02,305 basehttp 20508 39504 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:00:10,959 basehttp 20508 39504 "POST /capacitaciones/quiz/intento/17/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 11:00:11,720 basehttp 20508 39504 "POST /capacitaciones/quiz/intento/17/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 11:00:11,750 basehttp 20508 39504 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 11466
+INFO 2025-12-19 11:00:13,268 basehttp 20508 39504 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 37155
+INFO 2025-12-19 11:00:13,399 basehttp 20508 39504 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:00:24,539 basehttp 20508 11088 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 12791
+INFO 2025-12-19 11:00:24,576 basehttp 20508 11088 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:00:31,217 basehttp 20508 11088 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37084
+INFO 2025-12-19 11:00:31,317 basehttp 20508 11088 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:02:36,255 basehttp 20508 11088 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37514
+INFO 2025-12-19 11:02:36,352 basehttp 20508 11088 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:02:39,832 basehttp 20508 11088 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37514
+INFO 2025-12-19 11:02:39,928 basehttp 20508 11088 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:02:48,112 basehttp 20508 11088 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+INFO 2025-12-19 11:03:00,787 basehttp 20508 11088 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/ HTTP/1.1" 200 37585
+INFO 2025-12-19 11:03:00,881 basehttp 20508 11088 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:03:07,971 basehttp 20508 11088 "GET /capacitaciones/player/8e551c8f-fb25-4862-806b-06e942a7c851/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37514
+INFO 2025-12-19 11:03:08,105 basehttp 20508 11088 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:03:14,076 basehttp 20508 11088 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+INFO 2025-12-19 11:08:47,110 basehttp 20508 55988 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+INFO 2025-12-19 11:08:55,916 basehttp 20508 55988 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:08:55,921 basehttp 20508 55988 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-19 11:09:02,305 basehttp 20508 55988 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:09:02,373 basehttp 20508 55988 "GET /empleados/feed/ HTTP/1.1" 200 34925
+INFO 2025-12-19 11:09:03,938 basehttp 20508 55988 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:09:04,065 basehttp 20508 55988 "GET /empleados/perfil/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 39360
+INFO 2025-12-19 11:09:05,104 basehttp 20508 55988 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 16901
+INFO 2025-12-19 11:09:19,424 basehttp 20508 55988 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 29476
+INFO 2025-12-19 11:09:22,963 basehttp 20508 55988 "POST /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:09:22,991 basehttp 20508 55988 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23199
+INFO 2025-12-19 11:09:31,027 basehttp 20508 55988 "GET /capacitaciones/player/3b3a91fc-77cb-4ad6-966c-235b8719d7fc/ HTTP/1.1" 200 37297
+INFO 2025-12-19 11:09:31,124 basehttp 20508 55988 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:10:03,580 basehttp 20508 55988 "POST /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/ HTTP/1.1" 200 282
+INFO 2025-12-19 11:10:07,378 basehttp 20508 55988 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14967
+INFO 2025-12-19 11:10:07,418 basehttp 20508 55988 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:10:09,207 basehttp 20508 55988 "POST /capacitaciones/quiz/intento/19/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 11:10:10,512 basehttp 20508 55988 "POST /capacitaciones/quiz/intento/19/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 11:10:10,546 basehttp 20508 55988 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11469
+INFO 2025-12-19 11:10:12,021 basehttp 20508 55988 "GET /capacitaciones/player/3b3a91fc-77cb-4ad6-966c-235b8719d7fc/ HTTP/1.1" 200 37689
+INFO 2025-12-19 11:10:12,117 basehttp 20508 55988 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:10:17,247 basehttp 20508 55988 "GET /capacitaciones/player/3b3a91fc-77cb-4ad6-966c-235b8719d7fc/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37556
+INFO 2025-12-19 11:10:17,348 basehttp 20508 55988 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:11:03,899 basehttp 20508 55988 "POST /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/ HTTP/1.1" 200 283
+INFO 2025-12-19 11:11:08,271 basehttp 20508 55988 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 14965
+INFO 2025-12-19 11:11:08,315 basehttp 20508 55988 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:11:10,102 basehttp 20508 55988 "POST /capacitaciones/quiz/intento/20/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 11:11:11,298 basehttp 20508 55988 "POST /capacitaciones/quiz/intento/20/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 11:11:11,326 basehttp 20508 55988 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 11466
+INFO 2025-12-19 11:11:13,462 basehttp 20508 55988 "GET /capacitaciones/player/3b3a91fc-77cb-4ad6-966c-235b8719d7fc/ HTTP/1.1" 200 37585
+INFO 2025-12-19 11:11:13,563 basehttp 20508 55988 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:11:24,001 basehttp 20508 55988 "GET /capacitaciones/player/3b3a91fc-77cb-4ad6-966c-235b8719d7fc/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37514
+INFO 2025-12-19 11:11:24,106 basehttp 20508 55988 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:11:27,372 basehttp 20508 55988 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+WARNING 2025-12-19 11:11:41,213 log 20508 55988 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:11:41,214 basehttp 20508 55988 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:11:41,336 basehttp 20508 55988 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:11:43,647 basehttp 20508 49112 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+WARNING 2025-12-19 11:11:43,703 log 20508 49112 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:11:43,705 basehttp 20508 49112 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:11:43,706 basehttp 20508 15416 "GET /static/css/vendor/bootstrap.min.css HTTP/1.1" 200 232914
+INFO 2025-12-19 11:11:43,709 basehttp 20508 15416 "GET /static/js/custom.js HTTP/1.1" 200 13589
+INFO 2025-12-19 11:11:43,711 basehttp 20508 49112 "GET /static/js/vendor/sweetalert2.min.js HTTP/1.1" 200 47844
+INFO 2025-12-19 11:11:43,711 basehttp 20508 18256 "GET /static/css/vendor/fontawesome.min.css HTTP/1.1" 200 102025
+INFO 2025-12-19 11:11:43,715 basehttp 20508 34508 "GET /static/css/custom.css HTTP/1.1" 200 12294
+INFO 2025-12-19 11:11:43,718 basehttp 20508 1448 "GET /static/css/document-viewer.css HTTP/1.1" 200 469
+INFO 2025-12-19 11:11:43,721 basehttp 20508 25608 "GET /static/css/corporativo.css HTTP/1.1" 200 5259
+INFO 2025-12-19 11:11:43,739 basehttp 20508 25608 "GET /static/css/webfonts/fa-solid-900.woff2 HTTP/1.1" 200 150124
+WARNING 2025-12-19 11:11:43,767 basehttp 20508 25608 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:11:43,803 log 20508 1448 Not Found: /favicon.ico
+WARNING 2025-12-19 11:11:43,803 basehttp 20508 1448 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 11:12:37,810 apps 47664 54368 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 11:13:05,064 basehttp 20508 1448 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:13:05,070 basehttp 20508 1448 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:13:05,103 log 20508 1448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:05,104 basehttp 20508 1448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:13:24,781 basehttp 20508 1448 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:13:24,823 basehttp 20508 1448 "GET /empleados/feed/ HTTP/1.1" 200 34927
+WARNING 2025-12-19 11:13:24,859 log 20508 1448 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:24,862 basehttp 20508 1448 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:13:24,900 basehttp 20508 1448 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:13:24,901 basehttp 20508 34508 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 200 2895014
+INFO 2025-12-19 11:13:26,830 basehttp 20508 34508 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:13:26,918 basehttp 20508 34508 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25784
+WARNING 2025-12-19 11:13:26,949 log 20508 34508 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:26,952 basehttp 20508 34508 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:13:27,035 basehttp 20508 34508 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:13:27,889 basehttp 20508 18256 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29471
+WARNING 2025-12-19 11:13:27,915 log 20508 18256 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:27,920 basehttp 20508 18256 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:13:27,989 basehttp 20508 18256 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:13:36,319 log 20508 15416 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:36,319 basehttp 20508 49112 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:13:36,323 basehttp 20508 15416 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:13:36,375 basehttp 20508 15416 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:13:36,388 log 20508 20768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:36,389 basehttp 20508 20768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:13:51,715 basehttp 20508 20768 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 29477
+WARNING 2025-12-19 11:13:51,752 log 20508 20768 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:13:51,753 basehttp 20508 20768 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:13:51,802 basehttp 20508 20768 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:01,325 basehttp 20508 39236 "POST /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:14:01,362 basehttp 20508 39236 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 36596
+WARNING 2025-12-19 11:14:01,397 log 20508 39236 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:01,401 basehttp 20508 39236 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:01,447 basehttp 20508 39236 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:05,931 basehttp 20508 22704 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:14:05,934 basehttp 20508 22704 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:14:05,973 log 20508 22704 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:05,974 basehttp 20508 22704 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:14:12,861 basehttp 20508 22704 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:14:12,900 basehttp 20508 22704 "GET /empleados/feed/ HTTP/1.1" 200 35918
+WARNING 2025-12-19 11:14:12,934 log 20508 22704 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:12,935 basehttp 20508 22704 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:13,006 basehttp 20508 22704 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:14,770 basehttp 20508 40144 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:14:14,859 basehttp 20508 40144 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26691
+WARNING 2025-12-19 11:14:14,890 log 20508 40144 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:14,894 basehttp 20508 40144 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:14,937 basehttp 20508 40144 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:15,967 basehttp 20508 51820 "GET /dashboard/ HTTP/1.1" 200 21844
+WARNING 2025-12-19 11:14:16,003 log 20508 51820 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:16,005 basehttp 20508 51820 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:16,048 basehttp 20508 51820 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:17,370 basehttp 20508 47116 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+WARNING 2025-12-19 11:14:17,402 log 20508 47116 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:17,403 basehttp 20508 47116 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:17,453 basehttp 20508 47116 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:24,077 basehttp 20508 9016 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 30762
+WARNING 2025-12-19 11:14:24,117 log 20508 9016 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:24,120 basehttp 20508 9016 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:24,169 basehttp 20508 9016 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:35,206 basehttp 20508 45004 "GET /dashboard/ HTTP/1.1" 200 21844
+WARNING 2025-12-19 11:14:35,246 log 20508 45004 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:35,248 basehttp 20508 45004 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:35,305 basehttp 20508 45004 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:54,029 basehttp 20508 52976 "GET /notificaciones/list/ HTTP/1.1" 200 14449
+WARNING 2025-12-19 11:14:54,071 log 20508 52976 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:54,080 basehttp 20508 52976 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:54,121 basehttp 20508 52976 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:14:58,731 basehttp 20508 24816 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 15506
+WARNING 2025-12-19 11:14:58,762 log 20508 24816 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:14:58,763 basehttp 20508 24816 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:14:58,807 basehttp 20508 24816 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:15:13,285 basehttp 20508 56728 "GET /notificaciones/list/ HTTP/1.1" 200 14449
+WARNING 2025-12-19 11:15:13,328 log 20508 56728 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:15:13,340 basehttp 20508 56728 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:15:13,368 basehttp 20508 56728 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:15:18,592 basehttp 20508 18216 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:15:18,612 log 20508 2128 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:15:18,615 basehttp 20508 2128 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:15:18,633 basehttp 20508 2128 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+WARNING 2025-12-19 11:15:18,648 log 20508 46392 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:15:18,655 basehttp 20508 46392 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:16:07,232 apps 48188 11436 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 11:16:11,013 basehttp 20508 46392 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:16:11,115 basehttp 20508 46392 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 26691
+WARNING 2025-12-19 11:16:11,151 log 20508 46392 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:11,152 basehttp 20508 46392 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:11,221 basehttp 20508 46392 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:16:12,223 basehttp 20508 39388 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44386
+WARNING 2025-12-19 11:16:12,258 log 20508 39388 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:12,261 basehttp 20508 39388 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:12,312 basehttp 20508 39388 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:16:22,231 basehttp 20508 40164 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 44386
+WARNING 2025-12-19 11:16:22,269 log 20508 40164 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:22,272 basehttp 20508 40164 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:22,322 basehttp 20508 40164 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:16:30,334 basehttp 20508 6836 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:16:30,338 basehttp 20508 6836 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:16:30,373 log 20508 6836 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:30,381 basehttp 20508 6836 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:16:36,012 basehttp 20508 6836 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:16:36,056 basehttp 20508 6836 "GET /empleados/feed/ HTTP/1.1" 200 34925
+WARNING 2025-12-19 11:16:36,100 log 20508 6836 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:36,104 basehttp 20508 6836 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:36,174 basehttp 20508 6836 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:16:38,301 basehttp 20508 53864 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:16:38,446 basehttp 20508 53864 "GET /empleados/perfil/46c27cd2-0127-4d1f-8ff6-b51a48678692/ HTTP/1.1" 200 40810
+WARNING 2025-12-19 11:16:38,486 log 20508 53864 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:38,490 basehttp 20508 53864 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:38,538 basehttp 20508 53864 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:16:39,596 basehttp 20508 14684 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+WARNING 2025-12-19 11:16:39,630 log 20508 14684 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:16:39,635 basehttp 20508 14684 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:16:39,697 basehttp 20508 14684 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:18:38,695 basehttp 20508 49972 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:18:38,699 basehttp 20508 49972 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:18:38,737 log 20508 49972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:18:38,739 basehttp 20508 49972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:18:56,348 basehttp 20508 49972 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:18:56,389 basehttp 20508 49972 "GET /empleados/feed/ HTTP/1.1" 200 34923
+WARNING 2025-12-19 11:18:56,419 log 20508 49972 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:18:56,421 basehttp 20508 49972 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:18:56,467 basehttp 20508 49972 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:18:58,190 basehttp 20508 29648 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:18:58,270 basehttp 20508 29648 "GET /empleados/perfil/8cb45c87-f4d1-4d00-bb3b-bfe6815b8133/ HTTP/1.1" 200 27041
+WARNING 2025-12-19 11:18:58,300 log 20508 29648 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:18:58,300 basehttp 20508 29648 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:18:58,364 basehttp 20508 29648 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:18:59,232 basehttp 20508 40404 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+WARNING 2025-12-19 11:18:59,265 log 20508 40404 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:18:59,265 basehttp 20508 40404 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:18:59,313 basehttp 20508 40404 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:02,785 basehttp 20508 47588 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/ HTTP/1.1" 200 37698
+WARNING 2025-12-19 11:19:02,816 log 20508 47588 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-19 11:19:02,818 basehttp 20508 1140 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 31788
+WARNING 2025-12-19 11:19:02,819 basehttp 20508 47588 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:02,869 basehttp 20508 1140 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:02,873 basehttp 20508 49464 "GET /static/pdfjs/web/viewer.css HTTP/1.1" 200 120678
+INFO 2025-12-19 11:19:02,876 basehttp 20508 47588 "GET /static/pdfjs/build/pdf.mjs HTTP/1.1" 200 664927
+INFO 2025-12-19 11:19:02,884 basehttp 20508 49464 "GET /static/pdfjs/web/images/toolbarButton-viewThumbnail.svg HTTP/1.1" 200 1396
+INFO 2025-12-19 11:19:02,893 basehttp 20508 30376 "GET /static/pdfjs/web/viewer.mjs HTTP/1.1" 200 523977
+INFO 2025-12-19 11:19:02,898 basehttp 20508 49464 "GET /static/pdfjs/web/images/toolbarButton-pageDown.svg HTTP/1.1" 200 701
+INFO 2025-12-19 11:19:02,898 basehttp 20508 47588 "GET /static/pdfjs/web/images/toolbarButton-pageUp.svg HTTP/1.1" 200 682
+INFO 2025-12-19 11:19:02,907 basehttp 20508 42840 "GET /static/pdfjs/web/images/toolbarButton-viewOutline.svg HTTP/1.1" 200 332
+INFO 2025-12-19 11:19:02,909 basehttp 20508 47588 "GET /static/pdfjs/web/images/toolbarButton-search.svg HTTP/1.1" 200 1234
+INFO 2025-12-19 11:19:02,911 basehttp 20508 14088 "GET /static/pdfjs/web/images/toolbarButton-viewAttachments.svg HTTP/1.1" 200 570
+INFO 2025-12-19 11:19:02,913 basehttp 20508 49464 "GET /static/pdfjs/web/images/toolbarButton-editorFreeText.svg HTTP/1.1" 200 498
+INFO 2025-12-19 11:19:02,914 basehttp 20508 30376 "GET /static/pdfjs/web/images/toolbarButton-sidebarToggle.svg HTTP/1.1" 200 1560
+INFO 2025-12-19 11:19:02,921 basehttp 20508 42840 "GET /static/pdfjs/web/images/toolbarButton-zoomOut.svg HTTP/1.1" 200 472
+INFO 2025-12-19 11:19:02,923 basehttp 20508 14420 "GET /static/pdfjs/web/images/toolbarButton-viewLayers.svg HTTP/1.1" 200 671
+INFO 2025-12-19 11:19:02,923 basehttp 20508 49464 "GET /static/pdfjs/web/images/toolbarButton-menuArrow.svg HTTP/1.1" 200 681
+INFO 2025-12-19 11:19:02,923 basehttp 20508 14088 "GET /static/pdfjs/web/images/toolbarButton-editorInk.svg HTTP/1.1" 200 1189
+INFO 2025-12-19 11:19:02,924 basehttp 20508 30376 "GET /static/pdfjs/web/images/toolbarButton-download.svg HTTP/1.1" 200 1036
+INFO 2025-12-19 11:19:02,924 basehttp 20508 47588 "GET /static/pdfjs/web/images/toolbarButton-secondaryToolbarToggle.svg HTTP/1.1" 200 1080
+INFO 2025-12-19 11:19:02,926 basehttp 20508 42840 "GET /static/pdfjs/web/images/toolbarButton-print.svg HTTP/1.1" 200 927
+INFO 2025-12-19 11:19:02,932 basehttp 20508 14420 "GET /static/pdfjs/web/images/toolbarButton-zoomIn.svg HTTP/1.1" 200 958
+INFO 2025-12-19 11:19:02,968 basehttp 20508 49464 "GET /static/pdfjs/build/pdf.mjs.map HTTP/1.1" 200 1600097
+INFO 2025-12-19 11:19:03,010 basehttp 20508 14420 "GET /static/pdfjs/web/locale/locale.json HTTP/1.1" 200 2498
+INFO 2025-12-19 11:19:03,012 basehttp 20508 49464 "GET /static/pdfjs/web/viewer.mjs.map HTTP/1.1" 200 1225034
+INFO 2025-12-19 11:19:03,028 basehttp 20508 49464 "GET /static/pdfjs/web/images/toolbarButton-editorStamp.svg HTTP/1.1" 200 734
+INFO 2025-12-19 11:19:03,040 basehttp 20508 49464 "GET /static/pdfjs/web/locale/es-ES/viewer.ftl HTTP/1.1" 200 16262
+INFO 2025-12-19 11:19:03,047 basehttp 20508 49464 "GET /static/pdfjs/web/locale/en-US/viewer.ftl HTTP/1.1" 200 14945
+INFO 2025-12-19 11:19:03,053 basehttp 20508 14420 "GET /static/pdfjs/build/pdf.worker.mjs HTTP/1.1" 200 2217960
+INFO 2025-12-19 11:19:03,187 basehttp 20508 49464 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:19:03,239 basehttp 20508 14420 "GET /static/pdfjs/build/pdf.worker.mjs.map HTTP/1.1" 200 5175343
+INFO 2025-12-19 11:19:03,249 basehttp 20508 14420 "GET /static/pdfjs/web/images/loading-icon.gif HTTP/1.1" 200 2545
+INFO 2025-12-19 11:19:03,431 basehttp 20508 14420 "GET /static/pdfjs/web/images/loading.svg HTTP/1.1" 200 1559
+INFO 2025-12-19 11:19:05,930 basehttp 20508 14420 "GET /capacitaciones/player/79f5471d-aee4-4e4f-8f76-e37b11a109a9/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37613
+WARNING 2025-12-19 11:19:05,974 log 20508 14420 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-12-19 11:19:05,976 basehttp 20508 49464 "GET /static/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 31788
+WARNING 2025-12-19 11:19:05,980 basehttp 20508 14420 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:06,022 basehttp 20508 14420 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:06,286 basehttp 20508 49464 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:19:08,467 basehttp 20508 49464 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23506
+WARNING 2025-12-19 11:19:08,518 log 20508 49464 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:08,518 basehttp 20508 49464 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:08,565 basehttp 20508 49464 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:12,415 basehttp 20508 42840 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:19:12,420 basehttp 20508 42840 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:19:12,473 log 20508 42840 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:12,475 basehttp 20508 42840 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:19:25,595 basehttp 20508 42840 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:19:25,637 basehttp 20508 42840 "GET /empleados/feed/ HTTP/1.1" 200 35193
+WARNING 2025-12-19 11:19:25,704 log 20508 42840 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:25,706 basehttp 20508 42840 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:25,777 basehttp 20508 42840 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:27,059 basehttp 20508 47588 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:19:27,131 basehttp 20508 47588 "GET /empleados/perfil/83390c80-0c9a-4a1d-a85e-4aaf9e09137b/ HTTP/1.1" 200 27049
+WARNING 2025-12-19 11:19:27,173 log 20508 47588 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:27,174 basehttp 20508 47588 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:27,265 basehttp 20508 47588 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:28,619 basehttp 20508 30376 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23507
+WARNING 2025-12-19 11:19:28,666 log 20508 30376 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:28,670 basehttp 20508 30376 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:19:28,717 basehttp 20508 30376 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:19:32,076 basehttp 20508 14088 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:19:32,082 basehttp 20508 14088 "GET /auth/login/ HTTP/1.1" 200 3787
+WARNING 2025-12-19 11:19:32,139 log 20508 14088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:19:32,140 basehttp 20508 14088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:20:01,358 basehttp 20508 14088 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:20:01,393 basehttp 20508 14088 "GET /empleados/feed/ HTTP/1.1" 200 34923
+WARNING 2025-12-19 11:20:01,433 log 20508 14088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:01,440 basehttp 20508 14088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:01,488 basehttp 20508 14088 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:07,275 basehttp 20508 31696 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:20:07,375 basehttp 20508 31696 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 31358
+WARNING 2025-12-19 11:20:07,417 log 20508 31696 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:07,420 basehttp 20508 31696 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:07,465 basehttp 20508 31696 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:12,469 basehttp 20508 14968 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23191
+WARNING 2025-12-19 11:20:12,510 log 20508 14968 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:12,532 basehttp 20508 14968 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:12,574 basehttp 20508 14968 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:16,624 basehttp 20508 46872 "GET /capacitaciones/player/f5059ac4-106a-4503-9b91-8502abc666db/ HTTP/1.1" 200 43430
+WARNING 2025-12-19 11:20:16,668 log 20508 46872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:16,669 basehttp 20508 46872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:16,699 basehttp 20508 45824 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:16,713 basehttp 20508 46872 "GET /static/css/webfonts/fa-brands-400.woff2 HTTP/1.1" 200 108020
+INFO 2025-12-19 11:20:40,291 basehttp 20508 46872 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:20:40,385 basehttp 20508 46872 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 31358
+WARNING 2025-12-19 11:20:40,424 log 20508 46872 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:40,426 basehttp 20508 46872 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:40,481 basehttp 20508 46872 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:42,053 basehttp 20508 28992 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 25372
+WARNING 2025-12-19 11:20:42,093 log 20508 28992 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:42,096 basehttp 20508 28992 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:42,133 basehttp 20508 28992 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:46,940 basehttp 20508 20540 "POST /capacitaciones/capacitacion/4270d21b-2e14-4a61-bd03-1e88cb01bedc/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:20:46,975 basehttp 20508 20540 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30124
+WARNING 2025-12-19 11:20:47,009 log 20508 20540 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:47,014 basehttp 20508 20540 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:47,060 basehttp 20508 20540 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:50,274 basehttp 20508 32216 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37296
+WARNING 2025-12-19 11:20:50,302 log 20508 32216 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:20:50,308 basehttp 20508 32216 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:20:50,352 basehttp 20508 32216 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:20:50,551 basehttp 20508 32708 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:21:59,831 basehttp 20508 32708 "POST /capacitaciones/contenido/c9f8a5be-fa21-487e-8833-5f80172ad7af/completar/ HTTP/1.1" 200 282
+INFO 2025-12-19 11:22:07,044 basehttp 20508 32708 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:22:07,146 basehttp 20508 32708 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 32808
+WARNING 2025-12-19 11:22:07,189 log 20508 32708 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:07,192 basehttp 20508 32708 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:07,243 basehttp 20508 32708 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:08,527 basehttp 20508 28804 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30429
+WARNING 2025-12-19 11:22:08,567 log 20508 28804 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:08,569 basehttp 20508 28804 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:08,620 basehttp 20508 28804 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:16,967 basehttp 20508 55152 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37354
+WARNING 2025-12-19 11:22:17,004 log 20508 55152 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:17,010 basehttp 20508 55152 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:17,079 basehttp 20508 55152 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:17,227 basehttp 20508 37356 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:22:20,877 basehttp 20508 37356 "GET /capacitaciones/quiz/2/ HTTP/1.1" 200 14966
+WARNING 2025-12-19 11:22:20,925 log 20508 37356 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:20,927 basehttp 20508 37356 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:20,980 basehttp 20508 37356 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:21,028 basehttp 20508 50480 "POST /capacitaciones/quiz/2/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:22:22,606 basehttp 20508 50480 "POST /capacitaciones/quiz/intento/21/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 11:22:24,360 basehttp 20508 50480 "POST /capacitaciones/quiz/intento/21/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 11:22:24,398 basehttp 20508 50480 "GET /capacitaciones/quiz/2/resultado/ HTTP/1.1" 200 11468
+WARNING 2025-12-19 11:22:24,445 log 20508 50480 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:24,448 basehttp 20508 50480 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+INFO 2025-12-19 11:22:24,486 basehttp 20508 50480 "GET /static/css/webfonts/fa-regular-400.woff2 HTTP/1.1" 200 24948
+WARNING 2025-12-19 11:22:24,488 basehttp 20508 49124 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:26,771 basehttp 20508 50480 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37688
+WARNING 2025-12-19 11:22:26,819 log 20508 50480 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:26,824 basehttp 20508 50480 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:26,871 basehttp 20508 50480 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:27,041 basehttp 20508 42636 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:22:30,113 basehttp 20508 42636 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:22:30,230 basehttp 20508 42636 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 32808
+WARNING 2025-12-19 11:22:30,309 log 20508 42636 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:30,313 basehttp 20508 42636 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:30,362 basehttp 20508 42636 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:31,396 basehttp 20508 19280 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30429
+WARNING 2025-12-19 11:22:31,450 log 20508 19280 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:31,456 basehttp 20508 19280 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:31,504 basehttp 20508 19280 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:54,633 basehttp 20508 20940 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37688
+WARNING 2025-12-19 11:22:54,689 log 20508 20940 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:54,690 basehttp 20508 20940 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:54,732 basehttp 20508 20940 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:54,921 basehttp 20508 53200 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:22:57,188 basehttp 20508 53200 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37555
+WARNING 2025-12-19 11:22:57,238 log 20508 53200 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:22:57,246 basehttp 20508 53200 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:22:57,286 basehttp 20508 53200 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:22:57,473 basehttp 20508 13656 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:23:02,161 basehttp 20508 13656 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30429
+WARNING 2025-12-19 11:23:02,221 log 20508 13656 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:23:02,224 basehttp 20508 13656 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:23:02,304 basehttp 20508 13656 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:23:05,322 basehttp 20508 20648 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37688
+WARNING 2025-12-19 11:23:05,386 log 20508 20648 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:23:05,390 basehttp 20508 20648 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:23:05,431 basehttp 20508 20648 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:23:05,605 basehttp 20508 55360 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:23:26,354 basehttp 20508 55360 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37555
+WARNING 2025-12-19 11:23:26,438 log 20508 55360 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:23:26,440 basehttp 20508 55360 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:23:26,486 basehttp 20508 55360 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:23:26,691 basehttp 20508 56552 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:23:58,242 basehttp 20508 56552 "POST /capacitaciones/contenido/b0371595-2bba-4128-99b3-7c4e97230fa7/completar/ HTTP/1.1" 200 283
+INFO 2025-12-19 11:24:06,603 basehttp 20508 56552 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30432
+WARNING 2025-12-19 11:24:06,668 log 20508 56552 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:06,674 basehttp 20508 56552 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:06,749 basehttp 20508 56552 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:19,784 basehttp 20508 56736 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37698
+WARNING 2025-12-19 11:24:19,872 log 20508 56736 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:19,880 basehttp 20508 56736 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:19,934 basehttp 20508 56736 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:20,081 basehttp 20508 37792 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:24:22,751 basehttp 20508 37792 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/?contenido=b0371595-2bba-4128-99b3-7c4e97230fa7 HTTP/1.1" 200 37613
+WARNING 2025-12-19 11:24:22,833 log 20508 37792 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:22,835 basehttp 20508 37792 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:22,873 basehttp 20508 37792 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:23,058 basehttp 20508 46188 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_2_curso_bpa.pdf HTTP/1.1" 200 2578472
+INFO 2025-12-19 11:24:26,690 basehttp 20508 46188 "GET /capacitaciones/quiz/3/ HTTP/1.1" 200 14964
+WARNING 2025-12-19 11:24:26,780 log 20508 46188 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:26,780 basehttp 20508 46188 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:26,818 basehttp 20508 54120 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:26,832 basehttp 20508 46188 "POST /capacitaciones/quiz/3/ HTTP/1.1" 200 39
+INFO 2025-12-19 11:24:28,016 basehttp 20508 46188 "POST /capacitaciones/quiz/intento/22/respuesta/ HTTP/1.1" 200 42
+INFO 2025-12-19 11:24:28,711 basehttp 20508 46188 "POST /capacitaciones/quiz/intento/22/finalizar/ HTTP/1.1" 200 74
+INFO 2025-12-19 11:24:28,738 basehttp 20508 46188 "GET /capacitaciones/quiz/3/resultado/ HTTP/1.1" 200 11465
+WARNING 2025-12-19 11:24:28,829 log 20508 46188 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:28,833 basehttp 20508 46188 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:28,882 basehttp 20508 46188 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:30,290 basehttp 20508 42584 "GET /capacitaciones/player/5c03a7b0-db55-4893-a5ba-325c6f505dab/ HTTP/1.1" 200 37584
+WARNING 2025-12-19 11:24:30,371 log 20508 42584 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:30,377 basehttp 20508 42584 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:30,421 basehttp 20508 42584 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:30,631 basehttp 20508 5048 "GET /documentos/proxy-pdf/?file=/media/capacitaciones/contenido/modulo_1_curso_bpa.pdf HTTP/1.1" 200 2008932
+INFO 2025-12-19 11:24:31,695 basehttp 20508 5048 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-19 11:24:31,798 basehttp 20508 5048 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 32808
+WARNING 2025-12-19 11:24:31,903 log 20508 5048 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:31,903 basehttp 20508 5048 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:31,955 basehttp 20508 5048 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-19 11:24:33,034 basehttp 20508 4976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 30432
+WARNING 2025-12-19 11:24:33,130 log 20508 4976 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-19 11:24:33,132 basehttp 20508 4976 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-19 11:24:33,173 basehttp 20508 4976 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023

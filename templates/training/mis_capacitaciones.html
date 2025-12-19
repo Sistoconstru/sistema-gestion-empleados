@@ -234,9 +234,16 @@
                                 </div>
                             </div>
                             <div class="text-end">
-                                {% if inscripcion.estado == 'aprobado' and inscripcion.puntaje_final %}
-                                    <div class="h4 text-success mb-1">{{ inscripcion.puntaje_final }}%</div>
-                                    <small class="text-muted">Calificación</small>
+                                {% if inscripcion.estado == 'aprobado' %}
+                                    {% if inscripcion.puntaje_final %}
+                                        <div class="h4 text-success mb-1">{{ inscripcion.puntaje_final|floatformat:0 }}%</div>
+                                        <small class="text-muted">Calificación</small>
+                                    {% else %}
+                                        <div class="h4 text-warning mb-1">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <small class="text-warning">Valoraciones pendientes</small>
+                                    {% endif %}
                                 {% elif inscripcion.estado == 'en_progreso' %}
                                     <div class="h4 text-warning mb-1">{{ inscripcion.porcentaje_completado|default_if_none:0 }}%</div>
                                     <small class="text-muted">Completado</small>
@@ -260,13 +267,20 @@
                         </div>
                         {% elif inscripcion.estado == 'aprobado' %}
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span>Calificación Final</span>
-                                <span>{{ inscripcion.puntaje_final|default:95 }}/100</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-corporativo" style="width: {{ inscripcion.puntaje_final|default:95 }}%"></div>
-                            </div>
+                            {% if inscripcion.puntaje_final %}
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Calificación Final</span>
+                                    <span>{{ inscripcion.puntaje_final|floatformat:0 }}/100</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-corporativo" style="width: {{ inscripcion.puntaje_final }}%"></div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning small mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Debes completar todas las valoraciones de aprendizaje para obtener tu calificación final.
+                                </div>
+                            {% endif %}
                         </div>
                         {% endif %}
                         

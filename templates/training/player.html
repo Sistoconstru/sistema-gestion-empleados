@@ -270,21 +270,29 @@
                             </div>
                         {% else %}
                             {% include 'training/partials/_contenido_reproductor.html' %}
-                            {% if contenido_actual.contenido_texto or not progreso_actual.completado %}
                             <div class="mt-4">
                                 {% if contenido_actual.contenido_texto %}
                                     <div class="text-content p-3 bg-gris-claro rounded border mb-3">
                                         {{ contenido_actual.contenido_texto|safe }}
                                     </div>
                                 {% endif %}
-                                {% if not progreso_actual.completado %}
+                                {% if valoracion_resultado %}
+                                    <button class="btn btn-success btn-lg w-100 disabled" id="marcarCompletada" disabled>
+                                        <i class="fas fa-check-double me-2"></i>
+                                        Contenido visto y valoración realizada, resultado: {{ valoracion_resultado.puntaje }}
+                                    </button>
+                                {% elif progreso_actual.completado %}
+                                    <button class="btn btn-success btn-lg w-100 disabled" id="marcarCompletada" disabled>
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Contenido visto, puedes realizar valoración
+                                    </button>
+                                {% else %}
                                     <button class="btn btn-corporativo btn-lg w-100" id="marcarCompletada">
                                         <i class="fas fa-check me-2"></i>
                                         Marcar como Visto
                                     </button>
                                 {% endif %}
                             </div>
-                            {% endif %}
                         {% endif %}
                     </div>
                     
@@ -375,33 +383,61 @@ document.addEventListener('DOMContentLoaded', function() {
     // Marcar contenido como completado solo después de tiempo mínimo
     const btnMarcarCompletada = document.getElementById('marcarCompletada');
     if (btnMarcarCompletada) {
-        btnMarcarCompletada.disabled = true;
-        let tiempoMinimo = 0;
-        // Detectar tiempo mínimo desde el dataset del contenido activo
-        const activeLesson = document.querySelector('.lesson-item.active');
-        if (activeLesson && activeLesson.dataset.tiempoMinimo) {
-            tiempoMinimo = parseInt(activeLesson.dataset.tiempoMinimo);
-        } else {
-            // Fallback: buscar en el reproductor si es PDF o video
-            const pdfViewer = document.getElementById('pdfViewer');
-            if (pdfViewer && pdfViewer.dataset.tiempoMinimo) {
-                tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo);
-            }
-            const videoPlayer = document.getElementById('videoPlayer');
-            if (videoPlayer && videoPlayer.dataset.tiempoMinimo) {
-                tiempoMinimo = parseInt(videoPlayer.dataset.tiempoMinimo);
-            }
-        }
-        if (!tiempoMinimo || tiempoMinimo < 10) tiempoMinimo = 30; // Por defecto 30s mínimo
+        // Si el botón ya tiene la clase 'btn-success', significa que ya está completado
+        // No iniciar cuenta regresiva
+        const yaCompletado = btnMarcarCompletada.classList.contains('btn-success');
 
-        let tiempoTranscurrido = 0;
-        let intervaloMinimo = setInterval(() => {
-            tiempoTranscurrido++;
-            if (tiempoTranscurrido >= tiempoMinimo) {
-                btnMarcarCompletada.disabled = false;
-                clearInterval(intervaloMinimo);
+        if (!yaCompletado) {
+            let tiempoMinimo = 0;
+            // Detectar tiempo mínimo desde el dataset del contenido activo
+            const activeLesson = document.querySelector('.lesson-item.active');
+            if (activeLesson && activeLesson.dataset.tiempoMinimo) {
+                tiempoMinimo = parseInt(activeLesson.dataset.tiempoMinimo);
+            } else {
+                // Fallback: buscar en el reproductor si es PDF o video
+                const pdfViewer = document.getElementById('pdfViewer');
+                if (pdfViewer && pdfViewer.dataset.tiempoMinimo) {
+                    tiempoMinimo = parseInt(pdfViewer.dataset.tiempoMinimo);
+                }
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer && videoPlayer.dataset.tiempoMinimo) {
+                    tiempoMinimo = parseInt(videoPlayer.dataset.tiempoMinimo);
+                }
             }
-        }, 1000);
+            if (!tiempoMinimo || tiempoMinimo < 10) tiempoMinimo = 30; // Por defecto 30s mínimo
+
+            // Guardar el texto original del botón
+            const textoOriginal = btnMarcarCompletada.innerHTML;
+
+            let tiempoTranscurrido = 0;
+            btnMarcarCompletada.disabled = true;
+
+            // Función para formatear el tiempo restante
+            function formatearTiempo(segundos) {
+                const mins = Math.floor(segundos / 60);
+                const secs = segundos % 60;
+                if (mins > 0) {
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                }
+                return `${secs}s`;
+            }
+
+            // Actualizar cuenta regresiva
+            let intervaloMinimo = setInterval(() => {
+                tiempoTranscurrido++;
+                const tiempoRestante = tiempoMinimo - tiempoTranscurrido;
+
+                if (tiempoTranscurrido >= tiempoMinimo) {
+                    // Tiempo cumplido - habilitar botón
+                    btnMarcarCompletada.disabled = false;
+                    btnMarcarCompletada.innerHTML = textoOriginal;
+                    clearInterval(intervaloMinimo);
+                } else {
+                    // Mostrar cuenta regresiva
+                    btnMarcarCompletada.innerHTML = `<i class="fas fa-clock me-2"></i>Espera ${formatearTiempo(tiempoRestante)} para marcar como visto`;
+                }
+            }, 1000);
+        }
 
         btnMarcarCompletada.addEventListener('click', function() {
             const activeLesson = document.querySelector('.lesson-item.active');
@@ -637,28 +673,27 @@ function registrarProgreso(contenidoId, completado, btnMarcarCompletadaRef) {
                     item.classList.remove('bg-warning');
                     item.classList.add('bg-success');
                 });
-                // Deshabilitar y ocultar el botón "Marcar como Visto" SOLO después de éxito
+                // Cambiar el botón "Marcar como Visto" por mensaje de completado
+                let btnMessage = '<i class="fas fa-check-circle me-2"></i>Contenido visto, puedes realizar valoración';
+
+                // Si ya existe resultado de valoración, mostrar ese mensaje
+                if (data.valoracion_resultado) {
+                    btnMessage = `<i class="fas fa-check-double me-2"></i>Contenido visto y valoración realizada, resultado: ${data.valoracion_resultado.puntaje}`;
+                }
+
                 if (btnMarcarCompletadaRef) {
                     btnMarcarCompletadaRef.disabled = true;
-                    btnMarcarCompletadaRef.classList.add('disabled');
-                    btnMarcarCompletadaRef.style.display = 'none';
+                    btnMarcarCompletadaRef.classList.remove('btn-corporativo');
+                    btnMarcarCompletadaRef.classList.add('btn-success', 'disabled');
+                    btnMarcarCompletadaRef.innerHTML = btnMessage;
                 }
-                // Mostrar visualmente el estado completado en la interfaz principal (área de texto o donde estaba el botón)
-                // Buscar el contenedor principal donde está el botón
+                // Cambiar también el botón principal si existe
                 let mainBtn = document.getElementById('marcarCompletada');
                 if (mainBtn) {
-                    // Buscar el contenedor padre que tiene la clase mt-4 (donde está el botón y el texto)
-                    let mainContainer = mainBtn.closest('.mt-4');
-                    if (mainContainer && !document.getElementById('mensajeCompletado')) {
-                        // Eliminar el botón si aún existe
-                        mainBtn.remove();
-                        // Insertar mensaje de completado
-                        const msg = document.createElement('div');
-                        msg.id = 'mensajeCompletado';
-                        msg.className = 'alert alert-success mt-3';
-                        msg.innerHTML = '<i class="fas fa-check-circle me-2"></i>Contenido completado';
-                        mainContainer.appendChild(msg);
-                    }
+                    mainBtn.disabled = true;
+                    mainBtn.classList.remove('btn-corporativo');
+                    mainBtn.classList.add('btn-success', 'disabled');
+                    mainBtn.innerHTML = btnMessage;
                 }
                 // Habilitar el botón de evaluación tras completar la lección
                 const btnValoracion = document.getElementById('btnValoracion');
@@ -666,34 +701,6 @@ function registrarProgreso(contenidoId, completado, btnMarcarCompletadaRef) {
                     btnValoracion.removeAttribute('disabled');
                     btnValoracion.classList.add('btn-glow');
                 }
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Contenido visto',
-                    text: 'Has completado este contenido. ¡Sigue adelante!',
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(() => {
-                    // Recargar la página tras mostrar el mensaje de éxito
-                    window.location.reload();
-                    function isValidNextContentUrl(url) {
-                        if (!url || typeof url !== 'string') return false;
-                        if (url === 'undefined' || url === 'null') return false;
-                        if (url.trim() === '') return false;
-                        if (url.includes('undefined') || url.includes('null')) return false;
-                        try {
-                            new URL(url, window.location.origin);
-                        } catch (e) {
-                            return false;
-                        }
-                        return true;
-                    }
-                        // Solo marcar como completado y actualizar UI, sin redirigir
-                        const btnValoracion = document.getElementById('btnValoracion');
-                        if (btnValoracion) {
-                            btnValoracion.removeAttribute('disabled');
-                            btnValoracion.classList.add('btn-glow');
-                        }
-                });
             }
             // Actualizar progreso del módulo
             const moduleHeader = lessonItem.closest('.mb-4').previousElementSibling;
