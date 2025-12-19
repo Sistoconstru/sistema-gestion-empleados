@@ -418,6 +418,47 @@ def finalizar_quiz(request, intento_id):
                             # Aquí podrías actualizar un campo de progreso de módulo si existe, o simplemente permitir el acceso inmediato al siguiente módulo
                             pass  # Si tienes un modelo de progreso de módulo, actualízalo aquí
 
+                        # ACTUALIZAR ESTADO DE LA INSCRIPCIÓN DESPUÉS DE COMPLETAR VALORACIÓN
+                        # Obtener todos los quizzes de la capacitación
+                        capacitacion = leccion.modulo.capacitacion
+                        quizzes_ids = []
+                        for mod in capacitacion.modulocapacitacion_set.all():
+                            for lec in mod.leccion_set.all():
+                                if hasattr(lec, 'evaluacion') and lec.evaluacion:
+                                    quizzes_ids.append(lec.evaluacion.id)
+
+                        # Calcular progreso basado en valoraciones aprobadas
+                        if quizzes_ids:
+                            total_valoraciones = len(quizzes_ids)
+                            valoraciones_aprobadas = IntentoQuiz.objects.filter(
+                                quiz_id__in=quizzes_ids,
+                                usuario=request.user,
+                                aprobado=True
+                            ).count()
+
+                            inscripcion.porcentaje_completado = (valoraciones_aprobadas * 100) // total_valoraciones if total_valoraciones > 0 else 0
+
+                            # Verificar si completó TODAS las valoraciones para aprobar el curso
+                            if valoraciones_aprobadas == len(quizzes_ids):
+                                # Calcular puntaje final como promedio de todas las evaluaciones
+                                puntajes = IntentoQuiz.objects.filter(
+                                    quiz_id__in=quizzes_ids,
+                                    usuario=request.user,
+                                    aprobado=True
+                                ).values_list('puntaje_obtenido', flat=True)
+
+                                if puntajes:
+                                    promedio_final = round(sum([float(p) for p in puntajes]) / len(puntajes), 2)
+                                    inscripcion.puntaje_final = promedio_final
+
+                                    # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
+                                    if promedio_final >= float(capacitacion.puntaje_aprobacion):
+                                        inscripcion.estado = 'aprobado'
+                                        if not inscripcion.fecha_finalizacion:
+                                            inscripcion.fecha_finalizacion = timezone.now()
+
+                            inscripcion.save()
+
             return JsonResponse({
                 'status': 'success',
                 'redirect_url': reverse_lazy('training:quiz_resultado', kwargs={'pk': intento.quiz.pk})
@@ -1469,64 +1510,82 @@ def completar_contenido(request, pk):
             progreso.completado = True
             progreso.save()
 
-        # Calcular porcentaje total completado
-        total_contenidos_capacitacion = ContenidoLeccion.objects.filter(
-            leccion__modulo__capacitacion=inscripcion.capacitacion,
-            leccion__modulo__activo=True,
-            leccion__activa=True
-        ).count()
-        contenidos_completados_capacitacion = ProgresoCapacitacion.objects.filter(
-            inscripcion=inscripcion,
-            completado=True
-        ).count()
+        # Calcular porcentaje total completado basado en VALORACIONES APROBADAS, no en contenidos vistos
+        # Obtener todos los quizzes de la capacitación
+        quizzes_ids = []
+        for modulo in capacitacion.modulocapacitacion_set.all():
+            for leccion in modulo.leccion_set.all():
+                # Quiz directo de la lección (las valoraciones de aprendizaje)
+                if hasattr(leccion, 'evaluacion') and leccion.evaluacion:
+                    quizzes_ids.append(leccion.evaluacion.id)
 
-        inscripcion.porcentaje_completado = (contenidos_completados_capacitacion * 100) // total_contenidos_capacitacion
+        # Calcular progreso basado en valoraciones aprobadas
+        if quizzes_ids:
+            total_valoraciones = len(quizzes_ids)
+            valoraciones_aprobadas = IntentoQuiz.objects.filter(
+                quiz_id__in=quizzes_ids,
+                usuario=inscripcion.empleado.usuario,
+                aprobado=True
+            ).count()
 
-        # Si todos los contenidos están completos, verificar también las valoraciones antes de aprobar
-        if contenidos_completados_capacitacion == total_contenidos_capacitacion and total_contenidos_capacitacion > 0:
-            # Obtener todos los quizzes de la capacitación
-            quizzes_ids = []
-            for modulo in capacitacion.modulocapacitacion_set.all():
-                for leccion in modulo.leccion_set.all():
-                    # Quizzes de los contenidos de la lección
-                    for cont in leccion.contenidoleccion_set.all():
-                        if hasattr(cont, 'evaluacion') and cont.evaluacion:
-                            quizzes_ids.append(cont.evaluacion.id)
-                    # Quiz directo de la lección
-                    if hasattr(leccion, 'evaluacion') and leccion.evaluacion:
-                        quizzes_ids.append(leccion.evaluacion.id)
+            inscripcion.porcentaje_completado = (valoraciones_aprobadas * 100) // total_valoraciones if total_valoraciones > 0 else 0
+        else:
+            # Si no hay valoraciones, calcular por contenidos vistos
+            total_contenidos_capacitacion = ContenidoLeccion.objects.filter(
+                leccion__modulo__capacitacion=inscripcion.capacitacion,
+                leccion__modulo__activo=True,
+                leccion__activa=True
+            ).count()
+            contenidos_completados_capacitacion = ProgresoCapacitacion.objects.filter(
+                inscripcion=inscripcion,
+                completado=True
+            ).count()
+            inscripcion.porcentaje_completado = (contenidos_completados_capacitacion * 100) // total_contenidos_capacitacion if total_contenidos_capacitacion > 0 else 0
 
-            # Verificar cuántos quizzes aprobó el empleado
-            if quizzes_ids:
-                intentos_aprobados = IntentoQuiz.objects.filter(
+        # Verificar si completó TODAS las valoraciones para aprobar el curso
+        if quizzes_ids:
+            # Contar cuántas valoraciones aprobó
+            intentos_aprobados = IntentoQuiz.objects.filter(
+                quiz_id__in=quizzes_ids,
+                usuario=inscripcion.empleado.usuario,
+                aprobado=True
+            ).count()
+
+            # Solo aprobar si completó TODAS las valoraciones Y el promedio supera el mínimo
+            if intentos_aprobados == len(quizzes_ids):
+                # Calcular puntaje final como promedio de todas las evaluaciones
+                puntajes = IntentoQuiz.objects.filter(
                     quiz_id__in=quizzes_ids,
                     usuario=inscripcion.empleado.usuario,
                     aprobado=True
-                ).count()
+                ).values_list('puntaje_obtenido', flat=True)
 
-                # Solo aprobar si completó TODAS las valoraciones Y el promedio supera el mínimo
-                if intentos_aprobados == len(quizzes_ids):
-                    # Calcular puntaje final como promedio de todas las evaluaciones
-                    puntajes = IntentoQuiz.objects.filter(
-                        quiz_id__in=quizzes_ids,
-                        usuario=inscripcion.empleado.usuario,
-                        aprobado=True
-                    ).values_list('puntaje_obtenido', flat=True)
+                if puntajes:
+                    promedio_final = round(sum(puntajes) / len(puntajes), 2)
+                    inscripcion.puntaje_final = promedio_final
 
-                    if puntajes:
-                        promedio_final = round(sum(puntajes) / len(puntajes), 2)
-                        inscripcion.puntaje_final = promedio_final
+                    # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
+                    if promedio_final >= capacitacion.puntaje_aprobacion:
+                        inscripcion.estado = 'aprobado'
+                        inscripcion.fecha_finalizacion = timezone.now()
+                    # Si no alcanza el puntaje mínimo, mantener en progreso
+                    else:
+                        inscripcion.estado = 'en_progreso'
+        else:
+            # Si no hay valoraciones, verificar si todos los contenidos están completos
+            total_contenidos_capacitacion = ContenidoLeccion.objects.filter(
+                leccion__modulo__capacitacion=inscripcion.capacitacion,
+                leccion__modulo__activo=True,
+                leccion__activa=True
+            ).count()
+            contenidos_completados_capacitacion = ProgresoCapacitacion.objects.filter(
+                inscripcion=inscripcion,
+                completado=True
+            ).count()
 
-                        # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
-                        if promedio_final >= capacitacion.puntaje_aprobacion:
-                            inscripcion.estado = 'aprobado'
-                            inscripcion.fecha_finalizacion = timezone.now()
-                        # Si no alcanza el puntaje mínimo, mantener en progreso
-                        else:
-                            inscripcion.estado = 'en_progreso'
-            else:
-                # Si no hay quizzes, aprobar directamente
+            if contenidos_completados_capacitacion == total_contenidos_capacitacion and total_contenidos_capacitacion > 0:
                 inscripcion.estado = 'aprobado'
+                inscripcion.fecha_finalizacion = timezone.now()
 
         inscripcion.save()
 
