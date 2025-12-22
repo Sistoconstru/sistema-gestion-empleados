@@ -416,6 +416,17 @@
                                     <li><a class="dropdown-item" href="#" onclick="addToFavorites('{{ inscripcion.pk }}')">
                                         <i class="fas fa-bookmark me-2"></i>Agregar a Favoritos
                                     </a></li>
+
+                                    {% if inscripcion.estado != 'aprobado' and inscripcion.estado != 'completado' and inscripcion.estado != 'cancelado' and not inscripcion.obligatoria %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#modalCancelarInscripcion{{ inscripcion.id }}">
+                                            <i class="fas fa-times-circle me-2"></i>Cancelar Inscripción
+                                        </a>
+                                    </li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -1167,4 +1178,49 @@ window.addEventListener('beforeunload', function() {
     console.log(`Time spent: ${timeSpent} seconds`);
 });
 </script>
+
+<!-- Modales de Cancelación de Inscripción -->
+{% for inscripcion in inscripciones %}
+{% if inscripcion.estado != 'aprobado' and inscripcion.estado != 'completado' and inscripcion.estado != 'cancelado' and not inscripcion.obligatoria %}
+<div class="modal fade" id="modalCancelarInscripcion{{ inscripcion.id }}" tabindex="-1" aria-labelledby="modalCancelarInscripcionLabel{{ inscripcion.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCancelarInscripcionLabel{{ inscripcion.id }}">Cancelar Inscripción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'training:cancelar_inscripcion_empleado' inscripcion.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ¿Estás seguro que deseas cancelar tu inscripción a <strong>{{ inscripcion.capacitacion.nombre }}</strong>?
+                    </div>
+
+                    <p class="mb-3">Si cancelas esta inscripción:</p>
+                    <ul class="mb-3">
+                        <li>Perderás tu progreso actual</li>
+                        <li>Deberás volver a inscribirte si cambias de opinión</li>
+                        <li>Esta acción no se puede deshacer</li>
+                    </ul>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="motivo{{ inscripcion.id }}">Motivo de la cancelación (opcional)</label>
+                        <textarea class="form-control" name="motivo" id="motivo{{ inscripcion.id }}" rows="3" placeholder="Ej: No tengo tiempo suficiente, prefiero otra capacitación, etc."></textarea>
+                        <small class="text-muted">Esto nos ayuda a mejorar nuestro sistema de capacitaciones.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, mantener inscripción</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times-circle me-1"></i>Sí, cancelar inscripción
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
 {% endblock %}
