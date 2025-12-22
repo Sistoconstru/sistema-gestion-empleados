@@ -176,6 +176,10 @@
                                         <span class="badge bg-corporativo">Completada</span>
                                     {% elif inscripcion.estado == 'no_iniciado' %}
                                         <span class="badge bg-secondary">No Iniciada</span>
+                                    {% elif inscripcion.estado == 'pendiente_validacion' %}
+                                        <span class="badge bg-warning">Esperando Aprobación</span>
+                                    {% elif inscripcion.estado == 'cancelado' %}
+                                        <span class="badge bg-danger">Rechazada</span>
                                     {% elif inscripcion.estado == 'vencido' %}
                                         <span class="badge bg-danger">Vencida</span>
                                     {% endif %}
@@ -284,11 +288,39 @@
                         </div>
                         {% endif %}
                         
+                        <!-- Mensaje de Rechazo -->
+                        {% if inscripcion.estado == 'cancelado' %}
+                        <div class="alert alert-danger mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-times-circle fa-2x me-3"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2">Solicitud Rechazada</h6>
+                                    <p class="mb-2"><strong>Motivo:</strong></p>
+                                    <p class="mb-2">{{ inscripcion.observaciones_admin|default:"No se especificó un motivo" }}</p>
+                                    <hr>
+                                    <p class="mb-0 small">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Si tienes dudas sobre este rechazo, por favor contacta con el departamento de Recursos Humanos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
                         <!-- Action Buttons -->
                         <div class="d-flex gap-2">
                             {% if inscripcion.capacitacion.es_externa %}
                                 {# Capacitaciones Externas #}
-                                {% if inscripcion.estado == 'pendiente_validacion' %}
+                                {% if inscripcion.estado == 'cancelado' %}
+                                    <button class="btn btn-danger" disabled>
+                                        <i class="fas fa-ban"></i>
+                                        Inscripción Rechazada
+                                    </button>
+                                    <a href="{% url 'training:capacitacion_detail' inscripcion.capacitacion.pk %}" class="btn btn-outline-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Ver Detalles del Curso
+                                    </a>
+                                {% elif inscripcion.estado == 'pendiente_validacion' %}
                                     <button class="btn btn-warning" disabled>
                                         <i class="fas fa-hourglass-half"></i>
                                         Pendiente de aprobación
@@ -318,7 +350,16 @@
                                 {% endif %}
                             {% else %}
                                 {# Capacitaciones Internas #}
-                                {% if inscripcion.estado == 'en_progreso' %}
+                                {% if inscripcion.estado == 'cancelado' %}
+                                    <button class="btn btn-danger" disabled>
+                                        <i class="fas fa-ban"></i>
+                                        Inscripción Rechazada
+                                    </button>
+                                    <a href="{% url 'training:capacitacion_detail' inscripcion.capacitacion.pk %}" class="btn btn-outline-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Ver Detalles del Curso
+                                    </a>
+                                {% elif inscripcion.estado == 'en_progreso' %}
                                     <a href="{% url 'training:player' inscripcion.pk %}" class="btn btn-corporativo">
                                         <i class="fas fa-play"></i>
                                         Continuar Capacitación

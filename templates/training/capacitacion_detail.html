@@ -289,6 +289,41 @@
             </div>
         </div>
 
+        <!-- Modales de Rechazo (fuera del card-body para evitar conflictos de z-index) -->
+        {% for inscripcion in inscripciones_pendientes_aprobacion %}
+        <div class="modal fade" id="modalRechazarInscripcion{{ inscripcion.id }}" tabindex="-1" aria-labelledby="modalRechazarInscripcionLabel{{ inscripcion.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRechazarInscripcionLabel{{ inscripcion.id }}">Rechazar Solicitud de Inscripción</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'training:rechazar_inscripcion' inscripcion.id %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                ¿Está seguro que desea rechazar la solicitud de <strong>{{ inscripcion.empleado.nombre_completo }}</strong>?
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="motivo{{ inscripcion.id }}">Motivo del Rechazo <span class="text-danger">*</span></label>
+                                <textarea class="form-control" name="motivo" id="motivo{{ inscripcion.id }}" rows="3" placeholder="Ej: No cumple con los requisitos necesarios. Por favor, contacte con administración." required>No cumple con los requisitos necesarios. Por favor, contacte con administración.</textarea>
+                                <small class="text-muted">Este mensaje será visible para el empleado.</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times me-1"></i>Rechazar Solicitud
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
         <!-- Esperando Certificado -->
         <div class="card mb-4">
             <div class="card-header bg-info bg-opacity-10">
@@ -452,38 +487,6 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-corporativo">
                             <i class="fas fa-check me-1"></i>Validar Inscripción
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Rechazar Inscripción -->
-    <div class="modal fade" id="modalRechazarInscripcion{{ inscripcion.id }}" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Rechazar Inscripción</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="post" action="{% url 'training:rechazar_inscripcion' inscripcion.id %}">
-                    {% csrf_token %}
-                    <div class="modal-body">
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Esta acción cancelará la inscripción del empleado.
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Motivo del Rechazo <span class="text-danger">*</span></label>
-                            <textarea class="form-control" name="motivo" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-times me-1"></i>Rechazar Inscripción
                         </button>
                     </div>
                 </form>

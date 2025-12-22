@@ -1031,29 +1031,35 @@ def validar_inscripcion(request, pk):
 
 @login_required
 @require_http_methods(["POST"])
-def rechazar_inscripcion(request, inscripcion_id):
+def rechazar_inscripcion(request, pk):
     """Rechazar inscripción en capacitación externa"""
     if not request.user.is_staff:
         messages.error(request, 'No tienes permiso para realizar esta acción')
         return redirect('training:catalogo')
-        
-    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=inscripcion_id)
-    
+
+    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=pk)
+
+    if inscripcion.estado != 'pendiente_validacion':
+        messages.warning(request, 'Solo se pueden rechazar inscripciones pendientes de validación')
+        return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
+
     try:
         with transaction.atomic():
+            motivo = request.POST.get('motivo', 'No cumple con los requisitos necesarios. Por favor, contacte con administración.')
+
             inscripcion.estado = 'cancelado'
-            inscripcion.observaciones_admin = request.POST.get('motivo', '')
+            inscripcion.observaciones_admin = motivo
             inscripcion.save()
-            
+
             messages.success(
-                request, 
-                f'Se ha rechazado la inscripción de {inscripcion.empleado.nombre_completo}'
+                request,
+                f'❌ Solicitud rechazada. {inscripcion.empleado.nombre_completo} será notificado del rechazo.'
             )
-            
+
     except Exception as e:
-        logger.error(f'Error al rechazar inscripción {inscripcion_id}: {str(e)}')
+        logger.error(f'Error al rechazar inscripción {pk}: {str(e)}')
         messages.error(request, 'Ocurrió un error al rechazar la inscripción')
-        
+
     return redirect('training:capacitacion_detail', pk=inscripcion.capacitacion.id)
 
 @login_required
@@ -1061,21 +1067,24 @@ def rechazar_inscripcion(request, inscripcion_id):
 def inscribir_capacitacion(request, pk):
     """Inscribir empleado a capacitación"""
     capacitacion = get_object_or_404(Capacitacion.objects.select_related('tipo', 'proveedor_externo'), pk=pk)
-    
-    # Verificar si ya existe una inscripción
-    if request.user.is_staff:
-        empleado_id = request.POST.get('empleado_id')
-        if not empleado_id:
-            messages.error(request, 'Debe seleccionar un empleado')
-            return redirect('training:capacitacion_detail', pk=pk)
+
+    # Determinar el empleado a inscribir
+    empleado_id = request.POST.get('empleado_id')
+
+    if empleado_id:
+        # Si viene empleado_id, es un admin inscribiendo a otro empleado
+        if not request.user.is_staff:
+            messages.error(request, 'No tienes permisos para inscribir a otros empleados')
+            return redirect('training:catalogo')
         try:
             empleado = Empleado.objects.get(id=empleado_id)
         except Empleado.DoesNotExist:
             messages.error(request, 'Empleado no encontrado')
             return redirect('training:capacitacion_detail', pk=pk)
     else:
-        # Verificar que sea capacitación libre para empleados normales
-        if not capacitacion.tipo.permite_inscripcion_libre:
+        # Si NO viene empleado_id, el usuario se está auto-inscribiendo
+        # Verificar que sea capacitación libre para empleados normales (NO staff)
+        if not request.user.is_staff and not capacitacion.tipo.permite_inscripcion_libre:
             messages.error(request, 'Esta capacitación no permite inscripción libre')
             return redirect('training:catalogo')
         try:
