@@ -20884,3 +20884,426 @@ INFO 2025-12-19 15:56:51,855 basehttp 47176 16908 "GET /empleados/perfil/0ea6ac4
 INFO 2025-12-19 15:56:53,739 basehttp 47176 16908 "GET /empleados/marketplace/mis-productos/ HTTP/1.1" 200 12619
 INFO 2025-12-19 15:56:58,047 basehttp 47176 16908 "GET /dashboard/ HTTP/1.1" 302 0
 INFO 2025-12-19 15:56:58,123 basehttp 47176 16908 "GET /empleados/perfil/0ea6ac4e-2d22-48e2-9ad5-ddc6aeb3e426/ HTTP/1.1" 200 31762
+INFO 2025-12-19 15:58:37,368 apps 22480 25404 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 15:58:38,187 apps 2976 38384 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-19 15:58:38,207 autoreload 2976 38384 Watching for file changes with StatReloader
+INFO 2025-12-19 15:58:38,743 wsgi 2976 26692 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-19 15:58:44,066 basehttp 2976 22408 "GET /empleados/feed/ HTTP/1.1" 200 34923
+WARNING 2025-12-19 16:01:52,362 log 2976 40348 Not Found: /favicon.ico
+WARNING 2025-12-19 16:01:52,365 basehttp 2976 40348 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-19 16:01:53,945 basehttp 2976 40348 "GET /evaluaciones/imprimir-plan/af3d2dad-9798-4850-84f8-93f11f3ccf67/ HTTP/1.1" 302 0
+INFO 2025-12-19 16:01:54,006 basehttp 2976 40348 "GET /evaluaciones/ HTTP/1.1" 200 24319
+INFO 2025-12-22 06:29:39,659 apps 26568 25252 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 06:29:40,508 apps 5096 11292 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 06:29:40,534 autoreload 5096 11292 Watching for file changes with StatReloader
+INFO 2025-12-22 06:29:41,214 wsgi 5096 14672 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 06:32:39,701 basehttp 5096 24212 "GET / HTTP/1.1" 302 0
+INFO 2025-12-22 06:32:39,761 basehttp 5096 24212 "GET /dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:32:39,781 basehttp 5096 24212 "GET /auth/login/?next=/dashboard/ HTTP/1.1" 200 3787
+INFO 2025-12-22 06:32:40,013 basehttp 5096 24212 "GET /static/css/custom.css HTTP/1.1" 304 0
+WARNING 2025-12-22 06:32:40,089 log 5096 38128 Not Found: /favicon.ico
+WARNING 2025-12-22 06:32:40,089 basehttp 5096 38128 "GET /favicon.ico HTTP/1.1" 404 5209
+INFO 2025-12-22 06:32:49,069 basehttp 5096 38128 "POST /auth/login/?next=/dashboard/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:32:49,252 basehttp 5096 38128 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 06:33:09,114 basehttp 5096 47156 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+INFO 2025-12-22 06:33:17,586 basehttp 5096 47156 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:33:17,739 basehttp 5096 47156 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 06:33:20,209 basehttp 5096 47156 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 25237
+INFO 2025-12-22 06:33:37,413 basehttp 5096 47156 "POST /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:33:37,455 basehttp 5096 47156 "GET /capacitaciones/capacitacion/81260677-674f-4cd3-80f4-a54d69b0c7fe/ HTTP/1.1" 200 11625
+INFO 2025-12-22 06:39:49,533 autoreload 5096 11292 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-22 06:39:58,536 apps 19720 28528 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 06:39:58,895 autoreload 19720 28528 Watching for file changes with StatReloader
+INFO 2025-12-22 06:40:05,208 wsgi 19720 496 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 06:40:45,414 basehttp 19720 46380 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 06:41:01,259 basehttp 19720 46380 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 25237
+INFO 2025-12-22 06:41:06,969 basehttp 19720 46380 "POST /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:41:07,077 basehttp 19720 46380 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 11334
+INFO 2025-12-22 06:41:27,877 basehttp 19720 46380 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 32810
+INFO 2025-12-22 06:47:40,481 autoreload 19720 28528 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-22 06:47:41,409 apps 47072 19636 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 06:47:41,427 autoreload 47072 19636 Watching for file changes with StatReloader
+INFO 2025-12-22 06:47:41,871 wsgi 47072 23220 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 06:47:50,223 basehttp 47072 41088 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 06:47:52,431 basehttp 47072 41088 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+INFO 2025-12-22 06:47:56,223 basehttp 47072 41088 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 32810
+INFO 2025-12-22 06:51:50,562 basehttp 47072 41088 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 35310
+INFO 2025-12-22 06:52:00,912 basehttp 47072 41088 "GET /empleados/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 84430
+INFO 2025-12-22 06:53:19,147 basehttp 47072 41088 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 35310
+WARNING 2025-12-22 06:54:29,483 log 47072 41088 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-12-22 06:54:29,483 basehttp 47072 41088 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 5320
+WARNING 2025-12-22 06:54:29,506 basehttp 47072 41088 "GET /static/css/vendor/bootstrap.min.css.map HTTP/1.1" 404 2023
+INFO 2025-12-22 06:58:04,347 basehttp 47072 10816 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+INFO 2025-12-22 06:58:27,667 basehttp 47072 10816 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 06:58:29,964 basehttp 47072 10816 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+INFO 2025-12-22 06:58:32,381 basehttp 47072 10816 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 35395
+INFO 2025-12-22 06:59:39,664 basehttp 47072 11412 "POST /capacitaciones/inscripcion/ae70dad0-f811-4075-99df-f8e382564635/rechazar/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:59:39,767 basehttp 47072 11412 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 31829
+INFO 2025-12-22 06:59:45,922 basehttp 47072 11412 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 06:59:46,017 basehttp 47072 11412 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 06:59:53,147 basehttp 47072 11412 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29982
+INFO 2025-12-22 07:00:26,631 basehttp 47072 11412 "GET /notificaciones/list/ HTTP/1.1" 200 14449
+INFO 2025-12-22 07:00:33,932 basehttp 47072 11412 "GET /empleados/mensajeria/inbox/ HTTP/1.1" 200 18482
+INFO 2025-12-22 07:00:50,814 basehttp 47072 11412 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:00:50,931 basehttp 47072 11412 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 07:00:53,981 basehttp 47072 11412 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 18985
+INFO 2025-12-22 07:01:07,581 basehttp 47072 11412 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 29982
+INFO 2025-12-22 07:07:21,147 basehttp 47072 45504 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 31934
+INFO 2025-12-22 07:07:43,389 basehttp 47072 45504 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 10828
+INFO 2025-12-22 07:07:59,598 basehttp 47072 45504 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:07:59,665 basehttp 47072 45504 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 07:08:01,279 basehttp 47072 45504 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 31934
+INFO 2025-12-22 07:08:29,393 basehttp 47072 45504 "GET /capacitaciones/catalogo/ HTTP/1.1" 200 18985
+INFO 2025-12-22 07:08:38,812 basehttp 47072 45504 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 31934
+INFO 2025-12-22 07:13:45,577 apps 12704 6228 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 07:13:46,213 apps 34500 20020 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 07:13:46,236 autoreload 34500 20020 Watching for file changes with StatReloader
+INFO 2025-12-22 07:13:46,663 wsgi 34500 23284 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 07:17:08,631 basehttp 34500 13648 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 07:17:13,204 basehttp 34500 13648 "GET /capacitaciones/admin/ HTTP/1.1" 200 28490
+INFO 2025-12-22 07:17:23,308 basehttp 34500 13648 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 31412
+INFO 2025-12-22 07:18:00,817 basehttp 34500 13648 "POST /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/inscribir/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:18:00,880 basehttp 34500 13648 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 37919
+INFO 2025-12-22 07:19:14,781 basehttp 34500 13648 "POST /capacitaciones/inscripcion/3a4c24d3-3578-4e10-88b2-eb653a3ad11d/aprobar-solicitud/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:19:14,849 basehttp 34500 13648 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 38220
+INFO 2025-12-22 07:20:48,884 basehttp 34500 13648 "GET /capacitaciones/player-preview/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 28407
+INFO 2025-12-22 07:21:45,451 basehttp 34500 13648 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 07:22:06,379 basehttp 34500 13648 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:22:06,566 basehttp 34500 13648 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 07:22:23,293 basehttp 34500 13648 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 07:22:39,764 basehttp 34500 13648 "GET /encuestas/ HTTP/1.1" 200 16437
+INFO 2025-12-22 07:22:53,069 basehttp 34500 13648 "GET /reconocimientos/ HTTP/1.1" 200 166069
+INFO 2025-12-22 07:23:25,497 basehttp 34500 13648 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41160
+INFO 2025-12-22 07:24:33,713 basehttp 34500 13648 "GET /reconocimientos/historial-empleado/5ad6f828-9c87-46cb-bf84-ea3ac7e90a6a/ HTTP/1.1" 200 7540
+INFO 2025-12-22 07:25:06,698 basehttp 34500 13648 "POST /reconocimientos/generar-reporte/ HTTP/1.1" 200 8834
+INFO 2025-12-22 07:26:32,448 basehttp 34500 13648 "GET /reconocimientos/beneficios/ HTTP/1.1" 200 41160
+INFO 2025-12-22 07:26:37,114 basehttp 34500 13648 "GET /reconocimientos/ranking/ HTTP/1.1" 200 95184
+INFO 2025-12-22 07:27:20,935 basehttp 34500 13648 "GET /reconocimientos/dashboard/ HTTP/1.1" 200 166069
+INFO 2025-12-22 07:27:53,764 basehttp 34500 13648 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 07:28:08,073 basehttp 34500 13648 "GET /encuestas/ HTTP/1.1" 200 16437
+ERROR 2025-12-22 07:28:15,772 log 34500 13648 Internal Server Error: /encuestas/mis-encuestas/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 682, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse some characters: participaciones|first|.tiempo_empleado_minutos||default:"--"
+ERROR 2025-12-22 07:28:15,783 basehttp 34500 13648 "GET /encuestas/mis-encuestas/ HTTP/1.1" 500 240033
+INFO 2025-12-22 07:28:31,581 basehttp 34500 13648 "GET /dashboard/ HTTP/1.1" 200 21844
+INFO 2025-12-22 07:29:08,828 basehttp 34500 13648 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:29:08,942 basehttp 34500 13648 "GET /empleados/perfil/cebacbbe-1e86-4733-b46d-3c24e7e03de2/ HTTP/1.1" 200 22799
+INFO 2025-12-22 07:29:10,415 basehttp 34500 13648 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 31934
+INFO 2025-12-22 07:34:36,735 autoreload 34500 20020 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\views.py changed, reloading.
+INFO 2025-12-22 07:34:42,814 apps 3908 44132 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 07:34:43,024 autoreload 3908 44132 Watching for file changes with StatReloader
+INFO 2025-12-22 07:34:46,666 wsgi 3908 27544 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 07:35:29,622 autoreload 3908 44132 C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\apps\training\urls.py changed, reloading.
+INFO 2025-12-22 07:35:30,386 apps 49904 43004 [CoreConfig.ready] DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+INFO 2025-12-22 07:35:30,406 autoreload 49904 43004 Watching for file changes with StatReloader
+INFO 2025-12-22 07:35:30,834 wsgi 49904 49476 WSGI DJANGO_SETTINGS_MODULE: config.settings.development
+INFO 2025-12-22 07:36:42,036 basehttp 49904 2976 "GET /capacitaciones/capacitacion/91cfcecf-aff4-4525-bf06-f0364a2e70d9/ HTTP/1.1" 200 10828
+ERROR 2025-12-22 07:41:05,297 log 49904 2976 Internal Server Error: /capacitaciones/mis-capacitaciones/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "['aprobado',"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '['aprobado',' from '['aprobado','
+ERROR 2025-12-22 07:41:05,314 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 500 354343
+ERROR 2025-12-22 07:41:10,130 log 49904 2976 Internal Server Error: /capacitaciones/mis-capacitaciones/
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "['aprobado',"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Sisto\SIGHU\sistema-gestion-empleados-mi-rama\mi-entorno\Lib\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '['aprobado',' from '['aprobado','
+ERROR 2025-12-22 07:41:10,146 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 500 354206
+INFO 2025-12-22 07:42:41,796 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 32010
+INFO 2025-12-22 07:45:15,190 basehttp 49904 2976 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:15,266 basehttp 49904 2976 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-22 07:45:20,127 basehttp 49904 2976 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:20,227 basehttp 49904 2976 "GET /empleados/feed/ HTTP/1.1" 200 35193
+INFO 2025-12-22 07:45:20,243 basehttp 49904 2976 "GET /media/anuncios_renderizados/2025/12/12/anuncio_cfbcfb31-0f29-4171-ac47-c4a66b2a6c3b_AgZxk58.png HTTP/1.1" 304 0
+INFO 2025-12-22 07:45:21,927 basehttp 49904 2976 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:22,067 basehttp 49904 2976 "GET /empleados/perfil/83390c80-0c9a-4a1d-a85e-4aaf9e09137b/ HTTP/1.1" 200 25608
+INFO 2025-12-22 07:45:23,248 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 16901
+INFO 2025-12-22 07:45:26,148 basehttp 49904 2976 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:26,148 basehttp 49904 2976 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-22 07:45:35,581 basehttp 49904 2976 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:35,613 basehttp 49904 2976 "GET /empleados/feed/ HTTP/1.1" 200 35267
+INFO 2025-12-22 07:45:40,215 basehttp 49904 2976 "GET /notificaciones/list/ HTTP/1.1" 200 43702
+INFO 2025-12-22 07:45:46,264 basehttp 49904 2976 "POST /notificaciones/marcar-leida/64cfe74d-b8e7-459f-8a84-3a297281464a/ HTTP/1.1" 200 17
+INFO 2025-12-22 07:45:46,364 basehttp 49904 2976 "GET /empleados/mensajeria/conversacion/9c20f4cf-db40-47ae-b993-5dbc5e5b085d/ HTTP/1.1" 200 16226
+INFO 2025-12-22 07:45:46,392 basehttp 49904 2976 "POST /empleados/mensajeria/conversacion/9c20f4cf-db40-47ae-b993-5dbc5e5b085d/marcar-leidos/ HTTP/1.1" 200 66
+INFO 2025-12-22 07:45:54,565 basehttp 49904 2976 "POST /empleados/mensajeria/conversacion/9c20f4cf-db40-47ae-b993-5dbc5e5b085d/mensaje/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:54,595 basehttp 49904 2976 "GET /empleados/mensajeria/conversacion/9c20f4cf-db40-47ae-b993-5dbc5e5b085d/ HTTP/1.1" 200 16822
+INFO 2025-12-22 07:45:54,628 basehttp 49904 2976 "POST /empleados/mensajeria/conversacion/9c20f4cf-db40-47ae-b993-5dbc5e5b085d/marcar-leidos/ HTTP/1.1" 200 66
+INFO 2025-12-22 07:45:59,598 basehttp 49904 2976 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:45:59,634 basehttp 49904 2976 "GET /empleados/perfil/85007e4f-9b40-4a43-a238-4d804d0f09b8/ HTTP/1.1" 200 25793
+INFO 2025-12-22 07:46:02,714 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 23792
+INFO 2025-12-22 07:46:09,348 basehttp 49904 2976 "POST /auth/logout/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:46:09,348 basehttp 49904 2976 "GET /auth/login/ HTTP/1.1" 200 3787
+INFO 2025-12-22 07:46:20,074 basehttp 49904 2976 "POST /auth/login/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:46:20,143 basehttp 49904 2976 "GET /empleados/feed/ HTTP/1.1" 200 34943
+INFO 2025-12-22 07:46:22,166 basehttp 49904 2976 "GET /empleados/mi-perfil/ HTTP/1.1" 302 0
+INFO 2025-12-22 07:46:22,327 basehttp 49904 2976 "GET /empleados/perfil/5ada8d25-dd45-4d4b-a54a-96246825374a/ HTTP/1.1" 200 37237
+INFO 2025-12-22 07:46:23,678 basehttp 49904 2976 "GET /capacitaciones/mis-capacitaciones/ HTTP/1.1" 200 25038

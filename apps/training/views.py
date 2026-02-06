@@ -1064,6 +1064,51 @@ def rechazar_inscripcion(request, pk):
 
 @login_required
 @require_http_methods(["POST"])
+def cancelar_inscripcion_empleado(request, pk):
+    """Permite al empleado cancelar su propia inscripción a una capacitación"""
+    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=pk)
+
+    # Verificar que el empleado sea el dueño de la inscripción
+    try:
+        empleado = Empleado.objects.get(usuario=request.user)
+        if inscripcion.empleado != empleado:
+            messages.error(request, 'No tienes permiso para cancelar esta inscripción')
+            return redirect('training:mis_capacitaciones')
+    except Empleado.DoesNotExist:
+        messages.error(request, 'No se encontró tu perfil de empleado')
+        return redirect('training:mis_capacitaciones')
+
+    # No permitir cancelar si ya está aprobada/completada
+    if inscripcion.estado in ['aprobado', 'completado']:
+        messages.warning(request, 'No puedes cancelar una capacitación ya completada')
+        return redirect('training:mis_capacitaciones')
+
+    # No permitir cancelar capacitaciones obligatorias
+    if inscripcion.obligatoria:
+        messages.error(request, 'No puedes cancelar una capacitación obligatoria. Contacta con RRHH si necesitas ayuda.')
+        return redirect('training:mis_capacitaciones')
+
+    try:
+        with transaction.atomic():
+            motivo = request.POST.get('motivo', 'Cancelado por el empleado')
+
+            inscripcion.estado = 'cancelado'
+            inscripcion.observaciones_empleado = motivo
+            inscripcion.save()
+
+            messages.success(
+                request,
+                f'Has cancelado tu inscripción a "{inscripcion.capacitacion.nombre}". Puedes volver a inscribirte cuando lo desees.'
+            )
+
+    except Exception as e:
+        logger.error(f'Error al cancelar inscripción {pk}: {str(e)}')
+        messages.error(request, 'Ocurrió un error al cancelar la inscripción')
+
+    return redirect('training:mis_capacitaciones')
+
+@login_required
+@require_http_methods(["POST"])
 def inscribir_capacitacion(request, pk):
     """Inscribir empleado a capacitación"""
     capacitacion = get_object_or_404(Capacitacion.objects.select_related('tipo', 'proveedor_externo'), pk=pk)

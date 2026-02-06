@@ -47,6 +47,7 @@ urlpatterns = [
     path('inscripcion/<uuid:pk>/validar-certificado/', views.validar_certificado_externo, name='validar_certificado_externo'),
     path('inscripcion/<uuid:pk>/validar/', views.validar_inscripcion, name='validar_inscripcion'),  # Deprecated
     path('inscripcion/<uuid:pk>/rechazar/', views.rechazar_inscripcion, name='rechazar_inscripcion'),
+    path('inscripcion/<uuid:pk>/cancelar/', views.cancelar_inscripcion_empleado, name='cancelar_inscripcion_empleado'),
     
     # Quizzes y valoraciones
     path('quiz/<int:pk>/', views.QuizView.as_view(), name='quiz'),
