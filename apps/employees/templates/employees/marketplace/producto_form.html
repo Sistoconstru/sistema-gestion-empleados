@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Producto | SIGHU{% endblock %}
+{% block title %}{% if es_creacion %}Crear{% else %}Editar{% endif %} Producto | SIGHU{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -36,10 +36,10 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1>
-                <i class="fas fa-{% if form.instance.pk %}edit{% else %}plus-circle{% endif %} me-2"></i>
-                {% if form.instance.pk %}Editar Producto{% else %}Crear Nuevo Producto{% endif %}
+                <i class="fas fa-{% if es_creacion %}plus-circle{% else %}edit{% endif %} me-2"></i>
+                {% if es_creacion %}Crear Nuevo Producto{% else %}Editar Producto{% endif %}
             </h1>
-            <p class="text-muted">Completa los campos para {% if form.instance.pk %}actualizar{% else %}crear{% endif %} tu producto</p>
+            <p class="text-muted">Completa los campos para {% if es_creacion %}crear{% else %}actualizar{% endif %} tu producto</p>
         </div>
     </div>
 
@@ -296,6 +296,37 @@
                     </div>
                 </div>
 
+                <!-- Términos y Condiciones (solo al crear producto) -->
+                {% if es_creacion %}
+                <div class="form-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-file-contract me-2"></i>Términos y Condiciones
+                    </h5>
+
+                    <div class="form-check mb-3">
+                        {{ form.acepto_terminos }}
+                        <label for="{{ form.acepto_terminos.id_for_label }}" class="form-check-label">
+                            Acepto los <a href="{% url 'employees:terminos_condiciones' %}" target="_blank" style="color: #667eea; text-decoration: underline;">términos y condiciones</a> del marketplace como vendedor
+                        </label>
+                        {% if form.acepto_terminos.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.acepto_terminos.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>
+                            Al aceptar los términos, confirmas que entiendes tus responsabilidades como vendedor en el marketplace,
+                            incluyendo la veracidad de la información del producto y el cumplimiento de las obligaciones de venta.
+                        </small>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Errores generales -->
                 {% if form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">
@@ -310,7 +341,7 @@
                 <div class="d-flex gap-2 mt-5">
                     <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
                         <i class="fas fa-save me-2"></i>
-                        {% if form.instance.pk %}Guardar Cambios{% else %}Crear Producto{% endif %}
+                        {% if es_creacion %}Crear Producto{% else %}Guardar Cambios{% endif %}
                     </button>
                     <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-secondary btn-lg">
                         <i class="fas fa-times me-2"></i>Cancelar

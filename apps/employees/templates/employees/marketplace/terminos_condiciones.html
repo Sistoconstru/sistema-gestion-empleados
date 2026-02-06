@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Términos y Condiciones | Marketplace{% endblock %}
+
+{% block extra_css %}
+<style>
+    .terminos-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .terminos-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .terminos-header h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .terminos-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin: 0;
+    }
+    .terminos-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .terminos-section {
+        margin-bottom: 2.5rem;
+    }
+    .terminos-section h2 {
+        color: #667eea;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #667eea;
+    }
+    .terminos-section h3 {
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .terminos-section p, .terminos-section ul {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
+    .terminos-section ul {
+        padding-left: 2rem;
+    }
+    .terminos-section li {
+        margin-bottom: 0.5rem;
+    }
+    .highlight-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin: 1.5rem 0;
+    }
+    .highlight-box strong {
+        color: #667eea;
+    }
+    .fecha-actualizacion {
+        text-align: center;
+        color: #999;
+        font-size: 0.9rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #ddd;
+    }
+    .btn-volver {
+        margin-top: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="terminos-container">
+    <!-- Header -->
+    <div class="terminos-header">
+        <h1><i class="fas fa-file-contract me-3"></i>Términos y Condiciones</h1>
+        <p>Marketplace Corporativo - El Toldo</p>
+    </div>
+
+    <!-- Contenido -->
+    <div class="terminos-content">
+
+        <!-- Sección 1: Naturaleza del servicio -->
+        <div class="terminos-section">
+            <h2>1. Naturaleza del Servicio</h2>
+            <p>
+                La plataforma digital <strong>"El Toldo"</strong> opera como un <strong>Marketplace</strong>,
+                cuya función se limita a facilitar el contacto entre vendedores independientes y consumidores finales.
+                La plataforma no es propietaria de los productos ni prestadora directa de los servicios ofrecidos.
+            </p>
+            <div class="highlight-box">
+                <strong><i class="fas fa-info-circle me-2"></i>Importante:</strong>
+                El Toldo actúa únicamente como intermediario y no participa directamente en las transacciones comerciales.
+            </div>
+        </div>
+
+        <!-- Sección 2: Rol de intermediación -->
+        <div class="terminos-section">
+            <h2>2. Rol de Intermediación</h2>
+            <p>La plataforma <strong>no interviene</strong> en:</p>
+            <ul>
+                <li>La fijación de precios.</li>
+                <li>La definición de condiciones comerciales.</li>
+                <li>La entrega de productos o prestación de servicios.</li>
+                <li>La garantía, calidad o idoneidad de los productos o servicios ofrecidos.</li>
+            </ul>
+            <p>
+                El contrato de compraventa o prestación de servicios se celebra <strong>directamente entre el vendedor y el consumidor</strong>.
+            </p>
+        </div>
+
+        <!-- Sección 3: Responsabilidad del vendedor -->
+        <div class="terminos-section">
+            <h2>3. Responsabilidad del Vendedor</h2>
+            <p>El vendedor será el <strong>único responsable</strong> por:</p>
+            <ul>
+                <li>La información suministrada sobre sus productos o servicios.</li>
+                <li>El cumplimiento de las obligaciones legales y contractuales.</li>
+                <li>La atención de PQR's, garantías, devoluciones y reclamos.</li>
+                <li>La calidad, estado y características reales del producto o servicio ofrecido.</li>
+                <li>La entrega oportuna y en las condiciones acordadas del producto.</li>
+            </ul>
+            <div class="highlight-box">
+                <strong><i class="fas fa-exclamation-triangle me-2"></i>Nota Legal:</strong>
+                El vendedor se obliga a mantener indemne a la plataforma frente a cualquier reclamación,
+                sanción o perjuicio derivado del incumplimiento de sus obligaciones.
+            </div>
+        </div>
+
+        <!-- Sección 4: Derechos del consumidor -->
+        <div class="terminos-section">
+            <h2>4. Derechos del Consumidor</h2>
+            <p>
+                La plataforma garantiza el respeto de los derechos de los consumidores consagrados en la
+                <strong>Ley 1480 de 2011</strong> (Estatuto del Consumidor) y facilitará los mecanismos de
+                contacto directo con el vendedor para el ejercicio de dichos derechos.
+            </p>
+
+            <h3>Derechos principales:</h3>
+            <ul>
+                <li>Derecho a recibir productos e información adecuada y veraz.</li>
+                <li>Derecho a reclamar directamente ante el vendedor.</li>
+                <li>Derecho a la seguridad e indemnidad.</li>
+                <li>Derecho a recibir protección contra publicidad engañosa.</li>
+                <li>Derecho a la garantía legal del producto o servicio.</li>
+            </ul>
+        </div>
+
+        <!-- Sección 5: Cláusula contractual de intermediación -->
+        <div class="terminos-section">
+            <h2>5. Cláusula Contractual de Intermediación</h2>
+
+            <h3>Rol de Intermediación del Marketplace</h3>
+            <p>
+                Las partes reconocen y aceptan que la plataforma digital actúa <strong>única y exclusivamente como intermediaria</strong>,
+                limitándose a facilitar el contacto entre vendedores y consumidores.
+            </p>
+
+            <p>
+                En consecuencia, la plataforma <strong>no asume la calidad de proveedor</strong> de los productos o servicios ofrecidos,
+                ni participa en:
+            </p>
+            <ul>
+                <li>La fijación de precios</li>
+                <li>Las condiciones comerciales</li>
+                <li>La ejecución de la operación</li>
+                <li>La atención de reclamaciones</li>
+            </ul>
+
+            <p>
+                Las cuales serán de <strong>exclusiva responsabilidad del vendedor</strong>.
+            </p>
+
+            <div class="highlight-box">
+                <strong><i class="fas fa-balance-scale me-2"></i>Compromiso:</strong>
+                El vendedor se obliga a mantener indemne a la plataforma frente a cualquier reclamación,
+                sanción o perjuicio derivado del incumplimiento de sus obligaciones legales o contractuales
+                frente a los consumidores, sin perjuicio de los derechos irrenunciables consagrados en la
+                Ley 1480 de 2011.
+            </div>
+        </div>
+
+        <!-- Sección 6: Uso de la plataforma -->
+        <div class="terminos-section">
+            <h2>6. Uso de la Plataforma</h2>
+
+            <h3>Registro y conducta</h3>
+            <p>Al utilizar el marketplace, los usuarios se comprometen a:</p>
+            <ul>
+                <li>Proporcionar información veraz y actualizada.</li>
+                <li>Mantener la confidencialidad de sus credenciales de acceso.</li>
+                <li>Usar la plataforma de manera responsable y ética.</li>
+                <li>No publicar contenido ofensivo, ilegal o que viole derechos de terceros.</li>
+                <li>Respetar los derechos de propiedad intelectual.</li>
+            </ul>
+
+            <h3>Prohibiciones</h3>
+            <p>Queda estrictamente prohibido:</p>
+            <ul>
+                <li>Usar la plataforma para actividades ilegales.</li>
+                <li>Publicar productos prohibidos o de dudosa procedencia.</li>
+                <li>Realizar fraudes o engaños a otros usuarios.</li>
+                <li>Intentar acceder sin autorización a cuentas de otros usuarios.</li>
+                <li>Interferir con el funcionamiento normal de la plataforma.</li>
+            </ul>
+        </div>
+
+        <!-- Sección 7: Aceptación de términos -->
+        <div class="terminos-section">
+            <h2>7. Aceptación de Términos</h2>
+            <p>
+                Al realizar una compra, regalo o cualquier transacción en el marketplace,
+                el usuario acepta expresamente estos términos y condiciones en su totalidad.
+            </p>
+            <p>
+                La plataforma se reserva el derecho de modificar estos términos en cualquier momento,
+                notificando a los usuarios de cambios significativos.
+            </p>
+        </div>
+
+        <!-- Botón de volver -->
+        <div class="btn-volver">
+            <button onclick="volverAtras()" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i><span id="textoBoton">Volver</span>
+            </button>
+        </div>
+
+        <!-- Fecha de actualización -->
+        <div class="fecha-actualizacion">
+            <p><i class="far fa-calendar-alt me-2"></i>Última actualización: Febrero 2026</p>
+            <p class="mb-0">Estos términos y condiciones están sujetos a la legislación colombiana vigente.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Función inteligente para volver según el contexto
+function volverAtras() {
+    // Si se abrió en nueva pestaña/ventana y hay un opener, cerrar la ventana
+    if (window.opener && !window.opener.closed) {
+        window.close();
+    }
+    // Si hay historial en esta ventana, volver atrás
+    else if (window.history.length > 1) {
+        window.history.back();
+    }
+    // Si no hay historial, ir al marketplace
+    else {
+        window.location.href = "{% url 'employees:producto_list' %}";
+    }
+}
+
+// Actualizar el texto del botón según el contexto
+document.addEventListener('DOMContentLoaded', function() {
+    const textoBoton = document.getElementById('textoBoton');
+
+    // Si se abrió en nueva ventana/pestaña
+    if (window.opener && !window.opener.closed) {
+        textoBoton.textContent = 'Cerrar';
+    }
+    // Si hay historial para volver
+    else if (window.history.length > 1) {
+        textoBoton.textContent = 'Volver';
+    }
+    // Si no hay historial
+    else {
+        textoBoton.textContent = 'Ir al Marketplace';
+    }
+});
+</script>
+{% endblock %}

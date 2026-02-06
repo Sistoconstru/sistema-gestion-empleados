@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, TemplateView
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
@@ -2468,6 +2468,11 @@ class CrearProductoView(EmpleadoRequiredMixin, CreateView):
     form_class = ProductoForm
     template_name = 'employees/marketplace/producto_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['es_creacion'] = True
+        return context
+
     def get_form(self, form_class=None):
         """Personalizar el formulario según el tipo de usuario"""
         form = super().get_form(form_class)
@@ -2524,6 +2529,11 @@ class EditarProductoView(EmpleadoRequiredMixin, UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'employees/marketplace/producto_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['es_creacion'] = False
+        return context
 
     def get_queryset(self):
         """Solo el vendedor o admin pueden editar"""
@@ -3378,9 +3388,19 @@ def separar_producto_view(request, pk):
     # POST: crear la reserva
     elif request.method == 'POST':
         confirmado = request.POST.get('confirmado') == 'true'
+        acepto_terminos = request.POST.get('acepto_terminos') == 'true'
 
         if not confirmado:
             messages.warning(request, 'Debes confirmar la separación del producto.')
+            context = {
+                'producto': producto,
+                'cantidad_reservada': producto.get_cantidad_reservada(),
+                'disponible': producto.get_disponible_texto(),
+            }
+            return render(request, 'employees/marketplace/separar_producto.html', context)
+
+        if not acepto_terminos:
+            messages.error(request, 'Debes aceptar los términos y condiciones para continuar.')
             context = {
                 'producto': producto,
                 'cantidad_reservada': producto.get_cantidad_reservada(),
@@ -3410,3 +3430,86 @@ def separar_producto_view(request, pk):
             logger.error(f'Error creando reserva: {str(e)}')
             messages.error(request, 'Hubo un error al separar el producto. Intenta de nuevo.')
             return redirect('employees:producto_detail', pk=pk)
+
+
+@login_required
+@require_POST
+def confirmar_entrega_reserva(request, reserva_id):
+    """Vista para que el vendedor confirme la entrega y finalice la venta"""
+    from apps.employees.models import Reserva, Venta
+
+    # Obtener la reserva
+    reserva = get_object_or_404(Reserva, pk=reserva_id)
+
+    # Verificar que el usuario sea empleado
+    try:
+        vendedor = request.user.empleado
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Debes tener un perfil de empleado.')
+        return redirect('employees:mis_productos')
+
+    # Verificar que el usuario sea el vendedor del producto
+    if reserva.producto.vendedor.id != vendedor.id:
+        messages.error(request, 'No tienes permiso para confirmar esta reserva.')
+        return redirect('employees:mis_productos')
+
+    # Verificar que la reserva esté activa
+    if reserva.estado != 'activa':
+        messages.warning(request, f'Esta reserva ya está en estado: {reserva.get_estado_display()}')
+        return redirect('employees:mis_productos')
+
+    # Verificar que no tenga ya una venta asociada
+    if reserva.venta_asociada:
+        messages.warning(request, 'Esta reserva ya tiene una venta asociada.')
+        return redirect('employees:mis_productos')
+
+    try:
+        with transaction.atomic():
+            # Crear la venta completada
+            venta = Venta.objects.create(
+                producto=reserva.producto,
+                vendedor=reserva.producto.vendedor,
+                comprador=reserva.comprador,
+                precio_final=reserva.producto.precio_inicial or 0,
+                estado='completada',
+                observaciones=f'Venta confirmada desde reserva {reserva.id}',
+                fecha_completada=timezone.now(),
+                creado_por=request.user
+            )
+
+            # Actualizar la reserva
+            reserva.estado = 'confirmada'
+            reserva.venta_asociada = venta
+            reserva.save()
+
+            # Actualizar cantidad del producto si aplica
+            if reserva.producto.cantidad_disponible:
+                if reserva.producto.cantidad_disponible > 0:
+                    reserva.producto.cantidad_disponible -= 1
+                    reserva.producto.save()
+
+            # Log de éxito
+            logger.info(
+                f'[CONFIRMAR_ENTREGA] Reserva {reserva.id} confirmada. '
+                f'Venta {venta.id} creada. Producto: {reserva.producto.titulo}'
+            )
+
+            messages.success(
+                request,
+                f'¡Venta confirmada exitosamente! Se ha completado la transacción con {reserva.comprador.nombre_completo}.'
+            )
+
+    except Exception as e:
+        logger.error(f'Error confirmando entrega de reserva {reserva_id}: {str(e)}')
+        messages.error(request, 'Hubo un error al confirmar la entrega. Intenta de nuevo.')
+
+    return redirect('employees:mis_productos')
+
+
+# =============================================================================
+# MARKETPLACE - TÉRMINOS Y CONDICIONES
+# =============================================================================
+
+class TerminosCondicionesView(TemplateView):
+    """Vista para mostrar términos y condiciones del marketplace"""
+    template_name = 'employees/marketplace/terminos_condiciones.html'

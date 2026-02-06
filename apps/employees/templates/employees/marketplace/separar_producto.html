@@ -154,7 +154,15 @@
         <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="confirmCheckbox" name="confirmado" value="false" required>
             <label class="form-check-label" for="confirmCheckbox">
-                Entiendo que separa este producto me compromete a pagarlo. Confirmo que quiero continuar.
+                Entiendo que separar este producto me compromete a pagarlo. Confirmo que quiero continuar.
+            </label>
+        </div>
+
+        <!-- Términos y Condiciones -->
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="aceptoTerminos" name="acepto_terminos" value="false" required>
+            <label class="form-check-label" for="aceptoTerminos">
+                Acepto los <a href="{% url 'employees:terminos_condiciones' %}" target="_blank" style="color: #667eea; text-decoration: underline;">términos y condiciones</a> del marketplace
             </label>
         </div>
 
@@ -192,18 +200,22 @@ document.addEventListener('DOMContentLoaded', function() {
         precioElement.textContent = formatearPrecio(precio);
     }
 
-    // Control del checkbox
-    const checkbox = document.getElementById('confirmCheckbox');
+    // Control de ambos checkboxes
+    const confirmCheckbox = document.getElementById('confirmCheckbox');
+    const terminosCheckbox = document.getElementById('aceptoTerminos');
     const submitBtn = document.getElementById('submitBtn');
 
-    checkbox.addEventListener('change', function() {
-        submitBtn.disabled = !this.checked;
-    });
+    function actualizarBoton() {
+        submitBtn.disabled = !(confirmCheckbox.checked && terminosCheckbox.checked);
+    }
 
-    // Al submit, actualizar el valor correcto
+    confirmCheckbox.addEventListener('change', actualizarBoton);
+    terminosCheckbox.addEventListener('change', actualizarBoton);
+
+    // Al submit, actualizar los valores correctos
     document.getElementById('separationForm').addEventListener('submit', function(e) {
-        const checkbox = document.getElementById('confirmCheckbox');
-        checkbox.value = checkbox.checked ? 'true' : 'false';
+        confirmCheckbox.value = confirmCheckbox.checked ? 'true' : 'false';
+        terminosCheckbox.value = terminosCheckbox.checked ? 'true' : 'false';
     });
 });
 </script>

@@ -260,6 +260,13 @@
                                 <div class="reserva-info">
                                     <div class="reserva-nombre">
                                         {{ reserva.comprador.nombre_completo }}
+                                        {% if reserva.estado == 'activa' %}
+                                        <span class="badge bg-warning text-dark ms-2">Activa</span>
+                                        {% elif reserva.estado == 'confirmada' %}
+                                        <span class="badge bg-success ms-2">Confirmada</span>
+                                        {% elif reserva.estado == 'cancelada' %}
+                                        <span class="badge bg-secondary ms-2">Cancelada</span>
+                                        {% endif %}
                                     </div>
                                     <div class="reserva-fecha">
                                         <i class="fas fa-calendar-check me-1"></i>Separado: {{ reserva.fecha_creacion|date:"d/m/Y H:i" }}
@@ -269,6 +276,11 @@
                                     <a href="{% url 'employees:contactar_empleado' reserva.comprador.id %}" class="btn btn-sm btn-outline-primary" title="Enviar mensaje a {{ reserva.comprador.nombre_completo }}">
                                         <i class="fas fa-envelope me-1"></i>Contactar
                                     </a>
+                                    {% if reserva.estado == 'activa' %}
+                                    <button type="button" class="btn btn-sm btn-success" onclick="confirmarEntregaReserva('{{ reserva.id }}', '{{ reserva.comprador.nombre_completo }}', '{{ producto.titulo }}')" title="Confirmar que entregaste el producto">
+                                        <i class="fas fa-check-circle me-1"></i>Confirmar Entrega
+                                    </button>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% endfor %}
@@ -358,6 +370,30 @@ function toggleReservas(productoId) {
         toggleText.textContent = 'Ocultar separaciones';
         toggleBtn.querySelector('i').classList.remove('fa-chevron-down');
         toggleBtn.querySelector('i').classList.add('fa-chevron-up');
+    }
+}
+
+function confirmarEntregaReserva(reservaId, nombreComprador, tituloProducto) {
+    const mensaje = `¿Confirmas que has entregado el producto "${tituloProducto}" a ${nombreComprador}?\n\nEsta acción:\n• Marcará la reserva como completada\n• Creará una venta exitosa\n• Actualizará el inventario del producto\n\nEsta acción no se puede deshacer.`;
+
+    if (confirm(mensaje)) {
+        // Crear un formulario y enviarlo
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/empleados/marketplace/reservas/${reservaId}/confirmar-entrega/`;
+
+        // Agregar CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 </script>

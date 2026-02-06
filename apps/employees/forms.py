@@ -499,6 +499,21 @@ class BusquedaEmpleadoForm(forms.Form):
 class ProductoForm(forms.ModelForm):
     """Formulario para crear y editar productos"""
 
+    acepto_terminos = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+        }),
+        label='Acepto los terminos y condiciones del marketplace como vendedor'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Si estamos editando (instancia guardada en BD), no requerir términos
+        # Verificar si el objeto ya está en la base de datos
+        if self.instance.pk and not self.instance._state.adding:
+            self.fields['acepto_terminos'].required = False
+
     class Meta:
         model = Producto
         fields = ['titulo', 'descripcion', 'categoria', 'tipo', 'precio_inicial', 'cantidad_disponible', 'imagen', 'visible_para', 'vendedor']
@@ -562,6 +577,7 @@ class ProductoForm(forms.ModelForm):
         precio = cleaned_data.get('precio_inicial')
         titulo = cleaned_data.get('titulo')
         vendedor = cleaned_data.get('vendedor')
+        acepto_terminos = cleaned_data.get('acepto_terminos')
 
         # Validar que regalos no tengan precio
         if tipo == 'regalo' and precio:
@@ -597,6 +613,13 @@ class ProductoForm(forms.ModelForm):
                     f'Ya existe un producto con el título "{titulo}" de este vendedor. '
                     'Por favor usa un título diferente o edita el producto existente.'
                 )
+
+        # Validar aceptación de términos y condiciones (solo al crear, no al editar)
+        # Verificar que no esté guardado en BD (_state.adding) o que sea una nueva instancia
+        if (not self.instance.pk or self.instance._state.adding) and not acepto_terminos:
+            raise ValidationError(
+                'Debes aceptar los términos y condiciones para publicar un producto en el marketplace.'
+            )
 
         return cleaned_data
 
@@ -668,6 +691,7 @@ class VentaForm(forms.ModelForm):
         cleaned_data = super().clean()
         precio_final = cleaned_data.get('precio_final')
         confirmar_precio = cleaned_data.get('confirmar_precio')
+        acepto_terminos = cleaned_data.get('acepto_terminos')
 
         # Validar que los precios coincidan
         if precio_final and confirmar_precio:
@@ -692,6 +716,12 @@ class VentaForm(forms.ModelForm):
         if self.comprador and self.comprador.estado.codigo not in ['999', 'ACTIVO']:
             raise ValidationError(
                 'Debes estar activo para realizar compras.'
+            )
+
+        # Validar aceptación de términos y condiciones
+        if not acepto_terminos:
+            raise ValidationError(
+                'Debes aceptar los términos y condiciones para continuar con la compra.'
             )
 
         return cleaned_data
@@ -922,6 +952,14 @@ class RegaloForm(forms.ModelForm):
         help_text='Selecciona a quien quieres regalar este producto'
     )
 
+    acepto_terminos = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+        }),
+        label='Acepto los terminos y condiciones de este regalo'
+    )
+
     class Meta:
         model = Regalo
         fields = ['mensaje']
@@ -943,6 +981,7 @@ class RegaloForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         receptor = cleaned_data.get('receptor_id')
+        acepto_terminos = cleaned_data.get('acepto_terminos')
 
         # Validar que no regales a uno mismo
         if receptor and self.donante:
@@ -955,6 +994,12 @@ class RegaloForm(forms.ModelForm):
         if receptor and receptor.estado.codigo not in ['999', 'ACTIVO']:
             raise ValidationError(
                 'Solo puedes regalar a empleados activos.'
+            )
+
+        # Validar aceptación de términos y condiciones
+        if not acepto_terminos:
+            raise ValidationError(
+                'Debes aceptar los términos y condiciones para continuar con el regalo.'
             )
 
         return cleaned_data

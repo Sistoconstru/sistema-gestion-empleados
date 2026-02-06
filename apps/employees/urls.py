@@ -40,6 +40,11 @@ urlpatterns = [
     # path('<uuid:pk>/historial/', views.HistorialCargoView.as_view(), name='historial_cargo'),
 
     # =============================================================================
+    # MARKETPLACE - TÉRMINOS Y CONDICIONES
+    # =============================================================================
+    path('marketplace/terminos-condiciones/', views.TerminosCondicionesView.as_view(), name='terminos_condiciones'),
+
+    # =============================================================================
     # MARKETPLACE - PRODUCTOS
     # =============================================================================
     path('marketplace/productos/', views.ProductoListView.as_view(), name='producto_list'),
@@ -52,6 +57,7 @@ urlpatterns = [
     path('marketplace/mis-productos/', views.MisProductosView.as_view(), name='mis_productos'),
     path('marketplace/mis-compras/', views.MisComprasView.as_view(), name='mis_compras'),
     path('marketplace/productos/<uuid:producto_pk>/comprar/', views.ComprarProductoView.as_view(), name='comprar_producto'),
+    path('marketplace/reservas/<uuid:reserva_id>/confirmar-entrega/', views.confirmar_entrega_reserva, name='confirmar_entrega_reserva'),
 
     # =============================================================================
     # MARKETPLACE - SUBASTAS

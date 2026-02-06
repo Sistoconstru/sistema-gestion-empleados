@@ -203,10 +203,17 @@
 
                 <!-- Checkbox de términos -->
                 <div class="confirmacion-checkbox">
-                    <input type="checkbox" id="acepto_terminos" name="acepto_terminos" required>
-                    <label for="acepto_terminos" class="confirmacion-texto">
-                        Acepto los términos y condiciones de la transacción
+                    {{ form.acepto_terminos }}
+                    <label for="{{ form.acepto_terminos.id_for_label }}" class="confirmacion-texto">
+                        Acepto los <a href="{% url 'employees:terminos_condiciones' %}" target="_blank" style="color: #667eea; text-decoration: underline;">términos y condiciones</a> de la transacción
                     </label>
+                    {% if form.acepto_terminos.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.acepto_terminos.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <!-- Botones de acción -->
