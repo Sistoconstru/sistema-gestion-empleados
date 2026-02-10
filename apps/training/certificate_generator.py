@@ -16,8 +16,65 @@ from django.conf import settings
 from io import BytesIO
 import os
 import logging
+import tempfile
 
 logger = logging.getLogger(__name__)
+
+
+def get_file_for_reportlab(file_field):
+    """
+    Obtiene un archivo (ruta local o temporal) que ReportLab puede usar.
+    Maneja tanto archivos locales (desarrollo) como remotos en S3 (producción).
+
+    Similar al patrón usado con PIL/Pillow para documentos de empleado.
+
+    Args:
+        file_field: FileField o ImageField de Django
+
+    Returns:
+        tuple: (file_path, is_temp) donde file_path es la ruta utilizable
+               e is_temp indica si debe eliminarse después de usar
+    """
+    if not file_field:
+        return None, False
+
+    try:
+        # Intentar obtener path local (funciona en desarrollo con FileSystemStorage)
+        if hasattr(file_field, 'path'):
+            try:
+                local_path = file_field.path
+                if os.path.exists(local_path):
+                    logger.debug(f"Usando archivo local: {local_path}")
+                    return local_path, False
+            except NotImplementedError:
+                # El storage no soporta .path (S3, Google Cloud, etc.)
+                pass
+    except Exception as e:
+        logger.debug(f"No se pudo acceder a path local: {str(e)}")
+
+    # Si llegamos aquí, es un archivo remoto (S3) - leer y crear temporal
+    try:
+        logger.info(f"Leyendo archivo desde S3: {file_field.name}")
+
+        # Determinar extensión
+        ext = os.path.splitext(file_field.name)[1] or '.tmp'
+
+        # Crear archivo temporal
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+
+        # Leer contenido desde S3 (igual que PIL con Image.open())
+        with file_field.open('rb') as f:
+            temp_file.write(f.read())
+
+        temp_file.close()
+        temp_path = temp_file.name
+
+        logger.debug(f"Archivo temporal creado: {temp_path}")
+        return temp_path, True
+
+    except Exception as e:
+        logger.error(f"Error leyendo archivo desde S3: {str(e)}")
+        return None, False
 
 
 class CertificateGenerator:
@@ -63,6 +120,9 @@ class CertificateGenerator:
             if not inscripcion.numero_certificado:
                 inscripcion.generar_numero_certificado()
 
+            # Lista para rastrear archivos temporales que deben eliminarse
+            archivos_temporales = []
+
             # Crear PDF
             buffer = BytesIO()
             c = canvas.Canvas(buffer, pagesize=landscape(A4))
@@ -78,8 +138,10 @@ class CertificateGenerator:
             # ===== IMAGEN DE FONDO (si existe) =====
             if plantilla.imagen_fondo:
                 try:
-                    fondo_path = plantilla.imagen_fondo.path
-                    if os.path.exists(fondo_path):
+                    fondo_path, is_temp = get_file_for_reportlab(plantilla.imagen_fondo)
+                    if fondo_path:
+                        if is_temp:
+                            archivos_temporales.append(fondo_path)
                         # Dibujar la imagen de fondo cubriendo todo el certificado
                         c.drawImage(
                             fondo_path,
@@ -108,8 +170,10 @@ class CertificateGenerator:
             # ===== LOGO CENTRADO EN LA PARTE SUPERIOR =====
             if plantilla.logo:
                 try:
-                    logo_path = plantilla.logo.path
-                    if os.path.exists(logo_path):
+                    logo_path, is_temp = get_file_for_reportlab(plantilla.logo)
+                    if logo_path:
+                        if is_temp:
+                            archivos_temporales.append(logo_path)
                         # Tamaño del logo
                         logo_width = 2.4*inch
                         logo_height = 1.2*inch
@@ -219,8 +283,10 @@ class CertificateGenerator:
             x_firma_izq = width/4
             if plantilla.firma_responsable:
                 try:
-                    firma_path = plantilla.firma_responsable.path
-                    if os.path.exists(firma_path):
+                    firma_path, is_temp = get_file_for_reportlab(plantilla.firma_responsable)
+                    if firma_path:
+                        if is_temp:
+                            archivos_temporales.append(firma_path)
                         c.drawImage(
                             firma_path,
                             x_firma_izq - 0.9*inch,
@@ -252,8 +318,10 @@ class CertificateGenerator:
             x_firma_der = 3*width/4
             if plantilla.firma_rrhh:
                 try:
-                    firma_rrhh_path = plantilla.firma_rrhh.path
-                    if os.path.exists(firma_rrhh_path):
+                    firma_rrhh_path, is_temp = get_file_for_reportlab(plantilla.firma_rrhh)
+                    if firma_rrhh_path:
+                        if is_temp:
+                            archivos_temporales.append(firma_rrhh_path)
                         c.drawImage(
                             firma_rrhh_path,
                             x_firma_der - 0.9*inch,
@@ -313,3 +381,13 @@ class CertificateGenerator:
         except Exception as e:
             logger.error(f"Error generando certificado para inscripción {inscripcion.id}: {str(e)}")
             return False
+
+        finally:
+            # Limpiar archivos temporales descargados desde S3
+            for temp_file in archivos_temporales:
+                try:
+                    if os.path.exists(temp_file):
+                        os.unlink(temp_file)
+                        logger.debug(f"Archivo temporal eliminado: {temp_file}")
+                except Exception as e:
+                    logger.warning(f"No se pudo eliminar archivo temporal {temp_file}: {str(e)}")

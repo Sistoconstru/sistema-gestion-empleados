@@ -27,6 +27,7 @@ from .models import (Capacitacion, InscripcionCapacitacion, TipoCapacitacion,
                      OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
 from .forms import CapacitacionForm #InscripcionCapacitacionForm
 from apps.employees.models import Empleado
+from .certificate_generator import get_file_for_reportlab
 
 logger = logging.getLogger(__name__)
 
@@ -1889,6 +1890,9 @@ def vista_previa_certificado(request, plantilla_id):
         messages.error(request, 'No tienes permiso para ver esta vista previa.')
         return redirect('admin:index')
 
+    # Lista para rastrear archivos temporales que deben eliminarse
+    archivos_temporales = []
+
     try:
         # Crear un buffer en memoria para el PDF
         buffer = BytesIO()
@@ -1908,8 +1912,10 @@ def vista_previa_certificado(request, plantilla_id):
         # ===== IMAGEN DE FONDO (si existe) =====
         if plantilla.imagen_fondo:
             try:
-                fondo_path = plantilla.imagen_fondo.path
-                if os.path.exists(fondo_path):
+                fondo_path, is_temp = get_file_for_reportlab(plantilla.imagen_fondo)
+                if fondo_path:
+                    if is_temp:
+                        archivos_temporales.append(fondo_path)
                     # Dibujar la imagen de fondo cubriendo todo el certificado
                     c.drawImage(
                         fondo_path,
@@ -1936,15 +1942,18 @@ def vista_previa_certificado(request, plantilla_id):
         # === LOGO CENTRADO (si existe) ===
         if plantilla.logo:
             try:
-                logo_path = plantilla.logo.path
-                # Tamaño del logo
-                logo_width = 6*cm
-                logo_height = 3*cm
-                # Centrar: (ancho total - ancho del logo) / 2
-                logo_x = (width - logo_width) / 2
-                logo_y = height - 5*cm
-                c.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height,
-                           preserveAspectRatio=True, mask='auto')
+                logo_path, is_temp = get_file_for_reportlab(plantilla.logo)
+                if logo_path:
+                    if is_temp:
+                        archivos_temporales.append(logo_path)
+                    # Tamaño del logo
+                    logo_width = 6*cm
+                    logo_height = 3*cm
+                    # Centrar: (ancho total - ancho del logo) / 2
+                    logo_x = (width - logo_width) / 2
+                    logo_y = height - 5*cm
+                    c.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height,
+                               preserveAspectRatio=True, mask='auto')
             except:
                 pass
 
@@ -2070,8 +2079,11 @@ def vista_previa_certificado(request, plantilla_id):
         # Firma izquierda: Responsable de la Capacitación
         if plantilla.firma_responsable:
             try:
-                firma_path = plantilla.firma_responsable.path
-                c.drawImage(firma_path, width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
+                firma_path, is_temp = get_file_for_reportlab(plantilla.firma_responsable)
+                if firma_path:
+                    if is_temp:
+                        archivos_temporales.append(firma_path)
+                    c.drawImage(firma_path, width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
             except:
                 pass
 
@@ -2088,8 +2100,11 @@ def vista_previa_certificado(request, plantilla_id):
         # Firma derecha: Director de RRHH
         if plantilla.firma_rrhh:
             try:
-                firma_rrhh_path = plantilla.firma_rrhh.path
-                c.drawImage(firma_rrhh_path, 3*width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
+                firma_rrhh_path, is_temp = get_file_for_reportlab(plantilla.firma_rrhh)
+                if firma_rrhh_path:
+                    if is_temp:
+                        archivos_temporales.append(firma_rrhh_path)
+                    c.drawImage(firma_rrhh_path, 3*width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
             except:
                 pass
 
@@ -2120,3 +2135,14 @@ def vista_previa_certificado(request, plantilla_id):
         logger.error(f"Error al generar vista previa de certificado {plantilla_id}: {str(e)}")
         messages.error(request, f'Error al generar vista previa: {str(e)}')
         return redirect('admin:training_certificadoplantilla_changelist')
+
+    finally:
+        # Limpiar archivos temporales descargados desde S3
+        import os
+        for temp_file in archivos_temporales:
+            try:
+                if os.path.exists(temp_file):
+                    os.unlink(temp_file)
+                    logger.debug(f"Archivo temporal eliminado: {temp_file}")
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar archivo temporal {temp_file}: {str(e)}")
