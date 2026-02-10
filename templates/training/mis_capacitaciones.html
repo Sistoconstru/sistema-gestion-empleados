@@ -333,8 +333,13 @@
                                         </a>
                                     {% endif %}
                                     <div class="alert alert-info mb-0 p-2 small">
-                                        <i class="fas fa-info-circle"></i>
-                                        Completa el curso y presenta el certificado al administrador
+                                        <i class="fas fa-graduation-cap me-1"></i>
+                                        <strong>Pasos para completar:</strong><br>
+                                        <span style="line-height: 1.6;">
+                                        1️⃣ Completa el curso en {{ inscripcion.capacitacion.nombre_proveedor|default:"la plataforma externa" }}<br>
+                                        2️⃣ Descarga tu certificado de la plataforma<br>
+                                        3️⃣ Presenta el certificado al administrador para validación
+                                        </span>
                                     </div>
                                 {% elif inscripcion.estado == 'completado' or inscripcion.estado == 'aprobado' %}
                                     <span class="badge bg-success p-2">

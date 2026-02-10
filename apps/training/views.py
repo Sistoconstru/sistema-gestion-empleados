@@ -15,16 +15,16 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 from django.utils.safestring import mark_safe
 from django.db.models import Q, Count, Avg, Sum
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from datetime import date, timedelta
 import logging
 import json
 
-from .models import (Capacitacion, InscripcionCapacitacion, TipoCapacitacion, 
+from .models import (Capacitacion, InscripcionCapacitacion, TipoCapacitacion,
                      CapacitacionCargo, ModuloCapacitacion, ProgresoCapacitacion,
-                     Leccion, ContenidoLeccion, QuizLeccion, PreguntaQuiz, 
-                     OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz)
+                     Leccion, ContenidoLeccion, QuizLeccion, PreguntaQuiz,
+                     OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
 from .forms import CapacitacionForm #InscripcionCapacitacionForm
 from apps.employees.models import Empleado
 
@@ -1708,5 +1708,415 @@ def completar_contenido(request, pk):
             'message': 'Ocurrió un error al actualizar el progreso'
         }, status=400)
 
-class MisCertificadosView(TemplateView):
+class MisCertificadosView(LoginRequiredMixin, TemplateView):
     template_name = 'training/mis_certificados.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Obtener empleado del usuario actual
+        try:
+            empleado = self.request.user.empleado
+        except:
+            context['error'] = 'No se encontró perfil de empleado'
+            context['certificados'] = []
+            return context
+
+        # Obtener inscripciones aprobadas con certificado (generado O externo)
+        # IMPORTANTE: Excluir capacitaciones OBLIGATORIAS e INDUCCION (no generan certificado)
+        inscripciones_con_certificado = InscripcionCapacitacion.objects.filter(
+            empleado=empleado,
+            estado='aprobado'
+        ).filter(
+            Q(certificado_generado__isnull=False) | Q(certificado_externo__isnull=False)
+        ).exclude(
+            capacitacion__tipo__codigo__in=['OBLIGATORIA', 'INDUCCION']
+        ).select_related(
+            'capacitacion',
+            'capacitacion__tipo'
+        ).order_by('-fecha_emision_certificado', '-fecha_certificado_externo')
+
+        # Preparar datos de certificados
+        certificados = []
+        total_horas = 0
+        suma_puntajes = 0
+        contador_puntajes = 0
+
+        for inscripcion in inscripciones_con_certificado:
+            # Determinar fecha según tipo de certificado
+            if inscripcion.capacitacion.es_externa():
+                fecha_cert = inscripcion.fecha_certificado_externo or inscripcion.fecha_finalizacion
+                tipo_cert = 'Externa'
+                origen_cert = inscripcion.capacitacion.nombre_proveedor or 'Proveedor externo'
+            else:
+                fecha_cert = inscripcion.fecha_emision_certificado or inscripcion.fecha_finalizacion
+                tipo_cert = 'Interna'
+                origen_cert = 'Sistema interno'
+
+            certificado_data = {
+                'inscripcion': inscripcion,
+                'capacitacion': inscripcion.capacitacion,
+                'numero': inscripcion.numero_certificado or f"EXT-{inscripcion.id}",
+                'fecha_emision': fecha_cert,
+                'puntaje': inscripcion.puntaje_final,
+                'duracion': inscripcion.capacitacion.duracion_estimada_horas,
+                'tipo': tipo_cert,
+                'origen': origen_cert,
+                'categoria': inscripcion.capacitacion.tipo.nombre if inscripcion.capacitacion.tipo else 'Sin categoría',
+            }
+            certificados.append(certificado_data)
+
+            # Acumular estadísticas
+            if inscripcion.capacitacion.duracion_estimada_horas:
+                total_horas += inscripcion.capacitacion.duracion_estimada_horas
+
+            if inscripcion.puntaje_final:
+                suma_puntajes += float(inscripcion.puntaje_final)
+                contador_puntajes += 1
+
+        # Calcular estadísticas
+        context['certificados'] = certificados
+        context['total_certificados'] = len(certificados)
+        context['total_horas'] = total_horas
+        context['promedio_calificacion'] = round(suma_puntajes / contador_puntajes, 1) if contador_puntajes > 0 else 0
+
+        # Estadísticas por tipo
+        certificados_internos = sum(1 for c in certificados if c['tipo'] == 'Interna')
+        certificados_externos = sum(1 for c in certificados if c['tipo'] == 'Externa')
+        context['certificados_internos'] = certificados_internos
+        context['certificados_externos'] = certificados_externos
+
+        return context
+
+
+@login_required
+def descargar_certificado(request, pk):
+    """
+    Vista para descargar un certificado PDF
+    """
+    # Obtener la inscripción
+    inscripcion = get_object_or_404(InscripcionCapacitacion, pk=pk)
+
+    # Verificar que el usuario es el dueño del certificado
+    try:
+        empleado = request.user.empleado
+        if inscripcion.empleado != empleado:
+            messages.error(request, 'No tienes permiso para descargar este certificado.')
+            return redirect('training:mis_certificados')
+    except:
+        messages.error(request, 'No se encontró perfil de empleado.')
+        return redirect('training:mis_certificados')
+
+    # Verificar que puede descargar el certificado
+    if not inscripcion.puede_descargar_certificado():
+        messages.error(request, 'Este certificado no está disponible para descarga.')
+        return redirect('training:mis_certificados')
+
+    # Determinar qué certificado usar según el tipo de capacitación
+    if inscripcion.capacitacion.es_externa():
+        # Capacitación externa: usar certificado_externo
+        certificado_file = inscripcion.certificado_externo
+        tipo_certificado = 'externo'
+    else:
+        # Capacitación interna: usar certificado_generado
+        certificado_file = inscripcion.certificado_generado
+        tipo_certificado = 'generado'
+
+    # Verificar que el archivo existe
+    if not certificado_file:
+        messages.error(request, 'El archivo del certificado no existe.')
+        return redirect('training:mis_certificados')
+
+    # Retornar el archivo
+    try:
+        # Determinar el content type según la extensión del archivo
+        import mimetypes
+        file_name = certificado_file.name
+        content_type, _ = mimetypes.guess_type(file_name)
+
+        if not content_type:
+            # Por defecto, asumir PDF
+            content_type = 'application/pdf'
+
+        response = HttpResponse(
+            certificado_file.read(),
+            content_type=content_type
+        )
+
+        # Generar nombre de archivo apropiado
+        import os
+        extension = os.path.splitext(file_name)[1] or '.pdf'
+        if inscripcion.numero_certificado:
+            filename = f"certificado_{inscripcion.numero_certificado}{extension}"
+        else:
+            filename = f"certificado_{inscripcion.empleado.numero_documento}{extension}"
+
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        logger.info(
+            f"Certificado descargado ({tipo_certificado}) - "
+            f"Inscripción: {inscripcion.id}, "
+            f"Empleado: {empleado.nombre_completo}, "
+            f"Capacitación: {inscripcion.capacitacion.nombre}, "
+            f"Tipo: {content_type}"
+        )
+
+        return response
+    except Exception as e:
+        logger.error(f"Error al descargar certificado {pk}: {str(e)}")
+        messages.error(request, 'Ocurrió un error al descargar el certificado.')
+        return redirect('training:mis_certificados')
+
+
+@login_required
+def vista_previa_certificado(request, plantilla_id):
+    """
+    Genera una vista previa del certificado con datos de ejemplo
+    """
+    from io import BytesIO
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.units import cm
+    from reportlab.pdfgen import canvas
+    from reportlab.lib import colors
+    from datetime import datetime
+    from apps.training.certificate_generator import CertificateGenerator
+
+    # Obtener la plantilla
+    plantilla = get_object_or_404(CertificadoPlantilla, pk=plantilla_id)
+
+    # Verificar permisos (solo staff puede ver vista previa)
+    if not request.user.is_staff:
+        messages.error(request, 'No tienes permiso para ver esta vista previa.')
+        return redirect('admin:index')
+
+    try:
+        # Crear un buffer en memoria para el PDF
+        buffer = BytesIO()
+
+        # Configuración del documento
+        pagesize = landscape(A4)
+        width, height = pagesize
+        c = canvas.Canvas(buffer, pagesize=pagesize)
+
+        # === BORDES DECORATIVOS ===
+        from reportlab.lib.units import inch
+        import os
+
+        # Colores elegantes
+        color_dorado = colors.HexColor('#B8860B')  # Dorado oscuro
+
+        # ===== IMAGEN DE FONDO (si existe) =====
+        if plantilla.imagen_fondo:
+            try:
+                fondo_path = plantilla.imagen_fondo.path
+                if os.path.exists(fondo_path):
+                    # Dibujar la imagen de fondo cubriendo todo el certificado
+                    c.drawImage(
+                        fondo_path,
+                        0,
+                        0,
+                        width=width,
+                        height=height,
+                        preserveAspectRatio=False,
+                        mask='auto'
+                    )
+            except:
+                pass  # Si falla, continuar sin fondo
+
+        # Borde exterior dorado principal (solo si NO hay imagen de fondo)
+        if not plantilla.imagen_fondo:
+            c.setStrokeColor(color_dorado)
+            c.setLineWidth(4)
+            c.rect(0.4*inch, 0.4*inch, width-0.8*inch, height-0.8*inch)
+
+            # Borde interior más delgado
+            c.setLineWidth(1)
+            c.rect(0.5*inch, 0.5*inch, width-1*inch, height-1*inch)
+
+        # === LOGO CENTRADO (si existe) ===
+        if plantilla.logo:
+            try:
+                logo_path = plantilla.logo.path
+                # Tamaño del logo
+                logo_width = 6*cm
+                logo_height = 3*cm
+                # Centrar: (ancho total - ancho del logo) / 2
+                logo_x = (width - logo_width) / 2
+                logo_y = height - 5*cm
+                c.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height,
+                           preserveAspectRatio=True, mask='auto')
+            except:
+                pass
+
+        # === MARCA DE AGUA "VISTA PREVIA" ===
+        c.saveState()
+        c.setFont("Helvetica-Bold", 60)
+        c.setFillColor(colors.Color(0.9, 0.9, 0.9, alpha=0.3))
+        c.translate(width/2, height/2)
+        c.rotate(45)
+        c.drawCentredString(0, 0, "VISTA PREVIA")
+        c.restoreState()
+
+        # === TÍTULO DEL CERTIFICADO ===
+        c.setFont("Helvetica-Bold", 28)
+        c.setFillColor(colors.HexColor('#2C3E50'))
+        titulo = plantilla.titulo_certificado
+        c.drawCentredString(width/2, height - 5*cm, titulo)
+
+        # === TEXTO SUPERIOR ===
+        c.setFont("Helvetica", 14)
+        c.setFillColor(colors.HexColor('#555555'))
+        y_position = height - 7*cm
+
+        # Dividir texto en líneas
+        texto_superior = plantilla.texto_superior
+        max_width = width - 8*cm
+        lines = []
+        words = texto_superior.split()
+        current_line = ""
+
+        for word in words:
+            test_line = current_line + " " + word if current_line else word
+            if c.stringWidth(test_line, "Helvetica", 14) < max_width:
+                current_line = test_line
+            else:
+                lines.append(current_line)
+                current_line = word
+        if current_line:
+            lines.append(current_line)
+
+        for line in lines:
+            c.drawCentredString(width/2, y_position, line)
+            y_position -= 0.6*cm
+
+        # === NOMBRE DEL EMPLEADO (DATOS DE EJEMPLO) ===
+        c.setFont("Helvetica-Bold", 22)
+        c.setFillColor(colors.HexColor('#1E3A8A'))
+        y_position -= 1*cm
+        c.drawCentredString(width/2, y_position, "JUAN CARLOS PÉREZ GARCÍA")
+
+        # Documento
+        c.setFont("Helvetica", 11)
+        c.setFillColor(colors.HexColor('#666666'))
+        y_position -= 0.8*cm
+        c.drawCentredString(width/2, y_position, "C.C. 1.234.567.890")
+
+        # === NOMBRE DE LA CAPACITACIÓN ===
+        c.setFont("Helvetica-Bold", 16)
+        c.setFillColor(colors.HexColor('#2C3E50'))
+        y_position -= 1.5*cm
+        c.drawCentredString(width/2, y_position, plantilla.capacitacion.nombre)
+
+        # === INFORMACIÓN ADICIONAL ===
+        y_position -= 1.2*cm
+
+        info_lines = []
+
+        if plantilla.incluir_calificacion:
+            info_lines.append(f"Calificación obtenida: 95.0 puntos")
+
+        if plantilla.incluir_duracion and plantilla.capacitacion.duracion_estimada_horas:
+            info_lines.append(f"Duración: {plantilla.capacitacion.duracion_estimada_horas} horas")
+
+        c.setFont("Helvetica", 12)
+        c.setFillColor(colors.HexColor('#555555'))
+        for info_line in info_lines:
+            c.drawCentredString(width/2, y_position, info_line)
+            y_position -= 0.7*cm
+
+        # === TEXTO INFERIOR ===
+        y_position -= 0.5*cm
+        c.setFont("Helvetica", 12)
+        c.setFillColor(colors.HexColor('#555555'))
+
+        texto_inferior = plantilla.texto_inferior
+        lines = []
+        words = texto_inferior.split()
+        current_line = ""
+
+        for word in words:
+            test_line = current_line + " " + word if current_line else word
+            if c.stringWidth(test_line, "Helvetica", 12) < max_width:
+                current_line = test_line
+            else:
+                lines.append(current_line)
+                current_line = word
+        if current_line:
+            lines.append(current_line)
+
+        for line in lines:
+            c.drawCentredString(width/2, y_position, line)
+            y_position -= 0.6*cm
+
+        # === NÚMERO DE CERTIFICADO (EJEMPLO) ===
+        c.setFont("Helvetica", 9)
+        c.setFillColor(colors.HexColor('#999999'))
+        c.drawCentredString(width/2, 2.5*cm, f"Certificado No. CERT-2026-PREVIEW-0001")
+
+        # === FECHA DE EMISIÓN (HOY) ===
+        fecha_ejemplo = datetime.now().strftime("%d de %B de %Y")
+        meses = {
+            'January': 'enero', 'February': 'febrero', 'March': 'marzo',
+            'April': 'abril', 'May': 'mayo', 'June': 'junio',
+            'July': 'julio', 'August': 'agosto', 'September': 'septiembre',
+            'October': 'octubre', 'November': 'noviembre', 'December': 'diciembre'
+        }
+        for en, es in meses.items():
+            fecha_ejemplo = fecha_ejemplo.replace(en, es)
+
+        c.drawCentredString(width/2, 2*cm, f"Expedido el {fecha_ejemplo}")
+
+        # === FIRMAS (DOS FIRMAS) ===
+        # Firma izquierda: Responsable de la Capacitación
+        if plantilla.firma_responsable:
+            try:
+                firma_path = plantilla.firma_responsable.path
+                c.drawImage(firma_path, width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
+            except:
+                pass
+
+        if plantilla.nombre_responsable:
+            c.setFont("Helvetica-Bold", 11)
+            c.setFillColor(colors.HexColor('#2C3E50'))
+            c.drawCentredString(width/4, 2.5*cm, plantilla.nombre_responsable)
+
+        if plantilla.cargo_responsable:
+            c.setFont("Helvetica", 9)
+            c.setFillColor(colors.HexColor('#666666'))
+            c.drawCentredString(width/4, 2*cm, plantilla.cargo_responsable)
+
+        # Firma derecha: Director de RRHH
+        if plantilla.firma_rrhh:
+            try:
+                firma_rrhh_path = plantilla.firma_rrhh.path
+                c.drawImage(firma_rrhh_path, 3*width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
+            except:
+                pass
+
+        if plantilla.nombre_rrhh:
+            c.setFont("Helvetica-Bold", 11)
+            c.setFillColor(colors.HexColor('#2C3E50'))
+            c.drawCentredString(3*width/4, 2.5*cm, plantilla.nombre_rrhh)
+
+        if plantilla.cargo_rrhh:
+            c.setFont("Helvetica", 9)
+            c.setFillColor(colors.HexColor('#666666'))
+            c.drawCentredString(3*width/4, 2*cm, plantilla.cargo_rrhh)
+
+        # Finalizar el PDF
+        c.showPage()
+        c.save()
+
+        # Devolver el PDF
+        buffer.seek(0)
+        response = HttpResponse(buffer.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="vista_previa_certificado.pdf"'
+
+        logger.info(f"Vista previa generada - Plantilla: {plantilla_id}, Usuario: {request.user.username}")
+
+        return response
+
+    except Exception as e:
+        logger.error(f"Error al generar vista previa de certificado {plantilla_id}: {str(e)}")
+        messages.error(request, f'Error al generar vista previa: {str(e)}')
+        return redirect('admin:training_certificadoplantilla_changelist')

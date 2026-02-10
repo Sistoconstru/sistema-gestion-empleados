@@ -3,9 +3,9 @@
 # =============================================================================
 
 from django.contrib import admin
-from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion, 
+from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion,
                      Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion,
-                     QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz)
+                     QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
 
 @admin.register(TipoCapacitacion)
 class TipoCapacitacionAdmin(admin.ModelAdmin):
@@ -169,3 +169,98 @@ class InscripcionCapacitacionAdmin(admin.ModelAdmin):
 class ProgresoCapacitacionAdmin(admin.ModelAdmin):
     list_display = ('inscripcion', 'contenido', 'completado', 'porcentaje_visto', 'numero_visitas')
     list_filter = ('completado',)
+
+@admin.register(CertificadoPlantilla)
+class CertificadoPlantillaAdmin(admin.ModelAdmin):
+    list_display = ('capacitacion', 'titulo_certificado', 'incluir_calificacion', 'incluir_duracion', 'nota_minima_certificado', 'ver_vista_previa')
+    search_fields = ('capacitacion__nombre', 'titulo_certificado')
+    list_filter = ('incluir_calificacion', 'incluir_duracion')
+    readonly_fields = ('vista_previa_info',)
+
+    fieldsets = (
+        ('Capacitación', {
+            'fields': ('capacitacion',)
+        }),
+        ('Textos del Certificado', {
+            'fields': ('titulo_certificado', 'texto_superior', 'texto_inferior')
+        }),
+        ('Logo de la Empresa', {
+            'fields': ('logo',),
+            'description': 'Logo de la empresa (se mostrará centrado en la parte superior)'
+        }),
+        ('Imagen de Fondo', {
+            'fields': ('imagen_fondo',),
+            'description': 'Imagen decorativa de fondo con arabescos, marcos ornamentales, etc. (recomendado: diseño en PNG transparente)'
+        }),
+        ('Firma del Responsable de la Capacitación', {
+            'fields': ('firma_responsable', 'nombre_responsable', 'cargo_responsable'),
+            'description': 'Datos y firma del creador/responsable de la capacitación'
+        }),
+        ('Firma de Recursos Humanos', {
+            'fields': ('firma_rrhh', 'nombre_rrhh', 'cargo_rrhh'),
+            'description': 'Datos y firma del Director de Recursos Humanos'
+        }),
+        ('Configuración', {
+            'fields': ('vista_previa_info', 'incluir_calificacion', 'incluir_duracion', 'nota_minima_certificado'),
+            'description': 'Configura qué información mostrar en el certificado'
+        }),
+    )
+
+    def ver_vista_previa(self, obj):
+        """Botón para ver vista previa del certificado"""
+        from django.urls import reverse
+        from django.utils.html import format_html
+
+        url = reverse('training:vista_previa_certificado', kwargs={'plantilla_id': obj.pk})
+        return format_html(
+            '<a class="button" href="{}" target="_blank" style="'
+            'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); '
+            'color: white; '
+            'padding: 6px 12px; '
+            'border-radius: 4px; '
+            'text-decoration: none; '
+            'display: inline-block; '
+            'font-weight: 600; '
+            'font-size: 12px;">'
+            '<i class="fas fa-eye"></i> Ver Vista Previa'
+            '</a>',
+            url
+        )
+    ver_vista_previa.short_description = 'Acciones'
+    ver_vista_previa.allow_tags = True
+
+    def vista_previa_info(self, obj):
+        """Muestra información de ayuda y botón de vista previa en el formulario de edición"""
+        from django.urls import reverse
+        from django.utils.html import format_html
+
+        if obj.pk:
+            url = reverse('training:vista_previa_certificado', kwargs={'plantilla_id': obj.pk})
+            return format_html(
+                '<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 10px 0;">'
+                '<p style="margin: 0 0 10px 0; color: #1565c0; font-weight: bold;">'
+                '<i class="fas fa-info-circle"></i> Vista Previa del Certificado</p>'
+                '<p style="margin: 0 0 15px 0; color: #555;">Puedes ver cómo se verá el certificado con los datos configurados. '
+                'Se mostrará con información de ejemplo.</p>'
+                '<a href="{}" target="_blank" class="button" style="'
+                'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); '
+                'color: white; '
+                'padding: 10px 20px; '
+                'border-radius: 4px; '
+                'text-decoration: none; '
+                'display: inline-block; '
+                'font-weight: 600;">'
+                '<i class="fas fa-eye"></i> Abrir Vista Previa en Nueva Pestaña'
+                '</a>'
+                '</div>',
+                url
+            )
+        else:
+            return format_html(
+                '<div style="background: #fff3e0; padding: 15px; border-radius: 8px;">'
+                '<p style="margin: 0; color: #e65100;">'
+                '<i class="fas fa-info-circle"></i> Guarda la plantilla primero para ver la vista previa'
+                '</p>'
+                '</div>'
+            )
+    vista_previa_info.short_description = ''

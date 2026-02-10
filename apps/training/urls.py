@@ -41,6 +41,8 @@ urlpatterns = [
 
     # Certificados
     path('mis-certificados/', MisCertificadosView.as_view(), name='mis_certificados'),
+    path('certificado/<uuid:pk>/descargar/', views.descargar_certificado, name='descargar_certificado'),
+    path('certificado/plantilla/<int:plantilla_id>/vista-previa/', views.vista_previa_certificado, name='vista_previa_certificado'),
     
     # Validación de inscripciones
     path('inscripcion/<uuid:pk>/aprobar-solicitud/', views.aprobar_solicitud_inscripcion, name='aprobar_solicitud_inscripcion'),

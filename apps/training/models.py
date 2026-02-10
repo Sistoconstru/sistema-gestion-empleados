@@ -9,6 +9,15 @@ import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
+from custom_storage.media import MediaStorage
+from .utils import (
+    get_certificado_externo_upload_path,
+    get_certificado_generado_upload_path,
+    get_plantilla_logo_upload_path,
+    get_plantilla_firma_upload_path,
+    get_plantilla_firma_rrhh_upload_path,
+    get_plantilla_fondo_upload_path
+)
 
 User = get_user_model()
 
@@ -687,12 +696,34 @@ class InscripcionCapacitacion(models.Model):
     
     # Certificación externa (NUEVOS CAMPOS)
     certificado_externo = models.FileField(
-        upload_to='capacitaciones/certificados/', 
+        upload_to=get_certificado_externo_upload_path,
+        storage=MediaStorage(),
         blank=True,
         help_text="Certificado obtenido del proveedor externo"
     )
     fecha_certificado_externo = models.DateField(null=True, blank=True)
     validado_por_admin = models.BooleanField(default=False)
+
+    # Certificación generada automáticamente
+    numero_certificado = models.CharField(
+        max_length=50,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Identificador único del certificado (ej: CERT-2025-001)"
+    )
+    certificado_generado = models.FileField(
+        upload_to=get_certificado_generado_upload_path,
+        storage=MediaStorage(),
+        null=True,
+        blank=True,
+        help_text="Certificado PDF generado automáticamente por el sistema"
+    )
+    fecha_emision_certificado = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Fecha en que se emitió el certificado"
+    )
     
     # Observaciones
     observaciones_empleado = models.TextField(blank=True)
@@ -725,6 +756,54 @@ class InscripcionCapacitacion(models.Model):
             'cancelado': 'dark'
         }
         return colores.get(self.estado, 'secondary')
+
+    def generar_numero_certificado(self):
+        """Genera un número único de certificado"""
+        from django.utils import timezone
+        año = timezone.now().year
+        # Contar certificados de esta capacitación en este año
+        count = InscripcionCapacitacion.objects.filter(
+            capacitacion=self.capacitacion,
+            estado='aprobado',
+            numero_certificado__isnull=False,
+            fecha_emision_certificado__year=año
+        ).count()
+        self.numero_certificado = f"CERT-{año}-{self.capacitacion.codigo}-{count+1:04d}"
+        return self.numero_certificado
+
+    def puede_generar_certificado(self):
+        """Verifica si cumple condiciones para generar certificado"""
+        if self.estado != 'aprobado':
+            return False
+        # Verificar si ya tiene certificado generado
+        if self.certificado_generado:
+            return False
+        # IMPORTANTE: Solo capacitaciones LIBRES generan certificado
+        # Las OBLIGATORIAS (por cargo) y de INDUCCION NO generan certificado
+        if self.capacitacion.tipo:
+            tipo_codigo = self.capacitacion.tipo.codigo
+            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
+                return False
+        # Verificar nota mínima
+        if hasattr(self.capacitacion, 'plantilla_certificado'):
+            plantilla = self.capacitacion.plantilla_certificado
+            if self.puntaje_final and self.puntaje_final >= plantilla.nota_minima_certificado:
+                return True
+        return False
+
+    def puede_descargar_certificado(self):
+        """Verifica si el certificado puede ser descargado"""
+        # Solo capacitaciones LIBRES y EXTERNAS tienen certificado descargable
+        # Las OBLIGATORIAS e INDUCCION NO tienen certificado
+        if self.capacitacion.tipo:
+            tipo_codigo = self.capacitacion.tipo.codigo
+            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
+                return False
+
+        return (
+            self.estado == 'aprobado' and
+            (self.certificado_generado or self.certificado_externo)
+        )
 
 class ProgresoCapacitacion(models.Model):
     """Progreso de empleados en capacitaciones - MEJORADO"""
@@ -761,5 +840,121 @@ class ProgresoCapacitacion(models.Model):
         unique_together = ['inscripcion', 'contenido']
         verbose_name = 'Progreso de Capacitación'
         verbose_name_plural = 'Progresos de Capacitación'
+
+
+class CertificadoPlantilla(models.Model):
+    """Plantilla de certificado para cada capacitación"""
+
+    capacitacion = models.OneToOneField(
+        Capacitacion,
+        on_delete=models.CASCADE,
+        related_name='plantilla_certificado',
+        help_text="Capacitación a la que pertenece esta plantilla"
+    )
+
+    # Contenido del certificado
+    titulo_certificado = models.CharField(
+        max_length=200,
+        default="El Area de: ",
+        help_text="Título principal del certificado"
+    )
+    texto_superior = models.TextField(
+        default="Certifica que ",
+        help_text="Texto que aparece antes del nombre del empleado"
+    )
+    texto_inferior = models.TextField(
+        default="Ha completado satisfactoriamente la capacitación en: , la cual se dio de forma virtual por medio de la plataforma de SIGHU",
+        help_text="Texto que aparece después del nombre del empleado"
+    )
+
+    # Elementos visuales
+    logo = models.ImageField(
+        upload_to=get_plantilla_logo_upload_path,
+        storage=MediaStorage(),
+        blank=True,
+        null=True,
+        help_text="Logo de la empresa (opcional)"
+    )
+    imagen_fondo = models.ImageField(
+        upload_to=get_plantilla_fondo_upload_path,
+        storage=MediaStorage(),
+        blank=True,
+        null=True,
+        help_text="Imagen de fondo decorativa con arabescos/marcos ornamentales (opcional)"
+    )
+    firma_responsable = models.ImageField(
+        upload_to=get_plantilla_firma_upload_path,
+        storage=MediaStorage(),
+        blank=True,
+        null=True,
+        help_text="Imagen de la firma del responsable (opcional)"
+    )
+    nombre_responsable = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Nombre de quien firma el certificado"
+    )
+    cargo_responsable = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Cargo de quien firma el certificado (creador de la capacitación)"
+    )
+
+    # Firma de Recursos Humanos
+    firma_rrhh = models.ImageField(
+        upload_to=get_plantilla_firma_rrhh_upload_path,
+        storage=MediaStorage(),
+        blank=True,
+        null=True,
+        help_text="Imagen de la firma del Director de RRHH (opcional)"
+    )
+    nombre_rrhh = models.CharField(
+        max_length=200,
+        blank=True,
+        default="Director de Recursos Humanos",
+        help_text="Nombre del Director de RRHH"
+    )
+    cargo_rrhh = models.CharField(
+        max_length=200,
+        blank=True,
+        default="Director de Recursos Humanos",
+        help_text="Cargo del responsable de RRHH"
+    )
+
+    # Configuración
+    incluir_calificacion = models.BooleanField(
+        default=True,
+        help_text="Mostrar la calificación en el certificado"
+    )
+    incluir_duracion = models.BooleanField(
+        default=True,
+        help_text="Mostrar la duración de la capacitación"
+    )
+    nota_minima_certificado = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=70.0,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Nota mínima para generar el certificado automáticamente"
+    )
+
+    # Auditoría
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    creado_por = models.ForeignKey(
+        'authentication.Usuario',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='plantillas_certificados_creadas'
+    )
+
+    class Meta:
+        db_table = 'certificados_plantillas'
+        verbose_name = 'Plantilla de Certificado'
+        verbose_name_plural = 'Plantillas de Certificados'
+
+    def __str__(self):
+        return f"Plantilla de certificado: {self.capacitacion.nombre}"
 
 

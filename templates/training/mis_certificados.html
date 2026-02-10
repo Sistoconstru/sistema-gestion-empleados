@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Certificados | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .certificados-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .certificados-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    .certificados-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    .estadisticas-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .estadistica-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid;
+    }
+    .estadistica-card.total {
+        border-left-color: #667eea;
+    }
+    .estadistica-card.horas {
+        border-left-color: #f093fb;
+    }
+    .estadistica-card.promedio {
+        border-left-color: #4facfe;
+    }
+    .estadistica-card.tipos {
+        border-left-color: #43e97b;
+    }
+    .estadistica-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    .estadistica-valor {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0.5rem 0;
+    }
+    .estadistica-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .certificados-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+    .certificado-card {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .certificado-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .certificado-header {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 1.5rem;
+        position: relative;
+    }
+    .certificado-numero {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+    .certificado-titulo {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin: 0;
+        line-height: 1.3;
+    }
+    .certificado-icon {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 2rem;
+        opacity: 0.3;
+    }
+    .certificado-body {
+        padding: 1.5rem;
+    }
+    .certificado-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .certificado-info i {
+        width: 24px;
+        margin-right: 0.5rem;
+        color: #667eea;
+    }
+    .certificado-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+    }
+    .badge-interna {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+    .badge-externa {
+        background-color: #f3e5f5;
+        color: #7b1fa2;
+    }
+    .certificado-footer {
+        padding: 1rem 1.5rem;
+        background-color: #f9f9f9;
+        border-top: 1px solid #eee;
+    }
+    .btn-descargar {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .btn-descargar:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 0.5rem;
+    }
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #ddd;
+        margin-bottom: 1rem;
+    }
+    .empty-state h3 {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    .empty-state p {
+        color: #999;
+        margin-bottom: 2rem;
+    }
+    .calificacion-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .calificacion-excelente {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+    }
+    .calificacion-buena {
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+    .calificacion-aprobado {
+        background-color: #fff3e0;
+        color: #e65100;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="certificados-header">
+        <h1><i class="fas fa-award me-2"></i>Mis Certificados</h1>
+        <p>Aquí puedes ver y descargar todos tus certificados de capacitaciones completadas</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+    </div>
+    {% else %}
+
+    <!-- Estadísticas -->
+    {% if total_certificados > 0 %}
+    <div class="estadisticas-container">
+        <div class="estadistica-card total">
+            <div class="estadistica-icon">
+                <i class="fas fa-certificate" style="color: #667eea;"></i>
+            </div>
+            <div class="estadistica-valor">{{ total_certificados }}</div>
+            <div class="estadistica-label">Certificados Obtenidos</div>
+        </div>
+
+        <div class="estadistica-card horas">
+            <div class="estadistica-icon">
+                <i class="fas fa-clock" style="color: #f093fb;"></i>
+            </div>
+            <div class="estadistica-valor">{{ total_horas }}</div>
+            <div class="estadistica-label">Horas de Capacitación</div>
+        </div>
+
+        <div class="estadistica-card promedio">
+            <div class="estadistica-icon">
+                <i class="fas fa-star" style="color: #4facfe;"></i>
+            </div>
+            <div class="estadistica-valor">{{ promedio_calificacion }}</div>
+            <div class="estadistica-label">Promedio de Calificaciones</div>
+        </div>
+
+        <div class="estadistica-card tipos">
+            <div class="estadistica-icon">
+                <i class="fas fa-layer-group" style="color: #43e97b;"></i>
+            </div>
+            <div class="estadistica-valor">{{ certificados_internos }}/{{ certificados_externos }}</div>
+            <div class="estadistica-label">Internas / Externas</div>
+        </div>
+    </div>
+
+    <!-- Grid de Certificados -->
+    <div class="certificados-grid">
+        {% for cert in certificados %}
+        <div class="certificado-card">
+            <div class="certificado-header">
+                <div class="certificado-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <div class="certificado-numero">
+                    <i class="fas fa-hashtag"></i> {{ cert.numero }}
+                </div>
+                <h3 class="certificado-titulo">{{ cert.capacitacion.nombre }}</h3>
+            </div>
+
+            <div class="certificado-body">
+                <div class="certificado-info">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Emitido el {{ cert.fecha_emision|date:"d/m/Y" }}</span>
+                </div>
+
+                <div class="certificado-info">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ cert.duracion }} horas de capacitación</span>
+                </div>
+
+                <div class="certificado-info">
+                    <i class="fas fa-folder"></i>
+                    <span>{{ cert.categoria }}</span>
+                </div>
+
+                <div class="certificado-info">
+                    <i class="fas fa-star"></i>
+                    <span>
+                        Calificación:
+                        {% if cert.puntaje >= 90 %}
+                            <span class="calificacion-badge calificacion-excelente">{{ cert.puntaje }} - Excelente</span>
+                        {% elif cert.puntaje >= 75 %}
+                            <span class="calificacion-badge calificacion-buena">{{ cert.puntaje }} - Buena</span>
+                        {% else %}
+                            <span class="calificacion-badge calificacion-aprobado">{{ cert.puntaje }} - Aprobado</span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <span class="certificado-badge {% if cert.tipo == 'Interna' %}badge-interna{% else %}badge-externa{% endif %}">
+                        <i class="fas fa-tag me-1"></i>{{ cert.tipo }}
+                    </span>
+                    {% if cert.tipo == 'Externa' %}
+                        <span class="certificado-badge badge-externa" style="background-color: #e8f5e9; color: #2e7d32;">
+                            <i class="fas fa-building me-1"></i>{{ cert.origen }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="certificado-footer">
+                <a href="{% url 'training:descargar_certificado' cert.inscripcion.pk %}"
+                   class="btn btn-descargar"
+                   target="_blank">
+                    <i class="fas fa-download me-2"></i>Descargar Certificado
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Estado vacío -->
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-award"></i>
+        </div>
+        <h3>Aún no tienes certificados</h3>
+        <p>Completa capacitaciones y aprueba las evaluaciones para obtener tus certificados</p>
+        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-graduation-cap me-2"></i>Ver Mis Capacitaciones
+        </a>
+    </div>
+    {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}
