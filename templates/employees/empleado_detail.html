@@ -219,10 +219,10 @@
                 <div class="mb-3">
                     <label class="text-muted small" for="jefe-directo-display">Jefe Inmediato</label>
                     <div class="fw-bold" id="jefe-directo-display">
-                        {% if empleado.jefe_directo %}
-                            <a href="{% url 'employees:empleado_detail' empleado.jefe_directo.pk %}" class="text-decoration-none">
+                        {% if cargo_actual and cargo_actual.jefe_directo %}
+                            <a href="{% url 'employees:empleado_detail' cargo_actual.jefe_directo.pk %}" class="text-decoration-none">
                                 <i class="fas fa-user-tie me-1 text-primary"></i>
-                                {{ empleado.jefe_directo.nombre_completo }}
+                                {{ cargo_actual.jefe_directo.nombre_completo }}
                             </a>
                         {% else %}
                             <span class="text-muted">
