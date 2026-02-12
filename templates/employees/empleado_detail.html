@@ -215,7 +215,24 @@
                     {% endif %}
                 </div>
                 {% endif %}
-                
+
+                <div class="mb-3">
+                    <label class="text-muted small" for="jefe-directo-display">Jefe Inmediato</label>
+                    <div class="fw-bold" id="jefe-directo-display">
+                        {% if empleado.jefe_directo %}
+                            <a href="{% url 'employees:empleado_detail' empleado.jefe_directo.pk %}" class="text-decoration-none">
+                                <i class="fas fa-user-tie me-1 text-primary"></i>
+                                {{ empleado.jefe_directo.nombre_completo }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">
+                                <i class="fas fa-user-slash me-1"></i>
+                                Sin jefe asignado
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
                 {% if not empleado.fecha_nacimiento and not empleado.ciudad_nacimiento %}
                 <div class="text-center text-muted py-3">
                     <i class="fas fa-info-circle fa-2x mb-2"></i>
