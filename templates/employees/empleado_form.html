@@ -168,7 +168,10 @@
                                     <option value="">-- Seleccione jefe directo --</option>
                                     {% if form.jefe_directo.field.queryset %}
                                         {% for jefe in form.jefe_directo.field.queryset %}
-                                            <option value="{{ jefe.pk }}" {% if form.jefe_directo.value == jefe.pk|stringformat:"s" %}selected{% endif %}>
+                                            <option value="{{ jefe.pk }}"
+                                                {% if form.jefe_directo.value %}
+                                                    {% if form.jefe_directo.value|stringformat:"s" == jefe.pk|stringformat:"s" or form.jefe_directo.value == jefe.pk %}selected{% endif %}
+                                                {% elif form.jefe_directo.initial.pk == jefe.pk %}selected{% endif %}>
                                                 {{ jefe.nombre_completo }}
                                             </option>
                                         {% endfor %}
@@ -643,10 +646,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Cargar jefes al iniciar si hay un cargo seleccionado
         if (cargoSelect.value) {
-            // Si ya hay opciones en el select (recargado por error de validación), mostrar el contenedor
-            if (jefeDirectoSelect.options.length > 1) {
+            // Si ya hay un jefe directo seleccionado (modo edición), mostrar el contenedor
+            if (jefeDirectoSelect.value) {
                 jefeDirectoContenedor.style.display = '';
-            } else {
+                console.log('Jefe directo ya asignado, mostrando campo');
+            }
+            // Si ya hay opciones en el select (recargado por error de validación o desde servidor), mostrar el contenedor
+            else if (jefeDirectoSelect.options.length > 1) {
+                jefeDirectoContenedor.style.display = '';
+                console.log('Jefes potenciales ya cargados, mostrando campo');
+            }
+            // Si no hay opciones, cargarlas vía AJAX
+            else {
                 cargarJefesPotenciales(cargoSelect.value);
             }
         }

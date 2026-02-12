@@ -166,13 +166,22 @@ class EmpleadoForm(forms.ModelForm):
                 cargo_actual = self.instance.historialcargo_set.filter(activo=True).first()
                 if cargo_actual:
                     self.fields['cargo'].initial = cargo_actual.cargo
-                    # Cargar jefe directo si existe
-                    if cargo_actual.jefe_directo:
-                        self.fields['jefe_directo'].initial = cargo_actual.jefe_directo
                     # Cargar lista de posibles jefes para el cargo actual
                     if cargo_actual.cargo and cargo_actual.cargo.cargo_jefe:
                         jefes_potenciales = self._obtener_jefes_potenciales(cargo_actual.cargo)
+                        # IMPORTANTE: Si ya tiene un jefe directo asignado, asegurarse de que esté en el queryset
+                        # aunque ya no sea uno de los "jefes potenciales" actuales
+                        if cargo_actual.jefe_directo:
+                            # Verificar si el jefe actual está en los jefes potenciales
+                            if not jefes_potenciales.filter(pk=cargo_actual.jefe_directo.pk).exists():
+                                # Si no está, agregarlo al queryset
+                                jefes_potenciales = jefes_potenciales | Empleado.objects.filter(pk=cargo_actual.jefe_directo.pk)
+                            self.fields['jefe_directo'].initial = cargo_actual.jefe_directo
                         self.fields['jefe_directo'].queryset = jefes_potenciales
+                    elif cargo_actual.jefe_directo:
+                        # Si no hay cargo_jefe pero tiene jefe asignado manualmente, mostrarlo
+                        self.fields['jefe_directo'].initial = cargo_actual.jefe_directo
+                        self.fields['jefe_directo'].queryset = Empleado.objects.filter(pk=cargo_actual.jefe_directo.pk)
                 # Inicializar departamento según la ciudad actual
                 ciudad_actual = self.instance.ciudad_nacimiento
                 if ciudad_actual:
