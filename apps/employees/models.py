@@ -239,13 +239,40 @@ class HistorialCargo(BaseModel):
         if self.activo:
             # Desactivar otros cargos activos del mismo empleado
             HistorialCargo.objects.filter(
-                empleado=self.empleado, 
+                empleado=self.empleado,
                 activo=True
             ).exclude(pk=self.pk if self.pk else None).update(
                 activo=False,
                 fecha_fin=self.fecha_inicio
             )
-        
+
+            # Asignar jefe_directo automáticamente si no está asignado manualmente
+            # Solo si el cargo tiene un cargo_jefe definido
+            if not self.jefe_directo and self.cargo.cargo_jefe:
+                # Buscar empleados activos en el cargo_jefe
+                empleados_en_cargo_jefe = HistorialCargo.objects.filter(
+                    cargo=self.cargo.cargo_jefe,
+                    activo=True
+                ).select_related('empleado')
+
+                # Si hay exactamente UN empleado en el cargo jefe, asignarlo
+                if empleados_en_cargo_jefe.count() == 1:
+                    self.jefe_directo = empleados_en_cargo_jefe.first().empleado
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.info(
+                        f"Jefe directo asignado automáticamente: {self.empleado.nombre_completo} "
+                        f"→ {self.jefe_directo.nombre_completo} "
+                        f"(Cargo: {self.cargo.nombre} → {self.cargo.cargo_jefe.nombre})"
+                    )
+                elif empleados_en_cargo_jefe.count() > 1:
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        f"No se asignó jefe directo automáticamente para {self.empleado.nombre_completo}: "
+                        f"Hay {empleados_en_cargo_jefe.count()} empleados en el cargo jefe '{self.cargo.cargo_jefe.nombre}'"
+                    )
+
         super().save(*args, **kwargs)
     
     def __str__(self):
