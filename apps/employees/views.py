@@ -20,7 +20,7 @@ from django.db.models import Q, Count, Avg, Prefetch, Sum
 from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.db import transaction, IntegrityError
@@ -741,6 +741,79 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                 f'Error al actualizar el empleado: {str(e)}'
             )
             return self.form_invalid(form)
+
+
+@login_required
+@require_http_methods(["POST"])
+def empleado_inactivar(request, pk):
+    """
+    Vista para inactivar un empleado.
+    Cambia el estado del empleado a INACTIVO y desactiva sus cargos.
+    """
+    try:
+        empleado = get_object_or_404(Empleado, pk=pk)
+
+        # Verificar permisos
+        if not request.user.has_perm('employees.change_empleado'):
+            return JsonResponse({
+                'success': False,
+                'message': 'No tienes permisos para inactivar empleados'
+            }, status=403)
+
+        # Verificar que no esté ya inactivo
+        if empleado.estado.codigo.lower() == 'inactivo':
+            return JsonResponse({
+                'success': False,
+                'message': 'El empleado ya está inactivo'
+            }, status=400)
+
+        with transaction.atomic():
+            # Buscar el estado INACTIVO
+            estado_inactivo = EstadoEmpleado.objects.filter(
+                codigo__iexact='INACTIVO'
+            ).first()
+
+            if not estado_inactivo:
+                # Si no existe, intentar crear el estado INACTIVO
+                estado_inactivo = EstadoEmpleado.objects.create(
+                    codigo='INACTIVO',
+                    nombre='Inactivo'
+                )
+
+            # Cambiar estado del empleado
+            empleado.estado = estado_inactivo
+            empleado.save()
+
+            # Desactivar todos los cargos activos del empleado
+            HistorialCargo.objects.filter(
+                empleado=empleado,
+                activo=True
+            ).update(
+                activo=False,
+                fecha_fin=timezone.now().date()
+            )
+
+            # Desactivar usuario (no puede acceder al sistema)
+            if empleado.usuario:
+                empleado.usuario.is_active = False
+                empleado.usuario.save()
+
+            logger.info(
+                f"Empleado inactivado: {empleado.nombre_completo} "
+                f"(ID: {empleado.pk}) por {request.user.username}"
+            )
+
+        return JsonResponse({
+            'success': True,
+            'message': f'Empleado {empleado.nombre_completo} inactivado exitosamente'
+        })
+
+    except Exception as e:
+        logger.error(f"Error al inactivar empleado {pk}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Error al inactivar empleado: {str(e)}'
+        }, status=500)
 
 
 @login_required

@@ -15,6 +15,7 @@ urlpatterns = [
     path('crear/', views.EmpleadoCreateView.as_view(), name='empleado_create'),
     path('<uuid:pk>/', views.EmpleadoDetailView.as_view(), name='empleado_detail'),
     path('<uuid:pk>/editar/', views.EmpleadoUpdateView.as_view(), name='empleado_edit'),
+    path('<uuid:pk>/inactivar/', views.empleado_inactivar, name='empleado_inactivar'),
 
     # Exportaciones individuales
     path('<uuid:pk>/export/', views.empleado_export_individual, name='empleado_export_individual'),
