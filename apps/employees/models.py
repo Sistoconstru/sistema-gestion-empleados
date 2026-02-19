@@ -420,6 +420,29 @@ class Producto(BaseModel):
 
         return f"{max(disponible, 0)} de {self.cantidad_disponible}"
 
+    def get_calificacion_promedio(self):
+        """Calcula el promedio de calificaciones que ha recibido este producto/vendedor"""
+        from django.db.models import Avg
+        resultado = self.ventas.filter(
+            estado='completada',
+            calificacion_comprador__isnull=False
+        ).aggregate(promedio=Avg('calificacion_comprador'))
+        return round(resultado['promedio'], 1) if resultado['promedio'] else None
+
+    def get_total_calificaciones(self):
+        """Cuenta cuántas calificaciones ha recibido este producto/vendedor"""
+        return self.ventas.filter(
+            estado='completada',
+            calificacion_comprador__isnull=False
+        ).count()
+
+    def get_calificaciones_recientes(self, limit=5):
+        """Obtiene las calificaciones más recientes con comentarios"""
+        return self.ventas.filter(
+            estado='completada',
+            calificacion_comprador__isnull=False
+        ).select_related('comprador').order_by('-fecha_completada')[:limit]
+
 
 class Reserva(BaseModel):
     """Reservas/separaciones de productos por comprador"""

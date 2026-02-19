@@ -259,3 +259,59 @@ def multiply(value, factor):
         return float(value) * float(factor)
     except (ValueError, TypeError):
         return 0
+
+
+@register.filter
+def format_price(value):
+    """
+    Formatea un número para mostrar como precio en pesos colombianos.
+    Añade separadores de miles usando puntos.
+
+    Ejemplo: 1500000 -> 1.500.000
+    """
+    try:
+        # Convertir a entero para eliminar decimales
+        value = int(float(value))
+        # Formatear como string con separadores de miles
+        return f"{value:,}".replace(",", ".")
+    except (ValueError, TypeError):
+        return value
+
+
+@register.filter
+def total_venta(venta):
+    """
+    Calcula el total pagado en una venta considerando la cantidad solicitada.
+
+    Args:
+        venta: Objeto Venta del marketplace
+
+    Returns:
+        Total pagado (precio_final * cantidad_solicitada)
+    """
+    try:
+        cantidad = 1
+        if hasattr(venta, 'reserva_origen') and venta.reserva_origen:
+            cantidad = venta.reserva_origen.cantidad_solicitada
+        return venta.precio_final * cantidad
+    except (AttributeError, TypeError, ValueError):
+        return venta.precio_final if hasattr(venta, 'precio_final') else 0
+
+
+@register.filter
+def cantidad_venta(venta):
+    """
+    Obtiene la cantidad de unidades en una venta.
+
+    Args:
+        venta: Objeto Venta del marketplace
+
+    Returns:
+        Cantidad de unidades compradas
+    """
+    try:
+        if hasattr(venta, 'reserva_origen') and venta.reserva_origen:
+            return venta.reserva_origen.cantidad_solicitada
+        return 1
+    except (AttributeError, TypeError):
+        return 1

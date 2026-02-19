@@ -59,6 +59,7 @@ urlpatterns = [
     path('marketplace/mis-compras/', views.MisComprasView.as_view(), name='mis_compras'),
     path('marketplace/productos/<uuid:producto_pk>/comprar/', views.ComprarProductoView.as_view(), name='comprar_producto'),
     path('marketplace/reservas/<uuid:reserva_id>/confirmar-entrega/', views.confirmar_entrega_reserva, name='confirmar_entrega_reserva'),
+    path('marketplace/ventas/<uuid:venta_id>/calificar/', views.calificar_venta, name='calificar_venta'),
 
     # =============================================================================
     # MARKETPLACE - SUBASTAS

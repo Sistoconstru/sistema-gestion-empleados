@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load employee_tags %}
 
 {% block title %}Mis Compras | Marketplace | SIGHU{% endblock %}
 
@@ -160,7 +161,7 @@
         <div class="col-md-4">
             <div class="card text-center">
                 <div class="card-body">
-                    <h3 class="text-primary"><i class="fas fa-dollar-sign me-2"></i>{{ total_gastado|floatformat:0 }}</h3>
+                    <h3 class="text-primary"><i class="fas fa-dollar-sign me-2"></i>${{ total_gastado|format_price }}</h3>
                     <p class="mb-0 text-muted">Total Gastado (COP)</p>
                 </div>
             </div>
@@ -307,8 +308,20 @@
                 <!-- Detalles -->
                 <div class="compra-details">
                     <div class="detail-item">
-                        <div class="detail-label">Precio</div>
-                        <div class="detail-value precio">${{ venta.precio|floatformat:0 }}</div>
+                        <div class="detail-label">Cantidad</div>
+                        <div class="detail-value">
+                            {{ venta|cantidad_venta }} unidad{{ venta|cantidad_venta|pluralize:"es" }}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Precio Unit.</div>
+                        <div class="detail-value">${{ venta.precio_final|format_price }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total Pagado</div>
+                        <div class="detail-value precio">
+                            ${{ venta|total_venta|format_price }}
+                        </div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Categoría</div>
@@ -360,7 +373,7 @@
                         <i class="fas fa-comments me-1"></i>Contactar Vendedor
                     </a>
                     {% if venta.estado == 'completada' and not venta.calificacion_comprador %}
-                    <button type="button" class="btn btn-sm btn-warning" onclick="mostrarFormCalificacion({{ venta.pk }})">
+                    <button type="button" class="btn btn-sm btn-warning" onclick="mostrarFormCalificacion('{{ venta.pk }}')">
                         <i class="fas fa-star me-1"></i>Calificar
                     </button>
                     {% endif %}
@@ -429,10 +442,220 @@
     {% endif %}
 </div>
 
+<!-- Modal de Calificación -->
+<div class="modal fade" id="modalCalificacion" tabindex="-1" aria-labelledby="modalCalificacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="modalCalificacionLabel">
+                    <i class="fas fa-star me-2"></i>Calificar Compra
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCalificacion">
+                    {% csrf_token %}
+                    <input type="hidden" id="ventaIdCalificacion" name="venta_id">
+
+                    <div class="mb-4 text-center">
+                        <label class="form-label fw-bold">¿Cómo fue tu experiencia?</label>
+                        <div id="estrellas-calificacion" class="d-flex justify-content-center gap-2 mb-2">
+                            <i class="fas fa-star estrella-calificar" data-rating="1" style="font-size: 2.5rem; cursor: pointer; color: #ddd;"></i>
+                            <i class="fas fa-star estrella-calificar" data-rating="2" style="font-size: 2.5rem; cursor: pointer; color: #ddd;"></i>
+                            <i class="fas fa-star estrella-calificar" data-rating="3" style="font-size: 2.5rem; cursor: pointer; color: #ddd;"></i>
+                            <i class="fas fa-star estrella-calificar" data-rating="4" style="font-size: 2.5rem; cursor: pointer; color: #ddd;"></i>
+                            <i class="fas fa-star estrella-calificar" data-rating="5" style="font-size: 2.5rem; cursor: pointer; color: #ddd;"></i>
+                        </div>
+                        <input type="hidden" id="calificacion" name="calificacion" required>
+                        <small id="mensajeCalificacion" class="text-muted"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">Comentario (opcional)</label>
+                        <textarea
+                            class="form-control"
+                            id="comentario"
+                            name="comentario"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Cuéntanos sobre tu experiencia con este producto y el vendedor..."
+                        ></textarea>
+                        <small class="text-muted">Máximo 500 caracteres</small>
+                    </div>
+
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Tu calificación ayuda a otros empleados a tomar decisiones informadas</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" id="btnEnviarCalificacion" disabled>
+                    <i class="fas fa-paper-plane me-1"></i>Enviar Calificación
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Variables globales
+let modalCalificacion;
+let calificacionSeleccionada = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar modal Bootstrap
+    modalCalificacion = new bootstrap.Modal(document.getElementById('modalCalificacion'));
+
+    // Configurar estrellas interactivas
+    const estrellas = document.querySelectorAll('.estrella-calificar');
+    const btnEnviar = document.getElementById('btnEnviarCalificacion');
+    const inputCalificacion = document.getElementById('calificacion');
+    const mensajeCalificacion = document.getElementById('mensajeCalificacion');
+
+    const mensajes = {
+        1: 'Muy insatisfecho',
+        2: 'Insatisfecho',
+        3: 'Neutral',
+        4: 'Satisfecho',
+        5: 'Muy satisfecho'
+    };
+
+    // Efecto hover en estrellas
+    estrellas.forEach((estrella, index) => {
+        estrella.addEventListener('mouseenter', function() {
+            const rating = this.getAttribute('data-rating');
+            actualizarEstrellas(rating, false);
+        });
+
+        estrella.addEventListener('click', function() {
+            calificacionSeleccionada = parseInt(this.getAttribute('data-rating'));
+            inputCalificacion.value = calificacionSeleccionada;
+            actualizarEstrellas(calificacionSeleccionada, true);
+            mensajeCalificacion.textContent = mensajes[calificacionSeleccionada];
+            btnEnviar.disabled = false;
+        });
+    });
+
+    // Restaurar estrellas al salir del hover
+    document.getElementById('estrellas-calificacion').addEventListener('mouseleave', function() {
+        actualizarEstrellas(calificacionSeleccionada, true);
+    });
+
+    // Enviar calificación por AJAX
+    btnEnviar.addEventListener('click', function() {
+        const ventaId = document.getElementById('ventaIdCalificacion').value;
+        const calificacion = document.getElementById('calificacion').value;
+        const comentario = document.getElementById('comentario').value;
+
+        if (!calificacion || calificacion < 1 || calificacion > 5) {
+            alert('Por favor selecciona una calificación');
+            return;
+        }
+
+        // Deshabilitar botón mientras se envía
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Enviando...';
+
+        // Obtener CSRF token
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Enviar por AJAX
+        fetch(`/empleados/marketplace/ventas/${ventaId}/calificar/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken
+            },
+            body: new URLSearchParams({
+                'calificacion': calificacion,
+                'comentario': comentario
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Cerrar modal
+                modalCalificacion.hide();
+
+                // Mostrar mensaje de éxito
+                mostrarMensajeExito('¡Gracias por tu calificación!');
+
+                // Recargar página para actualizar UI
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                alert('Error: ' + (data.message || 'No se pudo guardar la calificación'));
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Enviar Calificación';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al enviar la calificación. Por favor intenta nuevamente.');
+            btnEnviar.disabled = false;
+            btnEnviar.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Enviar Calificación';
+        });
+    });
+
+    // Limpiar modal al cerrar
+    document.getElementById('modalCalificacion').addEventListener('hidden.bs.modal', function() {
+        resetearFormulario();
+    });
+});
+
 function mostrarFormCalificacion(ventaId) {
-    // TODO: Implementar modal/formulario de calificación
-    alert('Funcionalidad de calificación próximamente');
+    // Establecer ID de venta
+    document.getElementById('ventaIdCalificacion').value = ventaId;
+
+    // Resetear formulario
+    resetearFormulario();
+
+    // Mostrar modal
+    modalCalificacion.show();
+}
+
+function actualizarEstrellas(rating, permanente) {
+    const estrellas = document.querySelectorAll('.estrella-calificar');
+    estrellas.forEach((estrella, index) => {
+        const ratingEstrella = parseInt(estrella.getAttribute('data-rating'));
+        if (ratingEstrella <= rating) {
+            estrella.style.color = '#ffc107'; // Dorado
+        } else {
+            estrella.style.color = '#ddd'; // Gris
+        }
+    });
+}
+
+function resetearFormulario() {
+    calificacionSeleccionada = 0;
+    document.getElementById('calificacion').value = '';
+    document.getElementById('comentario').value = '';
+    document.getElementById('mensajeCalificacion').textContent = '';
+    document.getElementById('btnEnviarCalificacion').disabled = true;
+    document.getElementById('btnEnviarCalificacion').innerHTML = '<i class="fas fa-paper-plane me-1"></i>Enviar Calificación';
+    actualizarEstrellas(0, true);
+}
+
+function mostrarMensajeExito(mensaje) {
+    // Crear y mostrar alerta de éxito temporal
+    const alerta = document.createElement('div');
+    alerta.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+    alerta.style.zIndex = '9999';
+    alerta.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alerta);
+
+    // Auto-remover después de 3 segundos
+    setTimeout(() => {
+        alerta.remove();
+    }, 3000);
 }
 </script>
 {% endblock %}

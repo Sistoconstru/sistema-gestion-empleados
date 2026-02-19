@@ -205,6 +205,86 @@
         </div>
     </div>
 
+    <!-- Calificaciones del Producto/Vendedor -->
+    {% if producto.get_total_calificaciones > 0 %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>Calificaciones y Opiniones
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Resumen de Calificación -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center border-end">
+                            <div class="mb-2">
+                                <h1 class="display-3 mb-0" style="color: #ffc107;">{{ producto.get_calificacion_promedio }}</h1>
+                                <div class="mb-2">
+                                    {% with promedio=producto.get_calificacion_promedio %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= promedio %}
+                                        <i class="fas fa-star" style="color: #ffc107; font-size: 1.5rem;"></i>
+                                        {% elif forloop.counter|add:"-0.5" <= promedio %}
+                                        <i class="fas fa-star-half-alt" style="color: #ffc107; font-size: 1.5rem;"></i>
+                                        {% else %}
+                                        <i class="far fa-star" style="color: #ddd; font-size: 1.5rem;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                </div>
+                                <p class="text-muted mb-0">
+                                    Basado en <strong>{{ producto.get_total_calificaciones }}</strong>
+                                    calificación{{ producto.get_total_calificaciones|pluralize:"es" }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h6 class="mb-3">Opiniones Recientes</h6>
+                            {% for venta in producto.get_calificaciones_recientes %}
+                            <div class="mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong>{{ venta.comprador.nombre_completo }}</strong>
+                                        <div class="mt-1">
+                                            {% for i in "12345" %}
+                                                {% if i|add:"0" <= venta.calificacion_comprador %}
+                                                <i class="fas fa-star" style="color: #ffc107;"></i>
+                                                {% else %}
+                                                <i class="far fa-star" style="color: #ddd;"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ venta.fecha_completada|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                                {% if venta.comentario_comprador %}
+                                <p class="mb-0 text-muted">
+                                    <em>"{{ venta.comentario_comprador }}"</em>
+                                </p>
+                                {% else %}
+                                <p class="mb-0 text-muted">
+                                    <em>Sin comentario</em>
+                                </p>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Aún no hay calificaciones para este producto
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Información de Separaciones (solo para vendedor) -->
     {% if es_vendedor and producto.tipo == 'venta' %}
     <div class="row mt-5">

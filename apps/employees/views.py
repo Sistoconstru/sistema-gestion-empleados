@@ -2733,7 +2733,7 @@ class MisComprasView(EmpleadoRequiredMixin, ListView):
     def get_queryset(self):
         return Venta.objects.filter(
             comprador=self.request.user.empleado
-        ).select_related('producto', 'vendedor').order_by('-fecha_venta')
+        ).select_related('producto', 'vendedor', 'reserva_origen').order_by('-fecha_venta')
 
     def get_context_data(self, **kwargs):
         from apps.employees.models import Reserva
@@ -2741,9 +2741,13 @@ class MisComprasView(EmpleadoRequiredMixin, ListView):
         queryset = self.get_queryset()
         empleado = self.request.user.empleado
 
-        # Estadísticas de compras completadas
+        # Estadísticas de compras completadas (considerando cantidades)
         context['total_compras'] = queryset.count()
-        context['total_gastado'] = sum(v.precio_final for v in queryset)
+        total_gastado = 0
+        for venta in queryset:
+            cantidad = venta.reserva_origen.cantidad_solicitada if hasattr(venta, 'reserva_origen') and venta.reserva_origen else 1
+            total_gastado += venta.precio_final * cantidad
+        context['total_gastado'] = total_gastado
         context['compras_completadas'] = queryset.filter(estado='completada').count()
 
         # Reservas activas del comprador (productos separados pendientes)
@@ -3645,6 +3649,64 @@ def confirmar_entrega_reserva(request, reserva_id):
         messages.error(request, 'Hubo un error al confirmar la entrega. Intenta de nuevo.')
 
     return redirect('employees:mis_productos')
+
+
+@login_required
+@require_http_methods(["POST"])
+def calificar_venta(request, venta_id):
+    """Vista AJAX para que el comprador califique una venta completada"""
+    from apps.employees.models import Venta
+
+    # Obtener la venta
+    venta = get_object_or_404(Venta, pk=venta_id)
+
+    # Verificar que el usuario sea empleado
+    try:
+        comprador = request.user.empleado
+    except Empleado.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Debes tener un perfil de empleado.'}, status=403)
+
+    # Verificar que el usuario sea el comprador
+    if venta.comprador.id != comprador.id:
+        return JsonResponse({'success': False, 'message': 'No tienes permiso para calificar esta venta.'}, status=403)
+
+    # Verificar que la venta esté completada
+    if venta.estado != 'completada':
+        return JsonResponse({'success': False, 'message': 'Solo puedes calificar ventas completadas.'}, status=400)
+
+    # Verificar que no haya sido calificada ya
+    if venta.calificacion_comprador:
+        return JsonResponse({'success': False, 'message': 'Ya has calificado esta venta.'}, status=400)
+
+    # Obtener datos del formulario
+    try:
+        calificacion = int(request.POST.get('calificacion'))
+        comentario = request.POST.get('comentario', '').strip()
+
+        # Validar calificación
+        if calificacion < 1 or calificacion > 5:
+            return JsonResponse({'success': False, 'message': 'La calificación debe estar entre 1 y 5.'}, status=400)
+
+        # Guardar calificación
+        venta.calificacion_comprador = calificacion
+        venta.comentario_comprador = comentario
+        venta.save()
+
+        logger.info(f'[CALIFICAR_VENTA] Venta {venta.id} calificada con {calificacion} estrellas por {comprador.nombre_completo}')
+
+        return JsonResponse({
+            'success': True,
+            'message': '¡Gracias por tu calificación!',
+            'calificacion': calificacion,
+            'comentario': comentario
+        })
+
+    except (ValueError, TypeError) as e:
+        logger.error(f'Error procesando calificación de venta {venta_id}: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Datos inválidos.'}, status=400)
+    except Exception as e:
+        logger.error(f'Error guardando calificación de venta {venta_id}: {str(e)}')
+        return JsonResponse({'success': False, 'message': 'Error al guardar la calificación.'}, status=500)
 
 
 # =============================================================================
