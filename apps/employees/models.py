@@ -183,11 +183,11 @@ class Empleado(BaseModel):
     def area_actual(self):
         """Retorna el área actual del empleado basada en su cargo"""
         try:
-            historial = self.historialcargo_set.filter(activo=True).first()
-            if historial:
-                return historial.cargo.area
+            historial = self.historialcargo_set.filter(activo=True).select_related('cargo', 'cargo__area').first()
+            if historial and historial.cargo:
+                return historial.cargo.area if hasattr(historial.cargo, 'area') else None
             return None
-        except (AttributeError, TypeError, ValueError) as e:
+        except Exception as e:
             import logging
             logger = logging.getLogger(__name__)
             logger.warning(f"Error obteniendo área actual para empleado {self.id}: {e}")
