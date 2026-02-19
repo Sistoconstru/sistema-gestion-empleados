@@ -385,8 +385,10 @@ class Producto(BaseModel):
         return f"{self.titulo} (${self.precio_inicial})" if self.precio_inicial else self.titulo
 
     def get_cantidad_reservada(self):
-        """Obtiene la cantidad de productos reservados"""
-        return self.reservas.filter(estado='activa').count()
+        """Obtiene la cantidad total de unidades reservadas (suma de cantidad_solicitada)"""
+        from django.db.models import Sum
+        resultado = self.reservas.filter(estado='activa').aggregate(total=Sum('cantidad_solicitada'))
+        return resultado['total'] or 0
 
     def get_cantidad_regalos_solicitados(self):
         """Obtiene la cantidad de regalos solicitados (pendientes o aceptados)"""
@@ -394,21 +396,21 @@ class Producto(BaseModel):
             return self.regalos.filter(estado__in=['pendiente', 'aceptado']).count()
         return 0
 
-    def tiene_disponible(self):
+    def tiene_disponible(self, cantidad_requerida=1):
         """Verifica si hay cantidad disponible para reservar o regalar"""
         if self.cantidad_disponible is None:
             return True  # Sin límite
 
-        # Contar reservas y regalos solicitados
+        # Sumar unidades ya reservadas/solicitadas
         cantidad_usada = self.get_cantidad_reservada() + self.get_cantidad_regalos_solicitados()
-        return cantidad_usada < self.cantidad_disponible
+        return (cantidad_usada + cantidad_requerida) <= self.cantidad_disponible
 
     def get_disponible_texto(self):
         """Retorna texto de disponibilidad"""
         if self.cantidad_disponible is None:
-            return "Sin límite"
+            return "Ilimitado"
 
-        # Para regalos, contar solo los regalos. Para otros, contar solo las reservas
+        # Para regalos, contar solo los regalos. Para otros, sumar unidades reservadas
         if self.tipo == 'regalo':
             regalos_solicitados = self.get_cantidad_regalos_solicitados()
             disponible = self.cantidad_disponible - regalos_solicitados
@@ -416,7 +418,7 @@ class Producto(BaseModel):
             reservadas = self.get_cantidad_reservada()
             disponible = self.cantidad_disponible - reservadas
 
-        return f"{disponible} de {self.cantidad_disponible}"
+        return f"{max(disponible, 0)} de {self.cantidad_disponible}"
 
 
 class Reserva(BaseModel):
@@ -445,6 +447,10 @@ class Reserva(BaseModel):
         choices=ESTADO_CHOICES,
         default='activa',
         help_text="Estado de la reserva"
+    )
+    cantidad_solicitada = models.PositiveIntegerField(
+        default=1,
+        help_text="Cantidad de unidades solicitadas por el comprador"
     )
     venta_asociada = models.OneToOneField(
         'Venta',

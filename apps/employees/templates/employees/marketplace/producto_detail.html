@@ -216,9 +216,10 @@
                         <i class="fas fa-shopping-cart me-2"></i>Empleados que Han Separado el Producto
                     </h5>
                     <small>
-                        Total: {{ reservas_activas|length }}
+                        <strong>{{ reservaciones_activas }}</strong> unidad{{ reservaciones_activas|pluralize:"es" }} solicitada{{ reservaciones_activas|pluralize:"s" }}
+                        ({{ reservas_activas|length }} reserva{{ reservas_activas|length|pluralize:"s" }})
                         {% if producto.cantidad_disponible %}
-                        de {{ producto.cantidad_disponible }} disponibles
+                        | {{ producto.cantidad_disponible }} total disponibles
                         {% endif %}
                     </small>
                 </div>
@@ -226,7 +227,10 @@
                     {% for reserva in reservas_activas %}
                     <div class="d-flex justify-content-between align-items-center border-bottom py-3">
                         <div>
-                            <h6 class="mb-1">{{ reserva.comprador.nombre_completo }}</h6>
+                            <h6 class="mb-1">
+                                {{ reserva.comprador.nombre_completo }}
+                                <span class="badge bg-info ms-2">{{ reserva.cantidad_solicitada }} unidad{{ reserva.cantidad_solicitada|pluralize:"es" }}</span>
+                            </h6>
                             <small class="text-muted">
                                 <i class="fas fa-calendar-check me-1"></i>Separado: {{ reserva.fecha_creacion|date:"d/m/Y H:i" }}
                             </small>

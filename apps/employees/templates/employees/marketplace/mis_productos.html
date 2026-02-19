@@ -137,6 +137,29 @@
 {% block content %}
 <div class="container-fluid mt-4">
     <!-- Header -->
+    <!-- Navegación del Marketplace -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Inicio</a></li>
+                    <li class="breadcrumb-item active">Marketplace</li>
+                </ol>
+            </nav>
+            <div class="btn-group mb-3" role="group">
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success">
+                    <i class="fas fa-shopping-bag me-1"></i>El Toldo
+                </a>
+                <a href="{% url 'employees:mis_productos' %}" class="btn btn-success">
+                    <i class="fas fa-box me-1"></i>Mis Productos
+                </a>
+                <a href="{% url 'employees:mis_compras' %}" class="btn btn-outline-success">
+                    <i class="fas fa-shopping-cart me-1"></i>Mis Compras
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
@@ -252,7 +275,9 @@
                         <div class="reservas-section" id="reservas-{{ producto.pk }}">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="mb-0">
-                                    <i class="fas fa-users me-2"></i>Empleados que han separado este producto ({{ producto.reservas.all|length }})
+                                    <i class="fas fa-users me-2"></i>Empleados que han separado este producto
+                                    <span class="badge bg-primary ms-2">{{ producto.get_cantidad_reservada }} unidad{{ producto.get_cantidad_reservada|pluralize:"es" }} total</span>
+                                    <small class="text-muted">({{ producto.reservas.all|length }} reserva{{ producto.reservas.all|length|pluralize:"s" }})</small>
                                 </h6>
                             </div>
                             {% for reserva in producto.reservas.all %}
@@ -260,6 +285,7 @@
                                 <div class="reserva-info">
                                     <div class="reserva-nombre">
                                         {{ reserva.comprador.nombre_completo }}
+                                        <span class="badge bg-info ms-1">{{ reserva.cantidad_solicitada }} unidad{{ reserva.cantidad_solicitada|pluralize:"es" }}</span>
                                         {% if reserva.estado == 'activa' %}
                                         <span class="badge bg-warning text-dark ms-2">Activa</span>
                                         {% elif reserva.estado == 'confirmada' %}

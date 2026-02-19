@@ -105,6 +105,29 @@
 
 {% block content %}
 <div class="container-fluid mt-4">
+    <!-- Navegación del Marketplace -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Inicio</a></li>
+                    <li class="breadcrumb-item active">Marketplace</li>
+                </ol>
+            </nav>
+            <div class="btn-group mb-3" role="group">
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-warning">
+                    <i class="fas fa-shopping-bag me-1"></i>El Toldo
+                </a>
+                <a href="{% url 'employees:mis_productos' %}" class="btn btn-outline-warning">
+                    <i class="fas fa-box me-1"></i>Mis Productos
+                </a>
+                <a href="{% url 'employees:mis_compras' %}" class="btn btn-warning">
+                    <i class="fas fa-shopping-cart me-1"></i>Mis Compras
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
@@ -113,7 +136,123 @@
         </div>
     </div>
 
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning"><i class="fas fa-clock me-2"></i>{{ total_reservas_activas }}</h3>
+                    <p class="mb-0 text-muted">Productos Separados</p>
+                    {% if total_unidades_reservadas %}
+                    <small class="text-muted">{{ total_unidades_reservadas }} unidad{{ total_unidades_reservadas|pluralize:"es" }} total</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success"><i class="fas fa-check-circle me-2"></i>{{ compras_completadas }}</h3>
+                    <p class="mb-0 text-muted">Compras Completadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary"><i class="fas fa-dollar-sign me-2"></i>{{ total_gastado|floatformat:0 }}</h3>
+                    <p class="mb-0 text-muted">Total Gastado (COP)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Productos Separados (Reservas Activas) -->
+    {% if reservas_activas %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-hourglass-half me-2"></i>Productos Separados Pendientes
+                    </h5>
+                    <small>Tienes {{ total_reservas_activas }} producto{{ total_reservas_activas|pluralize:"s" }} separado{{ total_reservas_activas|pluralize:"s" }} esperando confirmación del vendedor</small>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Vendedor</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th>Fecha Separación</th>
+                                    <th>Precio Unit.</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reserva in reservas_activas %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ reserva.producto.titulo }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-tag me-1"></i>{{ reserva.producto.categoria.nombre }}
+                                        </small>
+                                    </td>
+                                    <td>{{ reserva.producto.vendedor.nombre_completo }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ reserva.cantidad_solicitada }} unidad{{ reserva.cantidad_solicitada|pluralize:"es" }}</span>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-calendar-check me-1"></i>{{ reserva.fecha_creacion|date:"d/m/Y H:i" }}
+                                    </td>
+                                    <td>
+                                        {% if reserva.producto.precio_inicial %}
+                                        <span class="text-success fw-bold">${{ reserva.producto.precio_inicial|floatformat:0 }}</span>
+                                        {% else %}
+                                        <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark">{{ reserva.get_estado_display }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'employees:producto_detail' reserva.producto.pk %}" class="btn btn-sm btn-outline-primary" title="Ver producto">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'employees:separar_producto' reserva.producto.pk %}" class="btn btn-sm btn-outline-success" title="Agregar más unidades">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                        <a href="{% url 'employees:contactar_empleado' reserva.producto.vendedor.id %}" class="btn btn-sm btn-outline-info" title="Contactar vendedor">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Los productos separados tienen un período de 7 días para confirmación. Contacta al vendedor si necesitas más información.
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sección: Historial de Compras -->
     {% if compras %}
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4><i class="fas fa-history me-2"></i>Historial de Compras</h4>
+            <p class="text-muted">Transacciones completadas y en proceso</p>
+        </div>
+    </div>
     <!-- Filtros -->
     <div class="row mb-4">
         <div class="col-12">
@@ -261,14 +400,15 @@
     </div>
 
     {% else %}
-    <!-- Sin compras -->
+    <!-- Sin compras completadas -->
+    {% if not reservas_activas %}
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body empty-state">
                     <i class="fas fa-inbox"></i>
-                    <h4>No tienes compras</h4>
-                    <p class="text-muted mb-4">Comienza a explorar el Toldo y compra productos</p>
+                    <h4>No tienes compras ni productos separados</h4>
+                    <p class="text-muted mb-4">Comienza a explorar el Toldo y separa productos de tu interés</p>
                     <a href="{% url 'employees:producto_list' %}" class="btn btn-primary">
                         <i class="fas fa-shopping-bag me-2"></i>Ir al Toldo
                     </a>
@@ -276,6 +416,16 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Aún no tienes compras completadas. Tus productos separados están esperando confirmación del vendedor.
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% endif %}
 </div>
 

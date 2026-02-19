@@ -2736,11 +2736,26 @@ class MisComprasView(EmpleadoRequiredMixin, ListView):
         ).select_related('producto', 'vendedor').order_by('-fecha_venta')
 
     def get_context_data(self, **kwargs):
+        from apps.employees.models import Reserva
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        empleado = self.request.user.empleado
+
+        # Estadísticas de compras completadas
         context['total_compras'] = queryset.count()
         context['total_gastado'] = sum(v.precio_final for v in queryset)
         context['compras_completadas'] = queryset.filter(estado='completada').count()
+
+        # Reservas activas del comprador (productos separados pendientes)
+        reservas_activas = Reserva.objects.filter(
+            comprador=empleado,
+            estado='activa'
+        ).select_related('producto', 'producto__vendedor', 'producto__categoria').order_by('-fecha_creacion')
+
+        context['reservas_activas'] = reservas_activas
+        context['total_reservas_activas'] = reservas_activas.count()
+        context['total_unidades_reservadas'] = sum(r.cantidad_solicitada for r in reservas_activas)
+
         return context
 
 
@@ -3433,8 +3448,8 @@ def separar_producto_view(request, pk):
         messages.error(request, 'No puedes separar tu propio producto.')
         return redirect('employees:producto_detail', pk=pk)
 
-    # Verificar disponibilidad
-    if not producto.tiene_disponible():
+    # Verificar disponibilidad mínima de 1 unidad
+    if not producto.tiene_disponible(cantidad_requerida=1):
         messages.error(request, 'Este producto no tiene cantidad disponible para separar.')
         return redirect('employees:producto_detail', pk=pk)
 
@@ -3445,9 +3460,12 @@ def separar_producto_view(request, pk):
         estado='activa'
     ).first()
 
-    if reserva_existente:
-        messages.warning(request, 'Ya tienes una separación activa de este producto.')
-        return redirect('employees:producto_detail', pk=pk)
+    # Calcular disponible para mostrar en el formulario
+    tiene_limite = producto.cantidad_disponible is not None
+    if tiene_limite:
+        cantidad_disponible_actual = producto.cantidad_disponible - producto.get_cantidad_reservada()
+    else:
+        cantidad_disponible_actual = None
 
     # GET: mostrar formulario de advertencia
     if request.method == 'GET':
@@ -3455,6 +3473,9 @@ def separar_producto_view(request, pk):
             'producto': producto,
             'cantidad_reservada': producto.get_cantidad_reservada(),
             'disponible': producto.get_disponible_texto(),
+            'tiene_limite': tiene_limite,
+            'cantidad_disponible_actual': cantidad_disponible_actual,
+            'reserva_existente': reserva_existente,
         }
         return render(request, 'employees/marketplace/separar_producto.html', context)
 
@@ -3463,45 +3484,91 @@ def separar_producto_view(request, pk):
         confirmado = request.POST.get('confirmado') == 'true'
         acepto_terminos = request.POST.get('acepto_terminos') == 'true'
 
-        if not confirmado:
-            messages.warning(request, 'Debes confirmar la separación del producto.')
+        # Leer y validar cantidad solicitada
+        try:
+            cantidad_solicitada = int(request.POST.get('cantidad_solicitada', 1))
+            if cantidad_solicitada < 1:
+                cantidad_solicitada = 1
+        except (ValueError, TypeError):
+            cantidad_solicitada = 1
+
+        def _render_form(msg_type=None, msg=None):
+            if msg_type == 'warning':
+                messages.warning(request, msg)
+            elif msg_type == 'error':
+                messages.error(request, msg)
             context = {
                 'producto': producto,
                 'cantidad_reservada': producto.get_cantidad_reservada(),
                 'disponible': producto.get_disponible_texto(),
+                'tiene_limite': tiene_limite,
+                'cantidad_disponible_actual': cantidad_disponible_actual,
+                'cantidad_solicitada': cantidad_solicitada,
+                'reserva_existente': reserva_existente,
             }
             return render(request, 'employees/marketplace/separar_producto.html', context)
+
+        if not confirmado:
+            return _render_form('warning', 'Debes confirmar la separación del producto.')
 
         if not acepto_terminos:
-            messages.error(request, 'Debes aceptar los términos y condiciones para continuar.')
-            context = {
-                'producto': producto,
-                'cantidad_reservada': producto.get_cantidad_reservada(),
-                'disponible': producto.get_disponible_texto(),
-            }
-            return render(request, 'employees/marketplace/separar_producto.html', context)
+            return _render_form('error', 'Debes aceptar los términos y condiciones para continuar.')
+
+        # Si existe una reserva, validar disponibilidad solo para las unidades ADICIONALES
+        if reserva_existente:
+            # Validar disponibilidad para la nueva cantidad adicional
+            # (sin contar las unidades ya reservadas por este usuario)
+            cantidad_ya_reservada_usuario = reserva_existente.cantidad_solicitada
+            if tiene_limite:
+                # Total reservado por OTROS usuarios
+                otras_reservas = producto.get_cantidad_reservada() - cantidad_ya_reservada_usuario
+                disponible_para_agregar = producto.cantidad_disponible - otras_reservas
+
+                if cantidad_solicitada > disponible_para_agregar:
+                    return _render_form('error', f'No puedes agregar {cantidad_solicitada} unidades. Solo hay {disponible_para_agregar} disponibles.')
+        else:
+            # Nueva reserva: validar disponibilidad total
+            if not producto.tiene_disponible(cantidad_requerida=cantidad_solicitada):
+                unidades_disp = cantidad_disponible_actual if tiene_limite else '∞'
+                return _render_form('error', f'No hay suficiente disponibilidad. Solo quedan {unidades_disp} unidades.')
 
         try:
-            # Crear la reserva
-            reserva = Reserva.objects.create(
-                producto=producto,
-                comprador=comprador,
-                creado_por=request.user,
-                estado='activa'
-            )
+            if reserva_existente:
+                # Actualizar la reserva existente incrementando la cantidad
+                nueva_cantidad = reserva_existente.cantidad_solicitada + cantidad_solicitada
+                reserva_existente.cantidad_solicitada = nueva_cantidad
+                reserva_existente.save()
 
-            messages.success(
-                request,
-                f'Producto separado exitosamente. Tienes {7} días para confirmar la compra o la reserva se cancelará.'
-            )
+                unidades_txt = f'{cantidad_solicitada} unidad{"es" if cantidad_solicitada > 1 else ""}'
+                messages.success(
+                    request,
+                    f'Has agregado {unidades_txt} a tu separación. Total ahora: {nueva_cantidad} unidad{"es" if nueva_cantidad > 1 else ""} de "{producto.titulo}".'
+                )
+            else:
+                # Crear nueva reserva con la cantidad solicitada
+                reserva = Reserva.objects.create(
+                    producto=producto,
+                    comprador=comprador,
+                    creado_por=request.user,
+                    estado='activa',
+                    cantidad_solicitada=cantidad_solicitada,
+                )
+
+                unidades_txt = f'{cantidad_solicitada} unidad{"es" if cantidad_solicitada > 1 else ""}'
+                messages.success(
+                    request,
+                    f'Separación exitosa: {unidades_txt} de "{producto.titulo}". '
+                    f'Tienes 7 días para confirmar la compra o la reserva se cancelará.'
+                )
+
             return redirect('employees:producto_detail', pk=pk)
 
         except IntegrityError:
             messages.error(request, 'Ya tienes una separación activa de este producto.')
             return redirect('employees:producto_detail', pk=pk)
         except Exception as e:
-            logger.error(f'Error creando reserva: {str(e)}')
-            messages.error(request, 'Hubo un error al separar el producto. Intenta de nuevo.')
+            logger.error(f'Error procesando reserva: {str(e)}')
+            messages.error(request, 'Hubo un error al procesar tu solicitud. Intenta de nuevo.')
             return redirect('employees:producto_detail', pk=pk)
 
 
@@ -3555,11 +3622,12 @@ def confirmar_entrega_reserva(request, reserva_id):
             reserva.venta_asociada = venta
             reserva.save()
 
-            # Actualizar cantidad del producto si aplica
-            if reserva.producto.cantidad_disponible:
-                if reserva.producto.cantidad_disponible > 0:
-                    reserva.producto.cantidad_disponible -= 1
-                    reserva.producto.save()
+            # Actualizar cantidad del producto si aplica (descontar unidades solicitadas)
+            if reserva.producto.cantidad_disponible is not None:
+                unidades = reserva.cantidad_solicitada or 1
+                nuevo_stock = reserva.producto.cantidad_disponible - unidades
+                reserva.producto.cantidad_disponible = max(nuevo_stock, 0)
+                reserva.producto.save()
 
             # Log de éxito
             logger.info(

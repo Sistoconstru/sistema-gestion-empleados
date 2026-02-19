@@ -80,6 +80,28 @@
         </a>
     </div>
 
+    <!-- Alerta: Ya tiene una reserva activa -->
+    {% if reserva_existente %}
+    <div class="alert alert-info" role="alert">
+        <h5 class="alert-heading">
+            <i class="fas fa-info-circle me-2"></i>Ya tienes una separación activa
+        </h5>
+        <p class="mb-1">
+            Actualmente tienes <strong>{{ reserva_existente.cantidad_solicitada }} unidad{{ reserva_existente.cantidad_solicitada|pluralize:"es" }}</strong>
+            separada{{ reserva_existente.cantidad_solicitada|pluralize:"s" }} de este producto.
+        </p>
+        <p class="mb-0">
+            <i class="fas fa-plus-circle me-1"></i>
+            Puedes <strong>agregar más unidades</strong> a tu separación usando el formulario a continuación.
+        </p>
+        <hr>
+        <small class="text-muted">
+            <i class="fas fa-calendar-check me-1"></i>
+            Reserva creada: {{ reserva_existente.fecha_creacion|date:"d/m/Y H:i" }}
+        </small>
+    </div>
+    {% endif %}
+
     <!-- Advertencia Principal -->
     <div class="warning-section">
         <div class="warning-header">
@@ -132,9 +154,11 @@
             <p class="mb-1">
                 <strong>Disponibles:</strong> {{ disponible }}
             </p>
+            {% if tiene_limite %}
             <p class="mb-0">
-                <strong>Ya separadas:</strong> {{ cantidad_reservada }}
+                <strong>Unidades ya separadas:</strong> {{ cantidad_reservada }}
             </p>
+            {% endif %}
         </div>
     </div>
 
@@ -151,10 +175,54 @@
     <!-- Formulario de Confirmación -->
     <form method="post" id="separationForm">
         {% csrf_token %}
+
+        <!-- Cantidad a solicitar -->
+        <div class="mb-4">
+            <label for="cantidadInput" class="form-label fw-bold">
+                <i class="fas fa-boxes me-1"></i>
+                {% if reserva_existente %}
+                Cantidad de unidades a <strong>agregar</strong>
+                {% else %}
+                Cantidad de unidades a solicitar
+                {% endif %}
+            </label>
+            <div class="input-group" style="max-width: 200px;">
+                <button class="btn btn-outline-secondary" type="button" id="btnMenos">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <input
+                    type="number"
+                    class="form-control text-center"
+                    id="cantidadInput"
+                    name="cantidad_solicitada"
+                    value="{{ cantidad_solicitada|default:1 }}"
+                    min="1"
+                    {% if tiene_limite %}max="{{ cantidad_disponible_actual }}"{% endif %}
+                    required
+                >
+                <button class="btn btn-outline-secondary" type="button" id="btnMas">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            {% if tiene_limite %}
+            <small class="text-muted mt-1 d-block">
+                Máximo disponible: <strong>{{ cantidad_disponible_actual }}</strong> unidades
+            </small>
+            {% else %}
+            <small class="text-muted mt-1 d-block">
+                Sin límite de unidades disponibles
+            </small>
+            {% endif %}
+        </div>
+
         <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="confirmCheckbox" name="confirmado" value="false" required>
             <label class="form-check-label" for="confirmCheckbox">
+                {% if reserva_existente %}
+                Confirmo que quiero agregar más unidades a mi separación y me comprometo a pagarlas.
+                {% else %}
                 Entiendo que separar este producto me compromete a pagarlo. Confirmo que quiero continuar.
+                {% endif %}
             </label>
         </div>
 
@@ -171,7 +239,11 @@
                 <i class="fas fa-times me-2"></i>Cancelar
             </a>
             <button type="submit" class="btn btn-warning btn-lg" id="submitBtn" disabled>
+                {% if reserva_existente %}
+                <i class="fas fa-plus-circle me-2"></i>Agregar Unidades
+                {% else %}
                 <i class="fas fa-check me-2"></i>Confirmar Separación
+                {% endif %}
             </button>
         </div>
     </form>
@@ -198,6 +270,34 @@ document.addEventListener('DOMContentLoaded', function() {
     if (precioElement) {
         const precio = precioElement.textContent.trim();
         precioElement.textContent = formatearPrecio(precio);
+    }
+
+    // Control de cantidad con botones + y -
+    const cantidadInput = document.getElementById('cantidadInput');
+    const btnMenos = document.getElementById('btnMenos');
+    const btnMas = document.getElementById('btnMas');
+
+    if (cantidadInput && btnMenos && btnMas) {
+        btnMenos.addEventListener('click', function() {
+            const min = parseInt(cantidadInput.min) || 1;
+            const val = parseInt(cantidadInput.value) || 1;
+            if (val > min) cantidadInput.value = val - 1;
+        });
+
+        btnMas.addEventListener('click', function() {
+            const max = cantidadInput.max ? parseInt(cantidadInput.max) : Infinity;
+            const val = parseInt(cantidadInput.value) || 1;
+            if (val < max) cantidadInput.value = val + 1;
+        });
+
+        cantidadInput.addEventListener('change', function() {
+            const min = parseInt(cantidadInput.min) || 1;
+            const max = cantidadInput.max ? parseInt(cantidadInput.max) : Infinity;
+            let val = parseInt(cantidadInput.value) || 1;
+            if (val < min) val = min;
+            if (val > max) val = max;
+            cantidadInput.value = val;
+        });
     }
 
     // Control de ambos checkboxes
