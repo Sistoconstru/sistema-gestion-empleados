@@ -78,10 +78,63 @@
                     <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-corporativo">
                         <i class="fas fa-user-check me-1"></i>Mis Encuestas
                     </a>
+                    {% if user.is_staff or user.is_superuser %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cog me-1"></i>Administración
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'surveys:crear_encuesta' %}">
+                                    <i class="fas fa-plus-circle me-2 text-success"></i>Crear Nueva Encuesta
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'surveys:encuesta_admin_list' %}">
+                                    <i class="fas fa-cog me-2 text-primary"></i>Gestionar Encuestas
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-chart-bar me-2 text-info"></i>Reportes (próximamente)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Panel de Acceso Rápido Admin (solo staff/superuser) -->
+    {% if user.is_staff or user.is_superuser %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">
+                                <i class="fas fa-user-shield me-2 text-primary"></i>Panel de Administración
+                            </h5>
+                            <p class="text-muted mb-0 small">Acceso rápido a las funciones administrativas</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'surveys:crear_encuesta' %}" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i>Crear Encuesta
+                            </a>
+                            <a href="{% url 'surveys:encuesta_admin_list' %}" class="btn btn-primary">
+                                <i class="fas fa-list me-1"></i>Gestionar Encuestas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Métricas principales -->
     <div class="row mb-4">

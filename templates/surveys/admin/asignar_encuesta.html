@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Asignar Encuesta: {{ encuesta.nombre }} | Administración | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.asignacion-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.asignacion-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.radio-card {
+    cursor: pointer;
+    border: 2px solid #e9ecef;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s;
+    margin-bottom: 1rem;
+}
+
+.radio-card:hover {
+    border-color: #667eea;
+    background: #f8f9fa;
+}
+
+.radio-card input[type="radio"]:checked + label {
+    color: #667eea;
+    font-weight: bold;
+}
+
+.lista-seleccion {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.item-seleccionable {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.item-seleccionable:hover {
+    background: #f8f9fa;
+}
+
+.item-seleccionable input:checked + label {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="admin-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-2">
+                    <i class="fas fa-users me-2"></i>Asignar Encuesta
+                </h1>
+                <p class="mb-0">{{ encuesta.nombre }}</p>
+                <small>{{ encuesta.codigo }} | {{ encuesta.tipo_encuesta.nombre }}</small>
+            </div>
+            <a href="{% url 'surveys:editar_preguntas' encuesta.pk %}" class="btn btn-light">
+                <i class="fas fa-arrow-left me-1"></i>Volver a Preguntas
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="stats-card">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h3 class="text-primary">{{ participaciones_existentes|length }}</h3>
+                <small class="text-muted">Empleados Asignados</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-success">{{ encuesta.fecha_inicio|date:"d/m/Y" }}</h3>
+                <small class="text-muted">Fecha Inicio</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-warning">{{ encuesta.fecha_fin|date:"d/m/Y" }}</h3>
+                <small class="text-muted">Fecha Límite</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-info">{{ areas_asignadas|length }}</h3>
+                <small class="text-muted">Áreas Asignadas</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Asignación -->
+    <form method="post" id="formAsignar">
+        {% csrf_token %}
+
+        <div class="asignacion-card">
+            <h5 class="mb-4">
+                <i class="fas fa-clipboard-check me-2"></i>Selecciona el método de asignación
+            </h5>
+
+            <!-- Opciones de Asignación -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="radio-card">
+                        <input type="radio"
+                               class="form-check-input me-2"
+                               name="asignar_a"
+                               id="asignar_todos"
+                               value="todos">
+                        <label for="asignar_todos" class="d-block">
+                            <strong>
+                                <i class="fas fa-users me-2"></i>Todos los Empleados Activos
+                            </strong>
+                            <p class="small text-muted mb-0 mt-1">
+                                Asignar automáticamente a todos los empleados con estado activo
+                            </p>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="radio-card">
+                        <input type="radio"
+                               class="form-check-input me-2"
+                               name="asignar_a"
+                               id="asignar_areas"
+                               value="areas">
+                        <label for="asignar_areas" class="d-block">
+                            <strong>
+                                <i class="fas fa-building me-2"></i>Por Áreas
+                            </strong>
+                            <p class="small text-muted mb-0 mt-1">
+                                Asignar a empleados de áreas específicas
+                            </p>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="radio-card">
+                        <input type="radio"
+                               class="form-check-input me-2"
+                               name="asignar_a"
+                               id="asignar_cargos"
+                               value="cargos">
+                        <label for="asignar_cargos" class="d-block">
+                            <strong>
+                                <i class="fas fa-briefcase me-2"></i>Por Cargos
+                            </strong>
+                            <p class="small text-muted mb-0 mt-1">
+                                Asignar a empleados con cargos específicos
+                            </p>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="radio-card">
+                        <input type="radio"
+                               class="form-check-input me-2"
+                               name="asignar_a"
+                               id="asignar_empleados"
+                               value="empleados">
+                        <label for="asignar_empleados" class="d-block">
+                            <strong>
+                                <i class="fas fa-user-check me-2"></i>Empleados Específicos
+                            </strong>
+                            <p class="small text-muted mb-0 mt-1">
+                                Seleccionar empleados individualmente
+                            </p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Seleccionar Áreas -->
+            <div id="seccion-areas" class="seleccion-container" style="display: none;">
+                <h6 class="mb-3">
+                    <i class="fas fa-building me-2"></i>Selecciona las Áreas
+                </h6>
+                <div class="lista-seleccion">
+                    {% for area in areas %}
+                    <div class="item-seleccionable">
+                        <input type="checkbox"
+                               class="form-check-input me-2"
+                               name="areas[]"
+                               id="area-{{ area.id }}"
+                               value="{{ area.id }}"
+                               {% if area.id in areas_asignadas %}checked{% endif %}>
+                        <label for="area-{{ area.id }}" class="form-check-label">
+                            {{ area.nombre }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sección: Seleccionar Cargos -->
+            <div id="seccion-cargos" class="seleccion-container" style="display: none;">
+                <h6 class="mb-3">
+                    <i class="fas fa-briefcase me-2"></i>Selecciona los Cargos
+                </h6>
+                <div class="lista-seleccion">
+                    {% for cargo in cargos %}
+                    <div class="item-seleccionable">
+                        <input type="checkbox"
+                               class="form-check-input me-2"
+                               name="cargos[]"
+                               id="cargo-{{ cargo.id }}"
+                               value="{{ cargo.id }}"
+                               {% if cargo.id in cargos_asignados %}checked{% endif %}>
+                        <label for="cargo-{{ cargo.id }}" class="form-check-label">
+                            {{ cargo.nombre }}
+                            {% if cargo.area %}
+                            <small class="text-muted">({{ cargo.area.nombre }})</small>
+                            {% endif %}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sección: Seleccionar Empleados -->
+            <div id="seccion-empleados" class="seleccion-container" style="display: none;">
+                <h6 class="mb-3">
+                    <i class="fas fa-user-check me-2"></i>Selecciona los Empleados
+                </h6>
+                <div class="mb-3">
+                    <input type="text"
+                           class="form-control"
+                           id="buscarEmpleado"
+                           placeholder="Buscar empleado por nombre...">
+                </div>
+                <div class="lista-seleccion" id="listaEmpleados">
+                    {% for empleado in empleados %}
+                    <div class="item-seleccionable empleado-item" data-nombre="{{ empleado.nombre_completo|lower }}">
+                        <input type="checkbox"
+                               class="form-check-input me-2"
+                               name="empleados[]"
+                               id="empleado-{{ empleado.id }}"
+                               value="{{ empleado.id }}"
+                               {% if empleado.id in participaciones_existentes %}checked{% endif %}>
+                        <label for="empleado-{{ empleado.id }}" class="form-check-label">
+                            {{ empleado.nombre_completo }}
+                            <small class="text-muted">
+                                {% if empleado.cargo_actual %}
+                                - {{ empleado.cargo_actual }}
+                                {% endif %}
+                            </small>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="mt-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="button" class="btn btn-outline-secondary" onclick="seleccionarTodos()">
+                        <i class="fas fa-check-double me-1"></i>Seleccionar Todos
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="deseleccionarTodos()">
+                        <i class="fas fa-times me-1"></i>Deseleccionar Todos
+                    </button>
+                </div>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-check me-1"></i>Asignar Encuesta
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de opciones de asignación
+    const radios = document.querySelectorAll('input[name="asignar_a"]');
+    const secciones = {
+        'areas': document.getElementById('seccion-areas'),
+        'cargos': document.getElementById('seccion-cargos'),
+        'empleados': document.getElementById('seccion-empleados')
+    };
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Ocultar todas las secciones
+            Object.values(secciones).forEach(seccion => {
+                seccion.style.display = 'none';
+            });
+
+            // Mostrar la sección seleccionada
+            if (this.value in secciones) {
+                secciones[this.value].style.display = 'block';
+            }
+        });
+    });
+
+    // Búsqueda de empleados
+    const buscarInput = document.getElementById('buscarEmpleado');
+    if (buscarInput) {
+        buscarInput.addEventListener('input', function() {
+            const termino = this.value.toLowerCase();
+            const items = document.querySelectorAll('.empleado-item');
+
+            items.forEach(item => {
+                const nombre = item.getAttribute('data-nombre');
+                if (nombre.includes(termino)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Validación del formulario
+    document.getElementById('formAsignar').addEventListener('submit', function(e) {
+        const asignarA = document.querySelector('input[name="asignar_a"]:checked');
+
+        if (!asignarA) {
+            e.preventDefault();
+            alert('Por favor selecciona un método de asignación');
+            return false;
+        }
+
+        // Validar que se haya seleccionado al menos un item
+        if (asignarA.value !== 'todos') {
+            const checkboxes = document.querySelectorAll(`#seccion-${asignarA.value} input[type="checkbox"]:checked`);
+            if (checkboxes.length === 0) {
+                e.preventDefault();
+                alert(`Por favor selecciona al menos un ${asignarA.value === 'empleados' ? 'empleado' : asignarA.value === 'areas' ? 'área' : 'cargo'}`);
+                return false;
+            }
+        }
+
+        // Confirmar asignación
+        if (!confirm('¿Estás seguro de asignar esta encuesta? Se crearán participaciones para los empleados seleccionados.')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+
+function seleccionarTodos() {
+    const seccionActiva = document.querySelector('.seleccion-container[style*="display: block"]');
+    if (seccionActiva) {
+        seccionActiva.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+    }
+}
+
+function deseleccionarTodos() {
+    const seccionActiva = document.querySelector('.seleccion-container[style*="display: block"]');
+    if (seccionActiva) {
+        seccionActiva.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+}
+</script>
+{% endblock %}

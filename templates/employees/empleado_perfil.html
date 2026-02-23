@@ -531,15 +531,6 @@
                         </div>
                     </div>
                     {% endfor %}
-                    
-                    {% if empleados_a_cargo.total > empleados_a_cargo.lista_empleados|length %}
-                    <div class="text-center mt-2">
-                        <a href="{% url 'evaluations:index' %}" class="btn btn-sm btn-outline-corporativo">
-                            <i class="fas fa-users me-1"></i>
-                            Ver todos ({{ empleados_a_cargo.total }} empleados)
-                        </a>
-                    </div>
-                    {% endif %}
                 </div>
                 {% else %}
                 <div class="text-center py-3">

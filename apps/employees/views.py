@@ -442,7 +442,7 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             lista_empleados = []
             con_alertas = 0
 
-            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo')[:10]:
+            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo'):
                 # Verificar si tiene alertas
                 tiene_alertas = False
                 alertas = []
@@ -1511,8 +1511,8 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             # Empleados con alertas (documentos vencidos, evaluaciones pendientes, etc.)
             con_alertas = 0
             lista_empleados = []
-            
-            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo')[:10]:
+
+            for emp in empleados_subordinados.select_related('estado').prefetch_related('historialcargo_set__cargo'):
                 # Verificar si tiene alertas
                 tiene_alertas = False
                 alertas = []
