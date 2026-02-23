@@ -393,19 +393,12 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def get_empleados_a_cargo(self, empleado):
-        """
-        Obtener empleados a cargo que tienen a este empleado como jefe directo.
-        Solo busca por el campo jefe_directo en HistorialCargo.
-        """
+        """Obtener empleados a cargo según jerarquía organizacional con lógica híbrida"""
         try:
-            # Buscar empleados que tienen a este empleado como jefe directo
-            empleados_subordinados = Empleado.objects.filter(
-                historialcargo__activo=True,
-                historialcargo__jefe_directo=empleado
-            ).distinct()
+            # Obtener cargo actual del empleado
+            cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
 
-            # Si no hay empleados a cargo, retornar estructura vacía
-            if empleados_subordinados.count() == 0:
+            if not cargo_actual or not cargo_actual.cargo:
                 return {
                     'empleados_a_cargo': {
                         'total': 0,
@@ -418,20 +411,114 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
                     }
                 }
 
-            # Determinar tipo de jefe según nombre del cargo actual
-            cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
-            tipo_jefe = 'jefe'  # Default
+            # Determinar tipo de jefe según nombre del cargo
+            cargo_nombre = cargo_actual.cargo.nombre.lower()
+            tipo_jefe = None
 
-            if cargo_actual and cargo_actual.cargo:
-                cargo_nombre = cargo_actual.cargo.nombre.lower()
-                if 'gerente' in cargo_nombre:
-                    tipo_jefe = 'gerente'
-                elif 'director' in cargo_nombre:
-                    tipo_jefe = 'director'
-                elif 'coordinador' in cargo_nombre:
-                    tipo_jefe = 'coordinador'
-                elif 'supervisor' in cargo_nombre:
-                    tipo_jefe = 'supervisor'
+            if 'gerente' in cargo_nombre:
+                tipo_jefe = 'gerente'
+            elif 'director' in cargo_nombre:
+                tipo_jefe = 'director'
+            elif 'coordinador' in cargo_nombre:
+                tipo_jefe = 'coordinador'
+            elif 'supervisor' in cargo_nombre or 'jefe' in cargo_nombre:
+                tipo_jefe = 'supervisor'
+
+            if not tipo_jefe:
+                # No es un cargo de jefatura
+                return {
+                    'empleados_a_cargo': {
+                        'total': 0,
+                        'activos': 0,
+                        'en_prueba': 0,
+                        'con_alertas': 0,
+                        'lista_empleados': [],
+                        'es_jefe': False,
+                        'tipo_jefe': None
+                    }
+                }
+
+            # LÓGICA HÍBRIDA: Buscar empleados a cargo
+            # Prioridad 1: Empleados con jefe_directo asignado explícitamente
+            empleados_con_jefe_directo = Empleado.objects.filter(
+                historialcargo__activo=True,
+                historialcargo__jefe_directo=empleado
+            ).distinct()
+
+            if empleados_con_jefe_directo.exists():
+                # Si hay jefatura directa asignada, usar eso (máxima prioridad)
+                empleados_subordinados = empleados_con_jefe_directo
+            else:
+                # Prioridad 2: Aplicar lógica automática según jerarquía
+                empleados_subordinados = Empleado.objects.none()
+
+                if tipo_jefe == 'gerente':
+                    # Gerente tiene directores y subgerentes (TODAS LAS SEDES)
+                    empleados_subordinados = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='director'
+                    ).exclude(pk=empleado.pk) | Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='subgerente'
+                    ).exclude(pk=empleado.pk)
+
+                elif tipo_jefe == 'director':
+                    # Director tiene coordinadores (TODAS LAS SEDES)
+                    empleados_subordinados = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='coordinador'
+                    ).exclude(pk=empleado.pk)
+
+                elif tipo_jefe == 'coordinador':
+                    # Coordinador: FILTRAR POR SEDE (solo su sede)
+                    # 1. Por relación directa cargo_jefe
+                    empleados_por_cargo_jefe = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(pk=empleado.pk)
+
+                    # 2. Por nivel jerárquico mayor en la misma área
+                    empleados_por_nivel = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(
+                        Q(historialcargo__cargo__nombre__icontains='gerente') |
+                        Q(historialcargo__cargo__nombre__icontains='director') |
+                        Q(historialcargo__cargo__nombre__icontains='coordinador') |
+                        Q(pk=empleado.pk)
+                    )
+
+                    # Combinar ambos conjuntos
+                    empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
+
+                elif tipo_jefe == 'supervisor':
+                    # Supervisor/jefe: FILTRAR POR SEDE (solo su sede)
+                    empleados_por_cargo_jefe = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(pk=empleado.pk)
+
+                    if cargo_actual.cargo.nivel_jerarquico:
+                        empleados_por_nivel = Empleado.objects.filter(
+                            historialcargo__activo=True,
+                            historialcargo__cargo__area=cargo_actual.cargo.area,
+                            historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
+                            sede=empleado.sede  # FILTRO POR SEDE
+                        ).exclude(pk=empleado.pk)
+
+                        empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
+                    else:
+                        empleados_subordinados = empleados_por_cargo_jefe
+
+            # Eliminar duplicados
+            empleados_subordinados = empleados_subordinados.distinct()
 
             # Calcular estadísticas
             total = empleados_subordinados.count()
@@ -1097,7 +1184,10 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         
         # === EVALUACIONES ===
         context.update(self.get_evaluaciones(empleado))
-        
+
+        # === ENCUESTAS ===
+        context.update(self.get_encuestas(empleado))
+
         # === EMPLEADOS A CARGO ===
         context.update(self.get_empleados_a_cargo(empleado))
         
@@ -1389,7 +1479,69 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     'ultima_evaluacion': None
                 }
             }
-    
+
+    def get_encuestas(self, empleado):
+        """Obtener estado de encuestas del empleado"""
+        try:
+            from apps.surveys.models import ParticipacionEncuesta, Encuesta
+
+            # Participaciones del empleado
+            participaciones = ParticipacionEncuesta.objects.filter(
+                empleado=empleado
+            ).select_related('encuesta', 'encuesta__tipo_encuesta')
+
+            # Encuestas pendientes (no completadas y activas)
+            pendientes = participaciones.filter(
+                completada=False,
+                encuesta__activa=True,
+                encuesta__fecha_inicio__lte=date.today(),
+                encuesta__fecha_fin__gte=date.today()
+            )
+
+            # Encuestas completadas
+            completadas = participaciones.filter(completada=True)
+
+            # Encuestas completadas este año
+            completadas_año = completadas.filter(
+                fecha_completada__year=date.today().year
+            )
+
+            # Encuestas próximas a vencer (siguientes 7 días)
+            fecha_limite = date.today() + timedelta(days=7)
+            proximas_vencer = pendientes.filter(
+                encuesta__fecha_fin__lte=fecha_limite
+            )
+
+            return {
+                'encuestas': {
+                    'pendientes': pendientes.count(),
+                    'completadas': completadas.count(),
+                    'completadas_año': completadas_año.count(),
+                    'proximas_vencer': proximas_vencer.count(),
+                    'lista_pendientes': pendientes[:5],  # Primeras 5 pendientes
+                    'lista_proximas_vencer': proximas_vencer[:3],
+                    'ultima_completada': completadas.order_by('-fecha_completada').first()
+                }
+            }
+        except ImportError:
+            logger.info("Módulo de encuestas no disponible")
+            return {
+                'encuestas': {
+                    'pendientes': 0, 'completadas': 0, 'completadas_año': 0,
+                    'proximas_vencer': 0, 'lista_pendientes': [],
+                    'lista_proximas_vencer': [], 'ultima_completada': None
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error obteniendo encuestas: {e}")
+            return {
+                'encuestas': {
+                    'pendientes': 0, 'completadas': 0, 'completadas_año': 0,
+                    'proximas_vencer': 0, 'lista_pendientes': [],
+                    'lista_proximas_vencer': [], 'ultima_completada': None
+                }
+            }
+
     def get_empleados_a_cargo(self, empleado):
         """Obtener empleados a cargo según jerarquía organizacional"""
         try:
@@ -1436,69 +1588,84 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     }
                 }
             
-            # Buscar empleados a cargo según jerarquía
-            empleados_subordinados = []
-            
-            if tipo_jefe == 'gerente':
-                # Gerente tiene directores y subgerentes
-                empleados_subordinados = Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__area=cargo_actual.cargo.area,
-                    historialcargo__cargo__nombre__icontains='director'
-                ).exclude(pk=empleado.pk) | Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__area=cargo_actual.cargo.area,
-                    historialcargo__cargo__nombre__icontains='subgerente'
-                ).exclude(pk=empleado.pk)
-                
-            elif tipo_jefe == 'director':
-                # Director tiene coordinadores
-                empleados_subordinados = Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__area=cargo_actual.cargo.area,
-                    historialcargo__cargo__nombre__icontains='coordinador'
-                ).exclude(pk=empleado.pk)
-                
-            elif tipo_jefe == 'coordinador':
-                # Coordinador puede tener empleados en dos formas:
-                # 1. Por relación directa cargo_jefe
-                empleados_por_cargo_jefe = Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__cargo_jefe=cargo_actual.cargo
-                ).exclude(pk=empleado.pk)
-                
-                # 2. Por nivel jerárquico mayor en la misma área (auxiliares, operarios, etc.)
-                empleados_por_nivel = Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__area=cargo_actual.cargo.area,
-                    historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico
-                ).exclude(
-                    Q(historialcargo__cargo__nombre__icontains='gerente') |
-                    Q(historialcargo__cargo__nombre__icontains='director') |
-                    Q(historialcargo__cargo__nombre__icontains='coordinador') |
-                    Q(pk=empleado.pk)
-                )
-                
-                # Combinar ambos conjuntos
-                empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-                
-            elif tipo_jefe == 'supervisor':
-                # Supervisor/jefe buscar por nivel jerárquico mayor y relación directa
-                empleados_por_cargo_jefe = Empleado.objects.filter(
-                    historialcargo__activo=True,
-                    historialcargo__cargo__cargo_jefe=cargo_actual.cargo
-                ).exclude(pk=empleado.pk)
-                
-                if cargo_actual.cargo.nivel_jerarquico:
+            # LÓGICA HÍBRIDA: Buscar empleados a cargo
+            # Prioridad 1: Empleados con jefe_directo asignado explícitamente
+            empleados_con_jefe_directo = Empleado.objects.filter(
+                historialcargo__activo=True,
+                historialcargo__jefe_directo=empleado
+            ).distinct()
+
+            if empleados_con_jefe_directo.exists():
+                # Si hay jefatura directa asignada, usar eso (máxima prioridad)
+                empleados_subordinados = empleados_con_jefe_directo
+            else:
+                # Prioridad 2: Aplicar lógica automática según jerarquía
+                empleados_subordinados = Empleado.objects.none()
+
+                if tipo_jefe == 'gerente':
+                    # Gerente tiene directores y subgerentes (TODAS LAS SEDES)
+                    empleados_subordinados = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='director'
+                    ).exclude(pk=empleado.pk) | Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='subgerente'
+                    ).exclude(pk=empleado.pk)
+
+                elif tipo_jefe == 'director':
+                    # Director tiene coordinadores (TODAS LAS SEDES)
+                    empleados_subordinados = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__area=cargo_actual.cargo.area,
+                        historialcargo__cargo__nombre__icontains='coordinador'
+                    ).exclude(pk=empleado.pk)
+
+                elif tipo_jefe == 'coordinador':
+                    # Coordinador: FILTRAR POR SEDE (solo su sede)
+                    # 1. Por relación directa cargo_jefe
+                    empleados_por_cargo_jefe = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(pk=empleado.pk)
+
+                    # 2. Por nivel jerárquico mayor en la misma área
                     empleados_por_nivel = Empleado.objects.filter(
                         historialcargo__activo=True,
                         historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico
-                    ).exclude(pk=empleado.pk)
-                    
+                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(
+                        Q(historialcargo__cargo__nombre__icontains='gerente') |
+                        Q(historialcargo__cargo__nombre__icontains='director') |
+                        Q(historialcargo__cargo__nombre__icontains='coordinador') |
+                        Q(pk=empleado.pk)
+                    )
+
+                    # Combinar ambos conjuntos
                     empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-                else:
-                    empleados_subordinados = empleados_por_cargo_jefe
+
+                elif tipo_jefe == 'supervisor':
+                    # Supervisor/jefe: FILTRAR POR SEDE (solo su sede)
+                    empleados_por_cargo_jefe = Empleado.objects.filter(
+                        historialcargo__activo=True,
+                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
+                        sede=empleado.sede  # FILTRO POR SEDE
+                    ).exclude(pk=empleado.pk)
+
+                    if cargo_actual.cargo.nivel_jerarquico:
+                        empleados_por_nivel = Empleado.objects.filter(
+                            historialcargo__activo=True,
+                            historialcargo__cargo__area=cargo_actual.cargo.area,
+                            historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
+                            sede=empleado.sede  # FILTRO POR SEDE
+                        ).exclude(pk=empleado.pk)
+
+                        empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
+                    else:
+                        empleados_subordinados = empleados_por_cargo_jefe
             
             # Eliminar duplicados
             empleados_subordinados = empleados_subordinados.distinct()
