@@ -441,11 +441,11 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             # Buscar empleados a cargo usando SOLO jefe_directo
             # Solo mostrar empleados que:
             # 1. Tienen jefe_directo asignado = empleado actual
-            # 2. Están ACTIVOS (código '999')
+            # 2. Están ACTIVOS o en PERÍODO DE PRUEBA
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo='999'  # Solo empleados activos
+                estado__codigo__in=['999', 'PRUEBA', 'p-prue']  # Activos y en período de prueba
             ).distinct()
 
             # Calcular estadísticas
@@ -1519,11 +1519,11 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             # Buscar empleados a cargo usando SOLO jefe_directo
             # Solo mostrar empleados que:
             # 1. Tienen jefe_directo asignado = empleado actual
-            # 2. Están ACTIVOS (código '999')
+            # 2. Están ACTIVOS o en PERÍODO DE PRUEBA
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo='999'  # Solo empleados activos
+                estado__codigo__in=['999', 'PRUEBA', 'p-prue']  # Activos y en período de prueba
             ).distinct()
 
             # Calcular estadísticas
