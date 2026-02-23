@@ -441,16 +441,16 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             # Buscar empleados a cargo usando SOLO jefe_directo
             # Solo mostrar empleados que:
             # 1. Tienen jefe_directo asignado = empleado actual
-            # 2. Están ACTIVOS
+            # 2. Están ACTIVOS (código '999')
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo='ACTIVO'  # Solo empleados activos
+                estado__codigo='999'  # Solo empleados activos
             ).distinct()
 
             # Calcular estadísticas
             total = empleados_subordinados.count()
-            activos = empleados_subordinados.filter(estado__codigo='ACTIVO').count()
+            activos = empleados_subordinados.filter(estado__codigo='999').count()
             en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
 
             # Preparar lista de empleados con detalles
@@ -1519,16 +1519,16 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             # Buscar empleados a cargo usando SOLO jefe_directo
             # Solo mostrar empleados que:
             # 1. Tienen jefe_directo asignado = empleado actual
-            # 2. Están ACTIVOS
+            # 2. Están ACTIVOS (código '999')
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo='ACTIVO'  # Solo empleados activos
+                estado__codigo='999'  # Solo empleados activos
             ).distinct()
-            
+
             # Calcular estadísticas
             total_subordinados = empleados_subordinados.count()
-            activos = empleados_subordinados.filter(estado__codigo='ACTIVO').count()
+            activos = empleados_subordinados.filter(estado__codigo='999').count()
             en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
             
             # Empleados con alertas (documentos vencidos, evaluaciones pendientes, etc.)
