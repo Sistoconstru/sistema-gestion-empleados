@@ -438,87 +438,15 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
                     }
                 }
 
-            # LÓGICA HÍBRIDA: Buscar empleados a cargo
-            # Prioridad 1: Empleados con jefe_directo asignado explícitamente
-            empleados_con_jefe_directo = Empleado.objects.filter(
+            # Buscar empleados a cargo usando SOLO jefe_directo
+            # Solo mostrar empleados que:
+            # 1. Tienen jefe_directo asignado = empleado actual
+            # 2. Están ACTIVOS
+            empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
-                historialcargo__jefe_directo=empleado
+                historialcargo__jefe_directo=empleado,
+                estado__codigo='ACTIVO'  # Solo empleados activos
             ).distinct()
-
-            if empleados_con_jefe_directo.exists():
-                # Si hay jefatura directa asignada, usar eso (máxima prioridad)
-                empleados_subordinados = empleados_con_jefe_directo
-            else:
-                # Prioridad 2: Aplicar lógica automática según jerarquía
-                empleados_subordinados = Empleado.objects.none()
-
-                if tipo_jefe == 'gerente':
-                    # Gerente tiene directores y subgerentes (TODAS LAS SEDES)
-                    empleados_subordinados = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='director'
-                    ).exclude(pk=empleado.pk) | Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='subgerente'
-                    ).exclude(pk=empleado.pk)
-
-                elif tipo_jefe == 'director':
-                    # Director tiene coordinadores (TODAS LAS SEDES)
-                    empleados_subordinados = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='coordinador'
-                    ).exclude(pk=empleado.pk)
-
-                elif tipo_jefe == 'coordinador':
-                    # Coordinador: FILTRAR POR SEDE (solo su sede)
-                    # 1. Por relación directa cargo_jefe
-                    empleados_por_cargo_jefe = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(pk=empleado.pk)
-
-                    # 2. Por nivel jerárquico mayor en la misma área
-                    empleados_por_nivel = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(
-                        Q(historialcargo__cargo__nombre__icontains='gerente') |
-                        Q(historialcargo__cargo__nombre__icontains='director') |
-                        Q(historialcargo__cargo__nombre__icontains='coordinador') |
-                        Q(pk=empleado.pk)
-                    )
-
-                    # Combinar ambos conjuntos
-                    empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-
-                elif tipo_jefe == 'supervisor':
-                    # Supervisor/jefe: FILTRAR POR SEDE (solo su sede)
-                    empleados_por_cargo_jefe = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(pk=empleado.pk)
-
-                    if cargo_actual.cargo.nivel_jerarquico:
-                        empleados_por_nivel = Empleado.objects.filter(
-                            historialcargo__activo=True,
-                            historialcargo__cargo__area=cargo_actual.cargo.area,
-                            historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
-                            sede=empleado.sede  # FILTRO POR SEDE
-                        ).exclude(pk=empleado.pk)
-
-                        empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-                    else:
-                        empleados_subordinados = empleados_por_cargo_jefe
-
-            # Eliminar duplicados
-            empleados_subordinados = empleados_subordinados.distinct()
 
             # Calcular estadísticas
             total = empleados_subordinados.count()
@@ -1588,87 +1516,15 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     }
                 }
             
-            # LÓGICA HÍBRIDA: Buscar empleados a cargo
-            # Prioridad 1: Empleados con jefe_directo asignado explícitamente
-            empleados_con_jefe_directo = Empleado.objects.filter(
+            # Buscar empleados a cargo usando SOLO jefe_directo
+            # Solo mostrar empleados que:
+            # 1. Tienen jefe_directo asignado = empleado actual
+            # 2. Están ACTIVOS
+            empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
-                historialcargo__jefe_directo=empleado
+                historialcargo__jefe_directo=empleado,
+                estado__codigo='ACTIVO'  # Solo empleados activos
             ).distinct()
-
-            if empleados_con_jefe_directo.exists():
-                # Si hay jefatura directa asignada, usar eso (máxima prioridad)
-                empleados_subordinados = empleados_con_jefe_directo
-            else:
-                # Prioridad 2: Aplicar lógica automática según jerarquía
-                empleados_subordinados = Empleado.objects.none()
-
-                if tipo_jefe == 'gerente':
-                    # Gerente tiene directores y subgerentes (TODAS LAS SEDES)
-                    empleados_subordinados = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='director'
-                    ).exclude(pk=empleado.pk) | Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='subgerente'
-                    ).exclude(pk=empleado.pk)
-
-                elif tipo_jefe == 'director':
-                    # Director tiene coordinadores (TODAS LAS SEDES)
-                    empleados_subordinados = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nombre__icontains='coordinador'
-                    ).exclude(pk=empleado.pk)
-
-                elif tipo_jefe == 'coordinador':
-                    # Coordinador: FILTRAR POR SEDE (solo su sede)
-                    # 1. Por relación directa cargo_jefe
-                    empleados_por_cargo_jefe = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(pk=empleado.pk)
-
-                    # 2. Por nivel jerárquico mayor en la misma área
-                    empleados_por_nivel = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__area=cargo_actual.cargo.area,
-                        historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(
-                        Q(historialcargo__cargo__nombre__icontains='gerente') |
-                        Q(historialcargo__cargo__nombre__icontains='director') |
-                        Q(historialcargo__cargo__nombre__icontains='coordinador') |
-                        Q(pk=empleado.pk)
-                    )
-
-                    # Combinar ambos conjuntos
-                    empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-
-                elif tipo_jefe == 'supervisor':
-                    # Supervisor/jefe: FILTRAR POR SEDE (solo su sede)
-                    empleados_por_cargo_jefe = Empleado.objects.filter(
-                        historialcargo__activo=True,
-                        historialcargo__cargo__cargo_jefe=cargo_actual.cargo,
-                        sede=empleado.sede  # FILTRO POR SEDE
-                    ).exclude(pk=empleado.pk)
-
-                    if cargo_actual.cargo.nivel_jerarquico:
-                        empleados_por_nivel = Empleado.objects.filter(
-                            historialcargo__activo=True,
-                            historialcargo__cargo__area=cargo_actual.cargo.area,
-                            historialcargo__cargo__nivel_jerarquico__gt=cargo_actual.cargo.nivel_jerarquico,
-                            sede=empleado.sede  # FILTRO POR SEDE
-                        ).exclude(pk=empleado.pk)
-
-                        empleados_subordinados = (empleados_por_cargo_jefe | empleados_por_nivel)
-                    else:
-                        empleados_subordinados = empleados_por_cargo_jefe
-            
-            # Eliminar duplicados
-            empleados_subordinados = empleados_subordinados.distinct()
             
             # Calcular estadísticas
             total_subordinados = empleados_subordinados.count()
