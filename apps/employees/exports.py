@@ -41,7 +41,7 @@ def export_empleados_excel(empleados):
         # ENCABEZADOS COMPLETOS
         headers = [
             'Documento', 'Nombres', 'Apellidos', 'Email', 'Teléfono',
-            'Cargo', 'Área', 'Sede', 'Estado', 'Escolaridad', 'Fecha Ingreso'
+            'Cargo', 'Área', 'Sede', 'Jefe Directo', 'Estado', 'Escolaridad', 'Fecha Ingreso'
         ]
         
         # Escribir encabezados
@@ -58,19 +58,25 @@ def export_empleados_excel(empleados):
                 # Obtener cargo actual
                 cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
                 
+                # Obtener jefe directo
+                jefe_directo_nombre = 'Sin asignar'
+                if cargo_actual and cargo_actual.jefe_directo:
+                    jefe_directo_nombre = cargo_actual.jefe_directo.nombre_completo
+
                 # TODOS LOS DATOS
                 data = [
                     empleado.numero_documento,                                    # Columna 1: Documento
-                    empleado.nombres,                                            # Columna 2: Nombres  
+                    empleado.nombres,                                            # Columna 2: Nombres
                     empleado.apellidos,                                          # Columna 3: Apellidos
                     empleado.correo_electronico or '',                          # Columna 4: Email
                     empleado.telefono_contacto,                                 # Columna 5: Teléfono
                     cargo_actual.cargo.nombre if cargo_actual else 'Sin cargo', # Columna 6: Cargo
                     cargo_actual.cargo.area.nombre if cargo_actual else 'Sin área', # Columna 7: Área
                     empleado.sede.nombre,                                        # Columna 8: Sede
-                    empleado.estado.nombre,                                      # Columna 9: Estado
-                    empleado.escolaridad.nivel if empleado.escolaridad else 'No especificado', # Columna 10: Escolaridad
-                    empleado.fecha_ingreso,                                      # Columna 11: Fecha Ingreso
+                    jefe_directo_nombre,                                         # Columna 9: Jefe Directo
+                    empleado.estado.nombre,                                      # Columna 10: Estado
+                    empleado.escolaridad.nivel if empleado.escolaridad else 'No especificado', # Columna 11: Escolaridad
+                    empleado.fecha_ingreso,                                      # Columna 12: Fecha Ingreso
                 ]
                 
                 # Escribir cada dato
@@ -184,18 +190,24 @@ def export_empleados_pdf(empleados):
         elements.append(Spacer(1, 20))
         
         # Preparar datos para la tabla (más columnas en horizontal)
-        data = [['Documento', 'Nombre Completo', 'Email', 'Cargo', 'Área', 'Estado', 'Fecha Ingreso']]
-        
+        data = [['Documento', 'Nombre Completo', 'Email', 'Cargo', 'Área', 'Jefe Directo', 'Estado', 'Fecha Ingreso']]
+
         for empleado in empleados:
             try:
                 cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
-                
+
+                # Obtener jefe directo
+                jefe_directo_nombre = 'Sin asignar'
+                if cargo_actual and cargo_actual.jefe_directo:
+                    jefe_directo_nombre = cargo_actual.jefe_directo.nombre_completo
+
                 row = [
                     empleado.numero_documento,
                     f"{empleado.nombres} {empleado.apellidos}",
                     empleado.correo_electronico or '',
                     cargo_actual.cargo.nombre if cargo_actual else 'Sin cargo',
                     cargo_actual.cargo.area.nombre if cargo_actual else 'Sin área',
+                    jefe_directo_nombre,
                     empleado.estado.nombre,
                     empleado.fecha_ingreso.strftime('%d/%m/%Y')
                 ]
@@ -205,8 +217,8 @@ def export_empleados_pdf(empleados):
                 print(f"❌ Error procesando empleado {empleado.id} para PDF: {e}")
                 continue
         
-        # Crear tabla con anchos específicos
-        table = Table(data, colWidths=[1*inch, 2*inch, 2*inch, 1.5*inch, 1.5*inch, 1*inch, 1*inch])
+        # Crear tabla con anchos específicos (8 columnas ahora)
+        table = Table(data, colWidths=[0.9*inch, 1.8*inch, 1.5*inch, 1.3*inch, 1.2*inch, 1.5*inch, 0.9*inch, 1*inch])
         
         # Estilo de tabla
         table.setStyle(TableStyle([
@@ -266,14 +278,19 @@ def export_empleados_csv(empleados):
     # Encabezados completos
     writer.writerow([
         'Documento', 'Nombres', 'Apellidos', 'Email', 'Teléfono',
-        'Cargo', 'Área', 'Sede', 'Estado', 'Escolaridad', 'Fecha Ingreso'
+        'Cargo', 'Área', 'Sede', 'Jefe Directo', 'Estado', 'Escolaridad', 'Fecha Ingreso'
     ])
-    
+
     # Datos completos
     for empleado in empleados:
         try:
             cargo_actual = empleado.historialcargo_set.filter(activo=True).first()
-            
+
+            # Obtener jefe directo
+            jefe_directo_nombre = 'Sin asignar'
+            if cargo_actual and cargo_actual.jefe_directo:
+                jefe_directo_nombre = cargo_actual.jefe_directo.nombre_completo
+
             writer.writerow([
                 empleado.numero_documento,
                 empleado.nombres,
@@ -283,6 +300,7 @@ def export_empleados_csv(empleados):
                 cargo_actual.cargo.nombre if cargo_actual else 'Sin cargo',
                 cargo_actual.cargo.area.nombre if cargo_actual else 'Sin área',
                 empleado.sede.nombre,
+                jefe_directo_nombre,
                 empleado.estado.nombre,
                 empleado.escolaridad.nivel if empleado.escolaridad else 'No especificado',
                 empleado.fecha_ingreso.strftime('%d/%m/%Y')
