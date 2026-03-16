@@ -107,7 +107,7 @@
             <div class="stats-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="mb-1">Reprobados (< 14 pts)</h5>
+                        <h5 class="mb-1">Bajo Desempeño</h5>
                         <h3 class="mb-0">{{ planes_reprobados|default:0 }}</h3>
                     </div>
                     <div class="align-self-center">
@@ -142,7 +142,7 @@
                                                     {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}
                                                 </h6>
                                                 <small class="text-muted">
-                                                    {{ plan.asignacion_evaluacion.empleado_evaluado.cargo|default:"Sin cargo asignado" }}
+                                                    {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_cargo_actual|default:"Sin cargo asignado" }}
                                                 </small>
                                             </div>
                                             {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
@@ -171,7 +171,13 @@
                                                     <small class="text-muted d-block">Puntaje Evaluación:</small>
                                                     <small class="fw-medium">
                                                         {% if plan.asignacion_evaluacion.puntaje_total %}
-                                                            <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:0 }}/21 pts</span>
+                                                            {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                                                <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:0 }}/21 pts</span>
+                                                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                                                <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%</span>
+                                                            {% else %}
+                                                                <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}%</span>
+                                                            {% endif %}
                                                         {% else %}
                                                             <span class="text-muted">N/A</span>
                                                         {% endif %}
@@ -189,18 +195,43 @@
                                                                 <i class="fas fa-check me-1"></i>Empleado aceptó el plan
                                                             </span>
                                                         </small>
-                                                    {% elif plan.asignacion_evaluacion.puntaje_total < 14 %}
-                                                        <small class="fw-medium">
-                                                            <span class="badge bg-danger">
-                                                                <i class="fas fa-times me-1"></i>No requiere aceptación (Reprobado)
-                                                            </span>
-                                                        </small>
                                                     {% else %}
-                                                        <small class="fw-medium">
-                                                            <span class="badge bg-warning text-dark">
-                                                                <i class="fas fa-clock me-1"></i>Pendiente aceptación del empleado
-                                                            </span>
-                                                        </small>
+                                                        {% comment %}Determinar si es reprobado según tipo de evaluación{% endcomment %}
+                                                        {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                                            {% if plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                                                <small class="fw-medium">
+                                                                    <span class="badge bg-danger">
+                                                                        <i class="fas fa-times me-1"></i>No requiere aceptación (Reprobado)
+                                                                    </span>
+                                                                </small>
+                                                            {% else %}
+                                                                <small class="fw-medium">
+                                                                    <span class="badge bg-warning text-dark">
+                                                                        <i class="fas fa-clock me-1"></i>Pendiente aceptación del empleado
+                                                                    </span>
+                                                                </small>
+                                                            {% endif %}
+                                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                                            {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                                                <small class="fw-medium">
+                                                                    <span class="badge bg-danger">
+                                                                        <i class="fas fa-times me-1"></i>No requiere aceptación (Bajo desempeño)
+                                                                    </span>
+                                                                </small>
+                                                            {% else %}
+                                                                <small class="fw-medium">
+                                                                    <span class="badge bg-warning text-dark">
+                                                                        <i class="fas fa-clock me-1"></i>Pendiente aceptación del empleado
+                                                                    </span>
+                                                                </small>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <small class="fw-medium">
+                                                                <span class="badge bg-warning text-dark">
+                                                                    <i class="fas fa-clock me-1"></i>Pendiente aceptación del empleado
+                                                                </span>
+                                                            </small>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -216,9 +247,11 @@
                                             {% comment %}
                                             Permitir aprobar si:
                                             1. El empleado aceptó el plan, O
-                                            2. La evaluación fue reprobada (puntaje < 14)
+                                            2. La evaluación fue reprobada según su tipo:
+                                               - PERIODO_PRUEBA: puntaje < 14
+                                               - ANUAL: puntaje < 61
                                             {% endcomment %}
-                                            {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                            {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' and plan.asignacion_evaluacion.puntaje_total < 14 or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' and plan.asignacion_evaluacion.puntaje_total < 61 %}
                                                 <div class="d-flex gap-2">
                                                     <form method="post" action="{% url 'evaluations:aprobar_evaluacion' plan.asignacion_evaluacion.id %}" class="flex-fill">
                                                         {% csrf_token %}

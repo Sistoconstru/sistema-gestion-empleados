@@ -20,8 +20,8 @@
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2><i class="fas fa-check-circle me-2"></i>Aceptar Plan de Mejora</h2>
-                    <p class="text-muted mb-0">Revise y acepte su plan de desarrollo profesional</p>
+                    <h2><i class="fas fa-clipboard-check me-2"></i>Revisión de Plan de Mejora</h2>
+                    <p class="text-muted mb-0">Revise su plan de desarrollo profesional y autoevaluación</p>
                 </div>
                 <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-1"></i>Volver al Plan
@@ -55,50 +55,108 @@
                 <div class="card-body">
                     <div class="alert alert-info">
                         <i class="fas fa-lightbulb me-2"></i>
-                        <strong>Importante:</strong> Al aceptar este plan, usted se compromete a seguir las recomendaciones y participar en los seguimientos programados.
+                        <strong>Importante:</strong> Este plan también funciona como su <strong>autoevaluación</strong>.
+                        Al aceptarlo, confirma estar de acuerdo con la evaluación y se compromete a seguir las recomendaciones.
                     </div>
 
-                    <div class="plan-preview border rounded p-3 bg-light">
+                    <div class="plan-preview border rounded p-3 bg-light" style="max-height: 500px; overflow-y: auto;">
                         <div class="plan-content">
-                            {{ plan.plan_mejora|linebreaks }}
+                            <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ plan.plan_mejora }}</pre>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Formulario de aceptación -->
+            <!-- Formulario de aceptación o rechazo -->
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="card-title mb-0"><i class="fas fa-signature me-2"></i>Aceptación del Plan</h5>
+                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="card-title mb-0"><i class="fas fa-clipboard-check me-2"></i>Decisión sobre el Plan</h5>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    {% if error_motivo %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Error:</strong> Debe proporcionar un motivo para rechazar el plan.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" id="formDecision">
                         {% csrf_token %}
-                        
-                        <div class="alert alert-warning">
-                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Términos de Aceptación</h6>
-                            <ul class="mb-0">
-                                <li>Acepto las recomendaciones y el plan de mejora establecido</li>
-                                <li>Me comprometo a participar en los seguimientos bimensuales programados</li>
-                                <li>Entiendo que el cumplimiento del plan será evaluado periódicamente</li>
-                                <li>Acepto trabajar en colaboración con mi supervisor para alcanzar los objetivos</li>
-                            </ul>
+                        <input type="hidden" name="accion" id="accion_input" value="">
+
+                        <!-- Instrucciones -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>¿Qué significa aceptar o rechazar?</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success"><i class="fas fa-check-circle me-1"></i>ACEPTAR:</h6>
+                                    <ul class="small mb-0">
+                                        <li>Estoy de acuerdo con la evaluación</li>
+                                        <li>Acepto el plan de mejora como autoevaluación</li>
+                                        <li>Me comprometo a participar en seguimientos bimensuales</li>
+                                        <li>El plan pasa a aprobación del supervisor</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-danger"><i class="fas fa-times-circle me-1"></i>RECHAZAR:</h6>
+                                    <ul class="small mb-0">
+                                        <li>No estoy de acuerdo con la evaluación</li>
+                                        <li>Debo justificar mi desacuerdo</li>
+                                        <li>El caso se envía a Gestión Humana para revisión</li>
+                                        <li>Podrían solicitar una nueva evaluación</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="acepto_terminos" required>
-                            <label class="form-check-label fw-bold" for="acepto_terminos">
-                                He leído y acepto los términos del plan de mejora
-                            </label>
+                        <!-- Área de motivo de rechazo (oculta inicialmente) -->
+                        <div id="motivoRechazoContainer" style="display: none;">
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Motivo del Desacuerdo</h6>
+                                <p class="small mb-2">Explique claramente por qué no está de acuerdo con la evaluación. Sea específico y profesional.</p>
+                            </div>
+                            <div class="mb-4">
+                                <label for="motivo_rechazo" class="form-label fw-bold">
+                                    ¿Por qué no está de acuerdo con este plan de mejora? <span class="text-danger">*</span>
+                                </label>
+                                <textarea
+                                    class="form-control"
+                                    id="motivo_rechazo"
+                                    name="motivo_rechazo"
+                                    rows="5"
+                                    placeholder="Ejemplo: Considero que mi desempeño en [área específica] fue superior a lo evaluado porque..."
+                                ></textarea>
+                                <small class="text-muted">Mínimo 50 caracteres</small>
+                            </div>
                         </div>
 
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary me-md-2">
-                                <i class="fas fa-times me-1"></i>Cancelar
+                        <!-- Términos para aceptación (visible solo al aceptar) -->
+                        <div id="terminosAceptacion">
+                            <div class="alert alert-success">
+                                <h6><i class="fas fa-check-circle me-2"></i>Términos de Aceptación</h6>
+                                <ul class="mb-0 small">
+                                    <li>Acepto las recomendaciones y el plan de mejora establecido</li>
+                                    <li>Me comprometo a participar en los seguimientos bimensuales programados</li>
+                                    <li>Entiendo que el cumplimiento del plan será evaluado periódicamente</li>
+                                    <li>Acepto trabajar en colaboración con mi supervisor para alcanzar los objetivos</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Volver sin Decidir
                             </a>
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-check me-1"></i>Aceptar Plan de Mejora
-                            </button>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-danger btn-lg" id="btnRechazar">
+                                    <i class="fas fa-times-circle me-1"></i>No Estoy de Acuerdo
+                                </button>
+                                <button type="button" class="btn btn-success btn-lg" id="btnAceptar">
+                                    <i class="fas fa-check-circle me-1"></i>Acepto el Plan
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -108,11 +166,6 @@
 </div>
 
 <style>
-.plan-preview {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
 .plan-content {
     font-size: 0.95rem;
     line-height: 1.6;
@@ -122,26 +175,80 @@
     font-weight: 600;
 }
 
-.form-check-label {
-    color: #333;
-}
-
 .alert ul {
     padding-left: 1.2rem;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const checkbox = document.getElementById('acepto_terminos');
-    const submitButton = document.querySelector('button[type="submit"]');
-    
-    function updateSubmitButton() {
-        submitButton.disabled = !checkbox.checked;
-    }
-    
-    checkbox.addEventListener('change', updateSubmitButton);
-    updateSubmitButton(); // Inicializar el estado
+    const btnAceptar = document.getElementById('btnAceptar');
+    const btnRechazar = document.getElementById('btnRechazar');
+    const motivoContainer = document.getElementById('motivoRechazoContainer');
+    const terminosContainer = document.getElementById('terminosAceptacion');
+    const motivoTextarea = document.getElementById('motivo_rechazo');
+    const accionInput = document.getElementById('accion_input');
+    const form = document.getElementById('formDecision');
+
+    // Manejar clic en "Aceptar"
+    btnAceptar.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (confirm('¿Está seguro que desea ACEPTAR este plan de mejora como su autoevaluación?\n\nAl aceptar, se compromete a seguir las recomendaciones y participar en los seguimientos.')) {
+            accionInput.value = 'aceptar';
+            form.submit();
+        }
+    });
+
+    // Manejar clic en "Rechazar"
+    btnRechazar.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Mostrar área de motivo
+        motivoContainer.style.display = 'block';
+        terminosContainer.style.display = 'none';
+
+        // Scroll al textarea
+        motivoTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        motivoTextarea.focus();
+
+        // Cambiar el botón de rechazar por "Confirmar Rechazo"
+        btnRechazar.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Enviar Desacuerdo';
+        btnRechazar.classList.remove('btn-danger');
+        btnRechazar.classList.add('btn-warning');
+
+        // Ocultar botón de aceptar
+        btnAceptar.style.display = 'none';
+
+        // Cambiar el comportamiento del botón
+        btnRechazar.onclick = function(e2) {
+            e2.preventDefault();
+
+            const motivo = motivoTextarea.value.trim();
+
+            if (!motivo) {
+                alert('Debe proporcionar un motivo para rechazar el plan.');
+                motivoTextarea.focus();
+                return;
+            }
+
+            if (motivo.length < 50) {
+                alert('El motivo debe tener al menos 50 caracteres para ser considerado.');
+                motivoTextarea.focus();
+                return;
+            }
+
+            if (confirm('¿Está seguro que desea RECHAZAR este plan de mejora?\n\nSu desacuerdo será enviado a Gestión Humana para revisión. Ellos podrían solicitar una nueva evaluación.')) {
+                accionInput.value = 'rechazar';
+                form.submit();
+            }
+        };
+    });
 });
 </script>
 {% endblock %}

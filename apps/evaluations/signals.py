@@ -1,0 +1,195 @@
+# =============================================================================
+# apps/evaluations/signals.py
+# Signals para auto-asignación de evaluaciones
+# =============================================================================
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
+from datetime import timedelta
+import logging
+
+from .models import EvaluacionCargo, AsignacionEvaluacion
+from apps.employees.models import Empleado, HistorialCargo
+
+# Logger para errores
+logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=EvaluacionCargo)
+def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
+    """
+    Signal que se ejecuta cuando se ACTIVA una evaluación asignada a un cargo.
+
+    NUEVO FLUJO CON CONTROL DE ACTIVACIÓN:
+    1. Admin asigna evaluación a cargo → estado='programada' → NO hace nada
+    2. Admin activa la evaluación desde el admin → estado='activa' → Asigna a empleados
+    3. Para cada empleado con ese cargo:
+       - Crea AsignacionEvaluacion
+       - Asigna al jefe_directo como evaluador
+       - Usa fecha_vencimiento_planeada del EvaluacionCargo
+
+    IMPORTANTE: Este signal NO se ejecuta al crear (estado='programada')
+    Solo se ejecuta cuando se actualiza a estado='activa' desde el admin
+    """
+
+    # NO procesar en creación (cuando se asigna al cargo por primera vez)
+    if created:
+        print(f"[SIGNAL] Evaluación '{instance.evaluacion.nombre}' asignada al cargo '{instance.cargo.nombre}' en estado PROGRAMADA.")
+        print(f"[SIGNAL] Para activarla y asignar a empleados, use la acción 'Activar Evaluación' en el admin.\n")
+        return
+
+    # Solo procesar si el estado cambió a 'activa'
+    if instance.estado != 'activa':
+        return
+
+    cargo = instance.cargo
+    evaluacion = instance.evaluacion
+    asignado_por = instance.asignado_por
+
+    # Verificación de seguridad: asignado_por no puede ser None
+    if not asignado_por:
+        print(f"[SIGNAL] ERROR: No se puede asignar evaluación sin usuario asignador. Se omite el proceso.")
+        return
+
+    print(f"\n[SIGNAL] ACTIVANDO evaluación '{evaluacion.nombre}' para el cargo '{cargo.nombre}'")
+    print(f"[SIGNAL] Activada por: {instance.activada_por or 'Sistema'}")
+
+    # Obtener todos los empleados activos con este cargo
+    empleados_con_cargo = Empleado.objects.filter(
+        estado__codigo='999',  # Estado ACTIVO
+        historialcargo__cargo=cargo,
+        historialcargo__activo=True
+    ).distinct()
+
+    print(f"[SIGNAL] Se encontraron {empleados_con_cargo.count()} empleados activos con el cargo '{cargo.nombre}'")
+
+    # Usar fecha de vencimiento planeada o calcular una por defecto
+    if instance.fecha_vencimiento_planeada:
+        fecha_vencimiento = instance.fecha_vencimiento_planeada
+    else:
+        fecha_vencimiento = timezone.now() + timedelta(days=instance.dias_para_completar)
+
+    # Crear periodo de evaluación
+    año_actual = timezone.now().year
+    periodo_evaluacion = f"{año_actual}"
+
+    asignaciones_creadas = 0
+    asignaciones_existentes = 0
+
+    for empleado in empleados_con_cargo:
+        # Obtener el jefe directo del empleado
+        try:
+            historial_activo = HistorialCargo.objects.get(
+                empleado=empleado,
+                activo=True
+            )
+            jefe_directo = historial_activo.jefe_directo
+
+            if not jefe_directo:
+                print(f"[SIGNAL] ADVERTENCIA: El empleado {empleado.nombre_completo} no tiene jefe directo asignado. Se omite.")
+                continue
+
+        except HistorialCargo.DoesNotExist:
+            print(f"[SIGNAL] ADVERTENCIA: El empleado {empleado.nombre_completo} no tiene historial de cargo activo. Se omite.")
+            continue
+
+        # Verificar si ya existe una asignación para este empleado con esta evaluación
+        asignacion_existente = AsignacionEvaluacion.objects.filter(
+            empleado_evaluado=empleado,
+            evaluacion=evaluacion,
+            periodo_evaluacion=periodo_evaluacion,
+            estado__in=['pendiente', 'en_progreso']  # No crear si ya está pendiente o en progreso
+        ).exists()
+
+        if asignacion_existente:
+            print(f"[SIGNAL] Ya existe asignación para {empleado.nombre_completo}. Se omite.")
+            asignaciones_existentes += 1
+            continue
+
+        # Crear AsignacionEvaluacion
+        asignacion = AsignacionEvaluacion.objects.create(
+            empleado_evaluado=empleado,
+            evaluacion=evaluacion,
+            evaluador=jefe_directo,
+            periodo_evaluacion=periodo_evaluacion,
+            fecha_vencimiento=fecha_vencimiento,
+            estado='pendiente',
+            es_autoevaluacion=False,
+            porcentaje_completado=0,
+            asignado_por=asignado_por  # Usuario que asignó la evaluación al cargo
+        )
+
+        print(f"[SIGNAL] ✓ Asignación creada: {empleado.nombre_completo} será evaluado por {jefe_directo.nombre_completo}")
+        asignaciones_creadas += 1
+
+        # ========== CREAR NOTIFICACIONES ==========
+
+        # 1. Notificación al EMPLEADO que será evaluado
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif_empleado = TipoNotificacion.objects.get(
+                codigo='evaluacion_asignada',
+                activo=True
+            )
+
+            datos_empleado = {
+                'nombre_evaluacion': evaluacion.nombre,
+                'periodo': periodo_evaluacion,
+                'nombre_evaluador': jefe_directo.nombre_completo,
+                'fecha_vencimiento': fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A',
+            }
+
+            Notificacion.objects.create(
+                usuario=empleado.usuario,
+                tipo_notificacion=tipo_notif_empleado,
+                titulo=tipo_notif_empleado.plantilla_titulo.format(**datos_empleado),
+                mensaje=tipo_notif_empleado.plantilla_mensaje.format(**datos_empleado),
+                datos_adicionales=datos_empleado
+            )
+            print(f"[SIGNAL]   → Notificación enviada al empleado: {empleado.nombre_completo}")
+
+        except TipoNotificacion.DoesNotExist:
+            logger.warning(f"Tipo de notificación 'evaluacion_asignada' no existe. Ejecute: python manage.py configurar_notificaciones_evaluaciones")
+        except Exception as e:
+            logger.warning(f"Error al crear notificación para empleado {empleado.nombre_completo}: {e}")
+
+        # 2. Notificación al EVALUADOR (jefe directo)
+        try:
+            from apps.notifications.models import Notificacion, TipoNotificacion
+
+            tipo_notif_evaluador = TipoNotificacion.objects.get(
+                codigo='evaluacion_para_evaluar',
+                activo=True
+            )
+
+            datos_evaluador = {
+                'nombre_empleado': empleado.nombre_completo,
+                'nombre_evaluacion': evaluacion.nombre,
+                'fecha_vencimiento': fecha_vencimiento.strftime('%d/%m/%Y') if fecha_vencimiento else 'N/A',
+            }
+
+            Notificacion.objects.create(
+                usuario=jefe_directo.usuario,
+                tipo_notificacion=tipo_notif_evaluador,
+                titulo=tipo_notif_evaluador.plantilla_titulo.format(**datos_evaluador),
+                mensaje=tipo_notif_evaluador.plantilla_mensaje.format(**datos_evaluador),
+                datos_adicionales=datos_evaluador
+            )
+            print(f"[SIGNAL]   → Notificación enviada al evaluador: {jefe_directo.nombre_completo}")
+
+        except TipoNotificacion.DoesNotExist:
+            logger.warning(f"Tipo de notificación 'evaluacion_para_evaluar' no existe. Ejecute: python manage.py configurar_notificaciones_evaluaciones")
+        except Exception as e:
+            logger.warning(f"Error al crear notificación para evaluador {jefe_directo.nombre_completo}: {e}")
+
+    print(f"\n[SIGNAL] ✅ EVALUACIÓN ACTIVADA EXITOSAMENTE")
+    print(f"[SIGNAL] RESUMEN:")
+    print(f"  - Evaluación: {evaluacion.nombre}")
+    print(f"  - Cargo: {cargo.nombre}")
+    print(f"  - Asignaciones creadas: {asignaciones_creadas}")
+    print(f"  - Asignaciones ya existentes (omitidas): {asignaciones_existentes}")
+    print(f"  - Total empleados procesados: {empleados_con_cargo.count()}")
+    print(f"  - Fecha de vencimiento: {fecha_vencimiento}")
+    print(f"  - Período: {periodo_evaluacion}\n")

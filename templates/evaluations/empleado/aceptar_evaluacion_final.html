@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aceptar Evaluación Final - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.resultado-card {
+    border-radius: 10px;
+    padding: 25px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.resultado-exitoso {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.resultado-parcial {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+}
+
+.resultado-no-exitoso {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.seguimiento-item {
+    border-left: 3px solid #28a745;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.seguimiento-item.no-satisfactorio {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+
+.conclusion-box {
+    background: #f8f9fa;
+    border-left: 4px solid #6f42c1;
+    padding: 20px;
+    border-radius: 6px;
+    font-style: italic;
+}
+
+.decision-option {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.decision-option:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.decision-option.selected {
+    border-color: #007bff;
+    background: #e7f3ff;
+}
+
+.motivo-rechazo-area {
+    display: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:index' %}">Evaluaciones</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}">Mi Plan de Mejora</a></li>
+                    <li class="breadcrumb-item active">Evaluación Final</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-trophy me-2"></i>Evaluación Final - Revisión</h2>
+                    <p class="text-muted mb-0">Revise el resultado final de su plan de mejora</p>
+                </div>
+                <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Volver al Plan
+                </a>
+            </div>
+
+            <!-- Información de la Evaluación -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Evaluación</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Tipo de Evaluación:</strong> {{ asignacion.evaluacion.tipo_evaluacion.nombre }}</p>
+                            <p><strong>Período:</strong> {{ asignacion.periodo_evaluacion }}</p>
+                            <p><strong>Puntaje Original:</strong>
+                                <span class="badge bg-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                                    {{ asignacion.puntaje_total|floatformat:1 }}/21
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Evaluador Original:</strong> {{ asignacion.evaluador.nombre_completo|default:"Sistema" }}</p>
+                            <p><strong>Evaluado Por:</strong> {{ evaluacion_final.evaluado_por.get_full_name }}</p>
+                            <p><strong>Fecha Evaluación Final:</strong> {{ evaluacion_final.fecha_evaluacion|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultado Final -->
+            <div class="resultado-card resultado-{% if evaluacion_final.resultado == 'exitoso' %}exitoso{% elif evaluacion_final.resultado == 'parcialmente_exitoso' %}parcial{% else %}no-exitoso{% endif %}">
+                <h3 class="mb-3">
+                    <i class="fas fa-{% if evaluacion_final.resultado == 'exitoso' %}check-circle{% elif evaluacion_final.resultado == 'parcialmente_exitoso' %}exclamation-circle{% else %}times-circle{% endif %} me-2"></i>
+                    Resultado: {{ evaluacion_final.get_resultado_display }}
+                </h3>
+                <p class="lead mb-0">
+                    {% if evaluacion_final.resultado == 'exitoso' %}
+                        ¡Felicidades! Has completado exitosamente todos los objetivos del plan de mejora durante los 6 meses de seguimiento.
+                    {% elif evaluacion_final.resultado == 'parcialmente_exitoso' %}
+                        Has mostrado mejoras significativas, pero aún hay áreas que requieren seguimiento adicional.
+                    {% else %}
+                        Los objetivos del plan de mejora requieren atención adicional y medidas de apoyo.
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Resumen de Seguimientos -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0"><i class="fas fa-calendar-check me-2"></i>Resumen de Seguimientos Bimensuales</h5>
+                </div>
+                <div class="card-body">
+                    {% for seg in seguimientos %}
+                    <div class="seguimiento-item {% if not seg.avance_satisfactorio %}no-satisfactorio{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ seg.numero_bimestre }}° Bimestre</strong>
+                                {% if seg.avance_satisfactorio %}
+                                    <span class="badge bg-success ms-2"><i class="fas fa-check"></i> Satisfactorio</span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2"><i class="fas fa-exclamation-triangle"></i> Necesita Mejorar</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">{{ seg.fecha_completado|date:"d/m/Y" }}</small>
+                        </div>
+                        {% if seg.observaciones %}
+                        <div class="mt-2">
+                            <small><strong>Observaciones:</strong> {{ seg.observaciones|truncatewords:20 }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Conclusión del Evaluador -->
+            <div class="card mb-4">
+                <div class="card-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a379f 100%); color: white;">
+                    <h5 class="card-title mb-0"><i class="fas fa-comment-alt me-2"></i>Conclusión del Evaluador</h5>
+                </div>
+                <div class="card-body">
+                    <div class="conclusion-box">
+                        <p class="mb-0" style="font-size: 1.05rem; line-height: 1.8;">{{ evaluacion_final.conclusion }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Decisión -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="card-title mb-0"><i class="fas fa-clipboard-check me-2"></i>Su Decisión sobre la Evaluación Final</h5>
+                </div>
+                <div class="card-body">
+                    {% if error_motivo %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Error:</strong> Debe proporcionar un motivo detallado para rechazar la evaluación final.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Importante:</strong> Esta es su oportunidad de expresar su conformidad o inconformidad con la evaluación final.
+                        Si está de acuerdo, el proceso se completará automáticamente. Si no está de acuerdo, su caso será revisado por Gestión Humana.
+                    </div>
+
+                    <form method="post" id="formDecision">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" id="accion_input" value="">
+
+                        <!-- Opción Aceptar -->
+                        <div class="decision-option" onclick="seleccionarOpcion('aceptar')" id="opcion-aceptar">
+                            <div class="row align-items-center">
+                                <div class="col-md-1 text-center">
+                                    <i class="fas fa-check-circle text-success" style="font-size: 2.5rem;"></i>
+                                </div>
+                                <div class="col-md-11">
+                                    <h5 class="text-success mb-2">ACEPTAR Evaluación Final</h5>
+                                    <ul class="mb-0">
+                                        <li>Estoy de acuerdo con el resultado final y la conclusión del evaluador</li>
+                                        <li>Acepto que el proceso de seguimiento ha concluido</li>
+                                        <li>El plan de mejora se marcará como COMPLETADO automáticamente</li>
+                                        <li>Se cerrará definitivamente el ciclo de evaluación</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opción Rechazar -->
+                        <div class="decision-option" onclick="seleccionarOpcion('rechazar')" id="opcion-rechazar">
+                            <div class="row align-items-center">
+                                <div class="col-md-1 text-center">
+                                    <i class="fas fa-times-circle text-danger" style="font-size: 2.5rem;"></i>
+                                </div>
+                                <div class="col-md-11">
+                                    <h5 class="text-danger mb-2">RECHAZAR Evaluación Final</h5>
+                                    <ul class="mb-0">
+                                        <li>No estoy de acuerdo con el resultado final o la conclusión</li>
+                                        <li>Requiero una revisión de la evaluación</li>
+                                        <li>El caso será enviado a <strong>Gestión Humana</strong> para mediación</li>
+                                        <li>Debo proporcionar un motivo detallado de mi desacuerdo</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo de motivo de rechazo -->
+                        <div class="motivo-rechazo-area mt-3" id="motivo-area">
+                            <div class="alert alert-danger">
+                                <i class="fas fa-pen me-2"></i>
+                                <strong>Motivo del Rechazo (Obligatorio):</strong>
+                            </div>
+                            <textarea class="form-control" name="motivo_rechazo" id="motivo_rechazo" rows="5"
+                                placeholder="Por favor, explique detalladamente por qué no está de acuerdo con la evaluación final. Sea específico sobre qué aspectos del resultado o la conclusión considera injustos o incorrectos. Esta información será revisada por Gestión Humana."
+                            ></textarea>
+                            <small class="form-text text-muted mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Mínimo 50 caracteres. Sea claro y respetuoso en su explicación.
+                            </small>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Volver sin Decidir
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg" id="btn-enviar" disabled>
+                                <i class="fas fa-paper-plane me-2"></i>
+                                <span id="btn-texto">Seleccione una opción</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let opcionSeleccionada = null;
+
+function seleccionarOpcion(opcion) {
+    // Limpiar selecciones previas
+    document.getElementById('opcion-aceptar').classList.remove('selected');
+    document.getElementById('opcion-rechazar').classList.remove('selected');
+
+    // Seleccionar la opción
+    opcionSeleccionada = opcion;
+    document.getElementById('accion_input').value = opcion;
+
+    if (opcion === 'aceptar') {
+        document.getElementById('opcion-aceptar').classList.add('selected');
+        document.getElementById('motivo-area').style.display = 'none';
+        document.getElementById('btn-enviar').disabled = false;
+        document.getElementById('btn-texto').textContent = 'Aceptar Evaluación Final';
+        document.getElementById('btn-enviar').className = 'btn btn-success btn-lg';
+    } else if (opcion === 'rechazar') {
+        document.getElementById('opcion-rechazar').classList.add('selected');
+        document.getElementById('motivo-area').style.display = 'block';
+        document.getElementById('btn-enviar').disabled = false;
+        document.getElementById('btn-texto').textContent = 'Rechazar y Enviar a RRHH';
+        document.getElementById('btn-enviar').className = 'btn btn-danger btn-lg';
+    }
+}
+
+document.getElementById('formDecision').addEventListener('submit', function(e) {
+    if (!opcionSeleccionada) {
+        e.preventDefault();
+        alert('Debe seleccionar una opción (Aceptar o Rechazar).');
+        return;
+    }
+
+    if (opcionSeleccionada === 'rechazar') {
+        const motivo = document.getElementById('motivo_rechazo').value.trim();
+        if (motivo.length < 50) {
+            e.preventDefault();
+            alert('El motivo del rechazo debe tener al menos 50 caracteres. Por favor, sea más específico.');
+            return;
+        }
+    }
+
+    // Confirmación
+    let mensaje = '';
+    if (opcionSeleccionada === 'aceptar') {
+        mensaje = '¿Está seguro de ACEPTAR la evaluación final?\n\nEl plan de mejora se marcará como COMPLETADO y el proceso finalizará automáticamente.';
+    } else {
+        mensaje = '¿Está seguro de RECHAZAR la evaluación final?\n\nSu caso será enviado a Gestión Humana para revisión. Deberá esperar la validación de RRHH.';
+    }
+
+    if (!confirm(mensaje)) {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}

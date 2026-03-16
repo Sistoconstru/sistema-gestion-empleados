@@ -176,6 +176,22 @@
                                 <div class="small text-muted">Aprobación y seguimiento</div>
                             </a>
                         </div>
+
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:resultados_finales_admin' %}" class="btn btn-outline-success w-100 py-3">
+                                <i class="fas fa-trophy fa-2x d-block mb-2"></i>
+                                <strong>Resultados Finales</strong>
+                                <div class="small text-muted">Evaluaciones completadas</div>
+                            </a>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}" class="btn btn-outline-danger w-100 py-3">
+                                <i class="fas fa-exclamation-triangle fa-2x d-block mb-2"></i>
+                                <strong>Evaluaciones Rechazadas</strong>
+                                <div class="small text-muted">Validación RRHH</div>
+                            </a>
+                        </div>
                         {% endif %}
 
                         {% if user.is_superuser or perms.evaluations.add_asignacionevaluacion %}

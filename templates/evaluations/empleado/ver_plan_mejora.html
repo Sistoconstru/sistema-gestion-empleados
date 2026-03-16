@@ -334,7 +334,7 @@
                                 <strong>Acción Requerida:</strong> Debe revisar y aceptar su plan de mejora antes de que pueda ser aprobado.
                             </div>
                             <a href="{% url 'evaluations:aceptar_plan_mejora' plan.id %}" class="btn btn-success">
-                                <i class="fas fa-check me-1"></i>Aceptar Plan
+                                <i class="fas fa-check me-1"></i>Revisar plan
                             </a>
                         </div>
                     </div>
@@ -435,20 +435,54 @@
                 </div>
                 {% endif %}
 
+                <!-- Alerta de Evaluación Final Pendiente de Aceptación -->
+                {% if evaluacion_final_pendiente %}
+                <div class="alert alert-warning border-warning mb-4" style="background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 5px solid #ffc107;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="alert-heading mb-2">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>¡ACCIÓN REQUERIDA!</strong> Evaluación Final Pendiente
+                            </h5>
+                            <p class="mb-2">
+                                Su supervisor ha completado la evaluación final de su plan de mejora.
+                                <strong>Debe revisar y aceptar/rechazar</strong> la evaluación para finalizar el proceso.
+                            </p>
+                            <ul class="mb-0">
+                                <li>✅ Si está de acuerdo, el plan se completará automáticamente</li>
+                                <li>❌ Si no está de acuerdo, su caso será revisado por Gestión Humana</li>
+                            </ul>
+                        </div>
+                        <div class="ms-3">
+                            <a href="{% url 'evaluations:aceptar_evaluacion_final_empleado' evaluacion_final.id %}"
+                               class="btn btn-warning btn-lg pulse-animation">
+                                <i class="fas fa-clipboard-check me-2"></i>
+                                REVISAR AHORA
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Evaluación Final -->
                 {% if evaluacion_final %}
                 <div class="evaluation-final-card resultado-{{ evaluacion_final.resultado }}">
                     <div class="text-center">
                         <h4>
                             <i class="fas fa-star me-2"></i>
-                            Evaluación Final Completada
+                            Evaluación Final
+                            {% if evaluacion_final.fue_aceptada %}
+                                <span class="badge bg-success ms-2">Aceptada</span>
+                            {% elif evaluacion_final.fue_rechazada %}
+                                <span class="badge bg-danger ms-2">En Revisión RRHH</span>
+                            {% endif %}
                         </h4>
                         <div class="mt-3 mb-4">
                             <span class="fs-5 fw-bold">
                                 Resultado: {{ evaluacion_final.get_resultado_display }}
                             </span>
                         </div>
-                        
+
                         <div class="text-start">
                             <h6><i class="fas fa-clipboard me-2"></i>Conclusión del Supervisor:</h6>
                             <div class="bg-white bg-opacity-25 rounded p-3 mt-2">
@@ -457,6 +491,28 @@
                             <small class="d-block mt-2 opacity-75">
                                 Evaluado por {{ evaluacion_final.evaluado_por.get_full_name }} el {{ evaluacion_final.fecha_evaluacion|date:"d/m/Y" }}
                             </small>
+
+                            {% if evaluacion_final.fue_aceptada %}
+                            <div class="alert alert-success mt-3">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong>Aceptado por usted</strong> el {{ evaluacion_final.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}
+                            </div>
+                            {% elif evaluacion_final.fue_rechazada %}
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Rechazado por usted</strong> el {{ evaluacion_final.fecha_rechazo_empleado|date:"d/m/Y H:i" }}
+                                <br>
+                                <small>Su caso está siendo revisado por Gestión Humana</small>
+                            </div>
+                            {% if evaluacion_final.validado_por_rrhh %}
+                            <div class="alert alert-info mt-2">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong>Validado por RRHH:</strong> {{ evaluacion_final.validado_por_rrhh.get_full_name }} el {{ evaluacion_final.fecha_validacion_rrhh|date:"d/m/Y" }}
+                                <br>
+                                <strong>Comentarios de RRHH:</strong> {{ evaluacion_final.comentarios_rrhh }}
+                            </div>
+                            {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

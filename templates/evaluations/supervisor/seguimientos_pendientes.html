@@ -141,7 +141,7 @@
 
     <!-- Estadísticas -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card stat-card bg-info text-white text-center">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -154,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card stat-card bg-danger text-white text-center">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -167,7 +167,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card stat-card bg-warning text-white text-center">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -180,7 +180,101 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white text-center">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ planes_listos_evaluacion_final|length }}</h3>
+                            <p class="mb-0">Evaluaciones Finales</p>
+                        </div>
+                        <i class="fas fa-trophy fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Evaluaciones Finales Pendientes -->
+    {% if planes_listos_evaluacion_final %}
+    <div class="card mb-4" style="border-left: 5px solid #28a745;">
+        <div class="card-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+            <h5 class="mb-0">
+                <i class="fas fa-trophy me-2"></i>
+                Evaluaciones Finales Pendientes
+            </h5>
+            <small class="opacity-75">
+                Planes de mejora con todos los seguimientos completados - Listos para evaluación final
+            </small>
+        </div>
+        <div class="card-body p-3">
+            <div class="alert alert-success mb-3">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>¡Atención!</strong> Los siguientes planes han completado sus 3 seguimientos bimensuales y están listos para recibir la evaluación final.
+            </div>
+
+            {% for item in planes_listos_evaluacion_final %}
+            <div class="card mb-3" style="border-left: 4px solid #28a745; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <!-- Información del Empleado -->
+                        <div class="col-md-4">
+                            <h6 class="mb-2 text-success">
+                                <i class="fas fa-user-circle me-2"></i>
+                                {{ item.asignacion.empleado_evaluado.nombre_completo }}
+                            </h6>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-briefcase me-1"></i>
+                                {{ item.asignacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-building me-1"></i>
+                                {{ item.asignacion.empleado_evaluado.cargo_actual.cargo.area.nombre|default:"Sin área" }}
+                            </small>
+                        </div>
+
+                        <!-- Estadísticas del Plan -->
+                        <div class="col-md-4 text-center">
+                            <div class="mb-2">
+                                <strong class="text-success">Todos los seguimientos completados</strong>
+                                <div class="badge bg-success mt-1">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    3/3 Seguimientos
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {% widthratio item.seguimientos_satisfactorios item.total_seguimientos 100 %}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                {{ item.seguimientos_satisfactorios }} de {{ item.total_seguimientos }} seguimientos satisfactorios
+                            </small>
+                        </div>
+
+                        <!-- Información de la Evaluación -->
+                        <div class="col-md-2 text-center">
+                            <small class="text-muted d-block">Puntaje Original</small>
+                            <span class="badge bg-{% if item.asignacion.puntaje_total >= 18 %}success{% elif item.asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %} fs-6">
+                                {{ item.asignacion.puntaje_total|floatformat:1 }}/21
+                            </span>
+                        </div>
+
+                        <!-- Botón de Acción -->
+                        <div class="col-md-2">
+                            <a href="{% url 'evaluations:evaluacion_final' item.plan.id %}"
+                               class="btn btn-success w-100">
+                                <i class="fas fa-trophy me-1"></i>
+                                Completar Evaluación Final
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Lista de Seguimientos Agrupados por Jefe -->
     {% if jefes_con_seguimientos %}

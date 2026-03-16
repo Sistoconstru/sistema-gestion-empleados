@@ -121,7 +121,7 @@
 </div> {% endcomment %}
 
 <!-- Alertas y Acciones Rápidas -->
-{% if documentos.vencidos > 0 or documentos.por_vencer > 0 or evaluaciones.vencidas > 0 or evaluaciones.proximas > 0 %}
+{% if documentos.vencidos > 0 or documentos.por_vencer > 0 or evaluaciones.vencidas > 0 or evaluaciones.proximas > 0 or encuestas.pendientes > 0 or encuestas.proximas_vencer > 0 %}
 <div class="row mb-4">
     <div class="col-12">
     <div class="card border-amarillo">
@@ -141,7 +141,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if documentos.por_vencer > 0 %}
                     <div class="col-md-6 mb-2">
                         <div class="alert alert-amarillo alert-sm mb-0 text-corporativo">
@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if evaluaciones.vencidas > 0 %}
                     <div class="col-md-6 mb-2">
                         <div class="alert alert-rojo alert-sm mb-0">
@@ -159,12 +159,30 @@
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if evaluaciones.proximas > 0 %}
                     <div class="col-md-6 mb-2">
                         <div class="alert alert-azul alert-sm mb-0">
                             <i class="fas fa-clipboard-check me-2"></i>
                             <strong>{{ evaluaciones.proximas }} evaluación{{ evaluaciones.proximas|pluralize }}</strong> próxima{{ evaluaciones.proximas|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if encuestas.pendientes > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-corporativo alert-sm mb-0 text-white">
+                            <i class="fas fa-poll-h me-2"></i>
+                            <strong>{{ encuestas.pendientes }} encuesta{{ encuestas.pendientes|pluralize }}</strong> pendiente{{ encuestas.pendientes|pluralize }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if encuestas.proximas_vencer > 0 %}
+                    <div class="col-md-6 mb-2">
+                        <div class="alert alert-amarillo alert-sm mb-0 text-corporativo">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>{{ encuestas.proximas_vencer }} encuesta{{ encuestas.proximas_vencer|pluralize }}</strong> por vencer
                         </div>
                     </div>
                     {% endif %}
@@ -237,7 +255,25 @@
                             {% endif %}
                         </a>
                     </div>
-                    
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-poll-h fa-2x d-block mb-2"></i>
+                            <strong>Mis Encuestas</strong>
+                            <div class="small text-muted">{{ encuestas.pendientes }} pendientes</div>
+                            {% if encuestas.pendientes > 0 %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-corporativo">
+                                    {{ encuestas.pendientes }}
+                                </span>
+                            {% endif %}
+                            {% if encuestas.proximas_vencer > 0 %}
+                                <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-amarillo text-corporativo">
+                                    {{ encuestas.proximas_vencer }} próximas
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
                     <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'recognition:index' %}" class="btn btn-outline-azul w-100 py-3">
                             <i class="fas fa-trophy fa-2x d-block mb-2"></i>
@@ -457,7 +493,46 @@
             </div>
         </div>
         {% endif %}
-        
+
+        <!-- Encuestas Pendientes -->
+        {% if encuestas.lista_pendientes %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-poll-h me-2"></i>Encuestas Pendientes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for participacion in encuestas.lista_pendientes %}
+                <div class="d-flex align-items-center border-bottom py-2 mb-2">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ participacion.encuesta.nombre }}</h6>
+                        <small class="text-muted d-block">
+                            <i class="fas fa-tag me-1"></i>{{ participacion.encuesta.tipo_encuesta.nombre }}
+                        </small>
+                        <small class="text-muted">
+                            <i class="fas fa-calendar me-1"></i>Vence: {{ participacion.encuesta.fecha_fin|date:"d/m/Y" }}
+                        </small>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <a href="{% url 'surveys:responder_encuesta' participacion.encuesta.pk %}" class="btn btn-sm btn-corporativo">
+                            <i class="fas fa-play me-1"></i>Responder
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if encuestas.pendientes > encuestas.lista_pendientes|length %}
+                <div class="text-center mt-2">
+                    <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-sm btn-outline-corporativo">
+                        <i class="fas fa-list me-1"></i>Ver todas ({{ encuestas.pendientes }})
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Empleados a mi Cargo -->
         {% if empleados_a_cargo.es_jefe %}
         <div class="card mb-4">

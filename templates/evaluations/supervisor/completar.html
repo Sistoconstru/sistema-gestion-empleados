@@ -474,6 +474,78 @@
                 {% endfor %}
             {% endfor %}
 
+            <!-- Sección de Seguridad y Salud en el Trabajo (SST) - Solo para evaluaciones anuales -->
+            {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' %}
+            <div class="card border-warning mt-4 mb-4" style="background-color: #fffbf0;">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-hard-hat"></i> Observación de Seguridad y Salud en el Trabajo (SST)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Nota:</strong> Esta observación es independiente de la evaluación de desempeño y <strong>no afecta el puntaje</strong>.
+                        Su propósito es monitorear el cumplimiento de normas de seguridad.
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-bold mb-3">
+                            <i class="fas fa-shield-alt"></i>
+                            ¿El empleado utiliza adecuadamente los Elementos de Protección Personal (EPP) y promueve su uso?
+                        </label>
+
+                        <div class="custom-radio-group">
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio"
+                                       id="uso_epp_correcto"
+                                       name="uso_epp_sst"
+                                       value="correcto"
+                                       class="custom-control-input"
+                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
+                                       {% if asignacion.uso_epp_sst == 'correcto' %}checked{% endif %}>
+                                <label class="custom-control-label" for="uso_epp_correcto">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <strong>Los usa correctamente y promueve su uso</strong>
+                                    <small class="d-block text-muted ml-4">El empleado cumple completamente con las normas de seguridad</small>
+                                </label>
+                            </div>
+
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio"
+                                       id="uso_epp_aveces"
+                                       name="uso_epp_sst"
+                                       value="a_veces"
+                                       class="custom-control-input"
+                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
+                                       {% if asignacion.uso_epp_sst == 'a_veces' %}checked{% endif %}>
+                                <label class="custom-control-label" for="uso_epp_aveces">
+                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    <strong>A veces no los usa adecuadamente</strong>
+                                    <small class="d-block text-muted ml-4">Se han observado ocasiones donde no cumple con las normas</small>
+                                </label>
+                            </div>
+
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio"
+                                       id="uso_epp_nunca"
+                                       name="uso_epp_sst"
+                                       value="nunca"
+                                       class="custom-control-input"
+                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
+                                       {% if asignacion.uso_epp_sst == 'nunca' %}checked{% endif %}>
+                                <label class="custom-control-label" for="uso_epp_nunca">
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                    <strong>No los usa o no promueve su uso</strong>
+                                    <small class="d-block text-muted ml-4">El empleado no cumple con las normas de seguridad</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Botones de acción -->
             <div class="row mt-4 align-items-center">
                 <div class="col-md-4">
@@ -493,34 +565,53 @@
                                     <i class="fas fa-chart-line"></i> Progreso Actual
                                 </h6>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <div class="text-center">
-                                            <h4 class="mb-1 text-primary" id="current-score">0</h4>
-                                            <small class="text-muted">Puntaje / 21</small>
+                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' %}
+                                        <!-- Para evaluaciones anuales ponderadas -->
+                                        <div class="col-12">
+                                            <div class="text-center">
+                                                <h4 class="mb-1 text-success" id="current-percentage">0.00%</h4>
+                                                <small class="text-muted">Puntaje Ponderado Actual</small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-center">
-                                            <h4 class="mb-1 text-success" id="current-percentage">0%</h4>
-                                            <small class="text-muted">Completado</small>
+                                    {% else %}
+                                        <!-- Para evaluaciones de período de prueba -->
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h4 class="mb-1 text-primary" id="current-score">0</h4>
+                                                <small class="text-muted">Puntaje / 21</small>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h4 class="mb-1 text-success" id="current-percentage">0%</h4>
+                                                <small class="text-muted">Completado</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 <div class="progress mt-2" style="height: 8px;">
-                                    <div class="progress-bar bg-info" role="progressbar" 
-                                         id="progress-bar" style="width: 0%" 
-                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="21">
+                                    <div class="progress-bar bg-info" role="progressbar"
+                                         id="progress-bar" style="width: 0%"
+                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="{% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' %}100{% else %}21{% endif %}">
                                     </div>
                                 </div>
                                 <small class="text-muted mt-1 d-block">
                                     <span id="answered-count">0</span> de {{ preguntas.count }} preguntas respondidas
                                 </small>
+                                {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' %}
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <strong>Criterios:</strong> Muy bajo: 1-40% • Bajo: 41-60% • Moderado: 61-75% • Alto: 76-90% • Muy alto: 91-100%
+                                    </small>
+                                </div>
+                                {% else %}
                                 <div class="mt-2">
                                     <small class="text-info">
-                                        <i class="fas fa-info-circle"></i> 
+                                        <i class="fas fa-info-circle"></i>
                                         Mínimo para aprobar: 14 puntos (67%)
                                     </small>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     {% endif %}
@@ -605,9 +696,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateScoreProgress() {
         const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
         const totalQuestions = {{ preguntas.count }};
+        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' %}true{% else %}false{% endif %};
         let currentScore = 0;
         let answeredQuestions = radioButtons.length;
-        
+
         // Calcular puntaje basado en opciones seleccionadas
         radioButtons.forEach(radio => {
             // Obtener el puntaje directamente del atributo data-puntaje
@@ -616,42 +708,133 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentScore += puntaje;
             }
         });
-        
+
         // Actualizar elementos del DOM
         const currentScoreEl = document.getElementById('current-score');
         const currentPercentageEl = document.getElementById('current-percentage');
         const progressBarEl = document.getElementById('progress-bar');
         const answeredCountEl = document.getElementById('answered-count');
-        
-        if (currentScoreEl && currentPercentageEl && progressBarEl && answeredCountEl) {
-            // Guardar puntajes anteriores para animación
-            const oldScore = parseInt(currentScoreEl.textContent) || 0;
-            const newScore = currentScore;
-            
-            // Actualizar puntaje actual
-            currentScoreEl.textContent = currentScore;
-            
-            // Calcular porcentaje (basado en 21 puntos máximos)
-            const percentage = Math.round((currentScore / 21) * 100);
-            currentPercentageEl.textContent = percentage + '%';
-            
-            // Actualizar barra de progreso
-            progressBarEl.style.width = percentage + '%';
-            progressBarEl.setAttribute('aria-valuenow', currentScore);
-            
+
+        if (currentPercentageEl && progressBarEl && answeredCountEl) {
+            let percentage;
+
+            if (isAnualPonderada) {
+                // Para evaluaciones anuales ponderadas: calcular puntaje ponderado en tiempo real
+                // Estructura: 10 preguntas divididas en 4 categorías
+                // Preguntas 1-3: Organizacionales (10%) → peso por punto: 10/15 = 0.6666667
+                // Pregunta 4: Objetivos (40%) → peso por punto: 40/5 = 8
+                // Preguntas 5-7: Interpersonales (25%) → peso por punto: 25/15 = 1.6666667
+                // Preguntas 8-10: Técnicas (25%) → peso por punto: 25/15 = 1.6666667
+
+                // Definir pesos por punto según categoría
+                const pesoPorPunto = {
+                    // Organizacionales: 10% / 15 puntos posibles (3 preguntas × 5)
+                    1: 10 / 15,  // 0.6666667
+                    2: 10 / 15,
+                    3: 10 / 15,
+                    // Objetivos: 40% / 5 puntos posibles (1 pregunta × 5)
+                    4: 40 / 5,   // 8
+                    // Interpersonales: 25% / 15 puntos posibles (3 preguntas × 5)
+                    5: 25 / 15,  // 1.6666667
+                    6: 25 / 15,
+                    7: 25 / 15,
+                    // Técnicas: 25% / 15 puntos posibles (3 preguntas × 5)
+                    8: 25 / 15,  // 1.6666667
+                    9: 25 / 15,
+                    10: 25 / 15
+                };
+
+                // Obtener todas las preguntas del formulario ordenadas
+                const allQuestions = form.querySelectorAll('.question-card');
+
+                // Mapear IDs de preguntas a su orden (1-10)
+                const questionIdToOrder = {};
+                allQuestions.forEach((card, index) => {
+                    const questionInputs = card.querySelectorAll('input[type="radio"]');
+                    if (questionInputs.length > 0) {
+                        const questionId = questionInputs[0].name.replace('pregunta_', '');
+                        questionIdToOrder[questionId] = index + 1; // orden 1-10
+                    }
+                });
+
+                // Calcular puntaje ponderado acumulado
+                let puntajePonderado = 0;
+
+                radioButtons.forEach(radio => {
+                    const questionId = radio.name.replace('pregunta_', '');
+                    const orden = questionIdToOrder[questionId];
+                    const puntaje = parseFloat(radio.getAttribute('data-puntaje'));
+
+                    if (orden && !isNaN(puntaje) && pesoPorPunto[orden]) {
+                        const contribucion = puntaje * pesoPorPunto[orden];
+                        puntajePonderado += contribucion;
+                    }
+                });
+
+                // Redondear a 2 decimales
+                percentage = Math.round(puntajePonderado * 100) / 100;
+
+                // Actualizar solo el porcentaje (no hay puntaje separado para anuales)
+                currentPercentageEl.textContent = percentage.toFixed(2) + '%';
+            } else {
+                // Para evaluaciones de período de prueba (escala 1-3, máximo 21)
+                const oldScore = currentScoreEl ? (parseInt(currentScoreEl.textContent) || 0) : 0;
+
+                // Actualizar puntaje actual
+                if (currentScoreEl) {
+                    currentScoreEl.textContent = currentScore;
+                }
+
+                // Calcular porcentaje (basado en 21 puntos máximos)
+                percentage = Math.round((currentScore / 21) * 100);
+                currentPercentageEl.textContent = percentage + '%';
+
+                // Agregar animación si el puntaje cambió
+                if (oldScore !== currentScore && oldScore > 0 && currentScoreEl) {
+                    currentScoreEl.classList.add('score-updated');
+                    currentPercentageEl.classList.add('score-updated');
+                    setTimeout(() => {
+                        currentScoreEl.classList.remove('score-updated');
+                        currentPercentageEl.classList.remove('score-updated');
+                    }, 300);
+                }
+            }
+
+            // Actualizar barra de progreso (limitar a 100% el ancho visual)
+            const barWidth = Math.min(percentage, 100);
+            progressBarEl.style.width = barWidth + '%';
+            progressBarEl.setAttribute('aria-valuenow', percentage);
+
             // Cambiar color de barra según el puntaje
             progressBarEl.className = 'progress-bar';
-            if (percentage >= 70) {
-                progressBarEl.classList.add('bg-success');
-            } else if (percentage >= 50) {
-                progressBarEl.classList.add('bg-warning');
+            if (isAnualPonderada) {
+                // Para evaluaciones anuales: colores según criterios de cumplimiento
+                // Muy alto: 91%-100%, Alto: 76%-90%, Moderado: 61%-75%, Bajo: 41%-60%, Muy bajo: 1%-40%
+                if (percentage >= 91) {
+                    progressBarEl.classList.add('bg-success');  // Muy alto
+                } else if (percentage >= 76) {
+                    progressBarEl.classList.add('bg-info');  // Alto
+                } else if (percentage >= 61) {
+                    progressBarEl.classList.add('bg-primary');  // Moderado
+                } else if (percentage >= 41) {
+                    progressBarEl.classList.add('bg-warning');  // Bajo
+                } else {
+                    progressBarEl.classList.add('bg-danger');  // Muy bajo
+                }
             } else {
-                progressBarEl.classList.add('bg-danger');
+                // Para período de prueba: 70%+ aprobado
+                if (percentage >= 70) {
+                    progressBarEl.classList.add('bg-success');
+                } else if (percentage >= 50) {
+                    progressBarEl.classList.add('bg-warning');
+                } else {
+                    progressBarEl.classList.add('bg-danger');
+                }
             }
-            
+
             // Actualizar contador de preguntas respondidas
             answeredCountEl.textContent = answeredQuestions;
-            
+
             // Actualizar estado del botón de completar
             const completarBtn = document.getElementById('completar-btn');
             if (completarBtn) {
@@ -667,16 +850,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const faltantes = totalQuestions - answeredQuestions;
                     completarBtn.title = `Faltan ${faltantes} pregunta${faltantes > 1 ? 's' : ''} por responder`;
                 }
-            }
-            
-            // Agregar animación si el puntaje cambió
-            if (oldScore !== newScore && oldScore > 0) {
-                currentScoreEl.classList.add('score-updated');
-                currentPercentageEl.classList.add('score-updated');
-                setTimeout(() => {
-                    currentScoreEl.classList.remove('score-updated');
-                    currentPercentageEl.classList.remove('score-updated');
-                }, 300);
             }
         }
     }

@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Activar Evaluaciones{% endblock %}
+
+{% block extrastyle %}
+<style>
+.evaluacion-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: #f8f9fa;
+}
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.btn-activar {
+    background: #28a745;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-activar:hover {
+    background: #218838;
+}
+.btn-cancelar {
+    background: #6c757d;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Inicio</a>
+    &rsaquo; <a href="{% url 'admin:evaluations_evaluacioncargo_changelist' %}">Evaluaciones por Cargo</a>
+    &rsaquo; Activar Evaluaciones
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>✅ Activar Evaluaciones</h1>
+
+    <div class="module">
+        <h2>Evaluaciones a activar ({{ evaluaciones.count }})</h2>
+        {% for ec in evaluaciones %}
+        <div class="evaluacion-card">
+            <strong>{{ ec.evaluacion.nombre }}</strong><br>
+            <small>Cargo: {{ ec.cargo.nombre }}</small><br>
+            <small>Asignado el: {{ ec.fecha_asignacion|date:"d/m/Y H:i" }} por {{ ec.asignado_por }}</small>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="module" style="margin-top: 20px;">
+        <h2>Configuración de activación</h2>
+        <p>Complete los siguientes datos para activar las evaluaciones. Al activar, se crearán automáticamente las asignaciones para todos los empleados con los cargos correspondientes.</p>
+
+        <form method="post" style="padding: 20px;">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div>
+                    <label for="{{ form.fecha_vencimiento.id_for_label }}">{{ form.fecha_vencimiento.label }}:</label>
+                    {{ form.fecha_vencimiento }}
+                    <p class="help">{{ form.fecha_vencimiento.help_text }}</p>
+                    {% if form.fecha_vencimiento.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.fecha_vencimiento.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 20px;">
+                <div>
+                    <label for="{{ form.periodo.id_for_label }}">{{ form.periodo.label }}:</label>
+                    {{ form.periodo }}
+                    <p class="help">{{ form.periodo.help_text }}</p>
+                    {% if form.periodo.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.periodo.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="submit-row" style="margin-top: 30px;">
+                <button type="submit" class="btn-activar">
+                    ✅ Activar {{ evaluaciones.count }} Evaluación(es)
+                </button>
+                <a href="{% url 'admin:evaluations_evaluacioncargo_changelist' %}" class="btn-cancelar">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="module" style="margin-top: 20px; background: #fff3cd; border-color: #ffc107;">
+        <h3 style="color: #856404;">⚠️ Importante</h3>
+        <ul style="color: #856404;">
+            <li>Al activar, se crearán automáticamente asignaciones para <strong>todos los empleados activos</strong> con los cargos seleccionados.</li>
+            <li>Cada empleado recibirá la evaluación asignada a su jefe directo.</li>
+            <li>La fecha de vencimiento será la misma para todos.</li>
+            <li>No se crearán asignaciones duplicadas.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

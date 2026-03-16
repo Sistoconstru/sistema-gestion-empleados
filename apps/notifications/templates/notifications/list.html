@@ -12,14 +12,12 @@
         margin-bottom: 0.75rem;
         border-radius: 0.25rem;
         transition: all 0.2s;
-        cursor: pointer;
         opacity: 1;
         pointer-events: auto;
     }
     .notificacion-item:hover {
         background-color: #f0f0f0;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transform: translateX(4px);
     }
     .notificacion-item.no-leida {
         background-color: #e3f2fd;
@@ -87,10 +85,7 @@
             {% for notificacion in notificaciones %}
             <div class="notificacion-item {% if not notificacion.leida %}no-leida{% endif %}"
                  data-notificacion-id="{{ notificacion.id }}"
-                 data-tipo-notificacion="{{ notificacion.tipo_notificacion.codigo }}"
-                 data-conversacion-id="{{ notificacion.datos_adicionales.conversacion_id }}"
-                 data-publicacion-id="{{ notificacion.datos_adicionales.publicacion_id }}"
-                 onclick="navegar_notificacion(this)">
+                 data-tipo-notificacion="{{ notificacion.tipo_notificacion.codigo }}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <div class="notificacion-titulo">
@@ -112,12 +107,58 @@
                         <div class="notificacion-fecha">
                             <i class="fas fa-clock me-1"></i>{{ notificacion.fecha_creacion|date:"d/m/Y H:i" }}
                         </div>
+
+                        <!-- Botones de acción -->
+                        <div class="mt-2">
+                            {% if not notificacion.leida %}
+                            <button type="button"
+                                    class="btn btn-sm btn-success"
+                                    onclick="marcarLeida('{{ notificacion.id }}', event)">
+                                <i class="fas fa-check me-1"></i>Marcar como leída
+                            </button>
+                            {% endif %}
+
+                            <!-- Enlaces específicos según tipo de notificación -->
+                            {% if notificacion.tipo_notificacion.codigo == 'evaluacion_asignada' or notificacion.tipo_notificacion.codigo == 'recordatorio_evaluacion' %}
+                                <a href="{% url 'evaluations:index' %}" class="btn btn-sm btn-primary ms-2">
+                                    <i class="fas fa-clipboard-check me-1"></i>Ver Evaluaciones
+                                </a>
+                            {% elif notificacion.tipo_notificacion.codigo == 'evaluacion_para_evaluar' %}
+                                <a href="{% url 'evaluations:index' %}" class="btn btn-sm btn-primary ms-2">
+                                    <i class="fas fa-users me-1"></i>Mis Empleados a Evaluar
+                                </a>
+                            {% elif notificacion.tipo_notificacion.codigo == 'plan_mejora_asignado' %}
+                                <a href="{% url 'evaluations:mis_planes_mejora' %}" class="btn btn-sm btn-primary ms-2">
+                                    <i class="fas fa-tasks me-1"></i>Ver Mi Plan de Mejora
+                                </a>
+                            {% elif notificacion.tipo_notificacion.codigo == 'evaluacion_final_pendiente' %}
+                                <a href="{% url 'evaluations:mis_planes_mejora' %}" class="btn btn-sm btn-warning ms-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>Revisar Evaluación Final
+                                </a>
+                            {% elif notificacion.tipo_notificacion.codigo == 'evaluacion_final_rechazada' %}
+                                <a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}" class="btn btn-sm btn-danger ms-2">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Validar en RRHH
+                                </a>
+                            {% elif notificacion.datos_adicionales.conversacion_id %}
+                                <a href="/empleados/mensajeria/conversacion/{{ notificacion.datos_adicionales.conversacion_id }}/"
+                                   class="btn btn-sm btn-primary ms-2"
+                                   onclick="marcarLeidaYNavegar('{{ notificacion.id }}', this.href, event)">
+                                    <i class="fas fa-envelope me-1"></i>Ver Mensaje
+                                </a>
+                            {% elif notificacion.datos_adicionales.publicacion_id %}
+                                <a href="/empleados/feed/#publicacion-{{ notificacion.datos_adicionales.publicacion_id }}"
+                                   class="btn btn-sm btn-primary ms-2"
+                                   onclick="marcarLeidaYNavegar('{{ notificacion.id }}', this.href, event)">
+                                    <i class="fas fa-comments me-1"></i>Ver Publicación
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="text-end ms-3">
                         {% if not notificacion.leida %}
-                        <span class="badge bg-primary">No leida</span>
+                        <span class="badge bg-primary">No leída</span>
                         {% else %}
-                        <span class="badge bg-secondary">Leida</span>
+                        <span class="badge bg-secondary">Leída</span>
                         {% endif %}
                     </div>
                 </div>
@@ -171,13 +212,11 @@
 </div>
 
 <script>
-function navegar_notificacion(element) {
-    const notificacionId = element.dataset.notificacionId;
-    const tipoNotificacion = element.dataset.tipoNotificacion;
-    const conversacionId = element.dataset.conversacionId;
-    const publicacionId = element.dataset.publicacionId;
+function marcarLeida(notificacionId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
 
-    // Marcar como leída y navegar
     fetch('/notificaciones/marcar-leida/' + notificacionId + '/', {
         method: 'POST',
         headers: {
@@ -188,33 +227,51 @@ function navegar_notificacion(element) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Intentar navegar según el tipo de notificación
-            if (conversacionId) {
-                // Si tenemos el ID de conversación, navegar directamente
-                window.location.href = '/empleados/mensajeria/conversacion/' + conversacionId + '/';
-            } else if (publicacionId) {
-                // Si tenemos el ID de publicación/anuncio, ir al feed con anchor
-                window.location.href = '/empleados/feed/#publicacion-' + publicacionId;
-            } else if (tipoNotificacion === 'nuevo_mensaje') {
-                // Si es una notificación de mensaje pero falta el conversacion_id, ir al inbox
-                console.log('Notificación de mensaje sin conversacion_id, redirigiendo al inbox');
-                window.location.href = '/empleados/mensajeria/inbox/';
-            } else {
-                // Para otros tipos de notificación, ir a la Cartelera
-                console.log('Notificación sin identificador, redirigiendo a la Cartelera');
-                window.location.href = '/empleados/feed/';
+            // Actualizar visualmente sin recargar
+            const notifElement = document.querySelector(`[data-notificacion-id="${notificacionId}"]`);
+            if (notifElement) {
+                // Remover clase de no leída
+                notifElement.classList.remove('no-leida');
+
+                // Actualizar badge
+                const badge = notifElement.querySelector('.badge.bg-primary');
+                if (badge && badge.textContent.includes('No leída')) {
+                    badge.classList.remove('bg-primary');
+                    badge.classList.add('bg-secondary');
+                    badge.textContent = 'Leída';
+                }
+
+                // Remover badge NUEVA
+                const badgeNueva = notifElement.querySelector('.badge.ms-2');
+                if (badgeNueva && badgeNueva.textContent === 'NUEVA') {
+                    badgeNueva.remove();
+                }
+
+                // Remover botón de marcar como leída
+                const botonMarcar = notifElement.querySelector('button.btn-success');
+                if (botonMarcar) {
+                    botonMarcar.remove();
+                }
+
+                // Mostrar mensaje de éxito
+                const mensaje = document.createElement('small');
+                mensaje.className = 'text-success ms-2';
+                mensaje.innerHTML = '<i class="fas fa-check-circle me-1"></i>Marcada como leída';
+                notifElement.querySelector('.notificacion-fecha').appendChild(mensaje);
             }
-        } else {
-            console.error('Error al marcar notificación como leída');
         }
     })
     .catch(error => {
-        console.error('Error en fetch:', error);
-        location.reload();
+        console.error('Error:', error);
+        alert('Error al marcar la notificación como leída');
     });
 }
 
-function marcarLeida(notificacionId) {
+function marcarLeidaYNavegar(notificacionId, url, event) {
+    if (event) {
+        event.preventDefault();
+    }
+
     fetch('/notificaciones/marcar-leida/' + notificacionId + '/', {
         method: 'POST',
         headers: {
@@ -225,13 +282,20 @@ function marcarLeida(notificacionId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Recargar la pagina para mostrar cambios
-            location.reload();
+            window.location.href = url;
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        window.location.href = url; // Navegar de todos modos
     });
 }
 
 function marcarTodasLeidas() {
+    if (!confirm('¿Marcar todas las notificaciones como leídas?')) {
+        return;
+    }
+
     fetch('/notificaciones/marcar-todas-leidas/', {
         method: 'POST',
         headers: {
@@ -242,8 +306,39 @@ function marcarTodasLeidas() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            location.reload();
+            // Actualizar todas las notificaciones visualmente
+            document.querySelectorAll('.notificacion-item.no-leida').forEach(notif => {
+                notif.classList.remove('no-leida');
+
+                // Actualizar badge
+                const badge = notif.querySelector('.badge.bg-primary');
+                if (badge && badge.textContent.includes('No leída')) {
+                    badge.classList.remove('bg-primary');
+                    badge.classList.add('bg-secondary');
+                    badge.textContent = 'Leída';
+                }
+
+                // Remover badge NUEVA
+                const badgeNueva = notif.querySelector('.badge.ms-2');
+                if (badgeNueva && badgeNueva.textContent === 'NUEVA') {
+                    badgeNueva.remove();
+                }
+
+                // Remover botones de marcar como leída
+                const botones = notif.querySelectorAll('button.btn-success');
+                botones.forEach(btn => btn.remove());
+            });
+
+            // Ocultar el botón de "Marcar todas como leídas"
+            document.querySelector('.btn-marcar-leidas').style.display = 'none';
+
+            // Mostrar mensaje de éxito
+            alert('Todas las notificaciones han sido marcadas como leídas');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al marcar las notificaciones como leídas');
     });
 }
 

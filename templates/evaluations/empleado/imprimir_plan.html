@@ -346,9 +346,19 @@
             <div class="info-item">
                 <label>Puntaje Obtenido:</label>
                 <div class="value">
-                    <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
-                        {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21 puntos
-                    </span>
+                    {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21 puntos
+                        </span>
+                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 76 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}info{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}warning{% else %}danger{% endif %}">
+                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
+                        </span>
+                    {% else %}
+                        <span class="badge badge-info">
+                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
+                        </span>
+                    {% endif %}
                 </div>
             </div>
             <div class="info-item">
@@ -503,7 +513,7 @@
     </div>
     {% endif %}
 
-    <!-- Sección de Firmas -->
+    <!-- Sección de Firmas 
     <div class="firma-section">
         <div class="firma-box">
             <div class="firma-line"></div>
@@ -519,7 +529,7 @@
                 <small>SUPERVISOR/EVALUADOR</small>
             </div>
         </div>
-    </div>
+    </div>    -->
 
     <!-- Footer -->
     <div class="footer">

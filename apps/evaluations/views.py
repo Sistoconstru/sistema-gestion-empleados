@@ -592,11 +592,18 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
             # Completar evaluación
             if respuestas_validas < total_preguntas_obligatorias:
                 messages.error(
-                    request, 
+                    request,
                     f'Faltan {total_preguntas_obligatorias - respuestas_validas} '
                     'respuestas obligatorias para completar la evaluación.'
                 )
             else:
+                # Guardar observación de SST (si aplica para evaluaciones anuales)
+                tipo_eval_codigo = asignacion.evaluacion.tipo_evaluacion.codigo
+                if tipo_eval_codigo in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES']:
+                    uso_epp = request.POST.get('uso_epp_sst', '')
+                    if uso_epp:
+                        asignacion.uso_epp_sst = uso_epp
+
                 # Finalizar evaluación
                 asignacion.estado = 'completada'
                 asignacion.fecha_completada = timezone.now()
@@ -607,26 +614,79 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                 _calcular_resultado_evaluacion(asignacion)
                 
                 # Generar plan de mejora automáticamente al completar la evaluación
-                # NO generar plan si el puntaje es 21/21 (desempeño excelente)
                 try:
                     from .models import PlanMejoraPredefinido
 
                     # Solo si no existe ya un plan para esta asignación
                     if not PlanMejoraPredefinido.objects.filter(asignacion_evaluacion=asignacion).exists():
-                        # Verificar el puntaje total
-                        if asignacion.puntaje_total and asignacion.puntaje_total >= 21:
-                            # Puntaje máximo - No requiere plan de mejora
-                            import logging
-                            logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo puntaje máximo (21/21). No se genera plan de mejora.')
-                        else:
+                        # Verificar el puntaje total según tipo de evaluación
+                        tipo_eval_codigo = asignacion.evaluacion.tipo_evaluacion.codigo
+                        debe_generar_plan = True
+
+                        if tipo_eval_codigo == 'PERIODO_PRUEBA':
+                            # Para período de prueba: no generar si puntaje es 21/21
+                            if asignacion.puntaje_total and asignacion.puntaje_total >= 21:
+                                import logging
+                                logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo puntaje máximo (21/21). No se genera plan de mejora.')
+                                debe_generar_plan = False
+                        elif tipo_eval_codigo in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES']:
+                            # Para evaluaciones anuales: no generar si porcentaje >= 91% (Muy alto/Excelente)
+                            if asignacion.porcentaje_completado and asignacion.porcentaje_completado >= 91:
+                                import logging
+                                logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo calificación excelente ({asignacion.porcentaje_completado}%). No se genera plan de mejora.')
+                                debe_generar_plan = False
+
+                        if debe_generar_plan:
                             # Generar plan de mejora usando el método apropiado según tipo de evaluación
                             respuestas = RespuestaEvaluacion.objects.filter(
                                 asignacion=asignacion
                             ).select_related('pregunta', 'opcion_seleccionada')
 
-                            # Usar método específico para período de prueba
-                            if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
+                            # Usar método específico según tipo de evaluación
+                            tipo_eval_codigo = asignacion.evaluacion.tipo_evaluacion.codigo
+
+                            if tipo_eval_codigo == 'PERIODO_PRUEBA':
                                 plan_mejora_texto = _generar_aspectos_mejora_periodo_prueba(asignacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_PROCESOS':
+                                # Generar plan específico para Auxiliares de Procesos
+                                from .utils.respuestas_predefinidas_auxiliar_procesos import (
+                                    generar_plan_mejora_auxiliar_procesos,
+                                    calcular_puntaje_ponderado_auxiliar_procesos
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_procesos(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliar_procesos(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_MANTENIMIENTO':
+                                # Generar plan específico para Mantenimiento
+                                from .utils.respuestas_predefinidas_mantenimiento import (
+                                    generar_plan_mejora_mantenimiento,
+                                    calcular_puntaje_ponderado_mantenimiento
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_mantenimiento(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_mantenimiento(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_OPERARIOS_PROD':
+                                # Generar plan específico para Operarios de Producción
+                                from .utils.respuestas_predefinidas_operarios_produccion import (
+                                    generar_plan_mejora_operarios_produccion,
+                                    calcular_puntaje_ponderado_operarios_produccion
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_operarios_produccion(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_operarios_produccion(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_COORD_PROC':
+                                # Generar plan específico para Coordinadores de Procesos
+                                from .utils.respuestas_predefinidas_coordinadores_procesos import (
+                                    generar_plan_mejora_coordinadores_procesos,
+                                    calcular_puntaje_ponderado_coordinadores_procesos
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_coordinadores_procesos(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_coordinadores_procesos(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AFILADORES':
+                                # Generar plan específico para Afiladores
+                                from .utils.respuestas_predefinidas_afiladores import (
+                                    generar_plan_mejora_afiladores,
+                                    calcular_puntaje_ponderado_afiladores
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_afiladores(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_afiladores(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
@@ -666,57 +726,136 @@ def _calcular_resultado_evaluacion(asignacion):
         respuestas = RespuestaEvaluacion.objects.filter(
             asignacion=asignacion
         ).select_related('pregunta', 'opcion_seleccionada')
-        
+
         if not respuestas.exists():
             return
-        
-        puntaje_acumulado = Decimal('0.00')
-        total_respuestas = respuestas.count()
-        
-        for respuesta in respuestas:
-            if respuesta.opcion_seleccionada:
-                valor_respuesta = Decimal(str(respuesta.opcion_seleccionada.valor_numerico))
-            elif respuesta.puntaje_obtenido:
-                valor_respuesta = Decimal(str(respuesta.puntaje_obtenido))
-            else:
-                continue
-            
-            puntaje_acumulado += valor_respuesta
-        
-        # Calcular puntaje final
-        if total_respuestas > 0:
-            # Para escalas 1-3, el puntaje máximo es 3 * número de preguntas
-            puntaje_maximo = Decimal('3') * total_respuestas
-            puntaje_final = (puntaje_acumulado / puntaje_maximo) * 5  # Convertir a escala 1-5
-            porcentaje = (puntaje_acumulado / puntaje_maximo) * 100
+
+        tipo_evaluacion_codigo = asignacion.evaluacion.tipo_evaluacion.codigo
+
+        # ============ EVALUACIONES ANUALES CON PONDERACIÓN ============
+        if tipo_evaluacion_codigo == 'ANUAL_AUX_PROCESOS':
+            from .utils.respuestas_predefinidas_auxiliar_procesos import calcular_puntaje_ponderado_auxiliar_procesos
+            resultado_calc = calcular_puntaje_ponderado_auxiliar_procesos(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_MANTENIMIENTO':
+            from .utils.respuestas_predefinidas_mantenimiento import calcular_puntaje_ponderado_mantenimiento
+            resultado_calc = calcular_puntaje_ponderado_mantenimiento(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_OPERARIOS_PROD':
+            from .utils.respuestas_predefinidas_operarios_produccion import calcular_puntaje_ponderado_operarios_produccion
+            resultado_calc = calcular_puntaje_ponderado_operarios_produccion(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_COORD_PROC':
+            from .utils.respuestas_predefinidas_coordinadores_procesos import calcular_puntaje_ponderado_coordinadores_procesos
+            resultado_calc = calcular_puntaje_ponderado_coordinadores_procesos(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AFILADORES':
+            from .utils.respuestas_predefinidas_afiladores import calcular_puntaje_ponderado_afiladores
+            resultado_calc = calcular_puntaje_ponderado_afiladores(respuestas)
         else:
-            puntaje_final = Decimal('0.00')
-            porcentaje = Decimal('0.00')
-        
-        # Determinar clasificación basada en puntaje total (umbral de aprobación: 14 puntos)
-        if puntaje_acumulado >= 20:  # Puntaje excelente (cerca del máximo 21)
-            clasificacion = 'excelente'
-        elif puntaje_acumulado >= 18:  # Puntaje sobresaliente
-            clasificacion = 'sobresaliente'
-        elif puntaje_acumulado >= 14:  # Puntaje satisfactorio (aprobado)
-            clasificacion = 'satisfactorio'
-        elif puntaje_acumulado >= 10:  # Puntaje mejorable (reprobado)
-            clasificacion = 'mejorable'
-        else:  # Puntaje insatisfactorio (muy reprobado)
-            clasificacion = 'insatisfactorio'
-        
-        # Generar aspectos positivos y áreas de mejora basados en el puntaje total
-        if puntaje_acumulado >= 18:  # Excelente/Sobresaliente
-            aspectos_positivos = "• Demuestra excelente desempeño en todas las áreas evaluadas\n• Supera consistentemente las expectativas\n• Muestra iniciativa y liderazgo"
-            areas_mejora = "• Continuar desarrollando habilidades de liderazgo\n• Compartir conocimientos con otros miembros del equipo\n• Asumir mayores responsabilidades"
-        elif puntaje_acumulado >= 14:  # Satisfactorio (aprobado)
-            aspectos_positivos = "• Cumple satisfactoriamente con las responsabilidades asignadas\n• Demuestra competencia técnica adecuada\n• Muestra actitud positiva hacia el trabajo"
-            areas_mejora = "• Mejorar la consistencia en el desempeño diario\n• Desarrollar mayor autonomía en la toma de decisiones\n• Fortalecer habilidades de comunicación"
-        else:  # Reprobado (puntaje ≤ 13)
-            aspectos_positivos = "• Muestra disposición para aprender y mejorar\n• Asiste puntualmente a sus labores\n• Demuestra interés en el desarrollo profesional"
-            areas_mejora = "• Requiere capacitación específica en competencias técnicas\n• Necesita mayor supervisión y acompañamiento\n• Desarrollar habilidades básicas del puesto"
-        
-        # Crear o actualizar resultado
+            resultado_calc = None
+
+        if resultado_calc:
+
+            puntaje_final = Decimal(str(resultado_calc['puntaje_escala']))  # 1-5
+            porcentaje = Decimal(str(resultado_calc['puntaje_porcentaje']))  # 0-100
+            nivel_desempeno = resultado_calc['nivel_desempeno']  # 'Muy bajo', 'Bajo', 'Moderado', 'Alto', 'Muy alto'
+
+            # Mapear nivel_desempeno a clasificación estándar
+            mapeo_clasificacion = {
+                'Muy alto': 'excelente',
+                'Alto': 'sobresaliente',
+                'Moderado': 'satisfactorio',
+                'Bajo': 'mejorable',
+                'Muy bajo': 'insatisfactorio'
+            }
+            clasificacion = mapeo_clasificacion.get(nivel_desempeno, 'satisfactorio')
+
+            # Generar aspectos según nivel
+            if porcentaje >= 91:
+                aspectos_positivos = "• Desempeño excepcional en todas las competencias evaluadas\n• Supera consistentemente las expectativas en todas las categorías\n• Referente de excelencia para el equipo"
+                areas_mejora = "• Continuar siendo modelo de excelencia\n• Liderar programas de mejora en el área\n• Mentor de compañeros con menor desempeño"
+            elif porcentaje >= 76:
+                aspectos_positivos = "• Desempeño destacado en la mayoría de competencias\n• Supera las expectativas del cargo\n• Contribuye significativamente a objetivos del área"
+                areas_mejora = "• Fortalecer competencias con calificación moderada\n• Incrementar participación en proyectos de mejora\n• Desarrollar habilidades de liderazgo"
+            elif porcentaje >= 61:
+                aspectos_positivos = "• Cumple satisfactoriamente con las responsabilidades del cargo\n• Desempeño aceptable en la mayoría de competencias\n• Mantiene estándares mínimos de calidad"
+                areas_mejora = "• Mejorar competencias con calificación baja\n• Incrementar eficiencia y productividad\n• Fortalecer habilidades técnicas específicas"
+            elif porcentaje >= 41:
+                aspectos_positivos = "• Muestra disposición para aprender y mejorar\n• Cumple con algunas responsabilidades básicas\n• Asiste puntualmente a sus labores"
+                areas_mejora = "• Requiere capacitación urgente en competencias críticas\n• Necesita supervisión y acompañamiento constante\n• Desarrollar habilidades técnicas básicas del puesto"
+            else:
+                aspectos_positivos = "• Asiste a sus labores\n• Muestra interés en el desarrollo profesional"
+                areas_mejora = "• Requiere mejora urgente en todas las competencias evaluadas\n• Necesita capacitación intensiva y supervisión directa\n• Plan de acción correctivo inmediato"
+
+            # Detalle por categorías
+            detalle_categorias = resultado_calc.get('detalle_categorias', {})
+            comentarios_detalle = "DESEMPEÑO POR CATEGORÍAS:\n"
+            for cat, datos in detalle_categorias.items():
+                comentarios_detalle += f"• {cat}: {datos['promedio']}/5 ({datos['porcentaje']:.1f}%)\n"
+
+            comentarios_generales = f'Evaluación anual completada con {porcentaje:.1f}% de cumplimiento.\n\n{comentarios_detalle}'
+
+            # Determinar recomendación
+            if porcentaje >= 76:
+                recomendaciones = 'Desempeño destacado. Se recomienda considerar para promociones o responsabilidades adicionales.'
+            elif porcentaje >= 61:
+                recomendaciones = 'Desempeño satisfactorio. El empleado continúa en el cargo con seguimiento en áreas de mejora.'
+            else:
+                recomendaciones = 'Desempeño por debajo de expectativas. Requiere plan de mejora con seguimientos bimensuales.'
+
+            # Guardar puntaje total en formato compatible
+            puntaje_total_acumulado = porcentaje  # Para evaluaciones ponderadas, guardamos el porcentaje
+
+        # ============ EVALUACIONES DE PERÍODO DE PRUEBA (Escala 1-3) ============
+        else:
+            puntaje_acumulado = Decimal('0.00')
+            total_respuestas = respuestas.count()
+
+            for respuesta in respuestas:
+                if respuesta.opcion_seleccionada:
+                    valor_respuesta = Decimal(str(respuesta.opcion_seleccionada.valor_numerico))
+                elif respuesta.puntaje_obtenido:
+                    valor_respuesta = Decimal(str(respuesta.puntaje_obtenido))
+                else:
+                    continue
+
+                puntaje_acumulado += valor_respuesta
+
+            # Calcular puntaje final
+            if total_respuestas > 0:
+                # Para escalas 1-3, el puntaje máximo es 3 * número de preguntas
+                puntaje_maximo = Decimal('3') * total_respuestas
+                puntaje_final = (puntaje_acumulado / puntaje_maximo) * 5  # Convertir a escala 1-5
+                porcentaje = (puntaje_acumulado / puntaje_maximo) * 100
+            else:
+                puntaje_final = Decimal('0.00')
+                porcentaje = Decimal('0.00')
+
+            # Determinar clasificación basada en puntaje total (umbral de aprobación: 14 puntos)
+            if puntaje_acumulado >= 20:  # Puntaje excelente (cerca del máximo 21)
+                clasificacion = 'excelente'
+            elif puntaje_acumulado >= 18:  # Puntaje sobresaliente
+                clasificacion = 'sobresaliente'
+            elif puntaje_acumulado >= 14:  # Puntaje satisfactorio (aprobado)
+                clasificacion = 'satisfactorio'
+            elif puntaje_acumulado >= 10:  # Puntaje mejorable (reprobado)
+                clasificacion = 'mejorable'
+            else:  # Puntaje insatisfactorio (muy reprobado)
+                clasificacion = 'insatisfactorio'
+
+            # Generar aspectos positivos y áreas de mejora basados en el puntaje total
+            if puntaje_acumulado >= 18:  # Excelente/Sobresaliente
+                aspectos_positivos = "• Demuestra excelente desempeño en todas las áreas evaluadas\n• Supera consistentemente las expectativas\n• Muestra iniciativa y liderazgo"
+                areas_mejora = "• Continuar desarrollando habilidades de liderazgo\n• Compartir conocimientos con otros miembros del equipo\n• Asumir mayores responsabilidades"
+            elif puntaje_acumulado >= 14:  # Satisfactorio (aprobado)
+                aspectos_positivos = "• Cumple satisfactoriamente con las responsabilidades asignadas\n• Demuestra competencia técnica adecuada\n• Muestra actitud positiva hacia el trabajo"
+                areas_mejora = "• Mejorar la consistencia en el desempeño diario\n• Desarrollar mayor autonomía en la toma de decisiones\n• Fortalecer habilidades de comunicación"
+            else:  # Reprobado (puntaje ≤ 13)
+                aspectos_positivos = "• Muestra disposición para aprender y mejorar\n• Asiste puntualmente a sus labores\n• Demuestra interés en el desarrollo profesional"
+                areas_mejora = "• Requiere capacitación específica en competencias técnicas\n• Necesita mayor supervisión y acompañamiento\n• Desarrollar habilidades básicas del puesto"
+
+            comentarios_generales = f'Evaluación completada con {porcentaje:.1f}% de cumplimiento.'
+            recomendaciones = 'Se recomienda que el empleado continúe en la empresa.' if puntaje_acumulado >= 14 else 'Se requiere plan de mejora inmediato.'
+            puntaje_total_acumulado = puntaje_acumulado
+
+        # ============ GUARDAR RESULTADO (Común para todos los tipos) ============
         resultado, created = ResultadoEvaluacion.objects.get_or_create(
             asignacion=asignacion,
             defaults={
@@ -725,25 +864,27 @@ def _calcular_resultado_evaluacion(asignacion):
                 'nivel_desempeño': clasificacion,
                 'aspectos_positivos': aspectos_positivos,
                 'areas_mejora': areas_mejora,
-                'comentarios_generales': f'Evaluación completada con {porcentaje:.1f}% de cumplimiento.',
-                'recomendaciones': 'Se recomienda que el empleado continúe en la empresa.' if puntaje_acumulado >= 14 else 'Se requiere plan de mejora inmediato.',
+                'comentarios_generales': comentarios_generales,
+                'recomendaciones': recomendaciones,
                 'generado_por': asignacion.evaluador.usuario if asignacion.evaluador and asignacion.evaluador.usuario else None,
             }
         )
-        
+
         if not created:
             resultado.puntaje_final = puntaje_final
             resultado.porcentaje_obtenido = porcentaje
             resultado.nivel_desempeño = clasificacion
             resultado.aspectos_positivos = aspectos_positivos
             resultado.areas_mejora = areas_mejora
+            resultado.comentarios_generales = comentarios_generales
+            resultado.recomendaciones = recomendaciones
             resultado.save()
-        
+
         # Actualizar también los campos en la asignación para compatibilidad con templates existentes
-        asignacion.puntaje_total = puntaje_acumulado
+        asignacion.puntaje_total = puntaje_total_acumulado
         asignacion.porcentaje_completado = porcentaje
         asignacion.save()
-            
+
     except Exception as e:
         # Log del error pero no fallar la operación
         import logging
@@ -786,13 +927,26 @@ class EvaluacionesPendientesAprobacionView(LoginRequiredMixin, ListView):
         queryset = self.get_queryset()
         planes_aceptados = queryset.filter(aceptado_por_empleado=True).count()
 
-        # Contar planes sin aceptar, diferenciando reprobados (puntaje < 14)
+        # Contar planes sin aceptar, diferenciando bajo desempeño según tipo de evaluación
         planes_sin_aceptar = 0
         planes_reprobados = 0
 
         for plan in queryset.filter(aceptado_por_empleado=False):
-            if plan.asignacion_evaluacion.puntaje_total and plan.asignacion_evaluacion.puntaje_total < 14:
-                planes_reprobados += 1
+            if plan.asignacion_evaluacion.puntaje_total:
+                tipo_evaluacion = plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo
+                puntaje = plan.asignacion_evaluacion.puntaje_total
+
+                # Determinar si es bajo desempeño según el tipo
+                es_bajo_desempeno = False
+                if tipo_evaluacion == 'PERIODO_PRUEBA':
+                    es_bajo_desempeno = puntaje < 14
+                elif tipo_evaluacion in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES']:
+                    es_bajo_desempeno = puntaje < 61
+
+                if es_bajo_desempeno:
+                    planes_reprobados += 1
+                else:
+                    planes_sin_aceptar += 1
             else:
                 planes_sin_aceptar += 1
 
@@ -1229,23 +1383,46 @@ def revisar_plan_predefinido(request, plan_id):
                     plan.comentarios_aprobacion = comentarios
                     plan.save()
 
-                    # Solo crear seguimientos si el puntaje no es el máximo (21)
-                    # Un puntaje de 21 indica desempeño excelente sin necesidad de seguimiento
-                    if plan.asignacion_evaluacion.puntaje_total < 21:
+                    # Determinar si requiere seguimiento según tipo de evaluación
+                    tipo_evaluacion = plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo
+                    puntaje = plan.asignacion_evaluacion.puntaje_total or 0
+                    requiere_seguimiento = False
+                    mensaje_aprobacion = ''
+
+                    if tipo_evaluacion == 'PERIODO_PRUEBA':
+                        # Período de prueba: puntaje máximo = 21
+                        requiere_seguimiento = float(puntaje) < 21
+                        if requiere_seguimiento:
+                            mensaje_aprobacion = 'Plan aprobado exitosamente. Se han creado los seguimientos bimensuales automáticamente.'
+                        else:
+                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo el puntaje máximo ({puntaje:.0f}/21), por lo que no requiere seguimientos bimensuales.'
+
+                    elif tipo_evaluacion in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES']:
+                        # Evaluación anual: requiere seguimiento si no es "Muy Alto" (< 91%)
+                        requiere_seguimiento = float(puntaje) < 91.0
+                        if requiere_seguimiento:
+                            mensaje_aprobacion = f'Plan aprobado exitosamente. Puntaje: {puntaje:.2f}%. Se han creado los seguimientos bimensuales automáticamente.'
+                        else:
+                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo un desempeño Muy Alto ({puntaje:.2f}%), por lo que no requiere seguimientos bimensuales.'
+
+                    else:
+                        # Otros tipos de evaluación: siempre requieren seguimiento
+                        requiere_seguimiento = True
+                        mensaje_aprobacion = 'Plan aprobado exitosamente. Se han creado los seguimientos bimensuales automáticamente.'
+
+                    if requiere_seguimiento:
                         # Crear seguimientos bimensuales automáticamente
                         crear_seguimientos_bimensuales(plan)
 
                         # Cambiar estado del plan a 'en_seguimiento'
                         plan.estado = 'en_seguimiento'
                         plan.save()
-
-                        messages.success(request, 'Plan aprobado exitosamente. Se han creado los seguimientos bimensuales automáticamente.')
                     else:
                         # Puntaje máximo - No requiere seguimiento
                         plan.estado = 'completado'
                         plan.save()
 
-                        messages.success(request, 'Plan aprobado exitosamente. El empleado obtuvo el puntaje máximo (21/21), por lo que no requiere seguimientos bimensuales.')
+                    messages.success(request, mensaje_aprobacion)
                     
                 elif accion == 'rechazar':
                     plan.estado = 'rechazado'
@@ -1270,9 +1447,11 @@ def revisar_plan_predefinido(request, plan_id):
 def seguimientos_pendientes_supervisor(request):
     """
     Vista para que los supervisores vean todos sus seguimientos bimensuales pendientes
+    Y planes listos para evaluación final
     Agrupados por jefe/evaluador
     """
-    from .models import SeguimientoBimensual
+    from .models import SeguimientoBimensual, PlanMejoraPredefinido
+    from .utils.respuestas_predefinidas import puede_generar_evaluacion_final
     from datetime import date
     from collections import defaultdict
 
@@ -1302,6 +1481,22 @@ def seguimientos_pendientes_supervisor(request):
                     'plan_mejora__asignacion_evaluacion__evaluador__historialcargo_set__cargo',
                     'plan_mejora__asignacion_evaluacion__evaluador__historialcargo_set__cargo__area'
                 ).order_by('fecha_limite')
+
+                # Obtener planes listos para evaluación final (todos seguimientos completados, sin evaluación final)
+                planes_para_evaluar = PlanMejoraPredefinido.objects.filter(
+                    estado='en_seguimiento'
+                ).select_related(
+                    'asignacion_evaluacion',
+                    'asignacion_evaluacion__empleado_evaluado',
+                    'asignacion_evaluacion__evaluador',
+                    'asignacion_evaluacion__evaluacion',
+                    'asignacion_evaluacion__evaluacion__tipo_evaluacion'
+                ).prefetch_related(
+                    'seguimientos',
+                    'asignacion_evaluacion__empleado_evaluado__historialcargo_set',
+                    'asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo',
+                    'asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo__area'
+                )
             else:
                 messages.error(request, 'No tiene permisos para acceder a esta sección.')
                 return redirect('evaluations:index')
@@ -1325,6 +1520,23 @@ def seguimientos_pendientes_supervisor(request):
                 'plan_mejora__asignacion_evaluacion__evaluador__historialcargo_set__cargo',
                 'plan_mejora__asignacion_evaluacion__evaluador__historialcargo_set__cargo__area'
             ).order_by('fecha_limite')
+
+            # Obtener planes listos para evaluación final del evaluador
+            planes_para_evaluar = PlanMejoraPredefinido.objects.filter(
+                asignacion_evaluacion__evaluador=empleado_usuario,
+                estado='en_seguimiento'
+            ).select_related(
+                'asignacion_evaluacion',
+                'asignacion_evaluacion__empleado_evaluado',
+                'asignacion_evaluacion__evaluador',
+                'asignacion_evaluacion__evaluacion',
+                'asignacion_evaluacion__evaluacion__tipo_evaluacion'
+            ).prefetch_related(
+                'seguimientos',
+                'asignacion_evaluacion__empleado_evaluado__historialcargo_set',
+                'asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo',
+                'asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo__area'
+            )
 
         # Marcar seguimientos vencidos
         hoy = date.today()
@@ -1393,12 +1605,32 @@ def seguimientos_pendientes_supervisor(request):
         vencidos = sum(1 for s in seguimientos if s.fecha_limite < hoy)
         proximos = sum(1 for s in seguimientos if (s.fecha_limite - hoy).days <= 7 and s.fecha_limite >= hoy)
 
+        # Filtrar planes listos para evaluación final
+        # (todos los seguimientos completados y sin evaluación final)
+        planes_listos_evaluacion_final = []
+        for plan in planes_para_evaluar:
+            # Verificar si puede generar evaluación final (todos seguimientos completados)
+            if puede_generar_evaluacion_final(plan):
+                # Verificar que NO tenga evaluación final ya creada
+                if not hasattr(plan, 'evaluacion_final'):
+                    # Contar seguimientos satisfactorios
+                    seguimientos_plan = plan.seguimientos.all()
+                    satisfactorios = sum(1 for s in seguimientos_plan if s.avance_satisfactorio is True)
+
+                    planes_listos_evaluacion_final.append({
+                        'plan': plan,
+                        'asignacion': plan.asignacion_evaluacion,
+                        'seguimientos_satisfactorios': satisfactorios,
+                        'total_seguimientos': seguimientos_plan.count(),
+                    })
+
         return render(request, 'evaluations/supervisor/seguimientos_pendientes.html', {
             'jefes_con_seguimientos': jefes_con_seguimientos,
             'es_admin': es_admin,
             'total_pendientes': total_pendientes,
             'vencidos': vencidos,
             'proximos': proximos,
+            'planes_listos_evaluacion_final': planes_listos_evaluacion_final,
         })
 
     except Exception as e:
@@ -1533,12 +1765,17 @@ def evaluacion_final_plan(request, plan_id):
                 conclusion=conclusion,
                 evaluado_por=request.user
             )
-            
-            # Marcar plan como completado
-            plan.estado = 'completado'
-            plan.save()
-            
-            messages.success(request, 'Evaluación final completada exitosamente. El plan ha sido marcado como terminado.')
+
+            # NO marcar plan como completado todavía
+            # El plan se completará cuando:
+            # 1. El empleado ACEPTE la evaluación final (automático), o
+            # 2. RRHH valide la evaluación final (si el empleado la rechaza)
+
+            messages.success(
+                request,
+                'Evaluación final creada exitosamente. '
+                'El empleado debe revisar y aceptar la evaluación final para completar el proceso.'
+            )
             return redirect('evaluations:admin_pendientes_aprobacion')
         
         # GET - Mostrar formulario
@@ -1556,6 +1793,101 @@ def evaluacion_final_plan(request, plan_id):
     except Exception as e:
         messages.error(request, f'Error en evaluación final: {str(e)}')
         return redirect('evaluations:admin_pendientes_aprobacion')
+
+
+@login_required
+def aceptar_evaluacion_final_empleado(request, evaluacion_final_id):
+    """
+    Vista para que el empleado acepte o rechace la evaluación final
+    """
+    from .models import EvaluacionFinal
+    from django.utils import timezone
+
+    try:
+        evaluacion_final = get_object_or_404(EvaluacionFinal, id=evaluacion_final_id)
+        plan = evaluacion_final.plan_mejora
+
+        # Verificar que el usuario sea el empleado evaluado
+        try:
+            empleado_usuario = Empleado.objects.get(usuario=request.user)
+        except Empleado.DoesNotExist:
+            messages.error(request, 'No tiene permisos para interactuar con esta evaluación final.')
+            return redirect('evaluations:index')
+
+        if plan.asignacion_evaluacion.empleado_evaluado != empleado_usuario:
+            messages.error(request, 'No tiene permisos para interactuar con esta evaluación final.')
+            return redirect('evaluations:index')
+
+        # Verificar que aún no haya sido aceptada o rechazada
+        if evaluacion_final.aceptado_por_empleado:
+            messages.info(request, 'Esta evaluación final ya ha sido aceptada.')
+            return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan.id)
+
+        if evaluacion_final.rechazado_por_empleado:
+            messages.info(request, 'Esta evaluación final ya ha sido rechazada y está en revisión por Gestión Humana.')
+            return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan.id)
+
+        if request.method == 'POST':
+            accion = request.POST.get('accion')
+
+            if accion == 'aceptar':
+                # Aceptar la evaluación final
+                evaluacion_final.aceptado_por_empleado = True
+                evaluacion_final.fecha_aceptacion_empleado = timezone.now()
+                evaluacion_final.save()
+
+                # COMPLETAR EL PLAN AUTOMÁTICAMENTE
+                plan.estado = 'completado'
+                plan.save()
+
+                messages.success(
+                    request,
+                    'Has aceptado la evaluación final exitosamente. '
+                    'El plan de mejora ha sido marcado como completado. ¡Felicidades por completar el proceso!'
+                )
+                return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan.id)
+
+            elif accion == 'rechazar':
+                # Rechazar la evaluación final
+                motivo_rechazo = request.POST.get('motivo_rechazo', '').strip()
+
+                if not motivo_rechazo:
+                    messages.error(request, 'Debe proporcionar un motivo para rechazar la evaluación final.')
+                    return render(request, 'evaluations/empleado/aceptar_evaluacion_final.html', {
+                        'evaluacion_final': evaluacion_final,
+                        'plan': plan,
+                        'asignacion': plan.asignacion_evaluacion,
+                        'error_motivo': True
+                    })
+
+                evaluacion_final.rechazado_por_empleado = True
+                evaluacion_final.fecha_rechazo_empleado = timezone.now()
+                evaluacion_final.motivo_rechazo_empleado = motivo_rechazo
+                evaluacion_final.en_revision_rrhh = True
+                evaluacion_final.save()
+
+                # NO completar el plan - queda en seguimiento hasta que RRHH valide
+
+                messages.warning(
+                    request,
+                    'Has rechazado la evaluación final. '
+                    'Tu caso ha sido enviado a Gestión Humana para revisión y validación.'
+                )
+                return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan.id)
+
+        # GET - Mostrar formulario
+        seguimientos = plan.seguimientos.all().order_by('numero_bimestre')
+
+        return render(request, 'evaluations/empleado/aceptar_evaluacion_final.html', {
+            'evaluacion_final': evaluacion_final,
+            'plan': plan,
+            'seguimientos': seguimientos,
+            'asignacion': plan.asignacion_evaluacion,
+        })
+
+    except Exception as e:
+        messages.error(request, f'Error al procesar la evaluación final: {str(e)}')
+        return redirect('evaluations:index')
 
 
 @login_required
@@ -1586,14 +1918,20 @@ def ver_plan_mejora_empleado(request, plan_id):
         
         # Obtener seguimientos ordenados
         seguimientos = plan.seguimientos.all().order_by('numero_bimestre')
-        
+
         # Verificar si tiene evaluación final
         evaluacion_final = getattr(plan, 'evaluacion_final', None)
-        
+
+        # Verificar si la evaluación final está pendiente de aceptación del empleado
+        evaluacion_final_pendiente = False
+        if evaluacion_final:
+            evaluacion_final_pendiente = evaluacion_final.esta_pendiente_aceptacion
+
         return render(request, 'evaluations/empleado/ver_plan_mejora.html', {
             'plan': plan,
             'seguimientos': seguimientos,
             'evaluacion_final': evaluacion_final,
+            'evaluacion_final_pendiente': evaluacion_final_pendiente,
             'asignacion': plan.asignacion_evaluacion
         })
         
@@ -1604,31 +1942,67 @@ def ver_plan_mejora_empleado(request, plan_id):
 @login_required
 def aceptar_plan_mejora(request, plan_id):
     """
-    Vista para que el empleado acepte su plan de mejora
+    Vista para que el empleado acepte o rechace su plan de mejora
     """
     from .models import PlanMejoraPredefinido
 
     try:
         plan = get_object_or_404(PlanMejoraPredefinido, id=plan_id)
 
-        # Verificar que el empleado puede aceptar este plan
+        # Verificar que el empleado puede interactuar con este plan
         if plan.asignacion_evaluacion.empleado_evaluado.usuario != request.user:
-            messages.error(request, 'No tiene permisos para aceptar este plan.')
+            messages.error(request, 'No tiene permisos para interactuar con este plan.')
             return redirect('evaluations:index')
 
-        # Verificar que el plan no esté ya aceptado
+        # Verificar que el plan no esté ya aceptado o rechazado
         if plan.aceptado_por_empleado:
             messages.info(request, 'Este plan ya ha sido aceptado.')
             return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan_id)
 
-        if request.method == 'POST':
-            # Aceptar el plan
-            plan.aceptado_por_empleado = True
-            plan.fecha_aceptacion_empleado = timezone.now()
-            plan.save()
-
-            messages.success(request, 'Plan de mejora aceptado exitosamente. Ahora está disponible para aprobación del supervisor.')
+        if plan.rechazado_por_empleado:
+            messages.info(request, 'Este plan ya ha sido rechazado. Está en revisión por Gestión Humana.')
             return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan_id)
+
+        if request.method == 'POST':
+            accion = request.POST.get('accion')
+
+            if accion == 'aceptar':
+                # Aceptar el plan
+                plan.aceptado_por_empleado = True
+                plan.fecha_aceptacion_empleado = timezone.now()
+                plan.save()
+
+                messages.success(
+                    request,
+                    'Plan de mejora aceptado exitosamente como autoevaluación. '
+                    'Ahora está disponible para aprobación del supervisor.'
+                )
+                return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan_id)
+
+            elif accion == 'rechazar':
+                # Rechazar el plan
+                motivo_rechazo = request.POST.get('motivo_rechazo', '').strip()
+
+                if not motivo_rechazo:
+                    messages.error(request, 'Debe proporcionar un motivo para rechazar el plan.')
+                    return render(request, 'evaluations/empleado/aceptar_plan.html', {
+                        'plan': plan,
+                        'asignacion': plan.asignacion_evaluacion,
+                        'error_motivo': True
+                    })
+
+                plan.rechazado_por_empleado = True
+                plan.fecha_rechazo_empleado = timezone.now()
+                plan.motivo_rechazo_empleado = motivo_rechazo
+                plan.en_revision_rrhh = True
+                plan.save()
+
+                messages.warning(
+                    request,
+                    'Has rechazado el plan de mejora. Tu desacuerdo ha sido enviado a Gestión Humana '
+                    'para revisión. Ellos decidirán si aprobar el plan original o solicitar una nueva evaluación.'
+                )
+                return redirect('evaluations:ver_plan_mejora_empleado', plan_id=plan_id)
 
         return render(request, 'evaluations/empleado/aceptar_plan.html', {
             'plan': plan,
@@ -1636,7 +2010,7 @@ def aceptar_plan_mejora(request, plan_id):
         })
 
     except Exception as e:
-        messages.error(request, f'Error al procesar la aceptación del plan: {str(e)}')
+        messages.error(request, f'Error al procesar el plan: {str(e)}')
         return redirect('evaluations:index')
 
 
@@ -1682,6 +2056,146 @@ def imprimir_plan_mejora(request, plan_id):
         return redirect('evaluations:index')
 
 
+@login_required
+def evaluaciones_finales_rechazadas_rrhh(request):
+    """
+    Vista para RRHH: listado de evaluaciones finales rechazadas por empleados
+    que necesitan validación
+    """
+    from .models import EvaluacionFinal
+
+    # Verificar permisos de administrador/RRHH
+    if not request.user.is_staff:
+        messages.error(request, 'No tiene permisos para acceder a esta sección.')
+        return redirect('evaluations:index')
+
+    try:
+        # Obtener evaluaciones finales rechazadas pendientes de validación
+        evaluaciones_rechazadas = EvaluacionFinal.objects.filter(
+            rechazado_por_empleado=True,
+            en_revision_rrhh=True,
+            validado_por_rrhh__isnull=True
+        ).select_related(
+            'plan_mejora',
+            'plan_mejora__asignacion_evaluacion',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado',
+            'plan_mejora__asignacion_evaluacion__evaluador',
+            'plan_mejora__asignacion_evaluacion__evaluacion',
+            'plan_mejora__asignacion_evaluacion__evaluacion__tipo_evaluacion',
+            'evaluado_por'
+        ).prefetch_related(
+            'plan_mejora__seguimientos'
+        ).order_by('-fecha_rechazo_empleado')
+
+        # También obtener las ya validadas para referencia
+        evaluaciones_validadas = EvaluacionFinal.objects.filter(
+            rechazado_por_empleado=True,
+            en_revision_rrhh=True,
+            validado_por_rrhh__isnull=False
+        ).select_related(
+            'plan_mejora',
+            'plan_mejora__asignacion_evaluacion',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado',
+            'validado_por_rrhh'
+        ).order_by('-fecha_validacion_rrhh')[:10]  # Últimas 10
+
+        # Agregar información adicional
+        evaluaciones_con_info = []
+        for eval_final in evaluaciones_rechazadas:
+            seguimientos = eval_final.plan_mejora.seguimientos.all()
+            satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+
+            evaluaciones_con_info.append({
+                'evaluacion_final': eval_final,
+                'plan': eval_final.plan_mejora,
+                'asignacion': eval_final.plan_mejora.asignacion_evaluacion,
+                'seguimientos_satisfactorios': satisfactorios,
+                'total_seguimientos': seguimientos.count(),
+            })
+
+        return render(request, 'evaluations/admin/evaluaciones_finales_rechazadas.html', {
+            'evaluaciones_con_info': evaluaciones_con_info,
+            'evaluaciones_validadas': evaluaciones_validadas,
+            'total_pendientes': evaluaciones_rechazadas.count(),
+        })
+
+    except Exception as e:
+        messages.error(request, f'Error al cargar evaluaciones rechazadas: {str(e)}')
+        return redirect('evaluations:index')
+
+
+@login_required
+def validar_evaluacion_final_rrhh(request, evaluacion_final_id):
+    """
+    Vista para que RRHH valide una evaluación final rechazada por el empleado
+    """
+    from .models import EvaluacionFinal
+    from django.utils import timezone
+
+    # Verificar permisos de administrador/RRHH
+    if not request.user.is_staff:
+        messages.error(request, 'No tiene permisos para realizar esta acción.')
+        return redirect('evaluations:index')
+
+    try:
+        evaluacion_final = get_object_or_404(EvaluacionFinal, id=evaluacion_final_id)
+        plan = evaluacion_final.plan_mejora
+
+        # Verificar que esté rechazada y pendiente de validación
+        if not evaluacion_final.rechazado_por_empleado:
+            messages.error(request, 'Esta evaluación final no ha sido rechazada por el empleado.')
+            return redirect('evaluations:evaluaciones_finales_rechazadas_rrhh')
+
+        if evaluacion_final.validado_por_rrhh:
+            messages.info(request, 'Esta evaluación final ya ha sido validada.')
+            return redirect('evaluations:evaluaciones_finales_rechazadas_rrhh')
+
+        if request.method == 'POST':
+            comentarios_rrhh = request.POST.get('comentarios_rrhh', '').strip()
+
+            if not comentarios_rrhh:
+                messages.error(request, 'Debe proporcionar comentarios sobre la resolución.')
+                return render(request, 'evaluations/admin/validar_evaluacion_final.html', {
+                    'evaluacion_final': evaluacion_final,
+                    'plan': plan,
+                    'seguimientos': plan.seguimientos.all().order_by('numero_bimestre'),
+                    'error_comentarios': True
+                })
+
+            # VALIDAR por RRHH
+            evaluacion_final.validado_por_rrhh = request.user
+            evaluacion_final.fecha_validacion_rrhh = timezone.now()
+            evaluacion_final.comentarios_rrhh = comentarios_rrhh
+            evaluacion_final.save()
+
+            # COMPLETAR EL PLAN (RRHH tiene la palabra final)
+            plan.estado = 'completado'
+            plan.save()
+
+            messages.success(
+                request,
+                f'Evaluación final validada exitosamente. '
+                f'El plan de {plan.asignacion_evaluacion.empleado_evaluado.nombre_completo} ha sido marcado como completado.'
+            )
+            return redirect('evaluations:evaluaciones_finales_rechazadas_rrhh')
+
+        # GET - Mostrar formulario
+        seguimientos = plan.seguimientos.all().order_by('numero_bimestre')
+        satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+
+        return render(request, 'evaluations/admin/validar_evaluacion_final.html', {
+            'evaluacion_final': evaluacion_final,
+            'plan': plan,
+            'seguimientos': seguimientos,
+            'satisfactorios': satisfactorios,
+            'asignacion': plan.asignacion_evaluacion,
+        })
+
+    except Exception as e:
+        messages.error(request, f'Error al validar evaluación final: {str(e)}')
+        return redirect('evaluations:evaluaciones_finales_rechazadas_rrhh')
+
+
 class MisEvaluacionesCompletadasView(LoginRequiredMixin, ListView):
     """Lista todas las evaluaciones completadas donde el usuario es evaluador (supervisor)"""
     template_name = 'evaluations/supervisor/completadas.html'
@@ -1706,3 +2220,113 @@ class MisEvaluacionesCompletadasView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['es_supervisor'] = True
         return context
+
+
+@login_required
+def resultados_finales_admin(request):
+    """
+    Vista para administradores que muestra todas las evaluaciones finales completadas
+    con filtros y estadísticas
+    """
+    from .models import EvaluacionFinal, PlanMejoraPredefinido
+    from django.db.models import Count, Q
+    from datetime import datetime, timedelta
+
+    # Verificar permisos de administrador
+    if not request.user.is_staff:
+        messages.error(request, 'No tiene permisos para acceder a esta sección.')
+        return redirect('evaluations:index')
+
+    try:
+        # Filtros
+        filtro_resultado = request.GET.get('resultado', 'todos')
+        filtro_periodo = request.GET.get('periodo', 'todos')
+        filtro_busqueda = request.GET.get('busqueda', '').strip()
+
+        # Query base - todas las evaluaciones finales
+        evaluaciones_finales = EvaluacionFinal.objects.select_related(
+            'plan_mejora',
+            'plan_mejora__asignacion_evaluacion',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado',
+            'plan_mejora__asignacion_evaluacion__evaluador',
+            'plan_mejora__asignacion_evaluacion__evaluacion',
+            'plan_mejora__asignacion_evaluacion__evaluacion__tipo_evaluacion',
+            'evaluado_por'
+        ).prefetch_related(
+            'plan_mejora__seguimientos',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado__historialcargo_set',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado__historialcargo_set__cargo__area'
+        ).order_by('-fecha_evaluacion')
+
+        # Aplicar filtro de resultado
+        if filtro_resultado != 'todos':
+            evaluaciones_finales = evaluaciones_finales.filter(resultado=filtro_resultado)
+
+        # Aplicar filtro de período
+        if filtro_periodo != 'todos':
+            hoy = datetime.now().date()
+            if filtro_periodo == 'mes':
+                fecha_inicio = hoy - timedelta(days=30)
+                evaluaciones_finales = evaluaciones_finales.filter(fecha_evaluacion__gte=fecha_inicio)
+            elif filtro_periodo == 'trimestre':
+                fecha_inicio = hoy - timedelta(days=90)
+                evaluaciones_finales = evaluaciones_finales.filter(fecha_evaluacion__gte=fecha_inicio)
+            elif filtro_periodo == 'semestre':
+                fecha_inicio = hoy - timedelta(days=180)
+                evaluaciones_finales = evaluaciones_finales.filter(fecha_evaluacion__gte=fecha_inicio)
+            elif filtro_periodo == 'año':
+                fecha_inicio = hoy - timedelta(days=365)
+                evaluaciones_finales = evaluaciones_finales.filter(fecha_evaluacion__gte=fecha_inicio)
+
+        # Aplicar búsqueda por nombre de empleado
+        if filtro_busqueda:
+            evaluaciones_finales = evaluaciones_finales.filter(
+                Q(plan_mejora__asignacion_evaluacion__empleado_evaluado__nombres__icontains=filtro_busqueda) |
+                Q(plan_mejora__asignacion_evaluacion__empleado_evaluado__apellidos__icontains=filtro_busqueda)
+            )
+
+        # Calcular estadísticas
+        total_evaluaciones = evaluaciones_finales.count()
+
+        exitosas = evaluaciones_finales.filter(resultado='exitoso').count()
+        parciales = evaluaciones_finales.filter(resultado='parcialmente_exitoso').count()
+        no_exitosas = evaluaciones_finales.filter(resultado='no_exitoso').count()
+
+        # Calcular porcentajes
+        porcentaje_exitosas = round((exitosas / total_evaluaciones * 100), 1) if total_evaluaciones > 0 else 0
+        porcentaje_parciales = round((parciales / total_evaluaciones * 100), 1) if total_evaluaciones > 0 else 0
+        porcentaje_no_exitosas = round((no_exitosas / total_evaluaciones * 100), 1) if total_evaluaciones > 0 else 0
+
+        # Agregar información de seguimientos a cada evaluación
+        evaluaciones_con_info = []
+        for eval_final in evaluaciones_finales:
+            seguimientos = eval_final.plan_mejora.seguimientos.all().order_by('numero_bimestre')
+            satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+
+            evaluaciones_con_info.append({
+                'evaluacion_final': eval_final,
+                'plan': eval_final.plan_mejora,
+                'asignacion': eval_final.plan_mejora.asignacion_evaluacion,
+                'seguimientos': seguimientos,
+                'total_seguimientos': seguimientos.count(),
+                'seguimientos_satisfactorios': satisfactorios,
+            })
+
+        return render(request, 'evaluations/admin/resultados_finales.html', {
+            'evaluaciones_con_info': evaluaciones_con_info,
+            'total_evaluaciones': total_evaluaciones,
+            'exitosas': exitosas,
+            'parciales': parciales,
+            'no_exitosas': no_exitosas,
+            'porcentaje_exitosas': porcentaje_exitosas,
+            'porcentaje_parciales': porcentaje_parciales,
+            'porcentaje_no_exitosas': porcentaje_no_exitosas,
+            'filtro_resultado': filtro_resultado,
+            'filtro_periodo': filtro_periodo,
+            'filtro_busqueda': filtro_busqueda,
+        })
+
+    except Exception as e:
+        messages.error(request, f'Error al cargar resultados finales: {str(e)}')
+        return redirect('evaluations:index')

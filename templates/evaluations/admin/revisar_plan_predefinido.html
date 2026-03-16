@@ -78,9 +78,19 @@
                     <p><strong>Tipo de evaluación:</strong> {{ plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}</p>
                     <p><strong>Período:</strong> {{ plan.asignacion_evaluacion.periodo_evaluacion }}</p>
                     <p><strong>Puntaje obtenido:</strong>
-                        <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
-                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
-                        </span>
+                        {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                            <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
+                                {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
+                            </span>
+                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                            <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 76 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}background-color: #d1ecf1; color: #0c5460; border: 1px solid #17a2b8;{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
+                                {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
+                            </span>
+                        {% else %}
+                            <span class="badge" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #17a2b8;">
+                                {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}%
+                            </span>
+                        {% endif %}
                     </p>
                     <p><strong>Aceptación del Empleado:</strong>
                         {% if plan.aceptado_por_empleado %}
@@ -143,21 +153,42 @@
 
                         <div class="action-buttons">
                             {% comment %}
-                            Si la evaluación fue reprobada (puntaje < 14), no se requiere aceptación del empleado
-                            porque no se genera plan de mejora (el empleado no aprueba el período de prueba)
+                            Determinar si requiere aceptación según tipo de evaluación y puntaje
                             {% endcomment %}
-                            {% if plan.asignacion_evaluacion.puntaje_total >= 14 and not plan.aceptado_por_empleado %}
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Esperando aceptación del empleado</strong>
-                                <p class="mb-0">El plan debe ser aceptado por el empleado antes de poder aprobarlo administrativamente.</p>
-                            </div>
-                            {% elif plan.asignacion_evaluacion.puntaje_total < 14 %}
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <strong>Evaluación con puntaje insatisfactorio</strong>
-                                <p class="mb-0">Como el puntaje es inferior a 14 puntos, no se requiere aceptación del empleado. El empleado no aprueba el período de prueba.</p>
-                            </div>
+                            {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                {% if plan.asignacion_evaluacion.puntaje_total >= 14 and not plan.aceptado_por_empleado %}
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Esperando aceptación del empleado</strong>
+                                        <p class="mb-0">El plan debe ser aceptado por el empleado antes de poder aprobarlo administrativamente.</p>
+                                    </div>
+                                {% elif plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Evaluación con puntaje insatisfactorio</strong>
+                                        <p class="mb-0">Como el puntaje es inferior a 14 puntos, no se requiere aceptación del empleado. El empleado no aprueba el período de prueba.</p>
+                                    </div>
+                                {% endif %}
+                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                {% if plan.asignacion_evaluacion.puntaje_total >= 61 and not plan.aceptado_por_empleado %}
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Esperando aceptación del empleado</strong>
+                                        <p class="mb-0">El plan debe ser aceptado por el empleado antes de poder aprobarlo administrativamente.</p>
+                                    </div>
+                                {% elif plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Evaluación con desempeño bajo</strong>
+                                        <p class="mb-0">Como el desempeño es bajo o muy bajo (&lt; 61%), no se requiere aceptación del empleado.</p>
+                                    </div>
+                                {% endif %}
+                            {% elif not plan.aceptado_por_empleado %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Esperando aceptación del empleado</strong>
+                                    <p class="mb-0">El plan debe ser aceptado por el empleado antes de poder aprobarlo administrativamente.</p>
+                                </div>
                             {% endif %}
 
                             <div class="row">
@@ -168,17 +199,41 @@
                                     </a>
                                 </div>
                                 <div class="col-md-3">
-                                    {% comment %}Permitir imprimir si está aceptado O si puntaje < 14{% endcomment %}
-                                    {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}
-                                    <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
-                                        <i class="fas fa-print"></i>
-                                        Imprimir Plan
-                                    </a>
+                                    {% comment %}Permitir imprimir si está aceptado O es bajo desempeño{% endcomment %}
+                                    {% if plan.aceptado_por_empleado %}
+                                        <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
+                                            <i class="fas fa-print"></i>
+                                            Imprimir Plan
+                                        </a>
+                                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                        {% if plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                            <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
+                                                <i class="fas fa-print"></i>
+                                                Imprimir Plan
+                                            </a>
+                                        {% else %}
+                                            <button type="button" class="btn btn-outline-secondary btn-block" disabled title="El plan debe ser aceptado primero">
+                                                <i class="fas fa-print"></i>
+                                                Imprimir Plan
+                                            </button>
+                                        {% endif %}
+                                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                        {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                            <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
+                                                <i class="fas fa-print"></i>
+                                                Imprimir Plan
+                                            </a>
+                                        {% else %}
+                                            <button type="button" class="btn btn-outline-secondary btn-block" disabled title="El plan debe ser aceptado primero">
+                                                <i class="fas fa-print"></i>
+                                                Imprimir Plan
+                                            </button>
+                                        {% endif %}
                                     {% else %}
-                                    <button type="button" class="btn btn-outline-secondary btn-block" disabled title="El plan debe ser aceptado primero">
-                                        <i class="fas fa-print"></i>
-                                        Imprimir Plan
-                                    </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-block" disabled title="El plan debe ser aceptado primero">
+                                            <i class="fas fa-print"></i>
+                                            Imprimir Plan
+                                        </button>
                                     {% endif %}
                                 </div>
                                 <div class="col-md-3">
@@ -188,18 +243,36 @@
                                     </button>
                                 </div>
                                 <div class="col-md-3">
-                                    {% comment %}Permitir aprobar si está aceptado O si puntaje < 14{% endcomment %}
-                                    <button
-                                        type="submit"
-                                        name="accion"
-                                        value="aprobar"
-                                        class="btn btn-success btn-block"
-                                        id="btnAprobar"
-                                        {% if plan.asignacion_evaluacion.puntaje_total >= 14 and not plan.aceptado_por_empleado %}disabled title="Debe esperar a que el empleado acepte el plan"{% endif %}
-                                    >
-                                        <i class="fas fa-{% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}check{% else %}lock{% endif %}"></i>
-                                        {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.puntaje_total < 14 %}Aprobar Plan{% else %}Aprobar (Bloqueado){% endif %}
-                                    </button>
+                                    {% comment %}Determinar si puede aprobar{% endcomment %}
+                                    {% if plan.aceptado_por_empleado %}
+                                        <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-block" id="btnAprobar">
+                                            <i class="fas fa-check"></i> Aprobar Plan
+                                        </button>
+                                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                        {% if plan.asignacion_evaluacion.puntaje_total < 14 %}
+                                            <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-block" id="btnAprobar">
+                                                <i class="fas fa-check"></i> Aprobar Plan
+                                            </button>
+                                        {% else %}
+                                            <button type="button" class="btn btn-success btn-block" disabled title="Debe esperar a que el empleado acepte el plan">
+                                                <i class="fas fa-lock"></i> Aprobar (Bloqueado)
+                                            </button>
+                                        {% endif %}
+                                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                        {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                            <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-block" id="btnAprobar">
+                                                <i class="fas fa-check"></i> Aprobar Plan
+                                            </button>
+                                        {% else %}
+                                            <button type="button" class="btn btn-success btn-block" disabled title="Debe esperar a que el empleado acepte el plan">
+                                                <i class="fas fa-lock"></i> Aprobar (Bloqueado)
+                                            </button>
+                                        {% endif %}
+                                    {% else %}
+                                        <button type="button" class="btn btn-success btn-block" disabled title="Debe esperar a que el empleado acepte el plan">
+                                            <i class="fas fa-lock"></i> Aprobar (Bloqueado)
+                                        </button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

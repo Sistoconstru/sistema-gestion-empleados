@@ -175,14 +175,53 @@ class EvaluacionDesempeño(models.Model):
 
 class EvaluacionCargo(models.Model):
     """Relación entre evaluaciones y cargos"""
+    ESTADO_CHOICES = [
+        ('programada', 'Programada'),
+        ('activa', 'Activa'),
+        ('finalizada', 'Finalizada'),
+    ]
+
     evaluacion = models.ForeignKey(EvaluacionDesempeño, on_delete=models.CASCADE)
     cargo = models.ForeignKey('organizational.Cargo', on_delete=models.CASCADE)
     fecha_asignacion = models.DateTimeField(auto_now_add=True)
     asignado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
-    
+
+    # Control de activación
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default='programada',
+        help_text='La evaluación se asigna a empleados solo cuando está Activa'
+    )
+    fecha_activacion = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text='Fecha en que se activó la evaluación y se asignó a empleados'
+    )
+    fecha_vencimiento_planeada = models.DateField(
+        null=True,
+        blank=True,
+        help_text='Fecha límite para completar la evaluación'
+    )
+    dias_para_completar = models.IntegerField(
+        default=30,
+        help_text='Días que tienen los empleados para completar la evaluación'
+    )
+    activada_por = models.ForeignKey(
+        'authentication.Usuario',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='evaluaciones_cargo_activadas',
+        help_text='Usuario que activó la evaluación'
+    )
+
     class Meta:
         db_table = 'evaluaciones_cargos'
         unique_together = ['evaluacion', 'cargo']
+
+    def __str__(self):
+        return f"{self.evaluacion.nombre} → {self.cargo.nombre} ({self.get_estado_display()})"
 
 class PreguntaEvaluacion(models.Model):
     """Preguntas de evaluación de desempeño"""
@@ -257,7 +296,21 @@ class AsignacionEvaluacion(models.Model):
     recomendacion_continuidad = models.CharField(max_length=20, choices=[('continua', 'Continúa'), ('no_continua', 'No Continúa')], null=True, blank=True)
     aspectos_mejora_generados = models.TextField(blank=True, help_text='Aspectos de mejora generados automáticamente')
     observaciones = models.TextField(blank=True)
-    
+
+    # Campo de Seguridad y Salud en el Trabajo (SST) - Solo para evaluaciones anuales
+    USO_EPP_CHOICES = [
+        ('correcto', 'Los usa correctamente y promueve su uso'),
+        ('a_veces', 'A veces no los usa adecuadamente'),
+        ('nunca', 'No los usa o no promueve su uso'),
+    ]
+    uso_epp_sst = models.CharField(
+        max_length=20,
+        choices=USO_EPP_CHOICES,
+        blank=True,
+        verbose_name='Uso de Elementos de Protección Personal (EPP)',
+        help_text='Observación de SST - No computa en el puntaje de la evaluación'
+    )
+
     class Meta:
         db_table = 'asignaciones_evaluacion'
         unique_together = ['empleado_evaluado', 'evaluacion', 'periodo_evaluacion', 'es_autoevaluacion']
@@ -371,15 +424,43 @@ class PlanMejoraPredefinido(models.Model):
     # Aceptación del empleado
     aceptado_por_empleado = models.BooleanField(default=False, help_text="Indica si el empleado ha aceptado el plan")
     fecha_aceptacion_empleado = models.DateTimeField(null=True, blank=True, help_text="Fecha en que el empleado aceptó el plan")
-    
+
+    # Rechazo del empleado
+    rechazado_por_empleado = models.BooleanField(default=False, help_text="Indica si el empleado ha rechazado el plan")
+    fecha_rechazo_empleado = models.DateTimeField(null=True, blank=True, help_text="Fecha en que el empleado rechazó el plan")
+    motivo_rechazo_empleado = models.TextField(blank=True, help_text="Motivo por el cual el empleado rechazó el plan")
+
+    # Revisión de Gestión Humana (cuando empleado rechaza)
+    en_revision_rrhh = models.BooleanField(default=False, help_text="Indica si está en revisión por RRHH tras rechazo del empleado")
+    decision_rrhh = models.CharField(
+        max_length=30,
+        blank=True,
+        choices=[
+            ('aprobar_plan_original', 'Aprobar Plan Original'),
+            ('solicitar_nueva_evaluacion', 'Solicitar Nueva Evaluación'),
+            ('modificar_plan', 'Modificar Plan'),
+        ],
+        help_text="Decisión de RRHH sobre el plan rechazado por el empleado"
+    )
+    comentarios_decision_rrhh = models.TextField(blank=True, help_text="Comentarios de RRHH sobre la decisión tomada")
+    fecha_decision_rrhh = models.DateTimeField(null=True, blank=True, help_text="Fecha de la decisión de RRHH")
+    decidido_por_rrhh = models.ForeignKey(
+        'authentication.Usuario',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='decisiones_rrhh_planes',
+        help_text="Usuario de RRHH que tomó la decisión"
+    )
+
     # Fechas de creación y gestión
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_aprobacion = models.DateTimeField(null=True, blank=True)
-    
+
     # Usuarios involucrados
     generado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='planes_generados')
     aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='planes_aprobados')
-    
+
     # Comentarios del proceso
     comentarios_aprobacion = models.TextField(blank=True, help_text="Comentarios del supervisor durante la aprobación")
     comentarios_seguimiento = models.TextField(blank=True, help_text="Comentarios del seguimiento")
@@ -443,23 +524,64 @@ class EvaluacionFinal(models.Model):
         ('parcialmente_exitoso', 'Parcialmente Exitoso'),
         ('no_exitoso', 'No Exitoso'),
     ]
-    
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plan_mejora = models.OneToOneField(PlanMejoraPredefinido, on_delete=models.CASCADE, related_name='evaluacion_final')
-    
+
     # Resultado final
     resultado = models.CharField(max_length=25, choices=RESULTADOS)
     conclusion = models.TextField(help_text="Conclusión final del evaluador sobre el plan de mejora")
-    
+
     # Fechas y usuario
     fecha_evaluacion = models.DateTimeField(auto_now_add=True)
-    evaluado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
-    
+    evaluado_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='evaluaciones_finales_realizadas')
+
+    # Aceptación por parte del empleado
+    aceptado_por_empleado = models.BooleanField(default=False, help_text="Si el empleado aceptó la evaluación final")
+    fecha_aceptacion_empleado = models.DateTimeField(null=True, blank=True, help_text="Fecha en que el empleado aceptó")
+
+    rechazado_por_empleado = models.BooleanField(default=False, help_text="Si el empleado rechazó la evaluación final")
+    fecha_rechazo_empleado = models.DateTimeField(null=True, blank=True, help_text="Fecha en que el empleado rechazó")
+    motivo_rechazo_empleado = models.TextField(blank=True, default='', help_text="Motivo del rechazo por parte del empleado")
+
+    # Validación de Gestión Humana (solo cuando hay rechazo)
+    en_revision_rrhh = models.BooleanField(default=False, help_text="Si está en revisión por Gestión Humana")
+    validado_por_rrhh = models.ForeignKey(
+        'authentication.Usuario',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='evaluaciones_finales_validadas',
+        help_text="Usuario de RRHH que validó la evaluación final"
+    )
+    fecha_validacion_rrhh = models.DateTimeField(null=True, blank=True, help_text="Fecha de validación por RRHH")
+    comentarios_rrhh = models.TextField(blank=True, default='', help_text="Comentarios de RRHH sobre la resolución")
+
     class Meta:
         db_table = 'evaluaciones_finales'
         verbose_name = 'Evaluación Final'
         verbose_name_plural = 'Evaluaciones Finales'
-    
+
     def __str__(self):
         return f"Evaluación Final - {self.plan_mejora} - {self.get_resultado_display()}"
+
+    @property
+    def esta_pendiente_aceptacion(self):
+        """Verifica si está pendiente de aceptación del empleado"""
+        return not self.aceptado_por_empleado and not self.rechazado_por_empleado
+
+    @property
+    def fue_aceptada(self):
+        """Verifica si fue aceptada por el empleado"""
+        return self.aceptado_por_empleado
+
+    @property
+    def fue_rechazada(self):
+        """Verifica si fue rechazada por el empleado"""
+        return self.rechazado_por_empleado
+
+    @property
+    def necesita_validacion_rrhh(self):
+        """Verifica si necesita validación de RRHH (fue rechazada y aún no validada)"""
+        return self.rechazado_por_empleado and self.en_revision_rrhh and not self.validado_por_rrhh
 

@@ -5,12 +5,16 @@ from django.contrib import admin
 # =============================================================================
 
 from django.contrib import admin
+from django.utils import timezone
+from django.contrib import messages
+from django import forms
+from datetime import datetime
 from .models import (
-    TipoPregunta, Valoracion, PreguntaValoracion, OpcionRespuesta, 
+    TipoPregunta, Valoracion, PreguntaValoracion, OpcionRespuesta,
     IntentoValoracion, RespuestaValoracion, CertificadoCapacitacion,
     TipoEvaluacion, EvaluacionDesempeño, PreguntaEvaluacion, OpcionEvaluacion,
     AsignacionEvaluacion, RespuestaEvaluacion, ResultadoEvaluacion,
-    PlanMejoraPredefinido, SeguimientoBimensual, EvaluacionFinal
+    PlanMejoraPredefinido, SeguimientoBimensual, EvaluacionFinal, EvaluacionCargo
 )
 
 # Registro del modelo TipoPregunta en el admin de Django
@@ -224,3 +228,88 @@ class EvaluacionFinalAdmin(admin.ModelAdmin):
     def plan_empleado(self, obj):
         return obj.plan_mejora.asignacion_evaluacion.empleado_evaluado.get_full_name()
     plan_empleado.short_description = 'Empleado'
+
+# =============================================================================
+# Admin de EvaluacionCargo con control de activación
+# =============================================================================
+
+@admin.register(EvaluacionCargo)
+class EvaluacionCargoAdmin(admin.ModelAdmin):
+    list_display = ('evaluacion', 'cargo', 'estado_badge', 'fecha_asignacion', 'fecha_vencimiento_planeada', 'fecha_activacion', 'asignado_por')
+    list_filter = ('estado', 'evaluacion__tipo_evaluacion', 'fecha_asignacion')
+    search_fields = ('evaluacion__nombre', 'cargo__nombre')
+    date_hierarchy = 'fecha_asignacion'
+    actions = ['activar_evaluaciones', 'finalizar_evaluaciones']
+    
+    readonly_fields = ('fecha_asignacion', 'fecha_activacion', 'activada_por')
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('evaluacion', 'cargo', 'estado', 'asignado_por', 'fecha_asignacion')
+        }),
+        ('Control de Activación', {
+            'fields': ('fecha_vencimiento_planeada', 'dias_para_completar', 'fecha_activacion', 'activada_por'),
+            'description': 'Configure la fecha de vencimiento antes de activar. Las asignaciones a empleados se crean al activar.'
+        }),
+    )
+    
+    def estado_badge(self, obj):
+        colores = {
+            'programada': '#ffc107',  # Amarillo
+            'activa': '#28a745',       # Verde
+            'finalizada': '#6c757d'    # Gris
+        }
+        color = colores.get(obj.estado, '#6c757d')
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px; font-weight: bold;">{}</span>',
+            color,
+            obj.get_estado_display()
+        )
+    estado_badge.short_description = 'Estado'
+    
+    def activar_evaluaciones(self, request, queryset):
+        """
+        Acción para activar evaluaciones programadas.
+        Abre una página intermedia para especificar fecha de vencimiento.
+        """
+        # Filtrar solo las que están en estado 'programada'
+        evaluaciones_programadas = queryset.filter(estado='programada')
+        
+        if not evaluaciones_programadas.exists():
+            self.message_user(
+                request,
+                "No hay evaluaciones en estado 'Programada' en la selección.",
+                level=messages.WARNING
+            )
+            return
+        
+        # Guardar los IDs en la sesión para la página intermedia
+        request.session['evaluaciones_a_activar'] = list(evaluaciones_programadas.values_list('id', flat=True))
+
+        # Redirigir a página intermedia (formulario)
+        from django.shortcuts import redirect
+        from django.urls import reverse
+        return redirect(reverse('evaluations:activar_evaluaciones_form'))
+    
+    activar_evaluaciones.short_description = "✅ Activar evaluaciones seleccionadas"
+    
+    def finalizar_evaluaciones(self, request, queryset):
+        """Marca evaluaciones activas como finalizadas"""
+        count = queryset.filter(estado='activa').update(estado='finalizada')
+        self.message_user(
+            request,
+            f"{count} evaluación(es) marcada(s) como finalizada(s).",
+            level=messages.SUCCESS if count > 0 else messages.WARNING
+        )
+    
+    finalizar_evaluaciones.short_description = "🏁 Finalizar evaluaciones seleccionadas"
+    
+    def get_readonly_fields(self, request, obj=None):
+        """No permitir editar una vez activada"""
+        if obj and obj.estado in ['activa', 'finalizada']:
+            return self.readonly_fields + ('evaluacion', 'cargo', 'estado', 'fecha_vencimiento_planeada', 'dias_para_completar')
+        return self.readonly_fields
+
+
+# Necesitamos importar format_html para los badges
+from django.utils.html import format_html

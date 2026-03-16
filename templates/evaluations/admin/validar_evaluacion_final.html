@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Validar Evaluación Final - Gestión Humana - SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+.validation-header {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a379f 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.info-section {
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.resultado-box {
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.motivo-rechazo-empleado {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.conclusion-supervisor {
+    background: #e7f3ff;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.seguimiento-item {
+    border-left: 3px solid #28a745;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.seguimiento-item.no-satisfactorio {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:index' %}">Evaluaciones</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}">Evaluaciones Rechazadas</a></li>
+                    <li class="breadcrumb-item active">Validar Evaluación Final</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="validation-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2>
+                            <i class="fas fa-gavel me-2"></i>
+                            Validación de Evaluación Final - Gestión Humana
+                        </h2>
+                        <p class="mb-0">Mediación y resolución de evaluación final impugnada</p>
+                    </div>
+                    <a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}" class="btn btn-light">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Información del Empleado -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i>
+                        Información del Empleado
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Empleado:</strong> {{ asignacion.empleado_evaluado.nombre_completo }}</p>
+                            <p><strong>Cargo:</strong> {{ asignacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}</p>
+                            <p><strong>Área:</strong> {{ asignacion.empleado_evaluado.cargo_actual.cargo.area.nombre|default:"Sin área" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Tipo de Evaluación:</strong> {{ asignacion.evaluacion.tipo_evaluacion.nombre }}</p>
+                            <p><strong>Período:</strong> {{ asignacion.periodo_evaluacion }}</p>
+                            <p><strong>Puntaje Original:</strong>
+                                <span class="badge bg-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %} fs-6">
+                                    {{ asignacion.puntaje_total|floatformat:1 }}/21
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultado Asignado por Supervisor -->
+            <div class="resultado-box" style="
+                {% if evaluacion_final.resultado == 'exitoso' %}
+                    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                {% elif evaluacion_final.resultado == 'parcialmente_exitoso' %}
+                    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+                {% else %}
+                    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                {% endif %}
+            ">
+                <h4 class="mb-2">
+                    <i class="fas fa-trophy me-2"></i>
+                    Resultado Asignado: {{ evaluacion_final.get_resultado_display }}
+                </h4>
+                <p class="mb-0">
+                    Evaluado por: {{ evaluacion_final.evaluado_por.get_full_name }} el {{ evaluacion_final.fecha_evaluacion|date:"d/m/Y" }}
+                </p>
+            </div>
+
+            <!-- Resumen de Seguimientos -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        Resumen de Seguimientos Bimensuales
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span><strong>Seguimientos Satisfactorios:</strong></span>
+                                <span class="badge bg-success fs-6">{{ satisfactorios }} de {{ seguimientos|length }}</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 12px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {% widthratio satisfactorios seguimientos|length 100 %}%">
+                                    {% widthratio satisfactorios seguimientos|length 100 %}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% for seg in seguimientos %}
+                    <div class="seguimiento-item {% if not seg.avance_satisfactorio %}no-satisfactorio{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ seg.numero_bimestre }}° Bimestre</strong>
+                                {% if seg.avance_satisfactorio %}
+                                    <span class="badge bg-success ms-2"><i class="fas fa-check"></i> Satisfactorio</span>
+                                {% else %}
+                                    <span class="badge bg-warning ms-2"><i class="fas fa-exclamation-triangle"></i> Necesita Mejorar</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">{{ seg.fecha_completado|date:"d/m/Y" }}</small>
+                        </div>
+                        {% if seg.observaciones %}
+                        <div class="mt-2">
+                            <small><strong>Observaciones:</strong> {{ seg.observaciones|truncatewords:25 }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Conclusión del Supervisor -->
+            <div class="conclusion-supervisor">
+                <h5 class="mb-3">
+                    <i class="fas fa-comment-alt me-2 text-primary"></i>
+                    Conclusión del Supervisor
+                </h5>
+                <p class="mb-0" style="font-size: 1.05rem; line-height: 1.8;">
+                    {{ evaluacion_final.conclusion }}
+                </p>
+            </div>
+
+            <!-- Motivo del Rechazo del Empleado -->
+            <div class="motivo-rechazo-empleado">
+                <h5 class="mb-3">
+                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                    Motivo del Rechazo del Empleado
+                </h5>
+                <div class="alert alert-warning mb-3">
+                    <strong>Rechazado el:</strong> {{ evaluacion_final.fecha_rechazo_empleado|date:"d/m/Y H:i" }}
+                </div>
+                <p class="mb-0" style="font-size: 1.05rem; font-style: italic; line-height: 1.8;">
+                    "{{ evaluacion_final.motivo_rechazo_empleado }}"
+                </p>
+            </div>
+
+            <!-- Formulario de Validación -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a379f 100%); color: white;">
+                    <h5 class="mb-0">
+                        <i class="fas fa-gavel me-2"></i>
+                        Validación Final de Gestión Humana
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if error_comentarios %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Error:</strong> Debe proporcionar comentarios detallados sobre la resolución del caso.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-info mb-4">
+                        <h6><i class="fas fa-info-circle me-2"></i>Instrucciones Importantes:</h6>
+                        <ul class="mb-0">
+                            <li>Revise cuidadosamente toda la información presentada</li>
+                            <li>Analice el resultado asignado por el supervisor vs. el motivo de rechazo del empleado</li>
+                            <li>Considere los seguimientos bimensuales como evidencia objetiva</li>
+                            <li>De ser necesario, cite a una reunión de conciliación con ambas partes antes de validar</li>
+                            <li><strong>Al validar, el plan se marcará como COMPLETADO automáticamente</strong></li>
+                            <li>Sus comentarios serán visibles para el empleado y el supervisor</li>
+                        </ul>
+                    </div>
+
+                    <form method="post" id="formValidacion">
+                        {% csrf_token %}
+
+                        <div class="form-group mb-4">
+                            <label for="comentarios_rrhh" class="form-label">
+                                <strong><i class="fas fa-comments me-2"></i>Comentarios de Gestión Humana (Obligatorio):</strong>
+                            </label>
+                            <textarea class="form-control" id="comentarios_rrhh" name="comentarios_rrhh" rows="8"
+                                placeholder="Escriba sus comentarios sobre la resolución de este caso. Debe incluir:&#10;&#10;1. Análisis del resultado asignado por el supervisor&#10;2. Consideración del motivo de rechazo del empleado&#10;3. Justificación de la validación&#10;4. Recomendaciones futuras (si aplica)&#10;5. Decisión final y fundamentos&#10;&#10;Sus comentarios deben ser profesionales, imparciales y constructivos."
+                                required
+                            ></textarea>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Mínimo 100 caracteres. Sea claro, imparcial y profesional en su análisis.
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Advertencia:</strong> Al validar esta evaluación final, el plan de mejora se marcará como <strong>COMPLETADO</strong> y se cerrará el caso definitivamente. Esta acción no se puede deshacer.
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Cancelar y Volver
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Validar y Completar Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('formValidacion').addEventListener('submit', function(e) {
+    const comentarios = document.getElementById('comentarios_rrhh').value.trim();
+
+    if (comentarios.length < 100) {
+        e.preventDefault();
+        alert('Los comentarios deben tener al menos 100 caracteres. Por favor, proporcione un análisis más detallado del caso.');
+        return;
+    }
+
+    const confirmacion = confirm(
+        '¿Está seguro de VALIDAR esta evaluación final?\n\n' +
+        '• El plan de mejora se marcará como COMPLETADO\n' +
+        '• El caso se cerrará definitivamente\n' +
+        '• Sus comentarios serán visibles para el empleado y supervisor\n' +
+        '• Esta acción NO se puede deshacer\n\n' +
+        '¿Desea continuar?'
+    );
+
+    if (!confirmacion) {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}

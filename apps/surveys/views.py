@@ -212,16 +212,22 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
 
                 if valor:
                     # Determinar si es opción o texto
-                    if pregunta.tipo_pregunta.codigo in ['multiple_choice', 'select', 'rating']:
+                    tipos_con_opciones = [
+                        'multiple_choice', 'select', 'rating',
+                        'PREGMULT', 'ESCALA_5', 'SI_NO'
+                    ]
+
+                    if pregunta.tipo_pregunta.codigo in tipos_con_opciones:
                         RespuestaEncuesta.objects.update_or_create(
                             participacion=participacion,
                             pregunta=pregunta,
                             defaults={
-                                'opcion_seleccionada_id': valor if valor.isdigit() else None
+                                'opcion_seleccionada_id': valor if valor.isdigit() else None,
+                                'respuesta_texto': valor if not valor.isdigit() else ''
                             }
                         )
                     else:
-                        # Texto libre o texto corto
+                        # Texto libre o texto corto (text, short_text, TEXTO_LIBRE)
                         RespuestaEncuesta.objects.update_or_create(
                             participacion=participacion,
                             pregunta=pregunta,

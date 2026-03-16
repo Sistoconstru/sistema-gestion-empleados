@@ -228,8 +228,8 @@
                         </div>
                         <div class="col-md-3">
                             <h5 class="text-info">
-                                {% if participaciones %}
-                                    {{ participaciones|first.tiempo_empleado_minutos|default:"--" }}
+                                {% if participaciones.first %}
+                                    {{ participaciones.first.tiempo_empleado_minutos|default:"--" }}
                                 {% else %}
                                     --
                                 {% endif %}

@@ -73,6 +73,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 4: Enviar recordatorios de evaluaciones pendientes a las 4:00 AM
+        scheduler.add_job(
+            _enviar_recordatorios_evaluaciones,
+            'cron',
+            hour=4,
+            minute=0,
+            id='recordatorios_evaluaciones',
+            name='Enviar recordatorios de evaluaciones pendientes',
+            replace_existing=True,
+            misfire_grace_time=600,  # 10 minutos de tolerancia
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -80,6 +93,7 @@ def start_scheduler():
         logger.info('  - 02:00 AM: Asignar evaluaciones de período de prueba')
         logger.info('  - 02:15 AM: Activar empleados completados')
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
+        logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
 
         return scheduler
 
@@ -177,6 +191,33 @@ def _limpiar_logs_antiguos():
     except Exception as e:
         logger.error(
             f'❌ Error en limpieza de logs: {e}',
+            exc_info=True
+        )
+
+
+def _enviar_recordatorios_evaluaciones():
+    """
+    Ejecuta el comando de envío de recordatorios de evaluaciones pendientes.
+
+    Este comando:
+    - Busca evaluaciones en estado 'pendiente' hace 3+ días sin actividad
+    - Verifica la última notificación enviada para evitar spam
+    - Envía recordatorios al empleado evaluado y al evaluador (jefe directo)
+    - Las notificaciones aparecen en el sistema para revisión
+    """
+    try:
+        logger.info('🔄 Iniciando envío de recordatorios de evaluaciones...')
+
+        call_command(
+            'enviar_recordatorios_evaluaciones',
+            '--dias', '3'
+        )
+
+        logger.info('✅ Recordatorios de evaluaciones enviados')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error al enviar recordatorios de evaluaciones: {e}',
             exc_info=True
         )
 

@@ -1,0 +1,597 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resultados Finales - Evaluaciones Completadas - SIGHU{% endblock title %}
+
+{% block extra_css %}
+<style>
+/* Header principal */
+.page-header-finales {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.page-header-finales h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.page-header-finales p {
+    margin: 8px 0 0 0;
+    opacity: 0.95;
+    font-size: 1.05rem;
+}
+
+/* Tarjetas de estadísticas */
+.stat-card-final {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    padding: 25px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-final::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255,255,255,0.1);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.stat-card-final:hover::before {
+    top: -60%;
+    right: -60%;
+}
+
+.stat-card-final:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.stat-card-final h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-card-final p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.stat-card-final small {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.stat-card-final i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3.5rem;
+    opacity: 0.2;
+}
+
+.bg-exitoso {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.bg-parcial {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+}
+
+.bg-no-exitoso {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.bg-total {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a379f 100%);
+}
+
+/* Filtros */
+.filters-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    margin-bottom: 0;
+}
+
+.filter-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+    transition: all 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Cards de evaluaciones */
+.evaluacion-final-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-left: 5px solid #28a745;
+}
+
+.evaluacion-final-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    transform: translateX(3px);
+}
+
+.evaluacion-final-card.exitoso {
+    border-left-color: #28a745;
+}
+
+.evaluacion-final-card.parcial {
+    border-left-color: #ffc107;
+}
+
+.evaluacion-final-card.no-exitoso {
+    border-left-color: #dc3545;
+}
+
+.card-header-resultado {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.card-body-resultado {
+    padding: 20px;
+}
+
+.empleado-nombre {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 5px;
+}
+
+.empleado-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.resultado-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.resultado-exitoso {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.resultado-parcial {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.resultado-no-exitoso {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.seguimientos-info {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-top: 15px;
+}
+
+.seguimientos-info .progress {
+    height: 8px;
+    border-radius: 10px;
+    margin-top: 8px;
+}
+
+.conclusion-preview {
+    background: #f8f9fa;
+    border-left: 3px solid #6c757d;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #495057;
+    font-style: italic;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.empty-state i {
+    font-size: 5em;
+    color: #28a745;
+    opacity: 0.3;
+    margin-bottom: 20px;
+}
+
+.empty-state h4 {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #adb5bd;
+}
+
+/* Badges */
+.info-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-header-finales {
+        padding: 20px;
+    }
+
+    .page-header-finales h2 {
+        font-size: 1.5rem;
+    }
+
+    .stat-card-final {
+        margin-bottom: 15px;
+    }
+
+    .stat-card-final h3 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-finales">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i class="fas fa-trophy me-2"></i>
+                    Resultados Finales - Evaluaciones Completadas
+                </h2>
+                <p>Dashboard completo de todas las evaluaciones finales del sistema</p>
+            </div>
+            <a href="{% url 'evaluations:index' %}" class="btn btn-light">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card-final bg-total">
+                <div class="position-relative">
+                    <h3>{{ total_evaluaciones }}</h3>
+                    <p class="mb-0">Total de Evaluaciones</p>
+                    <small>Finales completadas</small>
+                </div>
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card-final bg-exitoso">
+                <div class="position-relative">
+                    <h3>{{ exitosas }}</h3>
+                    <p class="mb-0">Exitosas</p>
+                    <small>{{ porcentaje_exitosas }}% del total</small>
+                </div>
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card-final bg-parcial">
+                <div class="position-relative">
+                    <h3>{{ parciales }}</h3>
+                    <p class="mb-0">Parcialmente Exitosas</p>
+                    <small>{{ porcentaje_parciales }}% del total</small>
+                </div>
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card-final bg-no-exitoso">
+                <div class="position-relative">
+                    <h3>{{ no_exitosas }}</h3>
+                    <p class="mb-0">No Exitosas</p>
+                    <small>{{ porcentaje_no_exitosas }}% del total</small>
+                </div>
+                <i class="fas fa-times-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-card">
+        <form method="get" id="filtros-form">
+            <div class="row align-items-end">
+                <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                    <div class="filter-group">
+                        <label for="resultado">
+                            <i class="fas fa-filter me-1"></i>Filtrar por Resultado
+                        </label>
+                        <select name="resultado" id="resultado" class="form-select" onchange="document.getElementById('filtros-form').submit()">
+                            <option value="todos" {% if filtro_resultado == 'todos' %}selected{% endif %}>Todos los resultados</option>
+                            <option value="exitoso" {% if filtro_resultado == 'exitoso' %}selected{% endif %}>Exitosas</option>
+                            <option value="parcialmente_exitoso" {% if filtro_resultado == 'parcialmente_exitoso' %}selected{% endif %}>Parcialmente Exitosas</option>
+                            <option value="no_exitoso" {% if filtro_resultado == 'no_exitoso' %}selected{% endif %}>No Exitosas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
+                    <div class="filter-group">
+                        <label for="periodo">
+                            <i class="fas fa-calendar me-1"></i>Período
+                        </label>
+                        <select name="periodo" id="periodo" class="form-select" onchange="document.getElementById('filtros-form').submit()">
+                            <option value="todos" {% if filtro_periodo == 'todos' %}selected{% endif %}>Todo el tiempo</option>
+                            <option value="mes" {% if filtro_periodo == 'mes' %}selected{% endif %}>Último mes</option>
+                            <option value="trimestre" {% if filtro_periodo == 'trimestre' %}selected{% endif %}>Último trimestre</option>
+                            <option value="semestre" {% if filtro_periodo == 'semestre' %}selected{% endif %}>Último semestre</option>
+                            <option value="año" {% if filtro_periodo == 'año' %}selected{% endif %}>Último año</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-8 mb-3 mb-md-0">
+                    <div class="filter-group">
+                        <label for="busqueda">
+                            <i class="fas fa-search me-1"></i>Buscar Empleado
+                        </label>
+                        <input type="text" name="busqueda" id="busqueda" class="form-control"
+                               placeholder="Nombre del empleado..." value="{{ filtro_busqueda }}">
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-4">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-search me-1"></i>Buscar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de Evaluaciones Finales -->
+    {% if evaluaciones_con_info %}
+        <div class="row">
+            <div class="col-12">
+                <h5 class="mb-3">
+                    <i class="fas fa-list me-2"></i>
+                    Mostrando {{ evaluaciones_con_info|length }} evaluación{% if evaluaciones_con_info|length != 1 %}es{% endif %}
+                </h5>
+            </div>
+        </div>
+
+        {% for item in evaluaciones_con_info %}
+        <div class="evaluacion-final-card {{ item.evaluacion_final.resultado }}">
+            <div class="card-header-resultado">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="empleado-nombre">
+                            <i class="fas fa-user-circle me-2 text-primary"></i>
+                            {{ item.asignacion.empleado_evaluado.nombre_completo }}
+                        </div>
+                        <div class="empleado-info">
+                            <span class="info-badge bg-light text-dark">
+                                <i class="fas fa-briefcase me-1"></i>
+                                {{ item.asignacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                            </span>
+                            <span class="info-badge bg-light text-dark">
+                                <i class="fas fa-building me-1"></i>
+                                {{ item.asignacion.empleado_evaluado.cargo_actual.cargo.area.nombre|default:"Sin área" }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                        <span class="resultado-badge resultado-{{ item.evaluacion_final.resultado|cut:"_exitoso" }}">
+                            {% if item.evaluacion_final.resultado == 'exitoso' %}
+                                <i class="fas fa-check-circle me-1"></i>Exitoso
+                            {% elif item.evaluacion_final.resultado == 'parcialmente_exitoso' %}
+                                <i class="fas fa-exclamation-circle me-1"></i>Parcialmente Exitoso
+                            {% else %}
+                                <i class="fas fa-times-circle me-1"></i>No Exitoso
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body-resultado">
+                <div class="row">
+                    <!-- Información de la Evaluación -->
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-info-circle me-1"></i>Información de la Evaluación
+                        </h6>
+                        <p class="mb-2">
+                            <strong>Tipo de Evaluación:</strong>
+                            {{ item.asignacion.evaluacion.tipo_evaluacion.nombre }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Período:</strong>
+                            {{ item.asignacion.periodo_evaluacion }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Puntaje Original:</strong>
+                            <span class="badge bg-{% if item.asignacion.puntaje_total >= 18 %}success{% elif item.asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                                {{ item.asignacion.puntaje_total|floatformat:1 }}/21
+                            </span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Evaluado por:</strong>
+                            {{ item.asignacion.evaluador.nombre_completo|default:"Sistema" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Evaluación Final por:</strong>
+                            {{ item.evaluacion_final.evaluado_por.get_full_name }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>Fecha Evaluación Final:</strong>
+                            <span class="text-success">
+                                <i class="fas fa-calendar-check me-1"></i>
+                                {{ item.evaluacion_final.fecha_evaluacion|date:"d/m/Y" }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Progreso de Seguimientos -->
+                    <div class="col-md-6">
+                        <h6 class="text-success mb-3">
+                            <i class="fas fa-chart-line me-1"></i>Progreso de Seguimientos
+                        </h6>
+
+                        <div class="seguimientos-info">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><strong>Total de Seguimientos:</strong></span>
+                                <span class="badge bg-primary">{{ item.total_seguimientos }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><strong>Seguimientos Satisfactorios:</strong></span>
+                                <span class="badge bg-success">{{ item.seguimientos_satisfactorios }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {% widthratio item.seguimientos_satisfactorios item.total_seguimientos 100 %}%"
+                                     aria-valuenow="{{ item.seguimientos_satisfactorios }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="{{ item.total_seguimientos }}">
+                                    {% widthratio item.seguimientos_satisfactorios item.total_seguimientos 100 %}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline de seguimientos -->
+                        <div class="mt-3">
+                            {% for seg in item.seguimientos %}
+                            <div class="d-flex align-items-center mb-2">
+                                <div style="width: 30px;">
+                                    {% if seg.avance_satisfactorio %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    {% else %}
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">
+                                    <strong>{{ seg.numero_bimestre }}° Bimestre:</strong>
+                                    {% if seg.avance_satisfactorio %}Satisfactorio{% else %}Necesita mejorar{% endif %}
+                                    ({{ seg.fecha_completado|date:"d/m/Y" }})
+                                </small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conclusión -->
+                <div class="conclusion-preview">
+                    <strong><i class="fas fa-comment-alt me-2"></i>Conclusión Final:</strong><br>
+                    {{ item.evaluacion_final.conclusion|truncatewords:30 }}
+                </div>
+
+                <!-- Acciones -->
+                <div class="text-end mt-3">
+                    <a href="{% url 'evaluations:ver_plan_mejora_empleado' item.plan.id %}"
+                       class="btn btn-primary btn-sm">
+                        <i class="fas fa-eye me-1"></i>Ver Plan Completo
+                    </a>
+                    <a href="{% url 'evaluations:imprimir_plan_mejora' item.plan.id %}"
+                       class="btn btn-outline-secondary btn-sm" target="_blank">
+                        <i class="fas fa-print me-1"></i>Imprimir
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <!-- Estado vacío -->
+        <div class="empty-state">
+            <i class="fas fa-trophy"></i>
+            <h4>No se encontraron evaluaciones finales</h4>
+            <p>
+                {% if filtro_resultado != 'todos' or filtro_periodo != 'todos' or filtro_busqueda %}
+                    No hay evaluaciones finales que coincidan con los filtros seleccionados.
+                    <br>
+                    <a href="{% url 'evaluations:resultados_finales_admin' %}" class="btn btn-outline-success mt-3">
+                        <i class="fas fa-redo me-1"></i>Limpiar Filtros
+                    </a>
+                {% else %}
+                    Aún no se han completado evaluaciones finales en el sistema.
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animar cards cuando aparecen
+    const cards = document.querySelectorAll('.evaluacion-final-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock extra_js %}

@@ -189,13 +189,13 @@
                     </div>
                     
                     <div class="card-body pt-3">
-                        {% if pregunta.tipo_pregunta.codigo == 'multiple_choice' %}
+                        {% if pregunta.tipo_pregunta.codigo == 'multiple_choice' or pregunta.tipo_pregunta.codigo == 'PREGMULT' %}
                             <!-- Pregunta de opción múltiple -->
                             {% for opcion in pregunta.opcionencuesta_set.all %}
                             <div class="form-check mb-2">
-                                <input class="form-check-input" 
-                                       type="radio" 
-                                       name="pregunta_{{ pregunta.id }}" 
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="pregunta_{{ pregunta.id }}"
                                        id="opcion_{{ opcion.id }}"
                                        value="{{ opcion.id }}"
                                        {% if pregunta.obligatoria %}required{% endif %}>
@@ -226,16 +226,16 @@
                             </div>
                             {% endfor %}
                             
-                        {% elif pregunta.tipo_pregunta.codigo == 'text' %}
+                        {% elif pregunta.tipo_pregunta.codigo == 'text' or pregunta.tipo_pregunta.codigo == 'TEXTO_LIBRE' %}
                             <!-- Pregunta de texto libre -->
                             <div class="mb-3">
-                                <textarea class="form-control" 
+                                <textarea class="form-control"
                                           name="pregunta_{{ pregunta.id }}"
                                           rows="4"
                                           placeholder="Escribe tu respuesta aquí..."
                                           {% if pregunta.obligatoria %}required{% endif %}></textarea>
                             </div>
-                            
+
                         {% elif pregunta.tipo_pregunta.codigo == 'short_text' %}
                             <!-- Pregunta de texto corto -->
                             <div class="mb-3">
@@ -246,35 +246,56 @@
                                        {% if pregunta.obligatoria %}required{% endif %}>
                             </div>
                             
-                        {% elif pregunta.tipo_pregunta.codigo == 'rating' %}
+                        {% elif pregunta.tipo_pregunta.codigo == 'rating' or pregunta.tipo_pregunta.codigo == 'ESCALA_5' %}
                             <!-- Pregunta de calificación -->
                             <div class="mb-3">
-                                <label class="form-label small text-muted">Selecciona una calificación del 1 al 5</label>
-                                <div class="d-flex gap-3">
-                                    {% for i in "12345" %}
-                                    <div class="form-check">
-                                        <input class="form-check-input" 
-                                               type="radio" 
-                                               name="pregunta_{{ pregunta.id }}" 
-                                               id="rating_{{ pregunta.id }}_{{ i }}"
-                                               value="{{ i }}"
+                                {% if pregunta.opcionencuesta_set.all %}
+                                    <!-- Si tiene opciones predefinidas, usarlas -->
+                                    {% for opcion in pregunta.opcionencuesta_set.all %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pregunta_{{ pregunta.id }}"
+                                               id="opcion_{{ opcion.id }}"
+                                               value="{{ opcion.id }}"
                                                {% if pregunta.obligatoria %}required{% endif %}>
-                                        <label class="form-check-label" for="rating_{{ pregunta.id }}_{{ i }}">
-                                            {{ i }}
+                                        <label class="form-check-label" for="opcion_{{ opcion.id }}">
+                                            {{ opcion.opcion }}
+                                            {% if opcion.valor_numerico %}
+                                                <small class="text-muted">({{ opcion.valor_numerico }})</small>
+                                            {% endif %}
                                         </label>
                                     </div>
                                     {% endfor %}
-                                </div>
-                                <div class="d-flex justify-content-between mt-1">
-                                    <small class="text-muted">Muy malo</small>
-                                    <small class="text-muted">Excelente</small>
-                                </div>
+                                {% else %}
+                                    <!-- Escala por defecto 1-5 -->
+                                    <label class="form-label small text-muted">Selecciona una calificación del 1 al 5</label>
+                                    <div class="d-flex gap-3">
+                                        {% for i in "12345" %}
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="radio"
+                                                   name="pregunta_{{ pregunta.id }}"
+                                                   id="rating_{{ pregunta.id }}_{{ i }}"
+                                                   value="{{ i }}"
+                                                   {% if pregunta.obligatoria %}required{% endif %}>
+                                            <label class="form-check-label" for="rating_{{ pregunta.id }}_{{ i }}">
+                                                {{ i }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-1">
+                                        <small class="text-muted">Muy malo</small>
+                                        <small class="text-muted">Excelente</small>
+                                    </div>
+                                {% endif %}
                             </div>
                             
                         {% elif pregunta.tipo_pregunta.codigo == 'select' %}
                             <!-- Pregunta de selección -->
                             <div class="mb-3">
-                                <select class="form-select" 
+                                <select class="form-select"
                                         name="pregunta_{{ pregunta.id }}"
                                         {% if pregunta.obligatoria %}required{% endif %}>
                                     <option value="">Selecciona una opción...</option>
@@ -286,7 +307,52 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            
+
+                        {% elif pregunta.tipo_pregunta.codigo == 'SI_NO' %}
+                            <!-- Pregunta Sí/No -->
+                            <div class="mb-3">
+                                {% if pregunta.opcionencuesta_set.all %}
+                                    <!-- Si tiene opciones predefinidas, usarlas -->
+                                    {% for opcion in pregunta.opcionencuesta_set.all %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pregunta_{{ pregunta.id }}"
+                                               id="opcion_{{ opcion.id }}"
+                                               value="{{ opcion.id }}"
+                                               {% if pregunta.obligatoria %}required{% endif %}>
+                                        <label class="form-check-label" for="opcion_{{ opcion.id }}">
+                                            {{ opcion.opcion }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Opciones por defecto Sí/No -->
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pregunta_{{ pregunta.id }}"
+                                               id="si_{{ pregunta.id }}"
+                                               value="si"
+                                               {% if pregunta.obligatoria %}required{% endif %}>
+                                        <label class="form-check-label" for="si_{{ pregunta.id }}">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="pregunta_{{ pregunta.id }}"
+                                               id="no_{{ pregunta.id }}"
+                                               value="no"
+                                               {% if pregunta.obligatoria %}required{% endif %}>
+                                        <label class="form-check-label" for="no_{{ pregunta.id }}">
+                                            No
+                                        </label>
+                                    </div>
+                                {% endif %}
+                            </div>
+
                         {% else %}
                             <!-- Tipo de pregunta no reconocido -->
                             <div class="alert alert-warning">
