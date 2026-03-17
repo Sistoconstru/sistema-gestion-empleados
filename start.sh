@@ -37,6 +37,15 @@ python manage.py migrate
 # DESHABILITADO: Ya se ejecutó una vez, las notificaciones retroactivas ya están generadas
 # python manage.py generar_notificaciones_evaluaciones_existentes
 
+# Configura evaluaciones anuales de desempeño (solo primera vez)
+echo "📋 Configurando evaluaciones anuales de desempeño..."
+python manage.py configurar_evaluacion_afiladores
+python manage.py configurar_evaluacion_operarios_produccion
+python manage.py configurar_evaluacion_auxiliar_procesos
+python manage.py configurar_evaluacion_coordinadores_procesos
+python manage.py configurar_evaluacion_mantenimiento
+echo "✅ Evaluaciones anuales configuradas"
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 
