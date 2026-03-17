@@ -86,6 +86,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 5: Enviar recordatorios de seguimientos bimensuales a las 4:15 AM
+        scheduler.add_job(
+            _enviar_recordatorios_seguimientos,
+            'cron',
+            hour=4,
+            minute=15,
+            id='recordatorios_seguimientos',
+            name='Enviar recordatorios de seguimientos bimensuales',
+            replace_existing=True,
+            misfire_grace_time=600,  # 10 minutos de tolerancia
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -94,6 +107,7 @@ def start_scheduler():
         logger.info('  - 02:15 AM: Activar empleados completados')
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
+        logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
 
         return scheduler
 
@@ -218,6 +232,34 @@ def _enviar_recordatorios_evaluaciones():
     except Exception as e:
         logger.error(
             f'❌ Error al enviar recordatorios de evaluaciones: {e}',
+            exc_info=True
+        )
+
+
+def _enviar_recordatorios_seguimientos():
+    """
+    Ejecuta el comando de envío de recordatorios de seguimientos bimensuales.
+
+    Este comando:
+    - Busca seguimientos bimensuales pendientes próximos a vencer (5 días antes)
+    - Verifica la última notificación enviada para evitar spam
+    - Envía recordatorios al supervisor y al empleado evaluado
+    - Marca como 'atrasado' los seguimientos que pasaron su fecha límite
+    """
+    try:
+        logger.info('🔄 Iniciando envío de recordatorios de seguimientos bimensuales...')
+
+        call_command(
+            'enviar_recordatorios_seguimientos',
+            '--dias-anticipacion', '5',
+            '--marcar-atrasados'
+        )
+
+        logger.info('✅ Recordatorios de seguimientos enviados y seguimientos atrasados actualizados')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error al enviar recordatorios de seguimientos: {e}',
             exc_info=True
         )
 
