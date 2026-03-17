@@ -30,12 +30,12 @@ python manage.py migrate
 # python manage.py actualizar_opciones_documento
 
 # Configura tipos de notificaciones para evaluaciones (solo primera vez)
-echo "📧 Configurando tipos de notificaciones..."
-python manage.py configurar_notificaciones_evaluaciones
+# DESHABILITADO: Ya se ejecutó una vez, los tipos de notificación ya están creados
+# python manage.py configurar_notificaciones_evaluaciones
 
 # Genera notificaciones para evaluaciones existentes (solo primera vez)
-echo "🔔 Generando notificaciones para evaluaciones existentes..."
-python manage.py generar_notificaciones_evaluaciones_existentes
+# DESHABILITADO: Ya se ejecutó una vez, las notificaciones retroactivas ya están generadas
+# python manage.py generar_notificaciones_evaluaciones_existentes
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
