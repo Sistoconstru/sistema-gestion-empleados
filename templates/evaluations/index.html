@@ -269,9 +269,15 @@
                     
                     {% if total_pendientes > 5 %}
                     <div class="text-center">
+                        {% if es_superusuario %}
+                        <a href="{% url 'evaluations:admin_todas_pendientes' %}" class="btn btn-outline-primary">
+                            Ver todas las evaluaciones ({{ total_pendientes }})
+                        </a>
+                        {% else %}
                         <a href="{% url 'evaluations:supervisor_pendientes' %}" class="btn btn-outline-primary">
                             Ver todas las evaluaciones ({{ total_pendientes }})
                         </a>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>
