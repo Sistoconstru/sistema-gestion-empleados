@@ -4,7 +4,6 @@
 # =============================================================================
 
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
 # ===================== PONDERACIONES =====================
@@ -582,8 +581,9 @@ DETALLE POR CATEGORÍAS:
                 for idx, item in enumerate(items_plan, 1):
                     plan_texto += f"   {idx}. {item}\n"
 
-                # Marcar si requiere seguimiento bimensual (puntuaciones 1, 2 o 3)
-                if puntuacion <= 3:
+                # Marcar si requiere seguimiento bimensual (cualquier puntuación de pregunta ≤ 4)
+                # Solo las preguntas con calificación 5 NO requieren seguimiento
+                if puntuacion <= 4:
                     plan_texto += f"\n   ⚠️  REQUIERE SEGUIMIENTO BIMENSUAL\n"
             else:
                 # Mensaje genérico si no hay datos predefinidos

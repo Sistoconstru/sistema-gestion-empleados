@@ -388,13 +388,14 @@ def generar_plan_mejora_afiladores(respuestas_evaluacion, resultado_evaluacion):
     plan_mejora.append(f"Nivel de Desempeño: {resultado_evaluacion['nivel_desempeno']}")
     plan_mejora.append("")
 
-    # Identificar áreas de mejora (respuestas con valor <= 3)
+    # Identificar áreas de mejora (respuestas con valor <= 4)
+    # Solo las preguntas con calificación 5 NO requieren seguimiento
     areas_mejora = []
 
     for respuesta in respuestas_evaluacion:
         valor = float(respuesta.opcion_seleccionada.valor_numerico)
 
-        if valor <= 3:
+        if valor <= 4:
             pregunta_texto = respuesta.pregunta.pregunta
             competencia_key = pregunta_texto.split(':')[0].strip()
 
@@ -425,6 +426,7 @@ def generar_plan_mejora_afiladores(respuestas_evaluacion, resultado_evaluacion):
             plan_mejora.append(f"   Nivel actual: {area['valor_texto']} ({area['valor']}/5)")
             plan_mejora.append(f"   Plan de acción:")
             plan_mejora.append(f"   {area['plan']}")
+            plan_mejora.append(f"   ⚠️  REQUIERE SEGUIMIENTO BIMENSUAL")
             plan_mejora.append("")
     else:
         plan_mejora.append("¡EXCELENTE DESEMPEÑO!")

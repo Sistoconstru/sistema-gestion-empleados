@@ -71,7 +71,7 @@
                     <p><strong>Período:</strong> {{ asignacion.periodo_evaluacion }}</p>
                     <p><strong>Puntaje:</strong> 
                         <span class="badge badge-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
-                            {{ asignacion.puntaje_total|floatformat:1 }}/20
+                            {{ asignacion.puntaje_total|floatformat:1 }}
                         </span>
                     </p>
                 </div>

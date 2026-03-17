@@ -630,11 +630,10 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo puntaje máximo (21/21). No se genera plan de mejora.')
                                 debe_generar_plan = False
                         elif tipo_eval_codigo in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES']:
-                            # Para evaluaciones anuales: no generar si porcentaje >= 91% (Muy alto/Excelente)
-                            if asignacion.porcentaje_completado and asignacion.porcentaje_completado >= 91:
-                                import logging
-                                logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo calificación excelente ({asignacion.porcentaje_completado}%). No se genera plan de mejora.')
-                                debe_generar_plan = False
+                            # Para evaluaciones anuales: SIEMPRE generar plan
+                            # El plan puede ser de mejora (si hay respuestas ≤4) o de felicitación (si todas son 5)
+                            # Los seguimientos bimensuales se determinan en otro momento según las respuestas
+                            debe_generar_plan = True
 
                         if debe_generar_plan:
                             # Generar plan de mejora usando el método apropiado según tipo de evaluación
