@@ -252,6 +252,7 @@
                                                - ANUAL: puntaje < 61
                                             {% endcomment %}
                                             {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' and plan.asignacion_evaluacion.puntaje_total < 14 or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' and plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                            <!--
                                                 <div class="d-flex gap-2">
                                                     <form method="post" action="{% url 'evaluations:aprobar_evaluacion' plan.asignacion_evaluacion.id %}" class="flex-fill">
                                                         {% csrf_token %}
@@ -259,7 +260,7 @@
                                                             <i class="fas fa-check me-1"></i>Aprobar Plan
                                                         </button>
                                                     </form>
-                                                </div>
+                                                </div>  -->
                                             {% else %}
                                                 <button class="btn btn-outline-secondary btn-sm" disabled
                                                         title="Debe esperar a que el empleado acepte">
