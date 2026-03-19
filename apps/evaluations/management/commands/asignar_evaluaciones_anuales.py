@@ -136,7 +136,10 @@ class Command(BaseCommand):
                 if not jefe_directo:
                     empleados_sin_jefe += 1
                     self.stdout.write(
-                        self.style.WARNING(f'  ⚠ {empleado.nombre_completo} ({cargo.nombre}) - Sin jefe directo')
+                        self.style.WARNING(
+                            f'  ⚠ {empleado.nombre_completo} ({cargo.nombre}) - Sin jefe directo asignado. '
+                            f'NO se asignará evaluación. Debe asignar jefe manualmente desde el admin.'
+                        )
                     )
                     continue
 
@@ -217,8 +220,39 @@ class Command(BaseCommand):
 
         self.stdout.write(f'Asignaciones que se crearían/creadas: {total_asignaciones_creadas}')
         self.stdout.write(f'Asignaciones ya existentes (omitidas): {total_asignaciones_existentes}')
-        self.stdout.write(f'Empleados sin jefe directo: {empleados_sin_jefe}')
         self.stdout.write(f'Empleados sin evaluación para su cargo: {empleados_sin_evaluacion}')
+
+        if empleados_sin_jefe > 0:
+            self.stdout.write(
+                self.style.WARNING(
+                    f'\n⚠ ATENCIÓN: {empleados_sin_jefe} empleados NO tienen jefe directo asignado'
+                )
+            )
+            self.stdout.write(
+                self.style.NOTICE(
+                    'Estos empleados NO recibirán evaluaciones hasta que se les asigne un jefe directo.'
+                )
+            )
+            self.stdout.write(
+                self.style.NOTICE(
+                    '\nPara verificar qué empleados necesitan jefe directo:'
+                )
+            )
+            self.stdout.write('  python manage.py verificar_jefes_directos --sin-jefe')
+            self.stdout.write(
+                self.style.NOTICE(
+                    '\nPara asignar jefes automáticamente (cuando hay 1 sola opción):'
+                )
+            )
+            self.stdout.write('  python manage.py asignar_jefes_automaticamente')
+            self.stdout.write(
+                self.style.NOTICE(
+                    '\nPara casos con múltiples opciones, asigne el jefe manualmente desde:'
+                )
+            )
+            self.stdout.write('  Admin Django → Empleados → Historial de Cargo → Campo "Jefe directo"')
+        else:
+            self.stdout.write(f'Empleados sin jefe directo: {empleados_sin_jefe}')
 
         if errores:
             self.stdout.write(f'\nErrores encontrados: {len(errores)}')

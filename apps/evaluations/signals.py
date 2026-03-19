@@ -76,6 +76,7 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
 
     asignaciones_creadas = 0
     asignaciones_existentes = 0
+    empleados_sin_jefe = 0
 
     for empleado in empleados_con_cargo:
         # Obtener el jefe directo del empleado
@@ -87,7 +88,9 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
             jefe_directo = historial_activo.jefe_directo
 
             if not jefe_directo:
-                print(f"[SIGNAL] ADVERTENCIA: El empleado {empleado.nombre_completo} no tiene jefe directo asignado. Se omite.")
+                empleados_sin_jefe += 1
+                print(f"[SIGNAL] ADVERTENCIA: El empleado {empleado.nombre_completo} ({historial_activo.cargo.nombre}) no tiene jefe directo asignado.")
+                print(f"[SIGNAL]            NO se asignará evaluación. Debe asignar jefe directo manualmente desde el admin.")
                 continue
 
         except HistorialCargo.DoesNotExist:
@@ -190,6 +193,14 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
     print(f"  - Cargo: {cargo.nombre}")
     print(f"  - Asignaciones creadas: {asignaciones_creadas}")
     print(f"  - Asignaciones ya existentes (omitidas): {asignaciones_existentes}")
+    print(f"  - Empleados sin jefe directo (no asignados): {empleados_sin_jefe}")
     print(f"  - Total empleados procesados: {empleados_con_cargo.count()}")
     print(f"  - Fecha de vencimiento: {fecha_vencimiento}")
-    print(f"  - Período: {periodo_evaluacion}\n")
+    print(f"  - Período: {periodo_evaluacion}")
+
+    if empleados_sin_jefe > 0:
+        print(f"\n[SIGNAL] ⚠ ATENCIÓN: {empleados_sin_jefe} empleados no recibieron evaluación por falta de jefe directo.")
+        print(f"[SIGNAL] Para verificar: python manage.py verificar_jefes_directos --sin-jefe")
+        print(f"[SIGNAL] Para asignar jefes: python manage.py asignar_jefes_automaticamente\n")
+    else:
+        print()

@@ -55,14 +55,25 @@ def asignar_evaluacion_manual(request):
                 empleados = empleados_form.cleaned_data['empleados']
                 try:
                     from .models import EvaluacionDesempeño, AsignacionEvaluacion
+                    from apps.employees.models import HistorialCargo
                     evaluacion = EvaluacionDesempeño.objects.filter(tipo_evaluacion=tipo_evaluacion, activa=True).first()
                     if not evaluacion:
                         mensaje = 'No existe una evaluación activa para el tipo seleccionado.'
                     else:
                         for empleado in empleados:
+                            # Obtener el jefe directo del HistorialCargo del empleado
+                            # IMPORTANTE: Usa el jefe_directo asignado manualmente, no busca por cargo
                             jefe = None
-                            if empleado.cargo_actual and empleado.cargo_actual.cargo.cargo_jefe:
-                                jefe = Empleado.objects.filter(historialcargo__cargo=empleado.cargo_actual.cargo.cargo_jefe, historialcargo__activo=True).first()
+                            try:
+                                historial = HistorialCargo.objects.get(
+                                    empleado=empleado,
+                                    activo=True
+                                )
+                                jefe = historial.jefe_directo
+                            except HistorialCargo.DoesNotExist:
+                                # Si no tiene historial activo, no se puede asignar jefe
+                                pass
+
                             AsignacionEvaluacion.objects.create(
                                 empleado_evaluado=empleado,
                                 evaluacion=evaluacion,
