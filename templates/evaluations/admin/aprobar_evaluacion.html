@@ -199,7 +199,7 @@
                         </div>
                     {% endif %}
                 </div>
-                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES' %}
+                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
                 <div class="text-center">
                     {% if asignacion.puntaje_total >= 76 %}
                         <div class="alert alert-success mb-0">
@@ -273,7 +273,7 @@
     </div>
 
     <!-- Sección de SST si aplica -->
-    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES' %}
+    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
     <div class="card border-warning mt-4 mb-4">
         <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">

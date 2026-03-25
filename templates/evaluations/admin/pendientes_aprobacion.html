@@ -20,6 +20,14 @@
 .plan-period-trial .badge {
     background-color: #e74c3c !important;
 }
+.plan-rechazado {
+    border-left-color: #dc3545;
+    border-left-width: 6px;
+    background-color: #fff5f5;
+}
+.plan-rechazado:hover {
+    background-color: #ffe5e5;
+}
 .stats-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -64,11 +72,11 @@
 
     <!-- Estadísticas -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="stats-card">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="mb-1">Total Pendientes</h5>
+                        <h5 class="mb-1">Total</h5>
                         <h3 class="mb-0">{{ planes_pendientes|length }}</h3>
                     </div>
                     <div class="align-self-center">
@@ -81,7 +89,7 @@
             <div class="stats-card">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="mb-1">Aceptados por Empleado</h5>
+                        <h5 class="mb-1">Aceptados</h5>
                         <h3 class="mb-0">{{ planes_aceptados|default:0 }}</h3>
                     </div>
                     <div class="align-self-center">
@@ -90,11 +98,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="stats-card">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="mb-1">Pendiente Aceptación</h5>
+                        <h5 class="mb-1">Pend. Acept.</h5>
                         <h3 class="mb-0">{{ planes_sin_aceptar|default:0 }}</h3>
                     </div>
                     <div class="align-self-center">
@@ -104,10 +112,24 @@
             </div>
         </div>
         <div class="col-md-3">
+            <div class="stats-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%) !important;">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="mb-1">Rechazados</h5>
+                        <h3 class="mb-0">{{ planes_rechazados_empleado|default:0 }}</h3>
+                        <small>En revisión RRHH</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
             <div class="stats-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="mb-1">Bajo Desempeño</h5>
+                        <h5 class="mb-1">Bajo Desemp.</h5>
                         <h3 class="mb-0">{{ planes_reprobados|default:0 }}</h3>
                     </div>
                     <div class="align-self-center">
@@ -133,7 +155,7 @@
                         <div class="row">
                             {% for plan in planes_pendientes %}
                             <div class="col-md-6 col-lg-4 mb-3">
-                                <div class="card plan-card h-100 {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}plan-period-trial{% endif %}">
+                                <div class="card plan-card h-100 {% if plan.rechazado_por_empleado %}plan-rechazado{% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}plan-period-trial{% endif %}">
                                     <div class="card-body">
                                         <!-- Header -->
                                         <div class="d-flex justify-content-between align-items-start mb-3">
@@ -189,7 +211,16 @@
                                                 </div>
                                                 <div class="col-12 mt-2">
                                                     <small class="text-muted d-block">Estado de Aceptación:</small>
-                                                    {% if plan.aceptado_por_empleado %}
+                                                    {% if plan.rechazado_por_empleado %}
+                                                        <small class="fw-medium">
+                                                            <span class="badge bg-danger">
+                                                                <i class="fas fa-times-circle me-1"></i>RECHAZADO por empleado
+                                                            </span>
+                                                        </small>
+                                                        <small class="text-danger d-block mt-1">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>Requiere revisión de RRHH
+                                                        </small>
+                                                    {% elif plan.aceptado_por_empleado %}
                                                         <small class="fw-medium">
                                                             <span class="badge bg-success">
                                                                 <i class="fas fa-check me-1"></i>Empleado aceptó el plan

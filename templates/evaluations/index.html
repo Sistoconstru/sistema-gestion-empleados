@@ -329,16 +329,75 @@
                                 </div>
                                 {% if asignacion.estado == 'completada' %}
                                 <div class="mt-3">
-                                    {% if asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
-                                        <!-- Verificar si existe plan de mejora predefinido -->
+                                    {% if asignacion.estado_aprobacion == 'requiere_revision' %}
+                                        <!-- Evaluación finalizada - requiere nueva evaluación -->
                                         {% if asignacion.planmejorapredefinido %}
                                             <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
-                                               class="btn btn-sm btn-warning">
-                                                <i class="fas fa-clipboard-check"></i> Ver y Aceptar Plan de Mejora
+                                               class="btn btn-sm btn-secondary">
+                                                <i class="fas fa-file-alt"></i> Ver Plan Archivado
                                             </a>
-                                            <small class="text-warning d-block mt-1">
-                                                <i class="fas fa-exclamation-circle"></i> Pendiente de tu aceptación
+                                            <small class="text-success d-block mt-1">
+                                                <i class="fas fa-check-circle"></i> Proceso finalizado - Nueva evaluación próximamente
                                             </small>
+                                        {% else %}
+                                            <a href="{% url 'evaluations:ver_resultados' asignacion.id %}"
+                                               class="btn btn-sm btn-secondary">
+                                                <i class="fas fa-clipboard-list"></i> Ver Resultados
+                                            </a>
+                                            <small class="text-muted d-block mt-1">
+                                                Proceso finalizado
+                                            </small>
+                                        {% endif %}
+                                    {% elif asignacion.estado_aprobacion == 'pendiente_aprobacion' %}
+                                        <!-- Verificar si existe plan de mejora predefinido -->
+                                        {% if asignacion.planmejorapredefinido %}
+                                            {% if asignacion.planmejorapredefinido.rechazado_por_empleado and asignacion.planmejorapredefinido.decision_rrhh %}
+                                                <!-- RRHH ya tomó decisión sobre el rechazo -->
+                                                {% if asignacion.planmejorapredefinido.decision_rrhh == 'solicitar_nueva_evaluacion' %}
+                                                    <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                       class="btn btn-sm btn-secondary">
+                                                        <i class="fas fa-file-alt"></i> Ver Plan Archivado
+                                                    </a>
+                                                    <small class="text-success d-block mt-1">
+                                                        <i class="fas fa-check-circle"></i> RRHH validó tu rechazo - Nueva evaluación próximamente
+                                                    </small>
+                                                {% else %}
+                                                    <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                       class="btn btn-sm btn-secondary">
+                                                        <i class="fas fa-file-alt"></i> Ver Plan
+                                                    </a>
+                                                    <small class="text-muted d-block mt-1">
+                                                        RRHH procesó tu rechazo
+                                                    </small>
+                                                {% endif %}
+                                            {% elif asignacion.planmejorapredefinido.rechazado_por_empleado %}
+                                                <!-- Plan rechazado - en revisión RRHH -->
+                                                <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                   class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-exclamation-triangle"></i> Plan Rechazado - En Revisión
+                                                </a>
+                                                <small class="text-danger d-block mt-1">
+                                                    <i class="fas fa-clock"></i> Gestión Humana está revisando tu rechazo
+                                                </small>
+                                            {% elif asignacion.planmejorapredefinido.aceptado_por_empleado %}
+                                                <!-- Plan aceptado por empleado, pendiente de aprobación admin -->
+                                                <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                   class="btn btn-sm btn-info">
+                                                    <i class="fas fa-check-circle"></i> Plan Aceptado
+                                                </a>
+                                                <small class="text-info d-block mt-1">
+                                                    <i class="fas fa-clock"></i> Pendiente de aprobación administrativa
+                                                </small>
+                                            {% else %}
+                                                <!-- Plan pendiente de aceptación del empleado -->
+                                                <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                   class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-clipboard-check"></i> Ver y Aceptar Plan de Mejora
+                                                </a>
+                                                <small class="text-warning d-block mt-1">
+                                                    <i class="fas fa-exclamation-circle"></i> Pendiente de tu aceptación
+                                                </small>
+                                            {% endif %}
                                         {% else %}
                                             <a href="{% url 'evaluations:ver_resultados' asignacion.id %}"
                                                class="btn btn-sm btn-info">

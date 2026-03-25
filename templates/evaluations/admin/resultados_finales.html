@@ -310,44 +310,54 @@
 
     <!-- Estadísticas -->
     <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-3 col-md-6 mb-3">
             <div class="stat-card-final bg-total">
                 <div class="position-relative">
                     <h3>{{ total_evaluaciones }}</h3>
-                    <p class="mb-0">Total de Evaluaciones</p>
-                    <small>Finales completadas</small>
+                    <p class="mb-0">Total</p>
+                    <small>Completadas</small>
                 </div>
                 <i class="fas fa-clipboard-check"></i>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-3 col-md-6 mb-3">
             <div class="stat-card-final bg-exitoso">
                 <div class="position-relative">
                     <h3>{{ exitosas }}</h3>
                     <p class="mb-0">Exitosas</p>
-                    <small>{{ porcentaje_exitosas }}% del total</small>
+                    <small>{{ porcentaje_exitosas }}% total</small>
                 </div>
                 <i class="fas fa-check-circle"></i>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-3 col-md-6 mb-3">
             <div class="stat-card-final bg-parcial">
                 <div class="position-relative">
                     <h3>{{ parciales }}</h3>
-                    <p class="mb-0">Parcialmente Exitosas</p>
-                    <small>{{ porcentaje_parciales }}% del total</small>
+                    <p class="mb-0">Parciales</p>
+                    <small>{{ porcentaje_parciales }}% total</small>
                 </div>
                 <i class="fas fa-exclamation-circle"></i>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-2 col-lg-3 col-md-6 mb-3">
             <div class="stat-card-final bg-no-exitoso">
                 <div class="position-relative">
                     <h3>{{ no_exitosas }}</h3>
                     <p class="mb-0">No Exitosas</p>
-                    <small>{{ porcentaje_no_exitosas }}% del total</small>
+                    <small>{{ porcentaje_no_exitosas }}% total</small>
                 </div>
                 <i class="fas fa-times-circle"></i>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-6 mb-3">
+            <div class="stat-card-final" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                <div class="position-relative">
+                    <h3>{{ total_archivadas }}</h3>
+                    <p class="mb-0">Archivadas</p>
+                    <small>{{ porcentaje_archivadas }}% total</small>
+                </div>
+                <i class="fas fa-archive"></i>
             </div>
         </div>
     </div>
@@ -366,6 +376,7 @@
                             <option value="exitoso" {% if filtro_resultado == 'exitoso' %}selected{% endif %}>Exitosas</option>
                             <option value="parcialmente_exitoso" {% if filtro_resultado == 'parcialmente_exitoso' %}selected{% endif %}>Parcialmente Exitosas</option>
                             <option value="no_exitoso" {% if filtro_resultado == 'no_exitoso' %}selected{% endif %}>No Exitosas</option>
+                            <option value="archivado" {% if filtro_resultado == 'archivado' %}selected{% endif %}>Archivadas</option>
                         </select>
                     </div>
                 </div>
@@ -416,7 +427,7 @@
         </div>
 
         {% for item in evaluaciones_con_info %}
-        <div class="evaluacion-final-card {{ item.evaluacion_final.resultado }}">
+        <div class="evaluacion-final-card {% if item.tipo == 'archivada' %}archivado{% else %}{{ item.evaluacion_final.resultado }}{% endif %}">
             <div class="card-header-resultado">
                 <div class="row align-items-center">
                     <div class="col-md-8">
@@ -436,6 +447,11 @@
                         </div>
                     </div>
                     <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                        {% if item.tipo == 'archivada' %}
+                        <span class="resultado-badge resultado-archivado" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                            <i class="fas fa-archive me-1"></i>Archivada
+                        </span>
+                        {% else %}
                         <span class="resultado-badge resultado-{{ item.evaluacion_final.resultado|cut:"_exitoso" }}">
                             {% if item.evaluacion_final.resultado == 'exitoso' %}
                                 <i class="fas fa-check-circle me-1"></i>Exitoso
@@ -445,6 +461,7 @@
                                 <i class="fas fa-times-circle me-1"></i>No Exitoso
                             {% endif %}
                         </span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -467,13 +484,26 @@
                         <p class="mb-2">
                             <strong>Puntaje Original:</strong>
                             <span class="badge bg-{% if item.asignacion.puntaje_total >= 18 %}success{% elif item.asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
-                                {{ item.asignacion.puntaje_total|floatformat:1 }}/21
+                                {{ item.asignacion.puntaje_total|floatformat:1 }}%
                             </span>
                         </p>
                         <p class="mb-2">
                             <strong>Evaluado por:</strong>
-                            {{ item.asignacion.evaluador.nombre_completo|default:"Sistema" }}
+                            {{ item.asignacion.evaluador.nombre_completo|default:"No asignado" }}
                         </p>
+                        {% if item.tipo == 'archivada' %}
+                        <p class="mb-2">
+                            <strong>Estado:</strong>
+                            <span class="badge bg-secondary">Evaluación Archivada</span>
+                        </p>
+                        <p class="mb-0">
+                            <strong>Fecha de Archivo:</strong>
+                            <span class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ item.asignacion.fecha_completada|date:"d/m/Y" }}
+                            </span>
+                        </p>
+                        {% else %}
                         <p class="mb-2">
                             <strong>Evaluación Final por:</strong>
                             {{ item.evaluacion_final.evaluado_por.get_full_name }}
@@ -485,10 +515,28 @@
                                 {{ item.evaluacion_final.fecha_evaluacion|date:"d/m/Y" }}
                             </span>
                         </p>
+                        {% endif %}
                     </div>
 
-                    <!-- Progreso de Seguimientos -->
+                    <!-- Progreso de Seguimientos o Motivo de Archivo -->
                     <div class="col-md-6">
+                        {% if item.tipo == 'archivada' %}
+                        <h6 class="text-secondary mb-3">
+                            <i class="fas fa-info-circle me-1"></i>Información de Archivo
+                        </h6>
+                        <div class="alert alert-secondary">
+                            <p class="mb-2">
+                                <i class="fas fa-archive me-2"></i>
+                                <strong>Motivo:</strong> Esta evaluación fue archivada porque se solicitó una nueva evaluación.
+                            </p>
+                            {% if item.plan %}
+                            <p class="mb-0">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                El plan de mejora está disponible para consulta.
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% else %}
                         <h6 class="text-success mb-3">
                             <i class="fas fa-chart-line me-1"></i>Progreso de Seguimientos
                         </h6>
@@ -502,6 +550,7 @@
                                 <span><strong>Seguimientos Satisfactorios:</strong></span>
                                 <span class="badge bg-success">{{ item.seguimientos_satisfactorios }}</span>
                             </div>
+                            {% if item.total_seguimientos > 0 %}
                             <div class="progress">
                                 <div class="progress-bar bg-success" role="progressbar"
                                      style="width: {% widthratio item.seguimientos_satisfactorios item.total_seguimientos 100 %}%"
@@ -511,6 +560,7 @@
                                     {% widthratio item.seguimientos_satisfactorios item.total_seguimientos 100 %}%
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
 
                         <!-- Timeline de seguimientos -->
@@ -532,25 +582,35 @@
                             </div>
                             {% endfor %}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- Conclusión -->
+                <!-- Conclusión o Historial -->
+                {% if item.tipo == 'finalizada' %}
                 <div class="conclusion-preview">
                     <strong><i class="fas fa-comment-alt me-2"></i>Conclusión Final:</strong><br>
                     {{ item.evaluacion_final.conclusion|truncatewords:30 }}
                 </div>
+                {% elif item.asignacion.observaciones %}
+                <div class="conclusion-preview">
+                    <strong><i class="fas fa-history me-2"></i>Historial:</strong><br>
+                    {{ item.asignacion.observaciones|truncatewords:30 }}
+                </div>
+                {% endif %}
 
                 <!-- Acciones -->
                 <div class="text-end mt-3">
+                    {% if item.plan %}
                     <a href="{% url 'evaluations:ver_plan_mejora_empleado' item.plan.id %}"
                        class="btn btn-primary btn-sm">
-                        <i class="fas fa-eye me-1"></i>Ver Plan Completo
+                        <i class="fas fa-eye me-1"></i>Ver Plan{% if item.tipo == 'archivada' %} Archivado{% else %} Completo{% endif %}
                     </a>
                     <a href="{% url 'evaluations:imprimir_plan_mejora' item.plan.id %}"
                        class="btn btn-outline-secondary btn-sm" target="_blank">
                         <i class="fas fa-print me-1"></i>Imprimir
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

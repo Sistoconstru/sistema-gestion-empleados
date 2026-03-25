@@ -5,6 +5,7 @@
 
 from datetime import datetime, timedelta
 from django.utils import timezone
+from .respuestas_predefinidas import formatear_comentarios_evaluador
 
 # ===================== PONDERACIONES =====================
 PONDERACION_CATEGORIAS = {
@@ -560,7 +561,11 @@ DETALLE POR CATEGORÍAS:
             competencia_encontrada = pregunta_texto.split(':')[0] if ':' in pregunta_texto else pregunta_texto[:50]
 
         plan_texto = f"{contador}. {competencia_encontrada}\n"
-        plan_texto += f"   Calificación: {puntuacion}/5\n\n"
+        plan_texto += f"   Calificación: {puntuacion}/5\n"
+
+        # Agregar comentarios del evaluador si existen
+        plan_texto += formatear_comentarios_evaluador(respuesta)
+        plan_texto += "\n"
 
         # Si puntuación es 5: Felicitar
         if puntuacion == 5:

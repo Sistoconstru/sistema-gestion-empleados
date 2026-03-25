@@ -3,6 +3,8 @@ Respuestas predefinidas y planes de mejora para la evaluación anual de Afilador
 Sistema de ponderación por categorías
 """
 
+from .respuestas_predefinidas import formatear_comentarios_evaluador
+
 # Ponderación de categorías (debe sumar 100%)
 PONDERACION_CATEGORIAS = {
     'Competencias Organizacionales': 10,
@@ -409,7 +411,8 @@ def generar_plan_mejora_afiladores(respuestas_evaluacion, resultado_evaluacion):
                     'valor': int(valor),
                     'valor_texto': competencia_data['respuestas'][int(valor)]['valor'],
                     'plan': plan_texto,
-                    'ponderacion': PONDERACION_CATEGORIAS[competencia_data['categoria']]
+                    'ponderacion': PONDERACION_CATEGORIAS[competencia_data['categoria']],
+                    'respuesta': respuesta  # Agregar objeto respuesta para acceder a comentarios
                 })
 
     if areas_mejora:
@@ -424,6 +427,12 @@ def generar_plan_mejora_afiladores(respuestas_evaluacion, resultado_evaluacion):
             plan_mejora.append(f"{i}. {area['competencia']}")
             plan_mejora.append(f"   Categoría: {area['categoria']} (Ponderación: {area['ponderacion']}%)")
             plan_mejora.append(f"   Nivel actual: {area['valor_texto']} ({area['valor']}/5)")
+
+            # Agregar comentarios del evaluador si existen
+            comentarios = formatear_comentarios_evaluador(area['respuesta'])
+            if comentarios:
+                plan_mejora.append(comentarios.strip())
+
             plan_mejora.append(f"   Plan de acción:")
             plan_mejora.append(f"   {area['plan']}")
             plan_mejora.append(f"   ⚠️  REQUIERE SEGUIMIENTO BIMENSUAL")

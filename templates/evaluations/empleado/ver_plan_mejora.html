@@ -299,12 +299,12 @@
                             <h6 class="text-primary mb-2">
                                 <i class="fas fa-chart-bar me-2"></i>Resultado Obtenido
                             </h6>
-                            <p class="mb-1"><strong>Puntaje:</strong> 
+                            <p class="mb-1"><strong>Puntaje:</strong>
                                 <span class="badge bg-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %} fs-6">
                                     {{ asignacion.puntaje_total|floatformat:1 }}
                                 </span>
                             </p>
-                            <p class="mb-1"><strong>Evaluador:</strong> {{ asignacion.evaluador.get_full_name|default:"Sistema" }}</p>
+                            <p class="mb-1"><strong>Evaluador:</strong> {{ asignacion.evaluador.nombre_completo|default:"No asignado" }}</p>
                             {% if plan.fecha_aprobacion %}
                             <p class="mb-1"><strong>Plan aprobado:</strong> {{ plan.fecha_aprobacion|date:"d/m/Y" }}</p>
                             {% endif %}
@@ -319,13 +319,102 @@
                         <i class="fas fa-clipboard-list me-2"></i>Mi Plan de Mejora Personalizado
                     </h5>
                     
-                    {% if plan.estado == 'pendiente_aprobacion' %}
+                    {% if plan.rechazado_por_empleado %}
+                    <!-- Plan rechazado por empleado -->
+                    {% if plan.decision_rrhh == 'solicitar_nueva_evaluacion' %}
+                    <!-- RRHH ya validó el rechazo -->
+                    <div class="alert alert-success border-success">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Proceso Finalizado - Rechazo Validado</strong>
+                        </h5>
+                        <hr>
+                        <p class="mb-2">
+                            <strong>Fecha de su rechazo:</strong> {{ plan.fecha_rechazo_empleado|date:"d/m/Y H:i" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Motivo de su rechazo:</strong><br>
+                            {{ plan.motivo_rechazo_empleado }}
+                        </p>
+                        <hr>
+                        <p class="mb-2">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Decisión de Gestión Humana:</strong> Su rechazo fue validado y se solicitará una nueva evaluación.
+                        </p>
+                        {% if plan.fecha_decision_rrhh %}
+                        <p class="mb-2">
+                            <strong>Fecha de decisión:</strong> {{ plan.fecha_decision_rrhh|date:"d/m/Y H:i" }}
+                        </p>
+                        {% endif %}
+                        {% if plan.comentarios_decision_rrhh %}
+                        <p class="mb-2">
+                            <strong>Comentarios de RRHH:</strong><br>
+                            {{ plan.comentarios_decision_rrhh }}
+                        </p>
+                        {% endif %}
+                        <hr>
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Estado:</strong> Este plan ha sido archivado. Próximamente se le asignará una nueva evaluación.
+                        </p>
+                    </div>
+                    {% elif plan.decision_rrhh == 'aprobar' %}
+                    <!-- RRHH aprobó el plan original -->
+                    <div class="alert alert-info border-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Plan Aprobado por Gestión Humana</strong>
+                        </h5>
+                        <hr>
+                        <p class="mb-2">
+                            <strong>Su rechazo del:</strong> {{ plan.fecha_rechazo_empleado|date:"d/m/Y H:i" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Motivo de su rechazo:</strong><br>
+                            {{ plan.motivo_rechazo_empleado }}
+                        </p>
+                        <hr>
+                        <p class="mb-2">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>Decisión de Gestión Humana:</strong> Se decidió aprobar el plan original.
+                        </p>
+                        {% if plan.comentarios_decision_rrhh %}
+                        <p class="mb-2">
+                            <strong>Comentarios de RRHH:</strong><br>
+                            {{ plan.comentarios_decision_rrhh }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <!-- Aún en revisión -->
+                    <div class="alert alert-warning border-warning">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Plan Rechazado por Usted - En Revisión</strong>
+                        </h5>
+                        <hr>
+                        <p class="mb-2">
+                            <strong>Fecha de rechazo:</strong> {{ plan.fecha_rechazo_empleado|date:"d/m/Y H:i" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Motivo del rechazo:</strong><br>
+                            {{ plan.motivo_rechazo_empleado }}
+                        </p>
+                        <hr>
+                        <p class="mb-0">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>Estado actual:</strong> Su rechazo ha sido enviado a Gestión Humana para revisión.
+                            Ellos decidirán si aprobar el plan original o solicitar una nueva evaluación.
+                        </p>
+                    </div>
+                    {% endif %}
+                    {% elif plan.estado == 'pendiente_aprobacion' %}
                     <div class="alert alert-warning">
                         <i class="fas fa-clock me-2"></i>
-                        <strong>Plan en Revisión:</strong> Su plan ha sido generado y está esperando su aceptación. 
+                        <strong>Plan en Revisión:</strong> Su plan ha sido generado y está esperando su aceptación.
                         Una vez que usted lo acepte, será enviado para la aprobación de Gestion Humana.
                     </div>
-                    
+
                     {% if not plan.aceptado_por_empleado %}
                     <div class="alert alert-info border-info">
                         <div class="d-flex justify-content-between align-items-center">
@@ -341,7 +430,7 @@
                     {% else %}
                     <div class="alert alert-success">
                         <i class="fas fa-check-circle me-2"></i>
-                        <strong>Plan Aceptado:</strong> Usted aceptó este plan el {{ plan.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}. 
+                        <strong>Plan Aceptado:</strong> Usted aceptó este plan el {{ plan.fecha_aceptacion_empleado|date:"d/m/Y H:i" }}.
                         Ahora está esperando la aprobación de su supervisor.
                     </div>
                     {% endif %}
@@ -524,13 +613,13 @@
                         <i class="fas fa-arrow-left me-2"></i>Volver a Evaluaciones
                     </a>
 
-                    {% if plan.aceptado_por_empleado %}
+                    {% if plan.aceptado_por_empleado or plan.rechazado_por_empleado or plan.estado == 'rechazado' or plan.estado == 'aprobado' or plan.estado == 'en_seguimiento' or plan.estado == 'completado' %}
                     <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary me-2" target="_blank">
                         <i class="fas fa-print me-1"></i>Imprimir Plan
                     </a>
                     {% endif %}
 
-                    {% if plan.estado == 'pendiente_aprobacion' and not plan.aceptado_por_empleado %}
+                    {% if plan.estado == 'pendiente_aprobacion' and not plan.aceptado_por_empleado and not plan.rechazado_por_empleado %}
                     <a href="{% url 'evaluations:aceptar_plan_mejora' plan.id %}" class="btn btn-success">
                         <i class="fas fa-check-circle me-1"></i>Aceptar Mi Plan de Mejora
                     </a>

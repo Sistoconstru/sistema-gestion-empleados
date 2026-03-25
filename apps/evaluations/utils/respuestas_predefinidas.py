@@ -7,6 +7,22 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
+# ===================== FUNCIONES AUXILIARES =====================
+
+def formatear_comentarios_evaluador(respuesta):
+    """
+    Formatea los comentarios del evaluador para incluirlos en el plan de mejora.
+
+    Args:
+        respuesta: Objeto RespuestaEvaluacion
+
+    Returns:
+        str: Comentarios formateados o cadena vacía si no hay comentarios
+    """
+    if respuesta.comentarios_evaluador and respuesta.comentarios_evaluador.strip():
+        return f"\n   💬 COMENTARIOS DEL EVALUADOR:\n   \"{respuesta.comentarios_evaluador.strip()}\"\n"
+    return ""
+
 # ===================== RESPUESTAS PREDEFINIDAS =====================
 
 RESPUESTAS_PREDEFINIDAS = {

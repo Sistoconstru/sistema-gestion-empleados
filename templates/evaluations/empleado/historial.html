@@ -302,7 +302,7 @@
                                         {% with asignacion.resultado_set.first as resultado %}
                                             {% if resultado %}
                                                 <div class="mb-2">
-                                                    <div class="result-score 
+                                                    <div class="result-score
                                                                 {% if resultado.puntaje_final >= 4.5 %}score-excellent
                                                                 {% elif resultado.puntaje_final >= 4.0 %}score-good
                                                                 {% elif resultado.puntaje_final >= 3.0 %}score-satisfactory
@@ -314,13 +314,46 @@
                                                         {{ resultado.clasificacion }}
                                                     </div>
                                                 </div>
+                                            {% elif asignacion.puntaje_total %}
+                                                <!-- Evaluaciones con plan predefinido (puntaje en asignación) -->
+                                                <div class="mb-2">
+                                                    <div class="result-score
+                                                                {% if asignacion.puntaje_total >= 18 %}score-excellent
+                                                                {% elif asignacion.puntaje_total >= 14 %}score-good
+                                                                {% elif asignacion.puntaje_total >= 10 %}score-satisfactory
+                                                                {% else %}score-needs-improvement{% endif %}">
+                                                        {{ asignacion.puntaje_total|floatformat:1 }}%
+                                                    </div>
+                                                    <div class="badge badge-secondary">
+                                                        {% if asignacion.puntaje_total >= 18 %}Excelente
+                                                        {% elif asignacion.puntaje_total >= 14 %}Bueno
+                                                        {% elif asignacion.puntaje_total >= 10 %}Satisfactorio
+                                                        {% else %}Necesita Mejorar{% endif %}
+                                                    </div>
+                                                </div>
                                             {% endif %}
                                         {% endwith %}
 
                                         <div class="mt-3">
-                                            <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-clipboard-list me-1"></i> Ver Mi Plan de Mejora
-                                            </a>
+                                            {% if asignacion.estado_aprobacion == 'requiere_revision' %}
+                                                {% if asignacion.planmejorapredefinido %}
+                                                    <a href="{% url 'evaluations:ver_plan_mejora_empleado' plan_id=asignacion.planmejorapredefinido.id %}"
+                                                       class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-file-alt me-1"></i> Ver Plan Archivado
+                                                    </a>
+                                                    <div class="mt-1">
+                                                        <small class="badge bg-success">Proceso Finalizado</small>
+                                                    </div>
+                                                {% else %}
+                                                    <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-clipboard-list me-1"></i> Ver Resultados
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'evaluations:ver_resultados' asignacion.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-clipboard-list me-1"></i> Ver Mi Plan de Mejora
+                                                </a>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% endif %}

@@ -317,6 +317,14 @@ class AsignacionEvaluacion(models.Model):
         verbose_name = 'Asignación de Evaluación'
         verbose_name_plural = 'Asignaciones de Evaluación'
 
+    @property
+    def planmejorapredefinido(self):
+        """
+        Propiedad para mantener compatibilidad con templates existentes.
+        Devuelve el primer plan de mejora asociado a esta asignación.
+        """
+        return self.planes_mejora.first() if self.planes_mejora.exists() else None
+
 class RespuestaEvaluacion(models.Model):
     """Respuestas de evaluaciones de desempeño"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
