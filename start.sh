@@ -45,9 +45,10 @@ python manage.py migrate
 # python manage.py configurar_evaluacion_coordinadores_procesos
 # python manage.py configurar_evaluacion_mantenimiento
 
-# Configura evaluación de Servicios Generales (ejecutar una sola vez)
-echo "⚙️  Configurando evaluación de Servicios Generales..."
-python manage.py configurar_evaluacion_servicios_generales
+# Configura evaluación de Servicios Generales (solo primera vez)
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Servicios Generales..."
+# python manage.py configurar_evaluacion_servicios_generales
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
