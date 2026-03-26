@@ -50,6 +50,10 @@ python manage.py migrate
 # echo "⚙️  Configurando evaluación de Servicios Generales..."
 # python manage.py configurar_evaluacion_servicios_generales
 
+# Configura evaluación de Auxiliares Administrativos (solo primera vez)
+echo "⚙️  Configurando evaluación de Auxiliares Administrativos..."
+python manage.py configurar_evaluacion_auxiliares_administrativos
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 

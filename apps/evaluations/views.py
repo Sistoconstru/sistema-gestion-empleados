@@ -705,6 +705,14 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_servicios_generales(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_servicios_generales(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_ADMIN':
+                                # Generar plan específico para Auxiliares Administrativos
+                                from .utils.respuestas_predefinidas_auxiliares_administrativos import (
+                                    generar_plan_mejora_auxiliares_administrativos,
+                                    calcular_puntaje_ponderado_auxiliares_administrativos
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliares_administrativos(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliares_administrativos(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
