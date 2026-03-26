@@ -215,6 +215,11 @@ class EvaluacionCargo(models.Model):
         related_name='evaluaciones_cargo_activadas',
         help_text='Usuario que activó la evaluación'
     )
+    periodo_a_evaluar = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text='Período a evaluar (ej: 2025, 2025-2026, etc.)'
+    )
 
     class Meta:
         db_table = 'evaluaciones_cargos'

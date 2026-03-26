@@ -777,6 +777,9 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_SERV_GRAL':
             from .utils.respuestas_predefinidas_servicios_generales import calcular_puntaje_ponderado_servicios_generales
             resultado_calc = calcular_puntaje_ponderado_servicios_generales(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AUX_ADMIN':
+            from .utils.respuestas_predefinidas_auxiliares_administrativos import calcular_puntaje_ponderado_auxiliares_administrativos
+            resultado_calc = calcular_puntaje_ponderado_auxiliares_administrativos(respuestas)
         else:
             resultado_calc = None
 
@@ -910,7 +913,13 @@ def _calcular_resultado_evaluacion(asignacion):
             resultado.save()
 
         # Actualizar también los campos en la asignación para compatibilidad con templates existentes
-        asignacion.puntaje_total = puntaje_total_acumulado
+        # Para evaluaciones anuales ponderadas, guardar el porcentaje; para período de prueba, el puntaje acumulado
+        if resultado_calc:
+            # Evaluación anual ponderada: guardar porcentaje (0-100)
+            asignacion.puntaje_total = porcentaje
+        else:
+            # Período de prueba u otra: guardar puntaje acumulado
+            asignacion.puntaje_total = puntaje_total_acumulado
         asignacion.porcentaje_completado = porcentaje
         asignacion.save()
 
@@ -1424,32 +1433,35 @@ def revisar_plan_predefinido(request, plan_id):
                     plan.comentarios_aprobacion = comentarios
                     plan.save()
 
-                    # Determinar si requiere seguimiento según tipo de evaluación
-                    tipo_evaluacion = plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo
+                    # Determinar si requiere seguimiento revisando las respuestas individuales
+                    # Si al menos UNA pregunta tiene calificación ≤ 4, requiere seguimiento
+                    from .models import RespuestaEvaluacion
+
+                    respuestas = RespuestaEvaluacion.objects.filter(
+                        asignacion=plan.asignacion_evaluacion
+                    ).select_related('opcion_seleccionada')
+
+                    # Verificar si existe al menos una respuesta con valor ≤ 4
+                    tiene_calificacion_baja = respuestas.filter(
+                        opcion_seleccionada__valor_numerico__lte=4
+                    ).exists()
+
+                    requiere_seguimiento = tiene_calificacion_baja
                     puntaje = plan.asignacion_evaluacion.puntaje_total or 0
-                    requiere_seguimiento = False
-                    mensaje_aprobacion = ''
+                    tipo_evaluacion = plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo
 
-                    if tipo_evaluacion == 'PERIODO_PRUEBA':
-                        # Período de prueba: puntaje máximo = 21
-                        requiere_seguimiento = float(puntaje) < 21
-                        if requiere_seguimiento:
-                            mensaje_aprobacion = 'Plan aprobado exitosamente. Se han creado los seguimientos bimensuales automáticamente.'
-                        else:
-                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo el puntaje máximo ({puntaje:.0f}/21), por lo que no requiere seguimientos bimensuales.'
-
-                    elif tipo_evaluacion in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES', 'ANUAL_SERV_GRAL']:
-                        # Evaluación anual: requiere seguimiento si no es "Muy Alto" (< 91%)
-                        requiere_seguimiento = float(puntaje) < 91.0
-                        if requiere_seguimiento:
-                            mensaje_aprobacion = f'Plan aprobado exitosamente. Puntaje: {puntaje:.2f}%. Se han creado los seguimientos bimensuales automáticamente.'
-                        else:
-                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo un desempeño Muy Alto ({puntaje:.2f}%), por lo que no requiere seguimientos bimensuales.'
-
+                    if requiere_seguimiento:
+                        # Contar cuántas competencias necesitan mejora
+                        preguntas_con_mejora = respuestas.filter(
+                            opcion_seleccionada__valor_numerico__lte=4
+                        ).count()
+                        mensaje_aprobacion = f'Plan aprobado exitosamente. Se detectaron {preguntas_con_mejora} competencia(s) con calificación ≤ 4. Se han creado los seguimientos bimensuales automáticamente.'
                     else:
-                        # Otros tipos de evaluación: siempre requieren seguimiento
-                        requiere_seguimiento = True
-                        mensaje_aprobacion = 'Plan aprobado exitosamente. Se han creado los seguimientos bimensuales automáticamente.'
+                        # Todas las preguntas tienen calificación 5
+                        if tipo_evaluacion == 'PERIODO_PRUEBA':
+                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo calificación perfecta (21/21). No requiere seguimientos bimensuales.'
+                        else:
+                            mensaje_aprobacion = f'Plan aprobado exitosamente. El empleado obtuvo calificación perfecta en todas las competencias. No requiere seguimientos bimensuales.'
 
                     if requiere_seguimiento:
                         # Crear seguimientos bimensuales automáticamente

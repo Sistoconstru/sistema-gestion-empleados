@@ -341,7 +341,7 @@
             </div>
             <div class="info-item">
                 <label>Evaluador/Supervisor:</label>
-                <div class="value">{{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</div>
+                <div class="value">{% if plan.asignacion_evaluacion.evaluador %}{{ plan.asignacion_evaluacion.evaluador.nombre_completo }}{% else %}Sistema{% endif %}</div>
             </div>
             <div class="info-item">
                 <label>Puntaje Obtenido:</label>
@@ -350,12 +350,8 @@
                         <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
                             {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21 puntos
                         </span>
-                    {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
-                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 76 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}info{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}warning{% else %}danger{% endif %}">
-                            {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
-                        </span>
                     {% else %}
-                        <span class="badge badge-info">
+                        <span class="badge badge-{% if plan.asignacion_evaluacion.puntaje_total >= 91 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 76 %}info{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}primary{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}warning{% else %}danger{% endif %}">
                             {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
                         </span>
                     {% endif %}

@@ -71,8 +71,12 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
         fecha_vencimiento = timezone.now() + timedelta(days=instance.dias_para_completar)
 
     # Crear periodo de evaluación
-    año_actual = timezone.now().year
-    periodo_evaluacion = f"{año_actual}"
+    # Usar el período configurado en EvaluacionCargo si está disponible, sino usar año actual
+    if instance.periodo_a_evaluar:
+        periodo_evaluacion = instance.periodo_a_evaluar
+    else:
+        año_actual = timezone.now().year
+        periodo_evaluacion = f"{año_actual}"
 
     asignaciones_creadas = 0
     asignaciones_existentes = 0
