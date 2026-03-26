@@ -51,12 +51,14 @@ python manage.py migrate
 # python manage.py configurar_evaluacion_servicios_generales
 
 # Configura evaluación de Auxiliares Administrativos (solo primera vez)
-echo "⚙️  Configurando evaluación de Auxiliares Administrativos..."
-python manage.py configurar_evaluacion_auxiliares_administrativos
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Auxiliares Administrativos..."
+# python manage.py configurar_evaluacion_auxiliares_administrativos
 
 # Generar seguimientos bimensuales faltantes (ejecutar una vez)
-echo "⚙️  Generando seguimientos bimensuales faltantes..."
-python manage.py generar_seguimientos_faltantes --ejecutar
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Generando seguimientos bimensuales faltantes..."
+# python manage.py generar_seguimientos_faltantes --ejecutar
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
