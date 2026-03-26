@@ -90,9 +90,9 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</p>
-                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
-                    <p><strong>Departamento:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"Sin departamento" }}</p>
+                    <p><strong>Empleado:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}</p>
+                    <p><strong>Cargo:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_cargo_actual|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Área:</strong> {{ plan.asignacion_evaluacion.empleado_evaluado.area_actual.nombre|default:"Sin área asignada" }}</p>
                     <p><strong>Evaluador original:</strong> {{ plan.asignacion_evaluacion.evaluador.get_full_name|default:"Sistema" }}</p>
                     <p><strong>Período evaluado:</strong> {{ plan.asignacion_evaluacion.periodo_evaluacion }}</p>
                     <p><strong>Puntaje original:</strong> 

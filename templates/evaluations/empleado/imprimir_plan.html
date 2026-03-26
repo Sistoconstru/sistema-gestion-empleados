@@ -298,7 +298,7 @@
         <div class="info-grid">
             <div class="info-item">
                 <label>Nombre Completo:</label>
-                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.get_full_name }}</div>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}</div>
             </div>
             <div class="info-item">
                 <label>Documento:</label>
@@ -306,11 +306,11 @@
             </div>
             <div class="info-item">
                 <label>Cargo:</label>
-                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.cargo.nombre|default:"No asignado" }}</div>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.nombre_cargo_actual|default:"No asignado" }}</div>
             </div>
             <div class="info-item">
-                <label>Departamento:</label>
-                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.departamento.nombre|default:"No asignado" }}</div>
+                <label>Área:</label>
+                <div class="value">{{ plan.asignacion_evaluacion.empleado_evaluado.area_actual.nombre|default:"No asignado" }}</div>
             </div>
             <div class="info-item">
                 <label>Sede:</label>

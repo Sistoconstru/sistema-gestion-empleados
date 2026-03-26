@@ -33,7 +33,7 @@
                 <tbody>
                 {% for asignacion in evaluaciones %}
                     <tr>
-                        <td>{{ asignacion.empleado_evaluado.get_full_name }}</td>
+                        <td>{{ asignacion.empleado_evaluado.nombre_completo }}</td>
                         <td>{{ asignacion.evaluacion.nombre }}</td>
                         <td>{{ asignacion.periodo_evaluacion }}</td>
                         <td>{{ asignacion.fecha_completada|date:"d/m/Y H:i" }}</td>

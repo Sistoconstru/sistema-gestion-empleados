@@ -64,8 +64,8 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>Empleado:</strong> {{ asignacion.empleado_evaluado.get_full_name }}</p>
-                    <p><strong>Cargo:</strong> {{ asignacion.empleado_evaluado.cargo.nombre|default:"Sin cargo asignado" }}</p>
+                    <p><strong>Empleado:</strong> {{ asignacion.empleado_evaluado.nombre_completo }}</p>
+                    <p><strong>Cargo:</strong> {{ asignacion.empleado_evaluado.nombre_cargo_actual|default:"Sin cargo asignado" }}</p>
                     <p><strong>Evaluador:</strong> {{ asignacion.evaluador.get_full_name|default:"Sistema" }}</p>
                     <p><strong>Tipo:</strong> {{ asignacion.evaluacion.tipo_evaluacion.nombre }}</p>
                     <p><strong>Período:</strong> {{ asignacion.periodo_evaluacion }}</p>
