@@ -565,7 +565,7 @@
                                     <i class="fas fa-chart-line"></i> Progreso Actual
                                 </h6>
                                 <div class="row">
-                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' %}
+                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' %}
                                         <!-- Para evaluaciones anuales ponderadas -->
                                         <div class="col-12">
                                             <div class="text-center">
@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateScoreProgress() {
         const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
         const totalQuestions = {{ preguntas.count }};
-        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' %}true{% else %}false{% endif %};
+        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' %}true{% else %}false{% endif %};
         let currentScore = 0;
         let answeredQuestions = radioButtons.length;
 
@@ -741,6 +741,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         9: 25 / 20,
                         10: 25 / 20,
                         11: 25 / 20
+                    };
+                } else if (tipoEvaluacion === 'ANUAL_AUX_TESORERIA') {
+                    // Auxiliar de Tesorería: 12 preguntas
+                    // Preguntas 1-3: Organizacionales (10%) → peso por punto: 10/15 = 0.6666667
+                    // Pregunta 4: Objetivos (40%) → peso por punto: 40/5 = 8
+                    // Preguntas 5-7: Interpersonales (25%) → peso por punto: 25/15 = 1.6666667
+                    // Preguntas 8-12: Técnicas (25%) → peso por punto: 25/25 = 1
+                    pesoPorPunto = {
+                        1: 10 / 15,   // Organizacionales
+                        2: 10 / 15,
+                        3: 10 / 15,
+                        4: 40 / 5,    // Objetivos
+                        5: 25 / 15,   // Interpersonales
+                        6: 25 / 15,
+                        7: 25 / 15,
+                        8: 1,         // Técnicas (5 preguntas)
+                        9: 1,
+                        10: 1,
+                        11: 1,
+                        12: 1
                     };
                 } else {
                     // Otras evaluaciones anuales: 10 preguntas

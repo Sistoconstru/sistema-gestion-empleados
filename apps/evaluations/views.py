@@ -758,6 +758,14 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_auxiliares_administrativos(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_auxiliares_administrativos(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_TESORERIA':
+                                # Generar plan específico para Auxiliar de Tesorería
+                                from .utils.respuestas_predefinidas_auxiliar_tesoreria import (
+                                    generar_plan_mejora_auxiliar_tesoreria,
+                                    calcular_puntaje_ponderado_auxiliar_tesoreria
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliar_tesoreria(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
@@ -825,6 +833,9 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_AUX_ADMIN':
             from .utils.respuestas_predefinidas_auxiliares_administrativos import calcular_puntaje_ponderado_auxiliares_administrativos
             resultado_calc = calcular_puntaje_ponderado_auxiliares_administrativos(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AUX_TESORERIA':
+            from .utils.respuestas_predefinidas_auxiliar_tesoreria import calcular_puntaje_ponderado_auxiliar_tesoreria
+            resultado_calc = calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas)
         else:
             resultado_calc = None
 

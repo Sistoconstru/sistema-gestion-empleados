@@ -60,6 +60,10 @@ python manage.py migrate
 # echo "⚙️  Generando seguimientos bimensuales faltantes..."
 # python manage.py generar_seguimientos_faltantes --ejecutar
 
+# Configura evaluación de Auxiliar de Tesorería (solo primera vez)
+echo "⚙️  Configurando evaluación de Auxiliar de Tesorería..."
+python manage.py configurar_evaluacion_auxiliar_tesoreria
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 
