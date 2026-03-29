@@ -442,12 +442,13 @@ class AdminTodasPendientesView(LoginRequiredMixin, ListView):
 
 
 class EvaluacionHistorialView(LoginRequiredMixin, ListView):
-    """Historial de evaluaciones del usuario como empleado"""
+    """Historial completo de evaluaciones: recibidas y realizadas"""
     template_name = 'evaluations/empleado/historial.html'
-    context_object_name = 'evaluaciones'
+    context_object_name = 'evaluaciones_recibidas'
     paginate_by = 10
-    
+
     def get_queryset(self):
+        # Evaluaciones donde el usuario ES EL EVALUADO
         return AsignacionEvaluacion.objects.filter(
             empleado_evaluado__usuario=self.request.user
         ).select_related(
@@ -456,31 +457,75 @@ class EvaluacionHistorialView(LoginRequiredMixin, ListView):
             'evaluacion__tipo_evaluacion',
             'resultadoevaluacion'
         ).order_by('-fecha_asignacion')
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        evaluaciones = self.get_queryset()
-        
-        # Calcular estadísticas
-        total_evaluaciones = evaluaciones.count()
-        completadas = evaluaciones.filter(estado='completada').count()
-        pendientes = evaluaciones.filter(estado__in=['pendiente', 'en_progreso']).count()
-        
-        # Calcular promedio general
-        resultados = ResultadoEvaluacion.objects.filter(
+        evaluaciones_recibidas = self.get_queryset()
+
+        # ============ EVALUACIONES RECIBIDAS (como evaluado) ============
+        total_recibidas = evaluaciones_recibidas.count()
+        recibidas_completadas = evaluaciones_recibidas.filter(estado='completada').count()
+        recibidas_pendientes = evaluaciones_recibidas.filter(estado__in=['pendiente', 'en_progreso']).count()
+
+        # Calcular promedio general de evaluaciones recibidas
+        resultados_recibidas = ResultadoEvaluacion.objects.filter(
             asignacion__empleado_evaluado__usuario=self.request.user
         )
-        if resultados.exists():
-            promedio = sum(r.puntaje_final for r in resultados) / resultados.count()
+        if resultados_recibidas.exists():
+            promedio_recibidas = sum(r.puntaje_final for r in resultados_recibidas) / resultados_recibidas.count()
         else:
-            promedio = 0.0
-        
+            promedio_recibidas = 0.0
+
+        # ============ EVALUACIONES REALIZADAS (como evaluador) ============
+        try:
+            empleado_usuario = Empleado.objects.get(usuario=self.request.user)
+
+            # Evaluaciones donde el usuario ES EL EVALUADOR
+            evaluaciones_realizadas = AsignacionEvaluacion.objects.filter(
+                evaluador=empleado_usuario
+            ).select_related(
+                'empleado_evaluado',
+                'evaluacion',
+                'evaluacion__tipo_evaluacion'
+            ).order_by('-fecha_asignacion')
+
+            total_realizadas = evaluaciones_realizadas.count()
+            realizadas_completadas = evaluaciones_realizadas.filter(estado='completada').count()
+            realizadas_pendientes = evaluaciones_realizadas.filter(estado__in=['pendiente', 'en_progreso']).count()
+
+            # Calcular promedio del equipo evaluado
+            asignaciones_con_puntaje = evaluaciones_realizadas.filter(
+                estado='completada',
+                puntaje_total__isnull=False
+            )
+            if asignaciones_con_puntaje.exists():
+                promedio_equipo = sum(float(a.puntaje_total) for a in asignaciones_con_puntaje) / asignaciones_con_puntaje.count()
+            else:
+                promedio_equipo = 0.0
+
+        except Empleado.DoesNotExist:
+            # Usuario no es empleado (admin sin perfil de empleado)
+            evaluaciones_realizadas = AsignacionEvaluacion.objects.none()
+            total_realizadas = 0
+            realizadas_completadas = 0
+            realizadas_pendientes = 0
+            promedio_equipo = 0.0
+
         context.update({
-            'evaluaciones_completadas': completadas,
-            'evaluaciones_pendientes': pendientes,
-            'promedio_general': promedio,
+            # Evaluaciones recibidas
+            'evaluaciones_completadas': recibidas_completadas,
+            'evaluaciones_pendientes': recibidas_pendientes,
+            'total_recibidas': total_recibidas,
+            'promedio_general': promedio_recibidas,
+
+            # Evaluaciones realizadas
+            'evaluaciones_realizadas': evaluaciones_realizadas,
+            'total_realizadas': total_realizadas,
+            'realizadas_completadas': realizadas_completadas,
+            'realizadas_pendientes': realizadas_pendientes,
+            'promedio_equipo': promedio_equipo,
         })
-        
+
         return context
 
 
@@ -1239,8 +1284,18 @@ def ver_resultados_evaluacion(request, asignacion_id):
         ).get(pk=asignacion_id)
         
         # Verificar que el usuario puede ver estos resultados
-        if not (request.user.empleado == asignacion.empleado_evaluado or 
-                request.user.is_superuser or 
+        # Permitir acceso a: empleado evaluado, evaluador, superusuario, o con permisos especiales
+        try:
+            empleado_usuario = Empleado.objects.get(usuario=request.user)
+            es_empleado_evaluado = empleado_usuario == asignacion.empleado_evaluado
+            es_evaluador = asignacion.evaluador and empleado_usuario == asignacion.evaluador
+        except Empleado.DoesNotExist:
+            es_empleado_evaluado = False
+            es_evaluador = False
+
+        if not (es_empleado_evaluado or
+                es_evaluador or
+                request.user.is_superuser or
                 request.user.has_perm('evaluations.view_asignacionevaluacion')):
             messages.error(request, 'No tiene permisos para ver estos resultados.')
             return redirect('evaluations:index')
