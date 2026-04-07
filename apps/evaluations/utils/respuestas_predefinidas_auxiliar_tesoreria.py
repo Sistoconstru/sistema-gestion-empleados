@@ -633,8 +633,8 @@ def formatear_comentarios_evaluador(respuesta):
     Returns:
         str: Comentario formateado con etiqueta de evaluador
     """
-    if respuesta.comentario_evaluador:
-        return f"**Comentario del evaluador:** {respuesta.comentario_evaluador}\n"
+    if respuesta.comentarios_evaluador:
+        return f"**Comentario del evaluador:** {respuesta.comentarios_evaluador}\n"
     return ""
 
 
@@ -694,7 +694,7 @@ def calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas_evaluacion):
     # Procesar cada respuesta
     for respuesta in respuestas_evaluacion:
         numero_pregunta = respuesta.pregunta.orden
-        valor_respuesta = respuesta.opcion_seleccionada.valor_numerico  # 1-5
+        valor_respuesta = float(respuesta.opcion_seleccionada.valor_numerico)  # Convertir a float para cálculos
 
         if numero_pregunta in estructura_ponderacion:
             config = estructura_ponderacion[numero_pregunta]
@@ -729,14 +729,27 @@ def calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas_evaluacion):
     else:
         nivel_desempeno = 'Muy bajo'
 
-    # Calcular porcentajes por categoría
+    # Calcular porcentajes por categoría y promedios
     detalle_categorias = {}
+
+    # Contar preguntas por categoría
+    preguntas_por_categoria = {
+        'Competencias Organizacionales': 3,  # preguntas 1-3
+        'Objetivos': 1,  # pregunta 4
+        'Competencias Interpersonales': 3,  # preguntas 5-7
+        'Competencias Técnicas': 5  # preguntas 8-12
+    }
+
     for nombre_cat, datos in categorias.items():
+        num_preguntas = preguntas_por_categoria.get(nombre_cat, 1)
         porcentaje_categoria = round((datos['puntaje_acumulado'] / datos['peso_total']) * 100, 2)
+        promedio_categoria = puntaje_escala_acumulado / total_preguntas if total_preguntas > 0 else 0
+
         detalle_categorias[nombre_cat] = {
-            'puntaje': round(datos['puntaje_acumulado'], 2),
-            'peso_total': datos['peso_total'],
-            'porcentaje': porcentaje_categoria
+            'ponderacion': datos['peso_total'],
+            'promedio': round(promedio_categoria, 2),
+            'porcentaje': porcentaje_categoria,
+            'contribucion': round(datos['puntaje_acumulado'], 2)
         }
 
     return {
@@ -753,15 +766,41 @@ def calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas_evaluacion):
 
 def generar_plan_mejora_auxiliar_tesoreria(respuestas_evaluacion, resultado_evaluacion):
     """
-    Genera plan de mejora personalizado para Auxiliar de Tesorería basado en respuestas.
+    Genera plan de mejora específico para Auxiliar de Tesorería
+    basado en respuestas y resultado ponderado.
 
     Args:
         respuestas_evaluacion: QuerySet de RespuestaEvaluacion
-        resultado_evaluacion: dict con resultados del cálculo de puntaje
+        resultado_evaluacion: dict con resultado del cálculo ponderado
 
     Returns:
-        str: Plan de mejora en formato Markdown
+        str: Plan de mejora completo formateado
     """
+    planes = []
+
+    # Encabezado con resultado general
+    plan_header = f"""╔══════════════════════════════════════════════════════════════════════════════╗
+║              PLAN DE MEJORA - EVALUACIÓN ANUAL DE DESEMPEÑO                  ║
+║                         AUXILIAR DE TESORERÍA                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+RESULTADO GENERAL:
+  • Puntaje Total: {resultado_evaluacion['puntaje_porcentaje']}%
+  • Nivel de Desempeño: {resultado_evaluacion['nivel_desempeno']} ({resultado_evaluacion['puntaje_escala']}/5)
+
+DETALLE POR CATEGORÍAS:
+"""
+
+    for categoria, datos in resultado_evaluacion['detalle_categorias'].items():
+        plan_header += f"  • {categoria} ({datos['ponderacion']}%): {datos['promedio']}/5 → {datos['porcentaje']}% → Contribución: {datos['contribucion']}%\n"
+
+    plan_header += "\n" + "="*80 + "\n\n"
+    planes.append(plan_header)
+
+    # Generar plan detallado por TODAS las preguntas
+    planes.append("EVALUACIÓN POR COMPETENCIA:\n\n")
+
+    contador = 1
 
     # Mapeo de preguntas a competencias
     mapeo_competencias = {
@@ -779,74 +818,79 @@ def generar_plan_mejora_auxiliar_tesoreria(respuestas_evaluacion, resultado_eval
         12: 'control_custodia_caja_menor'
     }
 
-    # Encabezado del plan
-    plan = f"""# PLAN DE MEJORA - AUXILIAR DE TESORERÍA
-
-## Resultado de la Evaluación
-
-**Puntaje Total:** {resultado_evaluacion['puntaje_porcentaje']}% ({resultado_evaluacion['puntaje_escala']}/5)
-**Nivel de Desempeño:** {resultado_evaluacion['nivel_desempeno']}
-
-### Detalle por Categorías
-
-"""
-
-    # Agregar detalle de categorías
-    for categoria, datos in resultado_evaluacion['detalle_categorias'].items():
-        plan += f"- **{categoria}:** {datos['porcentaje']}% ({datos['puntaje']}/{datos['peso_total']} puntos)\n"
-
-    plan += "\n---\n\n"
-
-    # Agregar evaluación y plan por cada competencia
     for respuesta in respuestas_evaluacion.order_by('pregunta__orden'):
-        numero_pregunta = respuesta.pregunta.orden
-        nombre_competencia = respuesta.pregunta.pregunta
-        valor = respuesta.opcion_seleccionada.valor_numerico
-        categoria = respuesta.pregunta.categoria
-
-        # Obtener clave de competencia
-        clave_competencia = mapeo_competencias.get(numero_pregunta)
-
-        if not clave_competencia:
+        # Excluir preguntas SST
+        if respuesta.pregunta.categoria == 'Observación SST':
             continue
 
-        # Obtener respuestas predefinidas
-        competencia_data = RESPUESTAS_AUXILIAR_TESORERIA.get(clave_competencia, {})
-        respuesta_predefinida = competencia_data.get(valor, {})
+        numero_pregunta = respuesta.pregunta.orden
+        nombre_competencia = respuesta.pregunta.pregunta
+        puntuacion = int(respuesta.opcion_seleccionada.valor_numerico) if respuesta.opcion_seleccionada else 0
+        clave_competencia = mapeo_competencias.get(numero_pregunta)
 
-        evaluacion_texto = respuesta_predefinida.get('evaluacion', 'No disponible')
-        planes_accion = respuesta_predefinida.get('plan_accion', [])
+        plan_texto = f"{contador}. {nombre_competencia}\n"
+        plan_texto += f"   Calificación: {puntuacion}/5\n"
 
-        # Construir sección
-        plan += f"## {numero_pregunta}. {nombre_competencia}\n\n"
-        plan += f"**Categoría:** {categoria}\n\n"
-        plan += f"**Calificación:** {valor}/5 - {respuesta.opcion_seleccionada.opcion}\n\n"
+        # Agregar comentarios del evaluador si existen
+        plan_texto += formatear_comentarios_evaluador(respuesta)
+        plan_texto += "\n"
 
-        # Agregar comentario del evaluador si existe
-        plan += formatear_comentarios_evaluador(respuesta)
+        # Si puntuación es 5: Felicitar
+        if puntuacion == 5:
+            plan_texto += "   ✅ ¡EXCELENTE DESEMPEÑO!\n"
+            plan_texto += "   El empleado ha demostrado dominio excepcional en esta competencia.\n"
+            plan_texto += "   Continue con este nivel de excelencia.\n"
 
-        plan += f"### Evaluación\n\n{evaluacion_texto}\n\n"
+        # Si puntuación es 4 o menos: Plan de acción
+        else:
+            if clave_competencia and clave_competencia in RESPUESTAS_AUXILIAR_TESORERIA:
+                competencia_data = RESPUESTAS_AUXILIAR_TESORERIA[clave_competencia]
+                if puntuacion in competencia_data:
+                    datos_plan = competencia_data[puntuacion]
+                    planes_accion = datos_plan.get('plan_accion', [])
 
-        if planes_accion:
-            plan += "### Plan de Acción\n\n"
-            for idx, accion in enumerate(planes_accion, 1):
-                plan += f"{idx}. {accion}\n"
-            plan += "\n"
+                    plan_texto += f"   📋 PLAN DE ACCIÓN:\n"
 
-        plan += "---\n\n"
+                    # Tomar solo los primeros 3 items del plan
+                    items_plan = planes_accion[:3]
 
-    # Cierre del plan
-    plan += """## Compromisos y Seguimiento
+                    for idx, item in enumerate(items_plan, 1):
+                        plan_texto += f"   {idx}. {item}\n"
 
-El empleado se compromete a trabajar en las áreas de mejora identificadas siguiendo el plan de acción establecido. Se realizarán seguimientos bimensuales para evaluar el progreso en cada competencia.
+                    # Marcar si requiere seguimiento bimensual (cualquier puntuación ≤ 4)
+                    if puntuacion <= 4:
+                        plan_texto += f"\n   ⚠️  REQUIERE SEGUIMIENTO BIMENSUAL\n"
+                else:
+                    # Plan genérico si no hay datos para esa puntuación
+                    plan_texto += f"   📋 PLAN DE ACCIÓN:\n"
+                    plan_texto += f"   1. Revisar los procedimientos y mejores prácticas relacionadas con esta competencia.\n"
+                    plan_texto += f"   2. Solicitar retroalimentación constante del supervisor inmediato.\n"
+                    plan_texto += f"   3. Establecer metas específicas para mejorar en esta área.\n"
+            else:
+                # Plan genérico si no hay datos predefinidos
+                plan_texto += f"   📋 PLAN DE ACCIÓN:\n"
+                plan_texto += f"   1. Revisar los procedimientos y mejores prácticas relacionadas con esta competencia.\n"
+                plan_texto += f"   2. Solicitar retroalimentación constante del supervisor inmediato.\n"
+                plan_texto += f"   3. Establecer metas específicas para mejorar en esta área.\n"
 
-**Fecha de elaboración del plan:** Se registrará automáticamente en el sistema.
+        plan_texto += "\n" + "-"*80 + "\n\n"
+        planes.append(plan_texto)
+        contador += 1
 
-**Próxima revisión:** Según cronograma de seguimientos bimensuales establecido.
+    # Agregar sección de SST
+    planes.append("="*80 + "\n")
+    planes.append("OBSERVACIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO (SST)\n")
+    planes.append("="*80 + "\n\n")
+    planes.append("Nota: La evaluación de uso de EPP se registra por separado y no afecta el puntaje general.\n")
+    planes.append("Esta observación es fundamental para garantizar la seguridad del empleado.\n\n")
 
----
+    # Footer
+    planes.append("="*80 + "\n")
+    planes.append("INSTRUCCIONES:\n")
+    planes.append("1. Este plan debe ser revisado y aceptado por el empleado.\n")
+    planes.append("2. Se realizarán 3 seguimientos bimensuales (cada 2 meses) durante 6 meses.\n")
+    planes.append("3. Al finalizar el período se realizará una evaluación final del plan.\n")
+    planes.append("4. Las competencias con seguimiento bimensual deben mostrar avance progresivo.\n")
+    planes.append("="*80 + "\n")
 
-*Este plan de mejora ha sido generado automáticamente basándose en los resultados de la evaluación anual de desempeño para el cargo de Auxiliar de Tesorería.*
-"""
-
-    return plan
+    return "".join(planes)

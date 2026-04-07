@@ -121,12 +121,14 @@ from decimal import Decimal
 from datetime import date
 
 from .models import (
-    AsignacionEvaluacion, 
-    EvaluacionDesempeño, 
+    AsignacionEvaluacion,
+    EvaluacionDesempeño,
     RespuestaEvaluacion,
     ResultadoEvaluacion,
     PreguntaEvaluacion,
-    OpcionEvaluacion
+    OpcionEvaluacion,
+    TipoEvaluacion,
+    PlanMejoraPredefinido
 )
 from apps.employees.models import Empleado
 
@@ -333,19 +335,25 @@ class ListadoCompletoEvaluacionesView(LoginRequiredMixin, ListView):
         empleados_con_evaluaciones = Empleado.objects.filter(
             id__in=AsignacionEvaluacion.objects.values_list('empleado_evaluado_id', flat=True)
         ).distinct().order_by('apellidos', 'nombres')
-        
+
+        # Obtener todos los tipos de evaluación activos para el filtro
+        tipos_evaluacion_disponibles = TipoEvaluacion.objects.filter(
+            activo=True
+        ).order_by('nombre')
+
         # Estadísticas generales
         total_evaluaciones = self.get_queryset().count()
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(estado='completada').count()
         evaluaciones_pendientes = AsignacionEvaluacion.objects.filter(estado__in=['pendiente', 'en_progreso']).count()
         evaluaciones_aprobadas = AsignacionEvaluacion.objects.filter(estado='aprobada').count()
-        
+
         context.update({
             'total_evaluaciones': total_evaluaciones,
             'evaluaciones_completadas': evaluaciones_completadas,
             'evaluaciones_pendientes': evaluaciones_pendientes,
             'evaluaciones_aprobadas': evaluaciones_aprobadas,
             'empleados_disponibles': empleados_con_evaluaciones,
+            'tipos_evaluacion_disponibles': tipos_evaluacion_disponibles,
             'es_superusuario': usuario.is_superuser,
             'empleado_actual': empleado_usuario,
             # Filtros para el template
@@ -555,11 +563,19 @@ def completar_evaluacion(request, asignacion_id):
         messages.warning(request, 'Esta evaluación ya ha sido completada.')
         return redirect('evaluations:supervisor_pendientes')
     
-    # Obtener preguntas de la evaluación
-    preguntas = PreguntaEvaluacion.objects.filter(
+    # Obtener TODAS las preguntas de la evaluación (incluyendo SST para procesamiento)
+    todas_preguntas = PreguntaEvaluacion.objects.filter(
         evaluacion=asignacion.evaluacion
     ).prefetch_related('opcionevaluacion_set').order_by('orden')
-    
+
+    # Obtener preguntas normales (excluyendo SST para mostrar en template)
+    preguntas = todas_preguntas.exclude(categoria='Observación SST')
+
+    # Obtener pregunta SST por separado (para mostrar en sección especial)
+    pregunta_sst = todas_preguntas.filter(
+        categoria='Observación SST'
+    ).first()
+
     # Obtener respuestas existentes (si las hay)
     respuestas_existentes = {}
     if asignacion.estado == 'en_progreso':
@@ -569,10 +585,10 @@ def completar_evaluacion(request, asignacion_id):
         respuestas_existentes = {
             respuesta.pregunta_id: respuesta for respuesta in respuestas
         }
-    
+
     if request.method == 'POST':
-        return _procesar_respuestas_evaluacion(request, asignacion, preguntas)
-    
+        return _procesar_respuestas_evaluacion(request, asignacion, todas_preguntas)
+
     # Buscar plan de mejora generado para esta asignación (si existe)
     plan_mejora = None
     try:
@@ -583,13 +599,14 @@ def completar_evaluacion(request, asignacion_id):
 
     context = {
         'asignacion': asignacion,
-        'preguntas': preguntas,
+        'preguntas': preguntas,  # Solo preguntas normales (sin SST)
+        'pregunta_sst': pregunta_sst,  # Pregunta SST separada
         'respuestas_existentes': respuestas_existentes,
         'empleado': asignacion.empleado_evaluado,
         'evaluacion': asignacion.evaluacion,
         'plan_mejora': plan_mejora,
     }
-    
+
     return render(request, 'evaluations/supervisor/completar.html', context)
 
 
@@ -766,6 +783,22 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_auxiliar_tesoreria(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_RRHH':
+                                # Generar plan específico para Auxiliar de RRHH
+                                from .utils.respuestas_predefinidas_auxiliar_rrhh import (
+                                    generar_plan_mejora_auxiliar_rrhh,
+                                    calcular_puntaje_ponderado_auxiliar_rrhh
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_rrhh(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliar_rrhh(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_CONTABLE':
+                                # Generar plan específico para Auxiliar Contable
+                                from .utils.respuestas_predefinidas_auxiliar_contable import (
+                                    generar_plan_mejora_auxiliar_contable,
+                                    calcular_puntaje_ponderado_auxiliar_contable
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_contable(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliar_contable(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
@@ -793,8 +826,28 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                 return redirect('evaluations:supervisor_pendientes')
             
     except Exception as e:
-        messages.error(request, f'Error al guardar la evaluación: {str(e)}')
-    
+        # Registrar el error completo en los logs para diagnóstico
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Error al procesar evaluación {asignacion.id}: {str(e)}', exc_info=True)
+
+        # Mensaje amigable para el usuario
+        mensaje_error = 'No se pudo guardar la evaluación.'
+
+        # Proporcionar mensajes más específicos según el tipo de error
+        if 'filter' in str(e) and 'list' in str(e):
+            mensaje_error = 'Ocurrió un error al procesar las preguntas. Por favor, intente nuevamente.'
+        elif 'DoesNotExist' in str(e):
+            mensaje_error = 'No se encontró una pregunta u opción requerida. Por favor, contacte al administrador.'
+        elif 'IntegrityError' in str(e):
+            mensaje_error = 'Error al guardar los datos. Verifique que todas las preguntas obligatorias estén respondidas.'
+        elif 'ValidationError' in str(e):
+            mensaje_error = 'Los datos ingresados no son válidos. Por favor, revise sus respuestas.'
+        else:
+            mensaje_error = f'No se pudo guardar la evaluación. Error técnico: {str(e)}'
+
+        messages.error(request, mensaje_error)
+
     # Redirigir de vuelta al formulario
     return redirect('evaluations:completar', asignacion_id=asignacion.id)
 
@@ -836,6 +889,12 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_AUX_TESORERIA':
             from .utils.respuestas_predefinidas_auxiliar_tesoreria import calcular_puntaje_ponderado_auxiliar_tesoreria
             resultado_calc = calcular_puntaje_ponderado_auxiliar_tesoreria(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AUX_RRHH':
+            from .utils.respuestas_predefinidas_auxiliar_rrhh import calcular_puntaje_ponderado_auxiliar_rrhh
+            resultado_calc = calcular_puntaje_ponderado_auxiliar_rrhh(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AUX_CONTABLE':
+            from .utils.respuestas_predefinidas_auxiliar_contable import calcular_puntaje_ponderado_auxiliar_contable
+            resultado_calc = calcular_puntaje_ponderado_auxiliar_contable(respuestas)
         else:
             resultado_calc = None
 

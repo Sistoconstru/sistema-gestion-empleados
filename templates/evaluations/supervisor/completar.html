@@ -474,8 +474,8 @@
                 {% endfor %}
             {% endfor %}
 
-            <!-- Sección de Seguridad y Salud en el Trabajo (SST) - Solo para evaluaciones anuales -->
-            {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' %}
+            <!-- Sección de Seguridad y Salud en el Trabajo (SST) - Dinámica -->
+            {% if pregunta_sst %}
             <div class="card border-warning mt-4 mb-4" style="background-color: #fffbf0;">
                 <div class="card-header bg-warning text-dark">
                     <h5 class="mb-0">
@@ -492,54 +492,48 @@
                     <div class="form-group">
                         <label class="font-weight-bold mb-3">
                             <i class="fas fa-shield-alt"></i>
-                            ¿El empleado utiliza adecuadamente los Elementos de Protección Personal (EPP) y promueve su uso?
+                            {{ pregunta_sst.pregunta }}
                         </label>
 
+                        {% if pregunta_sst.descripcion %}
+                            <p class="text-muted mb-3">{{ pregunta_sst.descripcion }}</p>
+                        {% endif %}
+
                         <div class="custom-radio-group">
+                            {% for opcion in pregunta_sst.opcionevaluacion_set.all %}
                             <div class="custom-control custom-radio mb-3">
                                 <input type="radio"
-                                       id="uso_epp_correcto"
-                                       name="uso_epp_sst"
-                                       value="correcto"
+                                       id="pregunta_{{ pregunta_sst.id }}_{{ opcion.id }}"
+                                       name="pregunta_{{ pregunta_sst.id }}"
+                                       value="{{ opcion.id }}"
+                                       data-puntaje="{{ opcion.valor_numerico }}"
                                        class="custom-control-input"
-                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
-                                       {% if asignacion.uso_epp_sst == 'correcto' %}checked{% endif %}>
-                                <label class="custom-control-label" for="uso_epp_correcto">
-                                    <i class="fas fa-check-circle text-success"></i>
-                                    <strong>Los usa correctamente y promueve su uso</strong>
-                                    <small class="d-block text-muted ml-4">El empleado cumple completamente con las normas de seguridad</small>
+                                       {% if pregunta_sst.obligatoria %}required{% endif %}
+                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}>
+                                <label class="custom-control-label" for="pregunta_{{ pregunta_sst.id }}_{{ opcion.id }}">
+                                    {% if opcion.valor_numerico == 3 %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    {% elif opcion.valor_numerico == 2 %}
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    {% else %}
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    {% endif %}
+                                    <strong>{{ opcion.opcion }}</strong>
                                 </label>
                             </div>
+                            {% endfor %}
+                        </div>
 
-                            <div class="custom-control custom-radio mb-3">
-                                <input type="radio"
-                                       id="uso_epp_aveces"
-                                       name="uso_epp_sst"
-                                       value="a_veces"
-                                       class="custom-control-input"
-                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
-                                       {% if asignacion.uso_epp_sst == 'a_veces' %}checked{% endif %}>
-                                <label class="custom-control-label" for="uso_epp_aveces">
-                                    <i class="fas fa-exclamation-triangle text-warning"></i>
-                                    <strong>A veces no los usa adecuadamente</strong>
-                                    <small class="d-block text-muted ml-4">Se han observado ocasiones donde no cumple con las normas</small>
-                                </label>
-                            </div>
-
-                            <div class="custom-control custom-radio mb-3">
-                                <input type="radio"
-                                       id="uso_epp_nunca"
-                                       name="uso_epp_sst"
-                                       value="nunca"
-                                       class="custom-control-input"
-                                       {% if asignacion.estado == 'completada' %}disabled{% endif %}
-                                       {% if asignacion.uso_epp_sst == 'nunca' %}checked{% endif %}>
-                                <label class="custom-control-label" for="uso_epp_nunca">
-                                    <i class="fas fa-times-circle text-danger"></i>
-                                    <strong>No los usa o no promueve su uso</strong>
-                                    <small class="d-block text-muted ml-4">El empleado no cumple con las normas de seguridad</small>
-                                </label>
-                            </div>
+                        <!-- Campo para comentarios adicionales -->
+                        <div class="mt-3">
+                            <label class="form-label">
+                                <i class="fas fa-comment"></i> Comentarios adicionales sobre SST (opcional)
+                            </label>
+                            <textarea name="comentario_{{ pregunta_sst.id }}"
+                                      class="form-control"
+                                      rows="2"
+                                      placeholder="Agregue observaciones específicas sobre seguridad..."
+                                      {% if asignacion.estado == 'completada' %}readonly{% endif %}></textarea>
                         </div>
                     </div>
                 </div>
@@ -565,7 +559,7 @@
                                     <i class="fas fa-chart-line"></i> Progreso Actual
                                 </h6>
                                 <div class="row">
-                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' %}
+                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' %}
                                         <!-- Para evaluaciones anuales ponderadas -->
                                         <div class="col-12">
                                             <div class="text-center">
@@ -696,7 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateScoreProgress() {
         const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
         const totalQuestions = {{ preguntas.count }};
-        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' %}true{% else %}false{% endif %};
+        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' %}true{% else %}false{% endif %};
         let currentScore = 0;
         let answeredQuestions = radioButtons.length;
 
@@ -723,8 +717,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const tipoEvaluacion = '{{ evaluacion.tipo_evaluacion.codigo }}';
                 let pesoPorPunto = {};
 
-                if (tipoEvaluacion === 'ANUAL_SERV_GRAL' || tipoEvaluacion === 'ANUAL_AUX_ADMIN') {
-                    // Servicios Generales y Auxiliares Administrativos: 11 preguntas
+                if (tipoEvaluacion === 'ANUAL_SERV_GRAL' || tipoEvaluacion === 'ANUAL_AUX_ADMIN' || tipoEvaluacion === 'ANUAL_AUX_RRHH' || tipoEvaluacion === 'ANUAL_AUX_CONTABLE') {
+                    // Servicios Generales, Auxiliares Administrativos, Auxiliares de RRHH y Auxiliar Contable: 11 preguntas
                     // Preguntas 1-3: Organizacionales (10%) → peso por punto: 10/15 = 0.6666667
                     // Pregunta 4: Objetivos (40%) → peso por punto: 40/5 = 8
                     // Preguntas 5-7: Interpersonales (25%) → peso por punto: 25/15 = 1.6666667

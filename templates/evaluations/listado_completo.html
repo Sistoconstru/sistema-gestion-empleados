@@ -280,9 +280,11 @@
                         <label class="form-label"><i class="fas fa-clipboard-list me-1"></i> Tipo de Evaluación</label>
                         <select name="tipo" class="form-select">
                             <option value="">Todos los tipos</option>
-                            <option value="periodo_prueba" {% if tipo_filtro == 'periodo_prueba' %}selected{% endif %}>Período de Prueba</option>
-                            <option value="desempeño_anual" {% if tipo_filtro == 'desempeño_anual' %}selected{% endif %}>Desempeño Anual</option>
-                            <option value="extraordinaria" {% if tipo_filtro == 'extraordinaria' %}selected{% endif %}>Extraordinaria</option>
+                            {% for tipo in tipos_evaluacion_disponibles %}
+                                <option value="{{ tipo.codigo }}" {% if tipo_filtro == tipo.codigo %}selected{% endif %}>
+                                    {{ tipo.nombre }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
 

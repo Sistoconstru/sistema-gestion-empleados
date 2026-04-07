@@ -64,6 +64,14 @@ python manage.py migrate
 echo "⚙️  Configurando evaluación de Auxiliar de Tesorería..."
 python manage.py configurar_evaluacion_auxiliar_tesoreria
 
+# Configura evaluación de Auxiliar de RRHH (solo primera vez)
+echo "⚙️  Configurando evaluación de Auxiliar de RRHH..."
+python manage.py configurar_evaluacion_auxiliar_rrhh
+
+# Configura evaluación de Auxiliar Contable (solo primera vez)
+echo "⚙️  Configurando evaluación de Auxiliar Contable..."
+python manage.py configurar_evaluacion_auxiliar_contable
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 
