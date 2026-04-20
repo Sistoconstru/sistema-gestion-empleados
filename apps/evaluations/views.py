@@ -799,6 +799,22 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_contable(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_auxiliar_contable(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_ANALISTA_CONT':
+                                # Generar plan específico para Analista Contable
+                                from .utils.respuestas_predefinidas_analista_contable import (
+                                    generar_plan_mejora_analista_contable,
+                                    calcular_puntaje_ponderado_analista_contable
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_analista_contable(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_analista_contable(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_ASESOR_COMER':
+                                # Generar plan específico para Asesor Comercial
+                                from .utils.respuestas_predefinidas_asesor_comercial import (
+                                    generar_plan_mejora_asesor_comercial,
+                                    calcular_puntaje_ponderado_asesor_comercial
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_asesor_comercial(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_asesor_comercial(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
@@ -895,6 +911,12 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_AUX_CONTABLE':
             from .utils.respuestas_predefinidas_auxiliar_contable import calcular_puntaje_ponderado_auxiliar_contable
             resultado_calc = calcular_puntaje_ponderado_auxiliar_contable(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_ANALISTA_CONT':
+            from .utils.respuestas_predefinidas_analista_contable import calcular_puntaje_ponderado_analista_contable
+            resultado_calc = calcular_puntaje_ponderado_analista_contable(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_ASESOR_COMER':
+            from .utils.respuestas_predefinidas_asesor_comercial import calcular_puntaje_ponderado_asesor_comercial
+            resultado_calc = calcular_puntaje_ponderado_asesor_comercial(respuestas)
         else:
             resultado_calc = None
 

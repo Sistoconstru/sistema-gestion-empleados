@@ -61,16 +61,27 @@ python manage.py migrate
 # python manage.py generar_seguimientos_faltantes --ejecutar
 
 # Configura evaluación de Auxiliar de Tesorería (solo primera vez)
-echo "⚙️  Configurando evaluación de Auxiliar de Tesorería..."
-python manage.py configurar_evaluacion_auxiliar_tesoreria
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Auxiliar de Tesorería..."
+# python manage.py configurar_evaluacion_auxiliar_tesoreria
 
 # Configura evaluación de Auxiliar de RRHH (solo primera vez)
-echo "⚙️  Configurando evaluación de Auxiliar de RRHH..."
-python manage.py configurar_evaluacion_auxiliar_rrhh
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Auxiliar de RRHH..."
+# python manage.py configurar_evaluacion_auxiliar_rrhh
 
 # Configura evaluación de Auxiliar Contable (solo primera vez)
-echo "⚙️  Configurando evaluación de Auxiliar Contable..."
-python manage.py configurar_evaluacion_auxiliar_contable
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Auxiliar Contable..."
+# python manage.py configurar_evaluacion_auxiliar_contable
+
+# Configura evaluación de Analista Contable (solo primera vez)
+echo "⚙️  Configurando evaluación de Analista Contable..."
+python manage.py configurar_evaluacion_analista_contable
+
+# Configura evaluación de Asesor Comercial (solo primera vez)
+echo "⚙️  Configurando evaluación de Asesor Comercial..."
+python manage.py configurar_evaluacion_asesor_comercial
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

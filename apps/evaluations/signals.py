@@ -3,7 +3,7 @@
 # Signals para auto-asignación de evaluaciones
 # =============================================================================
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
@@ -208,3 +208,54 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
         print(f"[SIGNAL] Para asignar jefes: python manage.py asignar_jefes_automaticamente\n")
     else:
         print()
+
+
+@receiver(pre_delete, sender=EvaluacionCargo)
+def eliminar_asignaciones_pendientes_al_eliminar_evaluacion_cargo(sender, instance, **kwargs):
+    """
+    Signal que se ejecuta ANTES de eliminar una EvaluacionCargo.
+
+    Elimina automáticamente las asignaciones que están en estado 'pendiente' o 'en_progreso',
+    pero PRESERVA las asignaciones completadas (historial importante).
+
+    Esto permite reasignar evaluaciones sin errores de duplicidad.
+    """
+    evaluacion = instance.evaluacion
+    cargo = instance.cargo
+
+    print(f"\n[SIGNAL DELETE] Eliminando EvaluacionCargo: '{evaluacion.nombre}' para cargo '{cargo.nombre}'")
+
+    # Buscar asignaciones pendientes o en progreso asociadas a esta evaluación
+    asignaciones_activas = AsignacionEvaluacion.objects.filter(
+        evaluacion=evaluacion,
+        empleado_evaluado__historialcargo__cargo=cargo,
+        empleado_evaluado__historialcargo__activo=True,
+        estado__in=['pendiente', 'en_progreso']
+    ).distinct()
+
+    count_eliminadas = asignaciones_activas.count()
+
+    if count_eliminadas > 0:
+        print(f"[SIGNAL DELETE] Eliminando {count_eliminadas} asignación(es) en estado 'pendiente' o 'en_progreso'...")
+
+        # Mostrar detalles de lo que se eliminará
+        for asignacion in asignaciones_activas:
+            print(f"[SIGNAL DELETE]   - Empleado: {asignacion.empleado_evaluado.nombre_completo} - Estado: {asignacion.estado}")
+
+        # Eliminar las asignaciones
+        asignaciones_activas.delete()
+        print(f"[SIGNAL DELETE] ✓ Asignaciones eliminadas exitosamente.")
+    else:
+        print(f"[SIGNAL DELETE] No hay asignaciones pendientes o en progreso para eliminar.")
+
+    # Verificar si hay asignaciones completadas (solo informativo)
+    asignaciones_completadas = AsignacionEvaluacion.objects.filter(
+        evaluacion=evaluacion,
+        empleado_evaluado__historialcargo__cargo=cargo,
+        estado='completada'
+    ).distinct().count()
+
+    if asignaciones_completadas > 0:
+        print(f"[SIGNAL DELETE] ℹ Se preservan {asignaciones_completadas} asignación(es) completadas (historial).")
+
+    print()
