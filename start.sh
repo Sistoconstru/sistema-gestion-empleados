@@ -76,12 +76,18 @@ python manage.py migrate
 # python manage.py configurar_evaluacion_auxiliar_contable
 
 # Configura evaluación de Analista Contable (solo primera vez)
-echo "⚙️  Configurando evaluación de Analista Contable..."
-python manage.py configurar_evaluacion_analista_contable
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Analista Contable..."
+# python manage.py configurar_evaluacion_analista_contable
 
 # Configura evaluación de Asesor Comercial (solo primera vez)
-echo "⚙️  Configurando evaluación de Asesor Comercial..."
-python manage.py configurar_evaluacion_asesor_comercial
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Asesor Comercial..."
+# python manage.py configurar_evaluacion_asesor_comercial
+
+# Configura evaluación de Directores (solo primera vez)
+echo "⚙️  Configurando evaluación de Directores..."
+python manage.py configurar_evaluacion_director
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

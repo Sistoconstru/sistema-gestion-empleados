@@ -815,6 +815,14 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_asesor_comercial(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_asesor_comercial(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_DIRECTOR':
+                                # Generar plan específico para Directores
+                                from .utils.respuestas_predefinidas_director import (
+                                    generar_plan_mejora_director,
+                                    calcular_puntaje_ponderado_director
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_director(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_director(respuestas, resultado_evaluacion)
                             else:
                                 # Usar método genérico para otras evaluaciones
                                 from .utils.respuestas_predefinidas import generar_plan_automatico
@@ -917,6 +925,9 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_ASESOR_COMER':
             from .utils.respuestas_predefinidas_asesor_comercial import calcular_puntaje_ponderado_asesor_comercial
             resultado_calc = calcular_puntaje_ponderado_asesor_comercial(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_DIRECTOR':
+            from .utils.respuestas_predefinidas_director import calcular_puntaje_ponderado_director
+            resultado_calc = calcular_puntaje_ponderado_director(respuestas)
         else:
             resultado_calc = None
 
