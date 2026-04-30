@@ -1,0 +1,668 @@
+<!-- templates/reports/evaluations_report.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Evaluaciones de Desempeño - RRHH Pro{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.metric-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.filter-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border: none;
+    color: white;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #0f877a 0%, #32d969 100%);
+    color: white;
+}
+
+.alert-card {
+    border-left: 4px solid #dc3545;
+}
+
+.nivel-muy-alto {
+    background: #d4edda;
+    color: #155724;
+}
+
+.nivel-alto {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.nivel-moderado {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.nivel-bajo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.nivel-muy-bajo {
+    background: #dc3545;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h2 mb-2">📊 Evaluaciones de Desempeño</h1>
+        <p class="text-muted">Análisis completo del sistema de evaluaciones</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'reports:index' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Volver a Reportes
+        </a>
+        <div class="btn-group">
+            <button type="button" class="btn export-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download"></i>
+                Exportar
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="{% url 'reports:export_evaluations_excel' %}">
+                        <i class="fas fa-file-excel text-success"></i>
+                        Exportar a Excel
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'reports:export_evaluations_pdf' %}">
+                        <i class="fas fa-file-pdf text-danger"></i>
+                        Exportar a PDF
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- KPIs Principales -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Promedio General</h6>
+                        <h2 class="mb-0 text-corporativo">{{ promedio_desempeño|floatformat:2 }}</h2>
+                        <small class="text-muted">sobre 100 puntos</small>
+                    </div>
+                    <div class="bg-corporativo bg-opacity-10 rounded p-3">
+                        <i class="fas fa-star text-corporativo fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Tasa de Completación</h6>
+                        <h2 class="mb-0 text-success">{{ tasa_completadas|floatformat:1 }}%</h2>
+                        <small class="text-muted">{{ evaluaciones_completadas_count }} de {{ total_evaluaciones }}</small>
+                    </div>
+                    <div class="bg-success bg-opacity-10 rounded p-3">
+                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Total Empleados</h6>
+                        <h2 class="mb-0">{{ total_empleados }}</h2>
+                        <small class="text-muted">empleados activos</small>
+                    </div>
+                    <div class="bg-info bg-opacity-10 rounded p-3">
+                        <i class="fas fa-users text-info fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card metric-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Planes de Mejora</h6>
+                        <h2 class="mb-0 text-amarillo">{{ total_planes }}</h2>
+                        <small class="text-success">{{ tasa_aceptacion|floatformat:1 }}% aceptados</small>
+                    </div>
+                    <div class="bg-amarillo bg-opacity-10 rounded p-3">
+                        <i class="fas fa-clipboard-list text-amarillo fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Distribución de Niveles -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Distribución de Niveles de Desempeño
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="distribucionNivelesChart"></canvas>
+                </div>
+                <div class="row text-center mt-3">
+                    <div class="col">
+                        <div class="p-2 rounded nivel-muy-alto">
+                            <h4 class="mb-0">{{ distribucion_niveles.muy_alto }}</h4>
+                            <small>Muy Alto (≥90)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 rounded nivel-alto">
+                            <h4 class="mb-0">{{ distribucion_niveles.alto }}</h4>
+                            <small>Alto (75-89)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 rounded nivel-moderado">
+                            <h4 class="mb-0">{{ distribucion_niveles.moderado }}</h4>
+                            <small>Moderado (60-74)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 rounded nivel-bajo">
+                            <h4 class="mb-0">{{ distribucion_niveles.bajo }}</h4>
+                            <small>Bajo (40-59)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 rounded nivel-muy-bajo">
+                            <h4 class="mb-0">{{ distribucion_niveles.muy_bajo }}</h4>
+                            <small>Muy Bajo (<40)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Estado de Planes
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="planesChart"></canvas>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">Completados</span>
+                        <span class="badge bg-success">{{ planes_por_estado.completado }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">En Seguimiento</span>
+                        <span class="badge bg-corporativo">{{ planes_por_estado.en_seguimiento }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small">Aprobados</span>
+                        <span class="badge bg-info">{{ planes_por_estado.aprobado }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small">Pendientes</span>
+                        <span class="badge bg-warning text-dark">{{ planes_por_estado.pendiente_aprobacion }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas Críticas -->
+<div class="row mb-4">
+    <div class="col-lg-4">
+        <div class="card alert-card h-100">
+            <div class="card-header bg-danger text-white">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Desempeño Bajo
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if empleados_bajo_desempeño %}
+                    <div class="list-group list-group-flush">
+                        {% for eval in empleados_bajo_desempeño %}
+                        <div class="list-group-item px-0 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ eval.empleado_evaluado.nombre_completo }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ eval.empleado_evaluado.nombre_cargo_actual }}</small>
+                                </div>
+                                <span class="badge bg-danger">{{ eval.puntaje_total|floatformat:1 }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center my-3">
+                        <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                        <br>
+                        No hay empleados con desempeño bajo
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card alert-card h-100">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Evaluaciones Vencidas
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if evaluaciones_vencidas %}
+                    <div class="list-group list-group-flush">
+                        {% for eval in evaluaciones_vencidas %}
+                        <div class="list-group-item px-0 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ eval.empleado_evaluado.nombre_completo }}</strong>
+                                    <br>
+                                    <small class="text-muted">Vence: {{ eval.fecha_vencimiento }}</small>
+                                </div>
+                                <span class="badge bg-warning text-dark">{{ eval.estado }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center my-3">
+                        <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                        <br>
+                        No hay evaluaciones vencidas
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card alert-card h-100">
+            <div class="card-header bg-info text-white">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Seguimientos Atrasados
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if seguimientos_atrasados %}
+                    <div class="list-group list-group-flush">
+                        {% for seg in seguimientos_atrasados %}
+                        <div class="list-group-item px-0 py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ seg.plan_mejora.asignacion_evaluacion.empleado_evaluado.nombre_completo }}</strong>
+                                    <br>
+                                    <small class="text-muted">Bimestre {{ seg.numero_bimestre }} - {{ seg.fecha_limite }}</small>
+                                </div>
+                                <span class="badge bg-danger">Atrasado</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center my-3">
+                        <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                        <br>
+                        No hay seguimientos atrasados
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Análisis por Cargo -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-briefcase me-2"></i>
+            Análisis por Cargo
+        </h5>
+        <a href="{% url 'reports:export_evaluations_excel' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-file-excel"></i>
+            Exportar
+        </a>
+    </div>
+    <div class="card-body">
+        {% if analisis_por_cargo %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Cargo</th>
+                        <th>Promedio</th>
+                        <th>Cantidad Evaluados</th>
+                        <th>Nivel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in analisis_por_cargo %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">#{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ item.cargo.nombre }}</strong>
+                            <br>
+                            <small class="text-muted">{{ item.cargo.area.nombre }}</small>
+                        </td>
+                        <td>
+                            <h5 class="mb-0
+                                {% if item.promedio >= 90 %}text-success
+                                {% elif item.promedio >= 75 %}text-primary
+                                {% elif item.promedio >= 60 %}text-warning
+                                {% else %}text-danger
+                                {% endif %}">
+                                {{ item.promedio }}
+                            </h5>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ item.cantidad_evaluados }}</span>
+                        </td>
+                        <td>
+                            {% if item.promedio >= 90 %}
+                                <span class="badge nivel-muy-alto">Muy Alto</span>
+                            {% elif item.promedio >= 75 %}
+                                <span class="badge nivel-alto">Alto</span>
+                            {% elif item.promedio >= 60 %}
+                                <span class="badge nivel-moderado">Moderado</span>
+                            {% elif item.promedio >= 40 %}
+                                <span class="badge nivel-bajo">Bajo</span>
+                            {% else %}
+                                <span class="badge nivel-muy-bajo">Muy Bajo</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center my-4">No hay datos suficientes para mostrar análisis por cargo</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Análisis por Área -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-sitemap me-2"></i>
+            Análisis por Área/Departamento
+        </h5>
+        <a href="{% url 'reports:export_evaluations_excel' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-file-excel"></i>
+            Exportar
+        </a>
+    </div>
+    <div class="card-body">
+        {% if analisis_por_area %}
+        <div class="row">
+            {% for item in analisis_por_area %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card metric-card h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">{{ item.area.nombre }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="mb-0
+                                    {% if item.promedio >= 90 %}text-success
+                                    {% elif item.promedio >= 75 %}text-primary
+                                    {% elif item.promedio >= 60 %}text-warning
+                                    {% else %}text-danger
+                                    {% endif %}">
+                                    {{ item.promedio }}
+                                </h2>
+                                <small class="text-muted">{{ item.cantidad_evaluados }} evaluados</small>
+                            </div>
+                            <div>
+                                {% if item.promedio >= 90 %}
+                                    <i class="fas fa-trophy text-success fa-2x"></i>
+                                {% elif item.promedio >= 75 %}
+                                    <i class="fas fa-star text-primary fa-2x"></i>
+                                {% elif item.promedio >= 60 %}
+                                    <i class="fas fa-check-circle text-warning fa-2x"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle text-danger fa-2x"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="progress mt-3" style="height: 8px;">
+                            <div class="progress-bar
+                                {% if item.promedio >= 90 %}bg-success
+                                {% elif item.promedio >= 75 %}bg-primary
+                                {% elif item.promedio >= 60 %}bg-warning
+                                {% else %}bg-danger
+                                {% endif %}"
+                                style="width: {{ item.promedio }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center my-4">No hay datos suficientes para mostrar análisis por área</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Análisis por Sede -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-building me-2"></i>
+            Análisis por Sede
+        </h5>
+        <a href="{% url 'reports:export_evaluations_excel' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-file-excel"></i>
+            Exportar
+        </a>
+    </div>
+    <div class="card-body">
+        {% if analisis_por_sede %}
+        <div class="row">
+            {% for item in analisis_por_sede %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card metric-card h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">{{ item.sede.nombre }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="mb-0
+                                    {% if item.promedio >= 90 %}text-success
+                                    {% elif item.promedio >= 75 %}text-primary
+                                    {% elif item.promedio >= 60 %}text-warning
+                                    {% else %}text-danger
+                                    {% endif %}">
+                                    {{ item.promedio }}
+                                </h2>
+                                <small class="text-muted">{{ item.cantidad_evaluados }} evaluados</small>
+                            </div>
+                            <div>
+                                {% if item.promedio >= 90 %}
+                                    <i class="fas fa-trophy text-success fa-2x"></i>
+                                {% elif item.promedio >= 75 %}
+                                    <i class="fas fa-star text-primary fa-2x"></i>
+                                {% elif item.promedio >= 60 %}
+                                    <i class="fas fa-check-circle text-warning fa-2x"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle text-danger fa-2x"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="progress mt-3" style="height: 8px;">
+                            <div class="progress-bar
+                                {% if item.promedio >= 90 %}bg-success
+                                {% elif item.promedio >= 75 %}bg-primary
+                                {% elif item.promedio >= 60 %}bg-warning
+                                {% else %}bg-danger
+                                {% endif %}"
+                                style="width: {{ item.promedio }}%">
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ item.sede.ciudad }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center my-4">No hay datos suficientes para mostrar análisis por sede</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Gráfico de Distribución de Niveles
+const distribucionCtx = document.getElementById('distribucionNivelesChart');
+if (distribucionCtx) {
+    new Chart(distribucionCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Muy Alto (≥90)', 'Alto (75-89)', 'Moderado (60-74)', 'Bajo (40-59)', 'Muy Bajo (<40)'],
+            datasets: [{
+                label: 'Cantidad de Empleados',
+                data: [
+                    {{ distribucion_niveles.muy_alto }},
+                    {{ distribucion_niveles.alto }},
+                    {{ distribucion_niveles.moderado }},
+                    {{ distribucion_niveles.bajo }},
+                    {{ distribucion_niveles.muy_bajo }}
+                ],
+                backgroundColor: [
+                    '#28a745',
+                    '#007bff',
+                    '#ffc107',
+                    '#fd7e14',
+                    '#dc3545'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Gráfico de Planes de Mejora
+const planesCtx = document.getElementById('planesChart');
+if (planesCtx) {
+    new Chart(planesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completados', 'En Seguimiento', 'Aprobados', 'Pendientes', 'Rechazados'],
+            datasets: [{
+                data: [
+                    {{ planes_por_estado.completado }},
+                    {{ planes_por_estado.en_seguimiento }},
+                    {{ planes_por_estado.aprobado }},
+                    {{ planes_por_estado.pendiente_aprobacion }},
+                    {{ planes_por_estado.rechazado }}
+                ],
+                backgroundColor: [
+                    '#28a745',
+                    '#007bff',
+                    '#17a2b8',
+                    '#ffc107',
+                    '#dc3545'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+// Las funciones de exportación ahora se manejan mediante enlaces directos a las vistas de Django
+</script>
+{% endblock %}

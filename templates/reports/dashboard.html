@@ -522,9 +522,9 @@
             <div class="card-body">
                 <i class="fas fa-chart-bar fa-3x text-warning mb-3"></i>
                 <h6>Reporte de Desempeño</h6>
-                <button class="btn btn-warning btn-sm" onclick="generatePerformanceReport()">
-                    Generar
-                </button>
+                <a href="{% url 'reports:evaluations_report' %}" class="btn btn-warning btn-sm">
+                    Ver Reporte
+                </a>
             </div>
         </div>
     </div>
