@@ -60,10 +60,12 @@ class PerformanceReportView(TemplateView):
         total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
 
         # Evaluaciones completadas (con puntaje calculado)
-        # Incluimos todas las evaluaciones completadas que tengan puntaje, sin importar estado de aprobación
+        # IMPORTANTE: Solo evaluaciones de DESEMPEÑO ANUAL (escala 1-5, puntaje en porcentaje)
+        # Excluimos evaluaciones de PERÍODO DE PRUEBA (escala 1-3, puntaje 1-21)
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(
             estado='completada',
-            puntaje_total__isnull=False
+            puntaje_total__isnull=False,
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'  # Solo evaluaciones anuales
         )
 
         # Promedio General de Desempeño (basado en porcentaje de evaluación)
@@ -277,16 +279,20 @@ class ExportEvaluationsExcelView(View):
         # Obtener datos (reutilizamos la misma lógica)
         total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
 
+        # Solo evaluaciones de DESEMPEÑO ANUAL (puntaje en porcentaje 0-100)
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(
             estado='completada',
-            puntaje_total__isnull=False
+            puntaje_total__isnull=False,
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'
         )
 
         promedio_desempeño = evaluaciones_completadas.aggregate(
             promedio=Avg('puntaje_total')
         )['promedio'] or 0
 
-        total_evaluaciones = AsignacionEvaluacion.objects.count()
+        total_evaluaciones = AsignacionEvaluacion.objects.filter(
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'
+        ).count()
         tasa_completadas = (evaluaciones_completadas.count() / total_evaluaciones * 100) if total_evaluaciones > 0 else 0
 
         # Análisis por cargo
@@ -589,16 +595,20 @@ class ExportEvaluationsPDFView(View):
         # Obtener datos
         total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
 
+        # Solo evaluaciones de DESEMPEÑO ANUAL (puntaje en porcentaje 0-100)
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(
             estado='completada',
-            puntaje_total__isnull=False
+            puntaje_total__isnull=False,
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'
         )
 
         promedio_desempeño = evaluaciones_completadas.aggregate(
             promedio=Avg('puntaje_total')
         )['promedio'] or 0
 
-        total_evaluaciones = AsignacionEvaluacion.objects.count()
+        total_evaluaciones = AsignacionEvaluacion.objects.filter(
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'
+        ).count()
         tasa_completadas = (evaluaciones_completadas.count() / total_evaluaciones * 100) if total_evaluaciones > 0 else 0
 
         # KPIs
