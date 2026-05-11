@@ -622,34 +622,69 @@
                                     {% endif %}
                                 </small>
                                 
-                                {% if evaluacion.estado == 'completada' and evaluacion.puntaje_total %}
+                                {% if evaluacion.estado == 'completada' %}
                                 <div class="mt-2">
-                                    <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                        <div>
-                                            <small class="text-muted d-block">Puntaje Obtenido:</small>
-                                            <span class="fw-bold">{{ evaluacion.puntaje_total }} de 21 puntos</span>
+                                    {% if evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                        {# Lógica para evaluaciones de PERÍODO DE PRUEBA #}
+                                        {% if evaluacion.puntaje_total %}
+                                        <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <div>
+                                                <small class="text-muted d-block">Puntaje Obtenido:</small>
+                                                <span class="fw-bold">{{ evaluacion.puntaje_total }} de 21 puntos</span>
+                                            </div>
+                                            <div>
+                                                <small class="text-muted d-block">Porcentaje:</small>
+                                                <span class="fw-bold">{{ evaluacion.porcentaje_completado|floatformat:1 }}%</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <small class="text-muted d-block">Porcentaje:</small>
-                                            <span class="fw-bold">{{ evaluacion.porcentaje_completado|floatformat:1 }}%</span>
+
+                                        {% if evaluacion.puntaje_total <= 13 %}
+                                        <div class="alert alert-danger alert-sm mt-2 mb-0">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            <strong>EMPLEADO REPROBADO</strong> - Puntaje insuficiente (mínimo requerido: 14 puntos)
                                         </div>
-                                    </div>
-                                    
-                                    {% if evaluacion.puntaje_total <= 13 %}
-                                    <div class="alert alert-danger alert-sm mt-2 mb-0">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        <strong>EMPLEADO REPROBADO</strong> - Puntaje insuficiente (mínimo requerido: 14 puntos)
-                                    </div>
-                                    {% elif evaluacion.puntaje_total >= 14 and evaluacion.puntaje_total <= 17 %}
-                                    <div class="alert alert-warning alert-sm mt-2 mb-0">
-                                        <i class="fas fa-check-circle me-1"></i>
-                                        <strong>APROBADO</strong> - Desempeño satisfactorio
-                                    </div>
-                                    {% elif evaluacion.puntaje_total >= 18 %}
-                                    <div class="alert alert-success alert-sm mt-2 mb-0">
-                                        <i class="fas fa-star me-1"></i>
-                                        <strong>EXCELENTE</strong> - Desempeño sobresaliente
-                                    </div>
+                                        {% elif evaluacion.puntaje_total >= 14 and evaluacion.puntaje_total <= 17 %}
+                                        <div class="alert alert-warning alert-sm mt-2 mb-0">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            <strong>APROBADO</strong> - Desempeño satisfactorio
+                                        </div>
+                                        {% elif evaluacion.puntaje_total >= 18 %}
+                                        <div class="alert alert-success alert-sm mt-2 mb-0">
+                                            <i class="fas fa-star me-1"></i>
+                                            <strong>EXCELENTE</strong> - Desempeño sobresaliente
+                                        </div>
+                                        {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        {# Lógica para evaluaciones ANUALES DE DESEMPEÑO #}
+                                        {% if evaluacion.porcentaje_completado %}
+                                        <div class="mb-2">
+                                            <small class="text-muted d-block">Calificación Final:</small>
+                                            <span class="fw-bold fs-5">{{ evaluacion.porcentaje_completado|floatformat:1 }}%</span>
+                                        </div>
+
+                                        {% if evaluacion.porcentaje_completado < 60 %}
+                                        <div class="alert alert-danger alert-sm mt-2 mb-0">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            <strong>DEFICIENTE</strong> - Desempeño por debajo de lo esperado (mínimo: 60%)
+                                        </div>
+                                        {% elif evaluacion.porcentaje_completado >= 60 and evaluacion.porcentaje_completado < 80 %}
+                                        <div class="alert alert-info alert-sm mt-2 mb-0">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            <strong>ACEPTABLE</strong> - Cumple con los requisitos básicos
+                                        </div>
+                                        {% elif evaluacion.porcentaje_completado >= 80 and evaluacion.porcentaje_completado < 90 %}
+                                        <div class="alert alert-warning alert-sm mt-2 mb-0">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            <strong>BUENO</strong> - Buen desempeño en el cargo
+                                        </div>
+                                        {% elif evaluacion.porcentaje_completado >= 90 %}
+                                        <div class="alert alert-success alert-sm mt-2 mb-0">
+                                            <i class="fas fa-star me-1"></i>
+                                            <strong>EXCELENTE</strong> - Desempeño sobresaliente
+                                        </div>
+                                        {% endif %}
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 {% endif %}
@@ -665,10 +700,20 @@
                                     {% elif evaluacion.estado_aprobacion == 'aprobada' %}
                                     <div>
                                         <span class="badge bg-info">Aprobada por Admin</span>
-                                        {% if evaluacion.puntaje_total <= 13 %}
-                                        <div class="mt-1">
-                                            <span class="badge bg-danger"><i class="fas fa-user-times me-1"></i>Requiere Desactivación</span>
-                                        </div>
+                                        {# Mostrar alerta de desactivación según el tipo de evaluación #}
+                                        {% if evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                            {% if evaluacion.puntaje_total and evaluacion.puntaje_total <= 13 %}
+                                            <div class="mt-1">
+                                                <span class="badge bg-danger"><i class="fas fa-user-times me-1"></i>Requiere Desactivación</span>
+                                            </div>
+                                            {% endif %}
+                                        {% else %}
+                                            {# Para evaluaciones anuales, mostrar alerta si está por debajo del 60% #}
+                                            {% if evaluacion.porcentaje_completado and evaluacion.porcentaje_completado < 60 %}
+                                            <div class="mt-1">
+                                                <span class="badge bg-danger"><i class="fas fa-exclamation-circle me-1"></i>Requiere Atención</span>
+                                            </div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     {% elif evaluacion.estado_aprobacion == 'desaprobada' %}
