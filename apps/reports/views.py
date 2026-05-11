@@ -90,16 +90,18 @@ class PerformanceReportView(TemplateView):
 
         # ============ 3. ALERTAS CRÍTICAS ============
 
-        # Empleados con desempeño bajo (menos de 60 puntos)
+        # Empleados con desempeño bajo (menos de 60% en evaluaciones anuales)
         empleados_bajo_desempeño = AsignacionEvaluacion.objects.filter(
             estado='completada',
-            puntaje_total__lt=60
+            puntaje_total__lt=60,
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'  # Solo evaluaciones anuales
         ).select_related('empleado_evaluado').order_by('puntaje_total')[:10]
 
-        # Evaluaciones vencidas
+        # Evaluaciones vencidas (solo evaluaciones anuales)
         evaluaciones_vencidas = AsignacionEvaluacion.objects.filter(
             estado__in=['pendiente', 'en_progreso'],
-            fecha_vencimiento__lt=timezone.now().date()
+            fecha_vencimiento__lt=timezone.now().date(),
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'  # Solo evaluaciones anuales
         ).select_related('empleado_evaluado').order_by('fecha_vencimiento')[:10]
 
         # Seguimientos atrasados

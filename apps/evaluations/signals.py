@@ -55,14 +55,25 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
     print(f"\n[SIGNAL] ACTIVANDO evaluación '{evaluacion.nombre}' para el cargo '{cargo.nombre}'")
     print(f"[SIGNAL] Activada por: {instance.activada_por or 'Sistema'}")
 
-    # Obtener todos los empleados activos con este cargo
+    # Obtener todos los empleados activos con este cargo ACTUALMENTE
+    # Importante: Solo considerar el historial ACTIVO del empleado
     empleados_con_cargo = Empleado.objects.filter(
         estado__codigo='999',  # Estado ACTIVO
         historialcargo__cargo=cargo,
         historialcargo__activo=True
     ).distinct()
 
-    print(f"[SIGNAL] Se encontraron {empleados_con_cargo.count()} empleados activos con el cargo '{cargo.nombre}'")
+    # Verificar que realmente tienen este cargo como su historial activo actual
+    empleados_con_cargo = [
+        emp for emp in empleados_con_cargo
+        if HistorialCargo.objects.filter(
+            empleado=emp,
+            cargo=cargo,
+            activo=True
+        ).exists()
+    ]
+
+    print(f"[SIGNAL] Se encontraron {len(empleados_con_cargo)} empleados activos con el cargo '{cargo.nombre}'")
 
     # Usar fecha de vencimiento planeada o calcular una por defecto
     if instance.fecha_vencimiento_planeada:
@@ -198,7 +209,7 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
     print(f"  - Asignaciones creadas: {asignaciones_creadas}")
     print(f"  - Asignaciones ya existentes (omitidas): {asignaciones_existentes}")
     print(f"  - Empleados sin jefe directo (no asignados): {empleados_sin_jefe}")
-    print(f"  - Total empleados procesados: {empleados_con_cargo.count()}")
+    print(f"  - Total empleados procesados: {len(empleados_con_cargo)}")
     print(f"  - Fecha de vencimiento: {fecha_vencimiento}")
     print(f"  - Período: {periodo_evaluacion}")
 

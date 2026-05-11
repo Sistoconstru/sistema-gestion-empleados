@@ -72,6 +72,7 @@ def dashboard_view(request):
                         break  # Solo salir si realmente encontramos empleados
                     else:
                         logger.info(f"Estado '{codigo}' existe pero no tiene empleados asignados")
+                        continue  # Continuar buscando con otros códigos
                 except EstadoEmpleado.DoesNotExist:
                     logger.info(f"Estado con código '{codigo}' no existe")
                     continue
@@ -97,6 +98,7 @@ def dashboard_view(request):
                         break  # Solo salir si realmente encontramos empleados
                     else:
                         logger.info(f"Estado '{codigo}' existe pero no tiene empleados en prueba")
+                        continue  # Continuar buscando con otros códigos
                 except EstadoEmpleado.DoesNotExist:
                     logger.info(f"Estado de prueba con código '{codigo}' no existe")
                     continue
