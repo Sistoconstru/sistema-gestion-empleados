@@ -74,7 +74,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f'\n✓ Evaluaciones actualizadas a FINALIZADA: {actualizadas_finalizadas}'
+                f'\n[OK] Evaluaciones actualizadas a FINALIZADA: {actualizadas_finalizadas}'
             )
         )
 
@@ -92,7 +92,7 @@ class Command(BaseCommand):
         if count_desaprobadas > 0:
             self.stdout.write(
                 self.style.WARNING(
-                    f'    ⚠ Encontradas {count_desaprobadas} evaluaciones desaprobadas que no se actualizaron'
+                    f'    [!] Encontradas {count_desaprobadas} evaluaciones desaprobadas que no se actualizaron'
                 )
             )
 
@@ -111,11 +111,11 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    f'\n✓ Evaluaciones actualizadas a REQUIERE_CORRECCION: {actualizadas_desaprobadas}'
+                    f'\n[OK] Evaluaciones actualizadas a REQUIERE_CORRECCION: {actualizadas_desaprobadas}'
                 )
             )
         else:
-            self.stdout.write(self.style.SUCCESS('    ✓ No hay evaluaciones desaprobadas pendientes'))
+            self.stdout.write(self.style.SUCCESS('    [OK] No hay evaluaciones desaprobadas pendientes'))
 
         # ========== RESUMEN ==========
         self.stdout.write('\n' + '='*70)
@@ -127,4 +127,4 @@ class Command(BaseCommand):
         if dry_run:
             self.stdout.write(self.style.WARNING('\n[DRY RUN] No se realizaron cambios reales'))
         else:
-            self.stdout.write(self.style.SUCCESS('\n✓ Actualización completada exitosamente'))
+            self.stdout.write(self.style.SUCCESS('\n[OK] Actualizacion completada exitosamente'))
