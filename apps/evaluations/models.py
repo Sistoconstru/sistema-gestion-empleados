@@ -267,7 +267,9 @@ class AsignacionEvaluacion(models.Model):
     ESTADOS = [
         ('pendiente', 'Pendiente'),
         ('en_progreso', 'En Progreso'),
-        ('completada', 'Completada'),
+        ('completada', 'Completada'),  # Evaluación terminada, seguimientos pendientes
+        ('requiere_correccion', 'Requiere Corrección'),  # Desaprobada por RRHH, necesita corrección
+        ('finalizada', 'Finalizada'),  # TODO el proceso completo (evaluación + seguimientos)
         ('vencida', 'Vencida'),
     ]
     

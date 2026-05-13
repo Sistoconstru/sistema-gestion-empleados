@@ -225,6 +225,9 @@
                         <div>
                             <h6 class="text-muted mb-1">Completadas</h6>
                             <h3 class="mb-0 text-success">{{ evaluaciones_completadas }}</h3>
+                            <small class="text-muted">
+                                <i class="fas fa-check-double"></i> {{ evaluaciones_finalizadas|default:0 }} finalizadas
+                            </small>
                         </div>
                         <div class="text-success">
                             <i class="fas fa-check-circle fa-2x"></i>
@@ -235,15 +238,15 @@
         </div>
         
         <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card stats-card border-info">
+            <div class="card stats-card border-danger">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">Aprobadas</h6>
-                            <h3 class="mb-0 text-info">{{ evaluaciones_aprobadas }}</h3>
+                            <h6 class="text-muted mb-1">Vencidas</h6>
+                            <h3 class="mb-0 text-danger">{{ evaluaciones_vencidas|default:0 }}</h3>
                         </div>
-                        <div class="text-info">
-                            <i class="fas fa-thumbs-up fa-2x"></i>
+                        <div class="text-danger">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -272,7 +275,9 @@
                             <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>Pendiente</option>
                             <option value="en_progreso" {% if estado_filtro == 'en_progreso' %}selected{% endif %}>En Progreso</option>
                             <option value="completada" {% if estado_filtro == 'completada' %}selected{% endif %}>Completada</option>
-                            <option value="aprobada" {% if estado_filtro == 'aprobada' %}selected{% endif %}>Aprobada</option>
+                            <option value="requiere_correccion" {% if estado_filtro == 'requiere_correccion' %}selected{% endif %}>Requiere Corrección</option>
+                            <option value="finalizada" {% if estado_filtro == 'finalizada' %}selected{% endif %}>Finalizada</option>
+                            <option value="vencida" {% if estado_filtro == 'vencida' %}selected{% endif %}>Vencida</option>
                         </select>
                     </div>
 
@@ -378,9 +383,24 @@
                                     {% elif evaluacion.estado == 'en_progreso' %}
                                         <span class="badge bg-info">En Progreso</span>
                                     {% elif evaluacion.estado == 'completada' %}
-                                        <span class="badge bg-success">Completada</span>
-                                    {% elif evaluacion.estado == 'aprobada' %}
-                                        <span class="badge bg-primary">Aprobada</span>
+                                        {% if evaluacion.estado_aprobacion == 'aprobada' %}
+                                            <span class="badge bg-primary">Aprobada</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Completada</span>
+                                            <br><small class="text-muted">Seguimientos pendientes</small>
+                                        {% endif %}
+                                    {% elif evaluacion.estado == 'requiere_correccion' %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-exclamation-circle me-1"></i>Requiere Corrección
+                                        </span>
+                                        <br><small class="text-muted">Desaprobada por RRHH</small>
+                                    {% elif evaluacion.estado == 'finalizada' %}
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-check-double me-1"></i>Finalizada
+                                        </span>
+                                        <br><small class="text-muted">Proceso completo</small>
+                                    {% elif evaluacion.estado == 'vencida' %}
+                                        <span class="badge bg-danger">Vencida</span>
                                     {% else %}
                                         <span class="badge bg-secondary">{{ evaluacion.estado|title }}</span>
                                     {% endif %}
@@ -397,22 +417,47 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if evaluacion.puntaje_total %}
-                                        <div class="d-flex align-items-center">
-                                            <div class="progress me-2" style="width: 50px; height: 20px;">
-                                                {% with porcentaje=evaluacion.porcentaje_completado|default:0 %}
-                                                <div class="progress-bar 
-                                                    {% if porcentaje >= 70 %}bg-success
-                                                    {% elif porcentaje >= 50 %}bg-warning
-                                                    {% else %}bg-danger{% endif %}" 
-                                                    style="width: {{ porcentaje }}%">
+                                    {% if evaluacion.estado == 'completada' %}
+                                        {% if evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                            {# Evaluación de Período de Prueba - Mostrar puntaje de 21 #}
+                                            {% if evaluacion.puntaje_total %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress me-2" style="width: 50px; height: 20px;">
+                                                    {% with porcentaje=evaluacion.porcentaje_completado|default:0 %}
+                                                    <div class="progress-bar
+                                                        {% if porcentaje >= 70 %}bg-success
+                                                        {% elif porcentaje >= 50 %}bg-warning
+                                                        {% else %}bg-danger{% endif %}"
+                                                        style="width: {{ porcentaje }}%">
+                                                    </div>
+                                                    {% endwith %}
                                                 </div>
-                                                {% endwith %}
+                                                <small><strong>{{ evaluacion.puntaje_total|floatformat:0 }}</strong>/21</small>
                                             </div>
-                                            <small><strong>{{ evaluacion.puntaje_total|floatformat:0 }}</strong>/21</small>
-                                        </div>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        {% else %}
+                                            {# Evaluación Anual de Desempeño - Mostrar solo porcentaje #}
+                                            {% if evaluacion.porcentaje_completado %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress me-2" style="width: 60px; height: 20px;">
+                                                    <div class="progress-bar
+                                                        {% if evaluacion.porcentaje_completado >= 90 %}bg-success
+                                                        {% elif evaluacion.porcentaje_completado >= 80 %}bg-info
+                                                        {% elif evaluacion.porcentaje_completado >= 60 %}bg-warning
+                                                        {% else %}bg-danger{% endif %}"
+                                                        style="width: {{ evaluacion.porcentaje_completado }}%">
+                                                    </div>
+                                                </div>
+                                                <small><strong>{{ evaluacion.porcentaje_completado|floatformat:1 }}%</strong></small>
+                                            </div>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        {% endif %}
                                     {% else %}
-                                        <span class="text-muted">-</span>
+                                        <span class="text-muted">Pendiente</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
@@ -436,15 +481,35 @@
                                                 <i class="fas fa-user"></i> Ver Empleado
                                             </a></li>
                                             {% if evaluacion.estado == 'completada' and es_superusuario %}
-                                                {% if '[ACEPTADO_EMPLEADO:' in evaluacion.observaciones or evaluacion.puntaje_total < 14 %}
-                                                    <li><a class="dropdown-item" href="#" onclick="aprobarEvaluacion('{{ evaluacion.id }}')">
-                                                        <i class="fas fa-check text-success"></i> Aprobar Evaluación
-                                                    </a></li>
+                                                {% comment %}
+                                                Lógica de aprobación:
+                                                - Período de prueba: Si puntaje < 14 o empleado aceptó
+                                                - Evaluación anual: Si porcentaje < 60% o empleado aceptó
+                                                {% endcomment %}
+                                                {% if evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                                    {# Lógica para evaluaciones de período de prueba #}
+                                                    {% if '[ACEPTADO_EMPLEADO:' in evaluacion.observaciones or evaluacion.puntaje_total < 14 %}
+                                                        <li><a class="dropdown-item" href="#" onclick="aprobarEvaluacion('{{ evaluacion.id }}')">
+                                                            <i class="fas fa-check text-success"></i> Aprobar Evaluación
+                                                        </a></li>
+                                                    {% else %}
+                                                        <li><a class="dropdown-item text-muted disabled" href="#" onclick="return false;"
+                                                               title="El empleado debe aceptar los resultados primero">
+                                                            <i class="fas fa-clock text-warning"></i> Esperando aceptación del empleado
+                                                        </a></li>
+                                                    {% endif %}
                                                 {% else %}
-                                                    <li><a class="dropdown-item text-muted disabled" href="#" onclick="return false;" 
-                                                           title="El empleado debe aceptar los resultados primero">
-                                                        <i class="fas fa-clock text-warning"></i> Esperando aceptación del empleado
-                                                    </a></li>
+                                                    {# Lógica para evaluaciones anuales de desempeño #}
+                                                    {% if '[ACEPTADO_EMPLEADO:' in evaluacion.observaciones or evaluacion.porcentaje_completado < 60 %}
+                                                        <li><a class="dropdown-item" href="#" onclick="aprobarEvaluacion('{{ evaluacion.id }}')">
+                                                            <i class="fas fa-check text-success"></i> Aprobar Evaluación
+                                                        </a></li>
+                                                    {% else %}
+                                                        <li><a class="dropdown-item text-muted disabled" href="#" onclick="return false;"
+                                                               title="El empleado debe aceptar los resultados primero">
+                                                            <i class="fas fa-clock text-warning"></i> Esperando aceptación del empleado
+                                                        </a></li>
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endif %}
                                             {% if es_superusuario %}

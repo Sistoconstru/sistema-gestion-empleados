@@ -344,14 +344,20 @@ class ListadoCompletoEvaluacionesView(LoginRequiredMixin, ListView):
         # Estadísticas generales
         total_evaluaciones = self.get_queryset().count()
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(estado='completada').count()
+        evaluaciones_finalizadas = AsignacionEvaluacion.objects.filter(estado='finalizada').count()
+        evaluaciones_requieren_correccion = AsignacionEvaluacion.objects.filter(estado='requiere_correccion').count()
         evaluaciones_pendientes = AsignacionEvaluacion.objects.filter(estado__in=['pendiente', 'en_progreso']).count()
-        evaluaciones_aprobadas = AsignacionEvaluacion.objects.filter(estado='aprobada').count()
+        evaluaciones_aprobadas = AsignacionEvaluacion.objects.filter(estado='completada', estado_aprobacion='aprobada').count()
+        evaluaciones_vencidas = AsignacionEvaluacion.objects.filter(estado='vencida').count()
 
         context.update({
             'total_evaluaciones': total_evaluaciones,
             'evaluaciones_completadas': evaluaciones_completadas,
+            'evaluaciones_finalizadas': evaluaciones_finalizadas,
+            'evaluaciones_requieren_correccion': evaluaciones_requieren_correccion,
             'evaluaciones_pendientes': evaluaciones_pendientes,
             'evaluaciones_aprobadas': evaluaciones_aprobadas,
+            'evaluaciones_vencidas': evaluaciones_vencidas,
             'empleados_disponibles': empleados_con_evaluaciones,
             'tipos_evaluacion_disponibles': tipos_evaluacion_disponibles,
             'es_superusuario': usuario.is_superuser,
@@ -376,9 +382,10 @@ class MisEvaluacionesPendientesView(LoginRequiredMixin, ListView):
         try:
             # Obtener el empleado del usuario actual
             empleado_usuario = Empleado.objects.get(usuario=self.request.user)
+            # Incluir evaluaciones que requieren corrección para que el jefe pueda re-editarlas
             return AsignacionEvaluacion.objects.filter(
                 evaluador=empleado_usuario,
-                estado__in=['pendiente', 'en_progreso']
+                estado__in=['pendiente', 'en_progreso', 'requiere_correccion']
             ).select_related(
                 'empleado_evaluado',
                 'evaluacion',
@@ -558,11 +565,20 @@ def completar_evaluacion(request, asignacion_id):
         messages.error(request, 'No tienes permisos para completar evaluaciones.')
         return redirect('evaluations:index')
     
-    # Verificar que la evaluación esté en estado válido
+    # Verificar que la evaluación esté en estado válido para editar
     if asignacion.estado == 'completada':
         messages.warning(request, 'Esta evaluación ya ha sido completada.')
         return redirect('evaluations:supervisor_pendientes')
-    
+
+    # Si está en 'requiere_correccion', mostrar mensaje informativo
+    requiere_correccion = asignacion.estado == 'requiere_correccion'
+    if requiere_correccion:
+        messages.info(
+            request,
+            f'Esta evaluación fue desaprobada por RRHH y requiere corrección. '
+            f'Comentarios: {asignacion.comentarios_aprobacion}'
+        )
+
     # Obtener TODAS las preguntas de la evaluación (incluyendo SST para procesamiento)
     todas_preguntas = PreguntaEvaluacion.objects.filter(
         evaluacion=asignacion.evaluacion
@@ -578,7 +594,8 @@ def completar_evaluacion(request, asignacion_id):
 
     # Obtener respuestas existentes (si las hay)
     respuestas_existentes = {}
-    if asignacion.estado == 'en_progreso':
+    # Cargar respuestas si está en progreso O requiere corrección
+    if asignacion.estado in ['en_progreso', 'requiere_correccion']:
         respuestas = RespuestaEvaluacion.objects.filter(
             asignacion=asignacion
         ).select_related('opcion_seleccionada')
@@ -1202,29 +1219,40 @@ def aprobar_evaluacion(request, asignacion_id):
         decision = request.POST.get('decision')  # 'aprobada' o 'desaprobada'
         comentarios = request.POST.get('comentarios_aprobacion', '')
         recomendacion = request.POST.get('recomendacion_continuidad', '')
-        
+
         with transaction.atomic():
             asignacion.estado_aprobacion = decision
             asignacion.aprobada_por = request.user
             asignacion.fecha_aprobacion = date.today()
             asignacion.comentarios_aprobacion = comentarios
             asignacion.recomendacion_continuidad = recomendacion
-            
+
+            # Si se DESAPRUEBA, cambiar el estado principal a 'requiere_correccion'
+            # para que el jefe pueda volver a editarla
+            if decision == 'desaprobada':
+                asignacion.estado = 'requiere_correccion'
+
             # Generar aspectos de mejora automáticamente para período de prueba
             if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
                 asignacion.aspectos_mejora_generados = _generar_aspectos_mejora_periodo_prueba(asignacion)
-            
+
             asignacion.save()
-            
+
             # Mensaje de éxito
-            accion = 'aprobada' if decision == 'aprobada' else 'desaprobada'
-            messages.success(
-                request, 
-                f'Evaluación {accion} exitosamente para {asignacion.empleado_evaluado.nombre_completo}.'
-            )
-            
+            if decision == 'aprobada':
+                messages.success(
+                    request,
+                    f'Evaluación aprobada exitosamente para {asignacion.empleado_evaluado.nombre_completo}.'
+                )
+            else:
+                messages.warning(
+                    request,
+                    f'Evaluación desaprobada para {asignacion.empleado_evaluado.nombre_completo}. '
+                    f'El evaluador podrá realizar las correcciones necesarias.'
+                )
+
             # TODO: Enviar notificación al empleado y supervisor
-            
+
         return redirect('evaluations:admin_pendientes_aprobacion')
     
     # GET - Mostrar formulario de aprobación
@@ -2091,6 +2119,11 @@ def aceptar_evaluacion_final_empleado(request, evaluacion_final_id):
                 plan.estado = 'completado'
                 plan.save()
 
+                # FINALIZAR LA ASIGNACIÓN DE EVALUACIÓN (TODO el proceso completo)
+                asignacion = plan.asignacion_evaluacion
+                asignacion.estado = 'finalizada'
+                asignacion.save()
+
                 messages.success(
                     request,
                     'Has aceptado la evaluación final exitosamente. '
@@ -2423,6 +2456,11 @@ def validar_evaluacion_final_rrhh(request, evaluacion_final_id):
             # COMPLETAR EL PLAN (RRHH tiene la palabra final)
             plan.estado = 'completado'
             plan.save()
+
+            # FINALIZAR LA ASIGNACIÓN DE EVALUACIÓN (TODO el proceso completo)
+            asignacion = plan.asignacion_evaluacion
+            asignacion.estado = 'finalizada'
+            asignacion.save()
 
             messages.success(
                 request,

@@ -21,6 +21,11 @@ fi
 # Ejecuta migraciones
 python manage.py migrate
 
+# Actualiza estados de evaluaciones existentes (solo primera vez)
+# Actualiza evaluaciones completadas a 'finalizada' y desaprobadas a 'requiere_correccion'
+echo "⚙️  Actualizando estados de evaluaciones existentes..."
+python manage.py actualizar_estados_evaluaciones
+
 # Popula datos iniciales de evaluaciones (estructura base)
 # DESHABILITADO: Ya se ejecutó una vez, datos ya están en la base de datos
 # python manage.py configurar_evaluaciones_iniciales
