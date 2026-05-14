@@ -71,9 +71,19 @@
             <div>
                 <h2>
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Evaluaciones Finales Rechazadas - Gestión Humana
+                    {% if evaluaciones_desaprobadas is not None %}
+                        Todos los Rechazos - Gestión Humana
+                    {% else %}
+                        Evaluaciones Finales Rechazadas - Gestión Humana
+                    {% endif %}
                 </h2>
-                <p class="mb-0">Mediación y validación de evaluaciones finales impugnadas por empleados</p>
+                <p class="mb-0">
+                    {% if evaluaciones_desaprobadas is not None %}
+                        Mediación y validación de evaluaciones, planes y evaluaciones finales rechazadas
+                    {% else %}
+                        Mediación y validación de evaluaciones finales impugnadas por empleados
+                    {% endif %}
+                </p>
             </div>
             <div>
                 <a href="{% url 'evaluations:index' %}" class="btn btn-light me-2">
@@ -84,43 +94,287 @@
     </div>
 
     <!-- Estadísticas -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card text-white" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-0">{{ total_pendientes }}</h3>
-                            <p class="mb-0">Pendientes de Validación</p>
+    {% if stats %}
+        {# Nueva vista consolidada con 3 tipos de rechazos #}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">{{ stats.total_eval_desaprobadas }}</h3>
+                                <p class="mb-0">Evaluaciones Desaprobadas</p>
+                            </div>
+                            <i class="fas fa-times-circle fa-3x opacity-50"></i>
                         </div>
-                        <i class="fas fa-clipboard-list fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">{{ stats.total_planes_rechazados }}</h3>
+                                <p class="mb-0">Planes Rechazados</p>
+                            </div>
+                            <i class="fas fa-file-contract fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">{{ stats.total_eval_finales_rechazadas }}</h3>
+                                <p class="mb-0">Eval. Finales Rechazadas</p>
+                            </div>
+                            <i class="fas fa-flag-checkered fa-3x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-0">{{ evaluaciones_validadas|length }}</h3>
-                            <p class="mb-0">Validadas Recientemente</p>
+    {% else %}
+        {# Vista antigua - solo evaluaciones finales #}
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card text-white" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">{{ total_pendientes }}</h3>
+                                <p class="mb-0">Pendientes de Validación</p>
+                            </div>
+                            <i class="fas fa-clipboard-list fa-3x opacity-50"></i>
                         </div>
-                        <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">{{ evaluaciones_validadas|length }}</h3>
+                                <p class="mb-0">Validadas Recientemente</p>
+                            </div>
+                            <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 
-    <!-- Lista de Evaluaciones Rechazadas -->
-    {% if evaluaciones_con_info %}
-        <h4 class="mb-3">
-            <i class="fas fa-list me-2"></i>
-            Evaluaciones Pendientes de Validación
-        </h4>
+    <!-- Tabs de Rechazos (solo si es vista consolidada) -->
+    {% if stats %}
+        <ul class="nav nav-tabs mb-4" id="rechazosTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="eval-desaprobadas-tab" data-bs-toggle="tab" data-bs-target="#eval-desaprobadas" type="button" role="tab">
+                    <i class="fas fa-times-circle me-1"></i>
+                    Evaluaciones Desaprobadas
+                    <span class="badge bg-danger ms-1">{{ stats.total_eval_desaprobadas }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="planes-rechazados-tab" data-bs-toggle="tab" data-bs-target="#planes-rechazados" type="button" role="tab">
+                    <i class="fas fa-file-contract me-1"></i>
+                    Planes Rechazados
+                    <span class="badge bg-warning text-dark ms-1">{{ stats.total_planes_rechazados }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="eval-finales-tab" data-bs-toggle="tab" data-bs-target="#eval-finales" type="button" role="tab">
+                    <i class="fas fa-flag-checkered me-1"></i>
+                    Evaluaciones Finales Rechazadas
+                    <span class="badge bg-warning text-dark ms-1">{{ stats.total_eval_finales_rechazadas }}</span>
+                </button>
+            </li>
+        </ul>
 
-        {% for item in evaluaciones_con_info %}
+        <div class="tab-content" id="rechazosTabContent">
+            <!-- TAB 1: EVALUACIONES DESAPROBADAS POR RRHH -->
+            <div class="tab-pane fade show active" id="eval-desaprobadas" role="tabpanel">
+                {% if evaluaciones_desaprobadas %}
+                    <h4 class="mb-3">
+                        <i class="fas fa-times-circle me-2 text-danger"></i>
+                        Evaluaciones Desaprobadas por RRHH
+                    </h4>
+
+                    {% for evaluacion in evaluaciones_desaprobadas %}
+                    <div class="card rechazo-card">
+                        <div class="card-header bg-danger text-white">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-user-circle me-2"></i>
+                                        {{ evaluacion.empleado_evaluado.nombre_completo }}
+                                    </h5>
+                                    <small>
+                                        {{ evaluacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }} -
+                                        {{ evaluacion.empleado_evaluado.cargo_actual.cargo.area.nombre|default:"Sin área" }}
+                                    </small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="badge bg-light text-dark">
+                                        Desaprobada: {{ evaluacion.fecha_aprobacion|date:"d/m/Y" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-danger mb-3">
+                                        <i class="fas fa-info-circle me-1"></i>Información de la Evaluación
+                                    </h6>
+                                    <p class="mb-2">
+                                        <strong>Tipo de Evaluación:</strong>
+                                        {{ evaluacion.evaluacion.tipo_evaluacion.nombre }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Período:</strong>
+                                        {{ evaluacion.periodo_evaluacion }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Puntaje:</strong>
+                                        <span class="badge bg-{% if evaluacion.puntaje_total >= 18 %}success{% elif evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
+                                            {{ evaluacion.puntaje_total|floatformat:1 }}/21
+                                        </span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Evaluador:</strong>
+                                        {{ evaluacion.evaluador.nombre_completo }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Desaprobada por:</strong>
+                                        {{ evaluacion.aprobada_por.get_full_name|default:"RRHH" }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Estado Actual:</strong>
+                                        <span class="badge bg-warning text-dark">{{ evaluacion.get_estado_display }}</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-warning mb-3">
+                                        <i class="fas fa-comment-dots me-1"></i>Comentarios de RRHH
+                                    </h6>
+                                    <div class="motivo-rechazo-box">
+                                        <p class="mb-0" style="font-style: italic;">
+                                            "{{ evaluacion.comentarios_aprobacion|default:"Sin comentarios" }}"
+                                        </p>
+                                    </div>
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        El evaluador puede re-editar esta evaluación desde su panel de evaluaciones pendientes.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h4 class="text-success">No hay evaluaciones desaprobadas</h4>
+                        <p class="text-muted">Todas las evaluaciones han sido aprobadas por RRHH.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- TAB 2: PLANES RECHAZADOS POR EMPLEADOS -->
+            <div class="tab-pane fade" id="planes-rechazados" role="tabpanel">
+                {% if planes_pendientes_decision %}
+                    <h4 class="mb-3">
+                        <i class="fas fa-file-contract me-2 text-warning"></i>
+                        Planes de Mejora Rechazados - Pendientes de Decisión
+                    </h4>
+
+                    {% for plan in planes_pendientes_decision %}
+                    <div class="card rechazo-card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%); color: white;">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-user-circle me-2"></i>
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}
+                                    </h5>
+                                    <small>
+                                        {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                                    </small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="badge bg-light text-dark">
+                                        Rechazado: {{ plan.fecha_rechazo_empleado|date:"d/m/Y" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-3">Información del Plan</h6>
+                                    <p class="mb-2">
+                                        <strong>Evaluación:</strong>
+                                        {{ plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Período:</strong>
+                                        {{ plan.asignacion_evaluacion.periodo_evaluacion }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="motivo-rechazo-box">
+                                        <h6 class="text-warning mb-2">
+                                            <i class="fas fa-comment-dots me-1"></i>Motivo del Rechazo:
+                                        </h6>
+                                        <p class="mb-0" style="font-style: italic;">
+                                            "{{ plan.motivo_rechazo_empleado }}"
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <a href="{% url 'evaluations:revisar_plan_predefinido' plan.id %}" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-gavel me-2"></i>Revisar y Decidir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h4 class="text-success">No hay planes rechazados pendientes</h4>
+                        <p class="text-muted">Todos los planes han sido aceptados o ya fueron decididos por RRHH.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- TAB 3: EVALUACIONES FINALES RECHAZADAS -->
+            <div class="tab-pane fade" id="eval-finales" role="tabpanel">
+    {% endif %}
+
+    <!-- Lista de Evaluaciones Finales Rechazadas (compatible con ambas vistas) -->
+    {% if evaluaciones_con_info or eval_finales_con_info %}
+        {% if not stats %}
+            {# Vista antigua sin tabs #}
+            <h4 class="mb-3">
+                <i class="fas fa-list me-2"></i>
+                Evaluaciones Pendientes de Validación
+            </h4>
+        {% else %}
+            {# Vista con tabs #}
+            <h4 class="mb-3">
+                <i class="fas fa-flag-checkered me-2 text-warning"></i>
+                Evaluaciones Finales Rechazadas por Empleados
+            </h4>
+        {% endif %}
+
+        {% for item in evaluaciones_con_info|default:eval_finales_con_info %}
         <div class="card rechazo-card">
             <div class="card-header bg-danger text-white">
                 <div class="row align-items-center">
@@ -251,8 +505,14 @@
         </div>
     {% endif %}
 
-    <!-- Historial de Validaciones Recientes -->
-    {% if evaluaciones_validadas %}
+    <!-- Cerrar tab-pane de evaluaciones finales (solo en vista consolidada) -->
+    {% if stats %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Historial de Validaciones Recientes (compatible con ambas vistas) -->
+    {% if evaluaciones_validadas or eval_finales_validadas %}
     <div class="mt-5">
         <h5 class="mb-3">
             <i class="fas fa-history me-2"></i>
@@ -260,7 +520,7 @@
         </h5>
         <div class="card">
             <div class="card-body">
-                {% for eval in evaluaciones_validadas %}
+                {% for eval in evaluaciones_validadas|default:eval_finales_validadas %}
                 <div class="validado-card">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>

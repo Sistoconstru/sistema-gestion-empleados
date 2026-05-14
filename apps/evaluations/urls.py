@@ -61,6 +61,9 @@ urlpatterns = [
     path('admin/evaluaciones-finales-rechazadas/', views.evaluaciones_finales_rechazadas_rrhh, name='evaluaciones_finales_rechazadas_rrhh'),
     path('admin/validar-evaluacion-final/<uuid:evaluacion_final_id>/', views.validar_evaluacion_final_rrhh, name='validar_evaluacion_final_rrhh'),
 
+    # Vista consolidada de todos los rechazos
+    path('admin/todos-los-rechazos/', views.todos_los_rechazos, name='todos_los_rechazos'),
+
     # URLs comentadas para futuro desarrollo
     # Valoraciones (exámenes)
     # path('valoraciones/', views.ValoracionListView.as_view(), name='valoracion_list'),

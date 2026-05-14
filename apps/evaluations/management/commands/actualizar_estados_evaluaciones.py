@@ -153,12 +153,52 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.SUCCESS('    [OK] No hay evaluaciones desaprobadas pendientes'))
 
+        # ========== 3. ACTUALIZAR EVALUACIONES CON PLANES RECHAZADOS ==========
+        # Caso especial: Evaluaciones donde el plan fue rechazado por RRHH
+        # pero la evaluación nunca fue marcada como desaprobada
+        self.stdout.write('\n[3] Verificando evaluaciones con planes rechazados...')
+
+        planes_rechazados = PlanMejoraPredefinido.objects.filter(
+            estado='rechazado'
+        ).select_related('asignacion_evaluacion', 'asignacion_evaluacion__empleado_evaluado', 'aprobado_por')
+
+        evaluaciones_con_plan_rechazado = 0
+        for plan in planes_rechazados:
+            asignacion = plan.asignacion_evaluacion
+            # Solo actualizar si la evaluación no está ya en requiere_correccion o desaprobada
+            if asignacion.estado != 'requiere_correccion' and asignacion.estado_aprobacion != 'desaprobada':
+                self.stdout.write(
+                    f'    -> {asignacion.empleado_evaluado.nombres} {asignacion.empleado_evaluado.apellidos}: '
+                    f'Plan rechazado pero evaluación en estado={asignacion.estado}, aprobacion={asignacion.estado_aprobacion or "NULL"}'
+                )
+
+                if not dry_run:
+                    asignacion.estado = 'requiere_correccion'
+                    asignacion.estado_aprobacion = 'desaprobada'
+                    if plan.aprobado_por:
+                        asignacion.aprobada_por = plan.aprobado_por
+                    if not asignacion.comentarios_aprobacion:
+                        asignacion.comentarios_aprobacion = plan.comentarios_aprobacion or 'Plan de mejora rechazado por RRHH'
+                    asignacion.save()
+
+                evaluaciones_con_plan_rechazado += 1
+
+        if evaluaciones_con_plan_rechazado > 0:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f'\n[OK] Evaluaciones actualizadas por plan rechazado: {evaluaciones_con_plan_rechazado}'
+                )
+            )
+        else:
+            self.stdout.write(self.style.SUCCESS('    [OK] No hay evaluaciones con planes rechazados que requieran actualización'))
+
         # ========== RESUMEN ==========
         self.stdout.write('\n' + '='*70)
         self.stdout.write(self.style.SUCCESS('RESUMEN'))
         self.stdout.write('='*70)
         self.stdout.write(f'  Actualizadas a FINALIZADA: {actualizadas_finalizadas}')
-        self.stdout.write(f'  Actualizadas a REQUIERE_CORRECCION: {count_desaprobadas}')
+        self.stdout.write(f'  Actualizadas a REQUIERE_CORRECCION (desaprobadas directamente): {count_desaprobadas}')
+        self.stdout.write(f'  Actualizadas a REQUIERE_CORRECCION (plan rechazado): {evaluaciones_con_plan_rechazado}')
 
         if dry_run:
             self.stdout.write(self.style.WARNING('\n[DRY RUN] No se realizaron cambios reales'))

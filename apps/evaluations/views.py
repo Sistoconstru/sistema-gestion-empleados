@@ -1669,7 +1669,20 @@ def revisar_plan_predefinido(request, plan_id):
                     plan.comentarios_aprobacion = comentarios or 'Plan rechazado sin comentarios específicos'
                     plan.save()
 
-                    messages.warning(request, 'Plan rechazado. Puede generar uno nuevo si es necesario.')
+                    # IMPORTANTE: Si RRHH rechaza el plan, también debe rechazar la evaluación
+                    # para que el supervisor pueda re-editarla
+                    asignacion = plan.asignacion_evaluacion
+                    asignacion.estado = 'requiere_correccion'
+                    asignacion.estado_aprobacion = 'desaprobada'
+                    asignacion.aprobada_por = request.user
+                    asignacion.fecha_aprobacion = timezone.now().date()
+                    asignacion.comentarios_aprobacion = comentarios or 'Plan de mejora rechazado por RRHH. Se requiere corrección de la evaluación.'
+                    asignacion.save()
+
+                    messages.warning(request,
+                        f'Plan rechazado. La evaluación de {asignacion.empleado_evaluado.nombre_completo} '
+                        'ha sido marcada como "Requiere Corrección" para que el evaluador pueda re-editarla.'
+                    )
 
                 elif accion == 'solicitar_nueva_evaluacion':
                     # Esta acción se usa cuando el empleado rechazó el plan y RRHH decide dar razón al empleado
@@ -2484,6 +2497,111 @@ def validar_evaluacion_final_rrhh(request, evaluacion_final_id):
     except Exception as e:
         messages.error(request, f'Error al validar evaluación final: {str(e)}')
         return redirect('evaluations:evaluaciones_finales_rechazadas_rrhh')
+
+
+@login_required
+def todos_los_rechazos(request):
+    """
+    Vista consolidada que muestra TODOS los tipos de rechazo en el sistema:
+    1. Evaluaciones desaprobadas por RRHH (evaluación inicial)
+    2. Planes de mejora rechazados por empleados
+    3. Evaluaciones finales rechazadas por empleados
+    """
+    from .models import PlanMejoraPredefinido, EvaluacionFinal
+
+    # Verificar permisos de administrador/RRHH
+    if not request.user.is_staff:
+        messages.error(request, 'No tiene permisos para acceder a esta sección.')
+        return redirect('evaluations:index')
+
+    try:
+        # ========== 1. EVALUACIONES DESAPROBADAS POR RRHH ==========
+        evaluaciones_desaprobadas = AsignacionEvaluacion.objects.filter(
+            estado_aprobacion='desaprobada'
+        ).select_related(
+            'empleado_evaluado',
+            'evaluador',
+            'evaluacion',
+            'evaluacion__tipo_evaluacion',
+            'aprobada_por'
+        ).order_by('-fecha_aprobacion')
+
+        # ========== 2. PLANES RECHAZADOS POR EMPLEADOS ==========
+        planes_rechazados = PlanMejoraPredefinido.objects.filter(
+            rechazado_por_empleado=True,
+            en_revision_rrhh=True
+        ).select_related(
+            'asignacion_evaluacion',
+            'asignacion_evaluacion__empleado_evaluado',
+            'asignacion_evaluacion__evaluador',
+            'asignacion_evaluacion__evaluacion',
+            'decidido_por_rrhh'
+        ).order_by('-fecha_rechazo_empleado')
+
+        # Separar planes pendientes de decisión vs ya decididos
+        planes_pendientes_decision = planes_rechazados.filter(decision_rrhh='')
+        planes_ya_decididos = planes_rechazados.exclude(decision_rrhh='')
+
+        # ========== 3. EVALUACIONES FINALES RECHAZADAS POR EMPLEADOS ==========
+        evaluaciones_finales_rechazadas = EvaluacionFinal.objects.filter(
+            rechazado_por_empleado=True,
+            en_revision_rrhh=True
+        ).select_related(
+            'plan_mejora',
+            'plan_mejora__asignacion_evaluacion',
+            'plan_mejora__asignacion_evaluacion__empleado_evaluado',
+            'plan_mejora__asignacion_evaluacion__evaluador',
+            'validado_por_rrhh'
+        ).prefetch_related(
+            'plan_mejora__seguimientos'
+        ).order_by('-fecha_rechazo_empleado')
+
+        # Separar pendientes de validación vs ya validadas
+        eval_finales_pendientes = evaluaciones_finales_rechazadas.filter(validado_por_rrhh__isnull=True)
+        eval_finales_validadas = evaluaciones_finales_rechazadas.filter(validado_por_rrhh__isnull=False)[:10]
+
+        # Agregar información de seguimientos a evaluaciones finales
+        eval_finales_con_info = []
+        for eval_final in eval_finales_pendientes:
+            seguimientos = eval_final.plan_mejora.seguimientos.all()
+            satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+
+            eval_finales_con_info.append({
+                'evaluacion_final': eval_final,
+                'plan': eval_final.plan_mejora,
+                'asignacion': eval_final.plan_mejora.asignacion_evaluacion,
+                'seguimientos_satisfactorios': satisfactorios,
+                'total_seguimientos': seguimientos.count(),
+            })
+
+        # Estadísticas
+        stats = {
+            'total_eval_desaprobadas': evaluaciones_desaprobadas.count(),
+            'total_planes_rechazados': planes_pendientes_decision.count(),
+            'total_eval_finales_rechazadas': eval_finales_pendientes.count(),
+        }
+
+        context = {
+            # Tipo 1: Evaluaciones desaprobadas por RRHH
+            'evaluaciones_desaprobadas': evaluaciones_desaprobadas,
+
+            # Tipo 2: Planes rechazados por empleados
+            'planes_pendientes_decision': planes_pendientes_decision,
+            'planes_ya_decididos': planes_ya_decididos,
+
+            # Tipo 3: Evaluaciones finales rechazadas
+            'eval_finales_con_info': eval_finales_con_info,
+            'eval_finales_validadas': eval_finales_validadas,
+
+            # Estadísticas
+            'stats': stats,
+        }
+
+        return render(request, 'evaluations/admin/evaluaciones_finales_rechazadas.html', context)
+
+    except Exception as e:
+        messages.error(request, f'Error al cargar rechazos: {str(e)}')
+        return redirect('evaluations:index')
 
 
 class MisEvaluacionesCompletadasView(LoginRequiredMixin, ListView):
