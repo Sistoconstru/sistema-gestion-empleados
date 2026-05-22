@@ -50,6 +50,7 @@ LOCAL_APPS = [
     'apps.recognition',
     'apps.notifications',
     'apps.reports',
+    'apps.integraciones.odoo',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [
@@ -179,6 +180,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/empleados/feed/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
+
+# Integración Odoo (docs/INTEGRACION_ODOO.md §3.2)
+SIGHU_ODOO_TOKEN = config('SIGHU_ODOO_TOKEN', default='')
+SIGHU_ODOO_WEBHOOK_URL = config('SIGHU_ODOO_WEBHOOK_URL', default='')
+SIGHU_ODOO_WEBHOOK_TOKEN = config('SIGHU_ODOO_WEBHOOK_TOKEN', default='')
+SIGHU_ODOO_PUSH_TIMEOUT = config('SIGHU_ODOO_PUSH_TIMEOUT', default=2, cast=int)
 
 # Email Configuration (Para notificaciones)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

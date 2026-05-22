@@ -343,7 +343,7 @@ def verificar_cambio_estado_empleado(empleado):
         from apps.employees.models import EstadoEmpleado
         
         # Solo verificar si está en prueba
-        estado_prueba = EstadoEmpleado.objects.get(codigo='PRUEBA')
+        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
         if empleado.estado != estado_prueba:
             return
         
@@ -370,7 +370,7 @@ def verificar_cambio_estado_empleado(empleado):
         
         if docs_aprobados >= len(todos_requeridos):
             # Cambiar a estado activo
-            estado_activo = EstadoEmpleado.objects.get(codigo='ACTIVO')
+            estado_activo = EstadoEmpleado.objects.get(codigo='999')
             empleado.estado = estado_activo
             empleado.save()
             

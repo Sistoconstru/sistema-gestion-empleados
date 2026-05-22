@@ -140,10 +140,13 @@ class EmpleadoAdmin(admin.ModelAdmin):
     def get_estado_badge(self, obj):
         """Badge colorido para el estado"""
         colors = {
-            'ACTIVO': '#28a745',
-            'PRUEBA': '#ffc107',
+            '999': '#28a745',
+            'p-prue': '#ffc107',
             'INACTIVO': '#dc3545',
-            'VACACIONES': '#17a2b8'
+            'VACACIONES': '#17a2b8',
+            'LICENCIA': '#fd7e14',
+            'SUSPENDIDO': '#6f42c1',
+            'RETIRADO': '#343a40',
         }
         color = colors.get(obj.estado.codigo, '#6c757d')
         
@@ -217,7 +220,7 @@ class EmpleadoAdmin(admin.ModelAdmin):
     def marcar_como_activo(self, request, queryset):
         """Marcar empleados seleccionados como activos"""
         try:
-            estado_activo = EstadoEmpleado.objects.get(codigo='ACTIVO')
+            estado_activo = EstadoEmpleado.objects.get(codigo='999')
             updated = queryset.update(estado=estado_activo)
             self.message_user(
                 request, 

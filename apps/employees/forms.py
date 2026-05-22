@@ -228,7 +228,7 @@ class EmpleadoForm(forms.ModelForm):
         jefes = Empleado.objects.filter(
             historialcargo__cargo=cargo.cargo_jefe,
             historialcargo__activo=True,
-            estado__codigo__in=['999', 'ACTIVO', 'p-prue']  # Estados activos o en prueba
+            estado__codigo__in=['999', 'p-prue']  # Estados activos o en prueba
         ).distinct().select_related('estado')
 
         return jefes
@@ -717,12 +717,12 @@ class VentaForm(forms.ModelForm):
                 )
 
         # Validar que ambos sean empleados activos
-        if self.vendedor and self.vendedor.estado.codigo not in ['999', 'ACTIVO']:
+        if self.vendedor and self.vendedor.estado.codigo != '999':
             raise ValidationError(
                 'El vendedor debe estar activo para realizar la transaccion.'
             )
 
-        if self.comprador and self.comprador.estado.codigo not in ['999', 'ACTIVO']:
+        if self.comprador and self.comprador.estado.codigo != '999':
             raise ValidationError(
                 'Debes estar activo para realizar compras.'
             )
@@ -922,7 +922,7 @@ class PujaForm(forms.ModelForm):
             )
 
         # Validar que sea empleado activo
-        if self.pujador and self.pujador.estado.codigo not in ['999', 'ACTIVO']:
+        if self.pujador and self.pujador.estado.codigo != '999':
             raise ValidationError(
                 'Solo empleados activos pueden pujar.'
             )
@@ -952,7 +952,7 @@ class RegaloForm(forms.ModelForm):
 
     receptor_id = forms.ModelChoiceField(
         queryset=Empleado.objects.filter(
-            estado__codigo__in=['999', 'ACTIVO']
+            estado__codigo='999'
         ).order_by('apellidos', 'nombres'),
         widget=forms.Select(attrs={
             'class': 'form-control',
@@ -1000,7 +1000,7 @@ class RegaloForm(forms.ModelForm):
                 )
 
         # Validar que el receptor este activo
-        if receptor and receptor.estado.codigo not in ['999', 'ACTIVO']:
+        if receptor and receptor.estado.codigo != '999':
             raise ValidationError(
                 'Solo puedes regalar a empleados activos.'
             )
@@ -1021,7 +1021,7 @@ class ConversacionForm(forms.ModelForm):
 
     participante_id = forms.ModelChoiceField(
         queryset=Empleado.objects.filter(
-            estado__codigo__in=['999', 'ACTIVO']
+            estado__codigo='999'
         ).order_by('apellidos', 'nombres'),
         widget=forms.Select(attrs={
             'class': 'form-control',
@@ -1056,7 +1056,7 @@ class ConversacionForm(forms.ModelForm):
         if usuario_actual:
             self.fields['participante_id'].queryset = \
                 Empleado.objects.filter(
-                    estado__codigo__in=['999', 'ACTIVO']
+                    estado__codigo='999'
                 ).exclude(id=usuario_actual.id).order_by('apellidos', 'nombres')
 
     def clean(self):

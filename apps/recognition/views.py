@@ -1148,7 +1148,7 @@ class GenerarReporteRankingView(LoginRequiredMixin, View):
             
             # Obtener datos del ranking
             empleados_ranking = Empleado.objects.filter(
-                estado_codigo__in=['activo', 'periodo_prueba']
+                estado__codigo__in=['999', 'p-prue']
             ).annotate(
                 total_puntos=Sum('historial_puntos__puntos', default=0)
             ).order_by('-total_puntos')[:50]  # Top 50

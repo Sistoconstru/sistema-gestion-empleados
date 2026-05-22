@@ -33,7 +33,7 @@ if os.environ.get('DJANGO_SETTINGS_MODULE') == 'config.settings.development':
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gestion_empleados',
+        'NAME': 'sighu_produccion',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': 'localhost',

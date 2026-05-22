@@ -114,7 +114,7 @@ class VentaFormTest(TestCase):
 
     def setUp(self):
         """Configurar datos de prueba"""
-        self.estado = EstadoEmpleado.objects.create(codigo='ACTIVO', nombre='Activo')
+        self.estado = EstadoEmpleado.objects.create(codigo='999', nombre='Activo')
         self.tipo_doc = TipoDocumento.objects.create(codigo='CC', nombre='Cédula')
         self.sede = Sede.objects.create(codigo='SEDE001', nombre='Sede Principal')
         self.user_v = User.objects.create_user(username='vendedor', password='pass123')
@@ -183,7 +183,7 @@ class RegaloFormTest(TestCase):
 
     def setUp(self):
         """Configurar datos de prueba"""
-        self.estado = EstadoEmpleado.objects.create(codigo='ACTIVO', nombre='Activo')
+        self.estado = EstadoEmpleado.objects.create(codigo='999', nombre='Activo')
         self.tipo_doc = TipoDocumento.objects.create(codigo='CC', nombre='Cédula')
         self.sede = Sede.objects.create(codigo='SEDE001', nombre='Sede Principal')
         self.user1 = User.objects.create_user(username='user1', password='pass123')
@@ -241,7 +241,7 @@ class ConversacionFormTest(TestCase):
 
     def setUp(self):
         """Configurar datos de prueba"""
-        self.estado = EstadoEmpleado.objects.create(codigo='ACTIVO', nombre='Activo')
+        self.estado = EstadoEmpleado.objects.create(codigo='999', nombre='Activo')
         self.tipo_doc = TipoDocumento.objects.create(codigo='CC', nombre='Cédula')
         self.sede = Sede.objects.create(codigo='SEDE001', nombre='Sede Principal')
         self.user1 = User.objects.create_user(username='user1', password='pass123')

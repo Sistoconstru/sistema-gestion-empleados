@@ -61,7 +61,7 @@ def dashboard_view(request):
         empleados_activos = 0
         try:
             # Intentar con diferentes códigos de estado activo
-            codigos_activo = ['ACTIVO', 'Activo', '999', 'activo']
+            codigos_activo = ['999']
             for codigo in codigos_activo:
                 try:
                     estado_activo = EstadoEmpleado.objects.get(codigo=codigo)
@@ -87,7 +87,7 @@ def dashboard_view(request):
         empleados_prueba = 0
         try:
             # Intentar con diferentes códigos de estado de prueba
-            codigos_prueba = ['PRUEBA', 'periodo_prueba', 'p-prue', 'prueba']
+            codigos_prueba = ['p-prue']
             for codigo in codigos_prueba:
                 try:
                     estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
@@ -148,7 +148,7 @@ def dashboard_view(request):
             fecha_limite_activacion = timezone.now().date() - timedelta(days=55)   # Próximos a 60 días
             
             # Buscar empleados en período de prueba entre 25-59 días sin evaluación
-            codigos_prueba = ['p-prue', 'PRUEBA', 'periodo_prueba', 'prueba']
+            codigos_prueba = ['p-prue']
             estado_prueba = None
             
             for codigo in codigos_prueba:
@@ -239,7 +239,7 @@ def dashboard_view(request):
         empleados_listos_nombres = []
         try:
             # Buscar estado de período de prueba
-            codigos_prueba = ['p-prue', 'PRUEBA', 'periodo_prueba', 'prueba']
+            codigos_prueba = ['p-prue']
             estado_prueba = None
             
             for codigo in codigos_prueba:

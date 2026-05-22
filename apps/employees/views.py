@@ -162,13 +162,13 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         
         # Por estado
         try:
-            estado_activo = EstadoEmpleado.objects.get(codigo='ACTIVO')
+            estado_activo = EstadoEmpleado.objects.get(codigo='999')
             empleados_activos = Empleado.objects.filter(estado=estado_activo).count()
         except EstadoEmpleado.DoesNotExist:
             empleados_activos = 0
         
         try:
-            estado_prueba = EstadoEmpleado.objects.get(codigo='PRUEBA')
+            estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
             empleados_prueba = Empleado.objects.filter(estado=estado_prueba).count()
         except EstadoEmpleado.DoesNotExist:
             empleados_prueba = 0
@@ -445,13 +445,13 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo__in=['999', 'PRUEBA', 'p-prue']  # Activos y en período de prueba
+                estado__codigo__in=['999', 'p-prue']  # Activos y en período de prueba
             ).distinct()
 
             # Calcular estadísticas
             total = empleados_subordinados.count()
             activos = empleados_subordinados.filter(estado__codigo='999').count()
-            en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
+            en_prueba = empleados_subordinados.filter(estado__codigo='p-prue').count()
 
             # Preparar lista de empleados con detalles
             lista_empleados = []
@@ -1523,13 +1523,13 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             empleados_subordinados = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=empleado,
-                estado__codigo__in=['999', 'PRUEBA', 'p-prue']  # Activos y en período de prueba
+                estado__codigo__in=['999', 'p-prue']  # Activos y en período de prueba
             ).distinct()
 
             # Calcular estadísticas
             total_subordinados = empleados_subordinados.count()
             activos = empleados_subordinados.filter(estado__codigo='999').count()
-            en_prueba = empleados_subordinados.filter(estado__codigo__in=['PRUEBA', 'p-prue']).count()
+            en_prueba = empleados_subordinados.filter(estado__codigo='p-prue').count()
             
             # Empleados con alertas (documentos vencidos, evaluaciones pendientes, etc.)
             con_alertas = 0
@@ -2406,7 +2406,7 @@ def obtener_jefes_potenciales(request, cargo_id):
         jefes = Empleado.objects.filter(
             historialcargo__cargo=cargo.cargo_jefe,
             historialcargo__activo=True,
-            estado__codigo__in=['999', 'ACTIVO', 'p-prue']
+            estado__codigo__in=['999', 'p-prue']
         ).distinct().select_related('estado').prefetch_related(
             Prefetch(
                 'historialcargo_set',
@@ -2912,7 +2912,7 @@ class SubastaDetailView(EmpleadoRequiredMixin, DetailView):
             # No es el vendedor y está activo
             puede_pujar = (
                 empleado_actual.id != subasta.vendedor.id and
-                empleado_actual.estado.codigo in ['999', 'ACTIVO']
+                empleado_actual.estado.codigo == '999'
             )
         except (AttributeError, Empleado.DoesNotExist):
             # Usuario sin empleado asociado no puede pujar

@@ -11,4 +11,5 @@ urlpatterns = [
     path('reconocimientos/', include('apps.recognition.api_urls')),
     path('notificaciones/', include('apps.notifications.api_urls')),
     path('reportes/', include('apps.reports.api_urls')),
+    path('odoo/', include('apps.integraciones.odoo.urls')),
 ]
