@@ -4,6 +4,13 @@ db.sqlite3
 backup_gestion_empleados.sql
 backup_gestion_empleados_utf8.sql
 evaluaciones_desempeno.sql
+
+# Dumps PostgreSQL — contienen PII (cedulas, telefonos, datos personales)
+# Viven en la maquina local, NUNCA en git
+*.dump
+*_produccion.dump
+sighu_*.dump
+gestion_empleados*.dump
 departamentos.json
 ciudades.json
 
