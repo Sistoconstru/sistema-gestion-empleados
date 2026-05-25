@@ -96,19 +96,24 @@ python manage.py actualizar_estados_evaluaciones
 # python manage.py configurar_evaluacion_director
 
 # Configura evaluación de Analista de Inventario (solo primera vez)
-# NOTA: Ejecutar en primera ejecución, luego comentar
-echo "⚙️  Configurando evaluación de Analista de Inventario..."
-python manage.py configurar_evaluacion_analista_inventario
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Analista de Inventario..."
+# python manage.py configurar_evaluacion_analista_inventario
 
 # Configura evaluación de Mensajero (solo primera vez)
-# NOTA: Ejecutar en primera ejecución, luego comentar
-echo "⚙️  Configurando evaluación de Mensajero..."
-python manage.py configurar_evaluacion_mensajero
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Mensajero..."
+# python manage.py configurar_evaluacion_mensajero
 
 # Configura evaluación de Auxiliar de SST (solo primera vez)
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Auxiliar de SST..."
+# python manage.py configurar_evaluacion_auxiliar_sst
+
+# Configura evaluación de Coordinador Administrativo (solo primera vez)
 # NOTA: Ejecutar en primera ejecución, luego comentar
-echo "⚙️  Configurando evaluación de Auxiliar de SST..."
-python manage.py configurar_evaluacion_auxiliar_sst
+echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
+python manage.py configurar_evaluacion_coordinador_administrativo
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

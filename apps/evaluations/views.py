@@ -894,6 +894,14 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_sst(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_auxiliar_sst(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_COORD_ADMIN':
+                                # Generar plan específico para Coordinador Administrativo
+                                from .utils.respuestas_predefinidas_coordinador_administrativo import (
+                                    generar_plan_mejora_coordinador_administrativo,
+                                    calcular_puntaje_ponderado_coordinador_administrativo
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_coordinador_administrativo(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_coordinador_administrativo(respuestas, resultado_evaluacion)
                             elif tipo_eval_codigo == 'ANUAL_ASESOR_COMER':
                                 # Generar plan específico para Asesor Comercial
                                 from .utils.respuestas_predefinidas_asesor_comercial import (
@@ -1018,6 +1026,9 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_AUX_SST':
             from .utils.respuestas_predefinidas_auxiliar_sst import calcular_puntaje_ponderado_auxiliar_sst
             resultado_calc = calcular_puntaje_ponderado_auxiliar_sst(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_COORD_ADMIN':
+            from .utils.respuestas_predefinidas_coordinador_administrativo import calcular_puntaje_ponderado_coordinador_administrativo
+            resultado_calc = calcular_puntaje_ponderado_coordinador_administrativo(respuestas)
         elif tipo_evaluacion_codigo == 'ANUAL_ASESOR_COMER':
             from .utils.respuestas_predefinidas_asesor_comercial import calcular_puntaje_ponderado_asesor_comercial
             resultado_calc = calcular_puntaje_ponderado_asesor_comercial(respuestas)

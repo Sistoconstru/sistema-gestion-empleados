@@ -559,7 +559,7 @@
                                     <i class="fas fa-chart-line"></i> Progreso Actual
                                 </h6>
                                 <div class="row">
-                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}
+                                    {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}
                                         <!-- Para evaluaciones anuales ponderadas -->
                                         <div class="col-12">
                                             <div class="text-center">
@@ -592,7 +592,7 @@
                                 <small class="text-muted mt-1 d-block">
                                     <span id="answered-count">0</span> de {{ preguntas.count }} preguntas respondidas
                                 </small>
-                                {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}
+                                {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}
                                 <div class="mt-2">
                                     <small class="text-muted">
                                         <strong>Criterios:</strong> Muy bajo: 1-40% • Bajo: 41-60% • Moderado: 61-75% • Alto: 76-90% • Muy alto: 91-100%
@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateScoreProgress() {
         const radioButtons = form.querySelectorAll('input[type="radio"]:checked');
         const totalQuestions = {{ preguntas.count }};
-        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}true{% else %}false{% endif %};
+        const isAnualPonderada = {% if evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_PROCESOS' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MANTENIMIENTO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_OPERARIOS_PROD' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_PROC' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AFILADORES' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_SERV_GRAL' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_TESORERIA' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_RRHH' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_CONTABLE' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_CONT' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ANALISTA_INV' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_MENSAJERO' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_AUX_SST' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_COORD_ADMIN' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_ASESOR_COMER' or evaluacion.tipo_evaluacion.codigo == 'ANUAL_DIRECTOR' %}true{% else %}false{% endif %};
         let currentScore = 0;
         let answeredQuestions = radioButtons.length;
 
@@ -874,6 +874,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         10: 25 / 5,
                         11: 25 / 5,
                         12: 25 / 5
+                    };
+                } else if (tipoEvaluacion === 'ANUAL_COORD_ADMIN') {
+                    // Coordinador Administrativo: 12 preguntas
+                    // Preguntas 1-3: Organizacionales (10%) → peso individual: 10/3 = 3.33%
+                    // Pregunta 4: Objetivos (40%) → peso individual: 40%
+                    // Preguntas 5-8: Interpersonales (25%) → peso individual: 25/4 = 6.25%
+                    // Preguntas 9-12: Técnicas (25%) → peso individual: 25/4 = 6.25%
+                    pesoPorPunto = {
+                        1: 10 / 3,   // Organizacionales (3.33%)
+                        2: 10 / 3,
+                        3: 10 / 3,
+                        4: 40 / 1,   // Objetivos (40%)
+                        5: 25 / 4,   // Interpersonales (6.25%)
+                        6: 25 / 4,
+                        7: 25 / 4,
+                        8: 25 / 4,
+                        9: 25 / 4,   // Técnicas (6.25%)
+                        10: 25 / 4,
+                        11: 25 / 4,
+                        12: 25 / 4
                     };
                 } else {
                     // Otras evaluaciones anuales: 10 preguntas

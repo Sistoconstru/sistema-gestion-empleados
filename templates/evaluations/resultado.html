@@ -190,7 +190,7 @@
                     <div class="mt-2 text-center text-white">
                         {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
                             <small><strong>✅ Puntaje obtenido: {{ asignacion.puntaje_total|floatformat:0 }} de 21 puntos posibles</strong></small>
-                        {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+                        {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN,ANUAL_ASESOR_COMER,ANUAL_DIRECTOR' %}
                             <small><strong>✅ Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:2 }}%</strong></small>
                         {% else %}
                             <small><strong>✅ Puntaje obtenido: {{ asignacion.puntaje_total|floatformat:2 }}%</strong></small>
@@ -216,7 +216,7 @@
             <div class="stat-value">
                 {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
                     {{ asignacion.puntaje_total|default:"0"|floatformat:0 }}/21
-                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN,ANUAL_ASESOR_COMER,ANUAL_DIRECTOR' %}
                     {{ asignacion.puntaje_total|default:"0"|floatformat:2 }}%
                 {% else %}
                     {{ asignacion.puntaje_total|default:"0"|floatformat:1 }}
@@ -236,7 +236,7 @@
             <div class="stat-value">
                 {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
                     {% if asignacion.puntaje_total >= 14 %}✅{% else %}❌{% endif %}
-                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN,ANUAL_ASESOR_COMER,ANUAL_DIRECTOR' %}
                     {% if asignacion.puntaje_total >= 76 %}✅{% else %}❌{% endif %}
                 {% else %}
                     {% if asignacion.puntaje_total >= 70 %}✅{% else %}❌{% endif %}
@@ -245,7 +245,7 @@
             <div>
                 {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
                     {% if asignacion.puntaje_total >= 14 %}Aprobado{% else %}Reprobado{% endif %}
-                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN,ANUAL_ASESOR_COMER,ANUAL_DIRECTOR' %}
                     {% if asignacion.puntaje_total >= 76 %}Alto{% elif asignacion.puntaje_total >= 61 %}Moderado{% elif asignacion.puntaje_total >= 41 %}Bajo{% else %}Muy Bajo{% endif %}
                 {% else %}
                     {% if asignacion.puntaje_total >= 70 %}Aprobado{% else %}Reprobado{% endif %}
@@ -356,7 +356,7 @@
     {% endfor %}
 
     <!-- Sección de SST si aplica -->
-    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN,ANUAL_ASESOR_COMER,ANUAL_DIRECTOR' %}
     <div class="card border-warning mt-4">
         <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">
