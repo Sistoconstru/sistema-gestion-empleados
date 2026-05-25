@@ -132,3 +132,10 @@ PLAN_*.md
 # Archivos de sistema Windows
 nul
 NUL
+
+# Scripts de diagnóstico y verificación (solo desarrollo local)
+diagnostico_*.py
+verificar_*.py
+generar_planes.sh
+generar_planes_faltantes.py
+apps/evaluations/management/commands/auditar_*.py

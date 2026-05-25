@@ -324,6 +324,50 @@ class AsignacionEvaluacion(models.Model):
         verbose_name = 'Asignación de Evaluación'
         verbose_name_plural = 'Asignaciones de Evaluación'
 
+    def clean(self):
+        """
+        Validación del modelo: Verifica que el tipo de evaluación sea compatible
+        con el estado del empleado.
+
+        Reglas de negocio:
+        - Empleados en periodo de prueba (estado='p-prue') solo pueden recibir evaluaciones PERIODO_PRUEBA
+        - Empleados activos (estado='999') NO deben recibir evaluaciones PERIODO_PRUEBA
+        """
+        from django.core.exceptions import ValidationError
+
+        if not self.empleado_evaluado or not self.evaluacion:
+            return  # No podemos validar sin estos datos
+
+        estado_empleado = self.empleado_evaluado.estado.codigo if self.empleado_evaluado.estado else None
+        tipo_evaluacion = self.evaluacion.tipo_evaluacion.codigo if self.evaluacion.tipo_evaluacion else None
+
+        if not estado_empleado or not tipo_evaluacion:
+            return  # No podemos validar sin estado o tipo
+
+        # Validar compatibilidad
+        es_evaluacion_periodo_prueba = tipo_evaluacion == 'PERIODO_PRUEBA'
+        empleado_en_periodo_prueba = estado_empleado == 'p-prue'
+
+        if es_evaluacion_periodo_prueba and not empleado_en_periodo_prueba:
+            raise ValidationError(
+                f'No se puede asignar una evaluación de periodo de prueba al empleado '
+                f'{self.empleado_evaluado.nombre_completo} porque no está en periodo de prueba '
+                f'(estado actual: {self.empleado_evaluado.estado.nombre}).'
+            )
+
+        if not es_evaluacion_periodo_prueba and empleado_en_periodo_prueba:
+            raise ValidationError(
+                f'No se puede asignar una evaluación de desempeño al empleado '
+                f'{self.empleado_evaluado.nombre_completo} porque está en periodo de prueba. '
+                f'Solo puede recibir evaluaciones de tipo PERIODO_PRUEBA.'
+            )
+
+    def save(self, *args, **kwargs):
+        """Override save para ejecutar validación automáticamente"""
+        if not kwargs.pop('skip_validation', False):
+            self.clean()
+        super().save(*args, **kwargs)
+
     @property
     def planmejorapredefinido(self):
         """

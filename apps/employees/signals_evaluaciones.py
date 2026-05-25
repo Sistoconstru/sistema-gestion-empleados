@@ -36,6 +36,41 @@ def asignar_evaluaciones_por_cargo(sender, instance, created, **kwargs):
 
     for ec in evaluaciones:
         evaluacion = ec.evaluacion
+
+        # VALIDACIÓN CRÍTICA: Verificar compatibilidad entre estado del empleado y tipo de evaluación
+        # No asignar evaluaciones de periodo de prueba a empleados activos, ni viceversa
+        estado_empleado = empleado.estado.codigo if empleado.estado else None
+        tipo_evaluacion = evaluacion.tipo_evaluacion.codigo if evaluacion.tipo_evaluacion else None
+
+        if estado_empleado and tipo_evaluacion:
+            es_periodo_prueba = tipo_evaluacion == 'PERIODO_PRUEBA'
+            empleado_en_prueba = estado_empleado == 'p-prue'
+
+            # Validar reglas de negocio
+            if es_periodo_prueba and not empleado_en_prueba:
+                # Intentando asignar evaluación de periodo de prueba a empleado activo - OMITIR
+                print(f"[SIGNAL] OMITIDO: No se puede asignar evaluación de periodo de prueba a {empleado.nombre_completo} (no está en periodo de prueba)")
+                continue
+            elif not es_periodo_prueba and empleado_en_prueba:
+                # Intentando asignar evaluación de desempeño a empleado en periodo de prueba - OMITIR
+                print(f"[SIGNAL] OMITIDO: No se puede asignar evaluación de desempeño a {empleado.nombre_completo} (está en periodo de prueba)")
+                continue
+
+            # VALIDACIÓN DE ANTIGÜEDAD: Para evaluaciones de desempeño (NO periodo de prueba),
+            # el empleado debe tener al menos 5 meses de antigüedad
+            # Esto evita asignar evaluaciones de desempeño a empleados recién pasados a activos
+            if not es_periodo_prueba and empleado.fecha_ingreso:
+                MESES_MINIMOS_DESEMPEÑO = 5
+                fecha_actual = timezone.now().date()
+                antigüedad_dias = (fecha_actual - empleado.fecha_ingreso).days
+                antigüedad_meses = antigüedad_dias / 30.44  # Promedio de días por mes
+
+                if antigüedad_meses < MESES_MINIMOS_DESEMPEÑO:
+                    print(f"[SIGNAL] OMITIDO: {empleado.nombre_completo} no tiene antigüedad suficiente "
+                          f"para evaluación de desempeño ({antigüedad_meses:.1f} meses, mínimo: {MESES_MINIMOS_DESEMPEÑO} meses). "
+                          f"Fecha ingreso: {empleado.fecha_ingreso}")
+                    continue
+
         # Evitar duplicados
         existe = AsignacionEvaluacion.objects.filter(
             empleado_evaluado=empleado,

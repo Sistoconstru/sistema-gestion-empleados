@@ -51,44 +51,243 @@
     background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
 }
 .stat-card.bg-danger {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100!) !important;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
 }
 .stat-card.bg-warning {
     background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
 }
-
-/* Tarjetas de seguimiento */
-.seguimiento-card {
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: all 0.2s;
-    border-left: 3px solid #17a2b8;
-    margin-bottom: 15px;
+.stat-card.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
 }
-.seguimiento-card:hover {
-    transform: translateY(-2px);
+
+/* Barra de búsqueda y filtros */
+.search-filter-bar {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    padding: 12px 45px 12px 45px;
+    border-radius: 25px;
+    border: 2px solid #e9ecef;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.15);
+}
+
+.search-box i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-box .clear-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    display: none;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid #dee2e6;
+    background: white;
+    color: #495057;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.filter-btn:hover {
+    border-color: #17a2b8;
+    color: #17a2b8;
+}
+
+.filter-btn.active {
+    background: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+
+.filter-btn .badge {
+    margin-left: 5px;
+    background: rgba(0,0,0,0.1);
+}
+
+/* Acordeones de evaluadores */
+.evaluador-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    border: none;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.evaluador-card:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
-.seguimiento-card .card-body {
-    padding: 12px;
+
+.evaluador-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
 }
-.seguimiento-card.vencido {
+
+.evaluador-header:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+}
+
+.evaluador-header .chevron {
+    transition: transform 0.3s;
+    font-size: 1.2rem;
+}
+
+.evaluador-header.collapsed .chevron {
+    transform: rotate(-90deg);
+}
+
+.evaluador-stats {
+    display: flex;
+    gap: 15px;
+}
+
+.evaluador-stat {
+    background: rgba(255,255,255,0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.evaluador-content {
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+/* Acordeones de empleados evaluados */
+.empleado-accordion {
+    margin-bottom: 10px;
+}
+
+.empleado-header {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.empleado-header:hover {
+    border-color: #17a2b8;
+    background: #f8f9fa;
+}
+
+.empleado-header.collapsed {
+    border-radius: 8px;
+}
+
+.empleado-header .chevron {
+    transition: transform 0.3s;
+    color: #6c757d;
+}
+
+.empleado-header.collapsed .chevron {
+    transform: rotate(-90deg);
+}
+
+.empleado-info h6 {
+    margin: 0;
+    color: #212529;
+    font-weight: 600;
+}
+
+.empleado-info small {
+    color: #6c757d;
+}
+
+.empleado-badges {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.empleado-content {
+    padding: 15px;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Tarjetas de seguimiento individuales */
+.seguimiento-item {
+    background: white;
+    border-left: 4px solid #17a2b8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+.seguimiento-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.seguimiento-item.vencido {
     border-left-color: #dc3545;
+    background: #fff5f5;
 }
-.seguimiento-card.proximo {
+
+.seguimiento-item.proximo {
     border-left-color: #ffc107;
+    background: #fffef0;
+}
+
+.seguimiento-item.bloqueado {
+    opacity: 0.7;
+    border-left-color: #6c757d;
 }
 
 .bimestre-badge {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    border-radius: 20px;
-}
-
-.empleado-info {
-    background: #f8f9fa;
-    border-radius: 6px;
-    padding: 10px;
+    font-size: 0.85rem;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-weight: 600;
 }
 
 .fecha-limite {
@@ -115,11 +314,40 @@
     background: #f8f9fa;
     border-radius: 12px;
 }
+
 .empty-state i {
     font-size: 4em;
     color: #17a2b8;
     opacity: 0.5;
     margin-bottom: 20px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.evaluador-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Ocultar elementos filtrados */
+.hidden-by-filter {
+    display: none !important;
+}
+
+/* Highlight de búsqueda */
+.search-highlight {
+    background: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 </style>
 {% endblock %}
@@ -131,7 +359,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h2><i class="fas fa-calendar-check me-2"></i> Seguimientos Bimensuales Pendientes</h2>
-                <p>Gestión de seguimientos de planes de mejora</p>
+                <p>Gestión de seguimientos de planes de mejora por evaluador</p>
             </div>
             <a href="{% url 'evaluations:index' %}" class="btn">
                 <i class="fas fa-arrow-left me-1"></i> Volver
@@ -276,132 +504,228 @@
     </div>
     {% endif %}
 
-    <!-- Lista de Seguimientos Agrupados por Jefe -->
-    {% if jefes_con_seguimientos %}
-        {% for jefe_info in jefes_con_seguimientos %}
-        <div class="card mb-4">
-            <!-- Header del Jefe -->
-            <div class="card-header" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h5 class="mb-0">
-                            <i class="fas fa-user-tie me-2"></i>
-                            {% if es_admin %}
-                                Supervisor: {{ jefe_info.jefe.get_full_name }}
-                            {% else %}
-                                Mis Seguimientos Pendientes
-                            {% endif %}
-                        </h5>
-                        {% if es_admin %}
-                        <small class="opacity-75">
-                            {{ jefe_info.jefe.nombre_cargo_actual|default:"Sin cargo" }} -
-                            {% if jefe_info.jefe.area_actual %}{{ jefe_info.jefe.area_actual.nombre }}{% else %}Sin área{% endif %}
-                        </small>
+    <!-- Barra de Búsqueda y Filtros -->
+    {% if evaluadores_con_seguimientos %}
+    <div class="search-filter-bar">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text"
+                           id="searchInput"
+                           class="form-control"
+                           placeholder="Buscar por evaluador, empleado evaluado, cargo o área...">
+                    <i class="fas fa-times clear-search" id="clearSearch"></i>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="todos">
+                        <i class="fas fa-list me-1"></i>
+                        Todos
+                        <span class="badge">{{ total_pendientes }}</span>
+                    </button>
+                    <button class="filter-btn" data-filter="vencidos">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        Vencidos
+                        <span class="badge">{{ vencidos }}</span>
+                    </button>
+                    <button class="filter-btn" data-filter="proximos">
+                        <i class="fas fa-clock me-1"></i>
+                        Próximos
+                        <span class="badge">{{ proximos }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Evaluadores con Seguimientos -->
+    <div id="evaluadoresContainer">
+        {% for evaluador_info in evaluadores_con_seguimientos %}
+        <div class="evaluador-card"
+             data-evaluador="{{ evaluador_info.evaluador.nombre_completo|lower }}"
+             data-tiene-vencidos="{{ evaluador_info.vencidos|yesno:'true,false' }}"
+             data-tiene-proximos="{{ evaluador_info.proximos|yesno:'true,false' }}">
+
+            <!-- Header del Evaluador -->
+            <div class="evaluador-header" data-bs-toggle="collapse" data-bs-target="#evaluador{{ forloop.counter }}">
+                <div>
+                    <h5 class="mb-1">
+                        <i class="fas fa-user-tie me-2"></i>
+                        Evaluador: {{ evaluador_info.evaluador.nombre_completo }}
+                    </h5>
+                    <small class="opacity-75">
+                        {{ evaluador_info.evaluador.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                        {% if evaluador_info.evaluador.cargo_actual %}
+                            • {{ evaluador_info.evaluador.cargo_actual.cargo.area.nombre }}
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="evaluador-stats">
+                        <div class="evaluador-stat">
+                            <strong>{{ evaluador_info.total }}</strong> seguimientos
+                        </div>
+                        {% if evaluador_info.vencidos > 0 %}
+                        <div class="evaluador-stat" style="background: rgba(220, 53, 69, 0.3);">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>{{ evaluador_info.vencidos }}</strong> vencidos
+                        </div>
+                        {% endif %}
+                        {% if evaluador_info.proximos > 0 %}
+                        <div class="evaluador-stat" style="background: rgba(255, 193, 7, 0.3);">
+                            <i class="fas fa-clock me-1"></i>
+                            <strong>{{ evaluador_info.proximos }}</strong> próximos
+                        </div>
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
-                        <div class="row text-center">
-                            <div class="col-4">
-                                <div class="bg-white bg-opacity-25 rounded p-2">
-                                    <strong class="d-block" style="font-size: 1.5rem;">{{ jefe_info.total }}</strong>
-                                    <small>Total</small>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="bg-white bg-opacity-25 rounded p-2">
-                                    <strong class="d-block" style="font-size: 1.5rem; color: #ffebee;">{{ jefe_info.vencidos }}</strong>
-                                    <small>Vencidos</small>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="bg-white bg-opacity-25 rounded p-2">
-                                    <strong class="d-block" style="font-size: 1.5rem; color: #fff9c4;">{{ jefe_info.proximos }}</strong>
-                                    <small>Próximos</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <i class="fas fa-chevron-down chevron"></i>
                 </div>
             </div>
 
-            <!-- Lista de Seguimientos del Jefe -->
-            <div class="card-body p-3">
-                {% for seguimiento in jefe_info.seguimientos %}
-                    {% with plan=seguimiento.plan_mejora %}
-                    <div class="card seguimiento-card {% if seguimiento.esta_vencido %}vencido{% elif seguimiento.es_proximo %}proximo{% endif %}" {% if seguimiento.esta_bloqueado %}style="opacity: 0.75;"{% endif %}>
-                        <div class="card-body">
-                            {% if seguimiento.esta_bloqueado %}
-                            <div class="alert alert-warning mb-3 p-2" style="font-size: 0.9rem;">
-                                <i class="fas fa-lock me-2"></i>
-                                <strong>Bloqueado:</strong> {{ seguimiento.razon_bloqueo }}
-                            </div>
-                            {% endif %}
-                            <div class="row align-items-center">
-                                <!-- Bimestre y Empleado -->
-                                <div class="col-md-5">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="badge bimestre-badge bg-primary me-2">
-                                            {{ seguimiento.numero_bimestre }}° Bimestre
-                                        </span>
-                                        {% if seguimiento.esta_vencido %}
-                                            <small class="badge bg-danger">VENCIDO</small>
-                                        {% elif seguimiento.es_proximo %}
-                                            <small class="badge bg-warning">PRÓXIMO</small>
-                                        {% endif %}
-                                        {% if seguimiento.esta_bloqueado %}
-                                            <small class="badge bg-secondary"><i class="fas fa-lock me-1"></i>Bloqueado</small>
-                                        {% endif %}
-                                    </div>
-                                    <strong class="d-block text-dark" style="font-size: 1.05rem;">
-                                        {{ plan.asignacion_evaluacion.empleado_evaluado.nombre_completo }}
-                                    </strong>
-                                    <small class="text-muted d-block">
-                                        {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
-                                        {% if plan.asignacion_evaluacion.empleado_evaluado.cargo_actual %}
-                                            • {{ plan.asignacion_evaluacion.empleado_evaluado.cargo_actual.cargo.area.nombre }}
-                                        {% endif %}
-                                    </small>
-                                </div>
+            <!-- Contenido del Evaluador (Empleados) -->
+            <div id="evaluador{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}">
+                <div class="evaluador-content">
+                    {% for empleado_info in evaluador_info.empleados %}
+                    <div class="empleado-accordion"
+                         data-empleado="{{ empleado_info.empleado.nombre_completo|lower }}"
+                         data-cargo="{{ empleado_info.empleado.cargo_actual.cargo.nombre|default:'Sin cargo'|lower }}"
+                         data-area="{{ empleado_info.empleado.cargo_actual.cargo.area.nombre|default:'Sin área'|lower }}">
 
-                                <!-- Fecha límite -->
-                                <div class="col-md-2 text-center">
-                                    <small class="text-muted d-block">Fecha límite</small>
-                                    <span class="fecha-limite {% if seguimiento.esta_vencido %}vencida{% elif seguimiento.es_proximo %}proxima{% else %}normal{% endif %}">
-                                        {{ seguimiento.fecha_limite|date:"d/m/Y" }}
-                                    </span>
-                                </div>
-
-                                <!-- Puntaje -->
-                                <div class="col-md-2 text-center">
-                                    <small class="text-muted d-block">Puntaje</small>
-                                    <span class="badge bg-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">
-                                        {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
-                                    </span>
-                                </div>
-
-                                <!-- Botón de Acción -->
-                                <div class="col-md-3">
-                                    {% if seguimiento.esta_bloqueado %}
-                                        <button class="btn btn-secondary btn-sm w-100" disabled>
-                                            <i class="fas fa-lock me-1"></i>
-                                            Bloqueado
-                                        </button>
-                                    {% else %}
-                                        <a href="{% url 'evaluations:seguimiento_bimensual' seguimiento.id %}"
-                                           class="btn btn-primary btn-sm w-100">
-                                            <i class="fas fa-clipboard-check me-1"></i>
-                                            Completar
-                                        </a>
+                        <!-- Header del Empleado Evaluado -->
+                        <div class="empleado-header collapsed"
+                             data-bs-toggle="collapse"
+                             data-bs-target="#empleado{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                            <div class="empleado-info">
+                                <h6>
+                                    <i class="fas fa-user me-2"></i>
+                                    {{ empleado_info.empleado.nombre_completo }}
+                                </h6>
+                                <small class="d-block">
+                                    <i class="fas fa-briefcase me-1"></i>
+                                    {{ empleado_info.empleado.cargo_actual.cargo.nombre|default:"Sin cargo" }}
+                                    {% if empleado_info.empleado.cargo_actual %}
+                                        • {{ empleado_info.empleado.cargo_actual.cargo.area.nombre }}
                                     {% endif %}
+                                </small>
+                            </div>
+                            <div class="empleado-badges">
+                                <span class="badge bg-secondary">
+                                    {{ empleado_info.total }} seguimiento{{ empleado_info.total|pluralize }}
+                                </span>
+                                {% if empleado_info.vencidos > 0 %}
+                                <span class="badge bg-danger">
+                                    {{ empleado_info.vencidos }} vencido{{ empleado_info.vencidos|pluralize }}
+                                </span>
+                                {% endif %}
+                                {% if empleado_info.proximos > 0 %}
+                                <span class="badge bg-warning text-dark">
+                                    {{ empleado_info.proximos }} próximo{{ empleado_info.proximos|pluralize }}
+                                </span>
+                                {% endif %}
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                        </div>
+
+                        <!-- Contenido del Empleado (Seguimientos) -->
+                        <div id="empleado{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="collapse">
+                            <div class="empleado-content">
+                                {% for seguimiento in empleado_info.seguimientos %}
+                                <div class="seguimiento-item {% if seguimiento.esta_vencido %}vencido{% elif seguimiento.es_proximo %}proximo{% endif %} {% if seguimiento.esta_bloqueado %}bloqueado{% endif %}"
+                                     data-estado="{% if seguimiento.esta_vencido %}vencido{% elif seguimiento.es_proximo %}proximo{% else %}normal{% endif %}">
+
+                                    {% if seguimiento.esta_bloqueado %}
+                                    <div class="alert alert-warning mb-2 p-2" style="font-size: 0.85rem;">
+                                        <i class="fas fa-lock me-1"></i>
+                                        <strong>Bloqueado:</strong> {{ seguimiento.razon_bloqueo }}
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="row align-items-center">
+                                        <!-- Bimestre y Estado -->
+                                        <div class="col-md-3">
+                                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                <span class="badge bimestre-badge bg-primary">
+                                                    {{ seguimiento.numero_bimestre }}° Bimestre
+                                                </span>
+                                                {% if seguimiento.esta_vencido %}
+                                                    <small class="badge bg-danger">VENCIDO</small>
+                                                {% elif seguimiento.es_proximo %}
+                                                    <small class="badge bg-warning text-dark">PRÓXIMO</small>
+                                                {% endif %}
+                                                {% if seguimiento.esta_bloqueado %}
+                                                    <small class="badge bg-secondary">
+                                                        <i class="fas fa-lock me-1"></i>Bloqueado
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- Fecha Límite -->
+                                        <div class="col-md-3 text-center">
+                                            <small class="text-muted d-block">Fecha límite</small>
+                                            <span class="fecha-limite {% if seguimiento.esta_vencido %}vencida{% elif seguimiento.es_proximo %}proxima{% else %}normal{% endif %}">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ seguimiento.fecha_limite|date:"d/m/Y" }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Puntaje Original -->
+                                        <div class="col-md-2 text-center">
+                                            <small class="text-muted d-block">Puntaje</small>
+                                            {% with puntaje=seguimiento.plan_mejora.asignacion_evaluacion.puntaje_total %}
+                                            <span class="badge bg-{% if puntaje >= 18 %}success{% elif puntaje >= 14 %}warning{% else %}danger{% endif %}">
+                                                {{ puntaje|floatformat:1 }}/21
+                                            </span>
+                                            {% endwith %}
+                                        </div>
+
+                                        <!-- Tipo Evaluación -->
+                                        <div class="col-md-2">
+                                            <small class="text-muted d-block">Evaluación</small>
+                                            <small class="d-block text-truncate" title="{{ seguimiento.plan_mejora.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre }}">
+                                                {{ seguimiento.plan_mejora.asignacion_evaluacion.evaluacion.tipo_evaluacion.nombre|truncatechars:25 }}
+                                            </small>
+                                        </div>
+
+                                        <!-- Botón de Acción -->
+                                        <div class="col-md-2">
+                                            {% if seguimiento.esta_bloqueado %}
+                                                <button class="btn btn-secondary btn-sm w-100" disabled>
+                                                    <i class="fas fa-lock me-1"></i>
+                                                    Bloqueado
+                                                </button>
+                                            {% else %}
+                                                <a href="{% url 'evaluations:seguimiento_bimensual' seguimiento.id %}"
+                                                   class="btn btn-primary btn-sm w-100">
+                                                    <i class="fas fa-clipboard-check me-1"></i>
+                                                    Completar
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                    {% endwith %}
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endfor %}
+    </div>
+
+    <!-- Mensaje cuando no hay resultados de búsqueda -->
+    <div id="noResultsMessage" class="empty-state" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h4>No se encontraron resultados</h4>
+        <p class="text-muted">
+            No hay seguimientos que coincidan con tu búsqueda o filtros seleccionados.
+        </p>
+    </div>
+
     {% else %}
         <!-- Estado Vacío -->
         <div class="empty-state">
@@ -425,18 +749,142 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Animar cards cuando aparecen
-    const cards = document.querySelectorAll('.seguimiento-card');
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const evaluadoresContainer = document.getElementById('evaluadoresContainer');
+    const noResultsMessage = document.getElementById('noResultsMessage');
 
-        setTimeout(() => {
-            card.style.transition = 'all 0.5s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
+    let currentFilter = 'todos';
+
+    // Toggle chevron icon cuando se expande/colapsa
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(trigger => {
+        trigger.addEventListener('click', function() {
+            this.classList.toggle('collapsed');
+        });
     });
+
+    // Búsqueda en tiempo real
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            // Mostrar/ocultar botón de limpiar
+            if (searchTerm) {
+                clearSearch.style.display = 'block';
+            } else {
+                clearSearch.style.display = 'none';
+            }
+
+            applyFilters();
+        });
+
+        // Limpiar búsqueda
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            clearSearch.style.display = 'none';
+            applyFilters();
+        });
+    }
+
+    // Filtros rápidos
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Actualizar botones activos
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Actualizar filtro actual
+            currentFilter = this.dataset.filter;
+
+            applyFilters();
+        });
+    });
+
+    // Función para aplicar filtros y búsqueda
+    function applyFilters() {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        let visibleCount = 0;
+
+        document.querySelectorAll('.evaluador-card').forEach(evaluadorCard => {
+            const evaluadorNombre = evaluadorCard.dataset.evaluador;
+            let evaluadorTieneVisible = false;
+
+            // Iterar empleados dentro del evaluador
+            evaluadorCard.querySelectorAll('.empleado-accordion').forEach(empleadoAccordion => {
+                const empleadoNombre = empleadoAccordion.dataset.empleado;
+                const cargo = empleadoAccordion.dataset.cargo;
+                const area = empleadoAccordion.dataset.area;
+                let empleadoTieneVisible = false;
+
+                // Iterar seguimientos dentro del empleado
+                empleadoAccordion.querySelectorAll('.seguimiento-item').forEach(seguimiento => {
+                    const estado = seguimiento.dataset.estado;
+                    let visible = true;
+
+                    // Aplicar filtro de estado
+                    if (currentFilter === 'vencidos' && estado !== 'vencido') {
+                        visible = false;
+                    } else if (currentFilter === 'proximos' && estado !== 'proximo') {
+                        visible = false;
+                    }
+
+                    // Aplicar filtro de búsqueda
+                    if (visible && searchTerm) {
+                        const matchEvaluador = evaluadorNombre.includes(searchTerm);
+                        const matchEmpleado = empleadoNombre.includes(searchTerm);
+                        const matchCargo = cargo.includes(searchTerm);
+                        const matchArea = area.includes(searchTerm);
+
+                        if (!matchEvaluador && !matchEmpleado && !matchCargo && !matchArea) {
+                            visible = false;
+                        }
+                    }
+
+                    // Mostrar/ocultar seguimiento
+                    if (visible) {
+                        seguimiento.classList.remove('hidden-by-filter');
+                        empleadoTieneVisible = true;
+                        visibleCount++;
+                    } else {
+                        seguimiento.classList.add('hidden-by-filter');
+                    }
+                });
+
+                // Mostrar/ocultar empleado si tiene seguimientos visibles
+                if (empleadoTieneVisible) {
+                    empleadoAccordion.classList.remove('hidden-by-filter');
+                    evaluadorTieneVisible = true;
+                } else {
+                    empleadoAccordion.classList.add('hidden-by-filter');
+                }
+            });
+
+            // Mostrar/ocultar evaluador si tiene empleados visibles
+            if (evaluadorTieneVisible) {
+                evaluadorCard.classList.remove('hidden-by-filter');
+            } else {
+                evaluadorCard.classList.add('hidden-by-filter');
+            }
+        });
+
+        // Mostrar mensaje de "sin resultados" si no hay nada visible
+        if (noResultsMessage && evaluadoresContainer) {
+            if (visibleCount === 0) {
+                evaluadoresContainer.style.display = 'none';
+                noResultsMessage.style.display = 'block';
+            } else {
+                evaluadoresContainer.style.display = 'block';
+                noResultsMessage.style.display = 'none';
+            }
+        }
+    }
+
+    // Expandir automáticamente el primer evaluador
+    const firstEvaluador = document.querySelector('.evaluador-header');
+    if (firstEvaluador && !firstEvaluador.classList.contains('collapsed')) {
+        firstEvaluador.classList.remove('collapsed');
+    }
 });
 </script>
 {% endblock %}

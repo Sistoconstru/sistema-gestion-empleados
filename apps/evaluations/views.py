@@ -31,13 +31,30 @@ def asignar_evaluacion_manual(request):
             if filtro_form.is_valid():
                 tipo_evaluacion = filtro_form.cleaned_data['tipo_evaluacion']
                 area = filtro_form.cleaned_data['area']
-                empleados_queryset = Empleado.objects.all()
+
+                # VALIDACIÓN CRÍTICA: Filtrar empleados según tipo de evaluación
+                # Los empleados en periodo de prueba SOLO pueden recibir evaluaciones de periodo de prueba
+                # Los empleados activos NO deben recibir evaluaciones de periodo de prueba
+                if tipo_evaluacion.codigo == 'PERIODO_PRUEBA':
+                    # Solo empleados en estado 'p-prue' (periodo de prueba)
+                    empleados_queryset = Empleado.objects.filter(estado__codigo='p-prue')
+                else:
+                    # Solo empleados activos (estado='999'), excluyendo periodo de prueba
+                    empleados_queryset = Empleado.objects.filter(estado__codigo='999')
+
+                # Filtrar por área si se especificó
                 if area:
                     # area_actual es una propiedad, filtrar por historialcargo activo
                     empleados_queryset = empleados_queryset.filter(
                         historialcargo__activo=True,
                         historialcargo__cargo__area=area
                     ).distinct()
+                else:
+                    # Asegurar que tengan historial activo
+                    empleados_queryset = empleados_queryset.filter(
+                        historialcargo__activo=True
+                    ).distinct()
+
                 # Crear formulario VACÍO (sin datos POST) para nueva búsqueda
                 empleados_form = AsignacionEvaluacionManualForm(empleados_queryset=empleados_queryset)
                 mostrar_empleados = True
@@ -60,7 +77,27 @@ def asignar_evaluacion_manual(request):
                     if not evaluacion:
                         mensaje = 'No existe una evaluación activa para el tipo seleccionado.'
                     else:
+                        asignaciones_creadas = 0
+                        empleados_rechazados = []
+
                         for empleado in empleados:
+                            # VALIDACIÓN CRÍTICA: Verificar compatibilidad entre estado del empleado y tipo de evaluación
+                            # Esta es una segunda capa de seguridad
+                            estado_empleado = empleado.estado.codigo if empleado.estado else None
+
+                            # Validar reglas de negocio
+                            es_periodo_prueba = tipo_evaluacion.codigo == 'PERIODO_PRUEBA'
+                            empleado_en_prueba = estado_empleado == 'p-prue'
+
+                            if es_periodo_prueba and not empleado_en_prueba:
+                                # Intentando asignar evaluación de periodo de prueba a empleado activo
+                                empleados_rechazados.append(f"{empleado.nombre_completo} (no está en periodo de prueba)")
+                                continue
+                            elif not es_periodo_prueba and empleado_en_prueba:
+                                # Intentando asignar evaluación de desempeño a empleado en periodo de prueba
+                                empleados_rechazados.append(f"{empleado.nombre_completo} (está en periodo de prueba)")
+                                continue
+
                             # Obtener el jefe directo del HistorialCargo del empleado
                             # IMPORTANTE: Usa el jefe_directo asignado manualmente, no busca por cargo
                             jefe = None
@@ -72,7 +109,8 @@ def asignar_evaluacion_manual(request):
                                 jefe = historial.jefe_directo
                             except HistorialCargo.DoesNotExist:
                                 # Si no tiene historial activo, no se puede asignar jefe
-                                pass
+                                empleados_rechazados.append(f"{empleado.nombre_completo} (sin historial de cargo activo)")
+                                continue
 
                             AsignacionEvaluacion.objects.create(
                                 empleado_evaluado=empleado,
@@ -83,7 +121,15 @@ def asignar_evaluacion_manual(request):
                                 es_autoevaluacion=tipo_evaluacion.es_autoevaluacion,
                                 asignado_por=request.user,
                             )
-                        mensaje = 'Evaluaciones asignadas correctamente.'
+                            asignaciones_creadas += 1
+
+                        # Construir mensaje de resultado
+                        if asignaciones_creadas > 0:
+                            mensaje = f'Evaluaciones asignadas correctamente: {asignaciones_creadas} de {len(empleados)}.'
+                            if empleados_rechazados:
+                                mensaje += f' No asignados: {", ".join(empleados_rechazados)}.'
+                        else:
+                            mensaje = f'No se pudo asignar ninguna evaluación. Empleados rechazados: {", ".join(empleados_rechazados)}.'
                         filtro_form = FiltroAsignacionEvaluacionForm()
                         empleados_form = None
                         mostrar_empleados = False
@@ -824,6 +870,30 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 )
                                 resultado_evaluacion = calcular_puntaje_ponderado_analista_contable(respuestas)
                                 plan_mejora_texto = generar_plan_mejora_analista_contable(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_ANALISTA_INV':
+                                # Generar plan específico para Analista de Inventario
+                                from .utils.respuestas_predefinidas_analista_inventario import (
+                                    generar_plan_mejora_analista_inventario,
+                                    calcular_puntaje_ponderado_analista_inventario
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_analista_inventario(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_analista_inventario(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_MENSAJERO':
+                                # Generar plan específico para Mensajero
+                                from .utils.respuestas_predefinidas_mensajero import (
+                                    generar_plan_mejora_mensajero,
+                                    calcular_puntaje_ponderado_mensajero
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_mensajero(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_mensajero(respuestas, resultado_evaluacion)
+                            elif tipo_eval_codigo == 'ANUAL_AUX_SST':
+                                # Generar plan específico para Auxiliar de SST
+                                from .utils.respuestas_predefinidas_auxiliar_sst import (
+                                    generar_plan_mejora_auxiliar_sst,
+                                    calcular_puntaje_ponderado_auxiliar_sst
+                                )
+                                resultado_evaluacion = calcular_puntaje_ponderado_auxiliar_sst(respuestas)
+                                plan_mejora_texto = generar_plan_mejora_auxiliar_sst(respuestas, resultado_evaluacion)
                             elif tipo_eval_codigo == 'ANUAL_ASESOR_COMER':
                                 # Generar plan específico para Asesor Comercial
                                 from .utils.respuestas_predefinidas_asesor_comercial import (
@@ -939,6 +1009,15 @@ def _calcular_resultado_evaluacion(asignacion):
         elif tipo_evaluacion_codigo == 'ANUAL_ANALISTA_CONT':
             from .utils.respuestas_predefinidas_analista_contable import calcular_puntaje_ponderado_analista_contable
             resultado_calc = calcular_puntaje_ponderado_analista_contable(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_ANALISTA_INV':
+            from .utils.respuestas_predefinidas_analista_inventario import calcular_puntaje_ponderado_analista_inventario
+            resultado_calc = calcular_puntaje_ponderado_analista_inventario(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_MENSAJERO':
+            from .utils.respuestas_predefinidas_mensajero import calcular_puntaje_ponderado_mensajero
+            resultado_calc = calcular_puntaje_ponderado_mensajero(respuestas)
+        elif tipo_evaluacion_codigo == 'ANUAL_AUX_SST':
+            from .utils.respuestas_predefinidas_auxiliar_sst import calcular_puntaje_ponderado_auxiliar_sst
+            resultado_calc = calcular_puntaje_ponderado_auxiliar_sst(respuestas)
         elif tipo_evaluacion_codigo == 'ANUAL_ASESOR_COMER':
             from .utils.respuestas_predefinidas_asesor_comercial import calcular_puntaje_ponderado_asesor_comercial
             resultado_calc = calcular_puntaje_ponderado_asesor_comercial(respuestas)
@@ -1838,15 +1917,15 @@ def seguimientos_pendientes_supervisor(request):
                     seguimiento.estado = 'atrasado'
                     seguimiento.save()
 
-        # Agrupar seguimientos por jefe/evaluador
-        seguimientos_por_jefe = defaultdict(list)
+        # Agrupar seguimientos por evaluador
+        seguimientos_por_evaluador = defaultdict(list)
         for seguimiento in seguimientos:
             evaluador = seguimiento.plan_mejora.asignacion_evaluacion.evaluador
-            seguimientos_por_jefe[evaluador].append(seguimiento)
+            seguimientos_por_evaluador[evaluador].append(seguimiento)
 
-        # Crear lista estructurada con estadísticas por jefe
-        jefes_con_seguimientos = []
-        for jefe, segs in seguimientos_por_jefe.items():
+        # Crear lista estructurada con estadísticas por evaluador
+        evaluadores_con_seguimientos = []
+        for evaluador, segs in seguimientos_por_evaluador.items():
             # Agregar información de es_proximo y bloqueado a cada seguimiento
             segs_con_info = []
             for s in segs:
@@ -1873,24 +1952,48 @@ def seguimientos_pendientes_supervisor(request):
 
                 segs_con_info.append(s)
 
-            # Ordenar seguimientos por fecha límite
-            segs_ordenados = sorted(segs_con_info, key=lambda s: s.fecha_limite)
+            # Agrupar seguimientos de este evaluador por empleado evaluado
+            empleados_con_seguimientos = defaultdict(list)
+            for s in segs_con_info:
+                empleado_evaluado = s.plan_mejora.asignacion_evaluacion.empleado_evaluado
+                empleados_con_seguimientos[empleado_evaluado].append(s)
 
-            # Calcular estadísticas para este jefe
-            total_jefe = len(segs_ordenados)
-            vencidos_jefe = sum(1 for s in segs_ordenados if s.esta_vencido)
-            proximos_jefe = sum(1 for s in segs_ordenados if s.es_proximo)
+            # Crear lista de empleados evaluados con sus seguimientos
+            empleados_lista = []
+            for empleado_evaluado, segs_empleado in empleados_con_seguimientos.items():
+                # Ordenar seguimientos por número de bimestre
+                segs_empleado_ordenados = sorted(segs_empleado, key=lambda s: s.numero_bimestre)
 
-            jefes_con_seguimientos.append({
-                'jefe': jefe,
-                'seguimientos': segs_ordenados,
-                'total': total_jefe,
-                'vencidos': vencidos_jefe,
-                'proximos': proximos_jefe,
+                # Estadísticas por empleado
+                vencidos_empleado = sum(1 for s in segs_empleado_ordenados if s.esta_vencido)
+                proximos_empleado = sum(1 for s in segs_empleado_ordenados if s.es_proximo)
+
+                empleados_lista.append({
+                    'empleado': empleado_evaluado,
+                    'seguimientos': segs_empleado_ordenados,
+                    'total': len(segs_empleado_ordenados),
+                    'vencidos': vencidos_empleado,
+                    'proximos': proximos_empleado,
+                })
+
+            # Ordenar empleados por cantidad de vencidos, luego por nombre
+            empleados_lista.sort(key=lambda x: (-x['vencidos'], x['empleado'].nombre_completo))
+
+            # Calcular estadísticas globales para este evaluador
+            total_evaluador = len(segs_con_info)
+            vencidos_evaluador = sum(1 for s in segs_con_info if s.esta_vencido)
+            proximos_evaluador = sum(1 for s in segs_con_info if s.es_proximo)
+
+            evaluadores_con_seguimientos.append({
+                'evaluador': evaluador,
+                'empleados': empleados_lista,
+                'total': total_evaluador,
+                'vencidos': vencidos_evaluador,
+                'proximos': proximos_evaluador,
             })
 
-        # Ordenar jefes por cantidad de vencidos (descendente), luego por total
-        jefes_con_seguimientos.sort(key=lambda x: (-x['vencidos'], -x['total']))
+        # Ordenar evaluadores por cantidad de vencidos (descendente), luego por total
+        evaluadores_con_seguimientos.sort(key=lambda x: (-x['vencidos'], -x['total']))
 
         # Estadísticas globales
         total_pendientes = seguimientos.count()
@@ -1917,7 +2020,7 @@ def seguimientos_pendientes_supervisor(request):
                     })
 
         return render(request, 'evaluations/supervisor/seguimientos_pendientes.html', {
-            'jefes_con_seguimientos': jefes_con_seguimientos,
+            'evaluadores_con_seguimientos': evaluadores_con_seguimientos,
             'es_admin': es_admin,
             'total_pendientes': total_pendientes,
             'vencidos': vencidos,

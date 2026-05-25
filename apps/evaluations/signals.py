@@ -92,8 +92,50 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
     asignaciones_creadas = 0
     asignaciones_existentes = 0
     empleados_sin_jefe = 0
+    empleados_rechazados = 0
+    empleados_antiguedad_insuficiente = 0
+
+    # Constante: Meses mínimos de antigüedad para evaluación de desempeño
+    MESES_MINIMOS_DESEMPEÑO = 5
 
     for empleado in empleados_con_cargo:
+        # VALIDACIÓN CRÍTICA: Verificar compatibilidad entre estado del empleado y tipo de evaluación
+        # Los empleados activos (estado='999') NO deben recibir evaluaciones de PERIODO_PRUEBA
+        estado_empleado = empleado.estado.codigo if empleado.estado else None
+        tipo_evaluacion_codigo = evaluacion.tipo_evaluacion.codigo if evaluacion.tipo_evaluacion else None
+
+        if estado_empleado and tipo_evaluacion_codigo:
+            es_periodo_prueba = tipo_evaluacion_codigo == 'PERIODO_PRUEBA'
+            empleado_en_prueba = estado_empleado == 'p-prue'
+
+            # Validar reglas de negocio
+            if es_periodo_prueba and not empleado_en_prueba:
+                # Intentando asignar evaluación de periodo de prueba a empleado activo - OMITIR
+                print(f"[SIGNAL] OMITIDO: No se puede asignar evaluación de periodo de prueba a {empleado.nombre_completo} (no está en periodo de prueba)")
+                empleados_rechazados += 1
+                continue
+            elif not es_periodo_prueba and empleado_en_prueba:
+                # Intentando asignar evaluación de desempeño a empleado en periodo de prueba - OMITIR
+                # Este caso NO debería ocurrir porque ya filtramos por estado='999' arriba, pero por seguridad:
+                print(f"[SIGNAL] OMITIDO: No se puede asignar evaluación de desempeño a {empleado.nombre_completo} (está en periodo de prueba)")
+                empleados_rechazados += 1
+                continue
+
+            # VALIDACIÓN DE ANTIGÜEDAD: Para evaluaciones de desempeño (NO periodo de prueba),
+            # el empleado debe tener al menos 5 meses de antigüedad
+            # Esto evita asignar evaluaciones de desempeño a empleados recién pasados a activos
+            if not es_periodo_prueba and empleado.fecha_ingreso:
+                fecha_actual = timezone.now().date()
+                antigüedad_dias = (fecha_actual - empleado.fecha_ingreso).days
+                antigüedad_meses = antigüedad_dias / 30.44  # Promedio de días por mes
+
+                if antigüedad_meses < MESES_MINIMOS_DESEMPEÑO:
+                    print(f"[SIGNAL] OMITIDO: {empleado.nombre_completo} no tiene antigüedad suficiente "
+                          f"para evaluación de desempeño ({antigüedad_meses:.1f} meses, mínimo: {MESES_MINIMOS_DESEMPEÑO} meses). "
+                          f"Fecha ingreso: {empleado.fecha_ingreso}")
+                    empleados_antiguedad_insuficiente += 1
+                    continue
+
         # Obtener el jefe directo del empleado
         try:
             historial_activo = HistorialCargo.objects.get(
@@ -209,6 +251,8 @@ def asignar_evaluacion_a_empleados_cargo(sender, instance, created, **kwargs):
     print(f"  - Asignaciones creadas: {asignaciones_creadas}")
     print(f"  - Asignaciones ya existentes (omitidas): {asignaciones_existentes}")
     print(f"  - Empleados sin jefe directo (no asignados): {empleados_sin_jefe}")
+    print(f"  - Empleados rechazados por incompatibilidad de tipo: {empleados_rechazados}")
+    print(f"  - Empleados rechazados por antigüedad insuficiente: {empleados_antiguedad_insuficiente}")
     print(f"  - Total empleados procesados: {len(empleados_con_cargo)}")
     print(f"  - Fecha de vencimiento: {fecha_vencimiento}")
     print(f"  - Período: {periodo_evaluacion}")

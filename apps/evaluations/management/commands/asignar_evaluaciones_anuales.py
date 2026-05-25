@@ -112,7 +112,11 @@ class Command(BaseCommand):
         total_asignaciones_existentes = 0
         empleados_sin_jefe = 0
         empleados_sin_evaluacion = 0
+        empleados_antiguedad_insuficiente = 0
         errores = []
+
+        # Constante: Meses mínimos de antigüedad para evaluación de desempeño
+        MESES_MINIMOS_DESEMPEÑO = 5
 
         # Obtener todos los empleados activos con cargo
         empleados_activos = Empleado.objects.filter(
@@ -161,6 +165,27 @@ class Command(BaseCommand):
                 # Crear asignaciones para cada evaluación del cargo
                 for ec in evaluaciones_cargo:
                     evaluacion = ec.evaluacion
+
+                    # VALIDACIÓN DE ANTIGÜEDAD: Para evaluaciones de desempeño (NO periodo de prueba),
+                    # el empleado debe tener al menos 5 meses de antigüedad
+                    # Esto evita asignar evaluaciones de desempeño a empleados recién pasados a activos
+                    tipo_evaluacion_codigo = evaluacion.tipo_evaluacion.codigo if evaluacion.tipo_evaluacion else None
+                    es_periodo_prueba = tipo_evaluacion_codigo == 'PERIODO_PRUEBA'
+
+                    if not es_periodo_prueba and empleado.fecha_ingreso:
+                        fecha_actual = timezone.now().date()
+                        antigüedad_dias = (fecha_actual - empleado.fecha_ingreso).days
+                        antigüedad_meses = antigüedad_dias / 30.44  # Promedio de días por mes
+
+                        if antigüedad_meses < MESES_MINIMOS_DESEMPEÑO:
+                            empleados_antiguedad_insuficiente += 1
+                            self.stdout.write(
+                                self.style.WARNING(
+                                    f'  ⚠ {empleado.nombre_completo} - {evaluacion.tipo_evaluacion.codigo} - '
+                                    f'Antigüedad insuficiente ({antigüedad_meses:.1f} meses, mínimo {MESES_MINIMOS_DESEMPEÑO} meses)'
+                                )
+                            )
+                            continue
 
                     # Verificar si ya existe asignación
                     existe = AsignacionEvaluacion.objects.filter(
@@ -221,6 +246,7 @@ class Command(BaseCommand):
         self.stdout.write(f'Asignaciones que se crearían/creadas: {total_asignaciones_creadas}')
         self.stdout.write(f'Asignaciones ya existentes (omitidas): {total_asignaciones_existentes}')
         self.stdout.write(f'Empleados sin evaluación para su cargo: {empleados_sin_evaluacion}')
+        self.stdout.write(f'Empleados rechazados por antigüedad insuficiente: {empleados_antiguedad_insuficiente}')
 
         if empleados_sin_jefe > 0:
             self.stdout.write(
