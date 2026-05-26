@@ -19,12 +19,21 @@ logging.getLogger('django').info('Prueba de logging django desde Railway')
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = [h for h in [
     'empleados.sistemaconstruinmuniza.com',
     'localhost',
     '127.0.0.1',
-    os.environ.get('RAILWAY_DOMAIN', ''),  # Agrega el dominio Railway si aplica
+    'sighu-web.railway.internal',  # Red privada Railway: Odoo llama por este host
+    os.environ.get('RAILWAY_DOMAIN', ''),  # URL temporal de Railway o dominio custom
+] if h]
+
+# CSRF: hosts permitidos para POST/PUT/DELETE con cookies cross-origin (Django >= 4.0)
+CSRF_TRUSTED_ORIGINS = [
+    'https://empleados.sistemaconstruinmuniza.com',
 ]
+_railway_domain = os.environ.get('RAILWAY_DOMAIN', '')
+if _railway_domain and not _railway_domain.startswith('http'):
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_railway_domain}')
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
