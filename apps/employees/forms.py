@@ -13,7 +13,8 @@ import logging
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo,
-    Conversacion, Mensaje, Publicacion, Comentario
+    Conversacion, Mensaje, Publicacion, Comentario,
+    PartidoMundial, PrediccionMundial
 )
 from apps.organizational.models import Sede, Cargo, AreaEmpresa
 
@@ -1659,3 +1660,60 @@ class ComentarioForm(forms.ModelForm):
         if not contenido or not contenido.strip():
             raise ValidationError('El comentario no puede estar vacío')
         return contenido
+
+
+# ===================== POLLA MUNDIALISTA 2026 =====================
+
+class PrediccionMundialForm(forms.ModelForm):
+    """Formulario para crear/editar predicciones de partidos del mundial"""
+
+    class Meta:
+        model = PrediccionMundial
+        fields = ['goles_local_prediccion', 'goles_visitante_prediccion']
+        widgets = {
+            'goles_local_prediccion': forms.NumberInput(attrs={
+                'class': 'form-control text-center',
+                'min': '0',
+                'max': '20',
+                'style': 'width: 70px;',
+                'placeholder': '0'
+            }),
+            'goles_visitante_prediccion': forms.NumberInput(attrs={
+                'class': 'form-control text-center',
+                'min': '0',
+                'max': '20',
+                'style': 'width: 70px;',
+                'placeholder': '0'
+            }),
+        }
+        labels = {
+            'goles_local_prediccion': '',
+            'goles_visitante_prediccion': '',
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.partido = kwargs.pop('partido', None)
+        self.empleado = kwargs.pop('empleado', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        """Validaciones generales del formulario"""
+        cleaned_data = super().clean()
+        goles_local = cleaned_data.get('goles_local_prediccion')
+        goles_visitante = cleaned_data.get('goles_visitante_prediccion')
+
+        # Validar que los goles sean valores válidos
+        if goles_local is None or goles_visitante is None:
+            raise ValidationError('Debes ingresar ambos marcadores')
+
+        if goles_local < 0 or goles_visitante < 0:
+            raise ValidationError('Los goles no pueden ser negativos')
+
+        if goles_local > 20 or goles_visitante > 20:
+            raise ValidationError('El marcador parece poco realista (máximo 20 goles)')
+
+        # Validar que el partido aún acepte predicciones
+        if self.partido and not self.partido.acepta_predicciones:
+            raise ValidationError('Este partido ya no acepta predicciones')
+
+        return cleaned_data

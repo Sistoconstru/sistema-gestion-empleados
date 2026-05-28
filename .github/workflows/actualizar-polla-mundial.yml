@@ -1,0 +1,79 @@
+name: Actualizar Polla Mundial
+
+# Este workflow actualiza automáticamente los resultados del Mundial
+# usando Railway CLI para ejecutar comandos Django en producción
+
+on:
+  schedule:
+    # Ejecutar cada 30 minutos entre 1 PM y 1 AM (UTC)
+    # Ajustar según tu zona horaria
+    # Formato: 'minuto hora * * *'
+
+    # 1 PM - 11:30 PM (13:00 - 23:30)
+    - cron: '0,30 13-23 * * *'
+
+    # 12 AM - 1 AM (00:00 - 01:30)
+    - cron: '0,30 0-1 * * *'
+
+  # Permitir ejecución manual desde GitHub Actions
+  workflow_dispatch:
+
+jobs:
+  actualizar:
+    name: Actualizar resultados y equipos
+    runs-on: ubuntu-latest
+
+    # Descomentar estas líneas durante el Mundial 2026 para limitar ejecución
+    # if: |
+    #   github.event_name == 'workflow_dispatch' ||
+    #   (github.event_name == 'schedule' &&
+    #    github.event.schedule == '0,30 13-23 * * *' &&
+    #    github.ref == 'refs/heads/main')
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (para Railway CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Verificar Railway CLI
+        run: railway --version
+
+      - name: Actualizar equipos TBD
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "🔄 Actualizando equipos TBD..."
+          railway run python manage.py actualizar_equipos_tbd || echo "⚠️ Error actualizando TBD (continuando...)"
+
+      - name: Actualizar resultados de partidos
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "📊 Actualizando resultados de partidos..."
+          railway run python manage.py actualizar_resultados_mundial --verbose
+
+      - name: Importar nuevos partidos
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "📥 Verificando nuevos partidos..."
+          railway run python manage.py importar_partidos_mundial --force || echo "⚠️ Sin nuevos partidos"
+
+      - name: Notificar resultado
+        if: always()
+        run: |
+          echo "✅ Actualización completada - $(date -u)"
+          echo "Próxima ejecución programada en 30 minutos"
+
+      - name: Notificar error
+        if: failure()
+        run: |
+          echo "❌ Error en la actualización - $(date -u)"
+          echo "Revisar logs de Railway y GitHub Actions"

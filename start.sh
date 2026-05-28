@@ -23,8 +23,9 @@ python manage.py migrate
 
 # Actualiza estados de evaluaciones existentes (solo primera vez)
 # Actualiza evaluaciones completadas a 'finalizada' y desaprobadas a 'requiere_correccion'
-echo "⚙️  Actualizando estados de evaluaciones existentes..."
-python manage.py actualizar_estados_evaluaciones
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Actualizando estados de evaluaciones existentes..."
+# python manage.py actualizar_estados_evaluaciones
 
 # Popula datos iniciales de evaluaciones (estructura base)
 # DESHABILITADO: Ya se ejecutó una vez, datos ya están en la base de datos
@@ -111,9 +112,9 @@ python manage.py actualizar_estados_evaluaciones
 # python manage.py configurar_evaluacion_auxiliar_sst
 
 # Configura evaluación de Coordinador Administrativo (solo primera vez)
-# NOTA: Ejecutar en primera ejecución, luego comentar
-echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
-python manage.py configurar_evaluacion_coordinador_administrativo
+# DESHABILITADO: Ya se ejecutó exitosamente en producción
+# echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
+# python manage.py configurar_evaluacion_coordinador_administrativo
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

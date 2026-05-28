@@ -17,7 +17,9 @@ from .models import (
     # Messaging
     Conversacion, Mensaje, LecturaConversacion,
     # Feed/Publicaciones
-    Publicacion, Comentario
+    Publicacion, Comentario,
+    # Polla Mundial
+    PartidoMundial, PrediccionMundial
 )
 
 # Registro del modelo TipoDocumento en el admin de Django
@@ -720,6 +722,111 @@ class ComentarioAdmin(admin.ModelAdmin):
         preview = obj.contenido[:50] + '...' if len(obj.contenido) > 50 else obj.contenido
         return preview
     contenido_preview.short_description = 'Contenido'
+
+
+# =============================================================================
+# POLLA MUNDIALISTA 2026
+# =============================================================================
+
+@admin.register(PartidoMundial)
+class PartidoMundialAdmin(admin.ModelAdmin):
+    """Admin para gestionar partidos del mundial"""
+    list_display = ('equipo_local', 'equipo_visitante', 'fase', 'fecha_hora', 'resultado_display', 'finalizado', 'activo')
+    list_filter = ('fase', 'finalizado', 'activo', 'fecha_hora')
+    search_fields = ('equipo_local', 'equipo_visitante', 'ciudad', 'estadio')
+    readonly_fields = ('fecha_creacion', 'api_id')
+
+    fieldsets = (
+        ('Equipos', {
+            'fields': ('equipo_local', 'equipo_visitante', 'bandera_local', 'bandera_visitante')
+        }),
+        ('Información del Partido', {
+            'fields': ('fecha_hora', 'fase', 'grupo', 'estadio', 'ciudad')
+        }),
+        ('Resultado', {
+            'fields': ('goles_local', 'goles_visitante', 'finalizado')
+        }),
+        ('Control', {
+            'fields': ('activo', 'api_id', 'fecha_creacion')
+        }),
+    )
+
+    ordering = ('-fecha_hora',)
+    list_per_page = 50
+
+    def resultado_display(self, obj):
+        """Muestra el resultado del partido si finalizó"""
+        if obj.finalizado and obj.goles_local is not None and obj.goles_visitante is not None:
+            return f"{obj.goles_local} - {obj.goles_visitante}"
+        return "-"
+    resultado_display.short_description = 'Resultado'
+
+    actions = ['marcar_como_finalizado', 'activar_predicciones', 'desactivar_predicciones']
+
+    def marcar_como_finalizado(self, request, queryset):
+        """Acción para marcar partidos como finalizados"""
+        count = queryset.update(finalizado=True)
+        self.message_user(request, f'{count} partido(s) marcado(s) como finalizado(s)')
+    marcar_como_finalizado.short_description = 'Marcar como finalizado'
+
+    def activar_predicciones(self, request, queryset):
+        """Acción para activar predicciones"""
+        count = queryset.update(activo=True)
+        self.message_user(request, f'Predicciones activadas para {count} partido(s)')
+    activar_predicciones.short_description = 'Activar predicciones'
+
+    def desactivar_predicciones(self, request, queryset):
+        """Acción para desactivar predicciones"""
+        count = queryset.update(activo=False)
+        self.message_user(request, f'Predicciones desactivadas para {count} partido(s)')
+    desactivar_predicciones.short_description = 'Desactivar predicciones'
+
+
+@admin.register(PrediccionMundial)
+class PrediccionMundialAdmin(admin.ModelAdmin):
+    """Admin para gestionar predicciones de empleados"""
+    list_display = ('empleado', 'partido_display', 'prediccion_display', 'puntos_ganados', 'fecha_prediccion')
+    list_filter = ('fecha_prediccion', 'partido__fase', 'puntos_ganados')
+    search_fields = ('empleado__nombre_completo', 'partido__equipo_local', 'partido__equipo_visitante')
+    readonly_fields = ('fecha_prediccion', 'fecha_actualizacion', 'puntos_ganados')
+
+    fieldsets = (
+        ('Información', {
+            'fields': ('empleado', 'partido')
+        }),
+        ('Predicción', {
+            'fields': ('goles_local_prediccion', 'goles_visitante_prediccion')
+        }),
+        ('Resultado', {
+            'fields': ('puntos_ganados', 'fecha_prediccion', 'fecha_actualizacion')
+        }),
+    )
+
+    ordering = ('-fecha_prediccion',)
+    list_per_page = 100
+
+    def partido_display(self, obj):
+        """Muestra información del partido"""
+        return f"{obj.partido.equipo_local} vs {obj.partido.equipo_visitante}"
+    partido_display.short_description = 'Partido'
+
+    def prediccion_display(self, obj):
+        """Muestra la predicción del empleado"""
+        return f"{obj.goles_local_prediccion} - {obj.goles_visitante_prediccion}"
+    prediccion_display.short_description = 'Predicción'
+
+    actions = ['recalcular_puntos']
+
+    def recalcular_puntos(self, request, queryset):
+        """Acción para recalcular puntos de predicciones"""
+        count = 0
+        for prediccion in queryset:
+            if prediccion.partido.finalizado:
+                prediccion.calcular_puntos()
+                prediccion.save()
+                count += 1
+        self.message_user(request, f'Puntos recalculados para {count} predicción(es)')
+    recalcular_puntos.short_description = 'Recalcular puntos'
 
 
 # Personalización del sitio admin

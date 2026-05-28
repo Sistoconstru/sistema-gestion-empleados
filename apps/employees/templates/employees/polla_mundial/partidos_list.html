@@ -1,0 +1,1020 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Polla Mundial 2026 | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .partido-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+    }
+    .partido-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    .partido-equipos {
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    .bandera {
+        font-size: 2.5rem;
+        margin: 0 10px;
+    }
+    .badge-fase {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    .prediccion-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 15px 0;
+    }
+    .prediccion-form input[type="number"] {
+        width: 60px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    .prediccion-actual {
+        background-color: #e7f3ff;
+        border-left: 4px solid #007bff;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    .resultado-real {
+        background-color: #d4edda;
+        border-left: 4px solid #28a745;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    .puntos-badge {
+        font-size: 1.1rem;
+        padding: 8px 15px;
+    }
+    .top-10-banner {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    .top-10-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0 0;
+    }
+    .top-10-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .top-10-list li:last-child {
+        border-bottom: none;
+    }
+    .medalla {
+        font-size: 1.3rem;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Navegación -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">Marketplace</a></li>
+                    <li class="breadcrumb-item active">Polla Mundial</li>
+                </ol>
+            </nav>
+            <div class="btn-group mb-3" role="group">
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success">
+                    <i class="fas fa-shopping-bag me-1"></i>El Toldo
+                </a>
+                <a href="{% url 'employees:polla_mundial' %}" class="btn btn-success">
+                    <i class="fas fa-trophy me-1"></i>Polla Mundial 2026
+                </a>
+                <a href="{% url 'employees:ranking_mundial' %}" class="btn btn-outline-success">
+                    <i class="fas fa-medal me-1"></i>Ranking
+                </a>
+                <a href="{% url 'employees:mis_predicciones' %}" class="btn btn-outline-success">
+                    <i class="fas fa-list-check me-1"></i>Mis Predicciones
+                </a>
+                <button type="button" class="btn btn-outline-success" onclick="mostrarModalTerminos()">
+                    <i class="fas fa-file-contract me-1"></i>Términos y Condiciones
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1><i class="fas fa-trophy me-2"></i>Polla Mundial 2026</h1>
+            <p class="text-muted">Predice los resultados y gana puntos. ¡Demuestra que eres el mejor!</p>
+        </div>
+    </div>
+
+    <!-- TOP 10 Banner -->
+    {% if top_10 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="top-10-banner">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4><i class="fas fa-star me-2"></i>TOP 10 Mejores Pronosticadores</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ol class="top-10-list" start="1">
+                                    {% for entry in top_10|slice:":5" %}
+                                    <li>
+                                        {% if entry.posicion == 1 %}<span class="medalla">🥇</span>
+                                        {% elif entry.posicion == 2 %}<span class="medalla">🥈</span>
+                                        {% elif entry.posicion == 3 %}<span class="medalla">🥉</span>
+                                        {% else %}<span class="medalla">{{ entry.posicion }}.</span>{% endif %}
+                                        <strong>{{ entry.empleado.nombre_completo }}</strong> - {{ entry.puntos }} pts
+                                    </li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <ol class="top-10-list" start="6">
+                                    {% for entry in top_10|slice:"5:10" %}
+                                    <li>
+                                        <span class="medalla">{{ entry.posicion }}.</span>
+                                        <strong>{{ entry.empleado.nombre_completo }}</strong> - {{ entry.puntos }} pts
+                                    </li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h5>Tu Posición</h5>
+                        <div class="display-3">{% if posicion_usuario %}#{{ posicion_usuario }}{% else %}-{% endif %}</div>
+                        <p class="mb-0"><strong>{{ total_puntos }}</strong> puntos</p>
+                        <p class="mb-0">{{ total_predicciones }} predicciones</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <!-- Fase -->
+                <div class="col-md-3">
+                    <select name="fase" class="form-select">
+                        <option value="">Todas las fases</option>
+                        {% for value, label in fases %}
+                        <option value="{{ value }}" {% if fase_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Estado -->
+                <div class="col-md-3">
+                    <select name="estado" class="form-select">
+                        <option value="proximos" {% if estado_filter == "proximos" %}selected{% endif %}>Próximos Partidos</option>
+                        <option value="finalizados" {% if estado_filter == "finalizados" %}selected{% endif %}>Finalizados</option>
+                        <option value="todos" {% if estado_filter == "todos" %}selected{% endif %}>Todos</option>
+                    </select>
+                </div>
+
+                <!-- Botón buscar -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-filter me-1"></i>Filtrar
+                    </button>
+                </div>
+
+                <!-- Limpiar filtros -->
+                <div class="col-md-3">
+                    <a href="{% url 'employees:polla_mundial' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-redo me-1"></i>Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sistema de puntos -->
+    <div class="alert alert-info mb-4">
+        <h6><i class="fas fa-info-circle me-2"></i>Sistema de Puntos</h6>
+        <div class="row small">
+            <div class="col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Resultado exacto:</strong> 5 puntos</li>
+                    <li><strong>Ganador correcto:</strong> 3 puntos</li>
+                    <li><strong>Empate acertado:</strong> 3 puntos</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Acertar goles de un equipo:</strong> +1 punto</li>
+                    <li><strong>Multiplicadores:</strong> Grupos x1, Octavos x2, Cuartos x3, Semifinal x4, Tercer Lugar x4, Final x5</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Partidos -->
+    {% if partidos %}
+    <div class="row">
+        {% for partido in partidos %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card partido-card">
+                <!-- Equipos y banderas -->
+                <div class="position-relative">
+                    <div class="partido-equipos">
+                        <span class="bandera">{{ partido.bandera_local|default:"⚽" }}</span>
+                        <span>{{ partido.equipo_local|truncatewords:1 }}</span>
+                        <span class="mx-3">vs</span>
+                        <span>{{ partido.equipo_visitante|truncatewords:1 }}</span>
+                        <span class="bandera">{{ partido.bandera_visitante|default:"⚽" }}</span>
+                    </div>
+
+                    <!-- Badge de fase -->
+                    <span class="badge badge-fase
+                        {% if partido.fase == 'final' %}bg-danger
+                        {% elif partido.fase == 'semifinal' or partido.fase == 'tercer_lugar' %}bg-warning
+                        {% elif partido.fase == 'cuartos' %}bg-info
+                        {% else %}bg-success{% endif %}">
+                        {{ partido.get_fase_display }} - x{{ partido.multiplicador_puntos }}
+                    </span>
+                </div>
+
+                <!-- Contenido -->
+                <div class="card-body">
+                    <h6 class="card-title">{{ partido.equipo_local }} vs {{ partido.equipo_visitante }}</h6>
+
+                    <p class="card-text text-muted small">
+                        <i class="fas fa-calendar me-1"></i>{{ partido.fecha_hora|date:"d/m/Y H:i" }}
+                    </p>
+
+                    {% if partido.ciudad %}
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-map-marker-alt me-1"></i>{{ partido.ciudad }}
+                    </p>
+                    {% endif %}
+
+                    <!-- Resultado real (si el partido finalizó) -->
+                    {% if partido.finalizado %}
+                    <div class="resultado-real">
+                        <strong><i class="fas fa-check-circle me-1"></i>Resultado:</strong>
+                        <div class="text-center">
+                            <span class="h4">{{ partido.goles_local }} - {{ partido.goles_visitante }}</span>
+                        </div>
+                        {% if partido.mi_prediccion %}
+                        <div class="text-center mt-2">
+                            <span class="badge bg-primary puntos-badge">
+                                +{{ partido.mi_prediccion.puntos_ganados }} puntos
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Predicción del usuario -->
+                    {% if partido.mi_prediccion %}
+                    <div class="prediccion-actual">
+                        <strong><i class="fas fa-user-check me-1"></i>Tu predicción:</strong>
+                        <div class="text-center">
+                            <span class="h5">{{ partido.mi_prediccion.goles_local_prediccion }} - {{ partido.mi_prediccion.goles_visitante_prediccion }}</span>
+                        </div>
+                        {% if partido.acepta_predicciones %}
+                        <small class="text-muted d-block text-center">Puedes modificarla</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Estadísticas de predicciones -->
+                    <div class="estadisticas-partido" id="stats-{{ partido.id }}" data-partido-id="{{ partido.id }}">
+                        <div class="text-center">
+                            <small class="text-muted"><i class="fas fa-spinner fa-spin"></i> Cargando estadísticas...</small>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de predicción -->
+                    {% if partido.acepta_predicciones %}
+                    <form class="prediccion-form" data-partido-id="{{ partido.id }}" onsubmit="guardarPrediccion(event, {{ partido.id }})">
+                        {% csrf_token %}
+                        <input type="number" name="goles_local_prediccion" class="form-control" min="0" max="20"
+                               value="{% if partido.mi_prediccion %}{{ partido.mi_prediccion.goles_local_prediccion }}{% else %}0{% endif %}" required>
+                        <span class="fw-bold">-</span>
+                        <input type="number" name="goles_visitante_prediccion" class="form-control" min="0" max="20"
+                               value="{% if partido.mi_prediccion %}{{ partido.mi_prediccion.goles_visitante_prediccion }}{% else %}0{% endif %}" required>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-save"></i>
+                        </button>
+                    </form>
+                    <small class="text-center d-block text-muted">
+                        <i class="fas fa-clock me-1"></i>Cierra: {{ partido.tiempo_restante }}
+                    </small>
+                    {% else %}
+                    <div class="alert alert-secondary text-center p-2 small mb-0">
+                        <i class="fas fa-lock me-1"></i>Predicciones cerradas
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Sin resultados -->
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <h4>No hay partidos disponibles</h4>
+        <p class="mb-0">Intenta cambiar los filtros o espera a que se agreguen nuevos partidos</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal para ver marcadores detallados -->
+<div class="modal fade" id="modalMarcadores" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMarcadoresTitle">Predicciones del Partido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalMarcadoresBody">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p class="mt-2">Cargando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Términos y Condiciones - Polla Mundial 2026 -->
+<div class="modal fade" id="modalTerminosPolla" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract me-2"></i>
+                    Términos y Condiciones - Polla Mundialista 2026
+                </h5>
+            </div>
+            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Importante:</strong> Debes leer y aceptar los términos y condiciones para participar en la Polla Mundial 2026.
+                </div>
+
+                <h5 class="mt-4 mb-3">1. ACEPTACIÓN DE LOS TÉRMINOS</h5>
+                <p>Al participar en la <strong>Polla Mundialista 2026</strong> organizada por SIGHU, el empleado declara haber leído, comprendido y aceptado en su totalidad los presentes términos y condiciones. La participación está condicionada a dicha aceptación.</p>
+
+                <h5 class="mt-4 mb-3">2. OBJETO DE LA ACTIVIDAD</h5>
+                <p>La Polla Mundialista 2026 es un juego de predicción de resultados del torneo <strong>Copa Mundial de Fútbol FIFA 2026</strong>, dirigido exclusivamente a empleados de la organización con el fin de promover la integración, el compañerismo y la sana competencia.</p>
+
+                <h5 class="mt-4 mb-3">3. PARTICIPANTES</h5>
+                <ul>
+                    <li>Solo podrán participar empleados <strong>activos de SIGHU</strong> con perfil creado en el sistema.</li>
+                    <li>Cada empleado deberá registrar sus predicciones utilizando <strong>su propio usuario</strong> en la plataforma.</li>
+                    <li>Queda <strong>prohibido</strong> compartir credenciales o realizar predicciones en nombre de otro empleado.</li>
+                    <li>Los organizadores se reservan el derecho de <strong>descalificar</strong> a cualquier participante que incumpla esta norma.</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">4. MECÁNICA DE PARTICIPACIÓN</h5>
+                <h6 class="mt-3 mb-2">4.1 Registro de Predicciones</h6>
+                <ul>
+                    <li>Las predicciones deben registrarse <strong>antes del cierre establecido</strong> para cada partido (5 minutos antes del inicio).</li>
+                    <li>El participante deberá ingresar el marcador que considera se producirá al finalizar el <strong>tiempo reglamentario</strong> (90 minutos + tiempo agregado).</li>
+                    <li>En caso de partidos eliminatorios que requieran definición (penales o tiempo extra), <strong>solo se considerará el resultado del tiempo reglamentario</strong> para efectos de puntuación.</li>
+                </ul>
+
+                <h6 class="mt-3 mb-2">4.2 Modificación de Predicciones</h6>
+                <ul>
+                    <li>Los participantes <strong>podrán modificar</strong> sus predicciones hasta el cierre establecido.</li>
+                    <li>Una vez iniciado el partido, <strong>no se aceptarán cambios</strong>.</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">5. SISTEMA DE PUNTUACIÓN</h5>
+
+                <h6 class="mt-3 mb-2">5.1 Asignación de Puntos Base</h6>
+                <p>Por cada predicción registrada se asignarán puntos según el nivel de acierto:</p>
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tipo de Acierto</th>
+                            <th>Puntos Base</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Resultado exacto</strong></td>
+                            <td><strong>5 puntos</strong></td>
+                            <td>Acertar el marcador final exacto (Ej: predicción 2-1, resultado 2-1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ganador correcto</strong></td>
+                            <td><strong>3 puntos</strong></td>
+                            <td>Acertar qué equipo ganó, aunque no el marcador exacto (Ej: predicción 2-0, resultado 3-1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Empate acertado</strong></td>
+                            <td><strong>3 puntos</strong></td>
+                            <td>Acertar que el partido terminó en empate, aunque no el marcador exacto (Ej: predicción 1-1, resultado 2-2)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Goles de un equipo</strong></td>
+                            <td><strong>+1 punto adicional</strong></td>
+                            <td>Bonificación si además de acertar ganador/empate, acertó los goles de uno de los equipos</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3 mb-2">5.2 Multiplicadores por Fase del Torneo</h6>
+                <p>Los puntos base se <strong>multiplican</strong> según la fase del torneo en que se dispute el partido:</p>
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fase del Torneo</th>
+                            <th>Multiplicador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fase de Grupos</td>
+                            <td><strong>x1</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Octavos de Final</td>
+                            <td><strong>x2</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Cuartos de Final</td>
+                            <td><strong>x3</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Semifinales</td>
+                            <td><strong>x4</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Tercer Lugar</td>
+                            <td><strong>x4</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Final</td>
+                            <td><strong>x5</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Ejemplo:</strong> Acertar el resultado exacto de un partido de <strong>Cuartos de Final</strong> otorga <strong>5 puntos x 3 = 15 puntos</strong>.</p>
+
+                <h6 class="mt-3 mb-2">5.3 Cálculo de Puntos Total</h6>
+                <p><strong>Fórmula:</strong> <code>Puntos Totales = (Puntos Base + Bonificaciones) × Multiplicador de Fase</code></p>
+
+                <h5 class="mt-4 mb-3">6. CRITERIOS DE DESEMPATE EN EL RANKING</h5>
+                <p>En caso de empate en puntos, se aplicarán los siguientes criterios <strong>en orden de prioridad</strong>:</p>
+                <ol>
+                    <li><strong>Total de puntos ganados</strong> (descendente)</li>
+                    <li><strong>Ganadores acertados</strong> - Cantidad de predicciones donde acertó el ganador (≥3 puntos) (descendente)</li>
+                    <li><strong>Marcadores exactos</strong> - Cantidad de predicciones con resultado exacto (≥5 puntos) (descendente)</li>
+                    <li><strong>Total de predicciones</strong> realizadas (descendente)</li>
+                    <li><strong>Anticipación promedio</strong> - Promedio de tiempo de anticipación al hacer predicciones (descendente)</li>
+                </ol>
+
+                <h5 class="mt-4 mb-3">7. RANKING Y TRANSPARENCIA</h5>
+                <ul>
+                    <li>El ranking será <strong>público y actualizado en tiempo real</strong> tras la finalización de cada partido.</li>
+                    <li>Los empleados podrán consultar en cualquier momento:
+                        <ul>
+                            <li>Su posición en el ranking general</li>
+                            <li>El historial de sus predicciones y puntos obtenidos</li>
+                            <li>Estadísticas agregadas de predicciones de otros empleados (sin mostrar datos individuales)</li>
+                        </ul>
+                    </li>
+                    <li>El sistema <strong>no mostrará</strong> las predicciones individuales de otros empleados hasta que el partido haya finalizado.</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">8. PREMIOS Y RECONOCIMIENTOS</h5>
+                <p>Al finalizar el torneo, se entregarán los siguientes premios a los <strong>tres primeros lugares del ranking final</strong>:</p>
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Posición</th>
+                            <th>Premio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🥇 <strong>1er Lugar</strong></td>
+                            <td><strong>$300.000 COP</strong></td>
+                        </tr>
+                        <tr>
+                            <td>🥈 <strong>2do Lugar</strong></td>
+                            <td><strong>$200.000 COP</strong></td>
+                        </tr>
+                        <tr>
+                            <td>🥉 <strong>3er Lugar</strong></td>
+                            <td><strong>$100.000 COP</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Nota:</strong> Los premios serán entregados <strong>en efectivo</strong> dentro de los <strong>15 días hábiles</strong> posteriores a la finalización del torneo.</p>
+
+                <h5 class="mt-4 mb-3">9. RESPONSABILIDADES Y CONDUCTA</h5>
+                <ul>
+                    <li>Los participantes se comprometen a <strong>participar de manera honesta</strong> y en el espíritu de sana competencia.</li>
+                    <li>Queda <strong>estrictamente prohibido</strong>:
+                        <ul>
+                            <li>Manipular el sistema o intentar alterar resultados</li>
+                            <li>Crear múltiples cuentas para participar más de una vez</li>
+                            <li>Compartir credenciales de acceso</li>
+                            <li>Utilizar bots o herramientas automatizadas</li>
+                        </ul>
+                    </li>
+                    <li>El incumplimiento de estas normas resultará en <strong>descalificación inmediata y definitiva</strong>.</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">10. PROTECCIÓN DE DATOS PERSONALES</h5>
+                <ul>
+                    <li>Los datos personales recopilados (nombre, cargo, predicciones) serán utilizados <strong>exclusivamente</strong> para efectos de la Polla Mundial 2026.</li>
+                    <li>El ranking mostrará el nombre del empleado y su posición, pero <strong>no se compartirán</strong> datos sensibles como cédula o información de contacto.</li>
+                    <li>Los participantes autorizan la publicación de su nombre en el ranking y reconocimientos relacionados con la actividad.</li>
+                    <li>Los datos serán tratados conforme a la <strong>Ley 1581 de 2012</strong> (Protección de Datos Personales en Colombia).</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">11. RESOLUCIÓN DE CONFLICTOS</h5>
+                <ul>
+                    <li>Cualquier duda o controversia relacionada con la puntuación, interpretación de resultados o aplicación de las reglas deberá ser dirigida a los <strong>organizadores de SIGHU</strong>.</li>
+                    <li>Las decisiones del comité organizador serán <strong>finales e inapelables</strong>.</li>
+                    <li>En caso de errores técnicos del sistema, los organizadores se reservan el derecho de <strong>recalcular puntos</strong> o tomar medidas correctivas.</li>
+                </ul>
+
+                <h5 class="mt-4 mb-3">12. SUSPENSIÓN O CANCELACIÓN</h5>
+                <p>SIGHU se reserva el derecho de <strong>suspender, modificar o cancelar</strong> la Polla Mundial en caso de:</p>
+                <ul>
+                    <li>Fuerza mayor (cancelación del torneo FIFA, desastres naturales, etc.)</li>
+                    <li>Fallos técnicos irreparables del sistema</li>
+                    <li>Detección de fraude masivo o irregularidades graves</li>
+                </ul>
+                <p>En caso de cancelación de la actividad, <strong>no se entregarán premios</strong>.</p>
+
+                <h5 class="mt-4 mb-3">13. MODIFICACIÓN DE LOS TÉRMINOS</h5>
+                <p>Los organizadores se reservan el derecho de <strong>modificar parcial o totalmente</strong> estos términos y condiciones en cualquier momento. Las modificaciones se comunicarán a los participantes mediante el sistema SIGHU y entrarán en vigor de manera inmediata.</p>
+
+                <h5 class="mt-4 mb-3">14. ACEPTACIÓN FINAL</h5>
+                <p>Al marcar la casilla de aceptación y realizar tu primera predicción, declaras:</p>
+                <ul>
+                    <li>Haber leído y comprendido estos términos en su totalidad</li>
+                    <li>Aceptar todas las condiciones establecidas</li>
+                    <li>Comprometerte a participar de manera honesta y respetuosa</li>
+                    <li>Autorizar el uso de tu nombre en el ranking y reconocimientos públicos</li>
+                </ul>
+
+                <div class="alert alert-success mt-4">
+                    <strong><i class="fas fa-futbol me-2"></i>¡Buena suerte en la Polla Mundialista 2026!</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-check w-100 mb-3">
+                    <input class="form-check-input" type="checkbox" id="aceptoTerminos">
+                    <label class="form-check-label" for="aceptoTerminos">
+                        <strong>He leído y acepto los Términos y Condiciones de la Polla Mundialista 2026</strong>
+                    </label>
+                </div>
+                <div class="d-flex gap-2 w-100">
+                    <button type="button" class="btn btn-danger flex-fill" id="btnRechazarTerminos">
+                        <i class="fas fa-times me-2"></i>No Acepto
+                    </button>
+                    <button type="button" class="btn btn-success flex-fill" id="btnAceptarTerminos" disabled>
+                        <i class="fas fa-check me-2"></i>Acepto y Participo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para guardar predicciones con AJAX -->
+<script>
+// Variables globales para guardar predicción pendiente
+let prediccionPendiente = null;
+
+function guardarPrediccion(event, partidoId) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(`/empleados/polla-mundial/partido/${partidoId}/predecir/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            const mensaje = document.createElement('div');
+            mensaje.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            mensaje.style.zIndex = '9999';
+            mensaje.innerHTML = `
+                <strong><i class="fas fa-check-circle me-2"></i>${data.message}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(mensaje);
+
+            // Auto cerrar después de 3 segundos
+            setTimeout(() => {
+                mensaje.remove();
+            }, 3000);
+
+            // Actualizar o crear el bloque "Tu predicción"
+            const cardBody = form.closest('.card-body');
+            let prediccionActual = cardBody.querySelector('.prediccion-actual');
+
+            if (!prediccionActual) {
+                // Crear el bloque si no existe
+                prediccionActual = document.createElement('div');
+                prediccionActual.className = 'prediccion-actual';
+                // Insertar antes del formulario
+                form.parentNode.insertBefore(prediccionActual, form);
+            }
+
+            // Actualizar el contenido
+            prediccionActual.innerHTML = `
+                <strong><i class="fas fa-user-check me-1"></i>Tu predicción:</strong>
+                <div class="text-center">
+                    <span class="h5">${data.prediccion.goles_local} - ${data.prediccion.goles_visitante}</span>
+                </div>
+                <small class="text-muted d-block text-center">Puedes modificarla</small>
+            `;
+
+            // Efecto visual de guardado
+            prediccionActual.style.animation = 'pulse 0.5s';
+            setTimeout(() => {
+                prediccionActual.style.animation = '';
+            }, 500);
+
+            // Recargar estadísticas del partido
+            cargarEstadisticas(partidoId);
+
+            // Limpiar predicción pendiente
+            prediccionPendiente = null;
+
+        } else {
+            // Verificar si debe mostrar el modal de términos
+            if (data.mostrar_terminos) {
+                // Guardar datos de la predicción para enviar después de aceptar términos
+                prediccionPendiente = {
+                    partidoId: partidoId,
+                    formData: formData,
+                    form: form
+                };
+                mostrarModalTerminos();
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo guardar la predicción'));
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar la predicción');
+    });
+}
+
+// Cargar estadísticas de un partido
+function cargarEstadisticas(partidoId) {
+    const statsDiv = document.getElementById(`stats-${partidoId}`);
+    if (!statsDiv) return;
+
+    fetch(`/empleados/polla-mundial/partido/${partidoId}/estadisticas/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.total === 0) {
+                statsDiv.innerHTML = '<small class="text-muted text-center d-block">Sin predicciones aún</small>';
+                return;
+            }
+
+            const { tendencias, marcadores, total } = data;
+
+            let html = `
+                <div class="estadisticas-box p-2 mb-2" style="background-color: #f8f9fa; border-radius: 5px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted"><i class="fas fa-chart-bar me-1"></i><strong>${total} predicciones</strong></small>
+                        <button class="btn btn-sm btn-outline-primary" onclick="verMarcadores(${partidoId})">
+                            <i class="fas fa-eye me-1"></i>Ver marcadores
+                        </button>
+                    </div>
+                    <div class="row small">
+            `;
+
+            if (tendencias.local.cantidad > 0) {
+                html += `
+                    <div class="col-4 text-center">
+                        <div style="font-size: 0.75rem;">Local</div>
+                        <strong>${tendencias.local.porcentaje}%</strong>
+                    </div>
+                `;
+            }
+
+            if (tendencias.empate.cantidad > 0) {
+                html += `
+                    <div class="col-4 text-center">
+                        <div style="font-size: 0.75rem;">Empate</div>
+                        <strong>${tendencias.empate.porcentaje}%</strong>
+                    </div>
+                `;
+            }
+
+            if (tendencias.visitante.cantidad > 0) {
+                html += `
+                    <div class="col-4 text-center">
+                        <div style="font-size: 0.75rem;">Visitante</div>
+                        <strong>${tendencias.visitante.porcentaje}%</strong>
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            statsDiv.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error cargando estadísticas:', error);
+            statsDiv.innerHTML = '<small class="text-muted text-center d-block">Error al cargar</small>';
+        });
+}
+
+// Mostrar modal con marcadores detallados
+function verMarcadores(partidoId) {
+    const modal = new bootstrap.Modal(document.getElementById('modalMarcadores'));
+    const modalBody = document.getElementById('modalMarcadoresBody');
+
+    modalBody.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+    modal.show();
+
+    fetch(`/empleados/polla-mundial/partido/${partidoId}/estadisticas/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('modalMarcadoresTitle').textContent =
+                `${data.equipo_local} vs ${data.equipo_visitante}`;
+
+            if (data.total === 0) {
+                modalBody.innerHTML = '<p class="text-center text-muted">Aún no hay predicciones para este partido</p>';
+                return;
+            }
+
+            let html = `
+                <div class="mb-3 text-center">
+                    <span class="badge bg-primary">${data.total} predicciones totales</span>
+                </div>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Marcador</th>
+                            <th class="text-end">Empleados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.marcadores.forEach((m, index) => {
+                const esPopular = index === 0;
+                html += `
+                    <tr ${esPopular ? 'class="table-success"' : ''}>
+                        <td>
+                            <strong>${m.marcador}</strong>
+                            ${esPopular ? '<span class="badge bg-warning text-dark ms-2">Más popular</span>' : ''}
+                        </td>
+                        <td class="text-end">
+                            <span class="badge bg-secondary">${m.cantidad} ${m.cantidad === 1 ? 'empleado' : 'empleados'}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            modalBody.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            modalBody.innerHTML = '<p class="text-center text-danger">Error al cargar los marcadores</p>';
+        });
+}
+
+// Cargar estadísticas de todos los partidos al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.estadisticas-partido').forEach(statsDiv => {
+        const partidoId = statsDiv.dataset.partidoId;
+        cargarEstadisticas(partidoId);
+    });
+
+    // Configurar modal de términos y condiciones
+    configurarModalTerminos();
+});
+
+// ===== MODAL DE TÉRMINOS Y CONDICIONES =====
+
+function mostrarModalTerminos() {
+    const modal = new bootstrap.Modal(document.getElementById('modalTerminosPolla'));
+    modal.show();
+}
+
+function configurarModalTerminos() {
+    const checkbox = document.getElementById('aceptoTerminos');
+    const btnAceptar = document.getElementById('btnAceptarTerminos');
+    const btnRechazar = document.getElementById('btnRechazarTerminos');
+
+    // Habilitar botón solo cuando checkbox está marcado
+    checkbox.addEventListener('change', function() {
+        btnAceptar.disabled = !this.checked;
+    });
+
+    // Manejar clic en botón de RECHAZO
+    btnRechazar.addEventListener('click', function() {
+        // Mostrar mensaje de confirmación
+        if (confirm('Si no aceptas los términos y condiciones, no podrás participar en la Polla Mundial 2026.\n\n¿Estás seguro de que deseas salir?')) {
+            // Redirigir al marketplace (El Toldo)
+            window.location.href = "{% url 'employees:producto_list' %}";
+        }
+    });
+
+    // Manejar clic en botón de ACEPTAR
+    btnAceptar.addEventListener('click', function() {
+        if (!checkbox.checked) return;
+
+        // Deshabilitar botón mientras se procesa
+        btnAceptar.disabled = true;
+        btnAceptar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+
+        // Enviar aceptación al servidor
+        fetch('/empleados/polla-mundial/aceptar-terminos/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalTerminosPolla'));
+                modal.hide();
+
+                // Si hay una predicción pendiente, guardarla automáticamente
+                if (prediccionPendiente) {
+                    guardarPrediccionPendiente();
+                } else {
+                    // Mostrar mensaje de éxito simple
+                    const mensaje = document.createElement('div');
+                    mensaje.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                    mensaje.style.zIndex = '9999';
+                    mensaje.innerHTML = `
+                        <strong><i class="fas fa-check-circle me-2"></i>Términos aceptados correctamente</strong>
+                        <p class="mb-0 small">Ahora puedes realizar tus predicciones</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(mensaje);
+
+                    setTimeout(() => {
+                        mensaje.remove();
+                    }, 5000);
+                }
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo registrar la aceptación'));
+                btnAceptar.disabled = false;
+                btnAceptar.innerHTML = '<i class="fas fa-check me-2"></i>Acepto y Participo';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al procesar la aceptación');
+            btnAceptar.disabled = false;
+            btnAceptar.innerHTML = '<i class="fas fa-check me-2"></i>Acepto y Participo';
+        });
+    });
+}
+
+// Función para guardar automáticamente la predicción pendiente después de aceptar términos
+function guardarPrediccionPendiente() {
+    if (!prediccionPendiente) return;
+
+    const { partidoId, formData, form } = prediccionPendiente;
+
+    // Mostrar mensaje de carga
+    const mensaje = document.createElement('div');
+    mensaje.className = 'alert alert-info alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+    mensaje.style.zIndex = '9999';
+    mensaje.id = 'mensajeGuardandoPrediccion';
+    mensaje.innerHTML = `
+        <strong><i class="fas fa-spinner fa-spin me-2"></i>Guardando tu predicción...</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(mensaje);
+
+    // Reenviar la predicción al servidor
+    fetch(`/empleados/polla-mundial/partido/${partidoId}/predecir/`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Remover mensaje de carga
+        mensaje.remove();
+
+        if (data.success) {
+            // Mostrar mensaje de éxito combinado
+            const mensajeExito = document.createElement('div');
+            mensajeExito.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            mensajeExito.style.zIndex = '9999';
+            mensajeExito.innerHTML = `
+                <strong><i class="fas fa-check-circle me-2"></i>¡Listo!</strong>
+                <p class="mb-1 small">✅ Términos aceptados</p>
+                <p class="mb-0 small">✅ Predicción guardada correctamente</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(mensajeExito);
+
+            setTimeout(() => {
+                mensajeExito.remove();
+            }, 5000);
+
+            // Actualizar o crear el bloque "Tu predicción"
+            const cardBody = form.closest('.card-body');
+            let prediccionActual = cardBody.querySelector('.prediccion-actual');
+
+            if (!prediccionActual) {
+                prediccionActual = document.createElement('div');
+                prediccionActual.className = 'prediccion-actual';
+                form.parentNode.insertBefore(prediccionActual, form);
+            }
+
+            prediccionActual.innerHTML = `
+                <strong><i class="fas fa-user-check me-1"></i>Tu predicción:</strong>
+                <div class="text-center">
+                    <span class="h5">${data.prediccion.goles_local} - ${data.prediccion.goles_visitante}</span>
+                </div>
+                <small class="text-muted d-block text-center">Puedes modificarla</small>
+            `;
+
+            // Efecto visual
+            prediccionActual.style.animation = 'pulse 0.5s';
+            setTimeout(() => {
+                prediccionActual.style.animation = '';
+            }, 500);
+
+            // Recargar estadísticas
+            cargarEstadisticas(partidoId);
+
+            // Limpiar predicción pendiente
+            prediccionPendiente = null;
+        } else {
+            alert('Error al guardar la predicción: ' + (data.error || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        mensaje.remove();
+        console.error('Error:', error);
+        alert('Error al guardar la predicción automáticamente. Por favor, intenta guardarla nuevamente.');
+    });
+}
+</script>
+
+<style>
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+</style>
+{% endblock %}

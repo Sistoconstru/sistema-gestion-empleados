@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis Predicciones - Polla Mundial 2026 | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .prediccion-item {
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+    .prediccion-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .prediccion-correcta {
+        border-left-color: #28a745;
+        background: #f8fff9;
+    }
+    .prediccion-incorrecta {
+        border-left-color: #dc3545;
+        background: #fff8f8;
+    }
+    .prediccion-pendiente {
+        border-left-color: #ffc107;
+        background: #fffef8;
+    }
+    .marcador {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0 10px;
+    }
+    .stats-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    .stat-box {
+        text-align: center;
+    }
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Navegación -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">Marketplace</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employees:polla_mundial' %}">Polla Mundial</a></li>
+                    <li class="breadcrumb-item active">Mis Predicciones</li>
+                </ol>
+            </nav>
+            <div class="btn-group mb-3" role="group">
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success">
+                    <i class="fas fa-shopping-bag me-1"></i>El Toldo
+                </a>
+                <a href="{% url 'employees:polla_mundial' %}" class="btn btn-outline-success">
+                    <i class="fas fa-trophy me-1"></i>Polla Mundial 2026
+                </a>
+                <a href="{% url 'employees:ranking_mundial' %}" class="btn btn-outline-success">
+                    <i class="fas fa-medal me-1"></i>Ranking
+                </a>
+                <a href="{% url 'employees:mis_predicciones' %}" class="btn btn-success">
+                    <i class="fas fa-list-check me-1"></i>Mis Predicciones
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1><i class="fas fa-list-check me-2"></i>Mis Predicciones</h1>
+            <p class="text-muted">Historial completo de todas tus predicciones</p>
+        </div>
+    </div>
+
+    <!-- Resumen de Estadísticas -->
+    <div class="stats-summary">
+        <div class="row">
+            <div class="col-md-4 stat-box">
+                <i class="fas fa-star fa-2x mb-2"></i>
+                <div class="stat-value">{{ total_puntos }}</div>
+                <div>Puntos Totales</div>
+            </div>
+            <div class="col-md-4 stat-box">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <div class="stat-value">{{ total_predicciones }}</div>
+                <div>Predicciones Realizadas</div>
+            </div>
+            <div class="col-md-4 stat-box">
+                <i class="fas fa-bullseye fa-2x mb-2"></i>
+                <div class="stat-value">{{ aciertos_exactos }}</div>
+                <div>Resultados Exactos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Predicciones por Fase -->
+    {% if predicciones_por_fase %}
+        {% for fase, predicciones in predicciones_por_fase.items %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-futbol me-2"></i>{{ fase }}</h5>
+            </div>
+            <div class="card-body">
+                {% for prediccion in predicciones %}
+                <div class="prediccion-item
+                    {% if prediccion.partido.finalizado %}
+                        {% if prediccion.puntos_ganados >= 5 %}prediccion-correcta
+                        {% elif prediccion.puntos_ganados > 0 %}prediccion-pendiente
+                        {% else %}prediccion-incorrecta{% endif %}
+                    {% else %}prediccion-pendiente{% endif %}">
+
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2" style="font-size: 1.5rem;">{{ prediccion.partido.bandera_local|default:"⚽" }}</span>
+                                <strong>{{ prediccion.partido.equipo_local }}</strong>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <span class="me-2" style="font-size: 1.5rem;">{{ prediccion.partido.bandera_visitante|default:"⚽" }}</span>
+                                <strong>{{ prediccion.partido.equipo_visitante }}</strong>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-calendar me-1"></i>{{ prediccion.partido.fecha_hora|date:"d/m/Y H:i" }}
+                            </small>
+                        </div>
+
+                        <div class="col-md-3 text-center">
+                            <small class="text-muted d-block mb-1">Tu Predicción</small>
+                            <div class="marcador text-primary">
+                                {{ prediccion.goles_local_prediccion }} - {{ prediccion.goles_visitante_prediccion }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 text-center">
+                            {% if prediccion.partido.finalizado %}
+                            <small class="text-muted d-block mb-1">Resultado Real</small>
+                            <div class="marcador text-success">
+                                {{ prediccion.partido.goles_local }} - {{ prediccion.partido.goles_visitante }}
+                            </div>
+                            {% else %}
+                            <small class="text-warning">
+                                <i class="fas fa-clock me-1"></i>Pendiente
+                            </small>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-2 text-center">
+                            {% if prediccion.partido.finalizado %}
+                                {% if prediccion.puntos_ganados >= 5 %}
+                                <span class="badge bg-success p-3" style="font-size: 1.2rem;">
+                                    <i class="fas fa-trophy me-1"></i>{{ prediccion.puntos_ganados }} pts
+                                </span>
+                                {% elif prediccion.puntos_ganados > 0 %}
+                                <span class="badge bg-warning p-3" style="font-size: 1.2rem;">
+                                    <i class="fas fa-star me-1"></i>{{ prediccion.puntos_ganados }} pts
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary p-3">
+                                    <i class="fas fa-times me-1"></i>0 pts
+                                </span>
+                                {% endif %}
+                            {% else %}
+                            <span class="badge bg-info p-3">
+                                <i class="fas fa-hourglass-half me-1"></i>Esperando
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <!-- Sin predicciones -->
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <h4>Aún no has hecho predicciones</h4>
+        <p class="mb-0">Ve a la lista de partidos y comienza a predecir los resultados</p>
+        <a href="{% url 'employees:polla_mundial' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-trophy me-2"></i>Hacer Predicciones
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

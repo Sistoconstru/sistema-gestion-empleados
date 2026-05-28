@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ranking Polla Mundial 2026 | SIGHU{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ranking-table {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .ranking-table tbody tr {
+        transition: background-color 0.2s;
+    }
+    .ranking-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .posicion-badge {
+        font-size: 1.2rem;
+        font-weight: bold;
+        width: 45px;
+        height: 45px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .posicion-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+    .posicion-2 { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: white; }
+    .posicion-3 { background: linear-gradient(135deg, #CD7F32, #B87333); color: white; }
+    .posicion-otros { background: #e9ecef; color: #495057; }
+
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    .medalla-grande {
+        font-size: 3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Navegación -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employees:producto_list' %}">Marketplace</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'employees:polla_mundial' %}">Polla Mundial</a></li>
+                    <li class="breadcrumb-item active">Ranking</li>
+                </ol>
+            </nav>
+            <div class="btn-group mb-3" role="group">
+                <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success">
+                    <i class="fas fa-shopping-bag me-1"></i>El Toldo
+                </a>
+                <a href="{% url 'employees:polla_mundial' %}" class="btn btn-outline-success">
+                    <i class="fas fa-trophy me-1"></i>Polla Mundial 2026
+                </a>
+                <a href="{% url 'employees:ranking_mundial' %}" class="btn btn-success">
+                    <i class="fas fa-medal me-1"></i>Ranking
+                </a>
+                <a href="{% url 'employees:mis_predicciones' %}" class="btn btn-outline-success">
+                    <i class="fas fa-list-check me-1"></i>Mis Predicciones
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1><i class="fas fa-medal me-2"></i>Ranking General</h1>
+            <p class="text-muted">Clasificación completa de todos los participantes</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas Generales -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card text-center">
+                <i class="fas fa-futbol mb-2" style="font-size: 2rem;"></i>
+                <div class="stat-number">{{ total_partidos }}</div>
+                <div>Partidos Totales</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card text-center">
+                <i class="fas fa-check-circle mb-2" style="font-size: 2rem;"></i>
+                <div class="stat-number">{{ partidos_finalizados }}</div>
+                <div>Partidos Jugados</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card text-center">
+                <i class="fas fa-users mb-2" style="font-size: 2rem;"></i>
+                <div class="stat-number">{{ total_participantes }}</div>
+                <div>Participantes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Podio TOP 3 -->
+    {% if ranking %}
+    <div class="row mb-4">
+        {% if ranking|length >= 2 %}
+        <!-- 2do Lugar -->
+        <div class="col-md-4 order-md-1 text-center mb-3">
+            <div class="card h-100" style="background: linear-gradient(135deg, #C0C0C0, #E8E8E8);">
+                <div class="card-body">
+                    <div class="medalla-grande">🥈</div>
+                    <div class="badge bg-success mb-2" style="font-size: 1rem;">💰 $200.000</div>
+                    <h4 class="mt-2">{{ ranking.1.empleado.nombre_completo }}</h4>
+                    <p class="mb-1"><small>{{ ranking.1.empleado.cargo_actual.nombre|default:"-" }}</small></p>
+                    <div class="display-4 fw-bold">{{ ranking.1.total_puntos }}</div>
+                    <p>puntos</p>
+                    <small>{{ ranking.1.total_predicciones }} predicciones | {{ ranking.1.aciertos_exactos }} exactos</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 1er Lugar -->
+        <div class="col-md-4 order-md-2 text-center mb-3">
+            <div class="card h-100" style="background: linear-gradient(135deg, #FFD700, #FFA500); transform: scale(1.05);">
+                <div class="card-body">
+                    <div class="medalla-grande">🥇</div>
+                    <div class="badge bg-danger mb-2" style="font-size: 1.1rem;">🏆 $300.000</div>
+                    <h3 class="mt-2 text-white">{{ ranking.0.empleado.nombre_completo }}</h3>
+                    <p class="mb-1 text-white"><small>{{ ranking.0.empleado.cargo_actual.nombre|default:"-" }}</small></p>
+                    <div class="display-3 fw-bold text-white">{{ ranking.0.total_puntos }}</div>
+                    <p class="text-white">puntos</p>
+                    <small class="text-white">{{ ranking.0.total_predicciones }} predicciones | {{ ranking.0.aciertos_exactos }} exactos</small>
+                </div>
+            </div>
+        </div>
+
+        {% if ranking|length >= 3 %}
+        <!-- 3er Lugar -->
+        <div class="col-md-4 order-md-3 text-center mb-3">
+            <div class="card h-100" style="background: linear-gradient(135deg, #CD7F32, #D4A574);">
+                <div class="card-body">
+                    <div class="medalla-grande">🥉</div>
+                    <div class="badge bg-warning text-dark mb-2" style="font-size: 1rem;">💰 $100.000</div>
+                    <h4 class="mt-2">{{ ranking.2.empleado.nombre_completo }}</h4>
+                    <p class="mb-1"><small>{{ ranking.2.empleado.cargo_actual.nombre|default:"-" }}</small></p>
+                    <div class="display-4 fw-bold">{{ ranking.2.total_puntos }}</div>
+                    <p>puntos</p>
+                    <small>{{ ranking.2.total_predicciones }} predicciones | {{ ranking.2.aciertos_exactos }} exactos</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tabla completa de ranking -->
+    <div class="card ranking-table">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Clasificación Completa</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="80" class="text-center">Pos.</th>
+                            <th>Empleado</th>
+                            <th width="100" class="text-center">Puntos</th>
+                            <th width="100" class="text-center">Predicciones</th>
+                            <th width="80" class="text-center">Exactos</th>
+                            <th width="100" class="text-center">Efectividad</th>
+                            <th width="120" class="text-center">Anticipación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in ranking %}
+                        <tr {% if entry.empleado.id == request.user.empleado.id %}class="table-info"{% endif %}>
+                            <td class="text-center">
+                                <span class="posicion-badge
+                                    {% if entry.posicion == 1 %}posicion-1
+                                    {% elif entry.posicion == 2 %}posicion-2
+                                    {% elif entry.posicion == 3 %}posicion-3
+                                    {% else %}posicion-otros{% endif %}">
+                                    {% if entry.posicion == 1 %}🥇
+                                    {% elif entry.posicion == 2 %}🥈
+                                    {% elif entry.posicion == 3 %}🥉
+                                    {% else %}{{ entry.posicion }}{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>{{ entry.empleado.nombre_completo }}</strong>
+                                    {% if entry.empleado.id == request.user.empleado.id %}
+                                    <span class="badge bg-info ms-2">Tú</span>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">{{ entry.empleado.cargo_actual.nombre|default:"-" }}</small>
+                            </td>
+                            <td class="text-center">
+                                <strong class="text-primary" style="font-size: 1.2rem;">{{ entry.total_puntos }}</strong>
+                            </td>
+                            <td class="text-center">{{ entry.total_predicciones }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-success">{{ entry.aciertos_exactos }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info">{{ entry.efectividad }}%</span>
+                            </td>
+                            <td class="text-center">
+                                <small class="text-muted">{{ entry.anticipacion|default:"-" }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Sin participantes -->
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-info-circle fa-3x mb-3"></i>
+        <h4>Aún no hay participantes</h4>
+        <p class="mb-0">Sé el primero en hacer tus predicciones</p>
+        <a href="{% url 'employees:polla_mundial' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-trophy me-2"></i>Hacer Predicciones
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

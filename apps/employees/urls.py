@@ -3,7 +3,7 @@
 # =============================================================================
 
 from django.urls import path
-from . import views, feed_views
+from . import views, feed_views, views_polla_mundial
 
 app_name = 'employees'
 
@@ -99,4 +99,14 @@ urlpatterns = [
     path('feed/anuncio/crear/', feed_views.CrearAnuncioImportanteView.as_view(), name='crear_anuncio'),
     path('feed/preview-renderizado/', feed_views.preview_renderizado_anuncio, name='preview_renderizado_anuncio'),
     path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),
+
+    # =============================================================================
+    # POLLA MUNDIALISTA 2026
+    # =============================================================================
+    path('polla-mundial/', views_polla_mundial.polla_mundial_lista, name='polla_mundial'),
+    path('polla-mundial/ranking/', views_polla_mundial.ranking_mundial, name='ranking_mundial'),
+    path('polla-mundial/mis-predicciones/', views_polla_mundial.mis_predicciones, name='mis_predicciones'),
+    path('polla-mundial/partido/<int:partido_id>/predecir/', views_polla_mundial.guardar_prediccion, name='guardar_prediccion'),
+    path('polla-mundial/partido/<int:partido_id>/estadisticas/', views_polla_mundial.estadisticas_partido, name='estadisticas_partido'),
+    path('polla-mundial/aceptar-terminos/', views_polla_mundial.aceptar_terminos_polla, name='aceptar_terminos_polla'),
 ]

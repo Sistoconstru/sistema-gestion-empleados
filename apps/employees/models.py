@@ -131,6 +131,11 @@ class Empleado(BaseModel):
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)  # Teléfono contacto emergencia
     correo_electronico = models.EmailField(blank=True)  # Email
     direccion = models.CharField(max_length=200, blank=False, help_text="Dirección de residencia (debe iniciar con el tipo de vía completo)")  # Dirección de residencia
+
+    # Polla Mundial 2026 - Aceptación de términos
+    acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
+    fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")
+
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
 
     class Meta:
@@ -1013,4 +1018,220 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.autor.nombre_completo} en {self.publicacion}"
+
+
+# ===================== POLLA MUNDIALISTA 2026 =====================
+
+class PartidoMundial(models.Model):
+    """Partidos del Mundial 2026 - Módulo temporal para polla mundialista"""
+
+    FASES = [
+        ('grupos', 'Fase de Grupos'),
+        ('octavos', 'Octavos de Final'),
+        ('cuartos', 'Cuartos de Final'),
+        ('semifinal', 'Semifinal'),
+        ('tercer_lugar', 'Tercer Lugar'),
+        ('final', 'Final'),
+    ]
+
+    MULTIPLICADORES_PUNTOS = {
+        'grupos': 1,
+        'octavos': 2,
+        'cuartos': 3,
+        'semifinal': 4,
+        'tercer_lugar': 4,
+        'final': 5,
+    }
+
+    # Información del partido
+    equipo_local = models.CharField(max_length=50, help_text="Nombre del equipo local")
+    equipo_visitante = models.CharField(max_length=50, help_text="Nombre del equipo visitante")
+    bandera_local = models.CharField(max_length=10, blank=True, help_text="Emoji de bandera del equipo local")
+    bandera_visitante = models.CharField(max_length=10, blank=True, help_text="Emoji de bandera del equipo visitante")
+
+    # Fecha y fase
+    fecha_hora = models.DateTimeField(help_text="Fecha y hora del partido")
+    fase = models.CharField(max_length=20, choices=FASES, default='grupos', help_text="Fase del torneo")
+    grupo = models.CharField(max_length=10, blank=True, help_text="Grupo (solo para fase de grupos, ej: A, B, C...)")
+    estadio = models.CharField(max_length=100, blank=True, help_text="Nombre del estadio")
+    ciudad = models.CharField(max_length=50, blank=True, help_text="Ciudad sede")
+
+    # Resultado real (se llena después del partido)
+    goles_local = models.IntegerField(null=True, blank=True, help_text="Goles del equipo local (resultado real)")
+    goles_visitante = models.IntegerField(null=True, blank=True, help_text="Goles del equipo visitante (resultado real)")
+    finalizado = models.BooleanField(default=False, help_text="¿Partido finalizado?")
+
+    # ID externo de la API
+    api_id = models.CharField(max_length=50, blank=True, null=True, unique=True, help_text="ID del partido en TheSportsDB")
+
+    # Control
+    activo = models.BooleanField(default=True, help_text="¿Partido activo para predicciones?")
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'polla_partidos'
+        ordering = ['fecha_hora']
+        indexes = [
+            models.Index(fields=['fecha_hora']),
+            models.Index(fields=['fase', 'fecha_hora']),
+            models.Index(fields=['finalizado']),
+        ]
+        verbose_name = 'Partido Mundial'
+        verbose_name_plural = 'Partidos Mundiales'
+
+    def __str__(self):
+        return f"{self.equipo_local} vs {self.equipo_visitante} - {self.get_fase_display()}"
+
+    @property
+    def multiplicador_puntos(self):
+        """Retorna el multiplicador de puntos según la fase"""
+        return self.MULTIPLICADORES_PUNTOS.get(self.fase, 1)
+
+    @property
+    def acepta_predicciones(self):
+        """Verifica si aún se aceptan predicciones (5 min antes del partido)"""
+        from django.utils import timezone
+        from datetime import timedelta
+
+        if self.finalizado or not self.activo:
+            return False
+
+        # Cerrar predicciones 5 minutos antes del partido
+        cierre = self.fecha_hora - timedelta(minutes=5)
+        return timezone.now() < cierre
+
+    @property
+    def tiempo_restante(self):
+        """Retorna el tiempo restante para hacer predicciones"""
+        from django.utils import timezone
+        from datetime import timedelta
+
+        if not self.acepta_predicciones:
+            return "Cerrado"
+
+        cierre = self.fecha_hora - timedelta(minutes=5)
+        diferencia = cierre - timezone.now()
+
+        if diferencia.days > 0:
+            return f"{diferencia.days}d {diferencia.seconds // 3600}h"
+        elif diferencia.seconds > 3600:
+            return f"{diferencia.seconds // 3600}h {(diferencia.seconds % 3600) // 60}m"
+        else:
+            return f"{diferencia.seconds // 60}m"
+
+
+class PrediccionMundial(models.Model):
+    """Predicciones de empleados para partidos del mundial"""
+
+    empleado = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='predicciones_mundial',
+        help_text="Empleado que realiza la predicción"
+    )
+    partido = models.ForeignKey(
+        PartidoMundial,
+        on_delete=models.CASCADE,
+        related_name='predicciones',
+        help_text="Partido para el cual se hace la predicción"
+    )
+
+    # Predicción del empleado
+    goles_local_prediccion = models.IntegerField(help_text="Predicción de goles del equipo local")
+    goles_visitante_prediccion = models.IntegerField(help_text="Predicción de goles del equipo visitante")
+
+    # Puntos obtenidos (calculado automáticamente cuando finaliza el partido)
+    puntos_ganados = models.IntegerField(default=0, help_text="Puntos obtenidos por esta predicción")
+
+    # Timestamps
+    fecha_prediccion = models.DateTimeField(auto_now_add=True, help_text="Fecha y hora de la predicción")
+    fecha_actualizacion = models.DateTimeField(auto_now=True, help_text="Última actualización de la predicción")
+
+    class Meta:
+        db_table = 'polla_predicciones'
+        unique_together = ['empleado', 'partido']
+        ordering = ['-fecha_prediccion']
+        indexes = [
+            models.Index(fields=['empleado', '-puntos_ganados']),
+            models.Index(fields=['partido', '-puntos_ganados']),
+        ]
+        verbose_name = 'Predicción Mundial'
+        verbose_name_plural = 'Predicciones Mundiales'
+
+    def __str__(self):
+        return f"{self.empleado.nombre_completo}: {self.goles_local_prediccion}-{self.goles_visitante_prediccion} ({self.partido})"
+
+    def calcular_puntos(self):
+        """
+        Calcula los puntos obtenidos por esta predicción según el resultado real
+
+        Sistema de puntos:
+        - Resultado exacto (marcador + ganador): 5 puntos
+        - Ganador correcto: 3 puntos
+        - Empate acertado: 3 puntos
+        - Acertar goles de un equipo: +1 punto
+
+        Los puntos se multiplican por el multiplicador de la fase
+        """
+        partido = self.partido
+
+        # Si el partido no ha finalizado, no se calculan puntos
+        if not partido.finalizado or partido.goles_local is None or partido.goles_visitante is None:
+            self.puntos_ganados = 0
+            return 0
+
+        puntos = 0
+
+        # 1. Verificar resultado exacto (5 puntos)
+        if (self.goles_local_prediccion == partido.goles_local and
+            self.goles_visitante_prediccion == partido.goles_visitante):
+            puntos = 5
+
+        # 2. Verificar ganador correcto o empate (3 puntos)
+        elif self._mismo_resultado(partido):
+            puntos = 3
+
+            # 3. Bonus: Acertar goles de algún equipo (+1 punto)
+            if self.goles_local_prediccion == partido.goles_local:
+                puntos += 1
+            elif self.goles_visitante_prediccion == partido.goles_visitante:
+                puntos += 1
+
+        # 4. Solo acertó goles de un equipo sin acertar ganador (1 punto)
+        else:
+            if self.goles_local_prediccion == partido.goles_local:
+                puntos += 1
+            if self.goles_visitante_prediccion == partido.goles_visitante:
+                puntos += 1
+
+        # Aplicar multiplicador de la fase
+        puntos_finales = puntos * partido.multiplicador_puntos
+
+        self.puntos_ganados = puntos_finales
+        return puntos_finales
+
+    def _mismo_resultado(self, partido):
+        """Verifica si acertó el resultado (ganador o empate)"""
+        # Resultado real
+        if partido.goles_local > partido.goles_visitante:
+            resultado_real = 'local'
+        elif partido.goles_local < partido.goles_visitante:
+            resultado_real = 'visitante'
+        else:
+            resultado_real = 'empate'
+
+        # Predicción
+        if self.goles_local_prediccion > self.goles_visitante_prediccion:
+            prediccion = 'local'
+        elif self.goles_local_prediccion < self.goles_visitante_prediccion:
+            prediccion = 'visitante'
+        else:
+            prediccion = 'empate'
+
+        return resultado_real == prediccion
+
+    @property
+    def puede_modificar(self):
+        """Verifica si aún puede modificar la predicción"""
+        return self.partido.acepta_predicciones
 
