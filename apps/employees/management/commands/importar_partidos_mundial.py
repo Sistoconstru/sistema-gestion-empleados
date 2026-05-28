@@ -37,13 +37,14 @@ class Command(BaseCommand):
         API_KEY = os.getenv('THESPORTSDB_API_KEY', '3')
 
         if API_KEY == 'TU_API_KEY_PREMIUM_AQUI' or API_KEY == '3':
-            self.stdout.write(self.style.ERROR('⚠️  ADVERTENCIA: Usando API key gratuita o no configurada'))
+            self.stdout.write(self.style.ERROR('ADVERTENCIA: Usando API key gratuita o no configurada'))
             self.stdout.write(self.style.WARNING('Configura THESPORTSDB_API_KEY en tu archivo .env con tu API key premium'))
-            self.stdout.write(self.style.WARNING('Continúa con limitaciones de la API gratuita (15 requests/mes)...\n'))
+            self.stdout.write(self.style.WARNING('Continua con limitaciones de la API gratuita (15 requests/mes)...\n'))
+            BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
         else:
-            self.stdout.write(self.style.SUCCESS(f'✓ Usando API key Premium: {API_KEY[:6]}...'))
-
-        BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
+            self.stdout.write(self.style.SUCCESS(f'Usando API key Premium: {API_KEY[:6]}...'))
+            # API Premium usa v2
+            BASE_URL = 'https://www.thesportsdb.com/api/v2/json'
 
         # ID de la liga del Mundial de FIFA
         LEAGUE_ID = '4429'  # FIFA World Cup
@@ -108,7 +109,7 @@ class Command(BaseCommand):
 
                     if created:
                         creados += 1
-                        self.stdout.write(self.style.SUCCESS(f'✓ Creado: {partido.equipo_local} vs {partido.equipo_visitante}'))
+                        self.stdout.write(self.style.SUCCESS(f'Creado: {partido.equipo_local} vs {partido.equipo_visitante}'))
                     else:
                         actualizados += 1
                         self.stdout.write(f'  Actualizado: {partido.equipo_local} vs {partido.equipo_visitante}')

@@ -40,10 +40,12 @@ class Command(BaseCommand):
         API_KEY = os.getenv('THESPORTSDB_API_KEY', '3')
 
         if API_KEY == 'TU_API_KEY_PREMIUM_AQUI' or API_KEY == '3':
-            self.stdout.write(self.style.ERROR('⚠️  ADVERTENCIA: Usando API key gratuita'))
+            self.stdout.write(self.style.ERROR('ADVERTENCIA: Usando API key gratuita'))
             self.stdout.write(self.style.WARNING('Configura THESPORTSDB_API_KEY en tu archivo .env\n'))
-
-        BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
+            BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
+        else:
+            # API Premium usa v2
+            BASE_URL = 'https://www.thesportsdb.com/api/v2/json'
 
         # Obtener partidos que tienen API ID pero no están finalizados
         partidos_pendientes = PartidoMundial.objects.filter(
