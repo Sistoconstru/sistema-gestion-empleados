@@ -48,7 +48,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "Configurando Railway CLI para proyecto construinmuniza..."
-          railway link construinmuniza -e production
+          railway link --project construinmuniza --environment production
 
       - name: Actualizar equipos TBD
         env:
