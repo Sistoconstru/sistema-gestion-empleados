@@ -23,12 +23,10 @@ jobs:
     name: Actualizar resultados y equipos
     runs-on: ubuntu-latest
 
-    # Descomentar estas líneas durante el Mundial 2026 para limitar ejecución
-    # if: |
-    #   github.event_name == 'workflow_dispatch' ||
-    #   (github.event_name == 'schedule' &&
-    #    github.event.schedule == '0,30 13-23 * * *' &&
-    #    github.ref == 'refs/heads/main')
+    # Solo ejecutar desde la rama mi-rama o manualmente
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && github.ref == 'refs/heads/mi-rama')
 
     steps:
       - name: Checkout código
@@ -45,35 +43,42 @@ jobs:
       - name: Verificar Railway CLI
         run: railway --version
 
+      - name: Configurar Railway Project
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "Configurando Railway CLI para proyecto construinmuniza..."
+          railway link construinmuniza -e production
+
       - name: Actualizar equipos TBD
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "🔄 Actualizando equipos TBD..."
-          railway run python manage.py actualizar_equipos_tbd || echo "⚠️ Error actualizando TBD (continuando...)"
+          echo "Actualizando equipos TBD..."
+          railway run --service sighu-web python manage.py actualizar_equipos_tbd || echo "Error actualizando TBD (continuando...)"
 
       - name: Actualizar resultados de partidos
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "📊 Actualizando resultados de partidos..."
-          railway run python manage.py actualizar_resultados_mundial --verbose
+          echo "Actualizando resultados de partidos..."
+          railway run --service sighu-web python manage.py actualizar_resultados_mundial --verbose
 
       - name: Importar nuevos partidos
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "📥 Verificando nuevos partidos..."
-          railway run python manage.py importar_partidos_mundial --force || echo "⚠️ Sin nuevos partidos"
+          echo "Verificando nuevos partidos..."
+          railway run --service sighu-web python manage.py importar_partidos_mundial --force || echo "Sin nuevos partidos"
 
       - name: Notificar resultado
         if: always()
         run: |
-          echo "✅ Actualización completada - $(date -u)"
+          echo "Actualización completada - $(date -u)"
           echo "Próxima ejecución programada en 30 minutos"
 
       - name: Notificar error
         if: failure()
         run: |
-          echo "❌ Error en la actualización - $(date -u)"
+          echo "Error en la actualización - $(date -u)"
           echo "Revisar logs de Railway y GitHub Actions"
