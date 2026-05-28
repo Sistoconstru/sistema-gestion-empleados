@@ -116,6 +116,10 @@ python manage.py migrate
 # echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
 # python manage.py configurar_evaluacion_coordinador_administrativo
 
+# TEMPORAL: Importar partidos del Mundial 2026 (REMOVER DESPUÉS DE PRIMERA EJECUCIÓN)
+echo "⚽ Importando partidos del Mundial 2026..."
+python manage.py importar_partidos_mundial --season=2026 || echo "⚠️ Ya existen partidos o error en importación"
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 
