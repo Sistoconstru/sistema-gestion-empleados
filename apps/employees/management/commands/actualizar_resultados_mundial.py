@@ -40,12 +40,14 @@ class Command(BaseCommand):
         API_KEY = os.getenv('THESPORTSDB_API_KEY', '3')
 
         if API_KEY == 'TU_API_KEY_PREMIUM_AQUI' or API_KEY == '3':
-            self.stdout.write(self.style.ERROR('ADVERTENCIA: Usando API key gratuita'))
-            self.stdout.write(self.style.WARNING('Configura THESPORTSDB_API_KEY en tu archivo .env\n'))
-            BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
+            self.stdout.write(self.style.ERROR('ADVERTENCIA: Usando API key gratuita o no configurada'))
+            self.stdout.write(self.style.WARNING('Configura THESPORTSDB_API_KEY en tu archivo .env con tu API key premium'))
+            self.stdout.write(self.style.WARNING('Continua con limitaciones de la API gratuita (15 requests/mes)...\n'))
         else:
-            # API Premium usa v2
-            BASE_URL = 'https://www.thesportsdb.com/api/v2/json'
+            self.stdout.write(self.style.SUCCESS(f'Usando API key Premium: {API_KEY[:6]}...'))
+
+        # TheSportsDB API Premium usa v1 endpoint con más requests permitidos
+        BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
 
         # Obtener partidos que tienen API ID pero no están finalizados
         partidos_pendientes = PartidoMundial.objects.filter(
@@ -81,7 +83,7 @@ class Command(BaseCommand):
                         partido.save()
 
                         self.stdout.write(self.style.SUCCESS(
-                            f'✓ {partido.equipo_local} {partido.goles_local} - {partido.goles_visitante} {partido.equipo_visitante}'
+                            f'Actualizado: {partido.equipo_local} {partido.goles_local} - {partido.goles_visitante} {partido.equipo_visitante}'
                         ))
 
                         # Calcular puntos de todas las predicciones de este partido
