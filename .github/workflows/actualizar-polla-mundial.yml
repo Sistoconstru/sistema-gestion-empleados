@@ -43,33 +43,26 @@ jobs:
       - name: Verificar Railway CLI
         run: railway --version
 
-      - name: Configurar Railway Project
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          echo "Configurando Railway CLI para proyecto construinmuniza..."
-          railway link --project construinmuniza --environment production
-
       - name: Actualizar equipos TBD
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "Actualizando equipos TBD..."
-          railway run --service sighu-web python manage.py actualizar_equipos_tbd || echo "Error actualizando TBD (continuando...)"
+          railway run --service ae4b4bd7-3b6c-4e4f-a294-178581ec8c99 python manage.py actualizar_equipos_tbd || echo "Error actualizando TBD (continuando...)"
 
       - name: Actualizar resultados de partidos
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "Actualizando resultados de partidos..."
-          railway run --service sighu-web python manage.py actualizar_resultados_mundial --verbose
+          railway run --service ae4b4bd7-3b6c-4e4f-a294-178581ec8c99 python manage.py actualizar_resultados_mundial --verbose
 
       - name: Importar nuevos partidos
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "Verificando nuevos partidos..."
-          railway run --service sighu-web python manage.py importar_partidos_mundial --force || echo "Sin nuevos partidos"
+          railway run --service ae4b4bd7-3b6c-4e4f-a294-178581ec8c99 python manage.py importar_partidos_mundial --force || echo "Sin nuevos partidos"
 
       - name: Notificar resultado
         if: always()
