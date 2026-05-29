@@ -99,18 +99,21 @@ def start_scheduler():
             coalesce=True,
         )
 
-        # Tarea 6: Actualizar Polla Mundial cada 30 min durante horario de partidos
-        # (1 PM - 1 AM UTC). Reemplaza el workflow de GitHub Actions que fallaba
-        # porque railway run ejecutaba Django en un runner sin dependencias.
+        # Tarea 6: Actualizar Polla Mundial cada 5 min, las 24 horas.
+        # No necesita restricción horaria: el comando filtra solo partidos en su
+        # ventana de finalización, así que si no hay partidos terminando hace 0
+        # requests a la API. Esto da latencia ~5 min tras el pitazo final con
+        # consumo mínimo (~600-1000 requests en todo el Mundial vs límite 3000/mes).
+        # Reemplaza el workflow de GitHub Actions que fallaba (railway run ejecutaba
+        # Django en un runner sin dependencias).
         scheduler.add_job(
             _actualizar_polla_mundial,
             'cron',
-            hour='13-23,0-1',
-            minute='0,30',
+            minute='*/5',
             id='actualizar_polla_mundial',
             name='Actualizar resultados Polla Mundial',
             replace_existing=True,
-            misfire_grace_time=600,
+            misfire_grace_time=120,
             coalesce=True,
         )
 
@@ -123,7 +126,7 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
-        logger.info('  - Cada 30 min (1 PM - 1 AM UTC): Actualizar Polla Mundial')
+        logger.info('  - Cada 5 min (24h): Actualizar Polla Mundial (solo partidos en ventana de finalización)')
 
         return scheduler
 
