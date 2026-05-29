@@ -99,21 +99,37 @@ def start_scheduler():
             coalesce=True,
         )
 
-        # Tarea 6: Actualizar Polla Mundial cada 5 min, las 24 horas.
-        # No necesita restricción horaria: el comando filtra solo partidos en su
-        # ventana de finalización, así que si no hay partidos terminando hace 0
-        # requests a la API. Esto da latencia ~5 min tras el pitazo final con
-        # consumo mínimo (~600-1000 requests en todo el Mundial vs límite 3000/mes).
-        # Reemplaza el workflow de GitHub Actions que fallaba (railway run ejecutaba
-        # Django en un runner sin dependencias).
+        # Tarea 6: Resultados de partidos cada 5 min, las 24 horas.
+        # El comando filtra solo partidos en su ventana de finalización, así que si
+        # no hay partidos terminando hace 0 requests a la API. Latencia ~5 min tras
+        # el pitazo final con consumo mínimo. Reemplaza el workflow de GitHub Actions
+        # que fallaba (railway run ejecutaba Django en un runner sin dependencias).
         scheduler.add_job(
-            _actualizar_polla_mundial,
+            _actualizar_resultados_mundial,
             'cron',
             minute='*/5',
-            id='actualizar_polla_mundial',
+            id='actualizar_resultados_mundial',
             name='Actualizar resultados Polla Mundial',
             replace_existing=True,
             misfire_grace_time=120,
+            coalesce=True,
+        )
+
+        # Tarea 7: Fixture y equipos TBD una vez al día (5:30 AM hora Colombia).
+        # importar_partidos_mundial hace 1 request por corrida SIEMPRE, y
+        # actualizar_equipos_tbd hace 1 request por cada partido con equipo TBD.
+        # Correrlos cada 5 min reventaría el plan de la API (límite 3000/mes), así
+        # que van en un job diario: el fixture es estable y los equipos de
+        # eliminación se definen al terminar cada ronda (no minuto a minuto).
+        scheduler.add_job(
+            _actualizar_fixture_mundial,
+            'cron',
+            hour=5,
+            minute=30,
+            id='actualizar_fixture_mundial',
+            name='Actualizar fixture y equipos TBD Polla Mundial',
+            replace_existing=True,
+            misfire_grace_time=3600,
             coalesce=True,
         )
 
@@ -126,7 +142,8 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
-        logger.info('  - Cada 5 min (24h): Actualizar Polla Mundial (solo partidos en ventana de finalización)')
+        logger.info('  - Cada 5 min (24h): Resultados Polla Mundial (solo partidos en ventana de finalización)')
+        logger.info('  - 05:30 AM: Fixture y equipos TBD Polla Mundial (1 vez al día, ahorro de API)')
 
         return scheduler
 
@@ -283,40 +300,60 @@ def _enviar_recordatorios_seguimientos():
         )
 
 
-def _actualizar_polla_mundial():
+def _actualizar_resultados_mundial():
     """
-    Actualiza la Polla Mundial: equipos TBD, resultados de partidos y nuevos partidos.
+    Actualiza resultados de partidos finalizados y recalcula puntos (cada 5 min).
 
-    Ejecuta en orden los 3 comandos (mismo flujo que el cron_actualizar_mundial.sh):
-    1. actualizar_equipos_tbd: resuelve equipos pendientes en eliminatorias
-    2. actualizar_resultados_mundial: consulta TheSportsDB, marca finalizados y
-       recalcula puntos de las predicciones
-    3. importar_partidos_mundial: importa partidos nuevos si se agregaron
+    El comando filtra solo partidos en su ventana de finalización, así que cuando
+    no hay partidos terminando no consume API. Es el job de baja latencia: refleja
+    el resultado y los puntos de las predicciones a los pocos minutos del pitazo final.
 
-    Corre dentro del propio servicio Railway, por lo que Django y la red privada
-    (DATABASE_URL interna) están disponibles — a diferencia del workflow de
-    GitHub Actions que fallaba en un runner externo sin dependencias.
+    Corre dentro del servicio Railway, por lo que Django y la red privada están
+    disponibles — a diferencia del workflow de GitHub Actions que fallaba en un
+    runner externo sin dependencias.
     """
     try:
-        logger.info('🔄 Iniciando actualización Polla Mundial...')
+        logger.info('🔄 Iniciando actualización de resultados Polla Mundial...')
+        call_command('actualizar_resultados_mundial', '--verbose')
+        logger.info('✅ Resultados Polla Mundial actualizados')
+    except Exception as e:
+        logger.error(
+            f'❌ Error en actualización de resultados Polla Mundial: {e}',
+            exc_info=True
+        )
+
+
+def _actualizar_fixture_mundial():
+    """
+    Actualiza fixture y equipos TBD una vez al día (ahorro de API).
+
+    Estos comandos consumen API en cada corrida (importar siempre hace 1 request;
+    equipos TBD hace 1 por cada partido pendiente de definir), por eso van en un
+    job diario en vez de cada 5 min:
+    1. actualizar_equipos_tbd: resuelve equipos de eliminatorias ya clasificados
+    2. importar_partidos_mundial: re-sincroniza el fixture (cambios de calendario)
+
+    Como los equipos de cada ronda se definen al terminar la ronda anterior (con
+    días de margen antes de jugarse), una actualización diaria es suficiente.
+    """
+    try:
+        logger.info('🔄 Iniciando actualización de fixture/equipos TBD Polla Mundial...')
 
         try:
             call_command('actualizar_equipos_tbd')
         except Exception as e:
             logger.warning(f'⚠️ Error actualizando equipos TBD (continuando): {e}')
 
-        call_command('actualizar_resultados_mundial', '--verbose')
-
         try:
             call_command('importar_partidos_mundial', '--season=2026', '--force')
         except Exception as e:
             logger.warning(f'⚠️ Sin nuevos partidos o error importando (continuando): {e}')
 
-        logger.info('✅ Actualización Polla Mundial completada')
+        logger.info('✅ Fixture/equipos TBD Polla Mundial actualizado')
 
     except Exception as e:
         logger.error(
-            f'❌ Error en actualización Polla Mundial: {e}',
+            f'❌ Error en actualización de fixture Polla Mundial: {e}',
             exc_info=True
         )
 
