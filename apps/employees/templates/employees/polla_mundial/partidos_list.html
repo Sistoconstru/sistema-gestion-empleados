@@ -369,7 +369,7 @@
 </div>
 
 <!-- Modal de Términos y Condiciones - Polla Mundial 2026 -->
-<div class="modal fade" id="modalTerminosPolla" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="modalTerminosPolla" tabindex="-1" {% if not terminos_aceptados %}data-bs-backdrop="static" data-bs-keyboard="false"{% endif %}>
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
@@ -377,12 +377,22 @@
                     <i class="fas fa-file-contract me-2"></i>
                     Términos y Condiciones - Polla Mundialista 2026
                 </h5>
+                {% if terminos_aceptados %}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                {% endif %}
             </div>
             <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                {% if not terminos_aceptados %}
                 <div class="alert alert-warning">
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Importante:</strong> Debes leer y aceptar los términos y condiciones para participar en la Polla Mundial 2026.
                 </div>
+                {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Ya aceptaste los términos:</strong> Aceptados el {{ request.user.empleado.fecha_aceptacion_terminos_polla|date:"d/m/Y H:i" }}
+                </div>
+                {% endif %}
 
                 <h5 class="mt-4 mb-3">1. ACEPTACIÓN DE LOS TÉRMINOS</h5>
                 <p>Al participar en la <strong>Polla Mundialista 2026</strong> organizada por SIGHU, el empleado declara haber leído, comprendido y aceptado en su totalidad los presentes términos y condiciones. La participación está condicionada a dicha aceptación.</p>
@@ -593,6 +603,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                {% if not terminos_aceptados %}
                 <div class="form-check w-100 mb-3">
                     <input class="form-check-input" type="checkbox" id="aceptoTerminos">
                     <label class="form-check-label" for="aceptoTerminos">
@@ -607,6 +618,11 @@
                         <i class="fas fa-check me-2"></i>Acepto y Participo
                     </button>
                 </div>
+                {% else %}
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">
+                    <i class="fas fa-times-circle me-2"></i>Cerrar
+                </button>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -137,6 +137,7 @@ def polla_mundial_lista(request):
         'total_puntos': total_puntos,
         'posicion_usuario': posicion_usuario,
         'top_10': top_10,
+        'terminos_aceptados': empleado.acepto_terminos_polla_mundial,
     }
 
     return render(request, 'employees/polla_mundial/partidos_list.html', context)
