@@ -76,7 +76,7 @@ def polla_mundial_lista(request):
     )['total'] or 0
 
     # Obtener ranking del usuario con criterios de desempate
-    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, DurationField, FloatField
+    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, FloatField, Value
     from django.db.models.functions import Extract
 
     ranking = PrediccionMundial.objects.filter(
@@ -98,11 +98,13 @@ def polla_mundial_lista(request):
                 output_field=IntegerField()
             )
         ),
-        # Promedio de anticipación en segundos: cuánto tiempo antes del partido hace sus predicciones
+        # Promedio de anticipación en segundos: cuánto tiempo antes del CIERRE (5 min antes del partido)
+        # hace sus predicciones. Cierre = partido.fecha_hora - 5 min (300 seg)
+        # Anticipación = (partido.fecha_hora - 300) - fecha_prediccion
         # Mayor valor = más anticipación = mejor posición
         anticipacion_segundos=Avg(
             ExpressionWrapper(
-                Extract(F('partido__fecha_hora'), 'epoch') - Extract(F('fecha_prediccion'), 'epoch'),
+                (Extract(F('partido__fecha_hora'), 'epoch') - Value(300)) - Extract(F('fecha_prediccion'), 'epoch'),
                 output_field=FloatField()
             )
         )
@@ -219,7 +221,7 @@ def guardar_prediccion(request, partido_id):
 def ranking_mundial(request):
     """Vista del ranking completo de la polla mundial"""
 
-    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, FloatField
+    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, FloatField, Value
     from django.db.models.functions import Extract
 
     # Obtener todos los empleados con predicciones
@@ -235,11 +237,13 @@ def ranking_mundial(request):
                 output_field=IntegerField()
             )
         ),
-        # Promedio de anticipación en segundos: cuánto tiempo antes del partido hace sus predicciones
+        # Promedio de anticipación en segundos: cuánto tiempo antes del CIERRE (5 min antes del partido)
+        # hace sus predicciones. Cierre = partido.fecha_hora - 5 min (300 seg)
+        # Anticipación = (partido.fecha_hora - 300) - fecha_prediccion
         # Mayor valor = más anticipación = mejor posición
         anticipacion_segundos=Avg(
             ExpressionWrapper(
-                Extract(F('partido__fecha_hora'), 'epoch') - Extract(F('fecha_prediccion'), 'epoch'),
+                (Extract(F('partido__fecha_hora'), 'epoch') - Value(300)) - Extract(F('fecha_prediccion'), 'epoch'),
                 output_field=FloatField()
             )
         )
