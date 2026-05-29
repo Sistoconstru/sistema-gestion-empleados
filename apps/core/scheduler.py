@@ -99,6 +99,21 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 6: Actualizar Polla Mundial cada 30 min durante horario de partidos
+        # (1 PM - 1 AM UTC). Reemplaza el workflow de GitHub Actions que fallaba
+        # porque railway run ejecutaba Django en un runner sin dependencias.
+        scheduler.add_job(
+            _actualizar_polla_mundial,
+            'cron',
+            hour='13-23,0-1',
+            minute='0,30',
+            id='actualizar_polla_mundial',
+            name='Actualizar resultados Polla Mundial',
+            replace_existing=True,
+            misfire_grace_time=600,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -108,6 +123,7 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
+        logger.info('  - Cada 30 min (1 PM - 1 AM UTC): Actualizar Polla Mundial')
 
         return scheduler
 
@@ -260,6 +276,44 @@ def _enviar_recordatorios_seguimientos():
     except Exception as e:
         logger.error(
             f'❌ Error al enviar recordatorios de seguimientos: {e}',
+            exc_info=True
+        )
+
+
+def _actualizar_polla_mundial():
+    """
+    Actualiza la Polla Mundial: equipos TBD, resultados de partidos y nuevos partidos.
+
+    Ejecuta en orden los 3 comandos (mismo flujo que el cron_actualizar_mundial.sh):
+    1. actualizar_equipos_tbd: resuelve equipos pendientes en eliminatorias
+    2. actualizar_resultados_mundial: consulta TheSportsDB, marca finalizados y
+       recalcula puntos de las predicciones
+    3. importar_partidos_mundial: importa partidos nuevos si se agregaron
+
+    Corre dentro del propio servicio Railway, por lo que Django y la red privada
+    (DATABASE_URL interna) están disponibles — a diferencia del workflow de
+    GitHub Actions que fallaba en un runner externo sin dependencias.
+    """
+    try:
+        logger.info('🔄 Iniciando actualización Polla Mundial...')
+
+        try:
+            call_command('actualizar_equipos_tbd')
+        except Exception as e:
+            logger.warning(f'⚠️ Error actualizando equipos TBD (continuando): {e}')
+
+        call_command('actualizar_resultados_mundial', '--verbose')
+
+        try:
+            call_command('importar_partidos_mundial', '--season=2026', '--force')
+        except Exception as e:
+            logger.warning(f'⚠️ Sin nuevos partidos o error importando (continuando): {e}')
+
+        logger.info('✅ Actualización Polla Mundial completada')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error en actualización Polla Mundial: {e}',
             exc_info=True
         )
 
