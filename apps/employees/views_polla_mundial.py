@@ -76,7 +76,8 @@ def polla_mundial_lista(request):
     )['total'] or 0
 
     # Obtener ranking del usuario con criterios de desempate
-    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, DurationField
+    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, DurationField, FloatField
+    from django.db.models.functions import Extract
 
     ranking = PrediccionMundial.objects.filter(
         empleado__isnull=False
@@ -97,14 +98,15 @@ def polla_mundial_lista(request):
                 output_field=IntegerField()
             )
         ),
-        # Promedio de anticipación: cuánto tiempo antes del partido hace sus predicciones
-        anticipacion_promedio=Avg(
+        # Promedio de anticipación en segundos: cuánto tiempo antes del partido hace sus predicciones
+        # Mayor valor = más anticipación = mejor posición
+        anticipacion_segundos=Avg(
             ExpressionWrapper(
-                F('partido__fecha_hora') - F('fecha_prediccion'),
-                output_field=DurationField()
+                Extract(F('partido__fecha_hora'), 'epoch') - Extract(F('fecha_prediccion'), 'epoch'),
+                output_field=FloatField()
             )
         )
-    ).order_by('-total_puntos', '-ganadores_acertados', '-marcadores_exactos', '-total_predicciones', '-anticipacion_promedio')
+    ).order_by('-total_puntos', '-ganadores_acertados', '-marcadores_exactos', '-total_predicciones', '-anticipacion_segundos')
 
     posicion_usuario = None
     for idx, entry in enumerate(ranking, 1):
@@ -217,7 +219,8 @@ def guardar_prediccion(request, partido_id):
 def ranking_mundial(request):
     """Vista del ranking completo de la polla mundial"""
 
-    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, DurationField
+    from django.db.models import Case, When, IntegerField, F, Avg, ExpressionWrapper, FloatField
+    from django.db.models.functions import Extract
 
     # Obtener todos los empleados con predicciones
     ranking_data = PrediccionMundial.objects.filter(
@@ -232,14 +235,15 @@ def ranking_mundial(request):
                 output_field=IntegerField()
             )
         ),
-        # Promedio de anticipación: cuánto tiempo antes del partido hace sus predicciones
-        anticipacion_promedio=Avg(
+        # Promedio de anticipación en segundos: cuánto tiempo antes del partido hace sus predicciones
+        # Mayor valor = más anticipación = mejor posición
+        anticipacion_segundos=Avg(
             ExpressionWrapper(
-                F('partido__fecha_hora') - F('fecha_prediccion'),
-                output_field=DurationField()
+                Extract(F('partido__fecha_hora'), 'epoch') - Extract(F('fecha_prediccion'), 'epoch'),
+                output_field=FloatField()
             )
         )
-    ).order_by('-total_puntos', '-ganadores_acertados', '-aciertos_exactos', '-total_predicciones', '-anticipacion_promedio')
+    ).order_by('-total_puntos', '-ganadores_acertados', '-aciertos_exactos', '-total_predicciones', '-anticipacion_segundos')
 
     # Enriquecer con datos del empleado
     ranking = []
@@ -247,11 +251,11 @@ def ranking_mundial(request):
         try:
             empleado = Empleado.objects.get(id=entry['empleado'])
 
-            # Convertir anticipación promedio a formato legible
-            anticipacion = entry.get('anticipacion_promedio')
-            if anticipacion:
-                dias = anticipacion.days
-                horas = anticipacion.seconds // 3600
+            # Convertir anticipación promedio (en segundos) a formato legible
+            anticipacion_seg = entry.get('anticipacion_segundos')
+            if anticipacion_seg and anticipacion_seg > 0:
+                dias = int(anticipacion_seg // 86400)  # 86400 segundos = 1 día
+                horas = int((anticipacion_seg % 86400) // 3600)
                 if dias > 0:
                     anticipacion_texto = f"{dias}d {horas}h"
                 else:
