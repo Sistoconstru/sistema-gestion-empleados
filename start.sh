@@ -130,8 +130,8 @@ echo "  - 02:00 AM: Asignar evaluaciones de período de prueba"
 echo "  - 02:15 AM: Activar empleados completados"
 
 # TEMPORAL: Recalcular evaluaciones anuales (ejecutar solo una vez)
-echo "⚙️  Recalculando evaluaciones anuales (fix de puntajes)..."
-python manage.py recalcular_evaluaciones_anuales || echo "⚠️  Error al recalcular evaluaciones"
+# echo "⚙️  Recalculando evaluaciones anuales (fix de puntajes)..."
+# python manage.py recalcular_evaluaciones_anuales || echo "⚠️  Error al recalcular evaluaciones"
 
 # Inicia Gunicorn en modo producción
 echo "🚀 Iniciando Gunicorn..."

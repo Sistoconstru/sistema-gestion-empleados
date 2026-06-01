@@ -56,8 +56,17 @@ class PerformanceReportView(TemplateView):
 
         # ============ 1. KPIs PRINCIPALES ============
 
-        # Total de empleados activos (con estado que permite acceso al sistema)
-        total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
+        # Total de empleados elegibles para evaluación anual
+        # Deben cumplir:
+        # 1. Estado activo (código "999")
+        # 2. Al menos 5 meses de antigüedad como activos (150 días desde activación)
+        #    - Activación = fecha_ingreso + 60 días (período de prueba)
+        #    - Elegible = activación + 150 días = fecha_ingreso + 210 días
+        fecha_limite = timezone.now().date() - timedelta(days=210)
+        total_empleados = Empleado.objects.filter(
+            estado__codigo='999',  # Solo activos
+            fecha_ingreso__lte=fecha_limite  # Con al menos 210 días desde ingreso
+        ).count()
 
         # Evaluaciones completadas (con puntaje calculado)
         # IMPORTANTE: Solo evaluaciones de DESEMPEÑO ANUAL (escala 1-5, puntaje en porcentaje)
@@ -74,7 +83,10 @@ class PerformanceReportView(TemplateView):
         )['promedio'] or 0
 
         # Tasa de Evaluaciones Completas (completadas vs total)
-        total_evaluaciones = AsignacionEvaluacion.objects.count()
+        # Solo contar evaluaciones anuales para que coincida con el filtro de completadas
+        total_evaluaciones = AsignacionEvaluacion.objects.filter(
+            evaluacion__tipo_evaluacion__codigo__startswith='ANUAL_'
+        ).count()
         tasa_completadas = (evaluaciones_completadas.count() / total_evaluaciones * 100) if total_evaluaciones > 0 else 0
 
         # ============ 2. DISTRIBUCIÓN DE NIVELES ============
