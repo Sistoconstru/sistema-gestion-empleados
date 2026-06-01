@@ -194,9 +194,9 @@
                                                     <small class="fw-medium">
                                                         {% if plan.asignacion_evaluacion.puntaje_total %}
                                                             {% if plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
-                                                                <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:0 }}/21 pts</span>
-                                                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
-                                                                <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%</span>
+                                                                <span class="badge bg-{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %}">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:0 }}/21 pts</span>
+                                                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
+                                                                <span class="badge bg-{% if plan.asignacion_evaluacion.puntaje_total >= 91 %}success{% elif plan.asignacion_evaluacion.puntaje_total >= 76 %}info{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}warning{% else %}danger{% endif %}">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}%</span>
                                                             {% else %}
                                                                 <span class="badge bg-info">{{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}%</span>
                                                             {% endif %}
@@ -242,7 +242,7 @@
                                                                     </span>
                                                                 </small>
                                                             {% endif %}
-                                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
                                                             {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
                                                                 <small class="fw-medium">
                                                                     <span class="badge bg-danger">
@@ -282,7 +282,7 @@
                                                - PERIODO_PRUEBA: puntaje < 14
                                                - ANUAL: puntaje < 61
                                             {% endcomment %}
-                                            {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' and plan.asignacion_evaluacion.puntaje_total < 14 or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' and plan.asignacion_evaluacion.puntaje_total < 61 %}
+                                            {% if plan.aceptado_por_empleado or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' and plan.asignacion_evaluacion.puntaje_total < 14 or plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' and plan.asignacion_evaluacion.puntaje_total < 61 %}
                                             <!--
                                                 <div class="d-flex gap-2">
                                                     <form method="post" action="{% url 'evaluations:aprobar_evaluacion' plan.asignacion_evaluacion.id %}" class="flex-fill">

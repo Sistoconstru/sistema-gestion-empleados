@@ -735,7 +735,7 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
             else:
                 # Guardar observación de SST (si aplica para evaluaciones anuales)
                 tipo_eval_codigo = asignacion.evaluacion.tipo_evaluacion.codigo
-                if tipo_eval_codigo in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES', 'ANUAL_SERV_GRAL']:
+                if tipo_eval_codigo in ['ANUAL_DIRECTOR', 'ANUAL_ASESOR_COMER', 'ANUAL_COORD_ADMIN', 'ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES', 'ANUAL_SERV_GRAL', 'ANUAL_AUX_ADMIN', 'ANUAL_AUX_TESORERIA', 'ANUAL_AUX_RRHH', 'ANUAL_AUX_CONTABLE', 'ANUAL_ANALISTA_CONT', 'ANUAL_ANALISTA_INV', 'ANUAL_MENSAJERO', 'ANUAL_AUX_SST']:
                     uso_epp = request.POST.get('uso_epp_sst', '')
                     if uso_epp:
                         asignacion.uso_epp_sst = uso_epp
@@ -765,7 +765,7 @@ def _procesar_respuestas_evaluacion(request, asignacion, preguntas):
                                 import logging
                                 logging.info(f'Empleado {asignacion.empleado_evaluado.nombre_completo} obtuvo puntaje máximo (21/21). No se genera plan de mejora.')
                                 debe_generar_plan = False
-                        elif tipo_eval_codigo in ['ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES', 'ANUAL_SERV_GRAL']:
+                        elif tipo_eval_codigo in ['ANUAL_DIRECTOR', 'ANUAL_ASESOR_COMER', 'ANUAL_COORD_ADMIN', 'ANUAL_AUX_PROCESOS', 'ANUAL_MANTENIMIENTO', 'ANUAL_OPERARIOS_PROD', 'ANUAL_COORD_PROC', 'ANUAL_AFILADORES', 'ANUAL_SERV_GRAL', 'ANUAL_AUX_ADMIN', 'ANUAL_AUX_TESORERIA', 'ANUAL_AUX_RRHH', 'ANUAL_AUX_CONTABLE', 'ANUAL_ANALISTA_CONT', 'ANUAL_ANALISTA_INV', 'ANUAL_MENSAJERO', 'ANUAL_AUX_SST']:
                             # Para evaluaciones anuales: SIEMPRE generar plan
                             # El plan puede ser de mejora (si hay respuestas ≤4) o de felicitación (si todas son 5)
                             # Los seguimientos bimensuales se determinan en otro momento según las respuestas
@@ -1075,7 +1075,10 @@ def _calcular_resultado_evaluacion(asignacion):
             detalle_categorias = resultado_calc.get('detalle_categorias', {})
             comentarios_detalle = "DESEMPEÑO POR CATEGORÍAS:\n"
             for cat, datos in detalle_categorias.items():
-                comentarios_detalle += f"• {cat}: {datos['promedio']}/5 ({datos['porcentaje']:.1f}%)\n"
+                if 'promedio' in datos and 'porcentaje' in datos:
+                    comentarios_detalle += f"• {cat}: {datos['promedio']}/5 ({datos['porcentaje']:.1f}%)\n"
+                elif 'porcentaje' in datos:
+                    comentarios_detalle += f"• {cat}: {datos['porcentaje']:.1f}%\n"
 
             comentarios_generales = f'Evaluación anual completada con {porcentaje:.1f}% de cumplimiento.\n\n{comentarios_detalle}'
 

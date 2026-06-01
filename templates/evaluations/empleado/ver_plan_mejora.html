@@ -300,9 +300,19 @@
                                 <i class="fas fa-chart-bar me-2"></i>Resultado Obtenido
                             </h6>
                             <p class="mb-1"><strong>Puntaje:</strong>
-                                <span class="badge bg-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %} fs-6">
-                                    {{ asignacion.puntaje_total|floatformat:1 }}
-                                </span>
+                                {% if asignacion.evaluacion.tipo_evaluacion.codigo == 'PERIODO_PRUEBA' %}
+                                    <span class="badge bg-{% if asignacion.puntaje_total >= 18 %}success{% elif asignacion.puntaje_total >= 14 %}warning{% else %}danger{% endif %} fs-6">
+                                        {{ asignacion.puntaje_total|floatformat:1 }}/21
+                                    </span>
+                                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
+                                    <span class="badge bg-{% if asignacion.puntaje_total >= 91 %}success{% elif asignacion.puntaje_total >= 76 %}info{% elif asignacion.puntaje_total >= 61 %}warning{% elif asignacion.puntaje_total >= 41 %}warning{% else %}danger{% endif %} fs-6">
+                                        {{ asignacion.puntaje_total|floatformat:1 }}%
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-info fs-6">
+                                        {{ asignacion.puntaje_total|floatformat:1 }}
+                                    </span>
+                                {% endif %}
                             </p>
                             <p class="mb-1"><strong>Evaluador:</strong> {{ asignacion.evaluador.nombre_completo|default:"No asignado" }}</p>
                             {% if plan.fecha_aprobacion %}

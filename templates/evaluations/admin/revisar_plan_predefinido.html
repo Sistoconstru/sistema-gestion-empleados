@@ -82,9 +82,9 @@
                             <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 18 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 14 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
                                 {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}/21
                             </span>
-                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
-                            <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 76 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}background-color: #d1ecf1; color: #0c5460; border: 1px solid #17a2b8;{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
-                                {{ plan.asignacion_evaluacion.puntaje_total|floatformat:2 }}%
+                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
+                            <span class="badge" style="{% if plan.asignacion_evaluacion.puntaje_total >= 91 %}background-color: #d4edda; color: #155724; border: 1px solid #28a745;{% elif plan.asignacion_evaluacion.puntaje_total >= 76 %}background-color: #d1ecf1; color: #0c5460; border: 1px solid #17a2b8;{% elif plan.asignacion_evaluacion.puntaje_total >= 61 %}background-color: #fff3cd; color: #856404; border: 1px solid #ffc107;{% elif plan.asignacion_evaluacion.puntaje_total >= 41 %}background-color: #ffeaa7; color: #856404; border: 1px solid #ffc107;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #dc3545;{% endif %}">
+                                {{ plan.asignacion_evaluacion.puntaje_total|floatformat:1 }}%
                             </span>
                         {% else %}
                             <span class="badge" style="background-color: #d1ecf1; color: #0c5460; border: 1px solid #17a2b8;">
@@ -223,7 +223,7 @@
                                         <p class="mb-0">Como el puntaje es inferior a 14 puntos, no se requiere aceptación del empleado. El empleado no aprueba el período de prueba.</p>
                                     </div>
                                 {% endif %}
-                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO' %}
+                            {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
                                 {% if plan.asignacion_evaluacion.puntaje_total >= 61 and not plan.aceptado_por_empleado %}
                                     <div class="alert alert-warning">
                                         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -296,7 +296,7 @@
                                                     Imprimir Plan
                                                 </button>
                                             {% endif %}
-                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL' %}
+                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
                                             {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
                                                 <a href="{% url 'evaluations:imprimir_plan_mejora' plan.id %}" class="btn btn-outline-primary btn-block" target="_blank">
                                                     <i class="fas fa-print"></i>
@@ -337,7 +337,7 @@
                                                     <i class="fas fa-lock"></i> Aprobar (Bloqueado)
                                                 </button>
                                             {% endif %}
-                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL' %}
+                                        {% elif plan.asignacion_evaluacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_SERV_GRAL,ANUAL_OPERARIOS_PRODUCCION,ANUAL_COORDINADORES_PROCESOS,ANUAL_AUX_TESORERIA,ANUAL_AUX_CONTABLE,ANUAL_AUX_RRHH,ANUAL_AUX_SST,ANUAL_ANALISTA_CONTABLE,ANUAL_ANALISTA_INVENTARIO,ANUAL_AFILADORES,ANUAL_AUX_ADMINISTRATIVOS' %}
                                             {% if plan.asignacion_evaluacion.puntaje_total < 61 %}
                                                 <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-block" id="btnAprobar">
                                                     <i class="fas fa-check"></i> Aprobar Plan

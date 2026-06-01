@@ -199,31 +199,37 @@
                         </div>
                     {% endif %}
                 </div>
-                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+                {% elif asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN' %}
                 <div class="text-center">
-                    {% if asignacion.puntaje_total >= 76 %}
+                    {% if asignacion.puntaje_total >= 91 %}
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-trophy me-1"></i>
+                            <strong>Desempeño: MUY ALTO</strong><br>
+                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:1 }}%</small>
+                        </div>
+                    {% elif asignacion.puntaje_total >= 76 %}
                         <div class="alert alert-success mb-0">
                             <i class="fas fa-check-circle me-1"></i>
                             <strong>Desempeño: ALTO</strong><br>
-                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:2 }}%</small>
+                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:1 }}%</small>
                         </div>
                     {% elif asignacion.puntaje_total >= 61 %}
                         <div class="alert alert-info mb-0">
                             <i class="fas fa-info-circle me-1"></i>
                             <strong>Desempeño: MODERADO</strong><br>
-                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:2 }}%</small>
+                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:1 }}%</small>
                         </div>
                     {% elif asignacion.puntaje_total >= 41 %}
                         <div class="alert alert-warning mb-0">
                             <i class="fas fa-exclamation-triangle me-1"></i>
                             <strong>Desempeño: BAJO</strong><br>
-                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:2 }}%</small>
+                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|floatformat:1 }}%</small>
                         </div>
                     {% else %}
                         <div class="alert alert-danger mb-0">
                             <i class="fas fa-times-circle me-1"></i>
                             <strong>Desempeño: MUY BAJO</strong><br>
-                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|default:"0"|floatformat:2 }}%</small>
+                            <small>Puntaje Ponderado: {{ asignacion.puntaje_total|default:"0"|floatformat:1 }}%</small>
                         </div>
                     {% endif %}
                 </div>
@@ -273,7 +279,7 @@
     </div>
 
     <!-- Sección de SST si aplica -->
-    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL' %}
+    {% if asignacion.uso_epp_sst and asignacion.evaluacion.tipo_evaluacion.codigo in 'ANUAL_DIRECTOR,ANUAL_ASESOR_COMERCIAL,ANUAL_AUX_PROCESOS,ANUAL_MANTENIMIENTO,ANUAL_OPERARIOS_PROD,ANUAL_COORD_PROC,ANUAL_AFILADORES,ANUAL_SERV_GRAL,ANUAL_AUX_ADMIN,ANUAL_AUX_TESORERIA,ANUAL_AUX_RRHH,ANUAL_AUX_CONTABLE,ANUAL_ANALISTA_CONT,ANUAL_ANALISTA_INV,ANUAL_MENSAJERO,ANUAL_AUX_SST,ANUAL_COORD_ADMIN' %}
     <div class="card border-warning mt-4 mb-4">
         <div class="card-header bg-warning text-dark">
             <h5 class="mb-0">

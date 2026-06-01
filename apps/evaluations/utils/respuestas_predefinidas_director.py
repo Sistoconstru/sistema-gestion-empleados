@@ -397,8 +397,11 @@ def calcular_puntaje_ponderado_director(respuestas):
             puntaje_ponderado = (porcentaje_categoria * peso) / 100
             puntaje_total += puntaje_ponderado
 
-            # Actualizar detalle
+            # Actualizar detalle con todas las claves necesarias
+            detalle_categorias[categoria]['promedio'] = round(promedio_categoria, 2)
             detalle_categorias[categoria]['porcentaje'] = round(porcentaje_categoria, 2)
+            detalle_categorias[categoria]['ponderacion'] = peso
+            detalle_categorias[categoria]['contribucion'] = round(puntaje_ponderado, 2)
 
     # Calcular puntaje en escala 1-5
     puntaje_escala_5 = 1 + (puntaje_total / 100) * 4
