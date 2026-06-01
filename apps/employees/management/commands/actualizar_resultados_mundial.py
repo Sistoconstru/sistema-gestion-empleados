@@ -4,6 +4,8 @@
 # =============================================================================
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+from datetime import timedelta
 from apps.employees.models import PartidoMundial, PrediccionMundial
 import requests
 import os
@@ -49,13 +51,27 @@ class Command(BaseCommand):
         # TheSportsDB API Premium usa v1 endpoint con más requests permitidos
         BASE_URL = 'https://www.thesportsdb.com/api/v1/json'
 
-        # Obtener partidos que tienen API ID pero no están finalizados
+        # Solo consultar partidos en su "ventana de recién terminado":
+        # - empezaron hace 2h+ (un partido dura ~2h, ya debería haber terminado)
+        # - pero no hace más de 24h (margen para que la API publique; pasado eso
+        #   requiere revisión manual)
+        # Esto minimiza el consumo de API: si no hay partidos terminando, no se
+        # hace ninguna request. Permite correr el job cada pocos minutos sin gastar
+        # el plan mensual de la API.
+        ahora = timezone.now()
         partidos_pendientes = PartidoMundial.objects.filter(
             api_id__isnull=False,
-            finalizado=False
+            finalizado=False,
+            fecha_hora__lte=ahora - timedelta(hours=2),
+            fecha_hora__gte=ahora - timedelta(hours=24),
         )
 
-        self.stdout.write(f'Partidos pendientes de actualización: {partidos_pendientes.count()}')
+        if not partidos_pendientes.exists():
+            self.stdout.write('Sin partidos en ventana de finalización (0 requests a la API)')
+            self.stdout.write(self.style.SUCCESS('\n=== Resumen ===\nPartidos actualizados: 0'))
+            return
+
+        self.stdout.write(f'Partidos en ventana de finalización: {partidos_pendientes.count()}')
 
         actualizados = 0
 
