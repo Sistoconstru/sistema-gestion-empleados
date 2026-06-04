@@ -121,6 +121,28 @@ class PerformanceReportView(TemplateView):
             'Competencias Técnicas - El Saber': 25.0
         }
 
+        # Función para mapear variantes de nombres a la categoría estándar
+        def normalizar_categoria(categoria_original):
+            """
+            Normaliza variantes de nombres de categorías para agruparlas correctamente.
+            Ejemplo: 'Objetivos' -> 'Objetivos - El Hacer'
+                     'Competencias Técnicas' -> 'Competencias Técnicas - El Saber'
+            """
+            if not categoria_original:
+                return None
+
+            # Mapeo de variantes
+            if 'Organizacionales' in categoria_original:
+                return 'Competencias Organizacionales'
+            elif 'Objetivos' in categoria_original:
+                return 'Objetivos - El Hacer'
+            elif 'Interpersonales' in categoria_original:
+                return 'Competencias Interpersonales - El Ser'
+            elif 'Técnicas' in categoria_original or 'Tecnicas' in categoria_original:
+                return 'Competencias Técnicas - El Saber'
+
+            return None  # No es una competencia reconocida
+
         # Inicializar estructuras para acumular datos
         analisis_competencias = {}
 
@@ -149,14 +171,17 @@ class PerformanceReportView(TemplateView):
             puntajes_por_categoria = defaultdict(list)
 
             for respuesta in respuestas:
-                categoria = respuesta.pregunta.categoria
+                categoria_original = respuesta.pregunta.categoria
 
-                # Solo procesar si la categoría está en nuestra lista de competencias
-                if categoria in categorias_competencias:
+                # Normalizar el nombre de la categoría
+                categoria_normalizada = normalizar_categoria(categoria_original)
+
+                # Solo procesar si es una competencia reconocida
+                if categoria_normalizada:
                     # Obtener el valor numérico de la respuesta (escala 1-5)
                     if respuesta.opcion_seleccionada:
                         valor = float(respuesta.opcion_seleccionada.valor_numerico)
-                        puntajes_por_categoria[categoria].append(valor)
+                        puntajes_por_categoria[categoria_normalizada].append(valor)
 
             # Calcular promedio por categoría para esta evaluación y clasificar
             for categoria, valores in puntajes_por_categoria.items():
