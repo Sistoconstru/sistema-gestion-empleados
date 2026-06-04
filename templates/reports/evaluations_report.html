@@ -317,6 +317,14 @@
                                 <div class="mt-2">
                                     <small class="text-muted">{{ competencia.cantidad_evaluaciones }} evaluaciones</small>
                                 </div>
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100"
+                                            data-bs-toggle="modal" data-bs-target="#detalleCompetencia{{ forloop.counter }}"
+                                            title="Ver análisis detallado">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Ver Detalle
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -431,6 +439,211 @@
         </div>
     </div>
 </div>
+
+<!-- Modales de Detalle por Competencia -->
+{% for competencia in analisis_competencias %}
+<div class="modal fade" id="detalleCompetencia{{ forloop.counter }}" tabindex="-1" aria-labelledby="detalleCompetenciaLabel{{ forloop.counter }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-corporativo text-white">
+                <h5 class="modal-title" id="detalleCompetenciaLabel{{ forloop.counter }}">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Análisis Detallado:
+                    {% if 'Organizacionales' in competencia.nombre %}
+                        Competencias Organizacionales
+                    {% elif 'Objetivos' in competencia.nombre %}
+                        Objetivos - El Hacer
+                    {% elif 'Interpersonales' in competencia.nombre %}
+                        Competencias Interpersonales - El Ser
+                    {% elif 'Técnicas' in competencia.nombre %}
+                        Competencias Técnicas - El Saber
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Resumen de la Competencia -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h6 class="text-muted mb-1">Promedio</h6>
+                            <h2 class="mb-0
+                                {% if competencia.promedio >= 90 %}text-success
+                                {% elif competencia.promedio >= 75 %}text-primary
+                                {% elif competencia.promedio >= 60 %}text-warning
+                                {% else %}text-danger
+                                {% endif %}">
+                                {{ competencia.promedio|floatformat:1 }}%
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h6 class="text-muted mb-1">Peso</h6>
+                            <h2 class="mb-0 text-secondary">{{ competencia.peso|floatformat:0 }}%</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h6 class="text-muted mb-1">Evaluaciones</h6>
+                            <h2 class="mb-0">{{ competencia.cantidad_evaluaciones }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h6 class="text-muted mb-1">Preguntas</h6>
+                            <h2 class="mb-0">{{ competencia.total_preguntas }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Análisis por Pregunta -->
+                <h6 class="mb-3">
+                    <i class="fas fa-list-ul me-2"></i>
+                    Desempeño por Pregunta (Agrupado por Tipo de Evaluación)
+                </h6>
+
+                {% if competencia.grupos_evaluacion %}
+                <div class="accordion" id="accordionCompetencia{{ forloop.counter }}">
+                    {% for grupo in competencia.grupos_evaluacion %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    aria-controls="collapse{{ forloop.parentloop.counter }}_{{ forloop.counter }}">
+                                <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                                    <div>
+                                        <i class="fas fa-briefcase me-2"></i>
+                                        <strong>{{ grupo.nombre }}</strong>
+                                    </div>
+                                    <div class="d-flex gap-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-list me-1"></i>
+                                            {{ grupo.total_preguntas }} preguntas
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-users me-1"></i>
+                                            {{ grupo.total_respuestas }} respuestas
+                                        </small>
+                                        <span class="badge
+                                            {% if grupo.promedio_grupo >= 90 %}bg-success
+                                            {% elif grupo.promedio_grupo >= 75 %}bg-primary
+                                            {% elif grupo.promedio_grupo >= 60 %}bg-warning
+                                            {% else %}bg-danger
+                                            {% endif %}">
+                                            Promedio: {{ grupo.promedio_grupo|floatformat:1 }}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                             class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                             aria-labelledby="heading{{ forloop.parentloop.counter }}_{{ forloop.counter }}"
+                             data-bs-parent="#accordionCompetencia{{ forloop.parentloop.counter }}">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 5%">#</th>
+                                                <th style="width: 60%">Pregunta</th>
+                                                <th class="text-center" style="width: 15%">Promedio</th>
+                                                <th class="text-center" style="width: 10%">Escala</th>
+                                                <th class="text-center" style="width: 10%">Respuestas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for pregunta in grupo.preguntas %}
+                                            <tr>
+                                                <td class="text-muted">{{ pregunta.orden }}</td>
+                                                <td>
+                                                    <small>{{ pregunta.pregunta }}</small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge
+                                                        {% if pregunta.promedio_porcentaje >= 90 %}bg-success
+                                                        {% elif pregunta.promedio_porcentaje >= 75 %}bg-primary
+                                                        {% elif pregunta.promedio_porcentaje >= 60 %}bg-warning
+                                                        {% elif pregunta.promedio_porcentaje >= 40 %}bg-orange
+                                                        {% else %}bg-danger
+                                                        {% endif %}">
+                                                        {{ pregunta.promedio_porcentaje|floatformat:1 }}%
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="text-muted">{{ pregunta.promedio_escala }}/5</small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="text-muted">{{ pregunta.cantidad_respuestas }}</small>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No hay preguntas registradas para esta competencia.
+                </div>
+                {% endif %}
+
+                <!-- Distribución de Desempeño -->
+                <h6 class="mb-3 mt-4">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Distribución de Empleados por Nivel
+                </h6>
+                <div class="row text-center">
+                    <div class="col">
+                        <div class="p-2 bg-success bg-opacity-10 rounded">
+                            <div class="h3 mb-0 text-success">{{ competencia.nivel_muy_alto }}</div>
+                            <small class="text-muted">Muy Alto<br>(≥90%)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 bg-primary bg-opacity-10 rounded">
+                            <div class="h3 mb-0 text-primary">{{ competencia.nivel_alto }}</div>
+                            <small class="text-muted">Alto<br>(75-89%)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 bg-warning bg-opacity-10 rounded">
+                            <div class="h3 mb-0 text-warning">{{ competencia.nivel_moderado }}</div>
+                            <small class="text-muted">Moderado<br>(60-74%)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 bg-orange bg-opacity-10 rounded">
+                            <div class="h3 mb-0" style="color: #fd7e14;">{{ competencia.nivel_bajo }}</div>
+                            <small class="text-muted">Bajo<br>(40-59%)</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-2 bg-danger bg-opacity-10 rounded">
+                            <div class="h3 mb-0 text-danger">{{ competencia.nivel_muy_bajo }}</div>
+                            <small class="text-muted">Muy Bajo<br>(<40%)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endif %}
 
 <!-- Alertas Críticas -->

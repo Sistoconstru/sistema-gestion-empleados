@@ -216,6 +216,87 @@ class PerformanceReportView(TemplateView):
                 datos['promedio'] = 0
                 datos['brecha_80'] = -80
 
+        # ============ 2.6. ANÁLISIS DETALLADO POR PREGUNTA EN CADA COMPETENCIA ============
+
+        from apps.evaluations.models import PreguntaEvaluacion
+
+        # Obtener análisis detallado de preguntas por competencia
+        for categoria in categorias_competencias:
+            # Obtener todas las preguntas de esta competencia (normalizadas)
+            todas_preguntas = PreguntaEvaluacion.objects.filter(activa=True)
+
+            preguntas_competencia = []
+            for pregunta in todas_preguntas:
+                if normalizar_categoria(pregunta.categoria) == categoria:
+                    preguntas_competencia.append(pregunta)
+
+            # Calcular promedio por pregunta
+            analisis_preguntas = []
+            for pregunta in preguntas_competencia:
+                # Obtener todas las respuestas a esta pregunta en evaluaciones completadas
+                respuestas_pregunta = RespuestaEvaluacion.objects.filter(
+                    asignacion__in=evaluaciones_completadas,
+                    pregunta=pregunta,
+                    opcion_seleccionada__isnull=False
+                ).select_related('opcion_seleccionada')
+
+                if respuestas_pregunta.exists():
+                    suma_valores = sum(float(r.opcion_seleccionada.valor_numerico) for r in respuestas_pregunta)
+                    cantidad = respuestas_pregunta.count()
+                    promedio_escala = suma_valores / cantidad
+                    promedio_porcentaje = ((promedio_escala - 1) / 4) * 100
+
+                    # Obtener información de la evaluación (tipo/cargo)
+                    nombre_evaluacion = pregunta.evaluacion.nombre if pregunta.evaluacion else "N/A"
+                    tipo_evaluacion = pregunta.evaluacion.tipo_evaluacion.nombre if pregunta.evaluacion and pregunta.evaluacion.tipo_evaluacion else "N/A"
+
+                    analisis_preguntas.append({
+                        'pregunta': pregunta.pregunta,
+                        'promedio_escala': round(promedio_escala, 2),
+                        'promedio_porcentaje': round(promedio_porcentaje, 2),
+                        'cantidad_respuestas': cantidad,
+                        'orden': pregunta.orden,
+                        'nombre_evaluacion': nombre_evaluacion,
+                        'tipo_evaluacion': tipo_evaluacion
+                    })
+
+            # Ordenar por orden de la pregunta
+            analisis_preguntas.sort(key=lambda x: x['orden'])
+
+            # Agrupar preguntas por tipo de evaluación
+            preguntas_por_tipo = defaultdict(list)
+            for pregunta_info in analisis_preguntas:
+                tipo = pregunta_info['nombre_evaluacion']
+                preguntas_por_tipo[tipo].append(pregunta_info)
+
+            # Convertir a lista de diccionarios para el template
+            grupos_evaluacion = []
+            for tipo_eval, preguntas_grupo in preguntas_por_tipo.items():
+                # Calcular promedio del grupo
+                if preguntas_grupo:
+                    promedio_grupo = sum(p['promedio_porcentaje'] for p in preguntas_grupo) / len(preguntas_grupo)
+                    total_respuestas_grupo = sum(p['cantidad_respuestas'] for p in preguntas_grupo)
+                else:
+                    promedio_grupo = 0
+                    total_respuestas_grupo = 0
+
+                grupos_evaluacion.append({
+                    'nombre': tipo_eval,
+                    'preguntas': preguntas_grupo,
+                    'total_preguntas': len(preguntas_grupo),
+                    'promedio_grupo': round(promedio_grupo, 2),
+                    'total_respuestas': total_respuestas_grupo
+                })
+
+            # Ordenar grupos por nombre
+            grupos_evaluacion.sort(key=lambda x: x['nombre'])
+
+            # Agregar al análisis de competencias
+            analisis_competencias[categoria]['preguntas'] = analisis_preguntas  # Mantener para compatibilidad
+            analisis_competencias[categoria]['grupos_evaluacion'] = grupos_evaluacion
+            analisis_competencias[categoria]['total_preguntas'] = len(preguntas_competencia)
+            analisis_competencias[categoria]['total_grupos'] = len(grupos_evaluacion)
+
         # Convertir a lista ordenada por promedio
         analisis_competencias_list = sorted(
             analisis_competencias.values(),
