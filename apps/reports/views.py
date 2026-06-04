@@ -100,6 +100,104 @@ class PerformanceReportView(TemplateView):
             'muy_bajo': evaluaciones_completadas.filter(puntaje_total__lt=40).count(),
         }
 
+        # ============ 2.5. ANÁLISIS POR COMPETENCIAS ============
+
+        from apps.evaluations.models import RespuestaEvaluacion
+        from collections import defaultdict
+
+        # Definir las categorías/competencias que se evalúan
+        categorias_competencias = [
+            'Competencias Organizacionales',
+            'Objetivos - El Hacer',
+            'Competencias Interpersonales - El Ser',
+            'Competencias Técnicas - El Saber'
+        ]
+
+        # Pesos de cada competencia
+        pesos_competencias = {
+            'Competencias Organizacionales': 10.0,
+            'Objetivos - El Hacer': 40.0,
+            'Competencias Interpersonales - El Ser': 25.0,
+            'Competencias Técnicas - El Saber': 25.0
+        }
+
+        # Inicializar estructuras para acumular datos
+        analisis_competencias = {}
+
+        for categoria in categorias_competencias:
+            analisis_competencias[categoria] = {
+                'nombre': categoria,
+                'peso': pesos_competencias.get(categoria, 0),
+                'suma_porcentajes': 0,
+                'cantidad_evaluaciones': 0,
+                'promedio': 0,
+                'nivel_muy_alto': 0,  # ≥90%
+                'nivel_alto': 0,       # 75-89%
+                'nivel_moderado': 0,   # 60-74%
+                'nivel_bajo': 0,       # 40-59%
+                'nivel_muy_bajo': 0,   # <40%
+            }
+
+        # Procesar cada evaluación completada para calcular promedios por competencia
+        for asignacion in evaluaciones_completadas:
+            # Obtener todas las respuestas de esta evaluación
+            respuestas = RespuestaEvaluacion.objects.filter(
+                asignacion=asignacion
+            ).select_related('pregunta', 'opcion_seleccionada')
+
+            # Agrupar respuestas por categoría
+            puntajes_por_categoria = defaultdict(list)
+
+            for respuesta in respuestas:
+                categoria = respuesta.pregunta.categoria
+
+                # Solo procesar si la categoría está en nuestra lista de competencias
+                if categoria in categorias_competencias:
+                    # Obtener el valor numérico de la respuesta (escala 1-5)
+                    if respuesta.opcion_seleccionada:
+                        valor = float(respuesta.opcion_seleccionada.valor_numerico)
+                        puntajes_por_categoria[categoria].append(valor)
+
+            # Calcular promedio por categoría para esta evaluación y clasificar
+            for categoria, valores in puntajes_por_categoria.items():
+                if valores:
+                    # Promedio en escala 1-5
+                    promedio_escala = sum(valores) / len(valores)
+                    # Convertir a porcentaje (1-5 → 0-100%)
+                    porcentaje = ((promedio_escala - 1) / 4) * 100
+
+                    # Acumular para el promedio general
+                    analisis_competencias[categoria]['suma_porcentajes'] += porcentaje
+                    analisis_competencias[categoria]['cantidad_evaluaciones'] += 1
+
+                    # Clasificar por nivel
+                    if porcentaje >= 90:
+                        analisis_competencias[categoria]['nivel_muy_alto'] += 1
+                    elif porcentaje >= 75:
+                        analisis_competencias[categoria]['nivel_alto'] += 1
+                    elif porcentaje >= 60:
+                        analisis_competencias[categoria]['nivel_moderado'] += 1
+                    elif porcentaje >= 40:
+                        analisis_competencias[categoria]['nivel_bajo'] += 1
+                    else:
+                        analisis_competencias[categoria]['nivel_muy_bajo'] += 1
+
+        # Calcular promedios finales y brecha respecto al 80%
+        for categoria, datos in analisis_competencias.items():
+            if datos['cantidad_evaluaciones'] > 0:
+                datos['promedio'] = round(datos['suma_porcentajes'] / datos['cantidad_evaluaciones'], 2)
+                datos['brecha_80'] = round(datos['promedio'] - 80, 2)
+            else:
+                datos['promedio'] = 0
+                datos['brecha_80'] = -80
+
+        # Convertir a lista ordenada por promedio
+        analisis_competencias_list = sorted(
+            analisis_competencias.values(),
+            key=lambda x: x['promedio'],
+            reverse=True
+        )
+
         # ============ 3. ALERTAS CRÍTICAS ============
 
         # Empleados con desempeño bajo (menos de 60% en evaluaciones anuales)
@@ -258,6 +356,9 @@ class PerformanceReportView(TemplateView):
 
             # Distribución
             'distribucion_niveles': distribucion_niveles,
+
+            # Competencias
+            'analisis_competencias': analisis_competencias_list,
 
             # Alertas
             'empleados_bajo_desempeño': empleados_bajo_desempeño,

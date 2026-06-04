@@ -259,6 +259,180 @@
     </div>
 </div>
 
+<!-- Análisis por Competencias -->
+{% if analisis_competencias %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Análisis por Competencias
+                </h5>
+                <small>Desempeño promedio en las 4 competencias clave evaluadas</small>
+            </div>
+            <div class="card-body">
+                <!-- KPIs por Competencia -->
+                <div class="row mb-4">
+                    {% for competencia in analisis_competencias %}
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card metric-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="text-muted mb-0" style="font-size: 0.9rem;">
+                                        {% if 'Organizacionales' in competencia.nombre %}
+                                            📋 Organizacionales
+                                        {% elif 'Objetivos' in competencia.nombre %}
+                                            🎯 Objetivos - El Hacer
+                                        {% elif 'Interpersonales' in competencia.nombre %}
+                                            🤝 Interpersonales - El Ser
+                                        {% elif 'Técnicas' in competencia.nombre %}
+                                            🔧 Técnicas - El Saber
+                                        {% else %}
+                                            {{ competencia.nombre }}
+                                        {% endif %}
+                                    </h6>
+                                    <span class="badge bg-secondary">{{ competencia.peso|floatformat:0 }}%</span>
+                                </div>
+                                <h2 class="mb-1
+                                    {% if competencia.promedio >= 90 %}text-success
+                                    {% elif competencia.promedio >= 75 %}text-primary
+                                    {% elif competencia.promedio >= 60 %}text-warning
+                                    {% else %}text-danger
+                                    {% endif %}">
+                                    {{ competencia.promedio|floatformat:1 }}%
+                                </h2>
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted me-2">vs Meta (80%)</small>
+                                    {% if competencia.brecha_80 >= 0 %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-arrow-up"></i> +{{ competencia.brecha_80|floatformat:1 }}%
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-arrow-down"></i> {{ competencia.brecha_80|floatformat:1 }}%
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">{{ competencia.cantidad_evaluaciones }} evaluaciones</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Gráfico Radar y Tabla -->
+                <div class="row">
+                    <div class="col-lg-6 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 text-muted">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Comparativa de Competencias
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal" data-bs-target="#radarFullscreenModal"
+                                    title="Ver en pantalla completa">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                                Ampliar
+                            </button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="radarCompetenciasChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Competencia</th>
+                                        <th class="text-center" title="Muy Alto">≥90%</th>
+                                        <th class="text-center" title="Alto">75-89%</th>
+                                        <th class="text-center" title="Moderado">60-74%</th>
+                                        <th class="text-center" title="Bajo">40-59%</th>
+                                        <th class="text-center" title="Muy Bajo">&lt;40%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for competencia in analisis_competencias %}
+                                    <tr>
+                                        <td>
+                                            <strong style="font-size: 0.85rem;">
+                                                {% if 'Organizacionales' in competencia.nombre %}
+                                                    Organizacionales
+                                                {% elif 'Objetivos' in competencia.nombre %}
+                                                    Objetivos
+                                                {% elif 'Interpersonales' in competencia.nombre %}
+                                                    Interpersonales
+                                                {% elif 'Técnicas' in competencia.nombre %}
+                                                    Técnicas
+                                                {% endif %}
+                                            </strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge nivel-muy-alto">{{ competencia.nivel_muy_alto }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge nivel-alto">{{ competencia.nivel_alto }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge nivel-moderado">{{ competencia.nivel_moderado }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge nivel-bajo">{{ competencia.nivel_bajo }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge nivel-muy-bajo">{{ competencia.nivel_muy_bajo }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Gráfico Radar en Pantalla Completa -->
+<div class="modal fade" id="radarFullscreenModal" tabindex="-1" aria-labelledby="radarFullscreenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-corporativo text-white">
+                <h5 class="modal-title" id="radarFullscreenModalLabel">
+                    <i class="fas fa-chart-area me-2"></i>
+                    Análisis de Competencias - Vista Ampliada
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="height: 70vh;">
+                <div class="chart-container" style="height: 100%;">
+                    <canvas id="radarCompetenciasChartFullscreen"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-start flex-grow-1">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Línea amarilla punteada:</strong> Meta organizacional (80%)
+                        <span class="mx-2">|</span>
+                        <strong>Línea azul sólida:</strong> Promedio actual de la organización
+                    </small>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Alertas Críticas -->
 <div class="row mb-4">
     <div class="col-lg-4">
@@ -662,6 +836,132 @@ if (planesCtx) {
         }
     });
 }
+
+// Gráfico Radar de Competencias
+{% if analisis_competencias %}
+
+// Configuración compartida del gráfico radar
+function getRadarChartConfig(fontSize = 12) {
+    return {
+        type: 'radar',
+        data: {
+            labels: [
+                {% for competencia in analisis_competencias %}
+                    '{% if "Organizacionales" in competencia.nombre %}Organizacionales{% elif "Objetivos" in competencia.nombre %}Objetivos{% elif "Interpersonales" in competencia.nombre %}Interpersonales{% elif "Técnicas" in competencia.nombre %}Técnicas{% endif %}'{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            datasets: [
+                {
+                    label: 'Meta (80%)',
+                    data: [80, 80, 80, 80],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    borderColor: '#ffc107',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                },
+                {
+                    label: 'Promedio Actual',
+                    data: [
+                        {% for competencia in analisis_competencias %}
+                            {{ competencia.promedio }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    fill: true,
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: '#007bff',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#007bff',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0,
+                    max: 100,
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 20,
+                        font: {
+                            size: fontSize
+                        },
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    },
+                    pointLabels: {
+                        font: {
+                            size: fontSize,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: fontSize
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.r.toFixed(1) + '%';
+                        }
+                    }
+                }
+            }
+        }
+    };
+}
+
+// Crear gráfico normal
+const radarCtx = document.getElementById('radarCompetenciasChart');
+if (radarCtx) {
+    new Chart(radarCtx, getRadarChartConfig(12));
+}
+
+// Crear gráfico en modal fullscreen cuando se abre
+let radarFullscreenChart = null;
+const radarFullscreenModal = document.getElementById('radarFullscreenModal');
+
+if (radarFullscreenModal) {
+    radarFullscreenModal.addEventListener('shown.bs.modal', function () {
+        const radarFullscreenCtx = document.getElementById('radarCompetenciasChartFullscreen');
+
+        if (radarFullscreenCtx) {
+            // Destruir gráfico anterior si existe
+            if (radarFullscreenChart) {
+                radarFullscreenChart.destroy();
+            }
+
+            // Crear nuevo gráfico con fuente más grande para mejor visualización
+            radarFullscreenChart = new Chart(radarFullscreenCtx, getRadarChartConfig(16));
+        }
+    });
+
+    // Limpiar al cerrar modal para liberar recursos
+    radarFullscreenModal.addEventListener('hidden.bs.modal', function () {
+        if (radarFullscreenChart) {
+            radarFullscreenChart.destroy();
+            radarFullscreenChart = null;
+        }
+    });
+}
+
+{% endif %}
 
 // Las funciones de exportación ahora se manejan mediante enlaces directos a las vistas de Django
 </script>
