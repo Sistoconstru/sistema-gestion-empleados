@@ -1,6 +1,7 @@
 <!-- templates/reports/evaluations_report.html -->
 {% extends 'base.html' %}
 {% load static %}
+{% load l10n %}
 
 {% block title %}Reporte de Evaluaciones de Desempeño - RRHH Pro{% endblock %}
 
@@ -1078,7 +1079,7 @@ function getRadarChartConfig(fontSize = 12) {
                     label: 'Promedio Actual',
                     data: [
                         {% for competencia in analisis_competencias %}
-                            {{ competencia.promedio }}{% if not forloop.last %},{% endif %}
+                            {{ competencia.promedio|unlocalize }}{% if not forloop.last %},{% endif %}
                         {% endfor %}
                     ],
                     fill: true,

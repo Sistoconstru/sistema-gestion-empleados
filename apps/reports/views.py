@@ -297,12 +297,11 @@ class PerformanceReportView(TemplateView):
             analisis_competencias[categoria]['total_preguntas'] = len(preguntas_competencia)
             analisis_competencias[categoria]['total_grupos'] = len(grupos_evaluacion)
 
-        # Convertir a lista ordenada por promedio
-        analisis_competencias_list = sorted(
-            analisis_competencias.values(),
-            key=lambda x: x['promedio'],
-            reverse=True
-        )
+        # Convertir a lista manteniendo el orden lógico de las competencias
+        # (no ordenar por promedio para mantener consistencia en el gráfico de radar)
+        analisis_competencias_list = [
+            analisis_competencias[cat] for cat in categorias_competencias
+        ]
 
         # ============ 3. ALERTAS CRÍTICAS ============
 
