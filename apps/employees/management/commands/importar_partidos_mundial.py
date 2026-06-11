@@ -9,6 +9,7 @@ from django.conf import settings
 from apps.employees.models import PartidoMundial
 import requests
 from datetime import datetime
+import pytz
 import os
 
 class Command(BaseCommand):
@@ -79,8 +80,12 @@ class Command(BaseCommand):
                     continue
 
                 try:
-                    fecha_hora = datetime.strptime(f'{fecha_str} {hora_str}', '%Y-%m-%d %H:%M:%S')
-                    fecha_hora = timezone.make_aware(fecha_hora)
+                    # La API devuelve fechas/horas en UTC, debemos convertir a timezone local
+                    fecha_hora_naive = datetime.strptime(f'{fecha_str} {hora_str}', '%Y-%m-%d %H:%M:%S')
+                    # Interpretar como UTC primero
+                    fecha_hora_utc = timezone.make_aware(fecha_hora_naive, timezone=pytz.UTC)
+                    # Convertir a America/Bogota para almacenar correctamente
+                    fecha_hora = fecha_hora_utc.astimezone(pytz.timezone('America/Bogota'))
                 except (ValueError, TypeError):
                     self.stdout.write(self.style.WARNING(f'Fecha inválida: {fecha_str} {hora_str}'))
                     continue

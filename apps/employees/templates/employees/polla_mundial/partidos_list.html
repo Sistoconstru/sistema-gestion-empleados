@@ -868,6 +868,11 @@ function configurarModalTerminos() {
     const btnAceptar = document.getElementById('btnAceptarTerminos');
     const btnRechazar = document.getElementById('btnRechazarTerminos');
 
+    // Si los elementos no existen (usuario ya aceptó términos), no configurar nada
+    if (!checkbox || !btnAceptar || !btnRechazar) {
+        return;
+    }
+
     // Habilitar botón solo cuando checkbox está marcado
     checkbox.addEventListener('change', function() {
         btnAceptar.disabled = !this.checked;
