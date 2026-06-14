@@ -116,6 +116,10 @@ python manage.py migrate
 # echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
 # python manage.py configurar_evaluacion_coordinador_administrativo
 
+# TEMPORAL: Resincronizar partidos finalizados (corregir marcadores cerrados prematuramente)
+echo "Resincronizando partidos finalizados desde API (correccion de marcadores)..."
+python manage.py actualizar_resultados_mundial --resincronizar || echo "Error en resincronizacion"
+
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
 
