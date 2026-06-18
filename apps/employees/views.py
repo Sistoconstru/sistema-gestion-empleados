@@ -3952,6 +3952,24 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 @staff_member_required
+def panel_admin(request):
+    """Punto de entrada de RRHH/Admin. Accesible a is_staff (incluye superuser)
+    sin requerir Empleado vinculado al usuario.
+    """
+    resumen = {
+        'empleados_activos': Empleado.objects.filter(estado__codigo='999').count(),
+        'empleados_en_prueba': Empleado.objects.filter(estado__codigo='p-prue').count(),
+        'familiares': Familiar.objects.count(),
+        'empleados_con_hijos': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
+        'vacaciones_pendientes': SolicitudVacacion.objects.filter(estado_local='enviada_pendiente_rrhh').count(),
+        'vacaciones_total_mes': SolicitudVacacion.objects.filter(
+            fecha_creacion__gte=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        ).count(),
+    }
+    return render(request, 'employees/admin/panel.html', {'resumen': resumen})
+
+
+@staff_member_required
 def familiares_admin_lista(request):
     qs = _familiares_filtrar(request)
 

@@ -33,6 +33,9 @@ urlpatterns = [
     path('perfil/familia/familiar/<uuid:familiar_id>/documento/subir/', views.documento_familiar_subir, name='documento_familiar_subir'),
     path('perfil/familia/documento/<uuid:documento_id>/eliminar/', views.documento_familiar_eliminar, name='documento_familiar_eliminar'),
 
+    # Panel de RRHH/Admin (staff/superuser, sin requerir Empleado vinculado)
+    path('admin/', views.panel_admin, name='panel_admin'),
+
     # Vista cruzada de familiares (staff/RRHH)
     path('admin/familiares/', views.familiares_admin_lista, name='familiares_admin_lista'),
     path('admin/familiares/export/', views.familiares_admin_export_excel, name='familiares_admin_export'),
