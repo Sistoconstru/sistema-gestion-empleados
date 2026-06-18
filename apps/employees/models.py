@@ -336,6 +336,66 @@ class DocumentoFamiliar(models.Model):
         return f"{self.get_tipo_display()} de {self.familiar.nombre_completo}"
 
 
+class SolicitudVacacion(BaseModel):
+    """Solicitud de vacaciones aprobada por el jefe directo y enviada a Odoo.
+
+    SIGHU NO valida saldo ni calcula días hábiles — eso lo hace Odoo. SIGHU solo
+    registra la solicitud, dispara el webhook y guarda el `leave_id_odoo` que
+    devuelve Odoo para trazabilidad. Ver docs/INTEGRACION_ODOO_VACACIONES.md.
+    """
+    ESTADO_CHOICES = [
+        ('borrador', 'Borrador'),
+        ('enviada_pendiente_rrhh', 'Enviada — Pendiente RRHH'),
+        ('rechazada_odoo', 'Rechazada por Odoo'),
+        ('error_envio', 'Error de envío'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    empleado = models.ForeignKey(
+        Empleado, on_delete=models.CASCADE, related_name='solicitudes_vacacion',
+        help_text="Empleado a quien le aplica la vacación",
+    )
+    jefe_solicitante = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='vacaciones_solicitadas',
+        help_text="Jefe (o staff/RRHH) que solicitó la vacación",
+    )
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    observaciones = models.TextField(blank=True)
+
+    estado_local = models.CharField(max_length=30, choices=ESTADO_CHOICES, default='borrador')
+    leave_id_odoo = models.IntegerField(null=True, blank=True, help_text="ID de hr.leave devuelto por Odoo")
+    motivo_rechazo = models.TextField(blank=True)
+    fecha_envio_odoo = models.DateTimeField(null=True, blank=True)
+    respuesta_odoo = models.JSONField(null=True, blank=True, help_text="Respuesta cruda de Odoo (auditoría)")
+
+    class Meta:
+        db_table = 'solicitudes_vacacion'
+        verbose_name = 'Solicitud de Vacación'
+        verbose_name_plural = 'Solicitudes de Vacación'
+        ordering = ['-fecha_creacion']
+        indexes = [
+            models.Index(fields=['empleado', '-fecha_creacion']),
+            models.Index(fields=['estado_local']),
+        ]
+
+    def __str__(self):
+        return f"Vacación {self.empleado.nombre_completo} {self.fecha_inicio} a {self.fecha_fin} ({self.get_estado_local_display()})"
+
+    @property
+    def dias_calendario(self):
+        """Días calendario incluyendo extremos (informativo; los hábiles los calcula Odoo)."""
+        if not self.fecha_inicio or not self.fecha_fin:
+            return None
+        return (self.fecha_fin - self.fecha_inicio).days + 1
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.fecha_inicio and self.fecha_fin and self.fecha_fin < self.fecha_inicio:
+            raise ValidationError("La fecha final no puede ser anterior a la inicial.")
+
+
 class HistorialCargo(BaseModel):
     """Historial de cargos de empleados"""
     empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)  # Empleado asociado

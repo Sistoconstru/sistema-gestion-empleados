@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Solicitar vacaciones — {{ empleado.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0"><i class="fas fa-umbrella-beach text-corporativo me-2"></i>Solicitar vacaciones</h2>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'employees:vacaciones_equipo' %}">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="small text-muted">Empleado</div>
+                    <h5 class="mb-0">{{ empleado.nombre_completo }}</h5>
+                    <small class="text-muted">{{ empleado.numero_documento }}</small>
+                </div>
+                <div class="col-md-3">
+                    <div class="small text-muted">Cargo</div>
+                    <div>{{ empleado.nombre_cargo_actual|default:'—' }}</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="small text-muted">Sede</div>
+                    <div>{{ empleado.sede.nombre|default:'—' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-corporativo text-white">
+            <i class="fas fa-calendar-plus me-2"></i>Datos de la vacación
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for m in messages %}<div class="alert alert-{{ m.tags|default:'info' }}">{{ m }}</div>{% endfor %}
+            {% endif %}
+
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-4">
+                    <label class="form-label">Fecha inicio *</label>
+                    {{ form.fecha_inicio }}
+                    {% if form.fecha_inicio.errors %}<div class="text-danger small">{{ form.fecha_inicio.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha fin *</label>
+                    {{ form.fecha_fin }}
+                    {% if form.fecha_fin.errors %}<div class="text-danger small">{{ form.fecha_fin.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <small class="text-muted">
+                        Odoo calcula los días hábiles y valida el saldo automáticamente. SIGHU solo registra y envía.
+                    </small>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Observaciones</label>
+                    {{ form.observaciones }}
+                </div>
+                <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-corporativo" type="submit">
+                        <i class="fas fa-paper-plane me-1"></i>Enviar solicitud
+                    </button>
+                    <a class="btn btn-outline-secondary" href="{% url 'employees:vacaciones_equipo' %}">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

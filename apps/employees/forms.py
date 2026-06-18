@@ -16,6 +16,7 @@ from .models import (
     Conversacion, Mensaje, Publicacion, Comentario,
     PartidoMundial, PrediccionMundial,
     Familiar, DocumentoFamiliar,
+    SolicitudVacacion,
 )
 from apps.organizational.models import Sede, Cargo, AreaEmpresa, CentroCosto
 
@@ -1788,3 +1789,26 @@ class DocumentoFamiliarForm(forms.ModelForm):
         }
 
 
+# =============================================================================
+# VACACIONES (jefe → Odoo)
+# =============================================================================
+
+class SolicitudVacacionForm(forms.ModelForm):
+    class Meta:
+        model = SolicitudVacacion
+        fields = ['fecha_inicio', 'fecha_fin', 'observaciones']
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
+            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Opcional'}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        fi = cleaned.get('fecha_inicio')
+        ff = cleaned.get('fecha_fin')
+        if fi and ff and ff < fi:
+            self.add_error('fecha_fin', 'La fecha final no puede ser anterior a la inicial.')
+        if fi and fi < date.today():
+            self.add_error('fecha_inicio', 'La fecha inicial no puede estar en el pasado.')
+        return cleaned

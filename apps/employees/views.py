@@ -32,11 +32,13 @@ from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria,
     Familiar, DocumentoFamiliar,
+    SolicitudVacacion,
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
     ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm,
     EstadoCivilForm, FamiliarForm, DocumentoFamiliarForm,
+    SolicitudVacacionForm,
 )
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
@@ -1130,6 +1132,15 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         
         # === ACTIVIDAD RECIENTE ===
         context.update(self.get_actividad_reciente(empleado))
+
+        # === Tiles del módulo de vacaciones ===
+        # Equipo: SOLO si el empleado tiene subordinados directos.
+        # Admin: SOLO si el usuario es staff. Son independientes; un usuario
+        # puede ver los dos tiles si cumple ambas condiciones.
+        context['puede_ver_vacaciones_equipo'] = HistorialCargo.objects.filter(
+            jefe_directo=empleado, activo=True
+        ).exists()
+        context['puede_ver_vacaciones_admin'] = self.request.user.is_staff
 
         return context
 
@@ -4023,3 +4034,172 @@ def familiares_admin_export_excel(request):
     response['Content-Disposition'] = f'attachment; filename=familiares_{stamp}.xlsx'
     wb.save(response)
     return response
+
+
+# =============================================================================
+# VACACIONES — Jefes solicitan/aprueban y se envía a Odoo
+# =============================================================================
+
+def _puede_solicitar_vacacion_para(usuario, empleado):
+    """Reglas de quién puede solicitar la vacación de un empleado:
+    - is_staff (RRHH/admin): para cualquiera.
+    - Jefe directo (vía HistorialCargo.jefe_directo activo): para sus subordinados.
+    """
+    if usuario.is_staff:
+        return True
+    try:
+        solicitante = Empleado.objects.get(usuario=usuario)
+    except Empleado.DoesNotExist:
+        return False
+    return HistorialCargo.objects.filter(
+        empleado=empleado, activo=True, jefe_directo=solicitante
+    ).exists()
+
+
+def _equipo_del_jefe(usuario):
+    """Subordinados directos del usuario (activos o en periodo de prueba).
+
+    Para staff/RRHH NO devuelve "todos los activos": eso vive en la vista admin
+    de vacaciones. Aquí siempre son los subordinados directos del jefe; si el
+    usuario es staff y además jefe, ve solo a su propio equipo.
+    """
+    try:
+        solicitante = Empleado.objects.get(usuario=usuario)
+    except Empleado.DoesNotExist:
+        return Empleado.objects.none()
+    return Empleado.objects.filter(
+        historialcargo__activo=True,
+        historialcargo__jefe_directo=solicitante,
+        estado__codigo__in=['999', 'p-prue'],
+    ).distinct().order_by('apellidos', 'nombres')
+
+
+@login_required
+def vacaciones_equipo(request):
+    """Panel del jefe: equipo + historial de solicitudes que hizo este usuario."""
+    equipo = _equipo_del_jefe(request.user)
+
+    solicitudes_hechas = SolicitudVacacion.objects.select_related(
+        'empleado', 'jefe_solicitante'
+    )
+    try:
+        empleado_actual = Empleado.objects.get(usuario=request.user)
+        solicitudes_hechas = solicitudes_hechas.filter(jefe_solicitante=empleado_actual)
+    except Empleado.DoesNotExist:
+        if not request.user.is_staff:
+            solicitudes_hechas = solicitudes_hechas.none()
+    solicitudes_hechas = solicitudes_hechas.order_by('-fecha_creacion')[:50]
+
+    return render(request, 'employees/vacaciones/equipo.html', {
+        'equipo': equipo,
+        'solicitudes': solicitudes_hechas,
+    })
+
+
+@login_required
+def vacacion_nueva(request, empleado_id):
+    """Form para crear y enviar una vacación de un empleado del equipo."""
+    empleado = get_object_or_404(Empleado, id=empleado_id)
+    if not _puede_solicitar_vacacion_para(request.user, empleado):
+        messages.error(request, 'No tienes permiso para solicitar vacaciones de este empleado.')
+        return redirect('employees:vacaciones_equipo')
+
+    if request.method == 'POST':
+        form = SolicitudVacacionForm(request.POST)
+        if form.is_valid():
+            from apps.integraciones.odoo.services import enviar_vacacion_a_odoo
+            try:
+                jefe = Empleado.objects.get(usuario=request.user)
+            except Empleado.DoesNotExist:
+                jefe = None
+
+            with transaction.atomic():
+                solicitud = form.save(commit=False)
+                solicitud.empleado = empleado
+                solicitud.jefe_solicitante = jefe
+                solicitud.creado_por = request.user
+                solicitud.estado_local = 'borrador'
+                solicitud.save()
+
+            ok, data = enviar_vacacion_a_odoo(solicitud)
+            solicitud.fecha_envio_odoo = timezone.now()
+            solicitud.respuesta_odoo = data
+            if ok:
+                solicitud.estado_local = 'enviada_pendiente_rrhh'
+                solicitud.leave_id_odoo = data.get('leave_id')
+                solicitud.save()
+                messages.success(
+                    request,
+                    f'Solicitud enviada a Odoo (leave_id={data.get("leave_id")}, '
+                    f'{data.get("dias")} día(s)). Pendiente de aprobación de RRHH.'
+                )
+                return redirect('employees:vacaciones_equipo')
+            else:
+                motivo = data.get('motivo', 'Error desconocido')
+                # Rechazo de negocio vs error técnico
+                if 'No se pudo contactar' in motivo or motivo.startswith('Error de transporte') or motivo.startswith('HTTP'):
+                    solicitud.estado_local = 'error_envio'
+                else:
+                    solicitud.estado_local = 'rechazada_odoo'
+                solicitud.motivo_rechazo = motivo
+                solicitud.save()
+                messages.error(request, f'Rechazada/Error: {motivo}')
+                return redirect('employees:vacaciones_equipo')
+    else:
+        form = SolicitudVacacionForm()
+
+    return render(request, 'employees/vacaciones/nueva.html', {
+        'empleado': empleado,
+        'form': form,
+    })
+
+
+@staff_member_required
+def vacaciones_admin_panel(request):
+    """Panel RRHH: buscar empleado para solicitar + historial global con filtros."""
+    # --- Búsqueda de empleado para iniciar una solicitud ---
+    q = request.GET.get('q', '').strip()
+    empleados_buscados = Empleado.objects.none()
+    if q:
+        empleados_buscados = Empleado.objects.filter(
+            estado__codigo__in=['999', 'p-prue']
+        ).filter(
+            Q(nombres__icontains=q) | Q(apellidos__icontains=q) |
+            Q(numero_documento__icontains=q)
+        ).order_by('apellidos', 'nombres')[:20]
+
+    # --- Historial global de solicitudes con filtros ---
+    solicitudes = SolicitudVacacion.objects.select_related(
+        'empleado', 'jefe_solicitante'
+    ).order_by('-fecha_creacion')
+
+    jefe_id = request.GET.get('jefe', '').strip()
+    estado = request.GET.get('estado', '').strip()
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+
+    if jefe_id:
+        solicitudes = solicitudes.filter(jefe_solicitante_id=jefe_id)
+    if estado:
+        solicitudes = solicitudes.filter(estado_local=estado)
+    if fecha_desde:
+        solicitudes = solicitudes.filter(fecha_inicio__gte=fecha_desde)
+    if fecha_hasta:
+        solicitudes = solicitudes.filter(fecha_fin__lte=fecha_hasta)
+
+    paginator = Paginator(solicitudes, 50)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    # Dropdown de jefes: solo empleados que efectivamente han solicitado alguna
+    jefes_con_solicitudes = Empleado.objects.filter(
+        vacaciones_solicitadas__isnull=False
+    ).distinct().order_by('apellidos', 'nombres')
+
+    return render(request, 'employees/vacaciones/admin.html', {
+        'q': q,
+        'empleados_buscados': empleados_buscados,
+        'page_obj': page_obj,
+        'jefes_con_solicitudes': jefes_con_solicitudes,
+        'estado_choices': SolicitudVacacion.ESTADO_CHOICES,
+        'filtros': request.GET,
+    })

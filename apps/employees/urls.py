@@ -36,6 +36,13 @@ urlpatterns = [
     # Vista cruzada de familiares (staff/RRHH)
     path('admin/familiares/', views.familiares_admin_lista, name='familiares_admin_lista'),
     path('admin/familiares/export/', views.familiares_admin_export_excel, name='familiares_admin_export'),
+
+    # Vacaciones (jefe → Odoo)
+    path('jefe/vacaciones/', views.vacaciones_equipo, name='vacaciones_equipo'),
+    path('jefe/vacaciones/nueva/<uuid:empleado_id>/', views.vacacion_nueva, name='vacacion_nueva'),
+
+    # Vacaciones — Administración (staff/RRHH)
+    path('admin/vacaciones/', views.vacaciones_admin_panel, name='vacaciones_admin_panel'),
     path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),
     # APIs y exportación
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),

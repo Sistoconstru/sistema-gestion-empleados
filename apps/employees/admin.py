@@ -14,6 +14,8 @@ from .models import (
     Empleado, HistorialCargo,
     # Familia
     Familiar, DocumentoFamiliar,
+    # Vacaciones
+    SolicitudVacacion,
     # Marketplace
     Categoria, Producto, Venta, Subasta, PujaSubasta, Regalo,
     # Messaging
@@ -867,3 +869,14 @@ class DocumentoFamiliarAdmin(admin.ModelAdmin):
     readonly_fields = ('fecha_subida',)
 
 
+@admin.register(SolicitudVacacion)
+class SolicitudVacacionAdmin(admin.ModelAdmin):
+    list_display = ('empleado', 'fecha_inicio', 'fecha_fin', 'estado_local', 'leave_id_odoo', 'jefe_solicitante', 'fecha_creacion')
+    list_filter = ('estado_local', 'fecha_inicio')
+    search_fields = (
+        'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento',
+        'jefe_solicitante__nombres', 'jefe_solicitante__apellidos',
+        'leave_id_odoo',
+    )
+    autocomplete_fields = ('empleado', 'jefe_solicitante', 'creado_por')
+    readonly_fields = ('fecha_creacion', 'fecha_actualizacion', 'fecha_envio_odoo', 'respuesta_odoo')
