@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Familia - {{ empleado.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="fas fa-users text-corporativo me-2"></i>Mi Familia
+            </h2>
+            <small class="text-muted">{{ empleado.nombre_completo }}</small>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            {% if es_padre %}
+                <span class="badge bg-info"><i class="fas fa-baby me-1"></i>Padre/Madre registrado/a</span>
+            {% endif %}
+            <a href="{% url 'employees:empleado_perfil' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al perfil
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for m in messages %}
+            <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ m }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-header bg-corporativo text-white">
+            <i class="fas fa-heart me-2"></i>Estado Civil
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'employees:familia_estado_civil' %}" class="row g-2 align-items-end">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label class="form-label">{{ estado_civil_form.estado_civil.label }}</label>
+                    {{ estado_civil_form.estado_civil }}
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-corporativo w-100">
+                        <i class="fas fa-save me-1"></i>Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-corporativo text-white d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-user-plus me-2"></i>Agregar familiar</span>
+            <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#formNuevoFamiliar">
+                Mostrar / Ocultar
+            </button>
+        </div>
+        <div id="formNuevoFamiliar" class="collapse">
+            <div class="card-body">
+                <form method="post" action="{% url 'employees:familiar_crear' %}" class="row g-3">
+                    {% csrf_token %}
+                    {% include 'employees/familia/_form_fields.html' with form=familiar_form %}
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-corporativo">
+                            <i class="fas fa-plus me-1"></i>Agregar familiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% for tipo_codigo, lista in grupos.items %}
+        {% if lista %}
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <strong>
+                        {% if tipo_codigo == 'pareja' %}<i class="fas fa-heart me-2 text-rojo"></i>Pareja
+                        {% elif tipo_codigo == 'hijo' %}<i class="fas fa-child me-2 text-info"></i>Hijos/as ({{ lista|length }})
+                        {% elif tipo_codigo == 'padre' %}<i class="fas fa-user-friends me-2"></i>Padres/Madres ({{ lista|length }})
+                        {% elif tipo_codigo == 'hermano' %}<i class="fas fa-people-arrows me-2"></i>Hermanos/as ({{ lista|length }})
+                        {% else %}<i class="fas fa-users me-2"></i>Otros ({{ lista|length }})
+                        {% endif %}
+                    </strong>
+                </div>
+                <div class="card-body p-0">
+                    {% for f in lista %}
+                        <div class="border-bottom p-3">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h5 class="mb-1">
+                                        {{ f.nombre_completo }}
+                                        {% if not f.activo %}<span class="badge bg-secondary">Inactivo</span>{% endif %}
+                                    </h5>
+                                    <div class="small text-muted">
+                                        {% if f.fecha_nacimiento %}{{ f.fecha_nacimiento|date:"d/m/Y" }} · {{ f.edad }} años{% endif %}
+                                        {% if f.tipo_documento %} · {{ f.tipo_documento.codigo }} {{ f.numero_documento }}{% endif %}
+                                        {% if f.tipo == 'otro' and f.parentesco %} · {{ f.parentesco }}{% endif %}
+                                    </div>
+                                    <div class="mt-2 d-flex flex-wrap gap-1">
+                                        {% if f.convive %}<span class="badge bg-success-subtle text-success">Convive</span>{% endif %}
+                                        {% if f.dependiente_economico %}<span class="badge bg-warning-subtle text-warning">Dependiente económico</span>{% endif %}
+                                        {% if f.eps %}<span class="badge bg-info-subtle text-info">EPS: {{ f.eps }}</span>{% endif %}
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-outline-corporativo" type="button" data-bs-toggle="collapse" data-bs-target="#edit-{{ f.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form method="post" action="{% url 'employees:familiar_eliminar' f.id %}" class="d-inline" onsubmit="return confirm('¿Eliminar este familiar y todos sus documentos?');">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-danger" type="submit"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <strong class="d-block mb-2"><i class="fas fa-paperclip me-1"></i>Documentos ({{ f.documentos.count }})</strong>
+                                {% for d in f.documentos.all %}
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2 mb-1">
+                                        <div>
+                                            <a href="{{ d.archivo.url }}" target="_blank" class="text-decoration-none">
+                                                <i class="fas fa-file me-1"></i>{{ d.get_tipo_display }}
+                                            </a>
+                                            {% if d.descripcion %} <span class="text-muted small">— {{ d.descripcion }}</span>{% endif %}
+                                            {% if d.fecha_vencimiento %}
+                                                <span class="badge bg-secondary ms-2">Vence {{ d.fecha_vencimiento|date:"d/m/Y" }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <form method="post" action="{% url 'employees:documento_familiar_eliminar' d.id %}" onsubmit="return confirm('¿Eliminar este documento?');">
+                                            {% csrf_token %}
+                                            <button class="btn btn-sm btn-link text-danger"><i class="fas fa-times"></i></button>
+                                        </form>
+                                    </div>
+                                {% empty %}
+                                    <div class="text-muted small">Sin documentos.</div>
+                                {% endfor %}
+
+                                <form method="post" action="{% url 'employees:documento_familiar_subir' f.id %}" enctype="multipart/form-data" class="row g-2 mt-2 align-items-end">
+                                    {% csrf_token %}
+                                    {% with upload_form=None %}
+                                    <div class="col-md-3">
+                                        <label class="form-label small mb-0">Clase de documento</label>
+                                        <select name="tipo" class="form-select form-select-sm" required>
+                                            <option value="">--</option>
+                                            <option value="registro_civil">Registro Civil</option>
+                                            <option value="tarjeta_identidad">Tarjeta de Identidad</option>
+                                            <option value="cedula">Cédula</option>
+                                            <option value="certificado_estudio">Certificado de Estudio</option>
+                                            <option value="certificado_eps">Certificado EPS</option>
+                                            <option value="otro">Otro</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small mb-0">Descripción</label>
+                                        <input type="text" name="descripcion" class="form-control form-control-sm" placeholder="Opcional">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-0">Vence</label>
+                                        <input type="date" name="fecha_vencimiento" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small mb-0">Archivo</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="file" name="archivo" class="form-control form-control-sm js-archivo" accept="image/*,application/pdf,.doc,.docx" required>
+                                            <button type="button" class="btn btn-outline-corporativo js-tomar-foto" title="Tomar foto con la cámara">
+                                                <i class="fas fa-camera"></i>
+                                            </button>
+                                            <input type="file" class="d-none js-camara" accept="image/*" capture="environment">
+                                        </div>
+                                        <div class="js-archivo-nombre small text-muted mt-1" style="display:none;"></div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button class="btn btn-corporativo btn-sm w-100" type="submit"><i class="fas fa-upload"></i></button>
+                                    </div>
+                                    {% endwith %}
+                                </form>
+                            </div>
+
+                            <div class="collapse mt-3" id="edit-{{ f.id }}">
+                                <form method="post" action="{% url 'employees:familiar_editar' f.id %}" class="row g-3 bg-light p-3 rounded">
+                                    {% csrf_token %}
+                                    {% include 'employees/familia/_form_fields.html' with form=familiar_form initial=f %}
+                                    <input type="hidden" name="_existing" value="1">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-corporativo btn-sm">
+                                            <i class="fas fa-save me-1"></i>Guardar cambios
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% if not grupos.pareja and not grupos.hijo and not grupos.padre and not grupos.hermano and not grupos.otro %}
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-users fa-3x mb-3 d-block"></i>
+            Aún no has registrado familiares. Usa "Agregar familiar" arriba para empezar.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    // Delegación: maneja todos los formularios de subida de documentos del panel familia.
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.js-tomar-foto');
+        if (!btn) return;
+        const group = btn.closest('.input-group');
+        const camara = group && group.querySelector('.js-camara');
+        if (camara) camara.click();
+    });
+
+    document.addEventListener('change', function (e) {
+        const camara = e.target.closest('.js-camara');
+        if (camara && camara.files && camara.files.length) {
+            const group = camara.closest('.input-group');
+            const archivo = group && group.querySelector('.js-archivo');
+            if (archivo) {
+                // Copia el archivo capturado al input que se envía.
+                const dt = new DataTransfer();
+                dt.items.add(camara.files[0]);
+                archivo.files = dt.files;
+                archivo.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            return;
+        }
+        const archivo = e.target.closest('.js-archivo');
+        if (archivo) {
+            const wrap = archivo.closest('.col-md-3') || archivo.parentElement.parentElement;
+            const label = wrap && wrap.querySelector('.js-archivo-nombre');
+            const file = archivo.files && archivo.files[0];
+            if (label) {
+                if (file) {
+                    label.textContent = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
+                    label.style.display = '';
+                } else {
+                    label.style.display = 'none';
+                    label.textContent = '';
+                }
+            }
+        }
+    });
+})();
+</script>
+{% endblock %}

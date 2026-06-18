@@ -12,6 +12,8 @@ from datetime import date
 from .models import (
     TipoDocumento, Escolaridad, EstadoEmpleado,
     Empleado, HistorialCargo,
+    # Familia
+    Familiar, DocumentoFamiliar,
     # Marketplace
     Categoria, Producto, Venta, Subasta, PujaSubasta, Regalo,
     # Messaging
@@ -833,3 +835,35 @@ class PrediccionMundialAdmin(admin.ModelAdmin):
 admin.site.site_header = "RRHH Pro - Administración"
 admin.site.site_title = "RRHH Pro Admin"
 admin.site.index_title = "Panel de Administración"
+
+
+# =============================================================================
+# Familia
+# =============================================================================
+
+class DocumentoFamiliarInline(admin.TabularInline):
+    model = DocumentoFamiliar
+    extra = 0
+    fields = ('tipo', 'descripcion', 'archivo', 'fecha_vencimiento', 'fecha_subida')
+    readonly_fields = ('fecha_subida',)
+
+
+@admin.register(Familiar)
+class FamiliarAdmin(admin.ModelAdmin):
+    list_display = ('nombre_completo', 'tipo', 'empleado', 'edad', 'eps', 'activo', 'fecha_creacion')
+    list_filter = ('tipo', 'activo', 'convive', 'dependiente_economico')
+    search_fields = ('nombres', 'apellidos', 'numero_documento', 'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento')
+    autocomplete_fields = ('empleado', 'tipo_documento', 'creado_por')
+    inlines = [DocumentoFamiliarInline]
+    readonly_fields = ('fecha_creacion', 'fecha_actualizacion')
+
+
+@admin.register(DocumentoFamiliar)
+class DocumentoFamiliarAdmin(admin.ModelAdmin):
+    list_display = ('familiar', 'tipo', 'descripcion', 'fecha_vencimiento', 'fecha_subida')
+    list_filter = ('tipo',)
+    search_fields = ('familiar__nombres', 'familiar__apellidos', 'descripcion')
+    autocomplete_fields = ('familiar',)
+    readonly_fields = ('fecha_subida',)
+
+

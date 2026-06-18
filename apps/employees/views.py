@@ -24,16 +24,19 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
 
 # Importaciones locales
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
-    Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria
+    Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria,
+    Familiar, DocumentoFamiliar,
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
-    ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm
+    ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm,
+    EstadoCivilForm, FamiliarForm, DocumentoFamiliarForm,
 )
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
@@ -1127,9 +1130,9 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         
         # === ACTIVIDAD RECIENTE ===
         context.update(self.get_actividad_reciente(empleado))
-        
+
         return context
-    
+
     def get_informacion_basica(self, empleado):
         """Obtener información básica del empleado"""
         # Cargo actual
@@ -3739,3 +3742,284 @@ def calificar_venta(request, venta_id):
 class TerminosCondicionesView(TemplateView):
     """Vista para mostrar términos y condiciones del marketplace"""
     template_name = 'employees/marketplace/terminos_condiciones.html'
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Autogestión del empleado
+# =============================================================================
+
+def _empleado_actual(request):
+    """Devuelve el Empleado vinculado al usuario logueado, o 404."""
+    return get_object_or_404(Empleado, usuario=request.user)
+
+
+@login_required
+def familia_panel(request):
+    """Panel principal de Historial Familiar (pestaña en el perfil)."""
+    empleado = _empleado_actual(request)
+    familiares = empleado.familiares.all().prefetch_related('documentos').order_by('tipo', 'fecha_nacimiento')
+
+    grupos = {'pareja': [], 'hijo': [], 'padre': [], 'hermano': [], 'otro': []}
+    for f in familiares:
+        grupos.setdefault(f.tipo, []).append(f)
+
+    return render(request, 'employees/familia/panel.html', {
+        'empleado': empleado,
+        'estado_civil_form': EstadoCivilForm(instance=empleado),
+        'familiar_form': FamiliarForm(),
+        'grupos': grupos,
+        'tipos_documento': TipoDocumento.objects.all().order_by('codigo'),
+        'es_padre': empleado.es_padre,
+    })
+
+
+@login_required
+@require_POST
+def familia_estado_civil_actualizar(request):
+    empleado = _empleado_actual(request)
+    form = EstadoCivilForm(request.POST, instance=empleado)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Estado civil actualizado.')
+    else:
+        messages.error(request, 'No se pudo actualizar el estado civil.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_crear(request):
+    empleado = _empleado_actual(request)
+    form = FamiliarForm(request.POST)
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                familiar = form.save(commit=False)
+                familiar.empleado = empleado
+                familiar.creado_por = request.user
+                familiar.full_clean()
+                familiar.save()
+            messages.success(request, f'Familiar "{familiar.nombre_completo}" agregado.')
+        except ValidationError as e:
+            messages.error(request, '; '.join(e.messages))
+    else:
+        messages.error(request, 'Revisa los datos: ' + '; '.join(
+            f"{k}: {v[0]}" for k, v in form.errors.items()
+        ))
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_editar(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    form = FamiliarForm(request.POST, instance=familiar)
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                familiar = form.save(commit=False)
+                familiar.full_clean()
+                familiar.save()
+            messages.success(request, 'Datos actualizados.')
+        except ValidationError as e:
+            messages.error(request, '; '.join(e.messages))
+    else:
+        messages.error(request, 'Revisa los datos.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_eliminar(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    nombre = familiar.nombre_completo
+    familiar.delete()
+    messages.success(request, f'Familiar "{nombre}" eliminado.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def documento_familiar_subir(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    form = DocumentoFamiliarForm(request.POST, request.FILES)
+    if form.is_valid():
+        doc = form.save(commit=False)
+        doc.familiar = familiar
+        doc.save()
+        messages.success(request, f'Documento subido para {familiar.nombre_completo}.')
+    else:
+        messages.error(request, 'No se pudo subir el documento. Verifica el tipo y el archivo.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def documento_familiar_eliminar(request, documento_id):
+    empleado = _empleado_actual(request)
+    doc = get_object_or_404(DocumentoFamiliar, id=documento_id, familiar__empleado=empleado)
+    doc.archivo.delete(save=False)
+    doc.delete()
+    messages.success(request, 'Documento eliminado.')
+    return redirect('employees:familia_panel')
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Vista cruzada (staff/RRHH)
+# =============================================================================
+
+def _familiares_filtrar(request):
+    """Construye el queryset filtrado por GET params. Reutilizado por list y export."""
+    qs = Familiar.objects.select_related(
+        'empleado', 'empleado__sede', 'empleado__estado', 'tipo_documento'
+    ).prefetch_related('documentos').all()
+
+    q = request.GET.get('q', '').strip()
+    tipo = request.GET.get('tipo', '').strip()
+    sede_id = request.GET.get('sede', '').strip()
+    estado_civil = request.GET.get('estado_civil', '').strip()
+    convive = request.GET.get('convive', '').strip()
+    dependiente = request.GET.get('dependiente', '').strip()
+    eps = request.GET.get('eps', '').strip()
+    edad_min = request.GET.get('edad_min', '').strip()
+    edad_max = request.GET.get('edad_max', '').strip()
+    activo = request.GET.get('activo', '').strip()
+    solo_padres = request.GET.get('solo_padres', '').strip()
+
+    if q:
+        qs = qs.filter(
+            Q(nombres__icontains=q) | Q(apellidos__icontains=q) |
+            Q(numero_documento__icontains=q) |
+            Q(empleado__nombres__icontains=q) | Q(empleado__apellidos__icontains=q) |
+            Q(empleado__numero_documento__icontains=q)
+        )
+    if tipo:
+        qs = qs.filter(tipo=tipo)
+    if sede_id:
+        qs = qs.filter(empleado__sede_id=sede_id)
+    if estado_civil:
+        qs = qs.filter(empleado__estado_civil=estado_civil)
+    if convive == 'si':
+        qs = qs.filter(convive=True)
+    elif convive == 'no':
+        qs = qs.filter(convive=False)
+    if dependiente == 'si':
+        qs = qs.filter(dependiente_economico=True)
+    elif dependiente == 'no':
+        qs = qs.filter(dependiente_economico=False)
+    if eps:
+        qs = qs.filter(eps__icontains=eps)
+    if activo == 'si':
+        qs = qs.filter(activo=True)
+    elif activo == 'no':
+        qs = qs.filter(activo=False)
+    if solo_padres == 'si':
+        # Solo familiares cuyo empleado tiene al menos un hijo registrado
+        qs = qs.filter(empleado__familiares__tipo='hijo').distinct()
+
+    # Filtro por edad — requiere fecha_nacimiento y se calcula contra hoy
+    hoy = date.today()
+    if edad_min.isdigit():
+        fecha_tope = date(hoy.year - int(edad_min), hoy.month, hoy.day) if hoy.month != 2 or hoy.day != 29 else date(hoy.year - int(edad_min), 2, 28)
+        qs = qs.filter(fecha_nacimiento__lte=fecha_tope)
+    if edad_max.isdigit():
+        # nació después de hoy - (edad_max + 1) años
+        edad_max_int = int(edad_max)
+        try:
+            fecha_inicio = date(hoy.year - edad_max_int - 1, hoy.month, hoy.day) + timedelta(days=1)
+        except ValueError:
+            fecha_inicio = date(hoy.year - edad_max_int - 1, 2, 28) + timedelta(days=1)
+        qs = qs.filter(fecha_nacimiento__gte=fecha_inicio)
+
+    return qs.order_by('empleado__apellidos', 'empleado__nombres', 'tipo', 'fecha_nacimiento')
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def familiares_admin_lista(request):
+    qs = _familiares_filtrar(request)
+
+    # Resumen
+    resumen = {
+        'total': qs.count(),
+        'parejas': qs.filter(tipo='pareja').count(),
+        'hijos': qs.filter(tipo='hijo').count(),
+        'padres': qs.filter(tipo='padre').count(),
+        'dependientes': qs.filter(dependiente_economico=True).count(),
+        'empleados_padres': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
+    }
+
+    paginator = Paginator(qs, 50)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    from apps.organizational.models import Sede as _Sede
+    return render(request, 'employees/familia/admin_lista.html', {
+        'page_obj': page_obj,
+        'resumen': resumen,
+        'sedes': _Sede.objects.filter(activa=True).order_by('nombre'),
+        'estado_civil_choices': Empleado.ESTADO_CIVIL_CHOICES,
+        'tipo_choices': Familiar.TIPO_CHOICES,
+        'filtros': request.GET,
+    })
+
+
+@staff_member_required
+def familiares_admin_export_excel(request):
+    qs = _familiares_filtrar(request)
+
+    try:
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
+    except ImportError:
+        return HttpResponse('openpyxl no disponible.', status=500)
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Familiares'
+
+    headers = [
+        'Empleado', 'Doc. Empleado', 'Sede', 'Estado Civil', 'Tipo Familiar',
+        'Nombres', 'Apellidos', 'Doc. Familiar', 'Núm. Doc.',
+        'Fecha Nacimiento', 'Edad', 'EPS', 'Convive', 'Dependiente',
+        'Parentesco', 'Activo', '# Documentos',
+    ]
+    for col, h in enumerate(headers, 1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = Font(bold=True, color='FFFFFF')
+        c.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+        c.alignment = Alignment(horizontal='center')
+
+    for r, f in enumerate(qs, 2):
+        ws.cell(row=r, column=1, value=f.empleado.nombre_completo)
+        ws.cell(row=r, column=2, value=f.empleado.numero_documento)
+        ws.cell(row=r, column=3, value=f.empleado.sede.nombre if f.empleado.sede_id else '')
+        ws.cell(row=r, column=4, value=f.empleado.get_estado_civil_display() if f.empleado.estado_civil else '')
+        ws.cell(row=r, column=5, value=f.get_tipo_display())
+        ws.cell(row=r, column=6, value=f.nombres)
+        ws.cell(row=r, column=7, value=f.apellidos)
+        ws.cell(row=r, column=8, value=f.tipo_documento.codigo if f.tipo_documento_id else '')
+        ws.cell(row=r, column=9, value=f.numero_documento)
+        ws.cell(row=r, column=10, value=f.fecha_nacimiento.strftime('%Y-%m-%d') if f.fecha_nacimiento else '')
+        ws.cell(row=r, column=11, value=f.edad if f.edad is not None else '')
+        ws.cell(row=r, column=12, value=f.eps)
+        ws.cell(row=r, column=13, value='Sí' if f.convive else 'No')
+        ws.cell(row=r, column=14, value='Sí' if f.dependiente_economico else 'No')
+        ws.cell(row=r, column=15, value=f.parentesco)
+        ws.cell(row=r, column=16, value='Sí' if f.activo else 'No')
+        ws.cell(row=r, column=17, value=f.documentos.count())
+
+    for col in range(1, len(headers) + 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 18
+
+    stamp = timezone.now().strftime('%Y%m%d_%H%M')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename=familiares_{stamp}.xlsx'
+    wb.save(response)
+    return response

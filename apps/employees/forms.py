@@ -14,7 +14,8 @@ from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo,
     Conversacion, Mensaje, Publicacion, Comentario,
-    PartidoMundial, PrediccionMundial
+    PartidoMundial, PrediccionMundial,
+    Familiar, DocumentoFamiliar,
 )
 from apps.organizational.models import Sede, Cargo, AreaEmpresa, CentroCosto
 
@@ -1728,3 +1729,62 @@ class PrediccionMundialForm(forms.ModelForm):
             raise ValidationError('Este partido ya no acepta predicciones')
 
         return cleaned_data
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Autogestión del empleado
+# =============================================================================
+
+class EstadoCivilForm(forms.ModelForm):
+    class Meta:
+        model = Empleado
+        fields = ['estado_civil']
+        widgets = {
+            'estado_civil': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+class FamiliarForm(forms.ModelForm):
+    class Meta:
+        model = Familiar
+        fields = [
+            'tipo', 'nombres', 'apellidos', 'tipo_documento', 'numero_documento',
+            'fecha_nacimiento', 'parentesco', 'convive', 'dependiente_economico',
+            'eps', 'observaciones', 'activo',
+        ]
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'nombres': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'tipo_documento': forms.Select(attrs={'class': 'form-select'}),
+            'numero_documento': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'parentesco': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Solo si tipo = Otro'}),
+            'convive': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'dependiente_economico': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'eps': forms.TextInput(attrs={'class': 'form-control'}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        tipo = cleaned.get('tipo')
+        parentesco = cleaned.get('parentesco', '').strip()
+        if tipo == 'otro' and not parentesco:
+            self.add_error('parentesco', 'Describe el parentesco cuando el tipo es "Otro".')
+        return cleaned
+
+
+class DocumentoFamiliarForm(forms.ModelForm):
+    class Meta:
+        model = DocumentoFamiliar
+        fields = ['tipo', 'descripcion', 'archivo', 'fecha_vencimiento']
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select', 'required': True}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Opcional'}),
+            'archivo': forms.ClearableFileInput(attrs={'class': 'form-control', 'required': True}),
+            'fecha_vencimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+

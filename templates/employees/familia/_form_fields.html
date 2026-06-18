@@ -1,0 +1,69 @@
+<div class="col-md-3">
+    <label class="form-label">Tipo de relación *</label>
+    <select name="tipo" class="form-select" required>
+        <option value="">--</option>
+        <option value="pareja"   {% if initial.tipo == 'pareja' %}selected{% endif %}>Pareja</option>
+        <option value="hijo"     {% if initial.tipo == 'hijo' %}selected{% endif %}>Hijo/a</option>
+        <option value="padre"    {% if initial.tipo == 'padre' %}selected{% endif %}>Padre/Madre</option>
+        <option value="hermano"  {% if initial.tipo == 'hermano' %}selected{% endif %}>Hermano/a</option>
+        <option value="otro"     {% if initial.tipo == 'otro' %}selected{% endif %}>Otro</option>
+    </select>
+</div>
+<div class="col-md-5">
+    <label class="form-label">Nombres *</label>
+    <input type="text" name="nombres" class="form-control" value="{{ initial.nombres|default_if_none:'' }}" required>
+</div>
+<div class="col-md-4">
+    <label class="form-label">Apellidos *</label>
+    <input type="text" name="apellidos" class="form-control" value="{{ initial.apellidos|default_if_none:'' }}" required>
+</div>
+
+<div class="col-md-3">
+    <label class="form-label">Tipo documento</label>
+    <select name="tipo_documento" class="form-select">
+        <option value="">--</option>
+        {% for td in tipos_documento %}
+            <option value="{{ td.id }}" {% if initial.tipo_documento_id == td.id %}selected{% endif %}>{{ td.codigo }} — {{ td.nombre }}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="col-md-3">
+    <label class="form-label">Número documento</label>
+    <input type="text" name="numero_documento" class="form-control" value="{{ initial.numero_documento|default_if_none:'' }}">
+</div>
+<div class="col-md-3">
+    <label class="form-label">Fecha de nacimiento</label>
+    <input type="date" name="fecha_nacimiento" class="form-control" value="{{ initial.fecha_nacimiento|date:'Y-m-d'|default_if_none:'' }}">
+</div>
+<div class="col-md-3">
+    <label class="form-label">Parentesco (si "Otro")</label>
+    <input type="text" name="parentesco" class="form-control" value="{{ initial.parentesco|default_if_none:'' }}">
+</div>
+
+<div class="col-md-4">
+    <label class="form-label">EPS</label>
+    <input type="text" name="eps" class="form-control" value="{{ initial.eps|default_if_none:'' }}">
+</div>
+<div class="col-md-3 d-flex align-items-end">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="convive" id="convive-{{ initial.id|default:'new' }}" {% if initial.convive %}checked{% endif %}>
+        <label class="form-check-label" for="convive-{{ initial.id|default:'new' }}">Convive</label>
+    </div>
+</div>
+<div class="col-md-3 d-flex align-items-end">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="dependiente_economico" id="dep-{{ initial.id|default:'new' }}" {% if initial.dependiente_economico %}checked{% endif %}>
+        <label class="form-check-label" for="dep-{{ initial.id|default:'new' }}">Dependiente económico</label>
+    </div>
+</div>
+<div class="col-md-2 d-flex align-items-end">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="activo" id="act-{{ initial.id|default:'new' }}" {% if not initial or initial.activo %}checked{% endif %}>
+        <label class="form-check-label" for="act-{{ initial.id|default:'new' }}">Activo</label>
+    </div>
+</div>
+
+<div class="col-12">
+    <label class="form-label">Observaciones</label>
+    <textarea name="observaciones" class="form-control" rows="2">{{ initial.observaciones|default_if_none:'' }}</textarea>
+</div>

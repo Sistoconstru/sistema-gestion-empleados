@@ -139,6 +139,15 @@ class Empleado(BaseModel):
     correo_electronico = models.EmailField(blank=True)  # Email
     direccion = models.CharField(max_length=200, blank=False, help_text="Dirección de residencia (debe iniciar con el tipo de vía completo)")  # Dirección de residencia
 
+    ESTADO_CIVIL_CHOICES = [
+        ('soltero', 'Soltero/a'),
+        ('casado', 'Casado/a'),
+        ('union_libre', 'Unión Libre'),
+        ('divorciado', 'Divorciado/a'),
+        ('viudo', 'Viudo/a'),
+    ]
+    estado_civil = models.CharField(max_length=20, choices=ESTADO_CIVIL_CHOICES, blank=True)
+
     # Polla Mundial 2026 - Aceptación de términos
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
     fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")
@@ -204,6 +213,128 @@ class Empleado(BaseModel):
             logger = logging.getLogger(__name__)
             logger.warning(f"Error obteniendo área actual para empleado {self.id}: {e}")
             return None
+
+    @property
+    def es_padre(self):
+        """True si el empleado tiene al menos un hijo registrado (sin importar el flag activo).
+
+        Se ignora `activo` a propósito: ser padre es un hecho de la persona, no de
+        la vigencia del registro (los hijos pueden ser adultos, vivir fuera, etc.).
+        """
+        return self.familiares.filter(tipo='hijo').exists()
+
+
+class Familiar(BaseModel):
+    """Datos de familiares del empleado (pareja, hijos, otros).
+
+    Un solo modelo polimórfico vía `tipo` para que sea extensible. Validación:
+    solo puede haber una pareja activa por empleado a la vez.
+    """
+    TIPO_CHOICES = [
+        ('pareja', 'Pareja'),
+        ('hijo', 'Hijo/a'),
+        ('padre', 'Padre/Madre'),
+        ('hermano', 'Hermano/a'),
+        ('otro', 'Otro'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE, related_name='familiares')
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.SET_NULL, null=True, blank=True)
+    numero_documento = models.CharField(max_length=20, blank=True)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    parentesco = models.CharField(max_length=50, blank=True, help_text="Detalle del parentesco si tipo='otro'")
+
+    # Aplican principalmente a pareja, opcionales para el resto
+    convive = models.BooleanField(default=False, help_text="Convive con el empleado")
+    dependiente_economico = models.BooleanField(default=False, help_text="Dependiente económico del empleado")
+    eps = models.CharField(max_length=100, blank=True, help_text="EPS a la que está afiliado")
+
+    observaciones = models.TextField(blank=True)
+    activo = models.BooleanField(default=True, help_text="Si el registro está vigente")
+
+    class Meta:
+        db_table = 'familiares'
+        verbose_name = 'Familiar'
+        verbose_name_plural = 'Familiares'
+        ordering = ['tipo', 'fecha_nacimiento']
+        indexes = [
+            models.Index(fields=['empleado', 'tipo']),
+        ]
+
+    def __str__(self):
+        return f"{self.get_tipo_display()}: {self.nombre_completo} (de {self.empleado.nombre_completo})"
+
+    @property
+    def nombre_completo(self):
+        return f"{self.nombres} {self.apellidos}".strip()
+
+    @property
+    def edad(self):
+        if not self.fecha_nacimiento:
+            return None
+        from datetime import date
+        hoy = date.today()
+        return hoy.year - self.fecha_nacimiento.year - (
+            (hoy.month, hoy.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day)
+        )
+
+    def clean(self):
+        """Solo puede existir una pareja activa por empleado."""
+        from django.core.exceptions import ValidationError
+        if not self.empleado_id:
+            # ModelForm._post_clean dispara este clean() antes de que la vista
+            # asigne empleado. Difiere la validación: se re-ejecutará en full_clean()
+            # justo antes de save().
+            return
+        if self.tipo == 'pareja' and self.activo:
+            qs = Familiar.objects.filter(
+                empleado_id=self.empleado_id, tipo='pareja', activo=True
+            ).exclude(pk=self.pk)
+            if qs.exists():
+                raise ValidationError(
+                    "Este empleado ya tiene una pareja registrada como activa. "
+                    "Desactiva la actual antes de registrar otra."
+                )
+
+
+def _documento_familiar_upload_path(instance, filename):
+    """Ruta de almacenamiento: familiares/<empleado_uuid>/<familiar_uuid>/<filename>."""
+    return f"familiares/{instance.familiar.empleado_id}/{instance.familiar_id}/{filename}"
+
+
+class DocumentoFamiliar(models.Model):
+    """Documentos adjuntos por familiar (registro civil, TI, certificados, etc.)."""
+
+    TIPO_CHOICES = [
+        ('registro_civil', 'Registro Civil'),
+        ('tarjeta_identidad', 'Tarjeta de Identidad'),
+        ('cedula', 'Cédula de Ciudadanía'),
+        ('certificado_estudio', 'Certificado de Estudio'),
+        ('certificado_eps', 'Certificado EPS'),
+        ('otro', 'Otro'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE, related_name='documentos')
+    tipo = models.CharField(max_length=30, choices=TIPO_CHOICES, verbose_name='Clase de documento')
+    descripcion = models.CharField(max_length=200, blank=True)
+    archivo = models.FileField(upload_to=_documento_familiar_upload_path)
+    fecha_vencimiento = models.DateField(null=True, blank=True, help_text="Si aplica (ej: certificado de estudio)")
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'documentos_familiar'
+        verbose_name = 'Documento de Familiar'
+        verbose_name_plural = 'Documentos de Familiares'
+        ordering = ['-fecha_subida']
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} de {self.familiar.nombre_completo}"
+
 
 class HistorialCargo(BaseModel):
     """Historial de cargos de empleados"""

@@ -239,6 +239,19 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:familia_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-users fa-2x d-block mb-2"></i>
+                            <strong>Mi Familia</strong>
+                            <div class="small text-muted">Estado civil, pareja, hijos, documentos</div>
+                            {% if empleado.es_padre %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-info">
+                                    <i class="fas fa-baby"></i>
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'evaluations:index' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3 position-relative">
                             <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>
