@@ -116,9 +116,9 @@ python manage.py migrate
 # echo "⚙️  Configurando evaluación de Coordinador Administrativo..."
 # python manage.py configurar_evaluacion_coordinador_administrativo
 
-# TEMPORAL: Reimportar partidos con zona horaria corregida (REMOVER DESPUÉS)
-echo "⚽ Reimportando partidos con zona horaria correcta (UTC -> America/Bogota)..."
-python manage.py importar_partidos_mundial --season=2026 --force || echo "⚠️ Error en reimportación"
+# TEMPORAL: Resincronizar partidos finalizados (corregir marcadores cerrados prematuramente)
+echo "Resincronizando partidos finalizados desde API (correccion de marcadores)..."
+python manage.py actualizar_resultados_mundial --resincronizar || echo "Error en resincronizacion"
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput
