@@ -61,3 +61,80 @@ class OdooHealthcheckView(APIView):
 
     def get(self, request):
         return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+
+
+# Mapeo del valor `estado` que envía Odoo → estado_local en SIGHU.
+# Solo aceptamos los tres eventos terminales: aprobada, rechazada, cancelada.
+ESTADO_ODOO_A_SIGHU = {
+    'aprobada': 'aprobada_rrhh',
+    'rechazada': 'rechazada_rrhh',
+    'cancelada': 'cancelada_rrhh',
+}
+
+
+class OdooVacacionEstadoView(APIView):
+    """Recibe el estado final de una solicitud de vacaciones desde Odoo.
+
+    Contrato:
+    - Auth: `Authorization: Token <SIGHU_ODOO_TOKEN>`.
+    - Body JSON: { leave_id, estado, motivo?, aprobada_por?, fecha_estado? }
+    - Idempotente: misma notificación dos veces → `status: ya_procesado`.
+    - Identificación por `leave_id` (entero) → `SolicitudVacacion.leave_id_odoo`.
+    """
+    authentication_classes = [OdooServiceTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from apps.employees.models import SolicitudVacacion
+
+        data = request.data if isinstance(request.data, dict) else {}
+
+        leave_id = data.get('leave_id')
+        if leave_id in (None, ''):
+            return Response(
+                {'error': 'leave_id requerido'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            leave_id = int(leave_id)
+        except (TypeError, ValueError):
+            return Response(
+                {'error': 'leave_id debe ser entero'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        estado_str = (data.get('estado') or '').strip()
+        nuevo_estado = ESTADO_ODOO_A_SIGHU.get(estado_str)
+        if not nuevo_estado:
+            return Response(
+                {'error': f"estado invalido: '{estado_str}'. Permitidos: {sorted(ESTADO_ODOO_A_SIGHU)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            solicitud = SolicitudVacacion.objects.get(leave_id_odoo=leave_id)
+        except SolicitudVacacion.DoesNotExist:
+            return Response(
+                {'error': f'leave_id {leave_id} no encontrado en SIGHU'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Idempotencia: si ya está en el estado destino, no hacer nada.
+        if solicitud.estado_local == nuevo_estado:
+            return Response(
+                {'status': 'ya_procesado', 'leave_id': leave_id},
+                status=status.HTTP_200_OK,
+            )
+
+        solicitud.estado_local = nuevo_estado
+        motivo = (data.get('motivo') or '').strip()
+        if motivo:
+            solicitud.motivo_rechazo = motivo
+        # Guardar el payload completo para auditoría (sobreescribe el push inicial)
+        solicitud.respuesta_odoo = data
+        solicitud.save(update_fields=['estado_local', 'motivo_rechazo', 'respuesta_odoo', 'fecha_actualizacion'])
+
+        return Response(
+            {'status': 'recibido', 'leave_id': leave_id, 'estado_local': nuevo_estado},
+            status=status.HTTP_200_OK,
+        )

@@ -87,8 +87,14 @@
                                 <td>
                                     {% if s.estado_local == 'enviada_pendiente_rrhh' %}
                                         <span class="badge bg-info">Pendiente RRHH</span>
+                                    {% elif s.estado_local == 'aprobada_rrhh' %}
+                                        <span class="badge bg-success">Aprobada</span>
+                                    {% elif s.estado_local == 'rechazada_rrhh' %}
+                                        <span class="badge bg-danger">Rechazada por RRHH</span>
+                                    {% elif s.estado_local == 'cancelada_rrhh' %}
+                                        <span class="badge bg-secondary">Cancelada por RRHH</span>
                                     {% elif s.estado_local == 'rechazada_odoo' %}
-                                        <span class="badge bg-danger">Rechazada</span>
+                                        <span class="badge bg-danger">Rechazada (saldo/reglas)</span>
                                     {% elif s.estado_local == 'error_envio' %}
                                         <span class="badge bg-warning text-dark">Error envío</span>
                                     {% else %}

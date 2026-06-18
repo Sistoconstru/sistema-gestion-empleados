@@ -346,8 +346,12 @@ class SolicitudVacacion(BaseModel):
     ESTADO_CHOICES = [
         ('borrador', 'Borrador'),
         ('enviada_pendiente_rrhh', 'Enviada — Pendiente RRHH'),
-        ('rechazada_odoo', 'Rechazada por Odoo'),
+        ('rechazada_odoo', 'Rechazada por Odoo (saldo/reglas)'),
         ('error_envio', 'Error de envío'),
+        # Callbacks de Odoo cuando RRHH actúa sobre la solicitud
+        ('aprobada_rrhh', 'Aprobada por RRHH'),
+        ('rechazada_rrhh', 'Rechazada por RRHH'),
+        ('cancelada_rrhh', 'Cancelada por RRHH'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
