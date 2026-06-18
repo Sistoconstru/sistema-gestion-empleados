@@ -123,6 +123,13 @@ class Empleado(BaseModel):
     telefono_contacto = models.CharField(max_length=15)  # Teléfono de contacto
     fecha_ingreso = models.DateField()  # Fecha de ingreso
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
+    centro_costo = models.ForeignKey(
+        'organizational.CentroCosto',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='empleados',
+        help_text="Centro de costo al que pertenece el empleado"
+    )
     estado = models.ForeignKey(EstadoEmpleado, on_delete=models.CASCADE)  # Estado actual
     fecha_nacimiento = models.DateField(null=True, blank=True)  # Fecha de nacimiento
     ciudad_nacimiento = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)  # Ciudad de nacimiento

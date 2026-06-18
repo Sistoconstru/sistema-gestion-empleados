@@ -16,7 +16,7 @@ from .models import (
     Conversacion, Mensaje, Publicacion, Comentario,
     PartidoMundial, PrediccionMundial
 )
-from apps.organizational.models import Sede, Cargo, AreaEmpresa
+from apps.organizational.models import Sede, Cargo, AreaEmpresa, CentroCosto
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -43,6 +43,17 @@ class EmpleadoForm(forms.ModelForm):
         required=True,
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_cargo'}),
         help_text="Cargo que ocupará el empleado"
+    )
+
+    # Centro de costo: obligatorio al crear/editar (la columna DB queda nullable
+    # para no romper los empleados existentes con NULL hasta que sean editados)
+    centro_costo = forms.ModelChoiceField(
+        queryset=CentroCosto.objects.filter(activo=True),
+        label="Centro de Costo",
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="-- Seleccione un centro de costo --",
+        help_text="Centro de costo al que pertenece el empleado"
     )
 
     # Campo para jefe directo (se muestra dinámicamente según el cargo seleccionado)
@@ -75,7 +86,7 @@ class EmpleadoForm(forms.ModelForm):
         model = Empleado
         fields = [
             'tipo_documento', 'numero_documento', 'nombres', 'apellidos',
-            'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo',
+            'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo', 'centro_costo',
             'fecha_nacimiento', 'departamento', 'ciudad_nacimiento', 'escolaridad',
             'contacto_emergencia_nombre', 'contacto_emergencia_telefono',
             'correo_electronico',
@@ -211,7 +222,7 @@ class EmpleadoForm(forms.ModelForm):
         # Hacer campos requeridos más explícitos
         required_fields = [
             'tipo_documento', 'numero_documento', 'nombres', 'apellidos',
-            'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo'
+            'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo', 'centro_costo'
         ]
         for field_name in required_fields:
             if field_name in self.fields:

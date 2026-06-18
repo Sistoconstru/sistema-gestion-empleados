@@ -4,7 +4,7 @@
 
 from django.contrib import admin
 from apps.evaluations.models import EvaluacionCargo
-from .models import Sede, AreaEmpresa, Cargo
+from .models import Sede, AreaEmpresa, Cargo, CentroCosto
 
 @admin.register(Sede)
 class SedeAdmin(admin.ModelAdmin):
@@ -99,3 +99,10 @@ class CargoAdmin(admin.ModelAdmin):
         for obj in formset.deleted_objects:
             obj.delete()
 
+
+@admin.register(CentroCosto)
+class CentroCostoAdmin(admin.ModelAdmin):
+    list_display = ('referencia', 'cuenta_analitica', 'nombre', 'activo', 'fecha_creacion')
+    list_filter = ('activo',)
+    search_fields = ('cuenta_analitica', 'referencia', 'nombre')
+    ordering = ('referencia',)

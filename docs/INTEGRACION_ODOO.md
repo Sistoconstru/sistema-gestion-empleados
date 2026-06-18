@@ -134,6 +134,11 @@ Sin autenticación. Devuelve `{"status": "ok"}`. Para verificar conectividad ant
     "fecha_inicio_cargo": "2024-02-01",
     "jefe_directo_uuid": "660e8400-e29b-41d4-a716-446655440111"
   },
+  "centro_costo": {
+    "referencia": "1003",
+    "cuenta_analitica": "[1003] RRHH",
+    "nombre": "RRHH"
+  },
   "fecha_actualizacion": "2026-05-20T14:32:11Z"
 }
 ```
@@ -143,6 +148,7 @@ Sin autenticación. Devuelve `{"status": "ok"}`. Para verificar conectividad ant
 - `sighu_uuid` = `empleados.id` (tipo UUID en PostgreSQL). Es la llave estable. **No usar `numero_documento`** como llave.
 - `cargo_actual.salario` proviene de `historial_cargos.salario` donde `activo=True` y `fecha_fin IS NULL`. **No** viene de `cargos.salario_minimo/maximo` (esos son rangos de referencia del cargo, no el salario real del empleado).
 - `cargo_actual.jefe_directo_uuid` proviene de `historial_cargos.jefe_directo_id` (UUID de otro empleado).
+- `centro_costo` proviene de `empleados.centro_costo_id` → `centros_costo`. La **llave de matching** contra Odoo es `referencia` (= `account.analytic.account.code` ya estandarizado en Odoo del cliente). `cuenta_analitica` es la etiqueta `[CODE] NOMBRE` tal cual aparece en el catálogo Odoo. Puede ser `null` si el empleado aún no tiene centro asignado (los empleados creados desde el form a partir de 2026-06-12 lo llevan obligatorio).
 - `tipo_documento.codigo_dian` es el código que Odoo debe usar para nómina electrónica DIAN (ver §3.4.1).
 - `fecha_actualizacion` debe ser `MAX(empleados.fecha_actualizacion, historial_cargos.fecha_actualizacion)` donde el historial esté activo. Si solo cambia el cargo (HistorialCargo) pero no el empleado, el `modified_since` debe detectarlo igualmente.
 - Fechas: ISO 8601, UTC para timestamps, `YYYY-MM-DD` para fechas simples.
@@ -180,6 +186,7 @@ Sin autenticación. Devuelve `{"status": "ok"}`. Para verificar conectividad ant
 | `cargo_actual.salario` | `historial_cargos.salario` (activo) | `hr.contract.wage` | Crear/actualizar contrato. |
 | `cargo_actual.fecha_inicio_cargo` | `historial_cargos.fecha_inicio` | `hr.contract.date_start` | |
 | `cargo_actual.jefe_directo_uuid` | `historial_cargos.jefe_directo_id` | `parent_id` | Resolver vía `x_sighu_uuid`. |
+| `centro_costo.referencia` | `centros_costo.referencia` | `account.analytic.account.code` → `hr.contract.analytic_account_id` (o equivalente del cliente) | Matching por `code`. Si no existe, registrar en `OdooSyncFalla` (los 31 centros ya están estandarizados en Odoo, no se deben crear). |
 | `estado.codigo` | `estados_empleado.codigo` | `active` + `x_estado_sighu` | `999` → active=True; `INACTIVO` → active=False. |
 | `contacto_emergencia.nombre` | `empleados.contacto_emergencia_nombre` | `emergency_contact` | |
 | `contacto_emergencia.telefono` | `empleados.contacto_emergencia_telefono` | `emergency_phone` | |

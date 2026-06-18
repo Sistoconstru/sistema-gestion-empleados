@@ -81,7 +81,7 @@ class OdooEmpleadoSerializerTests(TestCase):
             'apellidos', 'nombre_completo', 'fecha_nacimiento', 'ciudad_nacimiento',
             'correo_electronico', 'telefono_contacto', 'direccion', 'fecha_ingreso',
             'estado', 'sede', 'escolaridad', 'contacto_emergencia',
-            'cargo_actual', 'fecha_actualizacion',
+            'cargo_actual', 'centro_costo', 'fecha_actualizacion',
         }
         self.assertEqual(set(data.keys()), keys_esperadas)
 
