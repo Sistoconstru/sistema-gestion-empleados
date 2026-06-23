@@ -81,7 +81,7 @@ Conectar SIGHU (Sistema de Gestión de Empleados) con Odoo Community para que Od
   - ✅ Válido: `2026-05-22T18:00:22Z`, `2026-05-22T13:00:22-05:00`
   - ❌ Inválido: `2026-05-22T18:00:22` (sin tz) — SIGHU lo interpretará como hora local del servidor y los resultados serán impredecibles. Esto NO se tolera intencionalmente: el contrato exige timezone explícito para evitar bugs sutiles de zona horaria entre los dos servicios.
 - `page` (int, default 1). Paginación de 100 registros.
-- `incluir_inactivos` (bool, default `false`).
+- `incluir_inactivos` (bool, **default `true`** desde 2026-06-18). El pull devuelve también INACTIVO/RETIRADO para que el cron horario reconcilie cambios de estado cuando el push síncrono falle. Para limitar a activos pasar explícitamente `?incluir_inactivos=false`.
 
 **Headers:** `Authorization: Token <SIGHU_ODOO_TOKEN>`
 

@@ -158,6 +158,38 @@ class OdooEndpointTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()['count'], 0)
 
+    def test_listado_incluye_inactivos_por_default(self):
+        """Default cambió a incluir_inactivos=true: el pull es red de seguridad
+        para reconciliar inactivaciones si el push síncrono falla."""
+        # Crear un empleado INACTIVO adicional
+        estado_inactivo, _ = EstadoEmpleado.objects.get_or_create(
+            codigo='INACTIVO', defaults={'nombre': 'Inactivo', 'permite_acceso_sistema': False},
+        )
+        user2 = User.objects.create_user(username='odoo_test_inact', password='x')
+        Empleado.objects.create(
+            usuario=user2,
+            tipo_documento=self.emp.tipo_documento,
+            numero_documento='9090909090',
+            nombres='Pedro', apellidos='Retirado',
+            telefono_contacto='3009999999',
+            fecha_ingreso=date(2020, 1, 1),
+            sede=self.emp.sede,
+            estado=estado_inactivo,
+            direccion='Calle X',
+            contacto_emergencia_telefono='3008888888',
+            creado_por=user2,
+        )
+        self.client.credentials(HTTP_AUTHORIZATION='Token test-token-secreto')
+
+        # Default: incluye ambos (activo + inactivo)
+        resp = self.client.get('/api/v1/odoo/empleados/')
+        self.assertEqual(resp.json()['count'], 2)
+
+        # Opt-out: solo activos
+        resp = self.client.get('/api/v1/odoo/empleados/?incluir_inactivos=false')
+        self.assertEqual(resp.json()['count'], 1)
+        self.assertEqual(resp.json()['results'][0]['numero_documento'], '1020304050')
+
 
 @override_settings(
     SIGHU_ODOO_WEBHOOK_URL='http://fake.test/webhook',

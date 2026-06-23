@@ -38,7 +38,12 @@ class OdooEmpleadoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, view
             'historialcargo_set__jefe_directo',
         )
 
-        incluir_inactivos = self.request.query_params.get('incluir_inactivos', 'false').lower() == 'true'
+        # Por defecto INCLUIMOS inactivos: el pull es la red de seguridad cuando el
+        # push síncrono falla, y los cambios de estado (activo↔inactivo/retirado)
+        # tienen que poder reconciliarse desde aquí. Odoo decide qué hacer con
+        # cada estado vía empleado.estado.codigo en el payload.
+        # `?incluir_inactivos=false` se mantiene como opt-out por compatibilidad.
+        incluir_inactivos = self.request.query_params.get('incluir_inactivos', 'true').lower() == 'true'
         if not incluir_inactivos:
             qs = qs.filter(estado__permite_acceso_sistema=True)
 
