@@ -157,21 +157,6 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label" for="{{ form.centro_costo.id_for_label }}">{{ form.centro_costo.label }}</label>
-                                {{ form.centro_costo }}
-                                {% if form.centro_costo.help_text %}
-                                    <small class="form-text text-muted">{{ form.centro_costo.help_text }}</small>
-                                {% endif %}
-                                {% if form.centro_costo.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.centro_costo.errors.0 }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
                         <!-- Campo de Jefe Directo (dinámico según cargo seleccionado) -->
                         <div class="col-md-6" id="contenedor-jefe-directo" style="display: none;">
                             <div class="mb-3">
@@ -516,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validación del formulario
     form.addEventListener('submit', function(e) {
         let isValid = true;
-        const requiredFields = ['tipo_documento', 'numero_documento', 'nombres', 'apellidos', 'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo', 'centro_costo'];
+        const requiredFields = ['tipo_documento', 'numero_documento', 'nombres', 'apellidos', 'telefono_contacto', 'fecha_ingreso', 'sede', 'cargo'];
         
         // Verificar campos requeridos
         requiredFields.forEach(fieldName => {
