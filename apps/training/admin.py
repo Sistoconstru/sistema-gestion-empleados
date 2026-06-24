@@ -28,7 +28,7 @@ class CapacitacionAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Configuración', {
-            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion')
+            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion', 'emite_certificado')
         }),
         ('Vigencia', {
             'fields': ('fecha_vigencia_inicio', 'fecha_vigencia_fin', 'version')

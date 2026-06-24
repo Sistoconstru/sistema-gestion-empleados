@@ -227,6 +227,16 @@ class Capacitacion(models.Model):
     nivel_dificultad = models.CharField(max_length=20, choices=NIVELES_DIFICULTAD, default='basico')
     puntaje_aprobacion = models.IntegerField(default=70, validators=[MinValueValidator(0), MaxValueValidator(100)])
     intentos_maximos = models.IntegerField(default=3, validators=[MinValueValidator(1)])
+    emite_certificado = models.BooleanField(
+        default=True,
+        verbose_name="Emite certificado al aprobar",
+        help_text=(
+            "Si está activo, al aprobar el curso se genera el PDF de certificado "
+            "automáticamente. Para capacitaciones obligatorias o de inducción se "
+            "suele desactivar; actívalo manualmente cuando sí se requiera evidencia "
+            "(SST, compliance, etc.)."
+        ),
+    )
     
     # Vigencia
     fecha_vigencia_inicio = models.DateField()
@@ -782,12 +792,10 @@ class InscripcionCapacitacion(models.Model):
         # Verificar si ya tiene certificado generado
         if self.certificado_generado:
             return False
-        # IMPORTANTE: Solo capacitaciones LIBRES generan certificado
-        # Las OBLIGATORIAS (por cargo) y de INDUCCION NO generan certificado
-        if self.capacitacion.tipo:
-            tipo_codigo = self.capacitacion.tipo.codigo
-            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
-                return False
+        # La capacitación decide si emite certificado (configurable por curso).
+        # Para externas, el certificado lo entrega el proveedor (signal lo maneja).
+        if not self.capacitacion.emite_certificado:
+            return False
         # Verificar nota mínima
         if hasattr(self.capacitacion, 'plantilla_certificado'):
             plantilla = self.capacitacion.plantilla_certificado
@@ -797,12 +805,10 @@ class InscripcionCapacitacion(models.Model):
 
     def puede_descargar_certificado(self):
         """Verifica si el certificado puede ser descargado"""
-        # Solo capacitaciones LIBRES y EXTERNAS tienen certificado descargable
-        # Las OBLIGATORIAS e INDUCCION NO tienen certificado
-        if self.capacitacion.tipo:
-            tipo_codigo = self.capacitacion.tipo.codigo
-            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
-                return False
+        # La capacitación decide si emite certificado. Las externas se manejan
+        # aparte (el certificado lo entrega el proveedor y se sube por separado).
+        if not self.capacitacion.emite_certificado and not self.capacitacion.es_externa():
+            return False
 
         return (
             self.estado == 'aprobado' and
