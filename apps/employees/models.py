@@ -302,8 +302,19 @@ class Familiar(BaseModel):
 
 
 def _documento_familiar_upload_path(instance, filename):
-    """Ruta de almacenamiento: familiares/<empleado_uuid>/<familiar_uuid>/<filename>."""
-    return f"familiares/{instance.familiar.empleado_id}/{instance.familiar_id}/{filename}"
+    """Ruta de almacenamiento: familiares/<empleado_uuid>/<familiar_uuid>/<filename_safe>.
+
+    Normaliza el filename para evitar errores 400 por nombres largos o con
+    caracteres especiales: slugifica el base, lo recorta a 80 chars y conserva
+    la extensión original (hasta 10 chars). El prefijo con 2 UUIDs ya ocupa
+    ~85 caracteres, así que el filename hay que acotarlo siempre.
+    """
+    import os
+    from django.utils.text import slugify
+    base, ext = os.path.splitext(filename or '')
+    ext = (ext or '').lower()[:10]
+    base_safe = slugify(base)[:80] or 'documento'
+    return f"familiares/{instance.familiar.empleado_id}/{instance.familiar_id}/{base_safe}{ext}"
 
 
 class DocumentoFamiliar(models.Model):
@@ -322,7 +333,7 @@ class DocumentoFamiliar(models.Model):
     familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE, related_name='documentos')
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES, verbose_name='Clase de documento')
     descripcion = models.CharField(max_length=200, blank=True)
-    archivo = models.FileField(upload_to=_documento_familiar_upload_path)
+    archivo = models.FileField(upload_to=_documento_familiar_upload_path, max_length=500)
     fecha_vencimiento = models.DateField(null=True, blank=True, help_text="Si aplica (ej: certificado de estudio)")
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
@@ -334,6 +345,14 @@ class DocumentoFamiliar(models.Model):
 
     def __str__(self):
         return f"{self.get_tipo_display()} de {self.familiar.nombre_completo}"
+
+    @property
+    def filename(self):
+        """Nombre del archivo (sin path) para mostrar y para el atributo download."""
+        if not self.archivo:
+            return ''
+        import os
+        return os.path.basename(self.archivo.name)
 
 
 class SolicitudVacacion(BaseModel):
