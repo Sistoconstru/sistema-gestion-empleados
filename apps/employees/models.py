@@ -312,19 +312,31 @@ class Familiar(BaseModel):
 
 
 def _documento_familiar_upload_path(instance, filename):
-    """Ruta de almacenamiento: familiares/<empleado_uuid>/<familiar_uuid>/<filename_safe>.
+    """Ruta de almacenamiento siguiendo el patrón del proyecto.
 
-    Normaliza el filename para evitar errores 400 por nombres largos o con
-    caracteres especiales: slugifica el base, lo recorta a 80 chars y conserva
-    la extensión original (hasta 10 chars). El prefijo con 2 UUIDs ya ocupa
-    ~85 caracteres, así que el filename hay que acotarlo siempre.
+    Estructura: familiares/<numero_documento_empleado>/<tipo>_<nombre_slug_familiar>/<filename_safe>
+
+    Misma convención que DocumentoEmpleado (documentos/<numero_doc>/<tipo>/...)
+    y certificados de capacitación (capacitaciones/certificados/<numero_doc>/...).
+    Permite ubicar fácilmente todos los archivos de un empleado en S3 por su
+    cédula.
+
+    El filename se slugifica y se acota a 80 chars + extensión (hasta 10),
+    para evitar errores 400 por nombres largos o caracteres especiales.
     """
     import os
     from django.utils.text import slugify
+
+    empleado_doc = instance.familiar.empleado.numero_documento
+    tipo_familiar = instance.familiar.tipo  # 'pareja', 'hijo', 'padre', etc.
+    nombre_familiar_slug = slugify(instance.familiar.nombre_completo)[:50] or 'sin-nombre'
+    subcarpeta_familiar = f"{tipo_familiar}_{nombre_familiar_slug}"
+
     base, ext = os.path.splitext(filename or '')
     ext = (ext or '').lower()[:10]
     base_safe = slugify(base)[:80] or 'documento'
-    return f"familiares/{instance.familiar.empleado_id}/{instance.familiar_id}/{base_safe}{ext}"
+
+    return f"familiares/{empleado_doc}/{subcarpeta_familiar}/{base_safe}{ext}"
 
 
 class DocumentoFamiliar(models.Model):
