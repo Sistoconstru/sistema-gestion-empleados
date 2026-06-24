@@ -100,9 +100,6 @@
                              class="img-fluid mb-3">
                     {% endif %}
 
-                    {# El quiz permite múltiples intentos, así que NO revelamos cuál
-                       opción era la correcta (solo si la del usuario fue correcta o no).
-                       Tampoco mostramos la explicación porque típicamente la revela. #}
                     {% for opcion in respuesta.pregunta.opciones.all %}
                         <div class="opcion-resultado
                             {% if opcion == respuesta.opcion_seleccionada %}
