@@ -4016,8 +4016,13 @@ def familiares_admin_lista(request):
         'empleados_padres': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
     }
 
-    # Tabla: una fila por empleado (su primer familiar coincidente).
-    qs_tabla = _dedupe_por_empleado(qs)
+    # Tabla: dedupe solo si NO hay un tipo de familiar explícito.
+    # Si el usuario eligió "Tipo = Hijo/a" (o Pareja, Padre, etc.) desde el
+    # dropdown, quiere ver cada familiar individualmente — ej. listado de
+    # hijos para kit escolar, donde el padre puede repetirse. Sin tipo, la
+    # tabla muestra una fila por empleado (segmentación).
+    tipo_explicito = bool(request.GET.get('tipo', '').strip())
+    qs_tabla = qs if tipo_explicito else _dedupe_por_empleado(qs)
     paginator = Paginator(qs_tabla, 50)
     page_obj = paginator.get_page(request.GET.get('page'))
 
@@ -4035,8 +4040,11 @@ def familiares_admin_lista(request):
 
 @staff_member_required
 def familiares_admin_export_excel(request):
-    # Excel para segmentación: una fila por empleado, no por familiar.
-    qs = _dedupe_por_empleado(_familiares_filtrar(request))
+    # Consistente con la tabla: si se eligió un tipo explícito (ej. Hijo/a),
+    # exporta cada familiar individualmente. Sin tipo, una fila por empleado.
+    qs_filtrado = _familiares_filtrar(request)
+    tipo_explicito = bool(request.GET.get('tipo', '').strip())
+    qs = qs_filtrado if tipo_explicito else _dedupe_por_empleado(qs_filtrado)
 
     try:
         import openpyxl
