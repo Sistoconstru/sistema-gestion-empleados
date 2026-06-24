@@ -83,10 +83,21 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small mb-0">Solo padres</label>
-                    <select name="solo_padres" class="form-select form-select-sm" title="Empleados que tienen al menos un hijo registrado">
+                    <label class="form-label small mb-0">Padres / Madres</label>
+                    <select name="padres_madres" class="form-select form-select-sm" title="Empleados con al menos un hijo registrado, una fila por empleado">
                         <option value="">--</option>
-                        <option value="si" {% if filtros.solo_padres == 'si' %}selected{% endif %}>Sí</option>
+                        <option value="todos" {% if filtros.padres_madres == 'todos' %}selected{% endif %}>Todos (padres y madres)</option>
+                        <option value="padres" {% if filtros.padres_madres == 'padres' %}selected{% endif %}>Solo padres</option>
+                        <option value="madres" {% if filtros.padres_madres == 'madres' %}selected{% endif %}>Solo madres</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-0">Sexo empleado</label>
+                    <select name="sexo_empleado" class="form-select form-select-sm" title="Sexo biológico del empleado (para distinguir madres/padres)">
+                        <option value="">--</option>
+                        {% for v, l in sexo_choices %}
+                            <option value="{{ v }}" {% if filtros.sexo_empleado == v %}selected{% endif %}>{{ l }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-1">

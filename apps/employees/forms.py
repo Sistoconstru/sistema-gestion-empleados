@@ -1728,9 +1728,10 @@ class PrediccionMundialForm(forms.ModelForm):
 class EstadoCivilForm(forms.ModelForm):
     class Meta:
         model = Empleado
-        fields = ['estado_civil']
+        fields = ['estado_civil', 'sexo_biologico']
         widgets = {
             'estado_civil': forms.Select(attrs={'class': 'form-select'}),
+            'sexo_biologico': forms.Select(attrs={'class': 'form-select'}),
         }
 
 

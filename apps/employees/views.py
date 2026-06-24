@@ -3898,7 +3898,8 @@ def _familiares_filtrar(request):
     edad_min = request.GET.get('edad_min', '').strip()
     edad_max = request.GET.get('edad_max', '').strip()
     activo = request.GET.get('activo', '').strip()
-    solo_padres = request.GET.get('solo_padres', '').strip()
+    padres_madres = request.GET.get('padres_madres', '').strip()  # '' | 'padres' | 'madres' | 'todos'
+    sexo_empleado = request.GET.get('sexo_empleado', '').strip()
 
     if q:
         qs = qs.filter(
@@ -3927,9 +3928,23 @@ def _familiares_filtrar(request):
         qs = qs.filter(activo=True)
     elif activo == 'no':
         qs = qs.filter(activo=False)
-    if solo_padres == 'si':
-        # Solo familiares cuyo empleado tiene al menos un hijo registrado
-        qs = qs.filter(empleado__familiares__tipo='hijo').distinct()
+    if sexo_empleado in ('M', 'F'):
+        qs = qs.filter(empleado__sexo_biologico=sexo_empleado)
+    if padres_madres in ('padres', 'madres', 'todos'):
+        # Una fila por empleado-padre/madre: solo el primer hijo registrado de
+        # cada empleado. El padre/madre aparece una vez sin importar cuántos
+        # hijos tenga.
+        from django.db.models import OuterRef, Subquery
+        primer_hijo = Familiar.objects.filter(
+            empleado_id=OuterRef('empleado_id'), tipo='hijo'
+        ).order_by('fecha_creacion').values('id')[:1]
+        qs = qs.filter(tipo='hijo', id__in=Subquery(primer_hijo))
+        if padres_madres == 'padres':
+            qs = qs.filter(empleado__sexo_biologico='M')
+        elif padres_madres == 'madres':
+            qs = qs.filter(empleado__sexo_biologico='F')
+        # 'todos' = padres + madres (sin filtro de sexo) → todos los empleados
+        # con al menos un hijo registrado, una fila por cada uno.
 
     # Filtro por edad — requiere fecha_nacimiento y se calcula contra hoy
     hoy = date.today()
@@ -3992,6 +4007,7 @@ def familiares_admin_lista(request):
         'resumen': resumen,
         'sedes': _Sede.objects.filter(activa=True).order_by('nombre'),
         'estado_civil_choices': Empleado.ESTADO_CIVIL_CHOICES,
+        'sexo_choices': Empleado.SEXO_BIOLOGICO_CHOICES,
         'tipo_choices': Familiar.TIPO_CHOICES,
         'filtros': request.GET,
     })
@@ -4012,7 +4028,7 @@ def familiares_admin_export_excel(request):
     ws.title = 'Familiares'
 
     headers = [
-        'Empleado', 'Doc. Empleado', 'Sede', 'Estado Civil', 'Tipo Familiar',
+        'Empleado', 'Doc. Empleado', 'Sede', 'Sexo empleado', 'Estado Civil', 'Tipo Familiar',
         'Nombres', 'Apellidos', 'Doc. Familiar', 'Núm. Doc.',
         'Fecha Nacimiento', 'Edad', 'EPS', 'Convive', 'Dependiente',
         'Parentesco', 'Activo', '# Documentos',
@@ -4027,20 +4043,21 @@ def familiares_admin_export_excel(request):
         ws.cell(row=r, column=1, value=f.empleado.nombre_completo)
         ws.cell(row=r, column=2, value=f.empleado.numero_documento)
         ws.cell(row=r, column=3, value=f.empleado.sede.nombre if f.empleado.sede_id else '')
-        ws.cell(row=r, column=4, value=f.empleado.get_estado_civil_display() if f.empleado.estado_civil else '')
-        ws.cell(row=r, column=5, value=f.get_tipo_display())
-        ws.cell(row=r, column=6, value=f.nombres)
-        ws.cell(row=r, column=7, value=f.apellidos)
-        ws.cell(row=r, column=8, value=f.tipo_documento.codigo if f.tipo_documento_id else '')
-        ws.cell(row=r, column=9, value=f.numero_documento)
-        ws.cell(row=r, column=10, value=f.fecha_nacimiento.strftime('%Y-%m-%d') if f.fecha_nacimiento else '')
-        ws.cell(row=r, column=11, value=f.edad if f.edad is not None else '')
-        ws.cell(row=r, column=12, value=f.eps)
-        ws.cell(row=r, column=13, value='Sí' if f.convive else 'No')
-        ws.cell(row=r, column=14, value='Sí' if f.dependiente_economico else 'No')
-        ws.cell(row=r, column=15, value=f.parentesco)
-        ws.cell(row=r, column=16, value='Sí' if f.activo else 'No')
-        ws.cell(row=r, column=17, value=f.documentos.count())
+        ws.cell(row=r, column=4, value=f.empleado.get_sexo_biologico_display() if f.empleado.sexo_biologico else '')
+        ws.cell(row=r, column=5, value=f.empleado.get_estado_civil_display() if f.empleado.estado_civil else '')
+        ws.cell(row=r, column=6, value=f.get_tipo_display())
+        ws.cell(row=r, column=7, value=f.nombres)
+        ws.cell(row=r, column=8, value=f.apellidos)
+        ws.cell(row=r, column=9, value=f.tipo_documento.codigo if f.tipo_documento_id else '')
+        ws.cell(row=r, column=10, value=f.numero_documento)
+        ws.cell(row=r, column=11, value=f.fecha_nacimiento.strftime('%Y-%m-%d') if f.fecha_nacimiento else '')
+        ws.cell(row=r, column=12, value=f.edad if f.edad is not None else '')
+        ws.cell(row=r, column=13, value=f.eps)
+        ws.cell(row=r, column=14, value='Sí' if f.convive else 'No')
+        ws.cell(row=r, column=15, value='Sí' if f.dependiente_economico else 'No')
+        ws.cell(row=r, column=16, value=f.parentesco)
+        ws.cell(row=r, column=17, value='Sí' if f.activo else 'No')
+        ws.cell(row=r, column=18, value=f.documentos.count())
 
     for col in range(1, len(headers) + 1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 18

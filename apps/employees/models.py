@@ -148,6 +148,16 @@ class Empleado(BaseModel):
     ]
     estado_civil = models.CharField(max_length=20, choices=ESTADO_CIVIL_CHOICES, blank=True)
 
+    SEXO_BIOLOGICO_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+    ]
+    sexo_biologico = models.CharField(
+        max_length=1, choices=SEXO_BIOLOGICO_CHOICES, blank=True,
+        verbose_name='Sexo biológico',
+        help_text='Sirve para reportes legales (PILA/DIAN) y segmentación (madres/padres).',
+    )
+
     # Polla Mundial 2026 - Aceptación de términos
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
     fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")

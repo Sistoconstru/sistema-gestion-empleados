@@ -33,14 +33,21 @@
 
     <div class="card mb-4">
         <div class="card-header bg-corporativo text-white">
-            <i class="fas fa-heart me-2"></i>Estado Civil
+            <i class="fas fa-heart me-2"></i>Datos básicos
         </div>
         <div class="card-body">
             <form method="post" action="{% url 'employees:familia_estado_civil' %}" class="row g-2 align-items-end">
                 {% csrf_token %}
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <label class="form-label">{{ estado_civil_form.estado_civil.label }}</label>
                     {{ estado_civil_form.estado_civil }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">{{ estado_civil_form.sexo_biologico.label }}</label>
+                    {{ estado_civil_form.sexo_biologico }}
+                    {% if estado_civil_form.sexo_biologico.help_text %}
+                        <small class="text-muted d-block">{{ estado_civil_form.sexo_biologico.help_text }}</small>
+                    {% endif %}
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-corporativo w-100">
