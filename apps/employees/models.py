@@ -343,7 +343,14 @@ class DocumentoFamiliar(models.Model):
     familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE, related_name='documentos')
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES, verbose_name='Clase de documento')
     descripcion = models.CharField(max_length=200, blank=True)
-    archivo = models.FileField(upload_to=_documento_familiar_upload_path, max_length=500)
+    # storage=MediaStorage() explícito porque DEFAULT_FILE_STORAGE en Django 5
+    # con STORAGES nuevo puede no resolver al backend S3 esperado. Mismo patrón
+    # que DocumentoEmpleado.archivo en apps/documents/models.py.
+    archivo = models.FileField(
+        upload_to=_documento_familiar_upload_path,
+        max_length=500,
+        storage=MediaStorage(),
+    )
     fecha_vencimiento = models.DateField(null=True, blank=True, help_text="Si aplica (ej: certificado de estudio)")
     fecha_subida = models.DateTimeField(auto_now_add=True)
 
