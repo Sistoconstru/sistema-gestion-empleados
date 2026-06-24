@@ -124,12 +124,9 @@
                     <div class="opciones">
                         {% for opcion in pregunta.opciones.all %}
                         <label class="opcion">
-                            <input type="radio" 
-                                   name="pregunta_{{ pregunta.id }}" 
+                            <input type="radio"
+                                   name="pregunta_{{ pregunta.id }}"
                                    value="{{ opcion.id }}"
-                                   {% if pregunta.tipo == 'verdadero_falso' %}
-                                   data-es-verdadero="{{ opcion.es_correcta|lower }}"
-                                   {% endif %}
                                    required>
                             {{ opcion.texto }}
                         </label>
