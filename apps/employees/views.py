@@ -3931,20 +3931,14 @@ def _familiares_filtrar(request):
     if sexo_empleado in ('M', 'F'):
         qs = qs.filter(empleado__sexo_biologico=sexo_empleado)
     if padres_madres in ('padres', 'madres', 'todos'):
-        # Una fila por empleado-padre/madre: solo el primer hijo registrado de
-        # cada empleado. El padre/madre aparece una vez sin importar cuántos
-        # hijos tenga.
-        from django.db.models import OuterRef, Subquery
-        primer_hijo = Familiar.objects.filter(
-            empleado_id=OuterRef('empleado_id'), tipo='hijo'
-        ).order_by('fecha_creacion').values('id')[:1]
-        qs = qs.filter(tipo='hijo', id__in=Subquery(primer_hijo))
+        # Restringe a empleados con al menos un hijo registrado. La dedupe
+        # universal de _dedupe_por_empleado() se encarga de mostrar una fila
+        # por empleado.
+        qs = qs.filter(tipo='hijo')
         if padres_madres == 'padres':
             qs = qs.filter(empleado__sexo_biologico='M')
         elif padres_madres == 'madres':
             qs = qs.filter(empleado__sexo_biologico='F')
-        # 'todos' = padres + madres (sin filtro de sexo) → todos los empleados
-        # con al menos un hijo registrado, una fila por cada uno.
 
     # Filtro por edad — requiere fecha_nacimiento y se calcula contra hoy
     hoy = date.today()
@@ -3961,6 +3955,26 @@ def _familiares_filtrar(request):
         qs = qs.filter(fecha_nacimiento__gte=fecha_inicio)
 
     return qs.order_by('empleado__apellidos', 'empleado__nombres', 'tipo', 'fecha_nacimiento')
+
+
+def _dedupe_por_empleado(qs):
+    """Reduce el queryset a una fila por empleado.
+
+    Cada empleado queda representado por su primer familiar coincidente con
+    los filtros (orden interno: tipo, fecha_creacion). Pensado para listados
+    de segmentación donde duplicar al empleado por cada hijo es ruido.
+    Requiere PostgreSQL por el .distinct('field').
+    """
+    ids = list(
+        qs.order_by('empleado_id', 'tipo', 'fecha_creacion')
+          .distinct('empleado_id')
+          .values_list('id', flat=True)
+    )
+    return Familiar.objects.select_related(
+        'empleado', 'empleado__sede', 'empleado__estado', 'tipo_documento'
+    ).prefetch_related('documentos').filter(id__in=ids).order_by(
+        'empleado__apellidos', 'empleado__nombres'
+    )
 
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -3988,9 +4002,13 @@ def panel_admin(request):
 def familiares_admin_lista(request):
     qs = _familiares_filtrar(request)
 
-    # Resumen
+    # Resumen: cuentas sobre el set filtrado (sin dedup) para tener los
+    # totales reales por tipo. 'empleados' es el conteo único de empleados
+    # con al menos un familiar coincidente — coincide con las filas que
+    # mostrará la tabla deduplicada.
     resumen = {
-        'total': qs.count(),
+        'empleados': qs.values('empleado_id').distinct().count(),
+        'familiares': qs.count(),
         'parejas': qs.filter(tipo='pareja').count(),
         'hijos': qs.filter(tipo='hijo').count(),
         'padres': qs.filter(tipo='padre').count(),
@@ -3998,7 +4016,9 @@ def familiares_admin_lista(request):
         'empleados_padres': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
     }
 
-    paginator = Paginator(qs, 50)
+    # Tabla: una fila por empleado (su primer familiar coincidente).
+    qs_tabla = _dedupe_por_empleado(qs)
+    paginator = Paginator(qs_tabla, 50)
     page_obj = paginator.get_page(request.GET.get('page'))
 
     from apps.organizational.models import Sede as _Sede
@@ -4015,7 +4035,8 @@ def familiares_admin_lista(request):
 
 @staff_member_required
 def familiares_admin_export_excel(request):
-    qs = _familiares_filtrar(request)
+    # Excel para segmentación: una fila por empleado, no por familiar.
+    qs = _dedupe_por_empleado(_familiares_filtrar(request))
 
     try:
         import openpyxl
