@@ -396,6 +396,10 @@ class CapacitacionCargo(models.Model):
         prioridades = {1: 'Alta', 2: 'Media', 3: 'Baja'}
         return prioridades.get(self.prioridad, 'Media')
 
+    def __str__(self):
+        return f"{self.capacitacion.nombre} → {self.cargo.nombre}"
+
+
 class ModuloCapacitacion(models.Model):
     def esta_completado(self, inscripcion=None):
         """Verifica si el módulo está completado: todas las lecciones obligatorias completadas para la inscripción dada."""

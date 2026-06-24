@@ -65,6 +65,8 @@ class CapacitacionCargoAdmin(admin.ModelAdmin):
         # Asigna el usuario que realiza la asignación solo al crear
         if not change:
             obj.asignado_por = request.user
+        super().save_model(request, obj, form, change)
+
 
 class OpcionPreguntaQuizInline(admin.TabularInline):
     model = OpcionPreguntaQuiz
