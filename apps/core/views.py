@@ -343,3 +343,26 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         """Verificar redirección antes de procesar"""
         return dashboard_view(request)
 
+
+
+@login_required
+def documentos_institucionales(request):
+    """Lista los documentos corporativos activos agrupados por categoría.
+
+    Accesible para cualquier empleado logueado.
+    """
+    from collections import OrderedDict
+    from .models import DocumentoCorporativo
+
+    qs = DocumentoCorporativo.objects.filter(activo=True).order_by('categoria', '-fecha_publicacion')
+
+    grupos = OrderedDict()
+    for label_key, label_human in DocumentoCorporativo.CATEGORIAS:
+        docs = [d for d in qs if d.categoria == label_key]
+        if docs:
+            grupos[label_human] = docs
+
+    return render(request, 'core/documentos_institucionales.html', {
+        'grupos': grupos,
+        'total': qs.count(),
+    })

@@ -251,6 +251,14 @@
                         </a>
                     </div>
 
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'core:documentos_institucionales' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-folder-open fa-2x d-block mb-2"></i>
+                            <strong>Documentos Institucionales</strong>
+                            <div class="small text-muted">Reglamentos, políticas, manuales</div>
+                        </a>
+                    </div>
+
                     {% if puede_ver_vacaciones_equipo %}
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="{% url 'employees:vacaciones_equipo' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
