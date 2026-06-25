@@ -1723,15 +1723,14 @@ class MisCertificadosView(LoginRequiredMixin, TemplateView):
             context['certificados'] = []
             return context
 
-        # Obtener inscripciones aprobadas con certificado (generado O externo)
-        # IMPORTANTE: Excluir capacitaciones OBLIGATORIAS e INDUCCION (no generan certificado)
+        # Aprobadas con archivo disponible. La elegibilidad ya se decidió al
+        # generar/subir el PDF (puede_generar_certificado o validación externa);
+        # si el archivo existe, el empleado lo merece.
         inscripciones_con_certificado = InscripcionCapacitacion.objects.filter(
             empleado=empleado,
             estado='aprobado'
         ).filter(
-            Q(certificado_generado__isnull=False) | Q(certificado_externo__isnull=False)
-        ).exclude(
-            capacitacion__tipo__codigo__in=['OBLIGATORIA', 'INDUCCION']
+            ~Q(certificado_generado='') | ~Q(certificado_externo='')
         ).select_related(
             'capacitacion',
             'capacitacion__tipo'
