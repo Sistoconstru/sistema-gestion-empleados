@@ -2,10 +2,40 @@
 # apps/training/admin.py - CORREGIR CAPACITACIONES
 # =============================================================================
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion,
                      Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion,
                      QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
+from .certificate_generator import CertificateGenerator
+
+
+def _generar_certificados_para(inscripciones_qs):
+    """Itera inscripciones y genera el PDF de certificado para las elegibles.
+
+    Devuelve (generados, omitidos, errores) con detalle por inscripción.
+    Reusa puede_generar_certificado() del modelo, así que respeta todas las
+    reglas (nota mínima, no externa, capacitacion.emite_certificado=True, etc).
+    """
+    generados, omitidos, errores = 0, [], []
+    inscripciones_qs = inscripciones_qs.select_related('empleado', 'capacitacion')
+    for inscripcion in inscripciones_qs:
+        if not inscripcion.puede_generar_certificado():
+            omitidos.append(
+                f"{inscripcion.empleado.nombre_completo} / {inscripcion.capacitacion.nombre}"
+            )
+            continue
+        try:
+            if CertificateGenerator.generar_certificado(inscripcion):
+                generados += 1
+            else:
+                errores.append(
+                    f"{inscripcion.empleado.nombre_completo} / {inscripcion.capacitacion.nombre}: generador devolvió False"
+                )
+        except Exception as exc:
+            errores.append(
+                f"{inscripcion.empleado.nombre_completo} / {inscripcion.capacitacion.nombre}: {exc}"
+            )
+    return generados, omitidos, errores
 
 @admin.register(TipoCapacitacion)
 class TipoCapacitacionAdmin(admin.ModelAdmin):
@@ -40,6 +70,47 @@ class CapacitacionAdmin(admin.ModelAdmin):
     )
 
     exclude = ('creada_por', 'proveedor_externo', 'url_inscripcion_externa', 'permite_autocompletado')
+
+    actions = ['generar_certificados_pendientes']
+
+    @admin.action(description='Generar certificados pendientes de las inscripciones aprobadas')
+    def generar_certificados_pendientes(self, request, queryset):
+        """Para cada capacitación seleccionada, dispara la generación de PDFs de
+        las inscripciones aprobadas que aún no tienen archivo. Útil cuando se
+        activa emite_certificado=True después de que algunos empleados ya
+        aprobaron.
+        """
+        inscripciones = InscripcionCapacitacion.objects.filter(
+            capacitacion__in=queryset,
+            estado='aprobado',
+            certificado_generado='',
+        )
+        generados, omitidos, errores = _generar_certificados_para(inscripciones)
+        if generados:
+            self.message_user(
+                request,
+                f'{generados} certificado(s) generado(s) correctamente.',
+                level=messages.SUCCESS,
+            )
+        if omitidos:
+            self.message_user(
+                request,
+                f'{len(omitidos)} inscripción(es) omitida(s) por no cumplir condiciones (nota mínima, no es externa, capacitación emite certificado, etc).',
+                level=messages.WARNING,
+            )
+        if errores:
+            preview = '; '.join(errores[:3])
+            self.message_user(
+                request,
+                f'{len(errores)} error(es) durante la generación. Primeros: {preview}',
+                level=messages.ERROR,
+            )
+        if not (generados or omitidos or errores):
+            self.message_user(
+                request,
+                'No se encontraron inscripciones aprobadas sin certificado para las capacitaciones seleccionadas.',
+                level=messages.INFO,
+            )
 
     def es_externa_display(self, obj):
         """Muestra si es externa con ícono"""
@@ -158,14 +229,34 @@ class InscripcionCapacitacionAdmin(admin.ModelAdmin):
     list_display = ('empleado', 'capacitacion', 'estado', 'obligatoria', 'fecha_inscripcion', 'puntaje_final')
     list_filter = ('estado', 'obligatoria', 'fecha_inscripcion')
     search_fields = ('empleado__nombres', 'empleado__apellidos', 'capacitacion__nombre')
-    
+
     exclude = ('inscrito_por',)
-    
+    actions = ['generar_certificado_inscripciones']
+
     def save_model(self, request, obj, form, change):
         # Asigna el usuario que inscribe solo al crear
         if not change:
             obj.inscrito_por = request.user
         super().save_model(request, obj, form, change)
+
+    @admin.action(description='Generar certificado de las inscripciones seleccionadas')
+    def generar_certificado_inscripciones(self, request, queryset):
+        """Genera PDF para inscripciones aprobadas sin certificado. Las que ya
+        tienen archivo o no cumplen condiciones se omiten silenciosamente."""
+        generados, omitidos, errores = _generar_certificados_para(queryset)
+        if generados:
+            self.message_user(request, f'{generados} certificado(s) generado(s).', level=messages.SUCCESS)
+        if omitidos:
+            self.message_user(
+                request,
+                f'{len(omitidos)} inscripción(es) omitida(s) (ya tienen certificado, no aprobadas, no cumplen nota mínima o el curso no emite certificado).',
+                level=messages.WARNING,
+            )
+        if errores:
+            preview = '; '.join(errores[:3])
+            self.message_user(request, f'{len(errores)} error(es). Primeros: {preview}', level=messages.ERROR)
+        if not (generados or omitidos or errores):
+            self.message_user(request, 'Sin cambios.', level=messages.INFO)
 
 @admin.register(ProgresoCapacitacion)
 class ProgresoCapacitacionAdmin(admin.ModelAdmin):
