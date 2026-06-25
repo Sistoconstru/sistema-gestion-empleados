@@ -93,7 +93,7 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 f'  + {insc.empleado.nombre_completo} / {insc.capacitacion.codigo}: '
-                f'puntaje_final={promedio} ({len(puntajes)} intentos), '
+                f'puntaje_final={promedio} ({len(mejores_por_quiz)} quiz(zes)), '
                 f'fecha_fin={insc.fecha_finalizacion.strftime("%Y-%m-%d") if insc.fecha_finalizacion else "—"}'
             )
             if aplicar:
