@@ -771,6 +771,14 @@ class InscripcionCapacitacion(models.Model):
         }
         return colores.get(self.estado, 'secondary')
 
+    @property
+    def total_lecciones(self):
+        """Cuenta el total de lecciones de la capacitación de esta inscripción.
+
+        Una sola query con JOIN — más eficiente que iterar módulos y sumar.
+        """
+        return Leccion.objects.filter(modulo__capacitacion=self.capacitacion).count()
+
     def generar_numero_certificado(self):
         """Genera un número único de certificado"""
         from django.utils import timezone
@@ -804,16 +812,17 @@ class InscripcionCapacitacion(models.Model):
         return False
 
     def puede_descargar_certificado(self):
-        """Verifica si el certificado puede ser descargado"""
-        # La capacitación decide si emite certificado. Las externas se manejan
-        # aparte (el certificado lo entrega el proveedor y se sube por separado).
-        if not self.capacitacion.emite_certificado and not self.capacitacion.es_externa():
-            return False
+        """Verifica si el certificado puede ser descargado.
 
-        return (
-            self.estado == 'aprobado' and
-            (self.certificado_generado or self.certificado_externo)
-        )
+        Internas: necesita emite_certificado=True + número asignado (el PDF se
+        renderiza al vuelo en la descarga, no se guarda archivo).
+        Externas: necesita el archivo subido por el proveedor.
+        """
+        if self.estado != 'aprobado':
+            return False
+        if self.capacitacion.es_externa():
+            return bool(self.certificado_externo)
+        return bool(self.numero_certificado) and self.capacitacion.emite_certificado
 
 class ProgresoCapacitacion(models.Model):
     """Progreso de empleados en capacitaciones - MEJORADO"""

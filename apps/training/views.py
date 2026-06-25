@@ -306,12 +306,19 @@ class QuizView(LoginRequiredMixin, DetailView):
                 'status': 'error',
                 'message': 'Debes completar todos los contenidos de la lección antes de realizar la evaluación.'
             }, status=403)
-        # Verificar si puede iniciar un nuevo intento
-        intentos_previos = IntentoQuiz.objects.filter(
-            quiz=quiz,
-            usuario=usuario
+        # Limpiar intentos huérfanos (abiertos pero nunca finalizados) del
+        # mismo usuario+quiz. Un intento sin fecha_fin significa que abrió la
+        # valoración y no la entregó. Esos no deben contar contra el máximo
+        # ni quedar como ruido en la BD.
+        IntentoQuiz.objects.filter(
+            quiz=quiz, usuario=usuario, fecha_fin__isnull=True
+        ).delete()
+
+        # Verificar máximo solo contra intentos finalizados.
+        intentos_finalizados = IntentoQuiz.objects.filter(
+            quiz=quiz, usuario=usuario, fecha_fin__isnull=False
         ).count()
-        if quiz.intentos_maximos > 0 and intentos_previos >= quiz.intentos_maximos:
+        if quiz.intentos_maximos > 0 and intentos_finalizados >= quiz.intentos_maximos:
             messages.error(request, 'Has alcanzado el número máximo de intentos permitidos.')
             return redirect('training:quiz_resultado', pk=quiz.pk)
         # Crear nuevo intento
@@ -428,35 +435,35 @@ def finalizar_quiz(request, intento_id):
                                 if hasattr(lec, 'evaluacion') and lec.evaluacion:
                                     quizzes_ids.append(lec.evaluacion.id)
 
-                        # Calcular progreso basado en valoraciones aprobadas
+                        # Para cada quiz, tomar el MEJOR puntaje aprobado del
+                        # empleado. Si reintenta y obtiene puntaje menor, se
+                        # mantiene el mejor anterior.
+                        from django.db.models import Max
                         if quizzes_ids:
                             total_valoraciones = len(quizzes_ids)
-                            valoraciones_aprobadas = IntentoQuiz.objects.filter(
+                            mejores_por_quiz = list(IntentoQuiz.objects.filter(
                                 quiz_id__in=quizzes_ids,
                                 usuario=request.user,
-                                aprobado=True
-                            ).count()
+                                aprobado=True,
+                            ).values('quiz_id').annotate(mejor=Max('puntaje_obtenido')))
+                            valoraciones_aprobadas = len(mejores_por_quiz)
 
                             inscripcion.porcentaje_completado = (valoraciones_aprobadas * 100) // total_valoraciones if total_valoraciones > 0 else 0
 
                             # Verificar si completó TODAS las valoraciones para aprobar el curso
-                            if valoraciones_aprobadas == len(quizzes_ids):
-                                # Calcular puntaje final como promedio de todas las evaluaciones
-                                puntajes = IntentoQuiz.objects.filter(
-                                    quiz_id__in=quizzes_ids,
-                                    usuario=request.user,
-                                    aprobado=True
-                                ).values_list('puntaje_obtenido', flat=True)
+                            if valoraciones_aprobadas == total_valoraciones:
+                                # Promedio de los MEJORES puntajes de cada quiz.
+                                promedio_final = round(
+                                    sum([float(r['mejor']) for r in mejores_por_quiz]) / total_valoraciones,
+                                    2,
+                                )
+                                inscripcion.puntaje_final = promedio_final
 
-                                if puntajes:
-                                    promedio_final = round(sum([float(p) for p in puntajes]) / len(puntajes), 2)
-                                    inscripcion.puntaje_final = promedio_final
-
-                                    # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
-                                    if promedio_final >= float(capacitacion.puntaje_aprobacion):
-                                        inscripcion.estado = 'aprobado'
-                                        if not inscripcion.fecha_finalizacion:
-                                            inscripcion.fecha_finalizacion = timezone.now()
+                                # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
+                                if promedio_final >= float(capacitacion.puntaje_aprobacion):
+                                    inscripcion.estado = 'aprobado'
+                                    if not inscripcion.fecha_finalizacion:
+                                        inscripcion.fecha_finalizacion = timezone.now()
 
                             inscripcion.save()
 
@@ -1597,35 +1604,27 @@ def completar_contenido(request, pk):
             ).count()
             inscripcion.porcentaje_completado = (contenidos_completados_capacitacion * 100) // total_contenidos_capacitacion if total_contenidos_capacitacion > 0 else 0
 
-        # Verificar si completó TODAS las valoraciones para aprobar el curso
+        # Verificar si completó TODAS las valoraciones para aprobar el curso.
+        # Por cada quiz se toma el MEJOR puntaje aprobado del empleado.
         if quizzes_ids:
-            # Contar cuántas valoraciones aprobó
-            intentos_aprobados = IntentoQuiz.objects.filter(
+            from django.db.models import Max
+            mejores_por_quiz = list(IntentoQuiz.objects.filter(
                 quiz_id__in=quizzes_ids,
                 usuario=inscripcion.empleado.usuario,
-                aprobado=True
-            ).count()
+                aprobado=True,
+            ).values('quiz_id').annotate(mejor=Max('puntaje_obtenido')))
 
-            # Solo aprobar si completó TODAS las valoraciones Y el promedio supera el mínimo
-            if intentos_aprobados == len(quizzes_ids):
-                # Calcular puntaje final como promedio de todas las evaluaciones
-                puntajes = IntentoQuiz.objects.filter(
-                    quiz_id__in=quizzes_ids,
-                    usuario=inscripcion.empleado.usuario,
-                    aprobado=True
-                ).values_list('puntaje_obtenido', flat=True)
-
-                if puntajes:
-                    promedio_final = round(sum(puntajes) / len(puntajes), 2)
-                    inscripcion.puntaje_final = promedio_final
-
-                    # Solo aprobar si el promedio es mayor o igual al puntaje mínimo de aprobación
-                    if promedio_final >= capacitacion.puntaje_aprobacion:
-                        inscripcion.estado = 'aprobado'
-                        inscripcion.fecha_finalizacion = timezone.now()
-                    # Si no alcanza el puntaje mínimo, mantener en progreso
-                    else:
-                        inscripcion.estado = 'en_progreso'
+            if len(mejores_por_quiz) == len(quizzes_ids):
+                promedio_final = round(
+                    sum([float(r['mejor']) for r in mejores_por_quiz]) / len(mejores_por_quiz),
+                    2,
+                )
+                inscripcion.puntaje_final = promedio_final
+                if promedio_final >= capacitacion.puntaje_aprobacion:
+                    inscripcion.estado = 'aprobado'
+                    inscripcion.fecha_finalizacion = timezone.now()
+                else:
+                    inscripcion.estado = 'en_progreso'
         else:
             # Si no hay valoraciones, verificar si todos los contenidos están completos
             total_contenidos_capacitacion = ContenidoLeccion.objects.filter(
@@ -1723,14 +1722,15 @@ class MisCertificadosView(LoginRequiredMixin, TemplateView):
             context['certificados'] = []
             return context
 
-        # Aprobadas con archivo disponible. La elegibilidad ya se decidió al
-        # generar/subir el PDF (puede_generar_certificado o validación externa);
-        # si el archivo existe, el empleado lo merece.
+        # Internas: aprobadas con número de certificado asignado (el PDF se
+        # renderiza al vuelo en la descarga, no se guarda archivo).
+        # Externas: aprobadas con archivo subido por el proveedor.
         inscripciones_con_certificado = InscripcionCapacitacion.objects.filter(
             empleado=empleado,
             estado='aprobado'
         ).filter(
-            ~Q(certificado_generado='') | ~Q(certificado_externo='')
+            (Q(capacitacion__emite_certificado=True) & ~Q(numero_certificado='') & Q(numero_certificado__isnull=False))
+            | ~Q(certificado_externo='')
         ).select_related(
             'capacitacion',
             'capacitacion__tipo'
@@ -1812,55 +1812,51 @@ def descargar_certificado(request, pk):
         messages.error(request, 'Este certificado no está disponible para descarga.')
         return redirect('training:mis_certificados')
 
-    # Determinar qué certificado usar según el tipo de capacitación
-    if inscripcion.capacitacion.es_externa():
-        # Capacitación externa: usar certificado_externo
-        certificado_file = inscripcion.certificado_externo
-        tipo_certificado = 'externo'
-    else:
-        # Capacitación interna: usar certificado_generado
-        certificado_file = inscripcion.certificado_generado
-        tipo_certificado = 'generado'
-
-    # Verificar que el archivo existe
-    if not certificado_file:
-        messages.error(request, 'El archivo del certificado no existe.')
-        return redirect('training:mis_certificados')
-
-    # Retornar el archivo
+    # Capacitación externa → servir el archivo subido por el proveedor.
+    # Capacitación interna → renderizar PDF al vuelo con la plantilla actual.
     try:
-        # Determinar el content type según la extensión del archivo
-        import mimetypes
-        file_name = certificado_file.name
-        content_type, _ = mimetypes.guess_type(file_name)
+        if inscripcion.capacitacion.es_externa():
+            certificado_file = inscripcion.certificado_externo
+            if not certificado_file:
+                messages.error(request, 'El archivo del certificado externo no está disponible.')
+                return redirect('training:mis_certificados')
+            try:
+                archivo_existe = certificado_file.storage.exists(certificado_file.name)
+            except Exception:
+                archivo_existe = False
+            if not archivo_existe:
+                messages.error(
+                    request,
+                    'El certificado externo no está en el sistema. Contacta a RRHH para volver a cargarlo.'
+                )
+                return redirect('training:mis_certificados')
 
-        if not content_type:
-            # Por defecto, asumir PDF
-            content_type = 'application/pdf'
+            import mimetypes
+            import os
+            file_name = certificado_file.name
+            content_type, _ = mimetypes.guess_type(file_name)
+            if not content_type:
+                content_type = 'application/pdf'
+            response = HttpResponse(certificado_file.read(), content_type=content_type)
+            extension = os.path.splitext(file_name)[1] or '.pdf'
+            base = inscripcion.numero_certificado or inscripcion.empleado.numero_documento
+            response['Content-Disposition'] = f'attachment; filename="certificado_{base}{extension}"'
+            logger.info(
+                f"Certificado externo descargado - inscripción {inscripcion.id}, "
+                f"empleado {empleado.nombre_completo}"
+            )
+            return response
 
-        response = HttpResponse(
-            certificado_file.read(),
-            content_type=content_type
-        )
-
-        # Generar nombre de archivo apropiado
-        import os
-        extension = os.path.splitext(file_name)[1] or '.pdf'
-        if inscripcion.numero_certificado:
-            filename = f"certificado_{inscripcion.numero_certificado}{extension}"
-        else:
-            filename = f"certificado_{inscripcion.empleado.numero_documento}{extension}"
-
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-
+        # Interna: renderizar al vuelo con la plantilla actual del momento.
+        from .certificate_generator import CertificateGenerator
+        pdf_bytes = CertificateGenerator.renderizar_pdf_inscripcion(inscripcion)
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        base = inscripcion.numero_certificado or inscripcion.empleado.numero_documento
+        response['Content-Disposition'] = f'attachment; filename="certificado_{base}.pdf"'
         logger.info(
-            f"Certificado descargado ({tipo_certificado}) - "
-            f"Inscripción: {inscripcion.id}, "
-            f"Empleado: {empleado.nombre_completo}, "
-            f"Capacitación: {inscripcion.capacitacion.nombre}, "
-            f"Tipo: {content_type}"
+            f"Certificado interno renderizado al vuelo - inscripción {inscripcion.id}, "
+            f"empleado {empleado.nombre_completo}, num={inscripcion.numero_certificado}"
         )
-
         return response
     except Exception as e:
         logger.error(f"Error al descargar certificado {pk}: {str(e)}")
@@ -1868,280 +1864,27 @@ def descargar_certificado(request, pk):
         return redirect('training:mis_certificados')
 
 
+
 @login_required
 def vista_previa_certificado(request, plantilla_id):
+    """Vista previa del certificado para admin/RRHH.
+
+    Usa el mismo CertificateGenerator que la descarga real, con un flag de
+    preview que pinta marca de agua y rellena con datos de ejemplo. Así la
+    previsualización es 100% fiel a lo que recibirá el empleado.
     """
-    Genera una vista previa del certificado con datos de ejemplo
-    """
-    from io import BytesIO
-    from reportlab.lib.pagesizes import A4, landscape
-    from reportlab.lib.units import cm
-    from reportlab.pdfgen import canvas
-    from reportlab.lib import colors
-    from datetime import datetime
     from apps.training.certificate_generator import CertificateGenerator
 
-    # Obtener la plantilla
     plantilla = get_object_or_404(CertificadoPlantilla, pk=plantilla_id)
 
-    # Verificar permisos (solo staff puede ver vista previa)
     if not request.user.is_staff:
         messages.error(request, 'No tienes permiso para ver esta vista previa.')
         return redirect('admin:index')
 
-    # Lista para rastrear archivos temporales que deben eliminarse
-    archivos_temporales = []
+    pdf_bytes = CertificateGenerator.generar_preview_bytes(plantilla)
 
-    try:
-        # Crear un buffer en memoria para el PDF
-        buffer = BytesIO()
-
-        # Configuración del documento
-        pagesize = landscape(A4)
-        width, height = pagesize
-        c = canvas.Canvas(buffer, pagesize=pagesize)
-
-        # === BORDES DECORATIVOS ===
-        from reportlab.lib.units import inch
-        import os
-
-        # Colores elegantes
-        color_dorado = colors.HexColor('#B8860B')  # Dorado oscuro
-
-        # ===== IMAGEN DE FONDO (si existe) =====
-        if plantilla.imagen_fondo:
-            try:
-                fondo_path, is_temp = get_file_for_reportlab(plantilla.imagen_fondo)
-                if fondo_path:
-                    if is_temp:
-                        archivos_temporales.append(fondo_path)
-                    # Dibujar la imagen de fondo cubriendo todo el certificado
-                    c.drawImage(
-                        fondo_path,
-                        0,
-                        0,
-                        width=width,
-                        height=height,
-                        preserveAspectRatio=False,
-                        mask='auto'
-                    )
-            except:
-                pass  # Si falla, continuar sin fondo
-
-        # Borde exterior dorado principal (solo si NO hay imagen de fondo)
-        if not plantilla.imagen_fondo:
-            c.setStrokeColor(color_dorado)
-            c.setLineWidth(4)
-            c.rect(0.4*inch, 0.4*inch, width-0.8*inch, height-0.8*inch)
-
-            # Borde interior más delgado
-            c.setLineWidth(1)
-            c.rect(0.5*inch, 0.5*inch, width-1*inch, height-1*inch)
-
-        # === LOGO CENTRADO (si existe) ===
-        if plantilla.logo:
-            try:
-                logo_path, is_temp = get_file_for_reportlab(plantilla.logo)
-                if logo_path:
-                    if is_temp:
-                        archivos_temporales.append(logo_path)
-                    # Tamaño del logo
-                    logo_width = 6*cm
-                    logo_height = 3*cm
-                    # Centrar: (ancho total - ancho del logo) / 2
-                    logo_x = (width - logo_width) / 2
-                    logo_y = height - 5*cm
-                    c.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height,
-                               preserveAspectRatio=True, mask='auto')
-            except:
-                pass
-
-        # === MARCA DE AGUA "VISTA PREVIA" ===
-        c.saveState()
-        c.setFont("Helvetica-Bold", 60)
-        c.setFillColor(colors.Color(0.9, 0.9, 0.9, alpha=0.3))
-        c.translate(width/2, height/2)
-        c.rotate(45)
-        c.drawCentredString(0, 0, "VISTA PREVIA")
-        c.restoreState()
-
-        # === TÍTULO DEL CERTIFICADO ===
-        c.setFont("Helvetica-Bold", 28)
-        c.setFillColor(colors.HexColor('#2C3E50'))
-        titulo = plantilla.titulo_certificado
-        c.drawCentredString(width/2, height - 5*cm, titulo)
-
-        # === TEXTO SUPERIOR ===
-        c.setFont("Helvetica", 14)
-        c.setFillColor(colors.HexColor('#555555'))
-        y_position = height - 7*cm
-
-        # Dividir texto en líneas
-        texto_superior = plantilla.texto_superior
-        max_width = width - 8*cm
-        lines = []
-        words = texto_superior.split()
-        current_line = ""
-
-        for word in words:
-            test_line = current_line + " " + word if current_line else word
-            if c.stringWidth(test_line, "Helvetica", 14) < max_width:
-                current_line = test_line
-            else:
-                lines.append(current_line)
-                current_line = word
-        if current_line:
-            lines.append(current_line)
-
-        for line in lines:
-            c.drawCentredString(width/2, y_position, line)
-            y_position -= 0.6*cm
-
-        # === NOMBRE DEL EMPLEADO (DATOS DE EJEMPLO) ===
-        c.setFont("Helvetica-Bold", 22)
-        c.setFillColor(colors.HexColor('#1E3A8A'))
-        y_position -= 1*cm
-        c.drawCentredString(width/2, y_position, "JUAN CARLOS PÉREZ GARCÍA")
-
-        # Documento
-        c.setFont("Helvetica", 11)
-        c.setFillColor(colors.HexColor('#666666'))
-        y_position -= 0.8*cm
-        c.drawCentredString(width/2, y_position, "C.C. 1.234.567.890")
-
-        # === NOMBRE DE LA CAPACITACIÓN ===
-        c.setFont("Helvetica-Bold", 16)
-        c.setFillColor(colors.HexColor('#2C3E50'))
-        y_position -= 1.5*cm
-        c.drawCentredString(width/2, y_position, plantilla.capacitacion.nombre)
-
-        # === INFORMACIÓN ADICIONAL ===
-        y_position -= 1.2*cm
-
-        info_lines = []
-
-        if plantilla.incluir_calificacion:
-            info_lines.append(f"Calificación obtenida: 95.0 puntos")
-
-        if plantilla.incluir_duracion and plantilla.capacitacion.duracion_estimada_horas:
-            info_lines.append(f"Duración: {plantilla.capacitacion.duracion_estimada_horas} horas")
-
-        c.setFont("Helvetica", 12)
-        c.setFillColor(colors.HexColor('#555555'))
-        for info_line in info_lines:
-            c.drawCentredString(width/2, y_position, info_line)
-            y_position -= 0.7*cm
-
-        # === TEXTO INFERIOR ===
-        y_position -= 0.5*cm
-        c.setFont("Helvetica", 12)
-        c.setFillColor(colors.HexColor('#555555'))
-
-        texto_inferior = plantilla.texto_inferior
-        lines = []
-        words = texto_inferior.split()
-        current_line = ""
-
-        for word in words:
-            test_line = current_line + " " + word if current_line else word
-            if c.stringWidth(test_line, "Helvetica", 12) < max_width:
-                current_line = test_line
-            else:
-                lines.append(current_line)
-                current_line = word
-        if current_line:
-            lines.append(current_line)
-
-        for line in lines:
-            c.drawCentredString(width/2, y_position, line)
-            y_position -= 0.6*cm
-
-        # === NÚMERO DE CERTIFICADO (EJEMPLO) ===
-        c.setFont("Helvetica", 9)
-        c.setFillColor(colors.HexColor('#999999'))
-        c.drawCentredString(width/2, 2.5*cm, f"Certificado No. CERT-2026-PREVIEW-0001")
-
-        # === FECHA DE EMISIÓN (HOY) ===
-        fecha_ejemplo = datetime.now().strftime("%d de %B de %Y")
-        meses = {
-            'January': 'enero', 'February': 'febrero', 'March': 'marzo',
-            'April': 'abril', 'May': 'mayo', 'June': 'junio',
-            'July': 'julio', 'August': 'agosto', 'September': 'septiembre',
-            'October': 'octubre', 'November': 'noviembre', 'December': 'diciembre'
-        }
-        for en, es in meses.items():
-            fecha_ejemplo = fecha_ejemplo.replace(en, es)
-
-        c.drawCentredString(width/2, 2*cm, f"Expedido el {fecha_ejemplo}")
-
-        # === FIRMAS (DOS FIRMAS) ===
-        # Firma izquierda: Responsable de la Capacitación
-        if plantilla.firma_responsable:
-            try:
-                firma_path, is_temp = get_file_for_reportlab(plantilla.firma_responsable)
-                if firma_path:
-                    if is_temp:
-                        archivos_temporales.append(firma_path)
-                    c.drawImage(firma_path, width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
-            except:
-                pass
-
-        if plantilla.nombre_responsable:
-            c.setFont("Helvetica-Bold", 11)
-            c.setFillColor(colors.HexColor('#2C3E50'))
-            c.drawCentredString(width/4, 2.5*cm, plantilla.nombre_responsable)
-
-        if plantilla.cargo_responsable:
-            c.setFont("Helvetica", 9)
-            c.setFillColor(colors.HexColor('#666666'))
-            c.drawCentredString(width/4, 2*cm, plantilla.cargo_responsable)
-
-        # Firma derecha: Director de RRHH
-        if plantilla.firma_rrhh:
-            try:
-                firma_rrhh_path, is_temp = get_file_for_reportlab(plantilla.firma_rrhh)
-                if firma_rrhh_path:
-                    if is_temp:
-                        archivos_temporales.append(firma_rrhh_path)
-                    c.drawImage(firma_rrhh_path, 3*width/4 - 2*cm, 3*cm, width=4*cm, height=2*cm, preserveAspectRatio=True)
-            except:
-                pass
-
-        if plantilla.nombre_rrhh:
-            c.setFont("Helvetica-Bold", 11)
-            c.setFillColor(colors.HexColor('#2C3E50'))
-            c.drawCentredString(3*width/4, 2.5*cm, plantilla.nombre_rrhh)
-
-        if plantilla.cargo_rrhh:
-            c.setFont("Helvetica", 9)
-            c.setFillColor(colors.HexColor('#666666'))
-            c.drawCentredString(3*width/4, 2*cm, plantilla.cargo_rrhh)
-
-        # Finalizar el PDF
-        c.showPage()
-        c.save()
-
-        # Devolver el PDF
-        buffer.seek(0)
-        response = HttpResponse(buffer.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; filename="vista_previa_certificado.pdf"'
-
-        logger.info(f"Vista previa generada - Plantilla: {plantilla_id}, Usuario: {request.user.username}")
-
-        return response
-
-    except Exception as e:
-        logger.error(f"Error al generar vista previa de certificado {plantilla_id}: {str(e)}")
-        messages.error(request, f'Error al generar vista previa: {str(e)}')
-        return redirect('admin:training_certificadoplantilla_changelist')
-
-    finally:
-        # Limpiar archivos temporales descargados desde S3
-        import os
-        for temp_file in archivos_temporales:
-            try:
-                if os.path.exists(temp_file):
-                    os.unlink(temp_file)
-                    logger.debug(f"Archivo temporal eliminado: {temp_file}")
-            except Exception as e:
-                logger.warning(f"No se pudo eliminar archivo temporal {temp_file}: {str(e)}")
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = (
+        f'inline; filename="preview_certificado_{plantilla.capacitacion.codigo}.pdf"'
+    )
+    return response
