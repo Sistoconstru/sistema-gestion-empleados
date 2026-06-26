@@ -47,9 +47,9 @@ class EvaluacionCargoInline(admin.TabularInline):
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'nivel_jerarquico', 'activo')
+    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'crea_usuario_sistema', 'nivel_jerarquico', 'activo')
     inlines = [EvaluacionCargoInline]
-    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico')
+    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico', 'crea_usuario_sistema')
     search_fields = ('codigo', 'nombre', 'area__nombre')
 
     fieldsets = (
@@ -60,8 +60,8 @@ class CargoAdmin(admin.ModelAdmin):
             'fields': ('area', 'cargo_jefe', 'nivel_jerarquico')
         }),
         ('Rol del Sistema', {
-            'fields': ('rol_automatico',),
-            'description': 'Rol que se asignará automáticamente a empleados con este cargo'
+            'fields': ('rol_automatico', 'crea_usuario_sistema'),
+            'description': 'Rol que se asignará automáticamente a empleados con este cargo. Desmarca "¿Crea usuario en el sistema?" para cargos sin acceso (ej: aprendiz en etapa lectiva).'
         }),
         ('Salarios', {
             'fields': ('salario_minimo', 'salario_maximo')

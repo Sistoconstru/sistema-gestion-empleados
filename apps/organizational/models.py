@@ -60,11 +60,22 @@ class Cargo(models.Model):
     
     # NUEVO CAMPO: Rol automático
     rol_automatico = models.ForeignKey(
-        'authentication.Rol', 
-        on_delete=models.SET_NULL, 
+        'authentication.Rol',
+        on_delete=models.SET_NULL,
         null=True, blank=True,
         verbose_name="Rol del Sistema",
         help_text="Rol que se asigna automáticamente a empleados con este cargo"
+    )
+
+    crea_usuario_sistema = models.BooleanField(
+        default=True,
+        verbose_name="¿Crea usuario en el sistema?",
+        help_text=(
+            "Si está marcado, al asignar este cargo a un empleado nuevo se crea su usuario "
+            "automáticamente. Desmarca para cargos sin acceso al sistema (ej: aprendiz en "
+            "etapa lectiva). El usuario se creará cuando el empleado pase a un cargo que sí "
+            "lo permita."
+        ),
     )
     
     class Meta:

@@ -11,61 +11,125 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def _crear_usuario_para_empleado(empleado, cargo=None):
+    """Crea usuario, asigna rol automático del cargo y vincula al empleado.
+
+    Idempotente: si el empleado ya tiene usuario, retorna ``None`` sin crear nada.
+    Retorna ``(user, password_plano)`` cuando crea el usuario para que la vista
+    que orquesta la creación pueda mostrar las credenciales al RRHH.
+    """
+    # Idempotencia: re-leer desde BD para evitar duplicar si otro flujo ya lo creó
+    if Empleado.objects.filter(pk=empleado.pk, usuario__isnull=False).exists():
+        return None
+
+    User = get_user_model()
+    try:
+        primer_nombre = empleado.nombres.split()[0].lower()
+        primer_apellido = empleado.apellidos.split()[0].lower()
+        username_base = f"{primer_nombre}.{primer_apellido}"
+
+        username = username_base
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{username_base}{counter}"
+            counter += 1
+
+        password = f"{primer_nombre.capitalize()}{empleado.numero_documento}"
+
+        user = User.objects.create_user(
+            username=username,
+            email=empleado.correo_electronico or '',
+            first_name=empleado.nombres,
+            last_name=empleado.apellidos,
+            password=password,
+            is_active=True,
+        )
+
+        if cargo is None:
+            historial = empleado.historialcargo_set.filter(activo=True).first()
+            cargo = historial.cargo if historial else None
+
+        if cargo and getattr(cargo, 'rol_automatico', None):
+            from apps.authentication.models import UsuarioRol
+            superuser = User.objects.filter(is_superuser=True).first()
+            if not UsuarioRol.objects.filter(usuario=user, rol=cargo.rol_automatico).exists():
+                UsuarioRol.objects.create(
+                    usuario=user,
+                    rol=cargo.rol_automatico,
+                    asignado_por=superuser,
+                )
+
+        # update() para no disparar post_save de Empleado
+        Empleado.objects.filter(pk=empleado.pk, usuario__isnull=True).update(usuario=user)
+        logger.info(f"Usuario creado para empleado {empleado.numero_documento}: {username}")
+        return user, password
+    except Exception as e:
+        logger.exception(f"[ERROR al crear usuario automático para {empleado}]: {e}")
+        return None
+
+
 @receiver(post_save, sender=Empleado)
 def crear_usuario_automatico_empleado(sender, instance, created, **kwargs):
-    """Crea el usuario y asigna el rol cuando se crea un empleado nuevo sin usuario"""
-    # Flag para evitar duplicidad en el ciclo de guardado
+    """Crea el usuario y asigna el rol cuando se crea un empleado nuevo sin usuario.
+
+    No crea usuario si el cargo activo del empleado tiene crea_usuario_sistema=False
+    (ej: aprendiz en etapa lectiva). El usuario se creará cuando rote a un cargo
+    que sí lo permita — ver signal_crear_usuario_por_cambio_cargo.
+    """
     if created and not instance.usuario and not hasattr(instance, '_usuario_creado_flag'):
         setattr(instance, '_usuario_creado_flag', True)
         from django.db import transaction
+
         def crear_usuario_post_commit():
-            User = get_user_model()
-            try:
-                primer_nombre = instance.nombres.split()[0].lower()
-                primer_apellido = instance.apellidos.split()[0].lower()
-                username_base = f"{primer_nombre}.{primer_apellido}"
-
-                username = username_base
-                counter = 1
-                # Buscar username único, incluso si hay homónimos
-                while User.objects.filter(username=username).exists():
-                    username = f"{username_base}{counter}"
-                    counter += 1
-
-                password = f"{primer_nombre.capitalize()}{instance.numero_documento}"
-
-                # Verificar que no exista ya un usuario con ese username y correo
-                if not User.objects.filter(username=username, email=instance.correo_electronico).exists():
-                    user = User.objects.create_user(
-                        username=username,
-                        email=instance.correo_electronico or '',
-                        first_name=instance.nombres,
-                        last_name=instance.apellidos,
-                        password=password,
-                        is_active=True
-                    )
-
-                    # Asignar rol automático desde el cargo si existe historial activo
-                    historial = instance.historialcargo_set.filter(activo=True).first()
-                    if historial and historial.cargo and hasattr(historial.cargo, 'rol_automatico') and historial.cargo.rol_automatico:
-                        from apps.authentication.models import UsuarioRol
-                        superuser = User.objects.filter(is_superuser=True).first()
-                        # Evitar duplicidad de UsuarioRol
-                        if not UsuarioRol.objects.filter(usuario=user, rol=historial.cargo.rol_automatico).exists():
-                            UsuarioRol.objects.create(
-                                usuario=user,
-                                rol=historial.cargo.rol_automatico,
-                                asignado_por=superuser
-                            )
-
-                    # Asignar el usuario al empleado solo si sigue sin usuario, evitando save() para no disparar el signal nuevamente
-                    if not instance.usuario:
-                        Empleado.objects.filter(pk=instance.pk).update(usuario=user)
-
-            except Exception as e:
-                print(f"[ERROR al crear usuario automático]: {e}")
+            historial = instance.historialcargo_set.filter(activo=True).first()
+            cargo = historial.cargo if historial else None
+            if cargo and not getattr(cargo, 'crea_usuario_sistema', True):
+                logger.info(
+                    f"Empleado {instance} creado con cargo '{cargo}' sin acceso al sistema; "
+                    f"no se crea usuario."
+                )
+                return
+            _crear_usuario_para_empleado(instance, cargo=cargo)
 
         transaction.on_commit(crear_usuario_post_commit)
+
+
+@receiver(post_save, sender=HistorialCargo)
+def crear_usuario_al_promover_desde_cargo_sin_acceso(sender, instance, created, **kwargs):
+    """Crea el usuario al promover un empleado desde un cargo sin acceso (lectiva)
+    a un cargo con acceso (productiva u otro).
+
+    Solo dispara si:
+    1. El empleado aún no tiene usuario.
+    2. El cargo NUEVO sí crea usuario (crea_usuario_sistema=True).
+    3. El cargo ANTERIOR existía y NO creaba usuario (crea_usuario_sistema=False).
+
+    El guard de "cargo anterior sin acceso" evita disparos en ascensos normales
+    donde el empleado ya debería tener usuario.
+    """
+    if not created or not instance.activo:
+        return
+
+    empleado = instance.empleado
+    if empleado.usuario_id:
+        return
+
+    cargo_nuevo = instance.cargo
+    if not cargo_nuevo or not getattr(cargo_nuevo, 'crea_usuario_sistema', True):
+        return
+
+    cargo_anterior = (
+        HistorialCargo.objects
+        .filter(empleado=empleado)
+        .exclude(pk=instance.pk)
+        .order_by('-fecha_inicio', '-fecha_creacion')
+        .first()
+    )
+    if not cargo_anterior or getattr(cargo_anterior.cargo, 'crea_usuario_sistema', True):
+        return
+
+    from django.db import transaction
+    transaction.on_commit(lambda: _crear_usuario_para_empleado(empleado, cargo=cargo_nuevo))
 
 
 @receiver(pre_save, sender=Empleado)

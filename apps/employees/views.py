@@ -555,10 +555,18 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 # Asignar usuario creador
                 form.instance.creado_por = self.request.user
                 
-                # Determinar estado inicial basado en fecha de ingreso
+                # Determinar estado inicial basado en fecha de ingreso.
+                # Los aprendices (rol AP001) nunca están en periodo de prueba: su
+                # vínculo es contrato de aprendizaje, no laboral.
+                cargo_form = form.cleaned_data.get('cargo')
+                es_aprendiz = bool(
+                    cargo_form
+                    and getattr(cargo_form, 'rol_automatico', None)
+                    and cargo_form.rol_automatico.codigo == 'AP001'
+                )
                 dias_desde_ingreso = (date.today() - form.instance.fecha_ingreso).days
-                
-                if dias_desde_ingreso <= 60:  # Período de prueba
+
+                if dias_desde_ingreso <= 60 and not es_aprendiz:  # Período de prueba
                     try:
                         estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
                         form.instance.estado = estado_prueba
@@ -576,16 +584,28 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 
                 # Guardar empleado primero
                 empleado = form.save()
-                
-                # Crear usuario automáticamente si tiene email
-                if empleado.numero_documento:
+
+                # Crear usuario automáticamente solo si el cargo del empleado permite
+                # acceso al sistema. Para cargos sin acceso (ej: aprendiz lectiva),
+                # el usuario se creará al rotar a un cargo con acceso vía la señal
+                # de HistorialCargo.
+                cargo = cargo_form
+                permite_crear_usuario = (
+                    cargo is None or getattr(cargo, 'crea_usuario_sistema', True)
+                )
+                if empleado.numero_documento and permite_crear_usuario:
                     usuario_creado = self.crear_usuario_automatico(empleado)
                     if usuario_creado:
                         empleado.usuario = usuario_creado
                         empleado.save()
-                
+                elif cargo and not permite_crear_usuario:
+                    messages.info(
+                        self.request,
+                        f"ℹ️ El cargo '{cargo.nombre}' no crea usuario en el sistema. "
+                        f"El usuario se generará cuando el empleado pase a un cargo con acceso."
+                    )
+
                 # Crear historial de cargo si se especificó cargo
-                cargo = form.cleaned_data.get('cargo')
                 if cargo:
                     # Obtener el jefe directo seleccionado (si existe)
                     jefe_directo = form.cleaned_data.get('jefe_directo')
@@ -740,6 +760,31 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                         creado_por=self.request.user,
                         jefe_directo=jefe_directo_nuevo
                     )
+
+                    # Si el empleado no tenía usuario porque venía de un cargo sin acceso
+                    # y el nuevo cargo sí crea usuario, generarlo aquí para mostrar las
+                    # credenciales al RRHH en pantalla. La señal de HistorialCargo es
+                    # idempotente y no duplicará el usuario.
+                    if (
+                        not self.object.usuario_id
+                        and getattr(cargo_nuevo, 'crea_usuario_sistema', True)
+                        and cargo_actual is not None
+                        and not getattr(cargo_actual, 'crea_usuario_sistema', True)
+                    ):
+                        from apps.employees.signals import _crear_usuario_para_empleado
+                        resultado = _crear_usuario_para_empleado(self.object, cargo=cargo_nuevo)
+                        if resultado:
+                            user_creado, password_generado = resultado
+                            self.object.refresh_from_db()
+                            messages.success(
+                                self.request,
+                                f"✅ Usuario creado automáticamente al promover desde "
+                                f"'{cargo_actual.nombre}' a '{cargo_nuevo.nombre}':\n"
+                                f"👤 Usuario: {user_creado.username}\n"
+                                f"🔑 Contraseña: {password_generado}\n"
+                                f"📧 Email: {self.object.correo_electronico or '(sin email)'}\n"
+                                f"(Comunicar estas credenciales al empleado)"
+                            )
                 # Si solo cambió el jefe directo (mismo cargo)
                 elif historial_actual and jefe_directo_nuevo != jefe_directo_actual:
                     historial_actual.jefe_directo = jefe_directo_nuevo
