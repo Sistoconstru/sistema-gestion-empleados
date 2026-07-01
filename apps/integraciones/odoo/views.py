@@ -76,6 +76,64 @@ ESTADO_ODOO_A_SIGHU = {
     'cancelada': 'cancelada_rrhh',
 }
 
+# Cada estado terminal tiene un TipoNotificacion asociado que se dispara al
+# empleado dueño de la solicitud (ver migración notifications.0002_tipos_vacaciones).
+ESTADO_A_TIPO_NOTIFICACION = {
+    'aprobada_rrhh': 'vacacion_aprobada',
+    'rechazada_rrhh': 'vacacion_rechazada',
+    'cancelada_rrhh': 'vacacion_cancelada',
+}
+
+
+def _notificar_empleado_vacacion(solicitud, motivo=''):
+    """Crea la notificación in-app para el empleado dueño de la solicitud.
+
+    No falla el callback si la notificación no se puede crear (el estado ya se
+    guardó y Odoo espera un 200); registra el error y sigue.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+
+    try:
+        from apps.notifications.models import Notificacion, TipoNotificacion
+
+        codigo_tipo = ESTADO_A_TIPO_NOTIFICACION.get(solicitud.estado_local)
+        if not codigo_tipo:
+            return
+        usuario = getattr(solicitud.empleado, 'usuario', None)
+        if not usuario:
+            logger.info(
+                f"Vacación {solicitud.pk}: empleado {solicitud.empleado} sin usuario, "
+                f"se omite notificación."
+            )
+            return
+
+        tipo = TipoNotificacion.objects.filter(codigo=codigo_tipo, activo=True).first()
+        if not tipo:
+            logger.warning(f"TipoNotificacion '{codigo_tipo}' no existe o está inactivo.")
+            return
+
+        datos = {
+            'fecha_inicio': solicitud.fecha_inicio.strftime('%d/%m/%Y'),
+            'fecha_fin': solicitud.fecha_fin.strftime('%d/%m/%Y'),
+            'motivo': motivo or solicitud.motivo_rechazo or 'No especificado',
+            'empleado': solicitud.empleado.nombre_completo,
+        }
+        Notificacion.objects.create(
+            usuario=usuario,
+            tipo_notificacion=tipo,
+            titulo=tipo.plantilla_titulo.format(**datos),
+            mensaje=tipo.plantilla_mensaje.format(**datos),
+            datos_adicionales={
+                'solicitud_id': str(solicitud.pk),
+                'leave_id_odoo': solicitud.leave_id_odoo,
+                'estado_local': solicitud.estado_local,
+                **datos,
+            },
+        )
+    except Exception as e:
+        logger.exception(f"Error notificando vacación {solicitud.pk}: {e}")
+
 
 class OdooVacacionEstadoView(APIView):
     """Recibe el estado final de una solicitud de vacaciones desde Odoo.
@@ -138,6 +196,10 @@ class OdooVacacionEstadoView(APIView):
         # Guardar el payload completo para auditoría (sobreescribe el push inicial)
         solicitud.respuesta_odoo = data
         solicitud.save(update_fields=['estado_local', 'motivo_rechazo', 'respuesta_odoo', 'fecha_actualizacion'])
+
+        # Notificar al empleado. La idempotencia del callback (chequeo de estado
+        # igual arriba) garantiza que solo se dispara una vez por transición.
+        _notificar_empleado_vacacion(solicitud, motivo=motivo)
 
         return Response(
             {'status': 'recibido', 'leave_id': leave_id, 'estado_local': nuevo_estado},

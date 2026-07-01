@@ -56,6 +56,22 @@
             color: #2193b0;
             font-size: 1.1rem;
         }
+        .toggle-password {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.05rem;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .toggle-password:hover {
+            color: #2193b0;
+        }
         .login-options {
             display: flex;
             justify-content: space-between;
@@ -102,6 +118,9 @@
             <div class="input-group">
                 <i class="fa fa-lock"></i>
                 {{ form.password|add_class:"form-control" }}
+                <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
+                    <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                </button>
             </div>
             <div class="login-options">
                 <label>
@@ -113,5 +132,21 @@
             <button type="submit" class="login-btn">Entrar</button>
         </form>
     </div>
+    <script>
+        (function() {
+            var toggle = document.getElementById('togglePassword');
+            var icon = document.getElementById('togglePasswordIcon');
+            if (!toggle) return;
+            var input = document.getElementById('id_password') || toggle.parentElement.querySelector('input[type="password"], input[name="password"]');
+            if (!input) return;
+            toggle.addEventListener('click', function() {
+                var mostrar = input.type === 'password';
+                input.type = mostrar ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', !mostrar);
+                icon.classList.toggle('fa-eye-slash', mostrar);
+                toggle.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            });
+        })();
+    </script>
 </body>
 </html>

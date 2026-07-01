@@ -4184,6 +4184,28 @@ def _equipo_del_jefe(usuario):
 
 
 @login_required
+def mis_vacaciones(request):
+    """Historial de solicitudes de vacaciones del empleado autenticado (solo lectura)."""
+    try:
+        empleado = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.info(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('core:dashboard')
+
+    solicitudes = (
+        SolicitudVacacion.objects
+        .filter(empleado=empleado)
+        .select_related('jefe_solicitante')
+        .order_by('-fecha_creacion')
+    )
+
+    return render(request, 'employees/vacaciones/mis_vacaciones.html', {
+        'empleado': empleado,
+        'solicitudes': solicitudes,
+    })
+
+
+@login_required
 def vacaciones_equipo(request):
     """Panel del jefe: equipo + historial de solicitudes que hizo este usuario."""
     equipo = _equipo_del_jefe(request.user)

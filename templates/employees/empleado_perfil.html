@@ -259,6 +259,14 @@
                         </a>
                     </div>
 
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:mis_vacaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
+                            <strong>Mis vacaciones</strong>
+                            <div class="small text-muted">Historial y estado de tus solicitudes</div>
+                        </a>
+                    </div>
+
                     {% if puede_ver_vacaciones_equipo %}
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="{% url 'employees:vacaciones_equipo' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">

@@ -44,6 +44,9 @@ urlpatterns = [
     path('jefe/vacaciones/', views.vacaciones_equipo, name='vacaciones_equipo'),
     path('jefe/vacaciones/nueva/<uuid:empleado_id>/', views.vacacion_nueva, name='vacacion_nueva'),
 
+    # Mis vacaciones (empleado, solo lectura)
+    path('mis-vacaciones/', views.mis_vacaciones, name='mis_vacaciones'),
+
     # Vacaciones — Administración (staff/RRHH)
     path('admin/vacaciones/', views.vacaciones_admin_panel, name='vacaciones_admin_panel'),
     path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),
