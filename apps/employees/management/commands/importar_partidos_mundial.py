@@ -91,7 +91,8 @@ class Command(BaseCommand):
                     continue
 
                 # Determinar fase del torneo basándose en el nombre del round
-                round_name = event.get('strEvent', '').lower()
+                # strRound contiene: "Round of 16", "Quarter-Final", "Semi-Final", "Final"
+                round_name = event.get('strRound', '')
                 fase = self._determinar_fase(round_name)
 
                 # Datos del partido
@@ -129,18 +130,48 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f'Error inesperado: {e}'))
 
     def _determinar_fase(self, round_name):
-        """Determina la fase del torneo basándose en el nombre del round"""
-        round_name = round_name.lower()
+        """
+        Determina la fase del torneo basándose en el nombre del round
 
-        if 'final' in round_name and 'semi' not in round_name and 'quarter' not in round_name:
-            return 'final'
-        elif 'semi' in round_name or 'semifinal' in round_name:
-            return 'semifinal'
-        elif 'third' in round_name or 'tercer' in round_name:
-            return 'tercer_lugar'
-        elif 'quarter' in round_name or 'cuartos' in round_name:
-            return 'cuartos'
-        elif 'round of 16' in round_name or 'octavos' in round_name:
-            return 'octavos'
-        else:
+        Valores esperados de la API:
+        - "Group Stage" -> grupos (multiplicador 1x)
+        - "Round of 32" -> dieciseisavos (multiplicador 1x, igual que grupos)
+        - "Round of 16" -> octavos (multiplicador 2x)
+        - "Quarter-Final" -> cuartos (multiplicador 3x)
+        - "Semi-Final" -> semifinal (multiplicador 4x)
+        - "Third Place" -> tercer_lugar (multiplicador 4x)
+        - "Final" -> final (multiplicador 5x)
+        """
+        if not round_name:
             return 'grupos'
+
+        round_name_lower = round_name.lower()
+
+        # Verificar en orden de especificidad para evitar conflictos
+
+        # Tercer lugar (verificar antes que "final")
+        if 'third' in round_name_lower or '3rd' in round_name_lower or 'tercer' in round_name_lower:
+            return 'tercer_lugar'
+
+        # Semifinal (verificar antes que "final")
+        if 'semi' in round_name_lower:
+            return 'semifinal'
+
+        # Cuartos de final (verificar antes que "final")
+        if 'quarter' in round_name_lower or 'cuartos' in round_name_lower:
+            return 'cuartos'
+
+        # Octavos de final
+        if 'round of 16' in round_name_lower or 'octavos' in round_name_lower or 'round 16' in round_name_lower:
+            return 'octavos'
+
+        # Dieciseisavos de final (Round of 32) - mismo multiplicador que grupos
+        if 'round of 32' in round_name_lower or 'dieciseisavos' in round_name_lower or 'round 32' in round_name_lower:
+            return 'dieciseisavos'
+
+        # Final (verificar al final para evitar que capture "Semi-Final" o "Quarter-Final")
+        if round_name_lower == 'final' or round_name_lower.strip() == 'final':
+            return 'final'
+
+        # Fase de grupos (Group Stage o cualquier otro valor no reconocido)
+        return 'grupos'

@@ -1027,6 +1027,7 @@ class PartidoMundial(models.Model):
 
     FASES = [
         ('grupos', 'Fase de Grupos'),
+        ('dieciseisavos', 'Dieciseisavos de Final'),
         ('octavos', 'Octavos de Final'),
         ('cuartos', 'Cuartos de Final'),
         ('semifinal', 'Semifinal'),
@@ -1036,6 +1037,7 @@ class PartidoMundial(models.Model):
 
     MULTIPLICADORES_PUNTOS = {
         'grupos': 1,
+        'dieciseisavos': 1,  # Mismo multiplicador que fase de grupos
         'octavos': 2,
         'cuartos': 3,
         'semifinal': 4,
