@@ -95,6 +95,14 @@ class Command(BaseCommand):
                 round_name = event.get('strRound', '')
                 fase = self._determinar_fase(round_name)
 
+                # Log para debugging - mostrar qué fase se detectó
+                if round_name:
+                    self.stdout.write(f'  → strRound: "{round_name}" → fase: {fase}')
+                else:
+                    # strRound vacío - partido probablemente es de fase de grupos
+                    strEvent = event.get('strEvent', 'N/A')
+                    self.stdout.write(self.style.WARNING(f'  ⚠️  strRound vacío para partido: {strEvent} → asignando fase: {fase}'))
+
                 # Datos del partido
                 partido_data = {
                     'equipo_local': event.get('strHomeTeam', 'TBD'),
