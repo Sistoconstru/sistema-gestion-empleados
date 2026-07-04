@@ -90,18 +90,19 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(f'Fecha inválida: {fecha_str} {hora_str}'))
                     continue
 
-                # Determinar fase del torneo basándose en el nombre del round
-                # strRound contiene: "Round of 16", "Quarter-Final", "Semi-Final", "Final"
+                # Determinar fase del torneo basándose en las fechas oficiales de FIFA 2026
+                # Prioridad 1: Usar strRound si está disponible
+                # Prioridad 2: Usar fecha del partido según calendario oficial FIFA
                 round_name = event.get('strRound', '')
-                fase = self._determinar_fase(round_name)
 
-                # Log para debugging - mostrar qué fase se detectó
                 if round_name:
+                    # Si la API tiene strRound, usarlo
+                    fase = self._determinar_fase(round_name)
                     self.stdout.write(f'  → strRound: "{round_name}" → fase: {fase}')
                 else:
-                    # strRound vacío - partido probablemente es de fase de grupos
-                    strEvent = event.get('strEvent', 'N/A')
-                    self.stdout.write(self.style.WARNING(f'  ⚠️  strRound vacío para partido: {strEvent} → asignando fase: {fase}'))
+                    # Determinar fase por fecha según calendario oficial FIFA 2026
+                    fase = self._determinar_fase_por_fecha(fecha_hora)
+                    self.stdout.write(f'  → Fecha: {fecha_hora.strftime("%Y-%m-%d")} → fase: {fase}')
 
                 # Datos del partido
                 partido_data = {
@@ -183,3 +184,54 @@ class Command(BaseCommand):
 
         # Fase de grupos (Group Stage o cualquier otro valor no reconocido)
         return 'grupos'
+
+    def _determinar_fase_por_fecha(self, fecha_hora):
+        """
+        Determina la fase del torneo basándose en la fecha oficial de FIFA 2026
+
+        Calendario oficial FIFA World Cup 2026:
+        - Fase de grupos: 11 junio - 27 junio 2026
+        - Round of 32 (Dieciseisavos): 28 junio - 3 julio 2026
+        - Round of 16 (Octavos): 4 julio - 7 julio 2026
+        - Cuartos de final: 9 julio - 11 julio 2026
+        - Semifinales: 14 julio - 15 julio 2026
+        - Tercer lugar: 18 julio 2026
+        - Final: 19 julio 2026
+        """
+        from datetime import datetime
+
+        # Convertir a naive para comparación simple de fechas
+        fecha = fecha_hora.date()
+
+        # Definir rangos de fechas por fase (año 2026)
+        # Grupos: 11-27 junio
+        if datetime(2026, 6, 11).date() <= fecha <= datetime(2026, 6, 27).date():
+            return 'grupos'
+
+        # Dieciseisavos (Round of 32): 28 junio - 3 julio
+        elif datetime(2026, 6, 28).date() <= fecha <= datetime(2026, 7, 3).date():
+            return 'dieciseisavos'
+
+        # Octavos (Round of 16): 4-7 julio
+        elif datetime(2026, 7, 4).date() <= fecha <= datetime(2026, 7, 7).date():
+            return 'octavos'
+
+        # Cuartos: 9-11 julio
+        elif datetime(2026, 7, 9).date() <= fecha <= datetime(2026, 7, 11).date():
+            return 'cuartos'
+
+        # Semifinales: 14-15 julio
+        elif datetime(2026, 7, 14).date() <= fecha <= datetime(2026, 7, 15).date():
+            return 'semifinal'
+
+        # Tercer lugar: 18 julio
+        elif fecha == datetime(2026, 7, 18).date():
+            return 'tercer_lugar'
+
+        # Final: 19 julio
+        elif fecha == datetime(2026, 7, 19).date():
+            return 'final'
+
+        # Por defecto, grupos (para partidos fuera de rango)
+        else:
+            return 'grupos'
