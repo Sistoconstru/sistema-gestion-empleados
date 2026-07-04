@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel RRHH/Admin{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">Panel RRHH/Admin</li>
+{% endblock %}
+
+{% block content %}
+<!-- Hero del panel -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <div class="profile-avatar bg-white bg-opacity-25 rounded-circle mx-auto mb-2"
+                             style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-shield fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h2 class="mb-1">Panel RRHH / Administración</h2>
+                        <h5 class="mb-2 opacity-75">
+                            <span class="badge bg-amarillo bg-opacity-25 text-corporativo">Acceso staff</span>
+                        </h5>
+                        <div class="text-sm opacity-75">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Herramientas de gestión para recursos humanos y administradores.
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <a class="btn btn-light btn-sm" href="/admin/">
+                            <i class="fas fa-cog me-1"></i>Admin de Django
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen rápido -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-2">
+        <div class="card border-corporativo shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-3 fw-bold text-corporativo mb-0">{{ resumen.empleados_activos }}</div>
+                <h6 class="mb-0">Empleados activos</h6>
+                {% if resumen.empleados_en_prueba %}
+                    <small class="text-muted">+ {{ resumen.empleados_en_prueba }} en prueba</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-2">
+        <div class="card border-corporativo shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-3 fw-bold text-info mb-0">{{ resumen.familiares }}</div>
+                <h6 class="mb-0">Familiares registrados</h6>
+                <small class="text-muted">{{ resumen.empleados_con_hijos }} empleados con hijos</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-2">
+        <div class="card border-corporativo shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-3 fw-bold {% if resumen.vacaciones_pendientes %}text-amarillo{% else %}text-corporativo{% endif %} mb-0">
+                    {{ resumen.vacaciones_pendientes }}
+                </div>
+                <h6 class="mb-0">Vacaciones pendientes RRHH</h6>
+                <small class="text-muted">Por aprobar en Odoo</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-2">
+        <div class="card border-corporativo shadow-sm h-100">
+            <div class="card-body text-center py-3">
+                <div class="fs-3 fw-bold text-corporativo mb-0">{{ resumen.vacaciones_total_mes }}</div>
+                <h6 class="mb-0">Vacaciones del mes</h6>
+                <small class="text-muted">Solicitadas en SIGHU</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Acciones principales -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-corporativo shadow-sm">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="mb-0"><i class="fas fa-th-large me-2"></i>Herramientas</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'employees:familiares_admin_lista' %}"
+                           class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-users fa-2x d-block mb-2"></i>
+                            <strong>Historial familiar</strong>
+                            <div class="small text-muted">Segmentar por tipo, sede, edad, EPS — exporta a Excel</div>
+                            {% if resumen.familiares %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-info">
+                                    {{ resumen.familiares }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'employees:vacaciones_admin_panel' %}"
+                           class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
+                            <strong>Vacaciones — RRHH</strong>
+                            <div class="small text-muted">Solicitar por cualquier empleado y ver historial global</div>
+                            {% if resumen.vacaciones_pendientes %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-amarillo text-corporativo">
+                                    {{ resumen.vacaciones_pendientes }} pend.
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <a href="{% url 'employees:empleado_list' %}"
+                           class="btn btn-outline-amarillo text-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-id-card fa-2x d-block mb-2"></i>
+                            <strong>Empleados</strong>
+                            <div class="small text-muted">Buscar, filtrar, exportar, crear y editar</div>
+                            <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-corporativo">
+                                {{ resumen.empleados_activos }}
+                            </span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

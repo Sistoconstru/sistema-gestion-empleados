@@ -40,7 +40,13 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_SECONDS = 31536000
-SECURE_REDIRECT_EXEMPT = []
+# Exentos de redirect HTTP→HTTPS: las llamadas Odoo→SIGHU entran por la red
+# privada de Railway (*.railway.internal) en HTTP plano. Sin esta exención el
+# 301 a HTTPS rompe la integración (Odoo no sigue el redirect / pierde el body).
+# Patrón se evalúa contra request.path.lstrip('/').
+SECURE_REDIRECT_EXEMPT = [
+    r'^api/v1/odoo/',
+]
 SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True

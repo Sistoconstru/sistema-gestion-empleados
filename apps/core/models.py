@@ -76,3 +76,73 @@ class LogActividad(models.Model):
 
     def __str__(self):
         return self.descripcion or f"{self.usuario} - {self.accion} - {self.modelo}"
+
+
+def _documento_corporativo_upload_path(instance, filename):
+    """Ruta de almacenamiento: documentos_corporativos/<categoria>/<filename_safe>."""
+    import os
+    from django.utils.text import slugify
+    base, ext = os.path.splitext(filename or '')
+    ext = (ext or '').lower()[:10]
+    base_safe = slugify(base)[:80] or 'documento'
+    return f"documentos_corporativos/{instance.categoria}/{base_safe}{ext}"
+
+
+class DocumentoCorporativo(models.Model):
+    """Documentos institucionales disponibles para consulta de los empleados.
+
+    Reglamentos, políticas, manuales, procedimientos, etc. Se publican desde
+    el admin de Django y aparecen agrupados por categoría en la sección
+    'Documentos institucionales' del perfil del empleado.
+    """
+    from custom_storage.media import MediaStorage
+
+    CATEGORIAS = [
+        ('reglamento', 'Reglamentos'),
+        ('politica', 'Políticas'),
+        ('manual', 'Manuales'),
+        ('procedimiento', 'Procedimientos'),
+        ('formato', 'Formatos'),
+        ('otro', 'Otros'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True, help_text='Resumen breve del contenido del documento')
+    categoria = models.CharField(max_length=20, choices=CATEGORIAS, default='reglamento')
+    archivo = models.FileField(
+        upload_to=_documento_corporativo_upload_path,
+        max_length=500,
+        storage=MediaStorage(),
+        help_text='PDF, DOCX o imagen',
+    )
+    version = models.CharField(max_length=20, blank=True, help_text='Ej: v1.0, 2026, etc.')
+    fecha_publicacion = models.DateTimeField(default=timezone.now)
+    fecha_vigencia_desde = models.DateField(null=True, blank=True)
+    fecha_vigencia_hasta = models.DateField(null=True, blank=True, help_text='Opcional, si el documento tiene vencimiento')
+    activo = models.BooleanField(default=True, help_text='Si está activo, aparece en la sección de documentos del empleado')
+    creado_por = models.ForeignKey(
+        'authentication.Usuario',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='documentos_corporativos_creados',
+    )
+
+    class Meta:
+        db_table = 'documentos_corporativos'
+        ordering = ['categoria', '-fecha_publicacion']
+        verbose_name = 'Documento Corporativo'
+        verbose_name_plural = 'Documentos Corporativos'
+        indexes = [
+            models.Index(fields=['activo', 'categoria']),
+        ]
+
+    def __str__(self):
+        return f"{self.get_categoria_display()}: {self.titulo}"
+
+    @property
+    def filename(self):
+        if not self.archivo:
+            return ''
+        import os
+        return os.path.basename(self.archivo.name)

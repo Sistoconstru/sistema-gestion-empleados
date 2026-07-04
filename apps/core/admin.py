@@ -3,7 +3,35 @@
 # =============================================================================
 
 from django.contrib import admin
-from .models import ConfiguracionSistema, LogActividad
+from .models import ConfiguracionSistema, LogActividad, DocumentoCorporativo
+
+
+@admin.register(DocumentoCorporativo)
+class DocumentoCorporativoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'categoria', 'version', 'fecha_publicacion', 'activo', 'creado_por')
+    list_filter = ('categoria', 'activo', 'fecha_publicacion')
+    search_fields = ('titulo', 'descripcion', 'version')
+    readonly_fields = ('id',)
+    ordering = ('-fecha_publicacion',)
+
+    fieldsets = (
+        ('Información del documento', {
+            'fields': ('titulo', 'descripcion', 'categoria', 'version', 'archivo', 'activo'),
+        }),
+        ('Vigencia', {
+            'fields': ('fecha_publicacion', 'fecha_vigencia_desde', 'fecha_vigencia_hasta'),
+            'classes': ('collapse',),
+        }),
+        ('Auditoría', {
+            'fields': ('id', 'creado_por'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        if not change and not obj.creado_por_id:
+            obj.creado_por = request.user
+        super().save_model(request, obj, form, change)
 
 # Registro del modelo ConfiguracionSistema en el admin de Django
 @admin.register(ConfiguracionSistema)

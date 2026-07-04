@@ -101,23 +101,19 @@
                     {% endif %}
 
                     {% for opcion in respuesta.pregunta.opciones.all %}
-                        <div class="opcion-resultado 
+                        <div class="opcion-resultado
                             {% if opcion == respuesta.opcion_seleccionada %}
-                                {% if respuesta.es_correcta %}
-                                    opcion-correcta
-                                {% else %}
-                                    opcion-incorrecta
-                                {% endif %}
-                            {% elif opcion.es_correcta %}
-                                opcion-correcta
+                                {% if respuesta.es_correcta %}opcion-correcta{% else %}opcion-incorrecta{% endif %}
                             {% else %}
                                 opcion-neutral
                             {% endif %}">
 
                             {% if opcion == respuesta.opcion_seleccionada %}
-                                <i class="fas fa-check-circle me-2"></i>
-                            {% elif opcion.es_correcta %}
-                                <i class="fas fa-circle me-2"></i>
+                                {% if respuesta.es_correcta %}
+                                    <i class="fas fa-check-circle me-2"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle me-2"></i>
+                                {% endif %}
                             {% else %}
                                 <i class="far fa-circle me-2"></i>
                             {% endif %}
@@ -126,10 +122,10 @@
                         </div>
                     {% endfor %}
 
-                    {% if respuesta.pregunta.explicacion %}
-                        <div class="retroalimentacion">
-                            <h6>Explicación:</h6>
-                            {{ respuesta.pregunta.explicacion }}
+                    {% if not respuesta.es_correcta %}
+                        <div class="retroalimentacion text-muted small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Tu respuesta no fue correcta. Revisa el contenido de la lección antes de reintentar.
                         </div>
                     {% endif %}
                 </div>

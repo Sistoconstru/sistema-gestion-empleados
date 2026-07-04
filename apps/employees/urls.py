@@ -23,6 +23,32 @@ urlpatterns = [
     path('<uuid:pk>/historial/export/', views.empleado_historial_export, name='empleado_historial_export'),
     path('mi-perfil/', views.empleado_perfil_redirect, name='empleado_perfil'),
     path('perfil/<uuid:pk>/', views.EmpleadoPerfilView.as_view(), name='empleado_perfil_detail'),
+
+    # Historial Familiar (autogestión del empleado)
+    path('perfil/familia/', views.familia_panel, name='familia_panel'),
+    path('perfil/familia/estado-civil/', views.familia_estado_civil_actualizar, name='familia_estado_civil'),
+    path('perfil/familia/familiar/nuevo/', views.familiar_crear, name='familiar_crear'),
+    path('perfil/familia/familiar/<uuid:familiar_id>/editar/', views.familiar_editar, name='familiar_editar'),
+    path('perfil/familia/familiar/<uuid:familiar_id>/eliminar/', views.familiar_eliminar, name='familiar_eliminar'),
+    path('perfil/familia/familiar/<uuid:familiar_id>/documento/subir/', views.documento_familiar_subir, name='documento_familiar_subir'),
+    path('perfil/familia/documento/<uuid:documento_id>/eliminar/', views.documento_familiar_eliminar, name='documento_familiar_eliminar'),
+
+    # Panel de RRHH/Admin (staff/superuser, sin requerir Empleado vinculado)
+    path('admin/', views.panel_admin, name='panel_admin'),
+
+    # Vista cruzada de familiares (staff/RRHH)
+    path('admin/familiares/', views.familiares_admin_lista, name='familiares_admin_lista'),
+    path('admin/familiares/export/', views.familiares_admin_export_excel, name='familiares_admin_export'),
+
+    # Vacaciones (jefe → Odoo)
+    path('jefe/vacaciones/', views.vacaciones_equipo, name='vacaciones_equipo'),
+    path('jefe/vacaciones/nueva/<uuid:empleado_id>/', views.vacacion_nueva, name='vacacion_nueva'),
+
+    # Mis vacaciones (empleado, solo lectura)
+    path('mis-vacaciones/', views.mis_vacaciones, name='mis_vacaciones'),
+
+    # Vacaciones — Administración (staff/RRHH)
+    path('admin/vacaciones/', views.vacaciones_admin_panel, name='vacaciones_admin_panel'),
     path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),
     # APIs y exportación
     path('api/search/', views.empleado_search_api, name='empleado_search_api'),

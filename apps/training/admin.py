@@ -2,10 +2,34 @@
 # apps/training/admin.py - CORREGIR CAPACITACIONES
 # =============================================================================
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion,
                      Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion,
                      QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
+from .certificate_generator import CertificateGenerator
+
+
+def _emitir_certificados_para(inscripciones_qs):
+    """Asigna número + fecha de emisión a las inscripciones aprobadas que aún
+    no las tengan. No genera PDFs — esos se renderizan al vuelo en la descarga.
+
+    Devuelve (emitidos, omitidos, errores).
+    """
+    emitidos, omitidos, errores = 0, [], []
+    inscripciones_qs = inscripciones_qs.select_related('empleado', 'capacitacion')
+    for inscripcion in inscripciones_qs:
+        try:
+            if CertificateGenerator.emitir_certificado(inscripcion):
+                emitidos += 1
+            else:
+                omitidos.append(
+                    f"{inscripcion.empleado.nombre_completo} / {inscripcion.capacitacion.nombre}"
+                )
+        except Exception as exc:
+            errores.append(
+                f"{inscripcion.empleado.nombre_completo} / {inscripcion.capacitacion.nombre}: {exc}"
+            )
+    return emitidos, omitidos, errores
 
 @admin.register(TipoCapacitacion)
 class TipoCapacitacionAdmin(admin.ModelAdmin):
@@ -28,7 +52,7 @@ class CapacitacionAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Configuración', {
-            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion')
+            'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion', 'emite_certificado')
         }),
         ('Vigencia', {
             'fields': ('fecha_vigencia_inicio', 'fecha_vigencia_fin', 'version')
@@ -40,6 +64,49 @@ class CapacitacionAdmin(admin.ModelAdmin):
     )
 
     exclude = ('creada_por', 'proveedor_externo', 'url_inscripcion_externa', 'permite_autocompletado')
+
+    actions = ['emitir_certificados_pendientes']
+
+    @admin.action(description='Emitir certificados pendientes (asignar número y fecha)')
+    def emitir_certificados_pendientes(self, request, queryset):
+        """Para cada capacitación seleccionada, asigna número de certificado y
+        fecha de emisión a las inscripciones aprobadas que aún no los tienen.
+
+        El PDF se renderiza al vuelo en cada descarga usando la plantilla actual,
+        así que no se guarda archivo. Útil cuando se activa emite_certificado=True
+        después de que algunos empleados ya aprobaron y quedaron sin número.
+        """
+        inscripciones = InscripcionCapacitacion.objects.filter(
+            capacitacion__in=queryset,
+            estado='aprobado',
+            numero_certificado__in=['', None],
+        )
+        emitidos, omitidos, errores = _emitir_certificados_para(inscripciones)
+        if emitidos:
+            self.message_user(
+                request,
+                f'{emitidos} certificado(s) emitido(s) correctamente.',
+                level=messages.SUCCESS,
+            )
+        if omitidos:
+            self.message_user(
+                request,
+                f'{len(omitidos)} inscripción(es) omitida(s) por no cumplir condiciones (nota mínima, no es externa, capacitación emite certificado, etc).',
+                level=messages.WARNING,
+            )
+        if errores:
+            preview = '; '.join(errores[:3])
+            self.message_user(
+                request,
+                f'{len(errores)} error(es) durante la emisión. Primeros: {preview}',
+                level=messages.ERROR,
+            )
+        if not (emitidos or omitidos or errores):
+            self.message_user(
+                request,
+                'No se encontraron inscripciones aprobadas sin certificado para emitir.',
+                level=messages.INFO,
+            )
 
     def es_externa_display(self, obj):
         """Muestra si es externa con ícono"""
@@ -65,6 +132,8 @@ class CapacitacionCargoAdmin(admin.ModelAdmin):
         # Asigna el usuario que realiza la asignación solo al crear
         if not change:
             obj.asignado_por = request.user
+        super().save_model(request, obj, form, change)
+
 
 class OpcionPreguntaQuizInline(admin.TabularInline):
     model = OpcionPreguntaQuiz
@@ -156,14 +225,34 @@ class InscripcionCapacitacionAdmin(admin.ModelAdmin):
     list_display = ('empleado', 'capacitacion', 'estado', 'obligatoria', 'fecha_inscripcion', 'puntaje_final')
     list_filter = ('estado', 'obligatoria', 'fecha_inscripcion')
     search_fields = ('empleado__nombres', 'empleado__apellidos', 'capacitacion__nombre')
-    
+
     exclude = ('inscrito_por',)
-    
+    actions = ['emitir_certificado_inscripciones']
+
     def save_model(self, request, obj, form, change):
         # Asigna el usuario que inscribe solo al crear
         if not change:
             obj.inscrito_por = request.user
         super().save_model(request, obj, form, change)
+
+    @admin.action(description='Emitir certificado (asignar número) de las inscripciones seleccionadas')
+    def emitir_certificado_inscripciones(self, request, queryset):
+        """Asigna número y fecha de emisión a las inscripciones aprobadas que
+        no los tienen. El PDF se renderiza al vuelo en cada descarga."""
+        emitidos, omitidos, errores = _emitir_certificados_para(queryset)
+        if emitidos:
+            self.message_user(request, f'{emitidos} certificado(s) emitido(s).', level=messages.SUCCESS)
+        if omitidos:
+            self.message_user(
+                request,
+                f'{len(omitidos)} inscripción(es) omitida(s) (no aprobadas, no cumplen nota mínima, el curso no emite certificado o ya estaban emitidas).',
+                level=messages.WARNING,
+            )
+        if errores:
+            preview = '; '.join(errores[:3])
+            self.message_user(request, f'{len(errores)} error(es). Primeros: {preview}', level=messages.ERROR)
+        if not (emitidos or omitidos or errores):
+            self.message_user(request, 'Sin cambios.', level=messages.INFO)
 
 @admin.register(ProgresoCapacitacion)
 class ProgresoCapacitacionAdmin(admin.ModelAdmin):

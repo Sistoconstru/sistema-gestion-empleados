@@ -227,6 +227,16 @@ class Capacitacion(models.Model):
     nivel_dificultad = models.CharField(max_length=20, choices=NIVELES_DIFICULTAD, default='basico')
     puntaje_aprobacion = models.IntegerField(default=70, validators=[MinValueValidator(0), MaxValueValidator(100)])
     intentos_maximos = models.IntegerField(default=3, validators=[MinValueValidator(1)])
+    emite_certificado = models.BooleanField(
+        default=True,
+        verbose_name="Emite certificado al aprobar",
+        help_text=(
+            "Si está activo, al aprobar el curso se genera el PDF de certificado "
+            "automáticamente. Para capacitaciones obligatorias o de inducción se "
+            "suele desactivar; actívalo manualmente cuando sí se requiera evidencia "
+            "(SST, compliance, etc.)."
+        ),
+    )
     
     # Vigencia
     fecha_vigencia_inicio = models.DateField()
@@ -395,6 +405,10 @@ class CapacitacionCargo(models.Model):
     def get_prioridad_display(self):
         prioridades = {1: 'Alta', 2: 'Media', 3: 'Baja'}
         return prioridades.get(self.prioridad, 'Media')
+
+    def __str__(self):
+        return f"{self.capacitacion.nombre} → {self.cargo.nombre}"
+
 
 class ModuloCapacitacion(models.Model):
     def esta_completado(self, inscripcion=None):
@@ -757,6 +771,14 @@ class InscripcionCapacitacion(models.Model):
         }
         return colores.get(self.estado, 'secondary')
 
+    @property
+    def total_lecciones(self):
+        """Cuenta el total de lecciones de la capacitación de esta inscripción.
+
+        Una sola query con JOIN — más eficiente que iterar módulos y sumar.
+        """
+        return Leccion.objects.filter(modulo__capacitacion=self.capacitacion).count()
+
     def generar_numero_certificado(self):
         """Genera un número único de certificado"""
         from django.utils import timezone
@@ -778,12 +800,10 @@ class InscripcionCapacitacion(models.Model):
         # Verificar si ya tiene certificado generado
         if self.certificado_generado:
             return False
-        # IMPORTANTE: Solo capacitaciones LIBRES generan certificado
-        # Las OBLIGATORIAS (por cargo) y de INDUCCION NO generan certificado
-        if self.capacitacion.tipo:
-            tipo_codigo = self.capacitacion.tipo.codigo
-            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
-                return False
+        # La capacitación decide si emite certificado (configurable por curso).
+        # Para externas, el certificado lo entrega el proveedor (signal lo maneja).
+        if not self.capacitacion.emite_certificado:
+            return False
         # Verificar nota mínima
         if hasattr(self.capacitacion, 'plantilla_certificado'):
             plantilla = self.capacitacion.plantilla_certificado
@@ -792,18 +812,17 @@ class InscripcionCapacitacion(models.Model):
         return False
 
     def puede_descargar_certificado(self):
-        """Verifica si el certificado puede ser descargado"""
-        # Solo capacitaciones LIBRES y EXTERNAS tienen certificado descargable
-        # Las OBLIGATORIAS e INDUCCION NO tienen certificado
-        if self.capacitacion.tipo:
-            tipo_codigo = self.capacitacion.tipo.codigo
-            if tipo_codigo in ['OBLIGATORIA', 'INDUCCION']:
-                return False
+        """Verifica si el certificado puede ser descargado.
 
-        return (
-            self.estado == 'aprobado' and
-            (self.certificado_generado or self.certificado_externo)
-        )
+        Internas: necesita emite_certificado=True + número asignado (el PDF se
+        renderiza al vuelo en la descarga, no se guarda archivo).
+        Externas: necesita el archivo subido por el proveedor.
+        """
+        if self.estado != 'aprobado':
+            return False
+        if self.capacitacion.es_externa():
+            return bool(self.certificado_externo)
+        return bool(self.numero_certificado) and self.capacitacion.emite_certificado
 
 class ProgresoCapacitacion(models.Model):
     """Progreso de empleados en capacitaciones - MEJORADO"""

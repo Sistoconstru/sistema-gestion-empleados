@@ -24,49 +24,31 @@ def asignar_capacitaciones_nuevo_cargo(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=InscripcionCapacitacion)
-def auto_generar_certificado(sender, instance, created, **kwargs):
-    """
-    Genera automáticamente el certificado PDF cuando:
-    - El estado cambia a 'aprobado'
-    - Es una capacitación INTERNA (NO externa)
-    - Cumple con la nota mínima
-    - No tiene certificado generado previamente
-    - La capacitación tiene plantilla de certificado
+def auto_emitir_certificado(sender, instance, created, **kwargs):
+    """Al aprobar la inscripción, asigna número y fecha de emisión del certificado.
 
-    IMPORTANTE: Las capacitaciones externas NO generan certificados automáticos
-    porque el empleado presenta el certificado del proveedor externo.
+    No genera PDF: el archivo se renderiza al vuelo en cada descarga (ver
+    `descargar_certificado`). Externas no entran por aquí — su certificado lo
+    sube RRHH manualmente y se sirve tal cual.
     """
-    # Solo generar si el estado es 'aprobado'
-    if instance.estado == 'aprobado':
-        # VALIDACIÓN CRÍTICA: NO generar certificado si es capacitación externa
-        if instance.capacitacion.es_externa():
-            logger.debug(
-                f"Inscripción {instance.id} es de capacitación externa - "
-                f"NO se genera certificado automático. "
-                f"El certificado debe ser proporcionado por el proveedor externo."
-            )
-            return
+    if instance.estado != 'aprobado':
+        return
+    if instance.capacitacion.es_externa():
+        return
+    if instance.numero_certificado and instance.fecha_emision_certificado:
+        return  # Ya emitido; nada que hacer
 
-        # Verificar si ya tiene certificado generado
-        if not instance.certificado_generado:
-            # Verificar que puede generar
-            if instance.puede_generar_certificado():
-                logger.info(
-                    f"Generando certificado automático para inscripción {instance.id} "
-                    f"(Empleado: {instance.empleado.nombre_completo}, "
-                    f"Capacitación: {instance.capacitacion.nombre})"
-                )
-                try:
-                    resultado = CertificateGenerator.generar_certificado(instance)
-                    if resultado:
-                        logger.info(f"Certificado generado exitosamente para inscripción {instance.id}")
-                    else:
-                        logger.warning(f"No se pudo generar certificado para inscripción {instance.id}")
-                except Exception as e:
-                    logger.error(f"Error en auto-generación de certificado para inscripción {instance.id}: {str(e)}")
-            else:
-                logger.debug(
-                    f"Inscripción {instance.id} no cumple condiciones para generar certificado "
-                    f"(Estado: {instance.estado}, Puntaje: {instance.puntaje_final})"
-                )
+    if not instance.puede_generar_certificado():
+        logger.debug(
+            f"Inscripción {instance.id} no cumple condiciones para emitir certificado "
+            f"(estado: {instance.estado}, puntaje: {instance.puntaje_final})"
+        )
+        return
+
+    try:
+        CertificateGenerator.emitir_certificado(instance)
+    except Exception as e:
+        logger.error(
+            f"Error en auto-emisión de certificado para inscripción {instance.id}: {e}"
+        )
 

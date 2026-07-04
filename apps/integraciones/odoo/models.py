@@ -6,6 +6,7 @@ class OdooSyncFalla(models.Model):
         ('created', 'Creado'),
         ('updated', 'Actualizado'),
         ('deleted', 'Eliminado'),
+        ('vacacion', 'Vacación enviada'),
     )
 
     empleado = models.ForeignKey(
@@ -13,7 +14,7 @@ class OdooSyncFalla(models.Model):
         on_delete=models.CASCADE,
         related_name='odoo_sync_fallas',
     )
-    evento = models.CharField(max_length=10, choices=EVENTOS)
+    evento = models.CharField(max_length=20, choices=EVENTOS)
     fecha = models.DateTimeField(auto_now_add=True)
     motivo = models.CharField(max_length=200, blank=True)
     detalle = models.TextField(blank=True)

@@ -14,7 +14,9 @@ from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo,
     Conversacion, Mensaje, Publicacion, Comentario,
-    PartidoMundial, PrediccionMundial
+    PartidoMundial, PrediccionMundial,
+    Familiar, DocumentoFamiliar,
+    SolicitudVacacion,
 )
 from apps.organizational.models import Sede, Cargo, AreaEmpresa
 
@@ -1717,3 +1719,86 @@ class PrediccionMundialForm(forms.ModelForm):
             raise ValidationError('Este partido ya no acepta predicciones')
 
         return cleaned_data
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Autogestión del empleado
+# =============================================================================
+
+class EstadoCivilForm(forms.ModelForm):
+    class Meta:
+        model = Empleado
+        fields = ['estado_civil', 'sexo_biologico']
+        widgets = {
+            'estado_civil': forms.Select(attrs={'class': 'form-select'}),
+            'sexo_biologico': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+class FamiliarForm(forms.ModelForm):
+    class Meta:
+        model = Familiar
+        fields = [
+            'tipo', 'nombres', 'apellidos', 'tipo_documento', 'numero_documento',
+            'fecha_nacimiento', 'parentesco', 'convive', 'dependiente_economico',
+            'eps', 'observaciones', 'activo',
+        ]
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'nombres': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'tipo_documento': forms.Select(attrs={'class': 'form-select'}),
+            'numero_documento': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'parentesco': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Solo si tipo = Otro'}),
+            'convive': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'dependiente_economico': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'eps': forms.TextInput(attrs={'class': 'form-control'}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        tipo = cleaned.get('tipo')
+        parentesco = cleaned.get('parentesco', '').strip()
+        if tipo == 'otro' and not parentesco:
+            self.add_error('parentesco', 'Describe el parentesco cuando el tipo es "Otro".')
+        return cleaned
+
+
+class DocumentoFamiliarForm(forms.ModelForm):
+    class Meta:
+        model = DocumentoFamiliar
+        fields = ['tipo', 'descripcion', 'archivo', 'fecha_vencimiento']
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select', 'required': True}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Opcional'}),
+            'archivo': forms.ClearableFileInput(attrs={'class': 'form-control', 'required': True}),
+            'fecha_vencimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+
+# =============================================================================
+# VACACIONES (jefe → Odoo)
+# =============================================================================
+
+class SolicitudVacacionForm(forms.ModelForm):
+    class Meta:
+        model = SolicitudVacacion
+        fields = ['fecha_inicio', 'fecha_fin', 'observaciones']
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
+            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Opcional'}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        fi = cleaned.get('fecha_inicio')
+        ff = cleaned.get('fecha_fin')
+        if fi and ff and ff < fi:
+            self.add_error('fecha_fin', 'La fecha final no puede ser anterior a la inicial.')
+        if fi and fi < date.today():
+            self.add_error('fecha_inicio', 'La fecha inicial no puede estar en el pasado.')
+        return cleaned

@@ -24,16 +24,21 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
 
 # Importaciones locales
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
-    Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria
+    Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria,
+    Familiar, DocumentoFamiliar,
+    SolicitudVacacion,
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
-    ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm
+    ProductoForm, VentaForm, SubastaForm, PujaForm, RegaloForm, ConversacionForm, MensajeForm,
+    EstadoCivilForm, FamiliarForm, DocumentoFamiliarForm,
+    SolicitudVacacionForm,
 )
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
 from apps.training.models import InscripcionCapacitacion
@@ -550,10 +555,18 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 # Asignar usuario creador
                 form.instance.creado_por = self.request.user
                 
-                # Determinar estado inicial basado en fecha de ingreso
+                # Determinar estado inicial basado en fecha de ingreso.
+                # Los aprendices (rol AP001) nunca están en periodo de prueba: su
+                # vínculo es contrato de aprendizaje, no laboral.
+                cargo_form = form.cleaned_data.get('cargo')
+                es_aprendiz = bool(
+                    cargo_form
+                    and getattr(cargo_form, 'rol_automatico', None)
+                    and cargo_form.rol_automatico.codigo == 'AP001'
+                )
                 dias_desde_ingreso = (date.today() - form.instance.fecha_ingreso).days
-                
-                if dias_desde_ingreso <= 60:  # Período de prueba
+
+                if dias_desde_ingreso <= 60 and not es_aprendiz:  # Período de prueba
                     try:
                         estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
                         form.instance.estado = estado_prueba
@@ -571,16 +584,28 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 
                 # Guardar empleado primero
                 empleado = form.save()
-                
-                # Crear usuario automáticamente si tiene email
-                if empleado.numero_documento:
+
+                # Crear usuario automáticamente solo si el cargo del empleado permite
+                # acceso al sistema. Para cargos sin acceso (ej: aprendiz lectiva),
+                # el usuario se creará al rotar a un cargo con acceso vía la señal
+                # de HistorialCargo.
+                cargo = cargo_form
+                permite_crear_usuario = (
+                    cargo is None or getattr(cargo, 'crea_usuario_sistema', True)
+                )
+                if empleado.numero_documento and permite_crear_usuario:
                     usuario_creado = self.crear_usuario_automatico(empleado)
                     if usuario_creado:
                         empleado.usuario = usuario_creado
                         empleado.save()
-                
+                elif cargo and not permite_crear_usuario:
+                    messages.info(
+                        self.request,
+                        f"ℹ️ El cargo '{cargo.nombre}' no crea usuario en el sistema. "
+                        f"El usuario se generará cuando el empleado pase a un cargo con acceso."
+                    )
+
                 # Crear historial de cargo si se especificó cargo
-                cargo = form.cleaned_data.get('cargo')
                 if cargo:
                     # Obtener el jefe directo seleccionado (si existe)
                     jefe_directo = form.cleaned_data.get('jefe_directo')
@@ -735,6 +760,31 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                         creado_por=self.request.user,
                         jefe_directo=jefe_directo_nuevo
                     )
+
+                    # Si el empleado no tenía usuario porque venía de un cargo sin acceso
+                    # y el nuevo cargo sí crea usuario, generarlo aquí para mostrar las
+                    # credenciales al RRHH en pantalla. La señal de HistorialCargo es
+                    # idempotente y no duplicará el usuario.
+                    if (
+                        not self.object.usuario_id
+                        and getattr(cargo_nuevo, 'crea_usuario_sistema', True)
+                        and cargo_actual is not None
+                        and not getattr(cargo_actual, 'crea_usuario_sistema', True)
+                    ):
+                        from apps.employees.signals import _crear_usuario_para_empleado
+                        resultado = _crear_usuario_para_empleado(self.object, cargo=cargo_nuevo)
+                        if resultado:
+                            user_creado, password_generado = resultado
+                            self.object.refresh_from_db()
+                            messages.success(
+                                self.request,
+                                f"✅ Usuario creado automáticamente al promover desde "
+                                f"'{cargo_actual.nombre}' a '{cargo_nuevo.nombre}':\n"
+                                f"👤 Usuario: {user_creado.username}\n"
+                                f"🔑 Contraseña: {password_generado}\n"
+                                f"📧 Email: {self.object.correo_electronico or '(sin email)'}\n"
+                                f"(Comunicar estas credenciales al empleado)"
+                            )
                 # Si solo cambió el jefe directo (mismo cargo)
                 elif historial_actual and jefe_directo_nuevo != jefe_directo_actual:
                     historial_actual.jefe_directo = jefe_directo_nuevo
@@ -1127,9 +1177,18 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         
         # === ACTIVIDAD RECIENTE ===
         context.update(self.get_actividad_reciente(empleado))
-        
+
+        # === Tiles del módulo de vacaciones ===
+        # Equipo: SOLO si el empleado tiene subordinados directos.
+        # Admin: SOLO si el usuario es staff. Son independientes; un usuario
+        # puede ver los dos tiles si cumple ambas condiciones.
+        context['puede_ver_vacaciones_equipo'] = HistorialCargo.objects.filter(
+            jefe_directo=empleado, activo=True
+        ).exists()
+        context['puede_ver_vacaciones_admin'] = self.request.user.is_staff
+
         return context
-    
+
     def get_informacion_basica(self, empleado):
         """Obtener información básica del empleado"""
         # Cargo actual
@@ -3739,3 +3798,539 @@ def calificar_venta(request, venta_id):
 class TerminosCondicionesView(TemplateView):
     """Vista para mostrar términos y condiciones del marketplace"""
     template_name = 'employees/marketplace/terminos_condiciones.html'
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Autogestión del empleado
+# =============================================================================
+
+def _empleado_actual(request):
+    """Devuelve el Empleado vinculado al usuario logueado, o 404."""
+    return get_object_or_404(Empleado, usuario=request.user)
+
+
+@login_required
+def familia_panel(request):
+    """Panel principal de Historial Familiar (pestaña en el perfil)."""
+    empleado = _empleado_actual(request)
+    familiares = empleado.familiares.all().prefetch_related('documentos').order_by('tipo', 'fecha_nacimiento')
+
+    grupos = {'pareja': [], 'hijo': [], 'padre': [], 'hermano': [], 'otro': []}
+    for f in familiares:
+        grupos.setdefault(f.tipo, []).append(f)
+
+    return render(request, 'employees/familia/panel.html', {
+        'empleado': empleado,
+        'estado_civil_form': EstadoCivilForm(instance=empleado),
+        'familiar_form': FamiliarForm(),
+        'grupos': grupos,
+        'tipos_documento': TipoDocumento.objects.all().order_by('codigo'),
+        'es_padre': empleado.es_padre,
+    })
+
+
+@login_required
+@require_POST
+def familia_estado_civil_actualizar(request):
+    empleado = _empleado_actual(request)
+    form = EstadoCivilForm(request.POST, instance=empleado)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Estado civil actualizado.')
+    else:
+        messages.error(request, 'No se pudo actualizar el estado civil.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_crear(request):
+    empleado = _empleado_actual(request)
+    form = FamiliarForm(request.POST)
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                familiar = form.save(commit=False)
+                familiar.empleado = empleado
+                familiar.creado_por = request.user
+                familiar.full_clean()
+                familiar.save()
+            messages.success(request, f'Familiar "{familiar.nombre_completo}" agregado.')
+        except ValidationError as e:
+            messages.error(request, '; '.join(e.messages))
+    else:
+        messages.error(request, 'Revisa los datos: ' + '; '.join(
+            f"{k}: {v[0]}" for k, v in form.errors.items()
+        ))
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_editar(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    form = FamiliarForm(request.POST, instance=familiar)
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                familiar = form.save(commit=False)
+                familiar.full_clean()
+                familiar.save()
+            messages.success(request, 'Datos actualizados.')
+        except ValidationError as e:
+            messages.error(request, '; '.join(e.messages))
+    else:
+        messages.error(request, 'Revisa los datos.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def familiar_eliminar(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    nombre = familiar.nombre_completo
+    familiar.delete()
+    messages.success(request, f'Familiar "{nombre}" eliminado.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def documento_familiar_subir(request, familiar_id):
+    empleado = _empleado_actual(request)
+    familiar = get_object_or_404(Familiar, id=familiar_id, empleado=empleado)
+    form = DocumentoFamiliarForm(request.POST, request.FILES)
+    if form.is_valid():
+        doc = form.save(commit=False)
+        doc.familiar = familiar
+        doc.save()
+        messages.success(request, f'Documento subido para {familiar.nombre_completo}.')
+    else:
+        messages.error(request, 'No se pudo subir el documento. Verifica el tipo y el archivo.')
+    return redirect('employees:familia_panel')
+
+
+@login_required
+@require_POST
+def documento_familiar_eliminar(request, documento_id):
+    empleado = _empleado_actual(request)
+    doc = get_object_or_404(DocumentoFamiliar, id=documento_id, familiar__empleado=empleado)
+    doc.archivo.delete(save=False)
+    doc.delete()
+    messages.success(request, 'Documento eliminado.')
+    return redirect('employees:familia_panel')
+
+
+# =============================================================================
+# HISTORIAL FAMILIAR — Vista cruzada (staff/RRHH)
+# =============================================================================
+
+def _familiares_filtrar(request):
+    """Construye el queryset filtrado por GET params. Reutilizado por list y export."""
+    qs = Familiar.objects.select_related(
+        'empleado', 'empleado__sede', 'empleado__estado', 'tipo_documento'
+    ).prefetch_related('documentos').all()
+
+    q = request.GET.get('q', '').strip()
+    tipo = request.GET.get('tipo', '').strip()
+    sede_id = request.GET.get('sede', '').strip()
+    estado_civil = request.GET.get('estado_civil', '').strip()
+    convive = request.GET.get('convive', '').strip()
+    dependiente = request.GET.get('dependiente', '').strip()
+    eps = request.GET.get('eps', '').strip()
+    edad_min = request.GET.get('edad_min', '').strip()
+    edad_max = request.GET.get('edad_max', '').strip()
+    activo = request.GET.get('activo', '').strip()
+    padres_madres = request.GET.get('padres_madres', '').strip()  # '' | 'padres' | 'madres' | 'todos'
+    sexo_empleado = request.GET.get('sexo_empleado', '').strip()
+
+    if q:
+        qs = qs.filter(
+            Q(nombres__icontains=q) | Q(apellidos__icontains=q) |
+            Q(numero_documento__icontains=q) |
+            Q(empleado__nombres__icontains=q) | Q(empleado__apellidos__icontains=q) |
+            Q(empleado__numero_documento__icontains=q)
+        )
+    if tipo:
+        qs = qs.filter(tipo=tipo)
+    if sede_id:
+        qs = qs.filter(empleado__sede_id=sede_id)
+    if estado_civil:
+        qs = qs.filter(empleado__estado_civil=estado_civil)
+    if convive == 'si':
+        qs = qs.filter(convive=True)
+    elif convive == 'no':
+        qs = qs.filter(convive=False)
+    if dependiente == 'si':
+        qs = qs.filter(dependiente_economico=True)
+    elif dependiente == 'no':
+        qs = qs.filter(dependiente_economico=False)
+    if eps:
+        qs = qs.filter(eps__icontains=eps)
+    if activo == 'si':
+        qs = qs.filter(activo=True)
+    elif activo == 'no':
+        qs = qs.filter(activo=False)
+    if sexo_empleado in ('M', 'F'):
+        qs = qs.filter(empleado__sexo_biologico=sexo_empleado)
+    if padres_madres in ('padres', 'madres', 'todos'):
+        # Restringe a empleados con al menos un hijo registrado. La dedupe
+        # universal de _dedupe_por_empleado() se encarga de mostrar una fila
+        # por empleado.
+        qs = qs.filter(tipo='hijo')
+        if padres_madres == 'padres':
+            qs = qs.filter(empleado__sexo_biologico='M')
+        elif padres_madres == 'madres':
+            qs = qs.filter(empleado__sexo_biologico='F')
+
+    # Filtro por edad — requiere fecha_nacimiento y se calcula contra hoy
+    hoy = date.today()
+    if edad_min.isdigit():
+        fecha_tope = date(hoy.year - int(edad_min), hoy.month, hoy.day) if hoy.month != 2 or hoy.day != 29 else date(hoy.year - int(edad_min), 2, 28)
+        qs = qs.filter(fecha_nacimiento__lte=fecha_tope)
+    if edad_max.isdigit():
+        # nació después de hoy - (edad_max + 1) años
+        edad_max_int = int(edad_max)
+        try:
+            fecha_inicio = date(hoy.year - edad_max_int - 1, hoy.month, hoy.day) + timedelta(days=1)
+        except ValueError:
+            fecha_inicio = date(hoy.year - edad_max_int - 1, 2, 28) + timedelta(days=1)
+        qs = qs.filter(fecha_nacimiento__gte=fecha_inicio)
+
+    return qs.order_by('empleado__apellidos', 'empleado__nombres', 'tipo', 'fecha_nacimiento')
+
+
+def _dedupe_por_empleado(qs):
+    """Reduce el queryset a una fila por empleado.
+
+    Cada empleado queda representado por su primer familiar coincidente con
+    los filtros (orden interno: tipo, fecha_creacion). Pensado para listados
+    de segmentación donde duplicar al empleado por cada hijo es ruido.
+    Requiere PostgreSQL por el .distinct('field').
+    """
+    ids = list(
+        qs.order_by('empleado_id', 'tipo', 'fecha_creacion')
+          .distinct('empleado_id')
+          .values_list('id', flat=True)
+    )
+    return Familiar.objects.select_related(
+        'empleado', 'empleado__sede', 'empleado__estado', 'tipo_documento'
+    ).prefetch_related('documentos').filter(id__in=ids).order_by(
+        'empleado__apellidos', 'empleado__nombres'
+    )
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def panel_admin(request):
+    """Punto de entrada de RRHH/Admin. Accesible a is_staff (incluye superuser)
+    sin requerir Empleado vinculado al usuario.
+    """
+    resumen = {
+        'empleados_activos': Empleado.objects.filter(estado__codigo='999').count(),
+        'empleados_en_prueba': Empleado.objects.filter(estado__codigo='p-prue').count(),
+        'familiares': Familiar.objects.count(),
+        'empleados_con_hijos': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
+        'vacaciones_pendientes': SolicitudVacacion.objects.filter(estado_local='enviada_pendiente_rrhh').count(),
+        'vacaciones_total_mes': SolicitudVacacion.objects.filter(
+            fecha_creacion__gte=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        ).count(),
+    }
+    return render(request, 'employees/admin/panel.html', {'resumen': resumen})
+
+
+@staff_member_required
+def familiares_admin_lista(request):
+    qs = _familiares_filtrar(request)
+
+    # Resumen: cuentas sobre el set filtrado (sin dedup) para tener los
+    # totales reales por tipo. 'empleados' es el conteo único de empleados
+    # con al menos un familiar coincidente — coincide con las filas que
+    # mostrará la tabla deduplicada.
+    resumen = {
+        'empleados': qs.values('empleado_id').distinct().count(),
+        'familiares': qs.count(),
+        'parejas': qs.filter(tipo='pareja').count(),
+        'hijos': qs.filter(tipo='hijo').count(),
+        'padres': qs.filter(tipo='padre').count(),
+        'dependientes': qs.filter(dependiente_economico=True).count(),
+        'empleados_padres': Empleado.objects.filter(familiares__tipo='hijo').distinct().count(),
+    }
+
+    # Tabla: dedupe solo si NO hay un tipo de familiar explícito.
+    # Si el usuario eligió "Tipo = Hijo/a" (o Pareja, Padre, etc.) desde el
+    # dropdown, quiere ver cada familiar individualmente — ej. listado de
+    # hijos para kit escolar, donde el padre puede repetirse. Sin tipo, la
+    # tabla muestra una fila por empleado (segmentación).
+    tipo_explicito = bool(request.GET.get('tipo', '').strip())
+    qs_tabla = qs if tipo_explicito else _dedupe_por_empleado(qs)
+    paginator = Paginator(qs_tabla, 50)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    from apps.organizational.models import Sede as _Sede
+    return render(request, 'employees/familia/admin_lista.html', {
+        'page_obj': page_obj,
+        'resumen': resumen,
+        'sedes': _Sede.objects.filter(activa=True).order_by('nombre'),
+        'estado_civil_choices': Empleado.ESTADO_CIVIL_CHOICES,
+        'sexo_choices': Empleado.SEXO_BIOLOGICO_CHOICES,
+        'tipo_choices': Familiar.TIPO_CHOICES,
+        'filtros': request.GET,
+    })
+
+
+@staff_member_required
+def familiares_admin_export_excel(request):
+    # Consistente con la tabla: si se eligió un tipo explícito (ej. Hijo/a),
+    # exporta cada familiar individualmente. Sin tipo, una fila por empleado.
+    qs_filtrado = _familiares_filtrar(request)
+    tipo_explicito = bool(request.GET.get('tipo', '').strip())
+    qs = qs_filtrado if tipo_explicito else _dedupe_por_empleado(qs_filtrado)
+
+    try:
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
+    except ImportError:
+        return HttpResponse('openpyxl no disponible.', status=500)
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Familiares'
+
+    headers = [
+        'Empleado', 'Doc. Empleado', 'Sede', 'Sexo empleado', 'Estado Civil', 'Tipo Familiar',
+        'Nombres', 'Apellidos', 'Doc. Familiar', 'Núm. Doc.',
+        'Fecha Nacimiento', 'Edad', 'EPS', 'Convive', 'Dependiente',
+        'Parentesco', 'Activo', '# Documentos',
+    ]
+    for col, h in enumerate(headers, 1):
+        c = ws.cell(row=1, column=col, value=h)
+        c.font = Font(bold=True, color='FFFFFF')
+        c.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+        c.alignment = Alignment(horizontal='center')
+
+    for r, f in enumerate(qs, 2):
+        ws.cell(row=r, column=1, value=f.empleado.nombre_completo)
+        ws.cell(row=r, column=2, value=f.empleado.numero_documento)
+        ws.cell(row=r, column=3, value=f.empleado.sede.nombre if f.empleado.sede_id else '')
+        ws.cell(row=r, column=4, value=f.empleado.get_sexo_biologico_display() if f.empleado.sexo_biologico else '')
+        ws.cell(row=r, column=5, value=f.empleado.get_estado_civil_display() if f.empleado.estado_civil else '')
+        ws.cell(row=r, column=6, value=f.get_tipo_display())
+        ws.cell(row=r, column=7, value=f.nombres)
+        ws.cell(row=r, column=8, value=f.apellidos)
+        ws.cell(row=r, column=9, value=f.tipo_documento.codigo if f.tipo_documento_id else '')
+        ws.cell(row=r, column=10, value=f.numero_documento)
+        ws.cell(row=r, column=11, value=f.fecha_nacimiento.strftime('%Y-%m-%d') if f.fecha_nacimiento else '')
+        ws.cell(row=r, column=12, value=f.edad if f.edad is not None else '')
+        ws.cell(row=r, column=13, value=f.eps)
+        ws.cell(row=r, column=14, value='Sí' if f.convive else 'No')
+        ws.cell(row=r, column=15, value='Sí' if f.dependiente_economico else 'No')
+        ws.cell(row=r, column=16, value=f.parentesco)
+        ws.cell(row=r, column=17, value='Sí' if f.activo else 'No')
+        ws.cell(row=r, column=18, value=f.documentos.count())
+
+    for col in range(1, len(headers) + 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 18
+
+    stamp = timezone.now().strftime('%Y%m%d_%H%M')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename=familiares_{stamp}.xlsx'
+    wb.save(response)
+    return response
+
+
+# =============================================================================
+# VACACIONES — Jefes solicitan/aprueban y se envía a Odoo
+# =============================================================================
+
+def _puede_solicitar_vacacion_para(usuario, empleado):
+    """Reglas de quién puede solicitar la vacación de un empleado:
+    - is_staff (RRHH/admin): para cualquiera.
+    - Jefe directo (vía HistorialCargo.jefe_directo activo): para sus subordinados.
+    """
+    if usuario.is_staff:
+        return True
+    try:
+        solicitante = Empleado.objects.get(usuario=usuario)
+    except Empleado.DoesNotExist:
+        return False
+    return HistorialCargo.objects.filter(
+        empleado=empleado, activo=True, jefe_directo=solicitante
+    ).exists()
+
+
+def _equipo_del_jefe(usuario):
+    """Subordinados directos del usuario (activos o en periodo de prueba).
+
+    Para staff/RRHH NO devuelve "todos los activos": eso vive en la vista admin
+    de vacaciones. Aquí siempre son los subordinados directos del jefe; si el
+    usuario es staff y además jefe, ve solo a su propio equipo.
+    """
+    try:
+        solicitante = Empleado.objects.get(usuario=usuario)
+    except Empleado.DoesNotExist:
+        return Empleado.objects.none()
+    return Empleado.objects.filter(
+        historialcargo__activo=True,
+        historialcargo__jefe_directo=solicitante,
+        estado__codigo__in=['999', 'p-prue'],
+    ).distinct().order_by('apellidos', 'nombres')
+
+
+@login_required
+def mis_vacaciones(request):
+    """Historial de solicitudes de vacaciones del empleado autenticado (solo lectura)."""
+    try:
+        empleado = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.info(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('core:dashboard')
+
+    solicitudes = (
+        SolicitudVacacion.objects
+        .filter(empleado=empleado)
+        .select_related('jefe_solicitante')
+        .order_by('-fecha_creacion')
+    )
+
+    return render(request, 'employees/vacaciones/mis_vacaciones.html', {
+        'empleado': empleado,
+        'solicitudes': solicitudes,
+    })
+
+
+@login_required
+def vacaciones_equipo(request):
+    """Panel del jefe: equipo + historial de solicitudes que hizo este usuario."""
+    equipo = _equipo_del_jefe(request.user)
+
+    solicitudes_hechas = SolicitudVacacion.objects.select_related(
+        'empleado', 'jefe_solicitante'
+    )
+    try:
+        empleado_actual = Empleado.objects.get(usuario=request.user)
+        solicitudes_hechas = solicitudes_hechas.filter(jefe_solicitante=empleado_actual)
+    except Empleado.DoesNotExist:
+        if not request.user.is_staff:
+            solicitudes_hechas = solicitudes_hechas.none()
+    solicitudes_hechas = solicitudes_hechas.order_by('-fecha_creacion')[:50]
+
+    return render(request, 'employees/vacaciones/equipo.html', {
+        'equipo': equipo,
+        'solicitudes': solicitudes_hechas,
+    })
+
+
+@login_required
+def vacacion_nueva(request, empleado_id):
+    """Form para crear y enviar una vacación de un empleado del equipo."""
+    empleado = get_object_or_404(Empleado, id=empleado_id)
+    if not _puede_solicitar_vacacion_para(request.user, empleado):
+        messages.error(request, 'No tienes permiso para solicitar vacaciones de este empleado.')
+        return redirect('employees:vacaciones_equipo')
+
+    if request.method == 'POST':
+        form = SolicitudVacacionForm(request.POST)
+        if form.is_valid():
+            from apps.integraciones.odoo.services import enviar_vacacion_a_odoo
+            try:
+                jefe = Empleado.objects.get(usuario=request.user)
+            except Empleado.DoesNotExist:
+                jefe = None
+
+            with transaction.atomic():
+                solicitud = form.save(commit=False)
+                solicitud.empleado = empleado
+                solicitud.jefe_solicitante = jefe
+                solicitud.creado_por = request.user
+                solicitud.estado_local = 'borrador'
+                solicitud.save()
+
+            ok, data = enviar_vacacion_a_odoo(solicitud)
+            solicitud.fecha_envio_odoo = timezone.now()
+            solicitud.respuesta_odoo = data
+            if ok:
+                solicitud.estado_local = 'enviada_pendiente_rrhh'
+                solicitud.leave_id_odoo = data.get('leave_id')
+                solicitud.save()
+                messages.success(
+                    request,
+                    f'Solicitud enviada a Odoo (leave_id={data.get("leave_id")}, '
+                    f'{data.get("dias")} día(s)). Pendiente de aprobación de RRHH.'
+                )
+                return redirect('employees:vacaciones_equipo')
+            else:
+                motivo = data.get('motivo', 'Error desconocido')
+                # Rechazo de negocio vs error técnico
+                if 'No se pudo contactar' in motivo or motivo.startswith('Error de transporte') or motivo.startswith('HTTP'):
+                    solicitud.estado_local = 'error_envio'
+                else:
+                    solicitud.estado_local = 'rechazada_odoo'
+                solicitud.motivo_rechazo = motivo
+                solicitud.save()
+                messages.error(request, f'Rechazada/Error: {motivo}')
+                return redirect('employees:vacaciones_equipo')
+    else:
+        form = SolicitudVacacionForm()
+
+    return render(request, 'employees/vacaciones/nueva.html', {
+        'empleado': empleado,
+        'form': form,
+    })
+
+
+@staff_member_required
+def vacaciones_admin_panel(request):
+    """Panel RRHH: buscar empleado para solicitar + historial global con filtros."""
+    # --- Búsqueda de empleado para iniciar una solicitud ---
+    q = request.GET.get('q', '').strip()
+    empleados_buscados = Empleado.objects.none()
+    if q:
+        empleados_buscados = Empleado.objects.filter(
+            estado__codigo__in=['999', 'p-prue']
+        ).filter(
+            Q(nombres__icontains=q) | Q(apellidos__icontains=q) |
+            Q(numero_documento__icontains=q)
+        ).order_by('apellidos', 'nombres')[:20]
+
+    # --- Historial global de solicitudes con filtros ---
+    solicitudes = SolicitudVacacion.objects.select_related(
+        'empleado', 'jefe_solicitante'
+    ).order_by('-fecha_creacion')
+
+    jefe_id = request.GET.get('jefe', '').strip()
+    estado = request.GET.get('estado', '').strip()
+    fecha_desde = request.GET.get('fecha_desde', '').strip()
+    fecha_hasta = request.GET.get('fecha_hasta', '').strip()
+
+    if jefe_id:
+        solicitudes = solicitudes.filter(jefe_solicitante_id=jefe_id)
+    if estado:
+        solicitudes = solicitudes.filter(estado_local=estado)
+    if fecha_desde:
+        solicitudes = solicitudes.filter(fecha_inicio__gte=fecha_desde)
+    if fecha_hasta:
+        solicitudes = solicitudes.filter(fecha_fin__lte=fecha_hasta)
+
+    paginator = Paginator(solicitudes, 50)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    # Dropdown de jefes: solo empleados que efectivamente han solicitado alguna
+    jefes_con_solicitudes = Empleado.objects.filter(
+        vacaciones_solicitadas__isnull=False
+    ).distinct().order_by('apellidos', 'nombres')
+
+    return render(request, 'employees/vacaciones/admin.html', {
+        'q': q,
+        'empleados_buscados': empleados_buscados,
+        'page_obj': page_obj,
+        'jefes_con_solicitudes': jefes_con_solicitudes,
+        'estado_choices': SolicitudVacacion.ESTADO_CHOICES,
+        'filtros': request.GET,
+    })

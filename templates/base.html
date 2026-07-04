@@ -84,6 +84,13 @@
                                     <i class="fas fa-id-card me-1"></i> Mi Perfile
                             </a>
                             </li>
+                            {% if user.is_staff %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'employees:panel_admin' %}">
+                                    <i class="fas fa-user-shield me-1"></i> Panel RRHH/Admin
+                                </a>
+                            </li>
+                            {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">

@@ -123,6 +123,13 @@ class Empleado(BaseModel):
     telefono_contacto = models.CharField(max_length=15)  # Teléfono de contacto
     fecha_ingreso = models.DateField()  # Fecha de ingreso
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
+    centro_costo = models.ForeignKey(
+        'organizational.CentroCosto',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='empleados',
+        help_text="Centro de costo al que pertenece el empleado"
+    )
     estado = models.ForeignKey(EstadoEmpleado, on_delete=models.CASCADE)  # Estado actual
     fecha_nacimiento = models.DateField(null=True, blank=True)  # Fecha de nacimiento
     ciudad_nacimiento = models.ForeignKey(Ciudad, on_delete=models.SET_NULL, null=True, blank=True)  # Ciudad de nacimiento
@@ -131,6 +138,25 @@ class Empleado(BaseModel):
     contacto_emergencia_telefono = models.CharField(max_length=15, blank=False)  # Teléfono contacto emergencia
     correo_electronico = models.EmailField(blank=True)  # Email
     direccion = models.CharField(max_length=200, blank=False, help_text="Dirección de residencia (debe iniciar con el tipo de vía completo)")  # Dirección de residencia
+
+    ESTADO_CIVIL_CHOICES = [
+        ('soltero', 'Soltero/a'),
+        ('casado', 'Casado/a'),
+        ('union_libre', 'Unión Libre'),
+        ('divorciado', 'Divorciado/a'),
+        ('viudo', 'Viudo/a'),
+    ]
+    estado_civil = models.CharField(max_length=20, choices=ESTADO_CIVIL_CHOICES, blank=True)
+
+    SEXO_BIOLOGICO_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+    ]
+    sexo_biologico = models.CharField(
+        max_length=1, choices=SEXO_BIOLOGICO_CHOICES, blank=True,
+        verbose_name='Sexo biológico',
+        help_text='Sirve para reportes legales (PILA/DIAN) y segmentación (madres/padres).',
+    )
 
     # Polla Mundial 2026 - Aceptación de términos
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
@@ -197,6 +223,230 @@ class Empleado(BaseModel):
             logger = logging.getLogger(__name__)
             logger.warning(f"Error obteniendo área actual para empleado {self.id}: {e}")
             return None
+
+    @property
+    def es_padre(self):
+        """True si el empleado tiene al menos un hijo registrado (sin importar el flag activo).
+
+        Se ignora `activo` a propósito: ser padre es un hecho de la persona, no de
+        la vigencia del registro (los hijos pueden ser adultos, vivir fuera, etc.).
+        """
+        return self.familiares.filter(tipo='hijo').exists()
+
+
+class Familiar(BaseModel):
+    """Datos de familiares del empleado (pareja, hijos, otros).
+
+    Un solo modelo polimórfico vía `tipo` para que sea extensible. Validación:
+    solo puede haber una pareja activa por empleado a la vez.
+    """
+    TIPO_CHOICES = [
+        ('pareja', 'Pareja'),
+        ('hijo', 'Hijo/a'),
+        ('padre', 'Padre/Madre'),
+        ('hermano', 'Hermano/a'),
+        ('otro', 'Otro'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE, related_name='familiares')
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    tipo_documento = models.ForeignKey(TipoDocumento, on_delete=models.SET_NULL, null=True, blank=True)
+    numero_documento = models.CharField(max_length=20, blank=True)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    parentesco = models.CharField(max_length=50, blank=True, help_text="Detalle del parentesco si tipo='otro'")
+
+    # Aplican principalmente a pareja, opcionales para el resto
+    convive = models.BooleanField(default=False, help_text="Convive con el empleado")
+    dependiente_economico = models.BooleanField(default=False, help_text="Dependiente económico del empleado")
+    eps = models.CharField(max_length=100, blank=True, help_text="EPS a la que está afiliado")
+
+    observaciones = models.TextField(blank=True)
+    activo = models.BooleanField(default=True, help_text="Si el registro está vigente")
+
+    class Meta:
+        db_table = 'familiares'
+        verbose_name = 'Familiar'
+        verbose_name_plural = 'Familiares'
+        ordering = ['tipo', 'fecha_nacimiento']
+        indexes = [
+            models.Index(fields=['empleado', 'tipo']),
+        ]
+
+    def __str__(self):
+        return f"{self.get_tipo_display()}: {self.nombre_completo} (de {self.empleado.nombre_completo})"
+
+    @property
+    def nombre_completo(self):
+        return f"{self.nombres} {self.apellidos}".strip()
+
+    @property
+    def edad(self):
+        if not self.fecha_nacimiento:
+            return None
+        from datetime import date
+        hoy = date.today()
+        return hoy.year - self.fecha_nacimiento.year - (
+            (hoy.month, hoy.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day)
+        )
+
+    def clean(self):
+        """Solo puede existir una pareja activa por empleado."""
+        from django.core.exceptions import ValidationError
+        if not self.empleado_id:
+            # ModelForm._post_clean dispara este clean() antes de que la vista
+            # asigne empleado. Difiere la validación: se re-ejecutará en full_clean()
+            # justo antes de save().
+            return
+        if self.tipo == 'pareja' and self.activo:
+            qs = Familiar.objects.filter(
+                empleado_id=self.empleado_id, tipo='pareja', activo=True
+            ).exclude(pk=self.pk)
+            if qs.exists():
+                raise ValidationError(
+                    "Este empleado ya tiene una pareja registrada como activa. "
+                    "Desactiva la actual antes de registrar otra."
+                )
+
+
+def _documento_familiar_upload_path(instance, filename):
+    """Ruta de almacenamiento siguiendo el patrón del proyecto.
+
+    Estructura: familiares/<numero_documento_empleado>/<tipo>_<nombre_slug_familiar>/<filename_safe>
+
+    Misma convención que DocumentoEmpleado (documentos/<numero_doc>/<tipo>/...)
+    y certificados de capacitación (capacitaciones/certificados/<numero_doc>/...).
+    Permite ubicar fácilmente todos los archivos de un empleado en S3 por su
+    cédula.
+
+    El filename se slugifica y se acota a 80 chars + extensión (hasta 10),
+    para evitar errores 400 por nombres largos o caracteres especiales.
+    """
+    import os
+    from django.utils.text import slugify
+
+    empleado_doc = instance.familiar.empleado.numero_documento
+    tipo_familiar = instance.familiar.tipo  # 'pareja', 'hijo', 'padre', etc.
+    nombre_familiar_slug = slugify(instance.familiar.nombre_completo)[:50] or 'sin-nombre'
+    subcarpeta_familiar = f"{tipo_familiar}_{nombre_familiar_slug}"
+
+    base, ext = os.path.splitext(filename or '')
+    ext = (ext or '').lower()[:10]
+    base_safe = slugify(base)[:80] or 'documento'
+
+    return f"familiares/{empleado_doc}/{subcarpeta_familiar}/{base_safe}{ext}"
+
+
+class DocumentoFamiliar(models.Model):
+    """Documentos adjuntos por familiar (registro civil, TI, certificados, etc.)."""
+
+    TIPO_CHOICES = [
+        ('registro_civil', 'Registro Civil'),
+        ('tarjeta_identidad', 'Tarjeta de Identidad'),
+        ('cedula', 'Cédula de Ciudadanía'),
+        ('certificado_estudio', 'Certificado de Estudio'),
+        ('certificado_eps', 'Certificado EPS'),
+        ('otro', 'Otro'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE, related_name='documentos')
+    tipo = models.CharField(max_length=30, choices=TIPO_CHOICES, verbose_name='Clase de documento')
+    descripcion = models.CharField(max_length=200, blank=True)
+    # storage=MediaStorage() explícito porque DEFAULT_FILE_STORAGE en Django 5
+    # con STORAGES nuevo puede no resolver al backend S3 esperado. Mismo patrón
+    # que DocumentoEmpleado.archivo en apps/documents/models.py.
+    archivo = models.FileField(
+        upload_to=_documento_familiar_upload_path,
+        max_length=500,
+        storage=MediaStorage(),
+    )
+    fecha_vencimiento = models.DateField(null=True, blank=True, help_text="Si aplica (ej: certificado de estudio)")
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'documentos_familiar'
+        verbose_name = 'Documento de Familiar'
+        verbose_name_plural = 'Documentos de Familiares'
+        ordering = ['-fecha_subida']
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} de {self.familiar.nombre_completo}"
+
+    @property
+    def filename(self):
+        """Nombre del archivo (sin path) para mostrar y para el atributo download."""
+        if not self.archivo:
+            return ''
+        import os
+        return os.path.basename(self.archivo.name)
+
+
+class SolicitudVacacion(BaseModel):
+    """Solicitud de vacaciones aprobada por el jefe directo y enviada a Odoo.
+
+    SIGHU NO valida saldo ni calcula días hábiles — eso lo hace Odoo. SIGHU solo
+    registra la solicitud, dispara el webhook y guarda el `leave_id_odoo` que
+    devuelve Odoo para trazabilidad. Ver docs/INTEGRACION_ODOO_VACACIONES.md.
+    """
+    ESTADO_CHOICES = [
+        ('borrador', 'Borrador'),
+        ('enviada_pendiente_rrhh', 'Enviada — Pendiente RRHH'),
+        ('rechazada_odoo', 'Rechazada por Odoo (saldo/reglas)'),
+        ('error_envio', 'Error de envío'),
+        # Callbacks de Odoo cuando RRHH actúa sobre la solicitud
+        ('aprobada_rrhh', 'Aprobada por RRHH'),
+        ('rechazada_rrhh', 'Rechazada por RRHH'),
+        ('cancelada_rrhh', 'Cancelada por RRHH'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    empleado = models.ForeignKey(
+        Empleado, on_delete=models.CASCADE, related_name='solicitudes_vacacion',
+        help_text="Empleado a quien le aplica la vacación",
+    )
+    jefe_solicitante = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='vacaciones_solicitadas',
+        help_text="Jefe (o staff/RRHH) que solicitó la vacación",
+    )
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    observaciones = models.TextField(blank=True)
+
+    estado_local = models.CharField(max_length=30, choices=ESTADO_CHOICES, default='borrador')
+    leave_id_odoo = models.IntegerField(null=True, blank=True, help_text="ID de hr.leave devuelto por Odoo")
+    motivo_rechazo = models.TextField(blank=True)
+    fecha_envio_odoo = models.DateTimeField(null=True, blank=True)
+    respuesta_odoo = models.JSONField(null=True, blank=True, help_text="Respuesta cruda de Odoo (auditoría)")
+
+    class Meta:
+        db_table = 'solicitudes_vacacion'
+        verbose_name = 'Solicitud de Vacación'
+        verbose_name_plural = 'Solicitudes de Vacación'
+        ordering = ['-fecha_creacion']
+        indexes = [
+            models.Index(fields=['empleado', '-fecha_creacion']),
+            models.Index(fields=['estado_local']),
+        ]
+
+    def __str__(self):
+        return f"Vacación {self.empleado.nombre_completo} {self.fecha_inicio} a {self.fecha_fin} ({self.get_estado_local_display()})"
+
+    @property
+    def dias_calendario(self):
+        """Días calendario incluyendo extremos (informativo; los hábiles los calcula Odoo)."""
+        if not self.fecha_inicio or not self.fecha_fin:
+            return None
+        return (self.fecha_fin - self.fecha_inicio).days + 1
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.fecha_inicio and self.fecha_fin and self.fecha_fin < self.fecha_inicio:
+            raise ValidationError("La fecha final no puede ser anterior a la inicial.")
+
 
 class HistorialCargo(BaseModel):
     """Historial de cargos de empleados"""

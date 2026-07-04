@@ -33,6 +33,7 @@ class OdooEmpleadoSerializer(serializers.Serializer):
     escolaridad = serializers.SerializerMethodField()
     contacto_emergencia = serializers.SerializerMethodField()
     cargo_actual = serializers.SerializerMethodField()
+    centro_costo = serializers.SerializerMethodField()
     fecha_actualizacion = serializers.SerializerMethodField()
 
     def get_tipo_documento(self, obj):
@@ -75,6 +76,20 @@ class OdooEmpleadoSerializer(serializers.Serializer):
             'salario': str(historial.salario) if historial.salario is not None else None,
             'fecha_inicio_cargo': historial.fecha_inicio.isoformat() if historial.fecha_inicio else None,
             'jefe_directo_uuid': str(historial.jefe_directo_id) if historial.jefe_directo_id else None,
+        }
+
+    def get_centro_costo(self, obj):
+        """Centro de costo del empleado. La llave de matching contra Odoo es `referencia`
+        (= `account.analytic.account.code`). `cuenta_analitica` es la etiqueta Odoo
+        "[CODE] NOMBRE" tal cual aparece en el catálogo del cliente.
+        """
+        cc = obj.centro_costo
+        if not cc:
+            return None
+        return {
+            'referencia': cc.referencia,
+            'cuenta_analitica': cc.cuenta_analitica,
+            'nombre': cc.nombre,
         }
 
     def get_fecha_actualizacion(self, obj):

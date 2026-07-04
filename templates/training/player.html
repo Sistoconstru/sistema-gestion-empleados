@@ -29,25 +29,45 @@
     overflow: hidden;
 }
 .lesson-item {
-    padding: 0.75rem 1rem;
+    display: block;                    /* anchors por default son inline → causaba overlap */
+    padding: 0.6rem 0.85rem;
+    margin: 0;
     border-bottom: 1px solid #e9ecef;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-decoration: none;             /* quita el underline del link */
+    color: #2c3e50;
+    background: #ffffff;
+    line-height: 1.35;
+    word-break: break-word;             /* nombres largos se rompen, no se desbordan */
+    border-radius: 0.25rem;
+}
+.lesson-item + .lesson-item {
+    margin-top: 2px;                    /* aire entre items para que se distingan */
 }
 .lesson-item:hover {
     background: #e9ecef;
+    color: #1a1a1a;
+    text-decoration: none;
 }
 .lesson-item.active {
     background: #007bff;
     color: white;
 }
+.lesson-item.active:hover {
+    background: #0069d9;
+    color: white;
+}
 .lesson-item.completed {
     background-color: #d4edda;
+    color: #155724;
     border-color: #c3e6cb;
 }
-.lesson-item.locked {
-    opacity: 0.6;
+.lesson-item.locked,
+.lesson-item.disabled {
+    opacity: 0.55;
     cursor: not-allowed;
+    pointer-events: none;               /* previene clicks accidentales y tooltips bloqueando */
 }
 .lesson-progress {
     width: 24px;

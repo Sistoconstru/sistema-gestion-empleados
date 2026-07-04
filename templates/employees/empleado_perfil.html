@@ -239,6 +239,55 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:familia_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-users fa-2x d-block mb-2"></i>
+                            <strong>Mi Familia</strong>
+                            <div class="small text-muted">Estado civil, pareja, hijos, documentos</div>
+                            {% if empleado.es_padre %}
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-info">
+                                    <i class="fas fa-baby"></i>
+                                </span>
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'core:documentos_institucionales' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-folder-open fa-2x d-block mb-2"></i>
+                            <strong>Documentos Institucionales</strong>
+                            <div class="small text-muted">Reglamentos, políticas, manuales</div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'employees:mis_vacaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
+                            <strong>Mis vacaciones</strong>
+                            <div class="small text-muted">Historial y estado de tus solicitudes</div>
+                        </a>
+                    </div>
+
+                    {% if puede_ver_vacaciones_equipo %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'employees:vacaciones_equipo' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
+                                <strong>Vacaciones del equipo</strong>
+                                <div class="small text-muted">Solicitar y aprobar vacaciones de tus subordinados</div>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if puede_ver_vacaciones_admin %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'employees:vacaciones_admin_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-user-shield fa-2x d-block mb-2"></i>
+                                <strong>Vacaciones — RRHH</strong>
+                                <div class="small text-muted">Solicitar para cualquier empleado y ver historial global</div>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-md-3 col-sm-6 mb-3">
                         <a href="{% url 'evaluations:index' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3 position-relative">
                             <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>

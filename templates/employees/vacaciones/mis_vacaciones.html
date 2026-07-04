@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis vacaciones{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi perfil</a></li>
+<li class="breadcrumb-item active">Mis vacaciones</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <div class="profile-avatar bg-white bg-opacity-25 rounded-circle mx-auto mb-2"
+                             style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-umbrella-beach fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h2 class="mb-1">Mis vacaciones</h2>
+                        <div class="text-sm opacity-75">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Historial de tus solicitudes de vacaciones. La aprobación final la realiza RRHH.
+                            Si necesitas solicitar una nueva vacación, comunícate con tu jefe directo.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if solicitudes %}
+    <div class="card border-corporativo shadow-sm">
+        <div class="card-header bg-light">
+            <i class="fas fa-history me-2"></i>Historial de solicitudes
+            <span class="badge bg-corporativo ms-1">{{ solicitudes|length }}</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Desde</th>
+                            <th>Hasta</th>
+                            <th class="text-center">Días</th>
+                            <th>Estado</th>
+                            <th>Solicitada por</th>
+                            <th>Observaciones / Motivo</th>
+                            <th class="text-nowrap">Fecha solicitud</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in solicitudes %}
+                            <tr>
+                                <td>{{ s.fecha_inicio|date:'d/m/Y' }}</td>
+                                <td>{{ s.fecha_fin|date:'d/m/Y' }}</td>
+                                <td class="text-center">{{ s.dias_calendario }}</td>
+                                <td>
+                                    {% if s.estado_local == 'borrador' %}
+                                        <span class="badge bg-secondary"><i class="fas fa-pencil-alt me-1"></i>Borrador</span>
+                                    {% elif s.estado_local == 'enviada_pendiente_rrhh' %}
+                                        <span class="badge bg-info text-dark"><i class="fas fa-clock me-1"></i>Pendiente RRHH</span>
+                                    {% elif s.estado_local == 'aprobada_rrhh' %}
+                                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Aprobada</span>
+                                    {% elif s.estado_local == 'rechazada_rrhh' %}
+                                        <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rechazada</span>
+                                    {% elif s.estado_local == 'cancelada_rrhh' %}
+                                        <span class="badge bg-secondary"><i class="fas fa-ban me-1"></i>Cancelada</span>
+                                    {% elif s.estado_local == 'rechazada_odoo' %}
+                                        <span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Rechazada (saldo/reglas)</span>
+                                    {% elif s.estado_local == 'error_envio' %}
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-circle me-1"></i>Error de envío</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ s.get_estado_local_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small">
+                                    {% if s.jefe_solicitante %}
+                                        {{ s.jefe_solicitante.nombre_completo }}
+                                    {% else %}
+                                        <span class="text-muted">RRHH</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small">
+                                    {% if s.motivo_rechazo %}
+                                        <span class="text-danger"><strong>Motivo:</strong> {{ s.motivo_rechazo|truncatechars:120 }}</span>
+                                    {% elif s.observaciones %}
+                                        {{ s.observaciones|truncatechars:120 }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small text-muted text-nowrap">{{ s.fecha_creacion|date:'d/m/Y H:i' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-umbrella-beach fa-3x mb-3 text-muted"></i>
+            <h5 class="text-muted">Aún no tienes solicitudes de vacaciones</h5>
+            <p class="text-muted mb-0">
+                Cuando tu jefe o RRHH registre una solicitud a tu nombre, aparecerá aquí.
+            </p>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

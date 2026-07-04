@@ -60,11 +60,22 @@ class Cargo(models.Model):
     
     # NUEVO CAMPO: Rol automático
     rol_automatico = models.ForeignKey(
-        'authentication.Rol', 
-        on_delete=models.SET_NULL, 
+        'authentication.Rol',
+        on_delete=models.SET_NULL,
         null=True, blank=True,
         verbose_name="Rol del Sistema",
         help_text="Rol que se asigna automáticamente a empleados con este cargo"
+    )
+
+    crea_usuario_sistema = models.BooleanField(
+        default=True,
+        verbose_name="¿Crea usuario en el sistema?",
+        help_text=(
+            "Si está marcado, al asignar este cargo a un empleado nuevo se crea su usuario "
+            "automáticamente. Desmarca para cargos sin acceso al sistema (ej: aprendiz en "
+            "etapa lectiva). El usuario se creará cuando el empleado pase a un cargo que sí "
+            "lo permita."
+        ),
     )
     
     class Meta:
@@ -76,3 +87,25 @@ class Cargo(models.Model):
     def __str__(self):
         rol_info = f" → {self.rol_automatico.nombre}" if self.rol_automatico else ""
         return f"{self.nombre} - {self.area.nombre}{rol_info}"
+
+
+class CentroCosto(models.Model):
+    """Centros de costo para asignación contable de empleados.
+
+    La sede operativa de cada empleado se obtiene desde Empleado.sede; el centro
+    de costo es un catálogo independiente, no se ata a una sede.
+    """
+    cuenta_analitica = models.CharField(max_length=100, unique=True, help_text="Etiqueta Odoo: [CODE] NOMBRE")
+    referencia = models.CharField(max_length=30, blank=True, help_text="Código corto de referencia (ej: 1001)")
+    nombre = models.CharField(max_length=200)
+    activo = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'centros_costo'
+        verbose_name = 'Centro de Costo'
+        verbose_name_plural = 'Centros de Costo'
+        ordering = ['referencia']
+
+    def __str__(self):
+        return self.cuenta_analitica
