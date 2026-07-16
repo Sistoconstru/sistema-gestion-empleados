@@ -205,3 +205,172 @@ class OdooVacacionEstadoView(APIView):
             {'status': 'recibido', 'leave_id': leave_id, 'estado_local': nuevo_estado},
             status=status.HTTP_200_OK,
         )
+
+
+# Estados que Odoo puede enviar por el endpoint de importación (vacaciones
+# nacidas en Odoo por RRHH, sin pasar por SIGHU).
+ESTADO_ODOO_IMPORTAR_A_SIGHU = {
+    'aprobada': 'aprobada_rrhh',
+    'cancelada': 'cancelada_rrhh',
+}
+
+TIPO_ODOO_A_SIGHU = {
+    'tiempo': 'tiempo',
+    'pago_dinero': 'pago_dinero',
+}
+
+
+class OdooVacacionImportarView(APIView):
+    """Importa/actualiza en SIGHU una vacación creada directamente en Odoo por RRHH.
+
+    Diferencia con `/vacaciones/estado/`: aquel actualiza solicitudes que YA
+    existen en SIGHU (buscadas por `leave_id_odoo`). Este endpoint también CREA
+    la solicitud si no existe (upsert), para el caso en que RRHH crea la
+    vacación directamente en Odoo y SIGHU no tiene registro previo.
+
+    Contrato:
+    - Auth: `Authorization: Token <SIGHU_ODOO_TOKEN>`.
+    - Body JSON:
+        {
+          "leave_id": 12345,               // requerido (clave de idempotencia)
+          "sighu_uuid": "uuid-empleado",   // opcional
+          "cedula": "12345678",            // opcional (uno de los dos requerido)
+          "fecha_inicio": "2026-08-01",
+          "fecha_fin": "2026-08-15",
+          "dias": 10,                      // informativo
+          "tipo": "tiempo" | "pago_dinero",
+          "estado": "aprobada" | "cancelada",
+          "motivo": "opcional",
+          "aprobada_por": "user@odoo",
+          "fecha_estado": "2026-06-30T14:00:00Z"
+        }
+    - Respuestas:
+        201 { status: 'creado', ... } — se creó nueva SolicitudVacacion.
+        200 { status: 'actualizado', ... } — existía y cambió estado.
+        200 { status: 'ya_procesado', ... } — el estado enviado coincide.
+        400/404 — validaciones fallidas.
+    - Idempotente por `leave_id`: reintentos del cron de Odoo no duplican.
+    """
+    authentication_classes = [OdooServiceTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from datetime import date
+        from django.contrib.auth import get_user_model
+        from apps.employees.models import SolicitudVacacion
+
+        data = request.data if isinstance(request.data, dict) else {}
+
+        # --- Validación leave_id ---
+        leave_id = data.get('leave_id')
+        if leave_id in (None, ''):
+            return Response({'error': 'leave_id requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            leave_id = int(leave_id)
+        except (TypeError, ValueError):
+            return Response({'error': 'leave_id debe ser entero'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # --- Validación estado ---
+        estado_str = (data.get('estado') or '').strip()
+        nuevo_estado = ESTADO_ODOO_IMPORTAR_A_SIGHU.get(estado_str)
+        if not nuevo_estado:
+            return Response(
+                {'error': f"estado invalido: '{estado_str}'. Permitidos: {sorted(ESTADO_ODOO_IMPORTAR_A_SIGHU)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        motivo = (data.get('motivo') or '').strip()
+
+        # --- Upsert por leave_id ---
+        # Si ya existe: ignoramos identificación de empleado y fechas del payload
+        # (mantiene la solicitud original). Solo actualiza estado + motivo.
+        solicitud = SolicitudVacacion.objects.filter(leave_id_odoo=leave_id).first()
+
+        if solicitud is None:
+            # --- CREAR: aquí sí necesitamos identificar empleado y fechas ---
+            sighu_uuid = (data.get('sighu_uuid') or '').strip()
+            cedula = (data.get('cedula') or '').strip()
+            empleado = None
+            if sighu_uuid:
+                empleado = Empleado.objects.filter(pk=sighu_uuid).first()
+            if not empleado and cedula:
+                empleado = Empleado.objects.filter(numero_documento=cedula).first()
+            if not empleado:
+                return Response(
+                    {'error': 'Empleado no encontrado por sighu_uuid ni cedula'},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            try:
+                fecha_inicio = date.fromisoformat(data.get('fecha_inicio', ''))
+                fecha_fin = date.fromisoformat(data.get('fecha_fin', ''))
+            except (TypeError, ValueError):
+                return Response(
+                    {'error': 'fecha_inicio y fecha_fin requeridas en formato YYYY-MM-DD'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if fecha_fin < fecha_inicio:
+                return Response(
+                    {'error': 'fecha_fin no puede ser anterior a fecha_inicio'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            tipo = TIPO_ODOO_A_SIGHU.get((data.get('tipo') or 'tiempo').strip(), 'tiempo')
+            aprobada_por = (data.get('aprobada_por') or '').strip()
+
+            User = get_user_model()
+            creador_sistema = User.objects.filter(is_superuser=True).first()
+
+            # CREAR
+            observaciones = f"Origen: Odoo (RRHH)."
+            if aprobada_por:
+                observaciones += f" Aprobada por: {aprobada_por}."
+            solicitud = SolicitudVacacion.objects.create(
+                empleado=empleado,
+                jefe_solicitante=None,
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin,
+                observaciones=observaciones,
+                tipo=tipo,
+                estado_local=nuevo_estado,
+                leave_id_odoo=leave_id,
+                motivo_rechazo=motivo,
+                respuesta_odoo=data,
+                creado_por=creador_sistema,
+            )
+            _notificar_empleado_vacacion(solicitud, motivo=motivo)
+            return Response(
+                {
+                    'status': 'creado',
+                    'sighu_uuid': str(solicitud.pk),
+                    'leave_id': leave_id,
+                    'estado_local': nuevo_estado,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        # ACTUALIZAR (upsert): mantiene el empleado original — un leave_id
+        # no cambia de empleado, así que ignoramos el empleado del payload aquí.
+        if solicitud.estado_local == nuevo_estado:
+            return Response(
+                {'status': 'ya_procesado', 'sighu_uuid': str(solicitud.pk), 'leave_id': leave_id},
+                status=status.HTTP_200_OK,
+            )
+
+        solicitud.estado_local = nuevo_estado
+        if motivo:
+            solicitud.motivo_rechazo = motivo
+        solicitud.respuesta_odoo = data
+        solicitud.save(update_fields=[
+            'estado_local', 'motivo_rechazo', 'respuesta_odoo', 'fecha_actualizacion',
+        ])
+        _notificar_empleado_vacacion(solicitud, motivo=motivo)
+        return Response(
+            {
+                'status': 'actualizado',
+                'sighu_uuid': str(solicitud.pk),
+                'leave_id': leave_id,
+                'estado_local': nuevo_estado,
+            },
+            status=status.HTTP_200_OK,
+        )

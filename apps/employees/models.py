@@ -402,6 +402,11 @@ class SolicitudVacacion(BaseModel):
         ('cancelada_rrhh', 'Cancelada por RRHH'),
     ]
 
+    TIPO_CHOICES = [
+        ('tiempo', 'Tiempo (días libres)'),
+        ('pago_dinero', 'Pagada en dinero'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     empleado = models.ForeignKey(
         Empleado, on_delete=models.CASCADE, related_name='solicitudes_vacacion',
@@ -416,6 +421,10 @@ class SolicitudVacacion(BaseModel):
     fecha_fin = models.DateField()
     observaciones = models.TextField(blank=True)
 
+    tipo = models.CharField(
+        max_length=20, choices=TIPO_CHOICES, default='tiempo',
+        help_text="Tipo de vacación: tiempo (días libres) o pago en dinero",
+    )
     estado_local = models.CharField(max_length=30, choices=ESTADO_CHOICES, default='borrador')
     leave_id_odoo = models.IntegerField(null=True, blank=True, help_text="ID de hr.leave devuelto por Odoo")
     motivo_rechazo = models.TextField(blank=True)
