@@ -76,12 +76,14 @@ ESTADO_ODOO_A_SIGHU = {
     'cancelada': 'cancelada_rrhh',
 }
 
-# Cada estado terminal tiene un TipoNotificacion asociado que se dispara al
-# empleado dueño de la solicitud (ver migración notifications.0002_tipos_vacaciones).
+# Mapa (tipo_solicitud, estado_local) → código del TipoNotificacion.
+# Ver migraciones notifications.0002_tipos_vacaciones y 0003_tipos_compensacion.
 ESTADO_A_TIPO_NOTIFICACION = {
-    'aprobada_rrhh': 'vacacion_aprobada',
-    'rechazada_rrhh': 'vacacion_rechazada',
-    'cancelada_rrhh': 'vacacion_cancelada',
+    ('tiempo', 'aprobada_rrhh'): 'vacacion_aprobada',
+    ('tiempo', 'rechazada_rrhh'): 'vacacion_rechazada',
+    ('tiempo', 'cancelada_rrhh'): 'vacacion_cancelada',
+    ('pago_dinero', 'aprobada_rrhh'): 'vacacion_comp_aprobada',
+    ('pago_dinero', 'cancelada_rrhh'): 'vacacion_comp_cancelada',
 }
 
 
@@ -97,7 +99,8 @@ def _notificar_empleado_vacacion(solicitud, motivo=''):
     try:
         from apps.notifications.models import Notificacion, TipoNotificacion
 
-        codigo_tipo = ESTADO_A_TIPO_NOTIFICACION.get(solicitud.estado_local)
+        clave = (solicitud.tipo, solicitud.estado_local)
+        codigo_tipo = ESTADO_A_TIPO_NOTIFICACION.get(clave)
         if not codigo_tipo:
             return
         usuario = getattr(solicitud.empleado, 'usuario', None)
@@ -108,26 +111,39 @@ def _notificar_empleado_vacacion(solicitud, motivo=''):
             )
             return
 
-        tipo = TipoNotificacion.objects.filter(codigo=codigo_tipo, activo=True).first()
-        if not tipo:
+        tipo_notif = TipoNotificacion.objects.filter(codigo=codigo_tipo, activo=True).first()
+        if not tipo_notif:
             logger.warning(f"TipoNotificacion '{codigo_tipo}' no existe o está inactivo.")
             return
 
+        # Preparar datos según el tipo de vacación
         datos = {
-            'fecha_inicio': solicitud.fecha_inicio.strftime('%d/%m/%Y'),
-            'fecha_fin': solicitud.fecha_fin.strftime('%d/%m/%Y'),
             'motivo': motivo or solicitud.motivo_rechazo or 'No especificado',
             'empleado': solicitud.empleado.nombre_completo,
         }
+        if solicitud.tipo == 'tiempo':
+            datos['fecha_inicio'] = solicitud.fecha_inicio.strftime('%d/%m/%Y') if solicitud.fecha_inicio else '—'
+            datos['fecha_fin'] = solicitud.fecha_fin.strftime('%d/%m/%Y') if solicitud.fecha_fin else '—'
+        else:
+            datos['dias'] = str(solicitud.dias_compensados or '—')
+            valor = solicitud.valor_compensacion
+            datos['valor'] = f'${valor:,.0f}'.replace(',', '.') if valor is not None else '—'
+            datos['fecha_lote'] = (
+                solicitud.fecha_lote_nomina.strftime('%d/%m/%Y')
+                if solicitud.fecha_lote_nomina else '—'
+            )
+
         Notificacion.objects.create(
             usuario=usuario,
-            tipo_notificacion=tipo,
-            titulo=tipo.plantilla_titulo.format(**datos),
-            mensaje=tipo.plantilla_mensaje.format(**datos),
+            tipo_notificacion=tipo_notif,
+            titulo=tipo_notif.plantilla_titulo.format(**datos),
+            mensaje=tipo_notif.plantilla_mensaje.format(**datos),
             datos_adicionales={
                 'solicitud_id': str(solicitud.pk),
                 'leave_id_odoo': solicitud.leave_id_odoo,
+                'compensacion_id_odoo': solicitud.compensacion_id_odoo,
                 'estado_local': solicitud.estado_local,
+                'tipo': solicitud.tipo,
                 **datos,
             },
         )
@@ -217,58 +233,96 @@ ESTADO_ODOO_IMPORTAR_A_SIGHU = {
 TIPO_ODOO_A_SIGHU = {
     'tiempo': 'tiempo',
     'pago_dinero': 'pago_dinero',
+    'dinero': 'pago_dinero',  # sinónimo aceptado desde Odoo
 }
+
+
+def _actualizar_saldo_empleado(empleado, data):
+    """Si el payload trae saldo_dias_disponibles, lo guarda en el empleado.
+
+    Odoo es la fuente autoritativa del saldo (considera tiempo + dinero).
+    SIGHU solo persiste el valor y la fecha del update para mostrarlo.
+    """
+    from decimal import Decimal, InvalidOperation
+    from django.utils import timezone
+    from apps.employees.models import Empleado
+
+    raw = data.get('saldo_dias_disponibles')
+    if raw is None or raw == '':
+        return
+    try:
+        saldo = Decimal(str(raw))
+    except (InvalidOperation, TypeError):
+        return
+    Empleado.objects.filter(pk=empleado.pk).update(
+        saldo_vacaciones_dias=saldo,
+        saldo_vacaciones_actualizado=timezone.now(),
+    )
 
 
 class OdooVacacionImportarView(APIView):
     """Importa/actualiza en SIGHU una vacación creada directamente en Odoo por RRHH.
 
-    Diferencia con `/vacaciones/estado/`: aquel actualiza solicitudes que YA
-    existen en SIGHU (buscadas por `leave_id_odoo`). Este endpoint también CREA
-    la solicitud si no existe (upsert), para el caso en que RRHH crea la
-    vacación directamente en Odoo y SIGHU no tiene registro previo.
+    Soporta dos tipos:
+    - tipo='tiempo': vacación con rango de fechas, upsert por `leave_id`.
+    - tipo='dinero' (sinónimo: 'pago_dinero'): compensación en dinero, sin fechas,
+      upsert por `compensacion_id`. NO usa leave_id porque puede ser null.
 
-    Contrato:
-    - Auth: `Authorization: Token <SIGHU_ODOO_TOKEN>`.
-    - Body JSON:
-        {
-          "leave_id": 12345,               // requerido (clave de idempotencia)
-          "sighu_uuid": "uuid-empleado",   // opcional
-          "cedula": "12345678",            // opcional (uno de los dos requerido)
-          "fecha_inicio": "2026-08-01",
-          "fecha_fin": "2026-08-15",
-          "dias": 10,                      // informativo
-          "tipo": "tiempo" | "pago_dinero",
-          "estado": "aprobada" | "cancelada",
-          "motivo": "opcional",
-          "aprobada_por": "user@odoo",
-          "fecha_estado": "2026-06-30T14:00:00Z"
-        }
-    - Respuestas:
-        201 { status: 'creado', ... } — se creó nueva SolicitudVacacion.
-        200 { status: 'actualizado', ... } — existía y cambió estado.
-        200 { status: 'ya_procesado', ... } — el estado enviado coincide.
-        400/404 — validaciones fallidas.
-    - Idempotente por `leave_id`: reintentos del cron de Odoo no duplican.
+    Opcionalmente el payload puede traer `saldo_dias_disponibles` — SIGHU lo
+    guarda en el empleado como el valor autoritativo de Odoo. SIGHU no calcula
+    saldo, solo persiste lo que Odoo envía.
+
+    Ver docs/INTEGRACION_ODOO_VACACIONES.md para el contrato completo.
     """
     authentication_classes = [OdooServiceTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         from datetime import date
+        from decimal import Decimal, InvalidOperation
         from django.contrib.auth import get_user_model
         from apps.employees.models import SolicitudVacacion
 
         data = request.data if isinstance(request.data, dict) else {}
 
-        # --- Validación leave_id ---
-        leave_id = data.get('leave_id')
-        if leave_id in (None, ''):
-            return Response({'error': 'leave_id requerido'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            leave_id = int(leave_id)
-        except (TypeError, ValueError):
-            return Response({'error': 'leave_id debe ser entero'}, status=status.HTTP_400_BAD_REQUEST)
+        # --- Validación tipo ---
+        tipo_raw = (data.get('tipo') or 'tiempo').strip()
+        tipo = TIPO_ODOO_A_SIGHU.get(tipo_raw)
+        if not tipo:
+            return Response(
+                {'error': f"tipo invalido: '{tipo_raw}'. Permitidos: {sorted(TIPO_ODOO_A_SIGHU)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- Validación clave de idempotencia según tipo ---
+        # tipo=tiempo → leave_id; tipo=pago_dinero → compensacion_id
+        if tipo == 'tiempo':
+            leave_id = data.get('leave_id')
+            if leave_id in (None, ''):
+                return Response(
+                    {'error': 'leave_id requerido cuando tipo=tiempo'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            try:
+                leave_id = int(leave_id)
+            except (TypeError, ValueError):
+                return Response({'error': 'leave_id debe ser entero'}, status=status.HTTP_400_BAD_REQUEST)
+            compensacion_id = None
+        else:
+            compensacion_id = data.get('compensacion_id')
+            if compensacion_id in (None, ''):
+                return Response(
+                    {'error': 'compensacion_id requerido cuando tipo=dinero'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            try:
+                compensacion_id = int(compensacion_id)
+            except (TypeError, ValueError):
+                return Response(
+                    {'error': 'compensacion_id debe ser entero'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            leave_id = None
 
         # --- Validación estado ---
         estado_str = (data.get('estado') or '').strip()
@@ -281,13 +335,14 @@ class OdooVacacionImportarView(APIView):
 
         motivo = (data.get('motivo') or '').strip()
 
-        # --- Upsert por leave_id ---
-        # Si ya existe: ignoramos identificación de empleado y fechas del payload
-        # (mantiene la solicitud original). Solo actualiza estado + motivo.
-        solicitud = SolicitudVacacion.objects.filter(leave_id_odoo=leave_id).first()
+        # --- Upsert según tipo ---
+        if tipo == 'tiempo':
+            solicitud = SolicitudVacacion.objects.filter(leave_id_odoo=leave_id).first()
+        else:
+            solicitud = SolicitudVacacion.objects.filter(compensacion_id_odoo=compensacion_id).first()
 
         if solicitud is None:
-            # --- CREAR: aquí sí necesitamos identificar empleado y fechas ---
+            # --- CREAR ---
             sighu_uuid = (data.get('sighu_uuid') or '').strip()
             cedula = (data.get('cedula') or '').strip()
             empleado = None
@@ -301,61 +356,106 @@ class OdooVacacionImportarView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            try:
-                fecha_inicio = date.fromisoformat(data.get('fecha_inicio', ''))
-                fecha_fin = date.fromisoformat(data.get('fecha_fin', ''))
-            except (TypeError, ValueError):
-                return Response(
-                    {'error': 'fecha_inicio y fecha_fin requeridas en formato YYYY-MM-DD'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            if fecha_fin < fecha_inicio:
-                return Response(
-                    {'error': 'fecha_fin no puede ser anterior a fecha_inicio'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            tipo = TIPO_ODOO_A_SIGHU.get((data.get('tipo') or 'tiempo').strip(), 'tiempo')
             aprobada_por = (data.get('aprobada_por') or '').strip()
-
             User = get_user_model()
             creador_sistema = User.objects.filter(is_superuser=True).first()
 
-            # CREAR
-            observaciones = f"Origen: Odoo (RRHH)."
-            if aprobada_por:
-                observaciones += f" Aprobada por: {aprobada_por}."
-            solicitud = SolicitudVacacion.objects.create(
+            campos_base = dict(
                 empleado=empleado,
                 jefe_solicitante=None,
-                fecha_inicio=fecha_inicio,
-                fecha_fin=fecha_fin,
-                observaciones=observaciones,
                 tipo=tipo,
                 estado_local=nuevo_estado,
-                leave_id_odoo=leave_id,
                 motivo_rechazo=motivo,
                 respuesta_odoo=data,
                 creado_por=creador_sistema,
             )
-            _notificar_empleado_vacacion(solicitud, motivo=motivo)
-            return Response(
-                {
-                    'status': 'creado',
-                    'sighu_uuid': str(solicitud.pk),
-                    'leave_id': leave_id,
-                    'estado_local': nuevo_estado,
-                },
-                status=status.HTTP_201_CREATED,
-            )
 
-        # ACTUALIZAR (upsert): mantiene el empleado original — un leave_id
-        # no cambia de empleado, así que ignoramos el empleado del payload aquí.
+            if tipo == 'tiempo':
+                # Fechas requeridas
+                try:
+                    fecha_inicio = date.fromisoformat(data.get('fecha_inicio', ''))
+                    fecha_fin = date.fromisoformat(data.get('fecha_fin', ''))
+                except (TypeError, ValueError):
+                    return Response(
+                        {'error': 'fecha_inicio y fecha_fin requeridas para tipo=tiempo (YYYY-MM-DD)'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                if fecha_fin < fecha_inicio:
+                    return Response(
+                        {'error': 'fecha_fin no puede ser anterior a fecha_inicio'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                observaciones = 'Origen: Odoo (RRHH).'
+                if aprobada_por:
+                    observaciones += f' Aprobada por: {aprobada_por}.'
+                campos_base.update(
+                    fecha_inicio=fecha_inicio, fecha_fin=fecha_fin,
+                    leave_id_odoo=leave_id,
+                    observaciones=observaciones,
+                )
+            else:
+                # tipo=pago_dinero: sin fechas, con valor y fecha_lote
+                valor_raw = data.get('valor')
+                try:
+                    valor = Decimal(str(valor_raw)) if valor_raw not in (None, '') else None
+                except (InvalidOperation, TypeError):
+                    return Response(
+                        {'error': "valor invalido; debe ser numérico"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                dias_raw = data.get('dias')
+                try:
+                    dias = Decimal(str(dias_raw)) if dias_raw not in (None, '') else None
+                except (InvalidOperation, TypeError):
+                    dias = None
+                fecha_lote_str = (data.get('fecha') or '').strip()
+                fecha_lote = None
+                if fecha_lote_str:
+                    try:
+                        fecha_lote = date.fromisoformat(fecha_lote_str)
+                    except (TypeError, ValueError):
+                        return Response(
+                            {'error': "fecha invalida; formato YYYY-MM-DD"},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
+                observaciones = motivo or 'Compensación de vacaciones en dinero aplicada por RRHH.'
+                if aprobada_por:
+                    observaciones += f' Aprobada por: {aprobada_por}.'
+                campos_base.update(
+                    compensacion_id_odoo=compensacion_id,
+                    valor_compensacion=valor,
+                    dias_compensados=dias,
+                    fecha_lote_nomina=fecha_lote,
+                    observaciones=observaciones,
+                )
+
+            solicitud = SolicitudVacacion.objects.create(**campos_base)
+            _actualizar_saldo_empleado(empleado, data)
+            _notificar_empleado_vacacion(solicitud, motivo=motivo)
+            respuesta = {
+                'status': 'creado',
+                'sighu_uuid': str(solicitud.pk),
+                'estado_local': nuevo_estado,
+            }
+            if tipo == 'tiempo':
+                respuesta['leave_id'] = leave_id
+            else:
+                respuesta['compensacion_id'] = compensacion_id
+            return Response(respuesta, status=status.HTTP_201_CREATED)
+
+        # --- ACTUALIZAR (upsert) ---
         if solicitud.estado_local == nuevo_estado:
-            return Response(
-                {'status': 'ya_procesado', 'sighu_uuid': str(solicitud.pk), 'leave_id': leave_id},
-                status=status.HTTP_200_OK,
-            )
+            # Aunque el estado no cambie, refrescamos el saldo si vino en el payload.
+            _actualizar_saldo_empleado(solicitud.empleado, data)
+            respuesta = {
+                'status': 'ya_procesado',
+                'sighu_uuid': str(solicitud.pk),
+            }
+            if tipo == 'tiempo':
+                respuesta['leave_id'] = leave_id
+            else:
+                respuesta['compensacion_id'] = compensacion_id
+            return Response(respuesta, status=status.HTTP_200_OK)
 
         solicitud.estado_local = nuevo_estado
         if motivo:
@@ -364,13 +464,15 @@ class OdooVacacionImportarView(APIView):
         solicitud.save(update_fields=[
             'estado_local', 'motivo_rechazo', 'respuesta_odoo', 'fecha_actualizacion',
         ])
+        _actualizar_saldo_empleado(solicitud.empleado, data)
         _notificar_empleado_vacacion(solicitud, motivo=motivo)
-        return Response(
-            {
-                'status': 'actualizado',
-                'sighu_uuid': str(solicitud.pk),
-                'leave_id': leave_id,
-                'estado_local': nuevo_estado,
-            },
-            status=status.HTTP_200_OK,
-        )
+        respuesta = {
+            'status': 'actualizado',
+            'sighu_uuid': str(solicitud.pk),
+            'estado_local': nuevo_estado,
+        }
+        if tipo == 'tiempo':
+            respuesta['leave_id'] = leave_id
+        else:
+            respuesta['compensacion_id'] = compensacion_id
+        return Response(respuesta, status=status.HTTP_200_OK)

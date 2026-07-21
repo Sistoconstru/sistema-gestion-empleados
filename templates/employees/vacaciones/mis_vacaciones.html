@@ -33,6 +33,34 @@
     </div>
 </div>
 
+{% if saldo_dias is not None %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-success shadow-sm">
+            <div class="card-body py-3">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="text-success" style="font-size: 2.5rem;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="text-muted small mb-1">Saldo de días disponibles según Odoo</div>
+                        <div class="fs-2 fw-bold text-success">{{ saldo_dias|floatformat:2 }} días</div>
+                        {% if saldo_actualizado %}
+                            <div class="text-muted small">
+                                <i class="fas fa-sync-alt me-1"></i>Actualizado: {{ saldo_actualizado|date:"d/m/Y H:i" }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-muted small text-end">
+                        Considera tanto vacaciones<br/>tomadas en tiempo como pagadas en dinero.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% if solicitudes %}
     <div class="card border-corporativo shadow-sm">
         <div class="card-header bg-light">
@@ -48,6 +76,7 @@
                             <th>Hasta</th>
                             <th class="text-center">Días</th>
                             <th>Tipo</th>
+                            <th class="text-end">Valor</th>
                             <th>Estado</th>
                             <th>Solicitada por</th>
                             <th>Observaciones / Motivo</th>
@@ -57,14 +86,33 @@
                     <tbody>
                         {% for s in solicitudes %}
                             <tr>
-                                <td>{{ s.fecha_inicio|date:'d/m/Y' }}</td>
-                                <td>{{ s.fecha_fin|date:'d/m/Y' }}</td>
-                                <td class="text-center">{{ s.dias_calendario }}</td>
+                                <td>
+                                    {% if s.tipo == 'pago_dinero' %}
+                                        <span class="text-muted small"><i class="fas fa-file-invoice-dollar me-1"></i>Lote {{ s.fecha_lote_nomina|date:'d/m/Y'|default:'—' }}</span>
+                                    {% else %}
+                                        {{ s.fecha_inicio|date:'d/m/Y'|default:'—' }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if s.tipo == 'pago_dinero' %}
+                                        <span class="text-muted small">—</span>
+                                    {% else %}
+                                        {{ s.fecha_fin|date:'d/m/Y'|default:'—' }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ s.dias_calendario|default:'—' }}</td>
                                 <td>
                                     {% if s.tipo == 'pago_dinero' %}
                                         <span class="badge bg-warning text-dark"><i class="fas fa-money-bill-wave me-1"></i>Pagada en dinero</span>
                                     {% else %}
                                         <span class="badge bg-primary bg-opacity-75"><i class="fas fa-calendar-day me-1"></i>Días libres</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end small">
+                                    {% if s.valor_compensacion is not None %}
+                                        <strong>${{ s.valor_compensacion|floatformat:0 }}</strong>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                                 <td>

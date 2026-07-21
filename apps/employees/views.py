@@ -4185,7 +4185,11 @@ def _equipo_del_jefe(usuario):
 
 @login_required
 def mis_vacaciones(request):
-    """Historial de solicitudes de vacaciones del empleado autenticado (solo lectura)."""
+    """Historial de solicitudes de vacaciones del empleado autenticado (solo lectura).
+
+    Muestra tanto vacaciones en tiempo (con rango de fechas) como compensaciones
+    en dinero (sin fechas). El saldo de días disponibles lo autoritativa Odoo.
+    """
     try:
         empleado = Empleado.objects.get(usuario=request.user)
     except Empleado.DoesNotExist:
@@ -4202,28 +4206,34 @@ def mis_vacaciones(request):
     return render(request, 'employees/vacaciones/mis_vacaciones.html', {
         'empleado': empleado,
         'solicitudes': solicitudes,
+        'saldo_dias': empleado.saldo_vacaciones_dias,
+        'saldo_actualizado': empleado.saldo_vacaciones_actualizado,
     })
 
 
 @login_required
 def vacaciones_equipo(request):
-    """Panel del jefe: equipo + historial de solicitudes que hizo este usuario."""
+    """Panel del jefe: equipo + TODAS las solicitudes de vacaciones del equipo.
+
+    Incluye las creadas por el mismo jefe, por otros roles y las importadas
+    desde Odoo por RRHH (jefe_solicitante=NULL). Así el jefe tiene visibilidad
+    completa para planear la operación.
+    """
     equipo = _equipo_del_jefe(request.user)
 
-    solicitudes_hechas = SolicitudVacacion.objects.select_related(
-        'empleado', 'jefe_solicitante'
+    solicitudes = SolicitudVacacion.objects.select_related(
+        'empleado', 'jefe_solicitante',
     )
-    try:
-        empleado_actual = Empleado.objects.get(usuario=request.user)
-        solicitudes_hechas = solicitudes_hechas.filter(jefe_solicitante=empleado_actual)
-    except Empleado.DoesNotExist:
-        if not request.user.is_staff:
-            solicitudes_hechas = solicitudes_hechas.none()
-    solicitudes_hechas = solicitudes_hechas.order_by('-fecha_creacion')[:50]
+    if request.user.is_staff:
+        # Staff/RRHH ve todas las solicitudes del equipo del jefe (si lo tiene
+        # asignado) o simplemente las últimas si no. Panel Admin es aparte.
+        pass
+    solicitudes = solicitudes.filter(empleado__in=equipo)
+    solicitudes = solicitudes.order_by('-fecha_creacion')[:100]
 
     return render(request, 'employees/vacaciones/equipo.html', {
         'equipo': equipo,
-        'solicitudes': solicitudes_hechas,
+        'solicitudes': solicitudes,
     })
 
 

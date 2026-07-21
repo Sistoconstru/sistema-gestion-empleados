@@ -162,6 +162,17 @@ class Empleado(BaseModel):
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
     fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")
 
+    # Saldo de vacaciones (calculado y enviado por Odoo, actualizado en cada callback).
+    # SIGHU NO calcula saldo — solo muestra el valor autoritativo de Odoo.
+    saldo_vacaciones_dias = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True,
+        help_text="Días de vacaciones disponibles según Odoo (considera tiempo + dinero).",
+    )
+    saldo_vacaciones_actualizado = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Fecha/hora del último update de saldo recibido de Odoo.",
+    )
+
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
 
     class Meta:
@@ -417,8 +428,9 @@ class SolicitudVacacion(BaseModel):
         related_name='vacaciones_solicitadas',
         help_text="Jefe (o staff/RRHH) que solicitó la vacación",
     )
-    fecha_inicio = models.DateField()
-    fecha_fin = models.DateField()
+    # Fechas nullables: las compensaciones en dinero no tienen rango de ausencia.
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
     observaciones = models.TextField(blank=True)
 
     tipo = models.CharField(
@@ -426,7 +438,28 @@ class SolicitudVacacion(BaseModel):
         help_text="Tipo de vacación: tiempo (días libres) o pago en dinero",
     )
     estado_local = models.CharField(max_length=30, choices=ESTADO_CHOICES, default='borrador')
-    leave_id_odoo = models.IntegerField(null=True, blank=True, help_text="ID de hr.leave devuelto por Odoo")
+    leave_id_odoo = models.IntegerField(
+        null=True, blank=True,
+        help_text="ID de hr.leave devuelto por Odoo (solo aplica cuando tipo=tiempo)",
+    )
+    compensacion_id_odoo = models.IntegerField(
+        null=True, blank=True, unique=True,
+        help_text="ID de la compensación en Odoo (solo aplica cuando tipo=pago_dinero). "
+                  "Clave de upsert para compensaciones — no colisiona con leave_id.",
+    )
+    valor_compensacion = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True,
+        help_text="Valor pagado al empleado en pesos (solo tipo=pago_dinero).",
+    )
+    fecha_lote_nomina = models.DateField(
+        null=True, blank=True,
+        help_text="Fecha del lote de nómina en que se aplicó la compensación (solo tipo=pago_dinero).",
+    )
+    dias_compensados = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True,
+        help_text="Días compensados en dinero (informativo, solo tipo=pago_dinero). "
+                  "Puede tener decimales (ej: 7.5).",
+    )
     motivo_rechazo = models.TextField(blank=True)
     fecha_envio_odoo = models.DateTimeField(null=True, blank=True)
     respuesta_odoo = models.JSONField(null=True, blank=True, help_text="Respuesta cruda de Odoo (auditoría)")
@@ -446,7 +479,13 @@ class SolicitudVacacion(BaseModel):
 
     @property
     def dias_calendario(self):
-        """Días calendario incluyendo extremos (informativo; los hábiles los calcula Odoo)."""
+        """Días calendario incluyendo extremos.
+
+        Para tipo=tiempo, se calcula del rango de fechas.
+        Para tipo=pago_dinero (compensaciones), retorna dias_compensados que envía Odoo.
+        """
+        if self.tipo == 'pago_dinero':
+            return self.dias_compensados
         if not self.fecha_inicio or not self.fecha_fin:
             return None
         return (self.fecha_fin - self.fecha_inicio).days + 1
@@ -455,6 +494,9 @@ class SolicitudVacacion(BaseModel):
         from django.core.exceptions import ValidationError
         if self.fecha_inicio and self.fecha_fin and self.fecha_fin < self.fecha_inicio:
             raise ValidationError("La fecha final no puede ser anterior a la inicial.")
+        # tipo=tiempo requiere ambas fechas; tipo=pago_dinero no las requiere.
+        if self.tipo == 'tiempo' and (not self.fecha_inicio or not self.fecha_fin):
+            raise ValidationError("Las vacaciones en tiempo requieren fecha_inicio y fecha_fin.")
 
 
 class HistorialCargo(BaseModel):

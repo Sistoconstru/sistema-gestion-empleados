@@ -18,11 +18,13 @@ cuando el estado cambia.
 
 ### B) Origen Odoo → SIGHU (flujo de RRHH)
 
-RRHH crea la solicitud directamente en Odoo (típicamente **vacaciones pagadas
-en dinero** u otras solicitudes que no pasan por el jefe de SIGHU). Al aprobar,
-Odoo debe llamar al endpoint de importación para que el registro quede en el
-historial del empleado. Si luego se cancela, Odoo llama al mismo endpoint con
-`estado="cancelada"`.
+RRHH crea la solicitud directamente en Odoo. Aplica a dos casos:
+
+- **Vacaciones en tiempo** (días libres) creadas por RRHH sin pasar por el jefe.
+- **Compensaciones en dinero** (`tipo="dinero"`), que por naturaleza solo se
+  originan en Odoo por RRHH.
+
+Al aprobar/cancelar, Odoo llama a SIGHU. Es el mismo endpoint para ambos casos.
 
 - Callback único: Odoo → `POST /api/v1/odoo/vacaciones/importar/` (endpoint 2).
 
@@ -40,8 +42,9 @@ Actualiza el estado de una solicitud que YA existe en SIGHU (identificada por
   "leave_id": 12345,
   "estado": "aprobada",           // "aprobada" | "rechazada" | "cancelada"
   "motivo": "opcional",
-  "aprobada_por": "user@odoo",    // opcional (auditoría)
-  "fecha_estado": "2026-06-30T14:00:00Z"  // opcional
+  "aprobada_por": "user@odoo",
+  "fecha_estado": "2026-06-30T14:00:00Z",
+  "saldo_dias_disponibles": 12.5  // opcional (ver sección Saldo)
 }
 ```
 
@@ -56,56 +59,109 @@ Actualiza el estado de una solicitud que YA existe en SIGHU (identificada por
 
 ## Endpoint 2 — `POST /api/v1/odoo/vacaciones/importar/`
 
-Importa una solicitud creada directamente en Odoo (upsert por `leave_id`).
-**Crea** el registro si no existe; actualiza si ya existe.
+Importa una solicitud creada directamente en Odoo. Soporta **dos tipos** con
+claves de upsert distintas:
 
-### Request
+| tipo | Clave de upsert | Rango de fechas |
+|---|---|---|
+| `tiempo` | `leave_id` | Requerido |
+| `dinero` (o `pago_dinero`) | `compensacion_id` | No aplica (nulo) |
+
+**Nunca mezclar**: si `tipo="dinero"`, no envíes `leave_id`. Y viceversa.
+
+### Request — tipo=tiempo
 
 ```json
 {
-  "leave_id": 12345,               // requerido (clave de idempotencia)
-  "sighu_uuid": "uuid-empleado",   // opcional
-  "cedula": "1035831455",          // opcional (uno de los dos requerido)
+  "tipo": "tiempo",
+  "leave_id": 12345,                // clave de idempotencia
+  "sighu_uuid": "uuid-empleado",    // opcional
+  "cedula": "1035831455",           // opcional (uno de los dos requerido al CREAR)
   "fecha_inicio": "2026-08-01",
   "fecha_fin": "2026-08-15",
-  "dias": 10,                      // informativo (SIGHU no valida)
-  "tipo": "tiempo",                // "tiempo" (default) | "pago_dinero"
-  "estado": "aprobada",            // "aprobada" | "cancelada"
-  "motivo": "opcional",            // texto libre; se usa como motivo_rechazo si cancelada
-  "aprobada_por": "user@odoo",     // opcional, se registra en observaciones
-  "fecha_estado": "2026-06-30T14:00:00Z"  // opcional
+  "dias": 10,                       // informativo
+  "estado": "aprobada",             // "aprobada" | "cancelada"
+  "motivo": "opcional",
+  "aprobada_por": "user@odoo",
+  "fecha_estado": "2026-06-30T14:00:00Z",
+  "saldo_dias_disponibles": 8.0     // opcional (ver sección Saldo)
+}
+```
+
+### Request — tipo=dinero (compensación)
+
+```json
+{
+  "tipo": "dinero",
+  "compensacion_id": 1635,          // clave de idempotencia (distinta de leave_id)
+  "leave_id": null,                 // debe ir nulo o ausente para tipo=dinero
+  "sighu_uuid": "uuid-empleado",    // opcional
+  "cedula": "1035831455",           // opcional (uno de los dos requerido al CREAR)
+  "dias": 7.0,                      // días compensados (informativo)
+  "valor": 408544,                  // valor pagado en pesos (evidencia)
+  "fecha": "2026-07-01",            // periodo del lote de nómina
+  "fecha_inicio": null,             // NO aplica: no hay disfrute de días
+  "fecha_fin": null,                // NO aplica
+  "estado": "aprobada",             // "aprobada" (aplicada) | "cancelada" (reversada)
+  "motivo": "Compensación de vacaciones en dinero (7 días) aplicada por RRHH.",
+  "aprobada_por": "rrhh@empresa.com",
+  "saldo_dias_disponibles": 5.0     // opcional (ver sección Saldo)
 }
 ```
 
 ### Respuestas
 
-- `201 { status: "creado", sighu_uuid, leave_id, estado_local }` — nueva solicitud creada.
+- `201 { status: "creado", sighu_uuid, leave_id|compensacion_id, estado_local }` — nueva solicitud creada.
 - `200 { status: "actualizado", ... }` — solicitud existente actualizada (cambió estado).
 - `200 { status: "ya_procesado", ... }` — el estado enviado coincide (idempotente).
-- `400` — payload inválido (leave_id faltante, fechas inválidas, estado no permitido).
+- `400` — payload inválido (clave faltante, fechas inválidas, tipo/estado no permitido).
 - `404` — empleado no encontrado por `sighu_uuid` ni por `cedula`.
 
 ### Comportamiento clave
 
 - **Identificación del empleado:** primero por `sighu_uuid`; si no matchea, por `cedula`
-  (=`numero_documento`). Si ninguno matchea → 404. Debe enviarse al menos uno.
-- **Idempotencia por `leave_id`:** reintentos del cron de Odoo (si SIGHU estaba caído)
-  NO duplican registros ni notificaciones.
+  (=`numero_documento`). Solo se requiere al CREAR. En un update por reintento se
+  puede omitir.
+- **Idempotencia:** por `leave_id` cuando `tipo=tiempo`, por `compensacion_id` cuando
+  `tipo=dinero`. Reintentos del cron de Odoo NO duplican registros ni notificaciones.
+  Nunca colisionan porque son campos distintos.
 - **`jefe_solicitante`:** siempre NULL en este flujo (nació en Odoo, no en SIGHU).
-- **`observaciones`:** se prellena con "Origen: Odoo (RRHH). Aprobada por: <user>."
-- **Cancelación posterior:** llamar al mismo endpoint con `estado="cancelada"`.
-  El `leave_id_odoo` no cambia, así que el empleado en el payload se ignora
-  (mantiene el original).
-- **Notificación al empleado:** cada transición terminal (aprobada/cancelada)
-  dispara una notificación in-app al empleado. Idempotente: `ya_procesado` no notifica.
+- **Cancelación posterior:** llamar al mismo endpoint con `estado="cancelada"`,
+  manteniendo la misma clave de upsert (`leave_id` o `compensacion_id`).
+- **Notificación al empleado:** cada transición terminal dispara una notificación
+  in-app específica para cada tipo (`vacacion_aprobada` vs `vacacion_comp_aprobada`).
+  Idempotente: `ya_procesado` no notifica.
+- **Estados permitidos:** solo `aprobada` y `cancelada`. Los estados intermedios
+  (`borrador`, `enviada_pendiente_rrhh`) no aplican porque las solicitudes creadas
+  en Odoo llegan a SIGHU solo cuando ya son un hecho.
 
-### Estados permitidos
+---
 
-Solo `aprobada` y `cancelada` en este endpoint. Los estados intermedios
-(`borrador`, `enviada_pendiente_rrhh`) no aplican porque las solicitudes creadas
-en Odoo llegan a SIGHU solo cuando ya son un hecho.
+## Saldo de días disponibles
 
-### Ejemplo — crear vacación pagada en dinero
+**Odoo es la fuente autoritativa del saldo.** SIGHU NO calcula saldo — solo lo
+muestra tal como lo envía Odoo (que ya considera vacaciones en tiempo + dinero).
+
+Cualquiera de los dos endpoints acepta `saldo_dias_disponibles` como campo
+opcional en el payload. Cuando viene:
+
+- SIGHU guarda el valor en `Empleado.saldo_vacaciones_dias` y
+  `Empleado.saldo_vacaciones_actualizado = now()`.
+- El empleado ve el saldo en su vista **Mis vacaciones**.
+- Si no viene, SIGHU mantiene el último valor conocido (o vacío si nunca ha llegado).
+
+**Recomendación:** enviarlo en cada callback (crear, actualizar, cancelar). Es
+un decimal (puede tener fracciones, ej: `8.5`).
+
+Si el saldo cambia por razones que NO son un evento de vacaciones (ej: cierre
+anual, ajuste manual), el dev de Odoo debe decidir el mecanismo (endpoint
+adicional o llamada periódica). Hoy no está definido.
+
+---
+
+## Ejemplos
+
+### Ejemplo 1 — crear vacación en tiempo
 
 ```http
 POST /api/v1/odoo/vacaciones/importar/
@@ -113,29 +169,24 @@ Authorization: Token <SIGHU_ODOO_TOKEN>
 Content-Type: application/json
 
 {
+  "tipo": "tiempo",
   "leave_id": 8891,
   "cedula": "1035831455",
   "fecha_inicio": "2026-08-01",
   "fecha_fin": "2026-08-10",
   "dias": 10,
-  "tipo": "pago_dinero",
   "estado": "aprobada",
-  "aprobada_por": "rrhh@construinmuniza.com"
+  "aprobada_por": "rrhh@empresa.com",
+  "saldo_dias_disponibles": 5.0
 }
 ```
 
 Respuesta:
-
 ```json
-{
-  "status": "creado",
-  "sighu_uuid": "b1c2...",
-  "leave_id": 8891,
-  "estado_local": "aprobada_rrhh"
-}
+{ "status": "creado", "sighu_uuid": "b1c2...", "leave_id": 8891, "estado_local": "aprobada_rrhh" }
 ```
 
-### Ejemplo — cancelar la misma solicitud días después
+### Ejemplo 2 — crear compensación en dinero
 
 ```http
 POST /api/v1/odoo/vacaciones/importar/
@@ -143,19 +194,41 @@ Authorization: Token <SIGHU_ODOO_TOKEN>
 Content-Type: application/json
 
 {
-  "leave_id": 8891,
-  "estado": "cancelada",
-  "motivo": "Empleado renuncia antes de tomarla"
+  "tipo": "dinero",
+  "compensacion_id": 1635,
+  "cedula": "1035831455",
+  "dias": 7.0,
+  "valor": 408544,
+  "fecha": "2026-07-01",
+  "estado": "aprobada",
+  "motivo": "Compensación de vacaciones en dinero (7 días) aplicada por RRHH.",
+  "aprobada_por": "rrhh@empresa.com",
+  "saldo_dias_disponibles": 8.0
 }
 ```
 
 Respuesta:
-
 ```json
+{ "status": "creado", "sighu_uuid": "b1c2...", "compensacion_id": 1635, "estado_local": "aprobada_rrhh" }
+```
+
+### Ejemplo 3 — reversar la compensación (RRHH la anula)
+
+```http
+POST /api/v1/odoo/vacaciones/importar/
+Authorization: Token <SIGHU_ODOO_TOKEN>
+Content-Type: application/json
+
 {
-  "status": "actualizado",
-  "sighu_uuid": "b1c2...",
-  "leave_id": 8891,
-  "estado_local": "cancelada_rrhh"
+  "tipo": "dinero",
+  "compensacion_id": 1635,
+  "estado": "cancelada",
+  "motivo": "Reversada por RRHH — error en el lote de nómina.",
+  "saldo_dias_disponibles": 15.0
 }
+```
+
+Respuesta:
+```json
+{ "status": "actualizado", "sighu_uuid": "b1c2...", "compensacion_id": 1635, "estado_local": "cancelada_rrhh" }
 ```

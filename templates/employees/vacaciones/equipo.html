@@ -60,7 +60,8 @@
 
     <div class="card">
         <div class="card-header bg-light">
-            <i class="fas fa-history me-2"></i>Mis solicitudes recientes
+            <i class="fas fa-history me-2"></i>Solicitudes de vacaciones del equipo
+            <small class="text-muted ms-2">(incluye las creadas por RRHH desde Odoo)</small>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -70,20 +71,48 @@
                             <th>Empleado</th>
                             <th>Inicio</th>
                             <th>Fin</th>
-                            <th>Días cal.</th>
+                            <th>Días</th>
+                            <th>Tipo</th>
+                            <th class="text-end">Valor</th>
                             <th>Estado</th>
-                            <th>Leave ID</th>
+                            <th>Solicitada por</th>
                             <th>Motivo / Observaciones</th>
-                            <th>Solicitada</th>
+                            <th>Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for s in solicitudes %}
                             <tr>
                                 <td>{{ s.empleado.nombre_completo }}</td>
-                                <td>{{ s.fecha_inicio|date:'d/m/Y' }}</td>
-                                <td>{{ s.fecha_fin|date:'d/m/Y' }}</td>
-                                <td>{{ s.dias_calendario }}</td>
+                                <td>
+                                    {% if s.tipo == 'pago_dinero' %}
+                                        <span class="text-muted small">Lote {{ s.fecha_lote_nomina|date:'d/m/Y'|default:'—' }}</span>
+                                    {% else %}
+                                        {{ s.fecha_inicio|date:'d/m/Y'|default:'—' }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if s.tipo == 'pago_dinero' %}
+                                        <span class="text-muted small">—</span>
+                                    {% else %}
+                                        {{ s.fecha_fin|date:'d/m/Y'|default:'—' }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ s.dias_calendario|default:'—' }}</td>
+                                <td>
+                                    {% if s.tipo == 'pago_dinero' %}
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-money-bill-wave me-1"></i>Pagada</span>
+                                    {% else %}
+                                        <span class="badge bg-primary bg-opacity-75"><i class="fas fa-calendar-day me-1"></i>Días</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end small">
+                                    {% if s.valor_compensacion is not None %}
+                                        <strong>${{ s.valor_compensacion|floatformat:0 }}</strong>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if s.estado_local == 'enviada_pendiente_rrhh' %}
                                         <span class="badge bg-info">Pendiente RRHH</span>
@@ -101,12 +130,18 @@
                                         <span class="badge bg-secondary">{{ s.get_estado_local_display }}</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ s.leave_id_odoo|default:'—' }}</td>
+                                <td class="small">
+                                    {% if s.jefe_solicitante %}
+                                        {{ s.jefe_solicitante.nombre_completo }}
+                                    {% else %}
+                                        <span class="badge bg-light text-dark border"><i class="fas fa-user-shield me-1"></i>RRHH (Odoo)</span>
+                                    {% endif %}
+                                </td>
                                 <td class="small">{{ s.motivo_rechazo|default:s.observaciones|truncatechars:80 }}</td>
-                                <td class="small text-muted">{{ s.fecha_creacion|date:'d/m/Y H:i' }}</td>
+                                <td class="small text-muted text-nowrap">{{ s.fecha_creacion|date:'d/m/Y H:i' }}</td>
                             </tr>
                         {% empty %}
-                            <tr><td colspan="8" class="text-center text-muted py-3">Aún no hay solicitudes.</td></tr>
+                            <tr><td colspan="10" class="text-center text-muted py-3">Aún no hay solicitudes del equipo.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
