@@ -414,12 +414,14 @@ def mis_predicciones(request):
     total_puntos = predicciones.aggregate(total=Sum('puntos_ganados'))['total'] or 0
     total_predicciones = predicciones.count()
     aciertos_exactos = predicciones.filter(puntos_ganados__gte=5).count()
+    ganadores_acertados = predicciones.filter(puntos_ganados__gte=3).count()
 
     context = {
         'predicciones_por_fase': predicciones_por_fase,
         'total_puntos': total_puntos,
         'total_predicciones': total_predicciones,
         'aciertos_exactos': aciertos_exactos,
+        'ganadores_acertados': ganadores_acertados,
     }
 
     return render(request, 'employees/polla_mundial/mis_predicciones.html', context)
