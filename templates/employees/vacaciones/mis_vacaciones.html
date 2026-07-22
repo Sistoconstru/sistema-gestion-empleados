@@ -33,33 +33,49 @@
     </div>
 </div>
 
-{% if saldo_dias is not None %}
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card border-success shadow-sm">
+        <div class="card {% if saldo_dias is not None %}border-success{% else %}border-secondary{% endif %} shadow-sm">
             <div class="card-body py-3">
                 <div class="d-flex align-items-center flex-wrap gap-3">
-                    <div class="text-success" style="font-size: 2.5rem;">
+                    <div class="{% if saldo_dias is not None %}text-success{% else %}text-muted{% endif %}" style="font-size: 2.5rem;">
                         <i class="fas fa-calendar-check"></i>
                     </div>
                     <div class="flex-grow-1">
-                        <div class="text-muted small mb-1">Saldo de días disponibles según Odoo</div>
-                        <div class="fs-2 fw-bold text-success">{{ saldo_dias|floatformat:2 }} días</div>
-                        {% if saldo_actualizado %}
+                        <div class="text-muted small mb-1">Días disponibles</div>
+                        {% if saldo_dias is not None %}
+                            <div class="fs-2 fw-bold text-success">{{ saldo_dias|floatformat:2 }} días</div>
+                            {% if saldo_actualizado %}
+                                <div class="text-muted small">
+                                    <i class="fas fa-sync-alt me-1"></i>Actualizado {{ saldo_actualizado|timesince }} atrás
+                                </div>
+                            {% endif %}
+                            {% if consulta_saldo_falla %}
+                                <div class="text-warning small mt-1">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    No se pudo actualizar en este momento; mostrando último valor conocido.
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="fs-4 fw-bold text-muted">— sin sincronizar —</div>
                             <div class="text-muted small">
-                                <i class="fas fa-sync-alt me-1"></i>Actualizado: {{ saldo_actualizado|date:"d/m/Y H:i" }}
+                                <i class="fas fa-info-circle me-1"></i>
+                                {% if consulta_saldo_falla %}
+                                    No se pudo consultar el saldo en Odoo. Intenta más tarde o comunícate con RRHH.
+                                {% else %}
+                                    El saldo se sincronizará cuando RRHH registre el próximo movimiento en Odoo.
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
                     <div class="text-muted small text-end">
-                        Considera tanto vacaciones<br/>tomadas en tiempo como pagadas en dinero.
+                        Descuenta tanto días tomados<br/>como días compensados en dinero.
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endif %}
 
 {% if solicitudes %}
     <div class="card border-corporativo shadow-sm">

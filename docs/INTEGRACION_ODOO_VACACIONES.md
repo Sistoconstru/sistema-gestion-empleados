@@ -43,10 +43,13 @@ Actualiza el estado de una solicitud que YA existe en SIGHU (identificada por
   "estado": "aprobada",           // "aprobada" | "rechazada" | "cancelada"
   "motivo": "opcional",
   "aprobada_por": "user@odoo",
-  "fecha_estado": "2026-06-30T14:00:00Z",
-  "saldo_dias_disponibles": 12.5  // opcional (ver sección Saldo)
+  "fecha_estado": "2026-06-30T14:00:00Z"
 }
 ```
+
+> El saldo NO se envía en este payload. SIGHU lo consulta bajo demanda desde
+> el endpoint `GET /sighu_sync/vacaciones/saldos` que expone Odoo. Ver
+> sección "Saldo de días disponibles" al final.
 
 ### Respuestas
 
@@ -83,8 +86,7 @@ claves de upsert distintas:
   "estado": "aprobada",             // "aprobada" | "cancelada"
   "motivo": "opcional",
   "aprobada_por": "user@odoo",
-  "fecha_estado": "2026-06-30T14:00:00Z",
-  "saldo_dias_disponibles": 8.0     // opcional (ver sección Saldo)
+  "fecha_estado": "2026-06-30T14:00:00Z"
 }
 ```
 
@@ -104,8 +106,7 @@ claves de upsert distintas:
   "fecha_fin": null,                // NO aplica
   "estado": "aprobada",             // "aprobada" (aplicada) | "cancelada" (reversada)
   "motivo": "Compensación de vacaciones en dinero (7 días) aplicada por RRHH.",
-  "aprobada_por": "rrhh@empresa.com",
-  "saldo_dias_disponibles": 5.0     // opcional (ver sección Saldo)
+  "aprobada_por": "rrhh@empresa.com"
 }
 ```
 
@@ -139,23 +140,81 @@ claves de upsert distintas:
 
 ## Saldo de días disponibles
 
-**Odoo es la fuente autoritativa del saldo.** SIGHU NO calcula saldo — solo lo
-muestra tal como lo envía Odoo (que ya considera vacaciones en tiempo + dinero).
+**Odoo es la fuente autoritativa del saldo.** SIGHU NO calcula saldo — lo
+muestra tal como lo entrega Odoo (que ya considera vacaciones en tiempo + dinero).
 
-Cualquiera de los dos endpoints acepta `saldo_dias_disponibles` como campo
-opcional en el payload. Cuando viene:
+Modelo elegido: **pull bajo demanda desde SIGHU**. Cuando el empleado abre
+"Mis vacaciones", SIGHU llama al endpoint expuesto por Odoo. Con cache local de
+5 minutos para evitar hammering en recargas. Si Odoo no responde, se muestra el
+último saldo conocido con un aviso.
 
-- SIGHU guarda el valor en `Empleado.saldo_vacaciones_dias` y
-  `Empleado.saldo_vacaciones_actualizado = now()`.
-- El empleado ve el saldo en su vista **Mis vacaciones**.
-- Si no viene, SIGHU mantiene el último valor conocido (o vacío si nunca ha llegado).
+### Ventajas del pull vs push
 
-**Recomendación:** enviarlo en cada callback (crear, actualizar, cancelar). Es
-un decimal (puede tener fracciones, ej: `8.5`).
+- Si SIGHU está caído, no hay que encolar ni reintentar en Odoo — el próximo
+  request lo trae.
+- SIGHU decide su frescura (bajo demanda cuando el empleado abre la vista).
+- Odoo solo expone un dato; no necesita conocer el contrato de escritura.
+- Reutiliza el token de auth ya establecido (`SIGHU_ODOO_WEBHOOK_TOKEN`).
 
-Si el saldo cambia por razones que NO son un evento de vacaciones (ej: cierre
-anual, ajuste manual), el dev de Odoo debe decidir el mecanismo (endpoint
-adicional o llamada periódica). Hoy no está definido.
+### Condición operativa
+
+La acumulación diaria de saldos en Odoo debe correr **antes** de las 2:30 AM
+(propuesto: 2:00 AM) para que las consultas de la mañana no muestren un día
+atrasado. Es un cambio en un cron de Odoo, lo asume el equipo de Odoo.
+
+### Endpoint expuesto por Odoo
+
+```
+GET <base>/sighu_sync/vacaciones/saldos
+Authorization: Token <SIGHU_ODOO_WEBHOOK_TOKEN>
+
+Params opcionales:
+  ?sighu_uuid=<uuid>    ← consulta un solo empleado
+  ?cedula=<numero>      ← alternativa por cédula
+
+Respuesta 200:
+{
+  "fecha_corte": "2026-07-22",
+  "saldos": [
+    {
+      "sighu_uuid": "492066c9-260f-4696-8be0-576defdd8f5a",
+      "cedula": "66964818",
+      "nombre": "Adriana Patricia Guarin Giraldo",
+      "saldo_dias_disponibles": 12.5
+    }
+    // ... más empleados si es consulta bulk
+  ]
+}
+```
+
+Cuando la consulta es puntual (`?sighu_uuid=X`), se espera 0 o 1 elementos en
+`saldos`. Cuando es bulk (sin params), retorna todos los empleados.
+
+### Configuración en SIGHU
+
+- **Env var opcional** `SIGHU_ODOO_SALDOS_URL`: URL completa. Si no está,
+  SIGHU la deriva de `SIGHU_ODOO_WEBHOOK_URL` reemplazando `/empleado` por
+  `/vacaciones/saldos`.
+- **Env var opcional** `SIGHU_ODOO_SALDOS_TIMEOUT`: segundos (default `3`).
+- **Auth**: reutiliza `SIGHU_ODOO_WEBHOOK_TOKEN`. No hay token separado.
+
+### Comportamiento del cache y fallos
+
+- SIGHU pide a Odoo si el último saldo del empleado es de hace **> 5 minutos**
+  (o si nunca se ha pedido).
+- Si la respuesta es exitosa: actualiza `Empleado.saldo_vacaciones_dias` y
+  `saldo_vacaciones_actualizado = now()`.
+- Si Odoo falla (timeout, 5xx, JSON inválido, empleado sin saldo): NO se toca el
+  cache. La vista muestra el último saldo conocido + aviso "no se pudo
+  actualizar en este momento".
+- Si nunca se ha obtenido saldo Y Odoo falla ahora: se muestra "— sin sincronizar —"
+  con una explicación al empleado.
+
+### Actualizaciones fuera de eventos de vacaciones
+
+Cierres anuales, ajustes manuales u otras razones que modifiquen el saldo en
+Odoo sin generar una vacación se reflejan automáticamente en SIGHU en la
+siguiente consulta bajo demanda (cache de 5 minutos como máximo).
 
 ---
 
@@ -176,8 +235,7 @@ Content-Type: application/json
   "fecha_fin": "2026-08-10",
   "dias": 10,
   "estado": "aprobada",
-  "aprobada_por": "rrhh@empresa.com",
-  "saldo_dias_disponibles": 5.0
+  "aprobada_por": "rrhh@empresa.com"
 }
 ```
 
@@ -202,8 +260,7 @@ Content-Type: application/json
   "fecha": "2026-07-01",
   "estado": "aprobada",
   "motivo": "Compensación de vacaciones en dinero (7 días) aplicada por RRHH.",
-  "aprobada_por": "rrhh@empresa.com",
-  "saldo_dias_disponibles": 8.0
+  "aprobada_por": "rrhh@empresa.com"
 }
 ```
 
@@ -223,8 +280,7 @@ Content-Type: application/json
   "tipo": "dinero",
   "compensacion_id": 1635,
   "estado": "cancelada",
-  "motivo": "Reversada por RRHH — error en el lote de nómina.",
-  "saldo_dias_disponibles": 15.0
+  "motivo": "Reversada por RRHH — error en el lote de nómina."
 }
 ```
 

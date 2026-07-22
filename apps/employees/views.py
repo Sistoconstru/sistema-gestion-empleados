@@ -4185,16 +4185,37 @@ def _equipo_del_jefe(usuario):
 
 @login_required
 def mis_vacaciones(request):
-    """Historial de solicitudes de vacaciones del empleado autenticado (solo lectura).
+    """Historial de solicitudes de vacaciones del empleado autenticado.
 
-    Muestra tanto vacaciones en tiempo (con rango de fechas) como compensaciones
-    en dinero (sin fechas). El saldo de días disponibles lo autoritativa Odoo.
+    Refresca el saldo consultando a Odoo bajo demanda (pull), con cache local
+    de 5 minutos para no golpear a Odoo si el usuario recarga la vista varias
+    veces. Si Odoo no responde, muestra el último saldo conocido.
     """
+    from datetime import timedelta
+    from django.utils import timezone
+    from apps.integraciones.odoo.services import obtener_saldo_vacaciones_odoo
+
     try:
         empleado = Empleado.objects.get(usuario=request.user)
     except Empleado.DoesNotExist:
         messages.info(request, 'Tu usuario no está vinculado a un empleado.')
         return redirect('core:dashboard')
+
+    # Refresco bajo demanda con cache de 5 min: pide a Odoo si el último saldo
+    # es de hace más de 5 min o nunca se ha pedido. Si falla, mantiene el cache.
+    CACHE_MINUTOS = 5
+    debe_refrescar = (
+        empleado.saldo_vacaciones_actualizado is None
+        or empleado.saldo_vacaciones_actualizado
+           < timezone.now() - timedelta(minutes=CACHE_MINUTOS)
+    )
+    consulta_saldo_falla = False
+    if debe_refrescar:
+        resultado = obtener_saldo_vacaciones_odoo(empleado)
+        if resultado.get('ok'):
+            empleado.refresh_from_db(fields=['saldo_vacaciones_dias', 'saldo_vacaciones_actualizado'])
+        else:
+            consulta_saldo_falla = True
 
     solicitudes = (
         SolicitudVacacion.objects
@@ -4208,6 +4229,7 @@ def mis_vacaciones(request):
         'solicitudes': solicitudes,
         'saldo_dias': empleado.saldo_vacaciones_dias,
         'saldo_actualizado': empleado.saldo_vacaciones_actualizado,
+        'consulta_saldo_falla': consulta_saldo_falla,
     })
 
 

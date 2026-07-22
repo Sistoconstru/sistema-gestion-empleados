@@ -158,3 +158,106 @@ def enviar_vacacion_a_odoo(solicitud):
         detalle=(response.text or '')[:500], http_status=response.status_code,
     )
     return False, {'motivo': data.get('error') or f'HTTP {response.status_code}'}
+
+
+def _saldos_endpoint_url():
+    """URL del endpoint GET de saldos de vacaciones expuesto por Odoo.
+
+    1) Si SIGHU_ODOO_SALDOS_URL está definida, usarla.
+    2) Si no, derivarla de SIGHU_ODOO_WEBHOOK_URL reemplazando '/empleado' por
+       '/vacaciones/saldos'.
+    """
+    explicit = getattr(settings, 'SIGHU_ODOO_SALDOS_URL', '')
+    if explicit:
+        return explicit
+    base = getattr(settings, 'SIGHU_ODOO_WEBHOOK_URL', '') or ''
+    if base.endswith('/empleado'):
+        return base[:-len('/empleado')] + '/vacaciones/saldos'
+    return ''
+
+
+def obtener_saldo_vacaciones_odoo(empleado):
+    """Consulta a Odoo el saldo de vacaciones actual del empleado y lo persiste.
+
+    GET <SIGHU_ODOO_SALDOS_URL>?sighu_uuid=<id>
+    Auth: Token <SIGHU_ODOO_WEBHOOK_TOKEN> (el mismo que ya usa el push).
+
+    Contrato de respuesta (definido con el dev de Odoo):
+        {
+          "fecha_corte": "2026-07-22",
+          "saldos": [
+            {"sighu_uuid": "…", "cedula": "…", "nombre": "…",
+             "saldo_dias_disponibles": 12.5}
+          ]
+        }
+
+    Retorna un dict con el resultado:
+        {'ok': True,  'saldo': Decimal(...), 'fecha_corte': date}
+        {'ok': False, 'motivo': 'timeout|http_500|no_configurado|no_encontrado'}
+
+    Si la llamada tiene éxito, actualiza Empleado.saldo_vacaciones_dias y
+    saldo_vacaciones_actualizado con la respuesta. Si falla, deja el último
+    valor conocido intacto (fallback silencioso).
+    """
+    from decimal import Decimal
+    from django.utils import timezone
+    from apps.employees.models import Empleado
+
+    url = _saldos_endpoint_url()
+    token = getattr(settings, 'SIGHU_ODOO_WEBHOOK_TOKEN', '')
+
+    if not url or not token:
+        logger.debug("Consulta de saldo deshabilitada: SIGHU_ODOO_SALDOS_URL/TOKEN no configurados.")
+        return {'ok': False, 'motivo': 'no_configurado'}
+
+    timeout = getattr(settings, 'SIGHU_ODOO_SALDOS_TIMEOUT', 3)
+
+    try:
+        response = requests.get(
+            url,
+            params={'sighu_uuid': str(empleado.id)},
+            headers={'Authorization': f'Token {token}'},
+            timeout=timeout,
+        )
+    except requests.Timeout:
+        logger.info(f"Saldo Odoo timeout para empleado {empleado.id}")
+        return {'ok': False, 'motivo': 'timeout'}
+    except requests.RequestException as e:
+        logger.info(f"Saldo Odoo error transporte para empleado {empleado.id}: {e}")
+        return {'ok': False, 'motivo': 'error_transporte'}
+
+    if response.status_code != 200:
+        logger.info(
+            f"Saldo Odoo HTTP {response.status_code} para empleado {empleado.id}"
+        )
+        return {'ok': False, 'motivo': f'http_{response.status_code}'}
+
+    try:
+        data = response.json()
+    except ValueError:
+        logger.info(f"Saldo Odoo respuesta no-JSON para empleado {empleado.id}")
+        return {'ok': False, 'motivo': 'respuesta_invalida'}
+
+    saldos = data.get('saldos') or []
+    # Con ?sighu_uuid=X esperamos 0 o 1 elementos
+    if not saldos:
+        return {'ok': False, 'motivo': 'no_encontrado'}
+
+    registro = saldos[0]
+    saldo_raw = registro.get('saldo_dias_disponibles')
+    if saldo_raw is None:
+        return {'ok': False, 'motivo': 'sin_saldo_en_respuesta'}
+
+    try:
+        saldo = Decimal(str(saldo_raw))
+    except (ValueError, TypeError):
+        return {'ok': False, 'motivo': 'saldo_no_numerico'}
+
+    # Persistir
+    Empleado.objects.filter(pk=empleado.pk).update(
+        saldo_vacaciones_dias=saldo,
+        saldo_vacaciones_actualizado=timezone.now(),
+    )
+
+    fecha_corte = data.get('fecha_corte')
+    return {'ok': True, 'saldo': saldo, 'fecha_corte': fecha_corte}
