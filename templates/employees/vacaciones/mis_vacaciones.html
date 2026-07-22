@@ -100,6 +100,7 @@
                             <th>Solicitada por</th>
                             <th>Observaciones / Motivo</th>
                             <th class="text-nowrap">Fecha solicitud</th>
+                            <th class="text-center">Carta</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,6 +171,21 @@
                                     {% endif %}
                                 </td>
                                 <td class="small text-muted text-nowrap">{{ s.fecha_creacion|date:'d/m/Y H:i' }}</td>
+                                <td class="text-center">
+                                    {% if s.estado_local == 'aprobada_rrhh' %}
+                                        <button type="button" class="btn btn-sm btn-outline-corporativo"
+                                                data-bs-toggle="modal" data-bs-target="#modalCarta{{ s.pk }}"
+                                                title="{% if s.carta_descargada_fecha %}Ya descargada {{ s.carta_descargada_fecha|date:'d/m/Y H:i' }}{% else %}Descargar carta{% endif %}">
+                                            {% if s.carta_descargada_fecha %}
+                                                <i class="fas fa-file-download"></i> Descargar de nuevo
+                                            {% else %}
+                                                <i class="fas fa-file-pdf"></i> Descargar
+                                            {% endif %}
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted small">—</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -177,6 +193,60 @@
             </div>
         </div>
     </div>
+
+    {# Modal de consentimiento por cada solicitud aprobada #}
+    {% for s in solicitudes %}
+        {% if s.estado_local == 'aprobada_rrhh' %}
+        <div class="modal fade" id="modalCarta{{ s.pk }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="post" action="{% url 'employees:descargar_carta_vacaciones' s.pk %}">
+                        {% csrf_token %}
+                        <div class="modal-header bg-corporativo text-white">
+                            <h5 class="modal-title"><i class="fas fa-file-pdf me-2"></i>Descargar carta de vacaciones</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Estás por descargar la carta correspondiente a:</p>
+                            <ul class="mb-3">
+                                {% if s.tipo == 'pago_dinero' %}
+                                    <li><strong>Compensación en dinero</strong> por {{ s.dias_compensados|default:"—" }} días
+                                        (lote de nómina del {{ s.fecha_lote_nomina|date:"d/m/Y"|default:"—" }}).</li>
+                                {% else %}
+                                    <li>Vacaciones del <strong>{{ s.fecha_inicio|date:"d/m/Y" }}</strong>
+                                        al <strong>{{ s.fecha_fin|date:"d/m/Y" }}</strong>.</li>
+                                {% endif %}
+                            </ul>
+                            {% if s.carta_descargada_fecha %}
+                                <div class="alert alert-info small mb-3">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Ya descargaste esta carta el {{ s.carta_descargada_fecha|date:"d/m/Y H:i" }}.
+                                    Puedes volver a descargarla; la constancia original se mantiene.
+                                </div>
+                            {% endif %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="si"
+                                       name="consentimiento" id="consentimiento{{ s.pk }}" required
+                                       onchange="document.getElementById('btnDescargar{{ s.pk }}').disabled = !this.checked;">
+                                <label class="form-check-label" for="consentimiento{{ s.pk }}">
+                                    <strong>Declaro estar al tanto</strong> de mis vacaciones aprobadas y de la
+                                    fecha de regreso. Al descargar esta carta acepto que queda registrada
+                                    como constancia de esta declaración.
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-corporativo" id="btnDescargar{{ s.pk }}" disabled>
+                                <i class="fas fa-download me-1"></i>Descargar PDF
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
 {% else %}
     <div class="card">
         <div class="card-body text-center py-5">

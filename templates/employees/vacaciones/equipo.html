@@ -44,9 +44,17 @@
                                 <td>{{ e.nombre_cargo_actual|default:'—' }}</td>
                                 <td>{{ e.sede.nombre|default:'—' }}</td>
                                 <td class="text-end">
-                                    <a class="btn btn-sm btn-corporativo" href="{% url 'employees:vacacion_nueva' e.id %}">
-                                        <i class="fas fa-plus me-1"></i>Solicitar vacaciones
-                                    </a>
+                                    {% if e.solicitud_vigente %}
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled
+                                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                                title="Ya tiene solicitud vigente del {{ e.solicitud_vigente.fecha_inicio|date:'d/m/Y' }} al {{ e.solicitud_vigente.fecha_fin|date:'d/m/Y' }} ({{ e.solicitud_vigente.get_estado_local_display }}). Podrás crear una nueva cuando termine o si RRHH la rechaza/cancela.">
+                                            <i class="fas fa-lock me-1"></i>Con vigente
+                                        </button>
+                                    {% else %}
+                                        <a class="btn btn-sm btn-corporativo" href="{% url 'employees:vacacion_nueva' e.id %}">
+                                            <i class="fas fa-plus me-1"></i>Solicitar vacaciones
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% empty %}

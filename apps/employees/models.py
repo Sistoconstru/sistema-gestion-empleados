@@ -469,6 +469,18 @@ class SolicitudVacacion(BaseModel):
     fecha_envio_odoo = models.DateTimeField(null=True, blank=True)
     respuesta_odoo = models.JSONField(null=True, blank=True, help_text="Respuesta cruda de Odoo (auditoría)")
 
+    # Constancia de descarga de la carta (declaración del empleado de estar al
+    # tanto de sus vacaciones aprobadas). Se registra la primera descarga con
+    # su hash de confirmación; descargas posteriores no sobreescriben.
+    carta_descargada_fecha = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Fecha/hora en que el empleado descargó la carta con consentimiento.",
+    )
+    carta_confirmada_hash = models.CharField(
+        max_length=64, blank=True,
+        help_text="Hash SHA-256 del consentimiento (empleado_id + solicitud_id + fecha).",
+    )
+
     class Meta:
         db_table = 'solicitudes_vacacion'
         verbose_name = 'Solicitud de Vacación'

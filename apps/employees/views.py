@@ -4245,6 +4245,72 @@ def mis_vacaciones(request):
 
 
 @login_required
+@require_POST
+def descargar_carta_vacaciones(request, pk):
+    """Genera y devuelve el PDF de la carta de vacaciones (solo POST con consentimiento).
+
+    Requiere:
+    - Empleado autenticado dueño de la solicitud.
+    - Solicitud en estado aprobada_rrhh.
+    - Checkbox 'consentimiento' marcado en el POST.
+
+    Registra la primera descarga con un hash SHA-256 del consentimiento. Descargas
+    posteriores permiten re-descargar el PDF pero no sobreescriben la constancia.
+    """
+    import hashlib
+    from django.http import HttpResponse
+    from django.utils import timezone
+    from apps.employees.vacaciones_carta import generar_carta_vacaciones
+
+    solicitud = get_object_or_404(SolicitudVacacion, pk=pk)
+
+    # Verificar propiedad
+    try:
+        empleado = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('core:dashboard')
+
+    if solicitud.empleado_id != empleado.id:
+        messages.error(request, 'No tienes permiso para descargar esta carta.')
+        return redirect('employees:mis_vacaciones')
+
+    if solicitud.estado_local != 'aprobada_rrhh':
+        messages.warning(
+            request,
+            'Solo puedes descargar la carta cuando la solicitud está aprobada por RRHH.'
+        )
+        return redirect('employees:mis_vacaciones')
+
+    if request.POST.get('consentimiento') != 'si':
+        messages.warning(
+            request,
+            'Debes aceptar el consentimiento para descargar la carta.'
+        )
+        return redirect('employees:mis_vacaciones')
+
+    # Registrar constancia (solo la primera vez)
+    if not solicitud.carta_descargada_fecha:
+        ahora = timezone.now()
+        hash_input = f'{empleado.id}|{solicitud.id}|{ahora.isoformat()}'.encode()
+        SolicitudVacacion.objects.filter(pk=solicitud.pk).update(
+            carta_descargada_fecha=ahora,
+            carta_confirmada_hash=hashlib.sha256(hash_input).hexdigest(),
+        )
+        solicitud.refresh_from_db()
+
+    # Generar y devolver PDF
+    pdf_bytes = generar_carta_vacaciones(solicitud)
+    filename = (
+        f'carta_vacaciones_{empleado.numero_documento}_'
+        f'{solicitud.fecha_inicio.strftime("%Y%m%d") if solicitud.fecha_inicio else solicitud.pk}.pdf'
+    )
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+@login_required
 def vacaciones_equipo(request):
     """Panel del jefe: equipo + TODAS las solicitudes de vacaciones del equipo.
 
@@ -4252,15 +4318,17 @@ def vacaciones_equipo(request):
     desde Odoo por RRHH (jefe_solicitante=NULL). Así el jefe tiene visibilidad
     completa para planear la operación.
     """
-    equipo = _equipo_del_jefe(request.user)
+    equipo = list(_equipo_del_jefe(request.user))
+
+    # Anotar en cada empleado su solicitud vigente (si existe) para que la UI
+    # deshabilite el botón "Solicitar vacaciones" en lugar de dejar al jefe
+    # avanzar al formulario y chocarse con el bloqueo.
+    for emp in equipo:
+        emp.solicitud_vigente = _solicitud_vigente_de(emp)
 
     solicitudes = SolicitudVacacion.objects.select_related(
         'empleado', 'jefe_solicitante',
     )
-    if request.user.is_staff:
-        # Staff/RRHH ve todas las solicitudes del equipo del jefe (si lo tiene
-        # asignado) o simplemente las últimas si no. Panel Admin es aparte.
-        pass
     solicitudes = solicitudes.filter(empleado__in=equipo)
     solicitudes = solicitudes.order_by('-fecha_creacion')[:100]
 
@@ -4270,12 +4338,48 @@ def vacaciones_equipo(request):
     })
 
 
+def _solicitud_vigente_de(empleado):
+    """Retorna la SolicitudVacacion vigente del empleado o None.
+
+    Se considera vigente si bloquea la creación de una nueva: tipo=tiempo, en
+    un estado activo (borrador, pendiente Odoo o aprobada) y con fecha_fin
+    todavía no pasada. Las compensaciones en dinero (tipo=pago_dinero) no
+    bloquean porque son eventos puntuales de nómina, no ausencias.
+    """
+    from datetime import date
+    return (
+        SolicitudVacacion.objects
+        .filter(
+            empleado=empleado,
+            tipo='tiempo',
+            estado_local__in=['borrador', 'enviada_pendiente_rrhh', 'aprobada_rrhh'],
+            fecha_fin__gte=date.today(),
+        )
+        .order_by('-fecha_creacion')
+        .first()
+    )
+
+
 @login_required
 def vacacion_nueva(request, empleado_id):
     """Form para crear y enviar una vacación de un empleado del equipo."""
     empleado = get_object_or_404(Empleado, id=empleado_id)
     if not _puede_solicitar_vacacion_para(request.user, empleado):
         messages.error(request, 'No tienes permiso para solicitar vacaciones de este empleado.')
+        return redirect('employees:vacaciones_equipo')
+
+    # Bloqueo: un empleado no puede tener dos solicitudes de tiempo vigentes.
+    vigente = _solicitud_vigente_de(empleado)
+    if vigente:
+        estado_hum = vigente.get_estado_local_display()
+        messages.warning(
+            request,
+            f'{empleado.nombre_completo} ya tiene una solicitud vigente del '
+            f'{vigente.fecha_inicio.strftime("%d/%m/%Y")} al '
+            f'{vigente.fecha_fin.strftime("%d/%m/%Y")} ({estado_hum}). '
+            f'Podrás crear una nueva cuando termine ese periodo o si RRHH la '
+            f'rechaza/cancela.'
+        )
         return redirect('employees:vacaciones_equipo')
 
     if request.method == 'POST':
