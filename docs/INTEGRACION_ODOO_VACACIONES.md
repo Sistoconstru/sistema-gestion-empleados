@@ -143,10 +143,16 @@ claves de upsert distintas:
 **Odoo es la fuente autoritativa del saldo.** SIGHU NO calcula saldo — lo
 muestra tal como lo entrega Odoo (que ya considera vacaciones en tiempo + dinero).
 
-Modelo elegido: **pull bajo demanda desde SIGHU**. Cuando el empleado abre
-"Mis vacaciones", SIGHU llama al endpoint expuesto por Odoo. Con cache local de
-5 minutos para evitar hammering en recargas. Si Odoo no responde, se muestra el
-último saldo conocido con un aviso.
+**El saldo es al último corte mensual, no en vivo.** Se calcula el último día
+de cada mes (procesando novedades: incapacidades, licencias, etc.) y queda
+disponible el 1° del mes siguiente. Durante todo el mes el saldo NO cambia —
+los días acumulados en el mes actual se verán en el próximo corte.
+
+Modelo elegido: **pull bajo demanda desde SIGHU** con **cache mensual**.
+Cuando el empleado abre "Mis vacaciones", SIGHU consulta a Odoo SOLO si
+todavía no tiene el corte del mes anterior al actual (ej: es 15 de julio y
+SIGHU solo tiene el saldo al 31/05 → consulta para traer el corte al 30/06).
+Si ya tiene el corte del mes anterior, no consulta.
 
 ### Ventajas del pull vs push
 
@@ -198,23 +204,41 @@ Cuando la consulta es puntual (`?sighu_uuid=X`), se espera 0 o 1 elementos en
 - **Env var opcional** `SIGHU_ODOO_SALDOS_TIMEOUT`: segundos (default `3`).
 - **Auth**: reutiliza `SIGHU_ODOO_WEBHOOK_TOKEN`. No hay token separado.
 
-### Comportamiento del cache y fallos
+### Comportamiento del cache mensual
 
-- SIGHU pide a Odoo si el último saldo del empleado es de hace **> 5 minutos**
-  (o si nunca se ha pedido).
-- Si la respuesta es exitosa: actualiza `Empleado.saldo_vacaciones_dias` y
-  `saldo_vacaciones_actualizado = now()`.
+Regla: **SIGHU consulta a Odoo si NO tiene el `fecha_corte` del mes anterior
+al actual**.
+
+Ejemplos (hoy = 15 de julio 2026):
+- `fecha_corte guardada = 30/06/2026` → ya está el corte de junio → NO consulta.
+- `fecha_corte guardada = 31/05/2026` → falta el corte de junio → consulta.
+- `fecha_corte guardada = None` → nunca se ha consultado → consulta.
+
+Al llegar el 1° de agosto:
+- `fecha_corte guardada = 30/06/2026` → mes anterior a agosto = julio → falta
+  el corte de julio → consulta.
+
+Este esquema significa que **cada empleado consulta a Odoo como máximo una
+vez por mes**, la primera vez que abre "Mis vacaciones" después del corte.
+
+### Comportamiento en fallos
+
+- Si Odoo responde OK: actualiza `saldo_vacaciones_dias`, `saldo_vacaciones_fecha_corte`
+  y `saldo_vacaciones_actualizado = now()`.
 - Si Odoo falla (timeout, 5xx, JSON inválido, empleado sin saldo): NO se toca el
-  cache. La vista muestra el último saldo conocido + aviso "no se pudo
-  actualizar en este momento".
+  cache. La vista muestra el último corte conocido + aviso "no se pudo verificar
+  con Odoo en este momento".
 - Si nunca se ha obtenido saldo Y Odoo falla ahora: se muestra "— sin sincronizar —"
-  con una explicación al empleado.
+  con explicación al empleado.
+- El siguiente request del mismo mes reintenta (porque `fecha_corte` sigue sin
+  ser la del mes anterior), sin necesidad de esperar timers.
 
-### Actualizaciones fuera de eventos de vacaciones
+### Ajustes fuera de eventos de vacaciones
 
 Cierres anuales, ajustes manuales u otras razones que modifiquen el saldo en
-Odoo sin generar una vacación se reflejan automáticamente en SIGHU en la
-siguiente consulta bajo demanda (cache de 5 minutos como máximo).
+Odoo **dentro del mismo mes en curso** NO se ven reflejados hasta el siguiente
+corte, porque SIGHU no vuelve a consultar dentro del mismo mes. Es consistente
+con el modelo mensual — el saldo solo cambia en el corte.
 
 ---
 

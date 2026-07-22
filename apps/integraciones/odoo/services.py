@@ -253,11 +253,22 @@ def obtener_saldo_vacaciones_odoo(empleado):
     except (ValueError, TypeError):
         return {'ok': False, 'motivo': 'saldo_no_numerico'}
 
-    # Persistir
-    Empleado.objects.filter(pk=empleado.pk).update(
-        saldo_vacaciones_dias=saldo,
-        saldo_vacaciones_actualizado=timezone.now(),
-    )
+    # Persistir saldo + fecha_corte (si viene)
+    from datetime import date as _date
+    fecha_corte_raw = data.get('fecha_corte')
+    fecha_corte = None
+    if fecha_corte_raw:
+        try:
+            fecha_corte = _date.fromisoformat(fecha_corte_raw)
+        except (ValueError, TypeError):
+            logger.info(f"fecha_corte inválida: {fecha_corte_raw!r}")
 
-    fecha_corte = data.get('fecha_corte')
+    updates = {
+        'saldo_vacaciones_dias': saldo,
+        'saldo_vacaciones_actualizado': timezone.now(),
+    }
+    if fecha_corte is not None:
+        updates['saldo_vacaciones_fecha_corte'] = fecha_corte
+    Empleado.objects.filter(pk=empleado.pk).update(**updates)
+
     return {'ok': True, 'saldo': saldo, 'fecha_corte': fecha_corte}

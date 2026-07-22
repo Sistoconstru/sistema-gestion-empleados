@@ -4187,12 +4187,12 @@ def _equipo_del_jefe(usuario):
 def mis_vacaciones(request):
     """Historial de solicitudes de vacaciones del empleado autenticado.
 
-    Refresca el saldo consultando a Odoo bajo demanda (pull), con cache local
-    de 5 minutos para no golpear a Odoo si el usuario recarga la vista varias
-    veces. Si Odoo no responde, muestra el último saldo conocido.
+    El saldo de días es al ÚLTIMO CORTE MENSUAL (fin de mes anterior) según Odoo.
+    No cambia durante el mes. Por eso el cache es mensual: SIGHU solo consulta a
+    Odoo si el `fecha_corte` que tiene guardado NO es del mes anterior al actual
+    (es decir, si todavía no hemos traído el corte de este mes).
     """
-    from datetime import timedelta
-    from django.utils import timezone
+    from datetime import date
     from apps.integraciones.odoo.services import obtener_saldo_vacaciones_odoo
 
     try:
@@ -4201,19 +4201,29 @@ def mis_vacaciones(request):
         messages.info(request, 'Tu usuario no está vinculado a un empleado.')
         return redirect('core:dashboard')
 
-    # Refresco bajo demanda con cache de 5 min: pide a Odoo si el último saldo
-    # es de hace más de 5 min o nunca se ha pedido. Si falla, mantiene el cache.
-    CACHE_MINUTOS = 5
-    debe_refrescar = (
-        empleado.saldo_vacaciones_actualizado is None
-        or empleado.saldo_vacaciones_actualizado
-           < timezone.now() - timedelta(minutes=CACHE_MINUTOS)
+    # ¿Ya tenemos el saldo del corte del mes anterior al actual?
+    # Si sí (fecha_corte cae dentro del mes anterior) → no consultamos.
+    hoy = date.today()
+    if hoy.month == 1:
+        year_mes_anterior, mes_anterior = hoy.year - 1, 12
+    else:
+        year_mes_anterior, mes_anterior = hoy.year, hoy.month - 1
+
+    tiene_corte_actual = (
+        empleado.saldo_vacaciones_fecha_corte is not None
+        and empleado.saldo_vacaciones_fecha_corte.year == year_mes_anterior
+        and empleado.saldo_vacaciones_fecha_corte.month == mes_anterior
     )
+
     consulta_saldo_falla = False
-    if debe_refrescar:
+    if not tiene_corte_actual:
         resultado = obtener_saldo_vacaciones_odoo(empleado)
         if resultado.get('ok'):
-            empleado.refresh_from_db(fields=['saldo_vacaciones_dias', 'saldo_vacaciones_actualizado'])
+            empleado.refresh_from_db(fields=[
+                'saldo_vacaciones_dias',
+                'saldo_vacaciones_fecha_corte',
+                'saldo_vacaciones_actualizado',
+            ])
         else:
             consulta_saldo_falla = True
 
@@ -4228,6 +4238,7 @@ def mis_vacaciones(request):
         'empleado': empleado,
         'solicitudes': solicitudes,
         'saldo_dias': empleado.saldo_vacaciones_dias,
+        'saldo_fecha_corte': empleado.saldo_vacaciones_fecha_corte,
         'saldo_actualizado': empleado.saldo_vacaciones_actualizado,
         'consulta_saldo_falla': consulta_saldo_falla,
     })

@@ -162,15 +162,20 @@ class Empleado(BaseModel):
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
     fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")
 
-    # Saldo de vacaciones (calculado y enviado por Odoo, actualizado en cada callback).
+    # Saldo de vacaciones (calculado y devuelto por Odoo, consultado bajo demanda).
     # SIGHU NO calcula saldo — solo muestra el valor autoritativo de Odoo.
+    # El saldo es al ÚLTIMO CORTE MENSUAL (fin de mes anterior), no en vivo.
     saldo_vacaciones_dias = models.DecimalField(
         max_digits=6, decimal_places=2, null=True, blank=True,
-        help_text="Días de vacaciones disponibles según Odoo (considera tiempo + dinero).",
+        help_text="Días de vacaciones disponibles al último corte según Odoo.",
+    )
+    saldo_vacaciones_fecha_corte = models.DateField(
+        null=True, blank=True,
+        help_text="Fecha del corte al que corresponde el saldo (típicamente último día del mes anterior).",
     )
     saldo_vacaciones_actualizado = models.DateTimeField(
         null=True, blank=True,
-        help_text="Fecha/hora del último update de saldo recibido de Odoo.",
+        help_text="Fecha/hora en que SIGHU consultó el saldo por última vez.",
     )
 
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
