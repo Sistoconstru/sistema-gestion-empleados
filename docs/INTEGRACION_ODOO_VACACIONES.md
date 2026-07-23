@@ -199,8 +199,11 @@ Cuando la consulta es puntual (`?sighu_uuid=X`), se espera 0 o 1 elementos en
 ### Configuración en SIGHU
 
 - **Env var opcional** `SIGHU_ODOO_SALDOS_URL`: URL completa. Si no está,
-  SIGHU la deriva de `SIGHU_ODOO_WEBHOOK_URL` reemplazando `/empleado` por
-  `/vacaciones/saldos`.
+  SIGHU la deriva de `SIGHU_ODOO_WEBHOOK_URL`. **Importante**: el endpoint
+  de saldos NO vive bajo `/sighu_sync/webhook/`; está directamente en
+  `/sighu_sync/vacaciones/saldos`. La derivación soporta ambos formatos:
+  `.../sighu_sync/webhook/empleado` y `.../sighu_sync/empleado` → ambos
+  producen `.../sighu_sync/vacaciones/saldos`.
 - **Env var opcional** `SIGHU_ODOO_SALDOS_TIMEOUT`: segundos (default `3`).
 - **Auth**: reutiliza `SIGHU_ODOO_WEBHOOK_TOKEN`. No hay token separado.
 

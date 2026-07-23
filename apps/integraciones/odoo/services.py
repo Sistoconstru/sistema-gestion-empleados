@@ -163,14 +163,23 @@ def enviar_vacacion_a_odoo(solicitud):
 def _saldos_endpoint_url():
     """URL del endpoint GET de saldos de vacaciones expuesto por Odoo.
 
-    1) Si SIGHU_ODOO_SALDOS_URL está definida, usarla.
-    2) Si no, derivarla de SIGHU_ODOO_WEBHOOK_URL reemplazando '/empleado' por
-       '/vacaciones/saldos'.
+    A diferencia del push de empleados/vacaciones, este endpoint NO vive bajo
+    `/sighu_sync/webhook/`; está directamente en `/sighu_sync/vacaciones/saldos`.
+
+    Estrategia:
+    1) Si SIGHU_ODOO_SALDOS_URL está definida, usarla tal cual.
+    2) Si no, derivarla de SIGHU_ODOO_WEBHOOK_URL removiendo tanto `/webhook/`
+       como `/empleado` y agregando `/vacaciones/saldos`.
+       Ej: `.../sighu_sync/webhook/empleado` → `.../sighu_sync/vacaciones/saldos`.
     """
     explicit = getattr(settings, 'SIGHU_ODOO_SALDOS_URL', '')
     if explicit:
         return explicit
     base = getattr(settings, 'SIGHU_ODOO_WEBHOOK_URL', '') or ''
+    # Manejar ambos patrones: `/webhook/empleado` (Odoo actual) y `/empleado`
+    # (compat con instalaciones más antiguas).
+    if base.endswith('/webhook/empleado'):
+        return base[:-len('/webhook/empleado')] + '/vacaciones/saldos'
     if base.endswith('/empleado'):
         return base[:-len('/empleado')] + '/vacaciones/saldos'
     return ''
