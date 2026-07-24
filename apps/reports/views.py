@@ -1057,6 +1057,15 @@ class AsistenciaReportView(TemplateView):
             .order_by('-ausente', '-retardo', 'empleado__apellidos')[:100]
         )
 
+        # === Cumplimiento de registro por jefe ===
+        # Un jefe "cumple" un día laboral (L-V) si tiene AL MENOS 1 registro
+        # de asistencia de su equipo esa fecha. Ratio = días con registro /
+        # días laborales en el rango. El corte inferior es la fecha de
+        # arranque del módulo (antes no era omisión del jefe).
+        cumplimiento_jefes = self._calcular_cumplimiento_jefes(
+            fecha_desde, fecha_hasta, area_id=area_id, sede_id=sede_id,
+        )
+
         context.update({
             'fecha_desde': fecha_desde,
             'fecha_hasta': fecha_hasta,
@@ -1065,9 +1074,85 @@ class AsistenciaReportView(TemplateView):
             'pct_asistencia': round(pct_asistencia, 1),
             'pct_ausentismo': round(pct_ausentismo, 1),
             'por_empleado': por_empleado,
+            'cumplimiento_jefes': cumplimiento_jefes,
             'areas': AreaEmpresa.objects.filter(activa=True).order_by('nombre'),
             'sedes': Sede.objects.filter(activa=True).order_by('nombre'),
             'area_seleccionada': int(area_id) if area_id.isdigit() else None,
             'sede_seleccionada': sede_id or None,
         })
         return context
+
+    def _calcular_cumplimiento_jefes(self, fecha_desde, fecha_hasta, area_id=None, sede_id=None):
+        """Cumplimiento de registro de asistencia por jefe en el rango.
+
+        Retorna lista de dicts: {jefe, subordinados_activos, dias_laborales,
+        dias_con_registro, dias_faltantes, pct_cumplimiento, fechas_faltantes}.
+        Ordenada por peor cumplimiento primero.
+        """
+        from datetime import timedelta
+        from apps.employees.models import HistorialCargo, Empleado
+        from apps.employees.views import ASISTENCIA_FECHA_ARRANQUE
+
+        # Corte inferior: antes de la fecha de arranque el módulo no operaba,
+        # así que esos días no cuentan como omisión del jefe.
+        fecha_inicio_efectiva = max(fecha_desde, ASISTENCIA_FECHA_ARRANQUE)
+
+        # 1) Días laborales L-V en el rango efectivo
+        dias_laborales = []
+        cursor = fecha_inicio_efectiva
+        while cursor <= fecha_hasta:
+            if cursor.weekday() < 5:
+                dias_laborales.append(cursor)
+            cursor += timedelta(days=1)
+
+        if not dias_laborales:
+            return []
+
+        # 2) Jefes activos: empleados que son jefe_directo de al menos uno
+        jefes_ids = HistorialCargo.objects.filter(
+            activo=True, jefe_directo__isnull=False,
+        ).values_list('jefe_directo', flat=True).distinct()
+        jefes = Empleado.objects.filter(pk__in=list(jefes_ids)).select_related('sede')
+
+        resultado = []
+        for jefe in jefes:
+            # Subordinados activos del jefe
+            subs_qs = Empleado.objects.filter(
+                historialcargo__activo=True,
+                historialcargo__jefe_directo=jefe,
+                estado__codigo__in=['999', 'p-prue'],
+            ).distinct()
+            if area_id:
+                subs_qs = subs_qs.filter(
+                    historialcargo__cargo__area_id=area_id,
+                    historialcargo__activo=True,
+                )
+            if sede_id:
+                subs_qs = subs_qs.filter(sede_id=sede_id)
+            subs = list(subs_qs)
+            if not subs:
+                continue
+
+            # Fechas con al menos 1 registro del equipo (en el rango efectivo)
+            fechas_con_registro = set(
+                AsistenciaDiaria.objects
+                .filter(empleado__in=subs, fecha__gte=fecha_inicio_efectiva, fecha__lte=fecha_hasta)
+                .values_list('fecha', flat=True)
+                .distinct()
+            )
+            dias_con_registro = sum(1 for d in dias_laborales if d in fechas_con_registro)
+            fechas_faltantes = [d for d in dias_laborales if d not in fechas_con_registro]
+
+            resultado.append({
+                'jefe': jefe,
+                'subordinados_activos': len(subs),
+                'dias_laborales': len(dias_laborales),
+                'dias_con_registro': dias_con_registro,
+                'dias_faltantes': len(fechas_faltantes),
+                'pct_cumplimiento': round(dias_con_registro / len(dias_laborales) * 100, 1),
+                'fechas_faltantes': fechas_faltantes[:5],  # primeras 5 para UI
+                'faltantes_total': len(fechas_faltantes),
+            })
+
+        resultado.sort(key=lambda r: (r['pct_cumplimiento'], -r['dias_faltantes']))
+        return resultado

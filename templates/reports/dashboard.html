@@ -531,6 +531,17 @@
     <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
+                <i class="fas fa-clipboard-check fa-3x text-success mb-3"></i>
+                <h6>Reporte de Asistencia</h6>
+                <a href="{% url 'reports:asistencia_report' %}" class="btn btn-success btn-sm">
+                    Ver Reporte
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
                 <i class="fas fa-heart fa-3x text-info mb-3"></i>
                 <h6>Reporte de Clima</h6>
                 <button class="btn btn-info btn-sm" onclick="generateClimateReport()">

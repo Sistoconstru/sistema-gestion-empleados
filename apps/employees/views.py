@@ -4252,6 +4252,13 @@ def mis_vacaciones(request):
 # ============================================================================
 # Jornada estándar Construinmuniza: L-V, 7:00 AM a 4:24 PM con 1h de descanso
 # (20+40 min). Los sábados/domingos/festivos NO se registran.
+from datetime import date as _date_const  # aliased para constantes globales
+# Fecha desde la cual el módulo de asistencia está oficialmente activo.
+# Antes de esta fecha NO se consideran "días sin registrar" — no era falta
+# del jefe, simplemente el sistema aún no operaba. Ajustar si se cambia la
+# fecha de arranque.
+ASISTENCIA_FECHA_ARRANQUE = _date_const(2026, 7, 27)  # lunes 27/07/2026
+
 JORNADA_HORA_INGRESO = '07:00'
 JORNADA_HORA_SALIDA = '16:24'
 JORNADA_DESCANSOS_MIN = '20 + 40'
@@ -4324,6 +4331,28 @@ def asistencia_diaria(request):
             empleado__in=equipo, fecha=fecha,
         ).select_related('empleado')
     }
+
+    # Días L-V en la ventana retroactiva SIN ningún registro del equipo actual.
+    # Se considera "sin registrar" si no hay ningún AsistenciaDiaria del equipo
+    # para esa fecha (independiente de cuántos empleados haya). Excluye la
+    # fecha visualizada actualmente para no duplicar el aviso.
+    #
+    # El corte inferior real es max(ventana_min, ASISTENCIA_FECHA_ARRANQUE):
+    # antes de la fecha de arranque el sistema no operaba, así que esos días
+    # NO son omisión del jefe y no se reclaman.
+    limite_inferior = max(ventana_min, ASISTENCIA_FECHA_ARRANQUE)
+    dias_sin_registrar = []
+    fechas_con_registro = set(
+        AsistenciaDiaria.objects
+        .filter(empleado__in=equipo, fecha__gte=limite_inferior, fecha__lte=hoy)
+        .values_list('fecha', flat=True)
+        .distinct()
+    )
+    cursor = hoy
+    while cursor >= limite_inferior:
+        if cursor.weekday() < 5 and cursor != fecha and cursor not in fechas_con_registro:
+            dias_sin_registrar.append(cursor)
+        cursor -= timedelta(days=1)
 
     if request.method == 'POST':
         if es_fin_de_semana:
@@ -4420,6 +4449,7 @@ def asistencia_diaria(request):
         'jornada_ingreso': JORNADA_HORA_INGRESO,
         'jornada_salida': JORNADA_HORA_SALIDA,
         'jornada_descansos': JORNADA_DESCANSOS_MIN,
+        'dias_sin_registrar': dias_sin_registrar,
     })
 
 

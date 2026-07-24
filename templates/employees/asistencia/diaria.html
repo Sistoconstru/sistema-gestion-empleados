@@ -66,6 +66,28 @@
     {% endfor %}
 {% endif %}
 
+{% if dias_sin_registrar %}
+    <div class="alert alert-warning border-warning">
+        <div class="d-flex align-items-start gap-3">
+            <div class="text-warning" style="font-size: 1.6rem;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="flex-grow-1">
+                <strong>Tienes {{ dias_sin_registrar|length }} día{{ dias_sin_registrar|length|pluralize:"s" }} laboral{{ dias_sin_registrar|length|pluralize:"es" }} sin registrar</strong>
+                dentro de los últimos 7 días.
+                Puedes registrarlos ahora (después de esa ventana ya no será posible):
+                <div class="mt-2 d-flex flex-wrap gap-2">
+                    {% for d in dias_sin_registrar %}
+                        <a class="btn btn-sm btn-warning" href="?fecha={{ d|date:'Y-m-d' }}">
+                            <i class="fas fa-pen me-1"></i>{{ d|date:"D d/m" }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
 {% if es_fin_de_semana %}
     <div class="alert alert-warning">
         <i class="fas fa-info-circle me-1"></i>

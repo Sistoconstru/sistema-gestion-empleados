@@ -127,6 +127,72 @@
     </div>
 </div>
 
+{# Cumplimiento de registro por jefe #}
+<div class="card border-corporativo shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <i class="fas fa-user-check me-2"></i>Cumplimiento de registro por jefe
+        <small class="text-muted ms-2">(% días laborales L-V con al menos un registro del equipo, desde la fecha de arranque del módulo)</small>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Jefe</th>
+                        <th class="text-center">Equipo</th>
+                        <th class="text-center">Días L-V</th>
+                        <th class="text-center">Registrados</th>
+                        <th class="text-center">Faltantes</th>
+                        <th class="text-center">% Cumplimiento</th>
+                        <th>Días sin registrar (primeros)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in cumplimiento_jefes %}
+                        <tr>
+                            <td>
+                                <strong>{{ r.jefe.nombre_completo }}</strong>
+                                <div class="small text-muted">{{ r.jefe.sede.nombre|default:"" }}</div>
+                            </td>
+                            <td class="text-center">{{ r.subordinados_activos }}</td>
+                            <td class="text-center">{{ r.dias_laborales }}</td>
+                            <td class="text-center"><span class="badge bg-success">{{ r.dias_con_registro }}</span></td>
+                            <td class="text-center">
+                                {% if r.dias_faltantes > 0 %}
+                                    <span class="badge bg-danger">{{ r.dias_faltantes }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">0</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if r.pct_cumplimiento >= 90 %}
+                                    <span class="badge bg-success">{{ r.pct_cumplimiento }}%</span>
+                                {% elif r.pct_cumplimiento >= 70 %}
+                                    <span class="badge bg-warning text-dark">{{ r.pct_cumplimiento }}%</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ r.pct_cumplimiento }}%</span>
+                                {% endif %}
+                            </td>
+                            <td class="small">
+                                {% for d in r.fechas_faltantes %}
+                                    <span class="badge bg-light text-dark border">{{ d|date:"d/m" }}</span>
+                                {% empty %}
+                                    <span class="text-muted">—</span>
+                                {% endfor %}
+                                {% if r.faltantes_total > r.fechas_faltantes|length %}
+                                    <span class="text-muted small">+{{ r.faltantes_total|add:'-5' }} más</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="7" class="text-center text-muted py-3">Sin jefes con equipo en el rango.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 {# Ranking por empleado (top 100 por ausencias) #}
 <div class="card border-corporativo shadow-sm">
     <div class="card-header bg-light">
