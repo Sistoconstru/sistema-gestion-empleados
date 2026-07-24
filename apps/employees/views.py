@@ -1187,8 +1187,28 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             jefe_directo=empleado, activo=True
         ).exists()
         context['puede_ver_vacaciones_admin'] = self.request.user.is_staff
-        # Asistencia: mismo criterio que vacaciones_equipo — tiene subordinados directos.
-        context['puede_ver_asistencia_equipo'] = context['puede_ver_vacaciones_equipo']
+        # Asistencia: tiene subordinados directos, O es encargado de un jefe
+        # ausente hoy (reemplazo puntual), O es encargado de un jefe con
+        # equipo grande (delegación permanente).
+        from datetime import date as _date_hoy
+        es_encargado_hoy = bool(_jefes_ausentes_reemplazados(self.request.user, _date_hoy.today()))
+        tiene_delegacion = bool(_jefes_con_delegacion_permanente(self.request.user))
+        context['puede_ver_asistencia_equipo'] = (
+            context['puede_ver_vacaciones_equipo'] or es_encargado_hoy or tiene_delegacion
+        )
+
+        # Si el empleado es jefe, pasar su equipo directo + encargado actual
+        # para renderizar la sección "Mi equipo" con selector de encargado.
+        if context['puede_ver_vacaciones_equipo']:
+            equipo = list(_equipo_del_jefe(self.request.user))
+            context['mi_equipo'] = equipo
+            context['encargado_actual_id'] = str(empleado.encargado_asistencia_id) if empleado.encargado_asistencia_id else ''
+            # Delegación permanente activa: si tiene ≥ umbral subalternos Y hay encargado.
+            context['delegacion_permanente_activa'] = (
+                len(equipo) >= UMBRAL_EQUIPO_GRANDE_ENCARGADO
+                and bool(empleado.encargado_asistencia_id)
+            )
+            context['equipo_grande_umbral'] = UMBRAL_EQUIPO_GRANDE_ENCARGADO
 
         return context
 
@@ -4263,6 +4283,10 @@ JORNADA_HORA_INGRESO = '07:00'
 JORNADA_HORA_SALIDA = '16:24'
 JORNADA_DESCANSOS_MIN = '20 + 40'
 DIAS_RETROACTIVOS_ASISTENCIA = 7
+# Si un jefe tiene este número o más de subalternos activos y designó un
+# encargado, el encargado queda habilitado PERMANENTEMENTE para registrar
+# la asistencia del equipo (no solo cuando el jefe está ausente).
+UMBRAL_EQUIPO_GRANDE_ENCARGADO = 30
 
 
 def _tiene_vacacion_aprobada_en(empleado, fecha):
@@ -4288,6 +4312,108 @@ def _fecha_desde_query(request, default=None):
         return datetime.strptime(raw, '%Y-%m-%d').date()
     except ValueError:
         return default or date.today()
+
+
+def _empleado_de_usuario(usuario):
+    """Retorna el Empleado vinculado al usuario o None."""
+    try:
+        return Empleado.objects.get(usuario=usuario)
+    except Empleado.DoesNotExist:
+        return None
+
+
+def _subalternos_activos_de(empleado):
+    """Queryset de subalternos directos activos del empleado."""
+    return (
+        Empleado.objects
+        .filter(
+            historialcargo__activo=True,
+            historialcargo__jefe_directo=empleado,
+            estado__codigo__in=['999', 'p-prue'],
+        )
+        .distinct()
+    )
+
+
+def _jefes_ausentes_reemplazados(usuario, fecha):
+    """Jefes que designaron a `usuario` como encargado y están ausentes en `fecha`.
+
+    Un jefe se considera ausente si tiene AsistenciaDiaria en la fecha con
+    estado en el set de ausencias. Se ignoran estados 'presente' y 'retardo'
+    (el jefe está aunque haya llegado tarde).
+    """
+    emp = _empleado_de_usuario(usuario)
+    if not emp:
+        return []
+
+    ausencias = ['ausente', 'permiso', 'permiso_no_remunerado', 'incapacidad', 'en_vacaciones']
+    return list(
+        Empleado.objects
+        .filter(encargado_asistencia=emp)
+        .filter(asistencias__fecha=fecha, asistencias__estado__in=ausencias)
+        .distinct()
+    )
+
+
+def _jefes_con_delegacion_permanente(usuario):
+    """Jefes con equipo grande (≥ umbral) que designaron a `usuario` como encargado.
+
+    Estos jefes delegan la asistencia de forma permanente — el encargado
+    puede registrar todos los días, no solo cuando el jefe está ausente.
+    """
+    emp = _empleado_de_usuario(usuario)
+    if not emp:
+        return []
+
+    candidatos = Empleado.objects.filter(encargado_asistencia=emp)
+    return [
+        j for j in candidatos
+        if _subalternos_activos_de(j).count() >= UMBRAL_EQUIPO_GRANDE_ENCARGADO
+    ]
+
+
+def _grupos_asistencia_a_registrar(usuario, fecha):
+    """Retorna lista de grupos (equipos) que el usuario puede registrar hoy.
+
+    Estructura:
+        [
+          {'jefe': None,         'motivo': 'propio',      'empleados': [...]},
+          {'jefe': <Empleado X>, 'motivo': 'ausencia',    'empleados': [...]},
+          {'jefe': <Empleado Y>, 'motivo': 'delegacion',  'empleados': [...]},
+        ]
+
+    - 'propio': equipo directo del usuario (si es jefe).
+    - 'ausencia': equipo de un jefe registrado como ausente hoy.
+    - 'delegacion': equipo de un jefe con ≥ UMBRAL subalternos que delegó permanentemente.
+
+    Un jefe que cumpla ambas condiciones (ausente hoy + equipo grande delegado)
+    aparece una sola vez con motivo='ausencia' (más urgente).
+    """
+    grupos = []
+
+    equipo_propio = list(_equipo_del_jefe(usuario))
+    if equipo_propio:
+        grupos.append({'jefe': None, 'motivo': 'propio', 'empleados': equipo_propio})
+
+    jefes_vistos = set()
+
+    def agregar_grupo_de_jefe(jefe, motivo):
+        if jefe.pk in jefes_vistos:
+            return
+        jefes_vistos.add(jefe.pk)
+        equipo = list(_subalternos_activos_de(jefe).order_by('apellidos', 'nombres'))
+        if equipo:
+            grupos.append({'jefe': jefe, 'motivo': motivo, 'empleados': equipo})
+
+    # Ausencias hoy — prioridad más alta
+    for jefe_ausente in _jefes_ausentes_reemplazados(usuario, fecha):
+        agregar_grupo_de_jefe(jefe_ausente, 'ausencia')
+
+    # Delegaciones permanentes por equipo grande
+    for jefe_delegado in _jefes_con_delegacion_permanente(usuario):
+        agregar_grupo_de_jefe(jefe_delegado, 'delegacion')
+
+    return grupos
 
 
 @login_required
@@ -4319,40 +4445,44 @@ def asistencia_diaria(request):
         return redirect('employees:asistencia_diaria')
     es_fin_de_semana = fecha.weekday() >= 5
 
-    equipo = list(_equipo_del_jefe(request.user))
-    if not equipo:
-        messages.info(request, 'No tienes empleados a cargo para registrar asistencia.')
+    # Grupos a cargo del usuario en esta fecha:
+    # - Su equipo propio (si tiene subordinados directos).
+    # - PLUS los equipos de jefes ausentes hoy que lo designaron encargado.
+    grupos = _grupos_asistencia_a_registrar(request.user, fecha)
+    if not grupos:
+        messages.info(
+            request,
+            'No tienes equipo asignado ni estás reemplazando a un jefe ausente hoy.'
+        )
         return redirect('employees:empleado_perfil')
 
-    # Registros existentes de esa fecha para el equipo
+    # Registros existentes de la fecha para todos los empleados de todos los grupos
+    todos_empleados = [e for g in grupos for e in g['empleados']]
     registros_existentes = {
         r.empleado_id: r
         for r in AsistenciaDiaria.objects.filter(
-            empleado__in=equipo, fecha=fecha,
+            empleado__in=todos_empleados, fecha=fecha,
         ).select_related('empleado')
     }
 
-    # Días L-V en la ventana retroactiva SIN ningún registro del equipo actual.
-    # Se considera "sin registrar" si no hay ningún AsistenciaDiaria del equipo
-    # para esa fecha (independiente de cuántos empleados haya). Excluye la
-    # fecha visualizada actualmente para no duplicar el aviso.
-    #
-    # El corte inferior real es max(ventana_min, ASISTENCIA_FECHA_ARRANQUE):
-    # antes de la fecha de arranque el sistema no operaba, así que esos días
-    # NO son omisión del jefe y no se reclaman.
+    # Días L-V en la ventana retroactiva SIN ningún registro del EQUIPO PROPIO.
+    # El banner solo aplica al equipo propio del usuario — los días que faltan
+    # del equipo de un jefe reemplazado son responsabilidad del jefe titular.
+    equipo_propio = next((g['empleados'] for g in grupos if g['jefe'] is None), [])
     limite_inferior = max(ventana_min, ASISTENCIA_FECHA_ARRANQUE)
     dias_sin_registrar = []
-    fechas_con_registro = set(
-        AsistenciaDiaria.objects
-        .filter(empleado__in=equipo, fecha__gte=limite_inferior, fecha__lte=hoy)
-        .values_list('fecha', flat=True)
-        .distinct()
-    )
-    cursor = hoy
-    while cursor >= limite_inferior:
-        if cursor.weekday() < 5 and cursor != fecha and cursor not in fechas_con_registro:
-            dias_sin_registrar.append(cursor)
-        cursor -= timedelta(days=1)
+    if equipo_propio:
+        fechas_con_registro = set(
+            AsistenciaDiaria.objects
+            .filter(empleado__in=equipo_propio, fecha__gte=limite_inferior, fecha__lte=hoy)
+            .values_list('fecha', flat=True)
+            .distinct()
+        )
+        cursor = hoy
+        while cursor >= limite_inferior:
+            if cursor.weekday() < 5 and cursor != fecha and cursor not in fechas_con_registro:
+                dias_sin_registrar.append(cursor)
+            cursor -= timedelta(days=1)
 
     if request.method == 'POST':
         if es_fin_de_semana:
@@ -4365,11 +4495,13 @@ def asistencia_diaria(request):
             registrado_por = None
 
         estados_validos = {c[0] for c in AsistenciaDiaria.ESTADO_CHOICES}
-        empleado_ids_equipo = {e.id for e in equipo}
+        empleado_ids_permitidos = {e.id for e in todos_empleados}
         creados, actualizados, errores = 0, 0, []
 
         with transaction.atomic():
-            for emp in equipo:
+            for emp in todos_empleados:
+                if emp.id not in empleado_ids_permitidos:
+                    continue
                 # Auto-detección: vacaciones aprobadas mandan sin importar el input
                 if _tiene_vacacion_aprobada_en(emp, fecha):
                     estado_final = 'en_vacaciones'
@@ -4378,8 +4510,6 @@ def asistencia_diaria(request):
                     estado_final = (request.POST.get(f'estado_{emp.id}') or 'presente').strip()
                     motivo_final = (request.POST.get(f'motivo_{emp.id}') or '').strip()
 
-                if emp.id not in empleado_ids_equipo:
-                    continue
                 if estado_final not in estados_validos:
                     errores.append(f'{emp.nombre_completo}: estado inválido "{estado_final}"')
                     continue
@@ -4412,23 +4542,30 @@ def asistencia_diaria(request):
             )
         return redirect(f'{reverse("employees:asistencia_diaria")}?fecha={fecha.isoformat()}')
 
-    # GET — armar filas con auto-detección
-    filas = []
-    for emp in equipo:
-        reg = registros_existentes.get(emp.id)
-        en_vacaciones = _tiene_vacacion_aprobada_en(emp, fecha)
-        if en_vacaciones:
-            estado, motivo, readonly = 'en_vacaciones', 'Vacaciones aprobadas por RRHH', True
-        elif reg:
-            estado, motivo, readonly = reg.estado, reg.motivo, False
-        else:
-            estado, motivo, readonly = 'presente', '', False
-        filas.append({
-            'empleado': emp,
-            'estado': estado,
-            'motivo': motivo,
-            'readonly': readonly,
-            'registrado_previamente': reg is not None,
+    # GET — armar filas con auto-detección, agrupadas por sección
+    grupos_ui = []
+    for g in grupos:
+        filas = []
+        for emp in g['empleados']:
+            reg = registros_existentes.get(emp.id)
+            en_vacaciones = _tiene_vacacion_aprobada_en(emp, fecha)
+            if en_vacaciones:
+                estado, motivo, readonly = 'en_vacaciones', 'Vacaciones aprobadas por RRHH', True
+            elif reg:
+                estado, motivo, readonly = reg.estado, reg.motivo, False
+            else:
+                estado, motivo, readonly = 'presente', '', False
+            filas.append({
+                'empleado': emp,
+                'estado': estado,
+                'motivo': motivo,
+                'readonly': readonly,
+                'registrado_previamente': reg is not None,
+            })
+        grupos_ui.append({
+            'jefe_ausente': g['jefe'],  # None si es equipo propio
+            'motivo_grupo': g['motivo'],  # 'propio' | 'ausencia' | 'delegacion'
+            'filas': filas,
         })
 
     fecha_anterior = (fecha - timedelta(days=1)) if fecha > ventana_min else None
@@ -4439,7 +4576,7 @@ def asistencia_diaria(request):
         'hoy': hoy,
         'es_fin_de_semana': es_fin_de_semana,
         'es_hoy': fecha == hoy,
-        'filas': filas,
+        'grupos_ui': grupos_ui,
         'estados_editables': [
             c for c in AsistenciaDiaria.ESTADO_CHOICES
             if c[0] not in AsistenciaDiaria.ESTADOS_AUTOMATICOS
@@ -4451,6 +4588,47 @@ def asistencia_diaria(request):
         'jornada_descansos': JORNADA_DESCANSOS_MIN,
         'dias_sin_registrar': dias_sin_registrar,
     })
+
+
+@login_required
+@require_POST
+def asistencia_designar_encargado(request):
+    """Endpoint POST para designar (o quitar) un subalterno como encargado.
+
+    Se llama desde el perfil del empleado (sección "Mi equipo"), donde el jefe
+    marca con un radio button al empleado que actuará como encargado si él está
+    ausente. Vacío = sin encargado.
+    """
+    try:
+        jefe = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('employees:empleado_perfil')
+
+    subalternos = list(_equipo_del_jefe(request.user))
+    if not subalternos:
+        messages.info(request, 'No tienes empleados a cargo.')
+        return redirect('employees:empleado_perfil')
+
+    raw = (request.POST.get('encargado_id') or '').strip()
+    if raw == '':
+        Empleado.objects.filter(pk=jefe.pk).update(encargado_asistencia=None)
+        messages.success(request, 'Se retiró la designación de encargado.')
+        return redirect('employees:empleado_perfil')
+
+    subalternos_ids = {str(e.id) for e in subalternos}
+    if raw not in subalternos_ids:
+        messages.error(request, 'El empleado seleccionado no es tu subalterno directo activo.')
+        return redirect('employees:empleado_perfil')
+
+    Empleado.objects.filter(pk=jefe.pk).update(encargado_asistencia_id=raw)
+    elegido = next(e for e in subalternos if str(e.id) == raw)
+    messages.success(
+        request,
+        f'{elegido.nombre_completo} queda designado(a) como encargado(a) '
+        f'para registrar la asistencia del equipo cuando estés ausente.'
+    )
+    return redirect('employees:empleado_perfil')
 
 
 @login_required

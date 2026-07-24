@@ -162,6 +162,15 @@ class Empleado(BaseModel):
     acepto_terminos_polla_mundial = models.BooleanField(default=False, help_text="¿Aceptó términos y condiciones de la Polla Mundial?")
     fecha_aceptacion_terminos_polla = models.DateTimeField(null=True, blank=True, help_text="Fecha de aceptación de términos de Polla Mundial")
 
+    # Encargado de asistencia: subalterno directo que puede registrar la
+    # asistencia del equipo del jefe cuando el jefe esté ausente ese día.
+    # Se activa automáticamente al detectar registro de ausencia del jefe hoy.
+    encargado_asistencia = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='reemplaza_a',
+        help_text="Subalterno directo autorizado para registrar el equipo cuando este jefe esté ausente",
+    )
+
     # Saldo de vacaciones (calculado y devuelto por Odoo, consultado bajo demanda).
     # SIGHU NO calcula saldo — solo muestra el valor autoritativo de Odoo.
     # El saldo es al ÚLTIMO CORTE MENSUAL (fin de mes anterior), no en vivo.

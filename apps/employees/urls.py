@@ -51,6 +51,7 @@ urlpatterns = [
     # Asistencia diaria (jefe)
     path('asistencia/', views.asistencia_diaria, name='asistencia_diaria'),
     path('asistencia/historial/', views.asistencia_historial, name='asistencia_historial'),
+    path('asistencia/encargado/', views.asistencia_designar_encargado, name='asistencia_designar_encargado'),
 
     # Vacaciones — Administración (staff/RRHH)
     path('admin/vacaciones/', views.vacaciones_admin_panel, name='vacaciones_admin_panel'),

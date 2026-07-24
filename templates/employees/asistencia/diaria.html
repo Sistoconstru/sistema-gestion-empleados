@@ -96,78 +96,98 @@
 {% else %}
     <form method="post" id="formAsistencia">
         {% csrf_token %}
-        <div class="card border-corporativo shadow-sm">
-            <div class="card-header bg-light d-flex align-items-center justify-content-between">
-                <div>
-                    <i class="fas fa-users me-2"></i>Mi equipo
-                    <span class="badge bg-corporativo ms-1">{{ filas|length }}</span>
+
+        {% for g in grupos_ui %}
+            <div class="card border-{% if g.motivo_grupo == 'ausencia' %}warning{% elif g.motivo_grupo == 'delegacion' %}info{% else %}corporativo{% endif %} shadow-sm mb-3">
+                <div class="card-header {% if g.motivo_grupo == 'ausencia' %}bg-warning bg-opacity-25{% elif g.motivo_grupo == 'delegacion' %}bg-info bg-opacity-25{% else %}bg-light{% endif %} d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        {% if g.motivo_grupo == 'ausencia' %}
+                            <i class="fas fa-user-shield me-2 text-warning"></i>
+                            Reemplazando a <strong>{{ g.jefe_ausente.nombre_completo }}</strong>
+                            <span class="badge bg-warning text-dark ms-1">Ausente hoy</span>
+                        {% elif g.motivo_grupo == 'delegacion' %}
+                            <i class="fas fa-users-cog me-2 text-info"></i>
+                            Equipo delegado por <strong>{{ g.jefe_ausente.nombre_completo }}</strong>
+                            <span class="badge bg-info text-dark ms-1">Delegación permanente</span>
+                        {% else %}
+                            <i class="fas fa-users me-2"></i>Mi equipo
+                        {% endif %}
+                        <span class="badge bg-corporativo ms-1">{{ g.filas|length }}</span>
+                    </div>
+                    <div class="small text-muted">
+                        {% if g.motivo_grupo == 'propio' %}
+                            Por defecto todos aparecen como <strong>Presente</strong>. Marca solo las excepciones.
+                        {% elif g.motivo_grupo == 'ausencia' %}
+                            Registra la asistencia del equipo del jefe ausente.
+                        {% else %}
+                            Delegación permanente por equipo grande. El jefe también puede registrar.
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="small text-muted">
-                    Por defecto todos aparecen como <strong>Presente</strong>. Marca solo las excepciones.
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width: 32%;">Empleado</th>
-                                <th style="width: 26%;">Estado</th>
-                                <th>Motivo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for f in filas %}
-                                <tr class="{% if f.estado == 'presente' %}{% elif f.estado == 'en_vacaciones' %}table-info{% elif f.estado == 'incapacidad' %}table-warning{% elif f.estado == 'ausente' %}table-danger{% else %}table-secondary{% endif %}">
-                                    <td>
-                                        <strong>{{ f.empleado.nombre_completo }}</strong>
-                                        <div class="small text-muted">
-                                            {{ f.empleado.numero_documento }}
-                                            {% if f.registrado_previamente %}
-                                                · <span class="text-success"><i class="fas fa-check me-1"></i>ya registrado</span>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {% if f.readonly %}
-                                            <span class="badge bg-info text-dark">
-                                                <i class="fas fa-umbrella-beach me-1"></i>En vacaciones
-                                            </span>
-                                            <div class="small text-muted mt-1">Autodetectado por RRHH</div>
-                                        {% else %}
-                                            <select name="estado_{{ f.empleado.id }}" class="form-select form-select-sm select-estado"
-                                                    data-empleado-id="{{ f.empleado.id }}">
-                                                {% for cod, label in estados_editables %}
-                                                    <option value="{{ cod }}" {% if f.estado == cod %}selected{% endif %}>{{ label }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if f.readonly %}
-                                            <span class="text-muted small">{{ f.motivo|default:"—" }}</span>
-                                        {% else %}
-                                            <input type="text" class="form-control form-control-sm motivo-input"
-                                                   name="motivo_{{ f.empleado.id }}" value="{{ f.motivo }}"
-                                                   placeholder="{% if f.estado != 'presente' %}Motivo requerido{% else %}Sin ausencia{% endif %}"
-                                                   {% if f.estado == 'presente' %}disabled{% endif %}
-                                                   data-empleado-id="{{ f.empleado.id }}">
-                                        {% endif %}
-                                    </td>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 32%;">Empleado</th>
+                                    <th style="width: 26%;">Estado</th>
+                                    <th>Motivo</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for f in g.filas %}
+                                    <tr class="{% if f.estado == 'presente' %}{% elif f.estado == 'en_vacaciones' %}table-info{% elif f.estado == 'incapacidad' %}table-warning{% elif f.estado == 'ausente' %}table-danger{% else %}table-secondary{% endif %}">
+                                        <td>
+                                            <strong>{{ f.empleado.nombre_completo }}</strong>
+                                            <div class="small text-muted">
+                                                {{ f.empleado.numero_documento }}
+                                                {% if f.registrado_previamente %}
+                                                    · <span class="text-success"><i class="fas fa-check me-1"></i>ya registrado</span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if f.readonly %}
+                                                <span class="badge bg-info text-dark">
+                                                    <i class="fas fa-umbrella-beach me-1"></i>En vacaciones
+                                                </span>
+                                                <div class="small text-muted mt-1">Autodetectado por RRHH</div>
+                                            {% else %}
+                                                <select name="estado_{{ f.empleado.id }}" class="form-select form-select-sm select-estado"
+                                                        data-empleado-id="{{ f.empleado.id }}">
+                                                    {% for cod, label in estados_editables %}
+                                                        <option value="{{ cod }}" {% if f.estado == cod %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if f.readonly %}
+                                                <span class="text-muted small">{{ f.motivo|default:"—" }}</span>
+                                            {% else %}
+                                                <input type="text" class="form-control form-control-sm motivo-input"
+                                                       name="motivo_{{ f.empleado.id }}" value="{{ f.motivo }}"
+                                                       placeholder="{% if f.estado != 'presente' %}Motivo requerido{% else %}Sin ausencia{% endif %}"
+                                                       {% if f.estado == 'presente' %}disabled{% endif %}
+                                                       data-empleado-id="{{ f.empleado.id }}">
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="card-footer d-flex justify-content-end gap-2">
-                <a href="{% url 'employees:asistencia_diaria' %}?fecha={{ fecha|date:'Y-m-d' }}" class="btn btn-outline-secondary">
-                    Descartar cambios
-                </a>
-                <button type="submit" class="btn btn-corporativo">
-                    <i class="fas fa-save me-1"></i>Guardar día
-                </button>
-            </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            <a href="{% url 'employees:asistencia_diaria' %}?fecha={{ fecha|date:'Y-m-d' }}" class="btn btn-outline-secondary">
+                Descartar cambios
+            </a>
+            <button type="submit" class="btn btn-corporativo">
+                <i class="fas fa-save me-1"></i>Guardar día
+            </button>
         </div>
     </form>
 

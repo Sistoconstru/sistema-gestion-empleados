@@ -287,6 +287,136 @@
                         </div>
                     {% endif %}
 
+                    {% if puede_ver_vacaciones_equipo and mi_equipo %}
+                        <div class="col-12 mb-3">
+                            <div class="card border-corporativo shadow-sm">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <div>
+                                        <i class="fas fa-users me-2"></i>Mi equipo
+                                        <span class="badge bg-corporativo ms-1">{{ empleados_a_cargo.total|default:mi_equipo|length }}</span>
+                                        {% if empleados_a_cargo.tipo_jefe %}
+                                            <span class="badge bg-secondary ms-1">{{ empleados_a_cargo.tipo_jefe|capfirst }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">
+                                        Marca a UN empleado como <strong>encargado</strong> — podrá registrar la asistencia del equipo si tú estás ausente ese día.
+                                    </small>
+                                </div>
+
+                                {% if delegacion_permanente_activa %}
+                                <div class="alert alert-info mb-0 rounded-0 small">
+                                    <i class="fas fa-users-cog me-1"></i>
+                                    <strong>Delegación permanente activa</strong> — como tienes {{ mi_equipo|length }} empleados (umbral: {{ equipo_grande_umbral }}), tu encargado puede registrar la asistencia del equipo <strong>todos los días</strong>, no solo cuando estés ausente. Tú también sigues pudiendo registrar.
+                                </div>
+                                {% endif %}
+
+                                {# KPIs compactos #}
+                                {% if empleados_a_cargo.es_jefe %}
+                                <div class="card-body py-2 border-bottom bg-light bg-opacity-50">
+                                    <div class="row text-center g-2">
+                                        <div class="col">
+                                            <div class="fs-6 fw-bold text-corporativo">{{ empleados_a_cargo.activos }}</div>
+                                            <small class="text-muted">Activos</small>
+                                        </div>
+                                        {% if empleados_a_cargo.en_prueba > 0 %}
+                                            <div class="col">
+                                                <div class="fs-6 fw-bold text-warning">{{ empleados_a_cargo.en_prueba }}</div>
+                                                <small class="text-muted">En prueba</small>
+                                            </div>
+                                        {% endif %}
+                                        {% if empleados_a_cargo.con_alertas > 0 %}
+                                            <div class="col">
+                                                <div class="fs-6 fw-bold text-danger">{{ empleados_a_cargo.con_alertas }}</div>
+                                                <small class="text-muted">Con alertas</small>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <form method="post" action="{% url 'employees:asistencia_designar_encargado' %}">
+                                    {% csrf_token %}
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover align-middle mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width: 10%;" class="text-center">Encargado</th>
+                                                        <th>Empleado</th>
+                                                        <th>Cargo</th>
+                                                        <th>Estado</th>
+                                                        <th>Alertas</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <input type="radio" name="encargado_id" value=""
+                                                                   {% if not encargado_actual_id %}checked{% endif %}
+                                                                   class="form-check-input" title="Sin encargado">
+                                                        </td>
+                                                        <td colspan="4"><em class="text-muted">— Sin encargado designado —</em></td>
+                                                    </tr>
+                                                    {% for item in empleados_a_cargo.lista_empleados %}
+                                                        <tr class="{% if encargado_actual_id == item.empleado.id|stringformat:"s" %}table-success{% elif item.tiene_alertas %}table-warning{% endif %}">
+                                                            <td class="text-center">
+                                                                <input type="radio" name="encargado_id" value="{{ item.empleado.id }}"
+                                                                       {% if encargado_actual_id == item.empleado.id|stringformat:"s" %}checked{% endif %}
+                                                                       class="form-check-input">
+                                                            </td>
+                                                            <td>
+                                                                <a href="{% url 'employees:empleado_detail_supervisor' pk=item.empleado.pk %}" class="text-decoration-none">
+                                                                    <strong>{{ item.empleado.nombre_completo }}</strong>
+                                                                </a>
+                                                                {% if encargado_actual_id == item.empleado.id|stringformat:"s" %}
+                                                                    <span class="badge bg-success ms-1"><i class="fas fa-user-check me-1"></i>Encargado actual</span>
+                                                                {% endif %}
+                                                                <div class="small text-muted">{{ item.empleado.numero_documento }} · {{ item.dias_empresa }} días</div>
+                                                            </td>
+                                                            <td class="small">
+                                                                {% if item.cargo_actual %}{{ item.cargo_actual.cargo.nombre }}{% else %}<span class="text-muted">—</span>{% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-{% if item.empleado.estado.codigo == '999' %}success{% elif item.empleado.estado.codigo == 'p-prue' %}warning text-dark{% else %}secondary{% endif %}">
+                                                                    {{ item.empleado.estado.nombre }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                {% for alerta in item.alertas %}
+                                                                    <span class="badge bg-danger bg-opacity-75 me-1">{{ alerta }}</span>
+                                                                {% empty %}
+                                                                    <span class="text-muted small">—</span>
+                                                                {% endfor %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                        <div class="small">
+                                            {% if encargado_actual_id %}
+                                                <i class="fas fa-check-circle text-success me-1"></i>
+                                                <span class="text-muted">Encargado asignado. Cambia la selección arriba y guarda para reasignar.</span>
+                                            {% else %}
+                                                <i class="fas fa-info-circle text-muted me-1"></i>
+                                                <span class="text-muted">Aún no has designado un encargado.</span>
+                                            {% endif %}
+                                        </div>
+                                        <button type="submit" class="btn btn-{% if encargado_actual_id %}outline-corporativo{% else %}corporativo{% endif %} btn-sm">
+                                            {% if encargado_actual_id %}
+                                                <i class="fas fa-exchange-alt me-1"></i>Cambiar encargado
+                                            {% else %}
+                                                <i class="fas fa-save me-1"></i>Guardar encargado
+                                            {% endif %}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     {% if puede_ver_vacaciones_admin %}
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="{% url 'employees:vacaciones_admin_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
@@ -592,89 +722,6 @@
         </div>
         {% endif %}
 
-        <!-- Empleados a mi Cargo -->
-        {% if empleados_a_cargo.es_jefe %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-users me-2"></i>Mi Equipo
-                    <span class="badge bg-corporativo ms-2">{{ empleados_a_cargo.tipo_jefe|capfirst }}</span>
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center mb-3">
-                    <div class="col-4">
-                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.total }}</div>
-                        <small class="text-muted">Total</small>
-                    </div>
-                    <div class="col-4">
-                        <div class="text-corporativo fs-5 fw-bold">{{ empleados_a_cargo.activos }}</div>
-                        <small class="text-muted">Activos</small>
-                    </div>
-                    <div class="col-4">
-                        <div class="text-{% if empleados_a_cargo.con_alertas > 0 %}amarillo{% else %}corporativo{% endif %} fs-5 fw-bold">{{ empleados_a_cargo.con_alertas }}</div>
-                        <small class="text-muted">Con alertas</small>
-                    </div>
-                </div>
-                
-                {% if empleados_a_cargo.en_prueba > 0 %}
-                <div class="alert alert-amarillo alert-sm text-corporativo mb-3">
-                    <i class="fas fa-clock me-1"></i>
-                    <strong>{{ empleados_a_cargo.en_prueba }} empleado{{ empleados_a_cargo.en_prueba|pluralize }}</strong> en período de prueba
-                </div>
-                {% endif %}
-                
-                {% if empleados_a_cargo.lista_empleados %}
-                <div class="empleados-cargo-list">
-                    {% for item in empleados_a_cargo.lista_empleados %}
-                    <div class="d-flex align-items-center border-bottom py-2 {% if item.tiene_alertas %}bg-warning bg-opacity-10{% endif %}">
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm bg-corporativo bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                                <i class="fas fa-user text-corporativo"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">
-                                <a href="{% url 'employees:empleado_detail_supervisor' pk=item.empleado.pk %}" class="text-decoration-none">
-                                    {{ item.empleado.nombre_completo }}
-                                </a>
-                                {% if item.tiene_alertas %}
-                                    <i class="fas fa-exclamation-triangle text-amarillo ms-1" title="Tiene alertas"></i>
-                                {% endif %}
-                            </h6>
-                            <small class="text-muted">
-                                {% if item.cargo_actual %}
-                                    {{ item.cargo_actual.cargo.nombre }}
-                                {% else %}
-                                    Sin cargo asignado
-                                {% endif %}
-                                • {{ item.dias_empresa }} días en empresa
-                            </small>
-                            {% if item.alertas %}
-                                <div class="mt-1">
-                                    {% for alerta in item.alertas %}
-                                        <span class="badge bg-amarillo text-corporativo me-1">{{ alerta }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="flex-shrink-0">
-                            <span class="badge bg-{% if item.empleado.estado.codigo == 'ACTIVO' %}corporativo{% elif item.empleado.estado.codigo == 'PRUEBA' or item.empleado.estado.codigo == 'p-prue' %}amarillo text-corporativo{% else %}secondary{% endif %}">
-                                {{ item.empleado.estado.nombre }}
-                            </span>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="text-center py-3">
-                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
-                    <p class="text-muted mb-0">No hay empleados asignados</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
         
         <!-- Sistema de Puntos -->
         <div class="card mb-4">
