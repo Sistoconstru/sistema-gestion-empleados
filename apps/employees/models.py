@@ -620,13 +620,14 @@ class AsistenciaDiaria(BaseModel):
         ('retardo', 'Retardo'),
         ('ausente', 'Ausente sin justificar'),
         ('permiso', 'Permiso remunerado'),
-        ('licencia', 'Licencia no remunerada'),
+        ('permiso_no_remunerado', 'Permiso no remunerado'),
         ('incapacidad', 'Incapacidad'),
         ('en_vacaciones', 'En vacaciones'),
     ]
     # Estados que NO son un "presente pleno" — para reportes de ausentismo.
     ESTADOS_AUSENCIA = {
-        'ausente', 'permiso', 'licencia', 'incapacidad', 'en_vacaciones',
+        'ausente', 'permiso', 'permiso_no_remunerado',
+        'incapacidad', 'en_vacaciones',
     }
     # Estados autodetectados por el sistema — el jefe no los edita a mano.
     ESTADOS_AUTOMATICOS = {'en_vacaciones', 'incapacidad'}
@@ -636,7 +637,7 @@ class AsistenciaDiaria(BaseModel):
         help_text="Empleado al que corresponde el registro",
     )
     fecha = models.DateField(help_text="Fecha del registro (solo días L-V)")
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='presente')
+    estado = models.CharField(max_length=25, choices=ESTADO_CHOICES, default='presente')
     motivo = models.TextField(
         blank=True,
         help_text="Motivo de la ausencia/permiso (obligatorio si estado != presente)",

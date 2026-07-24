@@ -4494,7 +4494,7 @@ def asistencia_historial(request):
             ausente=Count('id', filter=Q(estado='ausente')),
             retardo=Count('id', filter=Q(estado='retardo')),
             permiso=Count('id', filter=Q(estado='permiso')),
-            licencia=Count('id', filter=Q(estado='licencia')),
+            permiso_no_remunerado=Count('id', filter=Q(estado='permiso_no_remunerado')),
             incapacidad=Count('id', filter=Q(estado='incapacidad')),
             en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
         )

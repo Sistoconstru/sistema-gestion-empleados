@@ -1028,18 +1028,22 @@ class AsistenciaReportView(TemplateView):
             retardo=Count('id', filter=Q(estado='retardo')),
             ausente=Count('id', filter=Q(estado='ausente')),
             permiso=Count('id', filter=Q(estado='permiso')),
-            licencia=Count('id', filter=Q(estado='licencia')),
+            permiso_no_remunerado=Count('id', filter=Q(estado='permiso_no_remunerado')),
             incapacidad=Count('id', filter=Q(estado='incapacidad')),
             en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
         )
-        # % asistencia = presente / (presente + retardo + ausente + permiso + licencia + incapacidad)
-        # (vacaciones no cuenta como ausencia, pero tampoco como asistencia efectiva)
+        # % asistencia = presente / (presente + retardo + ausencias reales)
+        # (vacaciones no cuenta como ausencia ni como asistencia efectiva)
         base_asistencia = (
             agrupado['presente'] + agrupado['retardo'] + agrupado['ausente']
-            + agrupado['permiso'] + agrupado['licencia'] + agrupado['incapacidad']
+            + agrupado['permiso'] + agrupado['permiso_no_remunerado']
+            + agrupado['incapacidad']
         )
         pct_asistencia = (agrupado['presente'] / base_asistencia * 100) if base_asistencia else 0
-        pct_ausentismo = ((agrupado['ausente'] + agrupado['permiso'] + agrupado['licencia'] + agrupado['incapacidad']) / base_asistencia * 100) if base_asistencia else 0
+        pct_ausentismo = (
+            (agrupado['ausente'] + agrupado['permiso'] + agrupado['permiso_no_remunerado'] + agrupado['incapacidad'])
+            / base_asistencia * 100
+        ) if base_asistencia else 0
 
         # === Desglose por empleado (top 100 por más ausencias) ===
         por_empleado = (
@@ -1050,7 +1054,7 @@ class AsistenciaReportView(TemplateView):
                 retardo=Count('id', filter=Q(estado='retardo')),
                 ausente=Count('id', filter=Q(estado='ausente')),
                 permiso=Count('id', filter=Q(estado='permiso')),
-                licencia=Count('id', filter=Q(estado='licencia')),
+                permiso_no_remunerado=Count('id', filter=Q(estado='permiso_no_remunerado')),
                 incapacidad=Count('id', filter=Q(estado='incapacidad')),
                 en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
             )

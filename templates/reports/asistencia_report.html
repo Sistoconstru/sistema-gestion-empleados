@@ -119,8 +119,8 @@
             <div class="col"><span class="badge bg-success fs-6">Presente: {{ agrupado.presente }}</span></div>
             <div class="col"><span class="badge bg-warning text-dark fs-6">Retardo: {{ agrupado.retardo }}</span></div>
             <div class="col"><span class="badge bg-danger fs-6">Ausente: {{ agrupado.ausente }}</span></div>
-            <div class="col"><span class="badge bg-info text-dark fs-6">Permiso: {{ agrupado.permiso }}</span></div>
-            <div class="col"><span class="badge bg-secondary fs-6">Licencia: {{ agrupado.licencia }}</span></div>
+            <div class="col"><span class="badge bg-info text-dark fs-6">Permiso remun.: {{ agrupado.permiso }}</span></div>
+            <div class="col"><span class="badge bg-secondary fs-6">Permiso no rem.: {{ agrupado.permiso_no_remunerado }}</span></div>
             <div class="col"><span class="badge bg-warning text-dark fs-6">Incapacidad: {{ agrupado.incapacidad }}</span></div>
             <div class="col"><span class="badge bg-primary fs-6">Vacaciones: {{ agrupado.en_vacaciones }}</span></div>
         </div>
@@ -209,8 +209,8 @@
                         <th class="text-center">Presente</th>
                         <th class="text-center">Retardo</th>
                         <th class="text-center">Ausente</th>
-                        <th class="text-center">Permiso</th>
-                        <th class="text-center">Licencia</th>
+                        <th class="text-center">Permiso remun.</th>
+                        <th class="text-center">Permiso no rem.</th>
                         <th class="text-center">Incapacidad</th>
                         <th class="text-center">Vacaciones</th>
                         <th class="text-center">Total</th>
@@ -225,7 +225,7 @@
                             <td class="text-center"><span class="badge bg-warning text-dark">{{ r.retardo }}</span></td>
                             <td class="text-center"><span class="badge bg-danger">{{ r.ausente }}</span></td>
                             <td class="text-center"><span class="badge bg-info text-dark">{{ r.permiso }}</span></td>
-                            <td class="text-center"><span class="badge bg-secondary">{{ r.licencia }}</span></td>
+                            <td class="text-center"><span class="badge bg-secondary">{{ r.permiso_no_remunerado }}</span></td>
                             <td class="text-center"><span class="badge bg-warning text-dark">{{ r.incapacidad }}</span></td>
                             <td class="text-center"><span class="badge bg-primary">{{ r.en_vacaciones }}</span></td>
                             <td class="text-center"><strong>{{ r.total }}</strong></td>

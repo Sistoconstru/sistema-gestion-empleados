@@ -68,8 +68,8 @@
                         <th class="text-center">Presente</th>
                         <th class="text-center">Retardo</th>
                         <th class="text-center">Ausente</th>
-                        <th class="text-center">Permiso</th>
-                        <th class="text-center">Licencia</th>
+                        <th class="text-center">Permiso remun.</th>
+                        <th class="text-center">Permiso no rem.</th>
                         <th class="text-center">Incapacidad</th>
                         <th class="text-center">Vacaciones</th>
                         <th class="text-center">Total</th>
@@ -83,7 +83,7 @@
                             <td class="text-center"><span class="badge bg-warning text-dark">{{ r.retardo }}</span></td>
                             <td class="text-center"><span class="badge bg-danger">{{ r.ausente }}</span></td>
                             <td class="text-center"><span class="badge bg-info text-dark">{{ r.permiso }}</span></td>
-                            <td class="text-center"><span class="badge bg-secondary">{{ r.licencia }}</span></td>
+                            <td class="text-center"><span class="badge bg-secondary">{{ r.permiso_no_remunerado }}</span></td>
                             <td class="text-center"><span class="badge bg-warning text-dark">{{ r.incapacidad }}</span></td>
                             <td class="text-center"><span class="badge bg-primary">{{ r.en_vacaciones }}</span></td>
                             <td class="text-center"><strong>{{ r.total }}</strong></td>
@@ -127,9 +127,9 @@
                                 {% elif r.estado == 'ausente' %}
                                     <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Ausente</span>
                                 {% elif r.estado == 'permiso' %}
-                                    <span class="badge bg-info text-dark"><i class="fas fa-hand-paper me-1"></i>Permiso</span>
-                                {% elif r.estado == 'licencia' %}
-                                    <span class="badge bg-secondary"><i class="fas fa-user-clock me-1"></i>Licencia</span>
+                                    <span class="badge bg-info text-dark"><i class="fas fa-hand-paper me-1"></i>Permiso remun.</span>
+                                {% elif r.estado == 'permiso_no_remunerado' %}
+                                    <span class="badge bg-secondary"><i class="fas fa-hand-paper me-1"></i>Permiso no rem.</span>
                                 {% elif r.estado == 'incapacidad' %}
                                     <span class="badge bg-warning text-dark"><i class="fas fa-heart me-1"></i>Incapacidad</span>
                                 {% elif r.estado == 'en_vacaciones' %}
