@@ -277,6 +277,16 @@
                         </div>
                     {% endif %}
 
+                    {% if puede_ver_asistencia_equipo %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'employees:asistencia_diaria' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
+                                <strong>Asistencia del equipo</strong>
+                                <div class="small text-muted">Registrar quién asistió hoy (L–V) y motivos de ausencia</div>
+                            </a>
+                        </div>
+                    {% endif %}
+
                     {% if puede_ver_vacaciones_admin %}
                         <div class="col-md-3 col-sm-6 mb-3">
                             <a href="{% url 'employees:vacaciones_admin_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">

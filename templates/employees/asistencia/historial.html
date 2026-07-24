@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial de asistencia{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi perfil</a></li>
+<li class="breadcrumb-item"><a href="{% url 'employees:asistencia_diaria' %}">Asistencia</a></li>
+<li class="breadcrumb-item active">Historial</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-history fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Historial de asistencia del equipo</h2>
+                        <div class="opacity-75 small">
+                            Resumen y detalle de asistencia registrada por rango de fechas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="get" class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Desde</label>
+                <input type="date" name="fecha" value="{{ fecha_desde|date:'Y-m-d' }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Hasta</label>
+                <input type="date" name="hasta" value="{{ fecha_hasta|date:'Y-m-d' }}" class="form-control">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-corporativo w-100">
+                    <i class="fas fa-search me-1"></i>Filtrar
+                </button>
+                <a href="{% url 'employees:asistencia_diaria' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-clipboard-check me-1"></i>Registrar hoy
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+{# Resumen por empleado #}
+<div class="card border-corporativo shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <i class="fas fa-chart-bar me-2"></i>Resumen del período
+        <span class="badge bg-corporativo ms-1">{{ resumen|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Empleado</th>
+                        <th class="text-center">Presente</th>
+                        <th class="text-center">Retardo</th>
+                        <th class="text-center">Ausente</th>
+                        <th class="text-center">Permiso</th>
+                        <th class="text-center">Licencia</th>
+                        <th class="text-center">Incapacidad</th>
+                        <th class="text-center">Vacaciones</th>
+                        <th class="text-center">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in resumen %}
+                        <tr>
+                            <td><strong>{{ r.empleado__nombres }} {{ r.empleado__apellidos }}</strong></td>
+                            <td class="text-center"><span class="badge bg-success">{{ r.presente }}</span></td>
+                            <td class="text-center"><span class="badge bg-warning text-dark">{{ r.retardo }}</span></td>
+                            <td class="text-center"><span class="badge bg-danger">{{ r.ausente }}</span></td>
+                            <td class="text-center"><span class="badge bg-info text-dark">{{ r.permiso }}</span></td>
+                            <td class="text-center"><span class="badge bg-secondary">{{ r.licencia }}</span></td>
+                            <td class="text-center"><span class="badge bg-warning text-dark">{{ r.incapacidad }}</span></td>
+                            <td class="text-center"><span class="badge bg-primary">{{ r.en_vacaciones }}</span></td>
+                            <td class="text-center"><strong>{{ r.total }}</strong></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="9" class="text-center text-muted py-3">Sin registros en el período seleccionado.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{# Detalle #}
+<div class="card border-corporativo shadow-sm">
+    <div class="card-header bg-light">
+        <i class="fas fa-list me-2"></i>Detalle día por día
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Empleado</th>
+                        <th>Estado</th>
+                        <th>Motivo</th>
+                        <th>Registrado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in registros %}
+                        <tr>
+                            <td class="text-nowrap">{{ r.fecha|date:"d/m/Y (D)" }}</td>
+                            <td>{{ r.empleado.nombre_completo }}</td>
+                            <td>
+                                {% if r.estado == 'presente' %}
+                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Presente</span>
+                                {% elif r.estado == 'retardo' %}
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Retardo</span>
+                                {% elif r.estado == 'ausente' %}
+                                    <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Ausente</span>
+                                {% elif r.estado == 'permiso' %}
+                                    <span class="badge bg-info text-dark"><i class="fas fa-hand-paper me-1"></i>Permiso</span>
+                                {% elif r.estado == 'licencia' %}
+                                    <span class="badge bg-secondary"><i class="fas fa-user-clock me-1"></i>Licencia</span>
+                                {% elif r.estado == 'incapacidad' %}
+                                    <span class="badge bg-warning text-dark"><i class="fas fa-heart me-1"></i>Incapacidad</span>
+                                {% elif r.estado == 'en_vacaciones' %}
+                                    <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>Vacaciones</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ r.get_estado_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="small">{{ r.motivo|default:"—" }}</td>
+                            <td class="small text-muted">{{ r.registrado_por.nombre_completo|default:"—" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="5" class="text-center text-muted py-3">Sin registros.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

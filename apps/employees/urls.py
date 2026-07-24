@@ -48,6 +48,10 @@ urlpatterns = [
     path('mis-vacaciones/', views.mis_vacaciones, name='mis_vacaciones'),
     path('mis-vacaciones/<uuid:pk>/carta/', views.descargar_carta_vacaciones, name='descargar_carta_vacaciones'),
 
+    # Asistencia diaria (jefe)
+    path('asistencia/', views.asistencia_diaria, name='asistencia_diaria'),
+    path('asistencia/historial/', views.asistencia_historial, name='asistencia_historial'),
+
     # Vacaciones — Administración (staff/RRHH)
     path('admin/vacaciones/', views.vacaciones_admin_panel, name='vacaciones_admin_panel'),
     path('supervisor/<uuid:pk>/', views.EmpleadoDetailSupervisorView.as_view(), name='empleado_detail_supervisor'),

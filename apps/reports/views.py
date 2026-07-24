@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from datetime import timedelta, datetime
 
 # Importar modelos que ya funcionan
-from apps.employees.models import Empleado
+from apps.employees.models import Empleado, AsistenciaDiaria
 from apps.training.models import Capacitacion
 from apps.evaluations.models import AsignacionEvaluacion, PlanMejoraPredefinido, SeguimientoBimensual
 
@@ -977,5 +977,97 @@ class ExportEvaluationsPDFView(View):
 
         # Generar PDF
         doc.build(elementos)
-
         return response
+
+
+@method_decorator(login_required, name='dispatch')
+class AsistenciaReportView(TemplateView):
+    """Reporte RRHH de asistencia con KPIs, filtros por rango/área/sede y desglose por empleado."""
+    template_name = 'reports/asistencia_report.html'
+
+    def get_context_data(self, **kwargs):
+        from datetime import date
+        from apps.organizational.models import AreaEmpresa, Sede
+        context = super().get_context_data(**kwargs)
+
+        hoy = date.today()
+
+        # === Filtros por query string ===
+        fecha_desde_raw = (self.request.GET.get('desde') or '').strip()
+        fecha_hasta_raw = (self.request.GET.get('hasta') or '').strip()
+        area_id = (self.request.GET.get('area') or '').strip()
+        sede_id = (self.request.GET.get('sede') or '').strip()
+
+        try:
+            fecha_desde = datetime.strptime(fecha_desde_raw, '%Y-%m-%d').date() if fecha_desde_raw else hoy.replace(day=1)
+        except ValueError:
+            fecha_desde = hoy.replace(day=1)
+        try:
+            fecha_hasta = datetime.strptime(fecha_hasta_raw, '%Y-%m-%d').date() if fecha_hasta_raw else hoy
+        except ValueError:
+            fecha_hasta = hoy
+        if fecha_desde > fecha_hasta:
+            fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+        # === Query base ===
+        qs = AsistenciaDiaria.objects.filter(
+            fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+        )
+        if area_id:
+            qs = qs.filter(
+                empleado__historialcargo__cargo__area_id=area_id,
+                empleado__historialcargo__activo=True,
+            ).distinct()
+        if sede_id:
+            qs = qs.filter(empleado__sede_id=sede_id)
+
+        # === KPIs generales ===
+        total_registros = qs.count()
+        agrupado = qs.aggregate(
+            presente=Count('id', filter=Q(estado='presente')),
+            retardo=Count('id', filter=Q(estado='retardo')),
+            ausente=Count('id', filter=Q(estado='ausente')),
+            permiso=Count('id', filter=Q(estado='permiso')),
+            licencia=Count('id', filter=Q(estado='licencia')),
+            incapacidad=Count('id', filter=Q(estado='incapacidad')),
+            en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
+        )
+        # % asistencia = presente / (presente + retardo + ausente + permiso + licencia + incapacidad)
+        # (vacaciones no cuenta como ausencia, pero tampoco como asistencia efectiva)
+        base_asistencia = (
+            agrupado['presente'] + agrupado['retardo'] + agrupado['ausente']
+            + agrupado['permiso'] + agrupado['licencia'] + agrupado['incapacidad']
+        )
+        pct_asistencia = (agrupado['presente'] / base_asistencia * 100) if base_asistencia else 0
+        pct_ausentismo = ((agrupado['ausente'] + agrupado['permiso'] + agrupado['licencia'] + agrupado['incapacidad']) / base_asistencia * 100) if base_asistencia else 0
+
+        # === Desglose por empleado (top 100 por más ausencias) ===
+        por_empleado = (
+            qs.values('empleado__id', 'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento')
+            .annotate(
+                total=Count('id'),
+                presente=Count('id', filter=Q(estado='presente')),
+                retardo=Count('id', filter=Q(estado='retardo')),
+                ausente=Count('id', filter=Q(estado='ausente')),
+                permiso=Count('id', filter=Q(estado='permiso')),
+                licencia=Count('id', filter=Q(estado='licencia')),
+                incapacidad=Count('id', filter=Q(estado='incapacidad')),
+                en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
+            )
+            .order_by('-ausente', '-retardo', 'empleado__apellidos')[:100]
+        )
+
+        context.update({
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'total_registros': total_registros,
+            'agrupado': agrupado,
+            'pct_asistencia': round(pct_asistencia, 1),
+            'pct_ausentismo': round(pct_ausentismo, 1),
+            'por_empleado': por_empleado,
+            'areas': AreaEmpresa.objects.filter(activa=True).order_by('nombre'),
+            'sedes': Sede.objects.filter(activa=True).order_by('nombre'),
+            'area_seleccionada': int(area_id) if area_id.isdigit() else None,
+            'sede_seleccionada': sede_id or None,
+        })
+        return context

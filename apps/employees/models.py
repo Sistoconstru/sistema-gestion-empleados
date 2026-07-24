@@ -603,6 +603,87 @@ class HistorialCargo(BaseModel):
         return f"{self.empleado.nombre_completo} - {self.cargo} ({estado})"
 
 
+# ===================== ASISTENCIA DIARIA =====================
+
+class AsistenciaDiaria(BaseModel):
+    """Registro diario de asistencia del empleado, capturado por su jefe directo.
+
+    Un registro por (empleado, fecha). El jefe abre el tablero, todos aparecen
+    como 'presente' por defecto, y solo interactúa con las excepciones. Las
+    ausencias por vacaciones/incapacidad se autodetectan del resto del sistema.
+
+    Jornada estándar Construinmuniza: L-V, 7:00 AM a 4:24 PM con 1h de descanso
+    (20+40 min). Los sábados/domingos/festivos NO se registran.
+    """
+    ESTADO_CHOICES = [
+        ('presente', 'Presente'),
+        ('retardo', 'Retardo'),
+        ('ausente', 'Ausente sin justificar'),
+        ('permiso', 'Permiso remunerado'),
+        ('licencia', 'Licencia no remunerada'),
+        ('incapacidad', 'Incapacidad'),
+        ('en_vacaciones', 'En vacaciones'),
+    ]
+    # Estados que NO son un "presente pleno" — para reportes de ausentismo.
+    ESTADOS_AUSENCIA = {
+        'ausente', 'permiso', 'licencia', 'incapacidad', 'en_vacaciones',
+    }
+    # Estados autodetectados por el sistema — el jefe no los edita a mano.
+    ESTADOS_AUTOMATICOS = {'en_vacaciones', 'incapacidad'}
+
+    empleado = models.ForeignKey(
+        Empleado, on_delete=models.CASCADE, related_name='asistencias',
+        help_text="Empleado al que corresponde el registro",
+    )
+    fecha = models.DateField(help_text="Fecha del registro (solo días L-V)")
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='presente')
+    motivo = models.TextField(
+        blank=True,
+        help_text="Motivo de la ausencia/permiso (obligatorio si estado != presente)",
+    )
+    registrado_por = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='asistencias_registradas',
+        help_text="Jefe que registró la asistencia",
+    )
+
+    class Meta:
+        db_table = 'asistencia_diaria'
+        verbose_name = 'Registro de asistencia'
+        verbose_name_plural = 'Registros de asistencia'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['empleado', 'fecha'],
+                name='unique_asistencia_empleado_fecha',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['fecha']),
+            models.Index(fields=['empleado', '-fecha']),
+            models.Index(fields=['estado']),
+        ]
+        ordering = ['-fecha', 'empleado__apellidos']
+
+    def __str__(self):
+        return f"{self.empleado.nombre_completo} - {self.fecha} ({self.get_estado_display()})"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Solo días laborales L-V (lunes=0 ... viernes=4)
+        if self.fecha and self.fecha.weekday() >= 5:
+            raise ValidationError({'fecha': 'Solo se registran días de lunes a viernes.'})
+        # Motivo obligatorio para ausencias
+        if self.estado != 'presente' and not (self.motivo or '').strip():
+            if self.estado not in self.ESTADOS_AUTOMATICOS:
+                raise ValidationError({
+                    'motivo': f'El motivo es obligatorio cuando el estado es {self.get_estado_display()}.',
+                })
+
+    @property
+    def es_ausencia(self):
+        return self.estado in self.ESTADOS_AUSENCIA
+
+
 # ===================== MARKETPLACE - PRODUCTOS =====================
 
 class Categoria(models.Model):

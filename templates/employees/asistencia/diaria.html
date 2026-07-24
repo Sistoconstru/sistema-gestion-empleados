@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Asistencia diaria del equipo{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi perfil</a></li>
+<li class="breadcrumb-item active">Asistencia diaria</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-clipboard-check fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Asistencia del equipo</h2>
+                        <div class="opacity-75">
+                            <i class="fas fa-calendar-day me-1"></i>
+                            {{ fecha|date:"l, d \\d\\e F \\d\\e Y" }}
+                            {% if es_hoy %}<span class="badge bg-warning text-dark ms-2">HOY</span>{% endif %}
+                            {% if es_fin_de_semana %}<span class="badge bg-danger ms-2">Sábado / Domingo — no registrable</span>{% endif %}
+                        </div>
+                        <div class="small opacity-75 mt-1">
+                            <i class="fas fa-clock me-1"></i>
+                            Jornada: {{ jornada_ingreso }} a {{ jornada_salida }} · Descansos {{ jornada_descansos }} min
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Navegación entre días #}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div class="btn-group">
+        {% if fecha_anterior %}
+            <a class="btn btn-outline-corporativo btn-sm" href="?fecha={{ fecha_anterior|date:'Y-m-d' }}">
+                <i class="fas fa-chevron-left me-1"></i>{{ fecha_anterior|date:'d/m/Y' }}
+            </a>
+        {% endif %}
+        <a class="btn btn-corporativo btn-sm" href="{% url 'employees:asistencia_diaria' %}">
+            <i class="fas fa-calendar-day me-1"></i>Hoy
+        </a>
+        {% if fecha_siguiente %}
+            <a class="btn btn-outline-corporativo btn-sm" href="?fecha={{ fecha_siguiente|date:'Y-m-d' }}">
+                {{ fecha_siguiente|date:'d/m/Y' }}<i class="fas fa-chevron-right ms-1"></i>
+            </a>
+        {% endif %}
+    </div>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'employees:asistencia_historial' %}">
+        <i class="fas fa-history me-1"></i>Historial y resumen
+    </a>
+</div>
+
+{% if messages %}
+    {% for m in messages %}
+        <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show">
+            {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if es_fin_de_semana %}
+    <div class="alert alert-warning">
+        <i class="fas fa-info-circle me-1"></i>
+        La asistencia se registra solo de lunes a viernes. Escoge otra fecha.
+    </div>
+{% else %}
+    <form method="post" id="formAsistencia">
+        {% csrf_token %}
+        <div class="card border-corporativo shadow-sm">
+            <div class="card-header bg-light d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-users me-2"></i>Mi equipo
+                    <span class="badge bg-corporativo ms-1">{{ filas|length }}</span>
+                </div>
+                <div class="small text-muted">
+                    Por defecto todos aparecen como <strong>Presente</strong>. Marca solo las excepciones.
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 32%;">Empleado</th>
+                                <th style="width: 26%;">Estado</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for f in filas %}
+                                <tr class="{% if f.estado == 'presente' %}{% elif f.estado == 'en_vacaciones' %}table-info{% elif f.estado == 'incapacidad' %}table-warning{% elif f.estado == 'ausente' %}table-danger{% else %}table-secondary{% endif %}">
+                                    <td>
+                                        <strong>{{ f.empleado.nombre_completo }}</strong>
+                                        <div class="small text-muted">
+                                            {{ f.empleado.numero_documento }}
+                                            {% if f.registrado_previamente %}
+                                                · <span class="text-success"><i class="fas fa-check me-1"></i>ya registrado</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if f.readonly %}
+                                            <span class="badge bg-info text-dark">
+                                                <i class="fas fa-umbrella-beach me-1"></i>En vacaciones
+                                            </span>
+                                            <div class="small text-muted mt-1">Autodetectado por RRHH</div>
+                                        {% else %}
+                                            <select name="estado_{{ f.empleado.id }}" class="form-select form-select-sm select-estado"
+                                                    data-empleado-id="{{ f.empleado.id }}">
+                                                {% for cod, label in estados_editables %}
+                                                    <option value="{{ cod }}" {% if f.estado == cod %}selected{% endif %}>{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if f.readonly %}
+                                            <span class="text-muted small">{{ f.motivo|default:"—" }}</span>
+                                        {% else %}
+                                            <input type="text" class="form-control form-control-sm motivo-input"
+                                                   name="motivo_{{ f.empleado.id }}" value="{{ f.motivo }}"
+                                                   placeholder="{% if f.estado != 'presente' %}Motivo requerido{% else %}Sin ausencia{% endif %}"
+                                                   {% if f.estado == 'presente' %}disabled{% endif %}
+                                                   data-empleado-id="{{ f.empleado.id }}">
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <a href="{% url 'employees:asistencia_diaria' %}?fecha={{ fecha|date:'Y-m-d' }}" class="btn btn-outline-secondary">
+                    Descartar cambios
+                </a>
+                <button type="submit" class="btn btn-corporativo">
+                    <i class="fas fa-save me-1"></i>Guardar día
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // Habilita/deshabilita el input de motivo según el estado seleccionado.
+        (function() {
+            const habilitarMotivo = (empId, habilitar) => {
+                const input = document.querySelector(`.motivo-input[data-empleado-id="${empId}"]`);
+                if (!input) return;
+                input.disabled = !habilitar;
+                if (!habilitar) input.value = '';
+                if (habilitar && !input.placeholder.includes('requerido')) {
+                    input.placeholder = 'Motivo requerido';
+                }
+            };
+            document.querySelectorAll('.select-estado').forEach(sel => {
+                sel.addEventListener('change', (e) => {
+                    const empId = e.target.dataset.empleadoId;
+                    habilitarMotivo(empId, e.target.value !== 'presente');
+                });
+            });
+        })();
+    </script>
+{% endif %}
+{% endblock %}

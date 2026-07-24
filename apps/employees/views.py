@@ -33,6 +33,7 @@ from .models import (
     Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria,
     Familiar, DocumentoFamiliar,
     SolicitudVacacion,
+    AsistenciaDiaria,
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
@@ -1186,6 +1187,8 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             jefe_directo=empleado, activo=True
         ).exists()
         context['puede_ver_vacaciones_admin'] = self.request.user.is_staff
+        # Asistencia: mismo criterio que vacaciones_equipo — tiene subordinados directos.
+        context['puede_ver_asistencia_equipo'] = context['puede_ver_vacaciones_equipo']
 
         return context
 
@@ -4241,6 +4244,238 @@ def mis_vacaciones(request):
         'saldo_fecha_corte': empleado.saldo_vacaciones_fecha_corte,
         'saldo_actualizado': empleado.saldo_vacaciones_actualizado,
         'consulta_saldo_falla': consulta_saldo_falla,
+    })
+
+
+# ============================================================================
+# Asistencia diaria — tablero del jefe
+# ============================================================================
+# Jornada estándar Construinmuniza: L-V, 7:00 AM a 4:24 PM con 1h de descanso
+# (20+40 min). Los sábados/domingos/festivos NO se registran.
+JORNADA_HORA_INGRESO = '07:00'
+JORNADA_HORA_SALIDA = '16:24'
+JORNADA_DESCANSOS_MIN = '20 + 40'
+DIAS_RETROACTIVOS_ASISTENCIA = 7
+
+
+def _tiene_vacacion_aprobada_en(empleado, fecha):
+    """True si el empleado tiene una SolicitudVacacion tipo=tiempo aprobada
+    que cubra la fecha dada (fecha_inicio <= fecha <= fecha_fin).
+    """
+    return SolicitudVacacion.objects.filter(
+        empleado=empleado,
+        tipo='tiempo',
+        estado_local='aprobada_rrhh',
+        fecha_inicio__lte=fecha,
+        fecha_fin__gte=fecha,
+    ).exists()
+
+
+def _fecha_desde_query(request, default=None):
+    """Parsea ?fecha=YYYY-MM-DD del query string. Default: hoy."""
+    from datetime import date, datetime
+    raw = (request.GET.get('fecha') or '').strip()
+    if not raw:
+        return default or date.today()
+    try:
+        return datetime.strptime(raw, '%Y-%m-%d').date()
+    except ValueError:
+        return default or date.today()
+
+
+@login_required
+def asistencia_diaria(request):
+    """Tablero del jefe para registrar la asistencia diaria del equipo.
+
+    GET: renderiza el equipo con el estado prellenado (presente por defecto,
+         vacaciones aprobadas → readonly).
+    POST: procesa el formulario, actualiza los registros del día. Idempotente:
+         puede corregirse dentro de la ventana retroactiva (7 días).
+    """
+    from datetime import date, timedelta
+    from django.db import transaction
+
+    fecha = _fecha_desde_query(request)
+    hoy = date.today()
+    ventana_min = hoy - timedelta(days=DIAS_RETROACTIVOS_ASISTENCIA)
+
+    # Validaciones de fecha
+    if fecha > hoy:
+        messages.warning(request, 'No puedes registrar asistencia de fechas futuras.')
+        return redirect('employees:asistencia_diaria')
+    if fecha < ventana_min:
+        messages.warning(
+            request,
+            f'Solo puedes registrar hasta {DIAS_RETROACTIVOS_ASISTENCIA} días atrás. '
+            f'Para fechas anteriores solicítalo a RRHH.'
+        )
+        return redirect('employees:asistencia_diaria')
+    es_fin_de_semana = fecha.weekday() >= 5
+
+    equipo = list(_equipo_del_jefe(request.user))
+    if not equipo:
+        messages.info(request, 'No tienes empleados a cargo para registrar asistencia.')
+        return redirect('employees:empleado_perfil')
+
+    # Registros existentes de esa fecha para el equipo
+    registros_existentes = {
+        r.empleado_id: r
+        for r in AsistenciaDiaria.objects.filter(
+            empleado__in=equipo, fecha=fecha,
+        ).select_related('empleado')
+    }
+
+    if request.method == 'POST':
+        if es_fin_de_semana:
+            messages.warning(request, 'No se puede registrar asistencia en sábado/domingo.')
+            return redirect('employees:asistencia_diaria')
+
+        try:
+            registrado_por = Empleado.objects.get(usuario=request.user)
+        except Empleado.DoesNotExist:
+            registrado_por = None
+
+        estados_validos = {c[0] for c in AsistenciaDiaria.ESTADO_CHOICES}
+        empleado_ids_equipo = {e.id for e in equipo}
+        creados, actualizados, errores = 0, 0, []
+
+        with transaction.atomic():
+            for emp in equipo:
+                # Auto-detección: vacaciones aprobadas mandan sin importar el input
+                if _tiene_vacacion_aprobada_en(emp, fecha):
+                    estado_final = 'en_vacaciones'
+                    motivo_final = 'Vacaciones aprobadas por RRHH.'
+                else:
+                    estado_final = (request.POST.get(f'estado_{emp.id}') or 'presente').strip()
+                    motivo_final = (request.POST.get(f'motivo_{emp.id}') or '').strip()
+
+                if emp.id not in empleado_ids_equipo:
+                    continue
+                if estado_final not in estados_validos:
+                    errores.append(f'{emp.nombre_completo}: estado inválido "{estado_final}"')
+                    continue
+                if estado_final != 'presente' and estado_final not in AsistenciaDiaria.ESTADOS_AUTOMATICOS:
+                    if not motivo_final:
+                        errores.append(f'{emp.nombre_completo}: falta motivo para "{estado_final}"')
+                        continue
+
+                _, creado = AsistenciaDiaria.objects.update_or_create(
+                    empleado=emp, fecha=fecha,
+                    defaults={
+                        'estado': estado_final,
+                        'motivo': motivo_final,
+                        'registrado_por': registrado_por,
+                        'creado_por': request.user,
+                    },
+                )
+                if creado:
+                    creados += 1
+                else:
+                    actualizados += 1
+
+        if errores:
+            for err in errores:
+                messages.error(request, err)
+        if creados or actualizados:
+            messages.success(
+                request,
+                f'Asistencia guardada: {creados} nuevos, {actualizados} actualizados.',
+            )
+        return redirect(f'{reverse("employees:asistencia_diaria")}?fecha={fecha.isoformat()}')
+
+    # GET — armar filas con auto-detección
+    filas = []
+    for emp in equipo:
+        reg = registros_existentes.get(emp.id)
+        en_vacaciones = _tiene_vacacion_aprobada_en(emp, fecha)
+        if en_vacaciones:
+            estado, motivo, readonly = 'en_vacaciones', 'Vacaciones aprobadas por RRHH', True
+        elif reg:
+            estado, motivo, readonly = reg.estado, reg.motivo, False
+        else:
+            estado, motivo, readonly = 'presente', '', False
+        filas.append({
+            'empleado': emp,
+            'estado': estado,
+            'motivo': motivo,
+            'readonly': readonly,
+            'registrado_previamente': reg is not None,
+        })
+
+    fecha_anterior = (fecha - timedelta(days=1)) if fecha > ventana_min else None
+    fecha_siguiente = (fecha + timedelta(days=1)) if fecha < hoy else None
+
+    return render(request, 'employees/asistencia/diaria.html', {
+        'fecha': fecha,
+        'hoy': hoy,
+        'es_fin_de_semana': es_fin_de_semana,
+        'es_hoy': fecha == hoy,
+        'filas': filas,
+        'estados_editables': [
+            c for c in AsistenciaDiaria.ESTADO_CHOICES
+            if c[0] not in AsistenciaDiaria.ESTADOS_AUTOMATICOS
+        ],
+        'fecha_anterior': fecha_anterior,
+        'fecha_siguiente': fecha_siguiente,
+        'jornada_ingreso': JORNADA_HORA_INGRESO,
+        'jornada_salida': JORNADA_HORA_SALIDA,
+        'jornada_descansos': JORNADA_DESCANSOS_MIN,
+    })
+
+
+@login_required
+def asistencia_historial(request):
+    """Historial de asistencia del equipo del jefe (filtro por rango)."""
+    from datetime import date
+
+    equipo = list(_equipo_del_jefe(request.user))
+    if not equipo:
+        messages.info(request, 'No tienes empleados a cargo.')
+        return redirect('employees:empleado_perfil')
+
+    hoy = date.today()
+    fecha_desde = _fecha_desde_query(request, default=hoy.replace(day=1))
+    fecha_hasta_raw = (request.GET.get('hasta') or '').strip()
+    try:
+        from datetime import datetime
+        fecha_hasta = datetime.strptime(fecha_hasta_raw, '%Y-%m-%d').date() if fecha_hasta_raw else hoy
+    except ValueError:
+        fecha_hasta = hoy
+
+    if fecha_desde > fecha_hasta:
+        fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+    registros = (
+        AsistenciaDiaria.objects
+        .filter(empleado__in=equipo, fecha__gte=fecha_desde, fecha__lte=fecha_hasta)
+        .select_related('empleado', 'registrado_por')
+        .order_by('-fecha', 'empleado__apellidos')
+    )
+
+    # Resumen por empleado
+    from django.db.models import Count, Q
+    resumen = (
+        AsistenciaDiaria.objects
+        .filter(empleado__in=equipo, fecha__gte=fecha_desde, fecha__lte=fecha_hasta)
+        .values('empleado__id', 'empleado__nombres', 'empleado__apellidos')
+        .annotate(
+            total=Count('id'),
+            presente=Count('id', filter=Q(estado='presente')),
+            ausente=Count('id', filter=Q(estado='ausente')),
+            retardo=Count('id', filter=Q(estado='retardo')),
+            permiso=Count('id', filter=Q(estado='permiso')),
+            licencia=Count('id', filter=Q(estado='licencia')),
+            incapacidad=Count('id', filter=Q(estado='incapacidad')),
+            en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
+        )
+        .order_by('empleado__apellidos')
+    )
+
+    return render(request, 'employees/asistencia/historial.html', {
+        'registros': registros,
+        'resumen': resumen,
+        'fecha_desde': fecha_desde,
+        'fecha_hasta': fecha_hasta,
     })
 
 
