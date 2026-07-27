@@ -131,7 +131,12 @@
 <div class="card border-corporativo shadow-sm mb-4">
     <div class="card-header bg-light">
         <i class="fas fa-user-check me-2"></i>Cumplimiento de registro por jefe
-        <small class="text-muted ms-2">(% días laborales L-V con al menos un registro del equipo, desde la fecha de arranque del módulo)</small>
+        <small class="text-muted ms-2">
+            Lista <strong>todos</strong> los jefes con equipo activo. La columna
+            <em>% Cumplimiento</em> = días L-V con al menos un registro del equipo
+            ÷ días L-V del rango (desde la fecha de arranque del módulo). Un jefe
+            aparece aunque no haya registrado nada.
+        </small>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -196,8 +201,8 @@
 {# Ranking por empleado (top 100 por ausencias) #}
 <div class="card border-corporativo shadow-sm">
     <div class="card-header bg-light">
-        <i class="fas fa-list-ol me-2"></i>Empleados con más ausencias
-        <small class="text-muted ms-2">(top 100, ordenados por ausencias sin justificar)</small>
+        <i class="fas fa-list-ol me-2"></i>Empleados con ausencias en el período
+        <small class="text-muted ms-2">(solo empleados con al menos 1 ausencia, retardo, permiso o incapacidad · top 100)</small>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -231,7 +236,13 @@
                             <td class="text-center"><strong>{{ r.total }}</strong></td>
                         </tr>
                     {% empty %}
-                        <tr><td colspan="10" class="text-center text-muted py-3">Sin registros en el período.</td></tr>
+                        <tr>
+                            <td colspan="10" class="text-center py-4">
+                                <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                                <div class="fw-bold text-success">Sin ausencias registradas en el período</div>
+                                <div class="text-muted small">Todos los empleados con registro aparecen como "presente".</div>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

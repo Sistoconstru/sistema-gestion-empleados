@@ -1046,6 +1046,11 @@ class AsistenciaReportView(TemplateView):
         ) if base_asistencia else 0
 
         # === Desglose por empleado (top 100 por más ausencias) ===
+        # Solo se listan empleados con AL MENOS 1 ausencia (ausente, retardo,
+        # permiso, permiso_no_remunerado o incapacidad) en el rango. Se anota
+        # sobre TODO el queryset (para mantener conteos correctos de 'presente'
+        # y 'vacaciones') y luego se filtra sobre las anotaciones.
+        # Vacaciones no cuenta como ausencia por ausentismo.
         por_empleado = (
             qs.values('empleado__id', 'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento')
             .annotate(
@@ -1057,6 +1062,10 @@ class AsistenciaReportView(TemplateView):
                 permiso_no_remunerado=Count('id', filter=Q(estado='permiso_no_remunerado')),
                 incapacidad=Count('id', filter=Q(estado='incapacidad')),
                 en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
+            )
+            .filter(
+                Q(ausente__gt=0) | Q(retardo__gt=0) | Q(permiso__gt=0)
+                | Q(permiso_no_remunerado__gt=0) | Q(incapacidad__gt=0)
             )
             .order_by('-ausente', '-retardo', 'empleado__apellidos')[:100]
         )
