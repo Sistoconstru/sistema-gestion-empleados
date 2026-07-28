@@ -694,6 +694,97 @@ class AsistenciaDiaria(BaseModel):
         return self.estado in self.ESTADOS_AUSENCIA
 
 
+# ===================== NOVEDADES DE NÓMINA =====================
+
+class NovedadNomina(BaseModel):
+    """Novedades operativas del empleado (horas extras, recargos) que impactan
+    la nómina.
+
+    Reemplaza el formato manual 'FORMATO DE HORAS EXTRAS Y RECARGOS'. El jefe
+    directo registra las novedades por empleado y por día desde una vista
+    semanal (L-D). RRHH aprueba antes de que cuenten para nómina.
+    """
+    TIPO_CHOICES = [
+        ('hora_extra_diurna', 'Hora extra diurna'),
+        ('hora_extra_nocturna', 'Hora extra nocturna'),
+        ('hora_extra_dominical', 'Hora extra dominical/festivo'),
+        ('recargo_nocturno', 'Recargo nocturno'),
+        ('recargo_dominical', 'Recargo dominical/festivo'),
+        ('vigilancia', 'Vigilancia'),
+    ]
+
+    ESTADO_APROBACION_CHOICES = [
+        ('pendiente', 'Pendiente de aprobación'),
+        ('aprobada', 'Aprobada por RRHH'),
+        ('rechazada', 'Rechazada por RRHH'),
+    ]
+
+    empleado = models.ForeignKey(
+        Empleado, on_delete=models.CASCADE, related_name='novedades_nomina',
+        help_text="Empleado al que corresponde la novedad",
+    )
+    fecha = models.DateField(help_text="Fecha en que ocurrió la novedad")
+    tipo = models.CharField(max_length=25, choices=TIPO_CHOICES)
+
+    hora_inicio = models.TimeField(
+        null=True, blank=True,
+        help_text="Hora de inicio (opcional si solo se registra total)",
+    )
+    hora_fin = models.TimeField(
+        null=True, blank=True,
+        help_text="Hora de fin (opcional si solo se registra total)",
+    )
+    total_horas = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        help_text="Horas totales de la novedad (ej: 2.50 = 2h 30m)",
+    )
+
+    motivo = models.TextField(help_text="Motivo de la novedad (obligatorio)")
+    observaciones = models.TextField(blank=True)
+
+    registrado_por = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='novedades_registradas',
+        help_text="Jefe que registró la novedad",
+    )
+
+    # Aprobación por RRHH
+    estado_aprobacion = models.CharField(
+        max_length=15, choices=ESTADO_APROBACION_CHOICES, default='pendiente',
+    )
+    aprobado_por_rrhh = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='novedades_aprobadas',
+        help_text="Usuario RRHH que aprobó/rechazó",
+    )
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True)
+    motivo_rechazo = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'novedades_nomina'
+        verbose_name = 'Novedad de nómina'
+        verbose_name_plural = 'Novedades de nómina'
+        indexes = [
+            models.Index(fields=['empleado', '-fecha']),
+            models.Index(fields=['fecha']),
+            models.Index(fields=['estado_aprobacion']),
+        ]
+        ordering = ['-fecha', 'empleado__apellidos']
+
+    def __str__(self):
+        return f"{self.empleado.nombre_completo} - {self.fecha} - {self.get_tipo_display()} ({self.total_horas}h)"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not (self.motivo or '').strip():
+            raise ValidationError({'motivo': 'El motivo es obligatorio.'})
+        if self.total_horas is None or self.total_horas <= 0:
+            raise ValidationError({'total_horas': 'El total de horas debe ser mayor a cero.'})
+        if self.hora_inicio and self.hora_fin and self.hora_fin <= self.hora_inicio:
+            # Puede cruzar medianoche — no forzar, solo advertir en validación fuerte.
+            pass
+
+
 # ===================== MARKETPLACE - PRODUCTOS =====================
 
 class Categoria(models.Model):

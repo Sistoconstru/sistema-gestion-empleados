@@ -285,6 +285,28 @@
                                 <div class="small text-muted">Registrar quién asistió hoy (L–V) y motivos de ausencia</div>
                             </a>
                         </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'employees:novedades_semana' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-business-time fa-2x d-block mb-2"></i>
+                                <strong>Novedades del equipo</strong>
+                                <div class="small text-muted">Horas extras y recargos — vista semanal L–D</div>
+                            </a>
+                        </div>
+
+                        {% if puede_aprobar_novedades %}
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'employees:novedades_aprobacion' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-check-double fa-2x d-block mb-2"></i>
+                                <strong>Aprobar novedades</strong>
+                                <div class="small text-muted">Revisar y aprobar horas extras de tus coordinadores</div>
+                                {% if novedades_pendientes_count %}
+                                    <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning text-dark">
+                                        {{ novedades_pendientes_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% endif %}
                     {% endif %}
 
                     {% if puede_ver_vacaciones_equipo and mi_equipo %}

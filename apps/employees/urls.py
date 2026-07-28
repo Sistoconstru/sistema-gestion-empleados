@@ -51,6 +51,12 @@ urlpatterns = [
     # Asistencia diaria (jefe)
     path('asistencia/', views.asistencia_diaria, name='asistencia_diaria'),
     path('asistencia/historial/', views.asistencia_historial, name='asistencia_historial'),
+
+    # Novedades de nómina (jefe)
+    path('novedades/', views.novedades_semana, name='novedades_semana'),
+    path('novedades/<int:pk>/eliminar/', views.novedad_eliminar, name='novedad_eliminar'),
+    path('novedades/export/excel/', views.novedades_export_excel_jefe, name='novedades_export_excel'),
+    path('novedades/aprobacion/', views.novedades_aprobacion, name='novedades_aprobacion'),
     path('asistencia/encargado/', views.asistencia_designar_encargado, name='asistencia_designar_encargado'),
 
     # Vacaciones — Administración (staff/RRHH)

@@ -34,6 +34,7 @@ from .models import (
     Familiar, DocumentoFamiliar,
     SolicitudVacacion,
     AsistenciaDiaria,
+    NovedadNomina,
 )
 from .forms import (
     EmpleadoForm, BusquedaEmpleadoForm,
@@ -1196,6 +1197,15 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         context['puede_ver_asistencia_equipo'] = (
             context['puede_ver_vacaciones_equipo'] or es_encargado_hoy or tiene_delegacion
         )
+
+        # Novedades — aprobación del director: pendientes de coordinadores
+        # que le reportan directamente. Tile visible cuando tiene subordinados
+        # directos (aunque haya 0 pendientes en el momento).
+        if context['puede_ver_vacaciones_equipo']:
+            context['novedades_pendientes_count'] = _novedades_pendientes_para_director(empleado).count()
+        else:
+            context['novedades_pendientes_count'] = 0
+        context['puede_aprobar_novedades'] = context['puede_ver_vacaciones_equipo']
 
         # Si el empleado es jefe, pasar su equipo directo + encargado actual
         # para renderizar la sección "Mi equipo" con selector de encargado.
@@ -4685,6 +4695,481 @@ def asistencia_historial(request):
         'fecha_desde': fecha_desde,
         'fecha_hasta': fecha_hasta,
     })
+
+
+# ============================================================================
+# Novedades de nómina — vista semanal para el jefe
+# ============================================================================
+# Reemplaza el formato manual "FORMATO DE HORAS EXTRAS Y RECARGOS".
+# El jefe registra por empleado y día; RRHH aprueba antes de nómina.
+
+# Límite operativo: horas extras que un empleado puede acumular en un mismo día.
+# Aplica solo a tipos 'hora_extra_*' (diurna/nocturna/dominical). Los recargos
+# y vigilancias no cuentan para este tope. Se computa sobre novedades ya
+# guardadas en estado 'pendiente' o 'aprobada'; las rechazadas no suman.
+from decimal import Decimal as _DecimalLimite
+LIMITE_HORAS_EXTRAS_DIA = _DecimalLimite('7')
+
+
+def _lunes_de_semana(fecha):
+    """Retorna el lunes de la semana a la que pertenece la fecha."""
+    from datetime import timedelta
+    return fecha - timedelta(days=fecha.weekday())
+
+
+# Código del área "Administración" — sus empleados no aplican para el módulo
+# de horas extras. Un coordinador administrativo sí puede acceder al módulo,
+# pero su equipo aparece vacío para efecto de novedades.
+AREA_CODIGO_ADMINISTRATIVA = 'ADM'
+
+
+def _empleado_es_administrativo(empleado):
+    """True si el cargo activo del empleado pertenece al área Administración."""
+    hc = empleado.historialcargo_set.filter(activo=True).select_related('cargo__area').first()
+    if not hc or not hc.cargo or not hc.cargo.area:
+        return False
+    return hc.cargo.area.codigo == AREA_CODIGO_ADMINISTRATIVA
+
+
+@login_required
+def novedades_semana(request):
+    """Vista semanal de novedades del equipo del jefe.
+
+    GET: renderiza tabla L-D con celdas por empleado/día. Cada celda muestra
+         las novedades ya ingresadas (con estado) y un botón para agregar.
+    POST: procesa una NUEVA novedad enviada desde el modal.
+    """
+    from datetime import date, timedelta
+    from decimal import Decimal, InvalidOperation
+    from django.db import transaction
+
+    # Determinar la semana a mostrar
+    fecha_ref = _fecha_desde_query(request, default=date.today())
+    lunes = _lunes_de_semana(fecha_ref)
+    dias_semana = [lunes + timedelta(days=i) for i in range(7)]
+
+    # Equipo directo del jefe, EXCLUYENDO empleados de área Administración:
+    # los administrativos no generan horas extras / novedades.
+    equipo = [
+        e for e in _equipo_del_jefe(request.user)
+        if not _empleado_es_administrativo(e)
+    ]
+    if not equipo:
+        messages.info(
+            request,
+            'No tienes empleados operativos a cargo para registrar novedades. '
+            'Los empleados del área administrativa no aplican para este módulo.',
+        )
+        return redirect('employees:empleado_perfil')
+
+    # POST: crear una nueva novedad
+    if request.method == 'POST':
+        try:
+            registrado_por = Empleado.objects.get(usuario=request.user)
+        except Empleado.DoesNotExist:
+            registrado_por = None
+
+        empleado_id = request.POST.get('empleado_id')
+        fecha_str = request.POST.get('fecha')
+        tipo = (request.POST.get('tipo') or '').strip()
+        total_horas_str = (request.POST.get('total_horas') or '').strip()
+        motivo = (request.POST.get('motivo') or '').strip()
+        observaciones = (request.POST.get('observaciones') or '').strip()
+        hora_inicio_str = (request.POST.get('hora_inicio') or '').strip()
+        hora_fin_str = (request.POST.get('hora_fin') or '').strip()
+
+        try:
+            empleado_obj = Empleado.objects.get(pk=empleado_id)
+        except (Empleado.DoesNotExist, ValueError):
+            messages.error(request, 'Empleado inválido.')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        if empleado_obj not in equipo:
+            messages.error(request, 'No tienes permiso para registrar novedades de este empleado.')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        try:
+            from datetime import datetime as _dt
+            fecha_nov = _dt.strptime(fecha_str, '%Y-%m-%d').date()
+        except (TypeError, ValueError):
+            messages.error(request, 'Fecha inválida.')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        if fecha_nov not in dias_semana:
+            messages.error(request, 'La fecha debe pertenecer a la semana visible.')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        # 'hora_extra_auto' es un tipo virtual del formulario: el sistema
+        # segmenta el rango en diurna/nocturna/dominical según jornada.
+        tipos_validos = {c[0] for c in NovedadNomina.TIPO_CHOICES} | {'hora_extra_auto'}
+        if tipo not in tipos_validos:
+            messages.error(request, f'Tipo de novedad inválido: {tipo}')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        if not motivo:
+            messages.error(request, 'El motivo es obligatorio.')
+            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        # Parsear horas
+        from datetime import datetime as _dt, timedelta as _td
+        hora_inicio = None
+        hora_fin = None
+        if hora_inicio_str:
+            try:
+                hora_inicio = _dt.strptime(hora_inicio_str, '%H:%M').time()
+            except ValueError:
+                pass
+        if hora_fin_str:
+            try:
+                hora_fin = _dt.strptime(hora_fin_str, '%H:%M').time()
+            except ValueError:
+                pass
+
+        # Determinar las novedades a crear:
+        # - 'hora_extra_auto' → segmentar el rango en 1..N tramos (diurna/
+        #   nocturna/dominical) usando el helper. Requiere ambas horas.
+        # - Otros tipos → 1 sola novedad; horas opcionales, total desde rango
+        #   o manual.
+        from apps.employees.utils.jornadas import segmentar_hora_extra
+        novedades_a_crear = []
+
+        if tipo == 'hora_extra_auto':
+            if not (hora_inicio and hora_fin):
+                messages.error(
+                    request,
+                    'Para hora extra automática debes ingresar hora de inicio y hora de fin.',
+                )
+                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+            try:
+                tramos = segmentar_hora_extra(fecha_nov, hora_inicio, hora_fin)
+            except ValueError as err:
+                messages.error(request, str(err))
+                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+            for tr in tramos:
+                novedades_a_crear.append({
+                    'tipo': tr['tipo'],
+                    'hora_inicio': tr['hora_inicio'],
+                    'hora_fin': tr['hora_fin'],
+                    'total_horas': tr['total_horas'],
+                })
+        else:
+            # Cálculo simple de total_horas para tipos no-auto
+            if hora_inicio and hora_fin:
+                anchor = _dt(2000, 1, 1)
+                dt_ini = _dt.combine(anchor.date(), hora_inicio)
+                dt_fin = _dt.combine(anchor.date(), hora_fin)
+                if dt_fin <= dt_ini:
+                    dt_fin += _td(days=1)
+                horas_calc = Decimal((dt_fin - dt_ini).total_seconds()) / Decimal('3600')
+                total_horas = horas_calc.quantize(Decimal('0.01'))
+                if total_horas <= 0:
+                    messages.error(request, 'El rango de horas debe resultar en un tiempo mayor a 0.')
+                    return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+            else:
+                try:
+                    total_horas = Decimal(total_horas_str)
+                    if total_horas <= 0:
+                        raise InvalidOperation
+                except (InvalidOperation, TypeError, ValueError):
+                    messages.error(
+                        request,
+                        'Debes ingresar el rango de horas (inicio y fin) o el total manual.',
+                    )
+                    return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+            novedades_a_crear.append({
+                'tipo': tipo,
+                'hora_inicio': hora_inicio,
+                'hora_fin': hora_fin,
+                'total_horas': total_horas,
+            })
+
+        # Validación del límite diario de horas extras.
+        # Suma solo los tramos que sean hora_extra_* + lo ya acumulado
+        # (pendiente + aprobada; rechazadas no cuentan).
+        nuevas_extras = sum(
+            (n['total_horas'] for n in novedades_a_crear if n['tipo'].startswith('hora_extra_')),
+            Decimal('0'),
+        )
+        if nuevas_extras > 0:
+            from django.db.models import Sum
+            ya_acumuladas = (
+                NovedadNomina.objects
+                .filter(
+                    empleado=empleado_obj,
+                    fecha=fecha_nov,
+                    tipo__startswith='hora_extra_',
+                    estado_aprobacion__in=('pendiente', 'aprobada'),
+                )
+                .aggregate(t=Sum('total_horas'))
+                .get('t') or Decimal('0')
+            )
+            si_se_agrega = ya_acumuladas + nuevas_extras
+            if si_se_agrega > LIMITE_HORAS_EXTRAS_DIA:
+                disponible = LIMITE_HORAS_EXTRAS_DIA - ya_acumuladas
+                if disponible < 0:
+                    disponible = Decimal('0')
+                messages.error(
+                    request,
+                    f'{empleado_obj.nombre_completo} ya tiene {ya_acumuladas}h '
+                    f'extras acumuladas el {fecha_nov.strftime("%d/%m/%Y")}. '
+                    f'Con esta novedad ({nuevas_extras}h) llegaría a {si_se_agrega}h '
+                    f'y el límite por día son {LIMITE_HORAS_EXTRAS_DIA}h. '
+                    f'Puedes registrar hasta {disponible}h más.'
+                )
+                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+        # Crear todas las novedades en una transacción
+        with transaction.atomic():
+            for n in novedades_a_crear:
+                NovedadNomina.objects.create(
+                    empleado=empleado_obj,
+                    fecha=fecha_nov,
+                    tipo=n['tipo'],
+                    hora_inicio=n['hora_inicio'],
+                    hora_fin=n['hora_fin'],
+                    total_horas=n['total_horas'],
+                    motivo=motivo,
+                    observaciones=observaciones,
+                    registrado_por=registrado_por,
+                    creado_por=request.user,
+                    estado_aprobacion='pendiente',
+                )
+
+        if len(novedades_a_crear) == 1:
+            messages.success(
+                request,
+                f'Novedad registrada para {empleado_obj.nombre_completo} el {fecha_nov.strftime("%d/%m/%Y")}.',
+            )
+        else:
+            resumen = ', '.join(
+                f'{n["total_horas"]}h {dict(NovedadNomina.TIPO_CHOICES).get(n["tipo"], n["tipo"]).lower()}'
+                for n in novedades_a_crear
+            )
+            messages.success(
+                request,
+                f'Se registraron {len(novedades_a_crear)} novedades para '
+                f'{empleado_obj.nombre_completo} el {fecha_nov.strftime("%d/%m/%Y")}: {resumen}.',
+            )
+        return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+
+    # GET: cargar novedades de la semana y armar matriz
+    novedades = (
+        NovedadNomina.objects
+        .filter(empleado__in=equipo, fecha__gte=dias_semana[0], fecha__lte=dias_semana[6])
+        .select_related('empleado')
+    )
+    # Indexar por (empleado_id, fecha) → lista de novedades
+    matriz = {}
+    for n in novedades:
+        matriz.setdefault((n.empleado_id, n.fecha), []).append(n)
+
+    # Armar filas por empleado
+    from decimal import Decimal
+    filas = []
+    for emp in equipo:
+        celdas = []
+        total_semana = Decimal('0')
+        for d in dias_semana:
+            lista = matriz.get((emp.id, d), [])
+            total_dia = sum((n.total_horas for n in lista), Decimal('0'))
+            total_semana += total_dia
+            celdas.append({
+                'fecha': d,
+                'novedades': lista,
+                'total_horas': total_dia,
+            })
+        filas.append({'empleado': emp, 'celdas': celdas, 'total_semana': total_semana})
+
+    # Nombres cortos para columnas
+    dias_labels = list(zip(dias_semana, ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM']))
+
+    # Opciones del select en el modal: el jefe elige "Hora extra (auto)" y el
+    # sistema segmenta en diurna/nocturna/dominical. Los recargos y vigilancia
+    # se conservan como opciones directas.
+    tipo_choices_ui = [
+        ('hora_extra_auto', 'Hora extra (auto — clasifica según jornada)'),
+    ] + [
+        c for c in NovedadNomina.TIPO_CHOICES if not c[0].startswith('hora_extra_')
+    ]
+
+    return render(request, 'employees/novedades/semana.html', {
+        'lunes': lunes,
+        'domingo': dias_semana[6],
+        'dias_semana': dias_semana,
+        'dias_labels': dias_labels,
+        'filas': filas,
+        'tipo_choices': tipo_choices_ui,
+        'semana_anterior': (lunes - timedelta(days=7)),
+        'semana_siguiente': (lunes + timedelta(days=7)),
+    })
+
+
+@login_required
+@require_POST
+def novedad_eliminar(request, pk):
+    """Elimina una novedad — solo el jefe que la creó puede, y solo si sigue pendiente."""
+    novedad = get_object_or_404(NovedadNomina, pk=pk)
+    try:
+        empleado_actual = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        empleado_actual = None
+
+    puede = (
+        request.user.is_staff
+        or (empleado_actual and novedad.registrado_por_id == empleado_actual.id
+            and novedad.estado_aprobacion == 'pendiente')
+    )
+    if not puede:
+        messages.error(request, 'No puedes eliminar esta novedad (o ya fue aprobada/rechazada por RRHH).')
+    else:
+        lunes = _lunes_de_semana(novedad.fecha)
+        novedad.delete()
+        messages.success(request, 'Novedad eliminada.')
+        return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+    return redirect('employees:novedades_semana')
+
+
+def _novedades_pendientes_para_director(director_empleado):
+    """Retorna queryset de NovedadNomina pendientes que este director puede aprobar.
+
+    Un director puede aprobar novedades registradas por coordinadores (u otros
+    jefes) que dependan directamente de él (jefe_directo == director_empleado).
+    """
+    from django.db.models import Exists, OuterRef
+    coord_reporta_a_director = HistorialCargo.objects.filter(
+        activo=True,
+        empleado=OuterRef('registrado_por'),
+        jefe_directo=director_empleado,
+    )
+    return (
+        NovedadNomina.objects
+        .filter(estado_aprobacion='pendiente')
+        .annotate(_is_de_mi_equipo=Exists(coord_reporta_a_director))
+        .filter(_is_de_mi_equipo=True)
+    )
+
+
+@login_required
+def novedades_aprobacion(request):
+    """Bandeja del director: pendientes registradas por sus coordinadores
+    directos. Batch aprobar/rechazar reusando NovedadesAccionView (permite
+    tanto RRHH como director)."""
+    try:
+        director = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('core:dashboard')
+
+    # ¿Tiene coordinadores u otros jefes reportando a él?
+    coords_a_cargo = list(
+        Empleado.objects.filter(
+            historialcargo__activo=True,
+            historialcargo__jefe_directo=director,
+        ).distinct()
+    )
+    if not coords_a_cargo:
+        messages.info(request, 'No tienes jefes o coordinadores reportando directamente a ti.')
+        return redirect('employees:empleado_perfil')
+
+    pendientes = (
+        _novedades_pendientes_para_director(director)
+        .select_related('empleado', 'registrado_por')
+        .order_by('fecha', 'empleado__apellidos', 'hora_inicio')
+    )
+
+    return render(request, 'employees/novedades/aprobacion.html', {
+        'director': director,
+        'pendientes': pendientes,
+        'total_horas_pendientes': sum((n.total_horas or 0) for n in pendientes),
+        'coords_a_cargo': coords_a_cargo,
+    })
+
+
+@login_required
+def novedades_export_excel_jefe(request):
+    """Exporta las novedades del EQUIPO DIRECTO del jefe autenticado.
+
+    Independiente de si el user es staff o no — siempre filtra por su equipo.
+    El título del reporte incluye el nombre del jefe para identificación.
+    """
+    from datetime import date, timedelta, datetime as _dt
+    from django.http import HttpResponse
+    from apps.employees.utils.excel_novedades import (
+        generar_excel_novedades, nombre_archivo_novedades,
+    )
+
+    try:
+        jefe = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        messages.error(request, 'Tu usuario no está vinculado a un empleado.')
+        return redirect('core:dashboard')
+
+    equipo_ids = list(
+        HistorialCargo.objects.filter(activo=True, jefe_directo=jefe)
+        .values_list('empleado_id', flat=True).distinct()
+    )
+    if not equipo_ids:
+        messages.info(request, 'No tienes empleados a cargo para exportar novedades.')
+        return redirect('employees:empleado_perfil')
+
+    # Parseo de rango — default: semana actual (L-D)
+    hoy = date.today()
+    default_lunes = hoy - timedelta(days=hoy.weekday())
+    fecha_desde_raw = (request.GET.get('desde') or '').strip()
+    fecha_hasta_raw = (request.GET.get('hasta') or '').strip()
+    try:
+        fecha_desde = _dt.strptime(fecha_desde_raw, '%Y-%m-%d').date() if fecha_desde_raw else default_lunes
+    except ValueError:
+        fecha_desde = default_lunes
+    try:
+        fecha_hasta = _dt.strptime(fecha_hasta_raw, '%Y-%m-%d').date() if fecha_hasta_raw else (default_lunes + timedelta(days=6))
+    except ValueError:
+        fecha_hasta = default_lunes + timedelta(days=6)
+    if fecha_desde > fecha_hasta:
+        fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+    estado_filtro = (request.GET.get('estado') or 'todas').strip()
+
+    qs = NovedadNomina.objects.filter(
+        empleado_id__in=equipo_ids,
+        fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+    ).select_related('empleado', 'registrado_por', 'aprobado_por_rrhh')
+
+    filtros_partes = [f'Personal a cargo de {jefe.nombre_completo}']
+    if estado_filtro in ('pendiente', 'aprobada', 'rechazada'):
+        qs = qs.filter(estado_aprobacion=estado_filtro)
+        filtros_partes.append(f'Estado: {estado_filtro}')
+
+    qs = qs.order_by('fecha', 'empleado__apellidos', 'hora_inicio')
+
+    # Cargo actual del jefe (para el encabezado)
+    cargo_actual = jefe.historialcargo_set.filter(activo=True).select_related('cargo').first()
+    cargo_str = f' — {cargo_actual.cargo.nombre}' if cargo_actual and cargo_actual.cargo else ''
+
+    contenido = generar_excel_novedades(
+        list(qs),
+        titulo=f'Novedades del equipo — {jefe.nombre_completo}{cargo_str}',
+        fecha_desde=fecha_desde,
+        fecha_hasta=fecha_hasta,
+        filtros_desc=' · '.join(filtros_partes),
+        contexto_scope=(
+            f'Jefe: {jefe.nombre_completo} · CC {jefe.numero_documento} · '
+            f'{len(equipo_ids)} subordinado(s) directo(s)'
+        ),
+    )
+    apellido_slug = (jefe.apellidos.split()[0] if jefe.apellidos else 'jefe').lower()
+    filename = nombre_archivo_novedades(
+        f'novedades_equipo_{apellido_slug}',
+        fecha_desde, fecha_hasta,
+    )
+
+    response = HttpResponse(
+        contenido,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Cache-Control'] = 'no-store'
+    return response
 
 
 @login_required

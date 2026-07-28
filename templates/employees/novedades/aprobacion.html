@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}Aprobar novedades de mi equipo{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi perfil</a></li>
+<li class="breadcrumb-item active">Aprobar novedades</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-check-double fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Novedades pendientes de aprobación</h2>
+                        <div class="opacity-75 small">
+                            Registradas por tus coordinadores directos. Revisa el motivo antes de aprobar.
+                        </div>
+                        <div class="small opacity-75 mt-1">
+                            <i class="fas fa-users me-1"></i>
+                            Reportando a ti: <strong>{{ coords_a_cargo|length }}</strong> jefe(s) directo(s)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    {% for m in messages %}
+        <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show">
+            {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if pendientes %}
+<form method="post" action="{% url 'reports:novedades_accion' %}" id="formAccion">
+    {% csrf_token %}
+    <div class="card border-corporativo shadow-sm">
+        <div class="card-header bg-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <i class="fas fa-clock me-2 text-warning"></i>Pendientes
+                <span class="badge bg-warning text-dark ms-1">{{ pendientes|length }}</span>
+                <small class="text-muted ms-2">{{ total_horas_pendientes }}h totales</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small me-2" id="contadorSeleccion">0 seleccionadas</span>
+                <button type="submit" name="accion" value="aprobar" id="btnAprobar" class="btn btn-sm btn-success" disabled>
+                    <i class="fas fa-check me-1"></i>Aprobar
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" id="btnAbrirRechazar" data-bs-toggle="modal" data-bs-target="#modalRechazar" disabled>
+                    <i class="fas fa-times me-1"></i>Rechazar
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:40px;">
+                                <input type="checkbox" id="checkAll" class="form-check-input">
+                            </th>
+                            <th>Fecha</th>
+                            <th>Empleado</th>
+                            <th>Tipo</th>
+                            <th class="text-center">Horas</th>
+                            <th style="min-width: 260px;">Motivo — <em class="text-muted">verificar antes de aprobar</em></th>
+                            <th>Horario</th>
+                            <th>Registrada por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for n in pendientes %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="novedad_ids" value="{{ n.pk }}" class="form-check-input row-check">
+                                </td>
+                                <td class="text-nowrap small">{{ n.fecha|date:"d/m/Y (D)" }}</td>
+                                <td>
+                                    <strong>{{ n.empleado.nombre_completo }}</strong>
+                                    <div class="small text-muted">{{ n.empleado.numero_documento }}</div>
+                                </td>
+                                <td class="small">{{ n.get_tipo_display }}</td>
+                                <td class="text-center"><strong>{{ n.total_horas }}h</strong></td>
+                                <td class="small">
+                                    <div class="border-start border-3 border-warning ps-2 py-1 bg-warning bg-opacity-10">
+                                        <strong>Motivo:</strong> {{ n.motivo }}
+                                        {% if n.observaciones %}
+                                            <div class="text-muted mt-1">
+                                                <em>Observaciones:</em> {{ n.observaciones }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="small text-nowrap">
+                                    {% if n.hora_inicio %}
+                                        {{ n.hora_inicio|time:"H:i" }} — {{ n.hora_fin|time:"H:i"|default:"?" }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="small">{{ n.registrado_por.nombre_completo|default:"—" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">
+            <i class="fas fa-info-circle me-1"></i>
+            RRHH también puede aprobar como respaldo desde su reporte global.
+            Marca las novedades cuyo motivo consideres válido y aprueba en batch.
+        </div>
+    </div>
+
+    {# Modal rechazar con motivo #}
+    <div class="modal fade" id="modalRechazar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-times me-2"></i>Rechazar novedades</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Indica el motivo del rechazo. Se aplicará a todas las novedades seleccionadas.</p>
+                    <textarea name="motivo_rechazo" id="motivoRechazoInput" class="form-control" rows="3"
+                              placeholder="Ej: motivo no justifica, tipo incorrecto, no autorizado..."></textarea>
+                    <div class="form-text small">El motivo es obligatorio para rechazar.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="accion" value="rechazar" id="btnConfirmarRechazo" class="btn btn-danger">
+                        <i class="fas fa-times me-1"></i>Rechazar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+            <h5 class="text-success">¡Al día!</h5>
+            <p class="text-muted mb-0">No hay novedades pendientes de tu aprobación.</p>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+(function() {
+    var checkAll = document.getElementById('checkAll');
+    var btnAprobar = document.getElementById('btnAprobar');
+    var btnAbrirRechazar = document.getElementById('btnAbrirRechazar');
+    var contador = document.getElementById('contadorSeleccion');
+    if (!btnAprobar) return;
+
+    function actualizarContador() {
+        var seleccionadas = document.querySelectorAll('.row-check:checked').length;
+        contador.textContent = seleccionadas + ' seleccionada' + (seleccionadas === 1 ? '' : 's');
+        btnAprobar.disabled = seleccionadas === 0;
+        btnAbrirRechazar.disabled = seleccionadas === 0;
+        if (seleccionadas > 0) {
+            contador.classList.add('text-corporativo', 'fw-bold');
+            contador.classList.remove('text-muted');
+        } else {
+            contador.classList.add('text-muted');
+            contador.classList.remove('text-corporativo', 'fw-bold');
+        }
+    }
+
+    if (checkAll) {
+        checkAll.addEventListener('change', function() {
+            document.querySelectorAll('.row-check').forEach(function(cb) { cb.checked = checkAll.checked; });
+            actualizarContador();
+        });
+    }
+    document.querySelectorAll('.row-check').forEach(function(cb) {
+        cb.addEventListener('change', actualizarContador);
+    });
+
+    btnAprobar.addEventListener('click', function(ev) {
+        var n = document.querySelectorAll('.row-check:checked').length;
+        if (n === 0) { ev.preventDefault(); return; }
+        var texto = n === 1
+            ? '¿Aprobar 1 novedad seleccionada?'
+            : '¿Aprobar ' + n + ' novedades seleccionadas?';
+        if (!confirm(texto)) ev.preventDefault();
+    });
+
+    var btnConfirmarRechazo = document.getElementById('btnConfirmarRechazo');
+    var motivoInput = document.getElementById('motivoRechazoInput');
+    if (btnConfirmarRechazo && motivoInput) {
+        btnConfirmarRechazo.addEventListener('click', function(ev) {
+            if (!motivoInput.value.trim()) {
+                ev.preventDefault();
+                motivoInput.classList.add('is-invalid');
+                motivoInput.focus();
+                return;
+            }
+            motivoInput.classList.remove('is-invalid');
+        });
+        motivoInput.addEventListener('input', function() {
+            if (motivoInput.value.trim()) motivoInput.classList.remove('is-invalid');
+        });
+    }
+    actualizarContador();
+})();
+</script>
+{% endblock %}

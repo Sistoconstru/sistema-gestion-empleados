@@ -21,6 +21,11 @@ urlpatterns = [
     # Reporte de asistencia (RRHH)
     path('asistencia/', views.AsistenciaReportView.as_view(), name='asistencia_report'),
 
+    # Novedades de nómina (RRHH y jefes — la vista detecta el scope)
+    path('novedades/', views.NovedadesReportView.as_view(), name='novedades_report'),
+    path('novedades/accion/', views.NovedadesAccionView.as_view(), name='novedades_accion'),
+    path('novedades/export/excel/', views.NovedadesExportExcelView.as_view(), name='novedades_export_excel'),
+
     # URLs para futuras funcionalidades
     # path('generate/', views.GenerateReportView.as_view(), name='generate_report'),
     # path('list/', views.ReportListView.as_view(), name='report_list'),

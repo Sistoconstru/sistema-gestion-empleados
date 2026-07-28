@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from datetime import timedelta, datetime
 
 # Importar modelos que ya funcionan
-from apps.employees.models import Empleado, AsistenciaDiaria
+from apps.employees.models import Empleado, AsistenciaDiaria, NovedadNomina
 from apps.training.models import Capacitacion
 from apps.evaluations.models import AsignacionEvaluacion, PlanMejoraPredefinido, SeguimientoBimensual
 
@@ -1169,3 +1169,280 @@ class AsistenciaReportView(TemplateView):
 
         resultado.sort(key=lambda r: (r['pct_cumplimiento'], -r['dias_faltantes']))
         return resultado
+
+
+@method_decorator(login_required, name='dispatch')
+class NovedadesReportView(TemplateView):
+    """Reporte RRHH de novedades de nómina con aprobación batch."""
+    template_name = 'reports/novedades_report.html'
+
+    def get_context_data(self, **kwargs):
+        from datetime import date, timedelta
+        from apps.organizational.models import AreaEmpresa, Sede
+        from apps.employees.models import NovedadNomina
+        from django.db.models import Sum, Count
+        context = super().get_context_data(**kwargs)
+
+        hoy = date.today()
+        # Semana actual por defecto (L-D)
+        fecha_desde_raw = (self.request.GET.get('desde') or '').strip()
+        fecha_hasta_raw = (self.request.GET.get('hasta') or '').strip()
+        estado_filtro = (self.request.GET.get('estado') or 'pendiente').strip()
+        area_id = (self.request.GET.get('area') or '').strip()
+        sede_id = (self.request.GET.get('sede') or '').strip()
+
+        try:
+            fecha_desde = datetime.strptime(fecha_desde_raw, '%Y-%m-%d').date() if fecha_desde_raw else (hoy - timedelta(days=hoy.weekday()))
+        except ValueError:
+            fecha_desde = hoy - timedelta(days=hoy.weekday())
+        try:
+            fecha_hasta = datetime.strptime(fecha_hasta_raw, '%Y-%m-%d').date() if fecha_hasta_raw else (fecha_desde + timedelta(days=6))
+        except ValueError:
+            fecha_hasta = fecha_desde + timedelta(days=6)
+        if fecha_desde > fecha_hasta:
+            fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+        qs = NovedadNomina.objects.filter(
+            fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+        ).select_related('empleado', 'registrado_por')
+
+        if estado_filtro in ('pendiente', 'aprobada', 'rechazada'):
+            qs = qs.filter(estado_aprobacion=estado_filtro)
+        if area_id:
+            qs = qs.filter(
+                empleado__historialcargo__cargo__area_id=area_id,
+                empleado__historialcargo__activo=True,
+            ).distinct()
+        if sede_id:
+            qs = qs.filter(empleado__sede_id=sede_id)
+
+        # KPIs
+        totales_por_estado = NovedadNomina.objects.filter(
+            fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+        ).values('estado_aprobacion').annotate(
+            n=Count('id'), horas=Sum('total_horas'),
+        )
+        kpis = {'pendiente': 0, 'aprobada': 0, 'rechazada': 0, 'total': 0}
+        horas = {'pendiente': 0, 'aprobada': 0, 'rechazada': 0, 'total': 0}
+        for row in totales_por_estado:
+            k = row['estado_aprobacion']
+            kpis[k] = row['n']
+            horas[k] = row['horas'] or 0
+            kpis['total'] += row['n']
+            horas['total'] += row['horas'] or 0
+
+        # Ranking: empleados con más horas extras en el período (aprobadas + pendientes)
+        por_empleado = (
+            NovedadNomina.objects.filter(fecha__gte=fecha_desde, fecha__lte=fecha_hasta)
+            .exclude(estado_aprobacion='rechazada')
+            .values('empleado__id', 'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento')
+            .annotate(total_horas=Sum('total_horas'), total_novedades=Count('id'))
+            .order_by('-total_horas')[:30]
+        )
+
+        context.update({
+            'novedades': qs.order_by('-fecha', 'empleado__apellidos'),
+            'fecha_desde': fecha_desde,
+            'fecha_hasta': fecha_hasta,
+            'estado_filtro': estado_filtro,
+            'kpis': kpis,
+            'horas': horas,
+            'por_empleado': por_empleado,
+            'areas': AreaEmpresa.objects.filter(activa=True).order_by('nombre'),
+            'sedes': Sede.objects.filter(activa=True).order_by('nombre'),
+            'area_seleccionada': int(area_id) if area_id.isdigit() else None,
+            'sede_seleccionada': sede_id or None,
+        })
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class NovedadesAccionView(View):
+    """Aprueba o rechaza novedades en batch (POST). Autorizados:
+
+    - RRHH (is_staff=True): puede accionar sobre CUALQUIER novedad pendiente.
+    - Director: puede accionar solo sobre novedades registradas por
+      coordinadores/jefes que le reportan directamente.
+    """
+
+    def post(self, request):
+        from django.contrib import messages as django_messages
+        from django.shortcuts import redirect
+        from django.utils import timezone
+        from apps.employees.models import NovedadNomina, Empleado
+
+        # Verificar que el user tiene algún rol que le permita aprobar
+        director = None
+        if not request.user.is_staff:
+            try:
+                director = Empleado.objects.get(usuario=request.user)
+            except Empleado.DoesNotExist:
+                director = None
+            if not director:
+                django_messages.error(request, 'Tu usuario no tiene permiso para aprobar novedades.')
+                return redirect('reports:novedades_report')
+
+        accion = (request.POST.get('accion') or '').strip()
+        ids = request.POST.getlist('novedad_ids')
+        motivo_rechazo = (request.POST.get('motivo_rechazo') or '').strip()
+
+        # URL de retorno consistente: siempre a la lista de pendientes con el
+        # filtro explícito. Preserva rango de fechas si venía en el referer.
+        from urllib.parse import urlparse, parse_qs
+        from django.urls import reverse
+        base_url = reverse('reports:novedades_report')
+        query_extra = ''
+        referer = request.META.get('HTTP_REFERER', '')
+        if referer:
+            qs_parsed = parse_qs(urlparse(referer).query)
+            # Preservar desde/hasta/area/sede — pero forzar estado=pendiente
+            preservados = {}
+            for k in ('desde', 'hasta', 'area', 'sede'):
+                if k in qs_parsed and qs_parsed[k]:
+                    preservados[k] = qs_parsed[k][0]
+            if preservados:
+                query_extra = '&' + '&'.join(f'{k}={v}' for k, v in preservados.items())
+        redirect_url = f'{base_url}?estado=pendiente{query_extra}'
+
+        if accion not in ('aprobar', 'rechazar'):
+            django_messages.error(request, 'Acción inválida.')
+            return redirect(redirect_url)
+        if not ids:
+            django_messages.warning(request, 'No seleccionaste novedades. Marca los checkboxes antes de aprobar o rechazar.')
+            return redirect(redirect_url)
+        if accion == 'rechazar' and not motivo_rechazo:
+            django_messages.error(request, 'Debes indicar el motivo del rechazo.')
+            return redirect(redirect_url)
+
+        qs = NovedadNomina.objects.filter(pk__in=ids, estado_aprobacion='pendiente')
+
+        # Restringir al scope del director si no es staff: solo puede accionar
+        # sobre novedades registradas por sus subordinados directos.
+        if director is not None:
+            from django.db.models import Exists, OuterRef
+            from apps.employees.models import HistorialCargo
+            coord_reporta_a_director = HistorialCargo.objects.filter(
+                activo=True,
+                empleado=OuterRef('registrado_por'),
+                jefe_directo=director,
+            )
+            qs = qs.annotate(_de_mi_equipo=Exists(coord_reporta_a_director)).filter(_de_mi_equipo=True)
+
+        n_afectadas = qs.count()
+        if n_afectadas == 0:
+            django_messages.warning(
+                request,
+                'Ninguna de las novedades seleccionadas te corresponde para aprobar/rechazar.',
+            )
+            return redirect(request.META.get('HTTP_REFERER') or 'reports:novedades_report')
+
+        if accion == 'aprobar':
+            qs.update(
+                estado_aprobacion='aprobada',
+                aprobado_por_rrhh=request.user,
+                fecha_aprobacion=timezone.now(),
+                motivo_rechazo='',
+            )
+            django_messages.success(request, f'{n_afectadas} novedad(es) aprobadas.')
+        else:
+            qs.update(
+                estado_aprobacion='rechazada',
+                aprobado_por_rrhh=request.user,
+                fecha_aprobacion=timezone.now(),
+                motivo_rechazo=motivo_rechazo,
+            )
+            django_messages.warning(request, f'{n_afectadas} novedad(es) rechazadas.')
+
+        return redirect(request.META.get('HTTP_REFERER') or 'reports:novedades_report')
+
+
+@method_decorator(login_required, name='dispatch')
+class NovedadesExportExcelView(View):
+    """Exporta a Excel las novedades globales para RRHH. Requiere is_staff.
+
+    Los jefes usan un endpoint separado en apps.employees que filtra
+    automáticamente por su equipo directo (ver employees:novedades_export_excel).
+    """
+
+    def get(self, request):
+        from datetime import date, timedelta
+        from apps.employees.models import NovedadNomina
+        from apps.employees.utils.excel_novedades import (
+            generar_excel_novedades, nombre_archivo_novedades,
+        )
+        from django.contrib import messages as django_messages
+        from django.shortcuts import redirect
+
+        if not request.user.is_staff:
+            django_messages.error(request, 'Solo RRHH puede acceder al reporte global. Usa el botón Exportar en Mis novedades del equipo.')
+            return redirect('reports:novedades_report')
+
+        # Filtros
+        hoy = date.today()
+        fecha_desde_raw = (request.GET.get('desde') or '').strip()
+        fecha_hasta_raw = (request.GET.get('hasta') or '').strip()
+        estado_filtro = (request.GET.get('estado') or 'todas').strip()
+        area_id = (request.GET.get('area') or '').strip()
+        sede_id = (request.GET.get('sede') or '').strip()
+
+        try:
+            fecha_desde = datetime.strptime(fecha_desde_raw, '%Y-%m-%d').date() if fecha_desde_raw else (hoy - timedelta(days=hoy.weekday()))
+        except ValueError:
+            fecha_desde = hoy - timedelta(days=hoy.weekday())
+        try:
+            fecha_hasta = datetime.strptime(fecha_hasta_raw, '%Y-%m-%d').date() if fecha_hasta_raw else (fecha_desde + timedelta(days=6))
+        except ValueError:
+            fecha_hasta = fecha_desde + timedelta(days=6)
+        if fecha_desde > fecha_hasta:
+            fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+        qs = NovedadNomina.objects.filter(
+            fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+        ).select_related('empleado', 'registrado_por', 'aprobado_por_rrhh')
+
+        filtros_partes = []
+        if estado_filtro in ('pendiente', 'aprobada', 'rechazada'):
+            qs = qs.filter(estado_aprobacion=estado_filtro)
+            filtros_partes.append(f'Estado: {estado_filtro}')
+        if area_id:
+            qs = qs.filter(
+                empleado__historialcargo__cargo__area_id=area_id,
+                empleado__historialcargo__activo=True,
+            ).distinct()
+            try:
+                from apps.organizational.models import AreaEmpresa
+                area_obj = AreaEmpresa.objects.filter(pk=area_id).first()
+                if area_obj:
+                    filtros_partes.append(f'Área: {area_obj.nombre}')
+            except Exception:
+                pass
+        if sede_id:
+            qs = qs.filter(empleado__sede_id=sede_id)
+            try:
+                from apps.organizational.models import Sede
+                sede_obj = Sede.objects.filter(pk=sede_id).first()
+                if sede_obj:
+                    filtros_partes.append(f'Sede: {sede_obj.nombre}')
+            except Exception:
+                pass
+
+        qs = qs.order_by('fecha', 'empleado__apellidos', 'hora_inicio')
+        filtros_desc = ' · '.join(filtros_partes) if filtros_partes else 'Sin filtros adicionales'
+
+        contenido = generar_excel_novedades(
+            list(qs),
+            titulo='Novedades de nómina — Reporte RRHH',
+            fecha_desde=fecha_desde,
+            fecha_hasta=fecha_hasta,
+            filtros_desc=filtros_desc,
+            contexto_scope='Todas las áreas y sedes',
+        )
+        filename = nombre_archivo_novedades('novedades_rrhh', fecha_desde, fecha_hasta)
+
+        response = HttpResponse(
+            contenido,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response['Cache-Control'] = 'no-store'
+        return response

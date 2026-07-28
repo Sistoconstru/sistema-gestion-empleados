@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Novedades semanales del equipo{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi perfil</a></li>
+<li class="breadcrumb-item active">Novedades del equipo</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-business-time fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Novedades del equipo</h2>
+                        <div class="opacity-75 small">
+                            <i class="fas fa-calendar-week me-1"></i>
+                            Semana del <strong>{{ lunes|date:"d/m/Y" }}</strong> al <strong>{{ domingo|date:"d/m/Y" }}</strong>
+                        </div>
+                        <div class="small opacity-75 mt-1">
+                            Registra horas extras y recargos por empleado y día. RRHH aprueba antes de que cuente para nómina.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Navegación entre semanas #}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div class="btn-group">
+        <a class="btn btn-outline-corporativo btn-sm" href="?fecha={{ semana_anterior|date:'Y-m-d' }}">
+            <i class="fas fa-chevron-left me-1"></i>Semana anterior
+        </a>
+        <a class="btn btn-corporativo btn-sm" href="{% url 'employees:novedades_semana' %}">
+            <i class="fas fa-calendar-day me-1"></i>Esta semana
+        </a>
+        <a class="btn btn-outline-corporativo btn-sm" href="?fecha={{ semana_siguiente|date:'Y-m-d' }}">
+            Semana siguiente<i class="fas fa-chevron-right ms-1"></i>
+        </a>
+    </div>
+    <a class="btn btn-outline-success btn-sm"
+       href="{% url 'employees:novedades_export_excel' %}?desde={{ lunes|date:'Y-m-d' }}&hasta={{ domingo|date:'Y-m-d' }}&estado=todas"
+       title="Exportar solo las novedades de mi equipo directo">
+        <i class="fas fa-file-excel me-1"></i>Exportar mi equipo
+    </a>
+</div>
+
+{% if messages %}
+    {% for m in messages %}
+        <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show">
+            {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card border-corporativo shadow-sm">
+    <div class="card-header bg-light">
+        <i class="fas fa-users me-2"></i>Novedades por empleado
+        <span class="badge bg-corporativo ms-1">{{ filas|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0" style="min-width: 900px;">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width: 200px;">Empleado</th>
+                        {% for f, label in dias_labels %}
+                            <th class="text-center" style="min-width: 90px;">
+                                {{ label }}<br/>
+                                <small class="text-muted">{{ f|date:"d/m" }}</small>
+                            </th>
+                        {% endfor %}
+                        <th class="text-center">Total sem.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in filas %}
+                        <tr>
+                            <td>
+                                <strong>{{ row.empleado.nombre_completo }}</strong>
+                                <div class="small text-muted">{{ row.empleado.numero_documento }}</div>
+                            </td>
+                            {% for c in row.celdas %}
+                                <td class="text-center align-top" style="padding: 4px;">
+                                    {% if c.novedades %}
+                                        <div class="fw-bold text-corporativo">{{ c.total_horas }}h</div>
+                                        {% for n in c.novedades %}
+                                            <div class="mb-1">
+                                                <span class="badge bg-{% if n.estado_aprobacion == 'aprobada' %}success{% elif n.estado_aprobacion == 'rechazada' %}danger{% else %}warning text-dark{% endif %}"
+                                                      title="{{ n.get_tipo_display }} — {{ n.motivo|truncatechars:60 }}"
+                                                      data-bs-toggle="tooltip">
+                                                    {{ n.total_horas }}h
+                                                </span>
+                                                {% if n.estado_aprobacion == 'pendiente' and n.registrado_por and n.registrado_por.usuario_id == request.user.id %}
+                                                    <form method="post" action="{% url 'employees:novedad_eliminar' n.pk %}" class="d-inline"
+                                                          onsubmit="return confirm('¿Eliminar esta novedad?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-link p-0 text-danger" title="Eliminar">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <button type="button" class="btn btn-sm btn-outline-corporativo mt-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalNovedad"
+                                            data-empleado-id="{{ row.empleado.id }}"
+                                            data-empleado-nombre="{{ row.empleado.nombre_completo }}"
+                                            data-fecha="{{ c.fecha|date:'Y-m-d' }}"
+                                            data-fecha-display="{{ c.fecha|date:'d/m/Y' }}"
+                                            title="Agregar novedad">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                            {% endfor %}
+                            <td class="text-center align-middle">
+                                <span class="badge bg-corporativo fs-6">{{ row.total_semana }}h</span>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="9" class="text-center text-muted py-4">No tienes empleados a cargo.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">
+        <i class="fas fa-info-circle me-1"></i>
+        <span class="badge bg-warning text-dark me-1">Amarillo</span> pendiente ·
+        <span class="badge bg-success mx-1">Verde</span> aprobada ·
+        <span class="badge bg-danger mx-1">Rojo</span> rechazada.
+        Pasa el cursor sobre cada badge para ver tipo y motivo.
+    </div>
+</div>
+
+{# Modal para agregar novedad #}
+<div class="modal fade" id="modalNovedad" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{% url 'employees:novedades_semana' %}?fecha={{ lunes|date:'Y-m-d' }}">
+                {% csrf_token %}
+                <input type="hidden" name="empleado_id" id="modal_empleado_id">
+                <input type="hidden" name="fecha" id="modal_fecha">
+                <div class="modal-header bg-corporativo text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-business-time me-2"></i>Agregar novedad
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 small text-muted">
+                        <strong id="modal_empleado_nombre"></strong> · <span id="modal_fecha_display"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de novedad *</label>
+                        <select name="tipo" id="nov_tipo" class="form-select" required>
+                            <option value="">— Seleccionar —</option>
+                            {% for cod, label in tipo_choices %}
+                                <option value="{{ cod }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text small" id="hint_tipo_auto" style="display:none;">
+                            <i class="fas fa-magic me-1 text-info"></i>
+                            El sistema separará automáticamente en <strong>diurna</strong> (6am–7pm),
+                            <strong>nocturna</strong> (7pm–6am) y <strong>dominical/festivo</strong>
+                            según la fecha y el rango de horas. Es <strong>obligatorio</strong> ingresar hora inicio y fin.
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Hora inicio</label>
+                            <input type="time" name="hora_inicio" id="nov_hora_inicio" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Hora fin</label>
+                            <input type="time" name="hora_fin" id="nov_hora_fin" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Total horas</label>
+                            <input type="number" name="total_horas" id="nov_total_horas"
+                                   step="0.25" min="0.25" class="form-control"
+                                   placeholder="Se calcula del rango">
+                            <div class="form-text small">Si ingresas hora inicio y fin, se calcula automáticamente.</div>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Motivo *</label>
+                        <textarea name="motivo" class="form-control" rows="2" required
+                                  placeholder="Ej: cierre de operación, cubrir turno, apoyo urgente..."></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Observaciones</label>
+                        <textarea name="observaciones" class="form-control" rows="2"
+                                  placeholder="(opcional)"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-corporativo">
+                        <i class="fas fa-save me-1"></i>Guardar novedad
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var modal = document.getElementById('modalNovedad');
+    var hi = document.getElementById('nov_hora_inicio');
+    var hf = document.getElementById('nov_hora_fin');
+    var th = document.getElementById('nov_total_horas');
+
+    var tipoSel = document.getElementById('nov_tipo');
+    var hintAuto = document.getElementById('hint_tipo_auto');
+
+    modal.addEventListener('show.bs.modal', function(ev) {
+        var btn = ev.relatedTarget;
+        document.getElementById('modal_empleado_id').value = btn.getAttribute('data-empleado-id');
+        document.getElementById('modal_empleado_nombre').textContent = btn.getAttribute('data-empleado-nombre');
+        document.getElementById('modal_fecha').value = btn.getAttribute('data-fecha');
+        document.getElementById('modal_fecha_display').textContent = btn.getAttribute('data-fecha-display');
+        // Reset campos
+        hi.value = '';
+        hf.value = '';
+        th.value = '';
+        th.readOnly = false;
+        tipoSel.value = '';
+        hintAuto.style.display = 'none';
+    });
+
+    // Mostrar el hint y marcar total_horas readonly cuando es auto.
+    tipoSel.addEventListener('change', function() {
+        if (tipoSel.value === 'hora_extra_auto') {
+            hintAuto.style.display = 'block';
+            th.readOnly = true;
+            th.value = '';  // el sistema lo calcula, no se muestra en el modal
+            th.placeholder = 'Se calcula al guardar';
+        } else {
+            hintAuto.style.display = 'none';
+            th.readOnly = !!(hi.value && hf.value);
+            th.placeholder = 'Ej: 2.5';
+        }
+    });
+
+    // Calcula el total_horas cuando cambian las horas. Cruza medianoche
+    // sumando 24h si hora_fin <= hora_inicio.
+    function recalcular() {
+        if (!hi.value || !hf.value) {
+            th.readOnly = false;
+            return;
+        }
+        var [h1, m1] = hi.value.split(':').map(Number);
+        var [h2, m2] = hf.value.split(':').map(Number);
+        var mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (mins <= 0) mins += 24 * 60;  // cruza medianoche
+        var horas = (mins / 60).toFixed(2);
+        th.value = horas;
+        th.readOnly = true;  // no editable si viene del cálculo
+    }
+    hi.addEventListener('change', recalcular);
+    hf.addEventListener('change', recalcular);
+
+    // Si el user borra alguna hora, permite editar total_horas manual
+    function permitirManual() {
+        if (!hi.value || !hf.value) {
+            th.readOnly = false;
+        }
+    }
+    hi.addEventListener('input', permitirManual);
+    hf.addEventListener('input', permitirManual);
+})();
+</script>
+{% endblock %}
