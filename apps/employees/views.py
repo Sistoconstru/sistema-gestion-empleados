@@ -241,7 +241,36 @@ class EmpleadoDetailView(LoginRequiredMixin, DetailView):
                 'capacitaciones_en_progreso': 0,
                 'capacitaciones_completadas': 0
             })
-        
+
+        # === Ausencias (últimos 6 meses) ===
+        # Solo estados distintos a 'presente'. Incluye vacaciones e incapacidad
+        # porque son ausencias legítimas del puesto de trabajo.
+        from datetime import date as _date_hoy, timedelta as _td
+        from django.db.models import Count as _Count, Q as _Q
+        _hoy = _date_hoy.today()
+        _hace_6m = _hoy - _td(days=180)
+        ausencias_qs = (
+            AsistenciaDiaria.objects
+            .filter(empleado=empleado, fecha__gte=_hace_6m, fecha__lte=_hoy)
+            .exclude(estado='presente')
+            .select_related('registrado_por')
+            .order_by('-fecha')
+        )
+        context['ausencias'] = list(ausencias_qs[:100])
+        context['ausencias_desde'] = _hace_6m
+        context['ausencias_hasta'] = _hoy
+        context['ausencias_totales'] = AsistenciaDiaria.objects.filter(
+            empleado=empleado, fecha__gte=_hace_6m, fecha__lte=_hoy,
+        ).exclude(estado='presente').count()
+        context['ausencias_por_estado'] = (
+            AsistenciaDiaria.objects
+            .filter(empleado=empleado, fecha__gte=_hace_6m, fecha__lte=_hoy)
+            .exclude(estado='presente')
+            .values('estado')
+            .annotate(n=_Count('id'))
+            .order_by('-n')
+        )
+
         # Evaluaciones
         try:
             context['evaluaciones'] = AsignacionEvaluacion.objects.filter(
@@ -4280,7 +4309,7 @@ def mis_vacaciones(request):
 # ============================================================================
 # Asistencia diaria — tablero del jefe
 # ============================================================================
-# Jornada estándar Construinmuniza: L-V, 7:00 AM a 4:24 PM con 1h de descanso
+# Jornada estándar Construinmuniza: L-V, 7:00 AM a 4:25 PM con 1h de descanso
 # (20+40 min). Los sábados/domingos/festivos NO se registran.
 from datetime import date as _date_const  # aliased para constantes globales
 # Fecha desde la cual el módulo de asistencia está oficialmente activo.
@@ -4290,7 +4319,7 @@ from datetime import date as _date_const  # aliased para constantes globales
 ASISTENCIA_FECHA_ARRANQUE = _date_const(2026, 7, 27)  # lunes 27/07/2026
 
 JORNADA_HORA_INGRESO = '07:00'
-JORNADA_HORA_SALIDA = '16:24'
+JORNADA_HORA_SALIDA = '16:25'
 JORNADA_DESCANSOS_MIN = '20 + 40'
 DIAS_RETROACTIVOS_ASISTENCIA = 7
 # Si un jefe tiene este número o más de subalternos activos y designó un
@@ -4506,28 +4535,46 @@ def asistencia_diaria(request):
 
         estados_validos = {c[0] for c in AsistenciaDiaria.ESTADO_CHOICES}
         empleado_ids_permitidos = {e.id for e in todos_empleados}
-        creados, actualizados, errores = 0, 0, []
 
+        # --- Pasada 1: validar TODO antes de tocar la BD.
+        # Si algún empleado tiene datos inválidos, se rechaza el día completo
+        # (todo-o-nada). Así el jefe corrige y reintenta sin quedar con
+        # registros parciales inconsistentes.
+        cambios_pendientes = []
+        errores = []
+        for emp in todos_empleados:
+            if emp.id not in empleado_ids_permitidos:
+                continue
+            if _tiene_vacacion_aprobada_en(emp, fecha):
+                estado_final = 'en_vacaciones'
+                motivo_final = 'Vacaciones aprobadas por RRHH.'
+            else:
+                estado_final = (request.POST.get(f'estado_{emp.id}') or 'presente').strip()
+                motivo_final = (request.POST.get(f'motivo_{emp.id}') or '').strip()
+
+            if estado_final not in estados_validos:
+                errores.append(f'{emp.nombre_completo}: estado inválido "{estado_final}"')
+                continue
+            if estado_final != 'presente' and estado_final not in AsistenciaDiaria.ESTADOS_AUTOMATICOS:
+                if not motivo_final:
+                    errores.append(f'{emp.nombre_completo}: falta motivo para "{estado_final}"')
+                    continue
+
+            cambios_pendientes.append((emp, estado_final, motivo_final))
+
+        if errores:
+            for err in errores:
+                messages.error(request, err)
+            messages.warning(
+                request,
+                'No se guardó ningún cambio. Corrige los errores señalados e intenta de nuevo.',
+            )
+            return redirect(f'{reverse("employees:asistencia_diaria")}?fecha={fecha.isoformat()}')
+
+        # --- Pasada 2: todo válido, aplicar cambios en una transacción.
+        creados, actualizados = 0, 0
         with transaction.atomic():
-            for emp in todos_empleados:
-                if emp.id not in empleado_ids_permitidos:
-                    continue
-                # Auto-detección: vacaciones aprobadas mandan sin importar el input
-                if _tiene_vacacion_aprobada_en(emp, fecha):
-                    estado_final = 'en_vacaciones'
-                    motivo_final = 'Vacaciones aprobadas por RRHH.'
-                else:
-                    estado_final = (request.POST.get(f'estado_{emp.id}') or 'presente').strip()
-                    motivo_final = (request.POST.get(f'motivo_{emp.id}') or '').strip()
-
-                if estado_final not in estados_validos:
-                    errores.append(f'{emp.nombre_completo}: estado inválido "{estado_final}"')
-                    continue
-                if estado_final != 'presente' and estado_final not in AsistenciaDiaria.ESTADOS_AUTOMATICOS:
-                    if not motivo_final:
-                        errores.append(f'{emp.nombre_completo}: falta motivo para "{estado_final}"')
-                        continue
-
+            for emp, estado_final, motivo_final in cambios_pendientes:
                 _, creado = AsistenciaDiaria.objects.update_or_create(
                     empleado=emp, fecha=fecha,
                     defaults={
@@ -4542,9 +4589,6 @@ def asistencia_diaria(request):
                 else:
                     actualizados += 1
 
-        if errores:
-            for err in errores:
-                messages.error(request, err)
         if creados or actualizados:
             messages.success(
                 request,

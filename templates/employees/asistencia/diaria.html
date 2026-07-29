@@ -58,13 +58,7 @@
     </a>
 </div>
 
-{% if messages %}
-    {% for m in messages %}
-        <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show">
-            {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
-{% endif %}
+{# Los mensajes flash los renderiza base.html — no duplicar aquí. #}
 
 {% if dias_sin_registrar %}
     <div class="alert alert-warning border-warning">
@@ -192,22 +186,100 @@
     </form>
 
     <script>
-        // Habilita/deshabilita el input de motivo según el estado seleccionado.
         (function() {
-            const habilitarMotivo = (empId, habilitar) => {
-                const input = document.querySelector(`.motivo-input[data-empleado-id="${empId}"]`);
+            const form = document.getElementById('formAsistencia');
+
+            const motivoDe = (empId) =>
+                document.querySelector(`.motivo-input[data-empleado-id="${empId}"]`);
+            const selectDe = (empId) =>
+                document.querySelector(`.select-estado[data-empleado-id="${empId}"]`);
+
+            // Marca/desmarca el input de motivo como inválido con mensaje debajo.
+            const setInvalid = (input, invalido) => {
                 if (!input) return;
-                input.disabled = !habilitar;
-                if (!habilitar) input.value = '';
-                if (habilitar && !input.placeholder.includes('requerido')) {
-                    input.placeholder = 'Motivo requerido';
+                input.classList.toggle('is-invalid', invalido);
+                // Buscar/crear el mensaje de error inmediato
+                let feedback = input.parentElement.querySelector('.invalid-feedback');
+                if (invalido) {
+                    if (!feedback) {
+                        feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'Falta el motivo — es obligatorio para este estado.';
+                        input.parentElement.appendChild(feedback);
+                    }
+                } else if (feedback) {
+                    feedback.remove();
                 }
             };
+
+            // Habilita/deshabilita el motivo según el estado seleccionado. NO
+            // borra el valor existente si el jefe simplemente vuelve a 'presente'
+            // y luego cambia a otra ausencia — respeta lo que ya haya escrito.
+            const sincronizarMotivo = (empId, estado) => {
+                const input = motivoDe(empId);
+                if (!input) return;
+                const requiereMotivo = estado !== 'presente';
+                input.disabled = !requiereMotivo;
+                if (requiereMotivo) {
+                    input.placeholder = 'Motivo requerido';
+                    // Si al cambiar a ausencia ya está vacío, marcar inválido
+                    if (!input.value.trim()) setInvalid(input, true);
+                } else {
+                    input.placeholder = 'Sin ausencia';
+                    setInvalid(input, false);
+                    // No borramos el valor — si el jefe se equivocó al pasar a
+                    // presente, al volver al estado anterior conserva el texto.
+                }
+            };
+
+            // Cuando cambia el estado
             document.querySelectorAll('.select-estado').forEach(sel => {
                 sel.addEventListener('change', (e) => {
-                    const empId = e.target.dataset.empleadoId;
-                    habilitarMotivo(empId, e.target.value !== 'presente');
+                    sincronizarMotivo(e.target.dataset.empleadoId, e.target.value);
                 });
+            });
+
+            // Cuando el jefe escribe en el motivo, quitar el error si ya no aplica
+            document.querySelectorAll('.motivo-input').forEach(inp => {
+                inp.addEventListener('input', () => {
+                    if (inp.value.trim()) setInvalid(inp, false);
+                });
+            });
+
+            // Validación al enviar el form: bloquear si algún ausente sin motivo.
+            form.addEventListener('submit', (ev) => {
+                const faltantes = [];
+                document.querySelectorAll('.select-estado').forEach(sel => {
+                    const empId = sel.dataset.empleadoId;
+                    const estado = sel.value;
+                    if (estado === 'presente') return;
+                    const input = motivoDe(empId);
+                    if (input && !input.value.trim()) {
+                        setInvalid(input, true);
+                        faltantes.push(input);
+                    }
+                });
+                if (faltantes.length > 0) {
+                    ev.preventDefault();
+                    // Enfocar el primero para llevar al usuario al problema
+                    faltantes[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    faltantes[0].focus({ preventScroll: true });
+                    // Mostrar alerta arriba
+                    let alerta = document.getElementById('alertaFaltaMotivo');
+                    if (!alerta) {
+                        alerta = document.createElement('div');
+                        alerta.id = 'alertaFaltaMotivo';
+                        alerta.className = 'alert alert-warning alert-dismissible fade show';
+                        alerta.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>' +
+                            '<strong>Falta el motivo</strong> en ' + faltantes.length +
+                            ' empleado(s) marcado(s) como ausencia. Complétalo y vuelve a guardar.' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                        form.parentElement.insertBefore(alerta, form);
+                    } else {
+                        alerta.querySelector('strong').nextSibling.textContent =
+                            ' en ' + faltantes.length + ' empleado(s) marcado(s) como ausencia. Complétalo y vuelve a guardar.';
+                    }
+                }
             });
         })();
     </script>

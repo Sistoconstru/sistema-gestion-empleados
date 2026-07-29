@@ -401,6 +401,14 @@
                 </button>
             </li>
             {% endif %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ausencias-tab" data-bs-toggle="tab" data-bs-target="#ausencias" type="button" role="tab">
+                    <i class="fas fa-user-clock me-1"></i>Ausencias
+                    {% if ausencias_totales %}
+                        <span class="badge bg-warning text-dark ms-1">{{ ausencias_totales }}</span>
+                    {% endif %}
+                </button>
+            </li>
         </ul>
 
         <div class="tab-content border border-top-0 p-4" id="profileTabsContent">
@@ -1343,6 +1351,96 @@
                 {% endif %}
             </div>
             {% endif %}
+
+            <!-- Pestaña Ausencias -->
+            <div class="tab-pane fade" id="ausencias" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h6 class="mb-0">
+                        <i class="fas fa-user-clock me-1 text-warning"></i>
+                        Historial de Ausencias
+                    </h6>
+                    <small class="text-muted">
+                        Del {{ ausencias_desde|date:"d/m/Y" }} al {{ ausencias_hasta|date:"d/m/Y" }}
+                        ({{ ausencias_totales }} registro{{ ausencias_totales|pluralize }})
+                    </small>
+                </div>
+
+                {% if ausencias_por_estado %}
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+                        {% for e in ausencias_por_estado %}
+                            <span class="badge
+                                {% if e.estado == 'ausente' %}bg-danger
+                                {% elif e.estado == 'retardo' %}bg-warning text-dark
+                                {% elif e.estado == 'permiso' %}bg-info text-dark
+                                {% elif e.estado == 'permiso_no_remunerado' %}bg-secondary
+                                {% elif e.estado == 'incapacidad' %}bg-warning text-dark
+                                {% elif e.estado == 'en_vacaciones' %}bg-primary
+                                {% else %}bg-secondary{% endif %} fs-6">
+                                {% if e.estado == 'ausente' %}Ausente sin justificar
+                                {% elif e.estado == 'retardo' %}Retardo
+                                {% elif e.estado == 'permiso' %}Permiso remun.
+                                {% elif e.estado == 'permiso_no_remunerado' %}Permiso no rem.
+                                {% elif e.estado == 'incapacidad' %}Incapacidad
+                                {% elif e.estado == 'en_vacaciones' %}Vacaciones
+                                {% else %}{{ e.estado }}
+                                {% endif %}:
+                                <strong>{{ e.n }}</strong>
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if ausencias %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Motivo</th>
+                                    <th>Registrado por</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in ausencias %}
+                                    <tr>
+                                        <td class="text-nowrap">{{ a.fecha|date:"d/m/Y (D)" }}</td>
+                                        <td>
+                                            {% if a.estado == 'retardo' %}
+                                                <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Retardo</span>
+                                            {% elif a.estado == 'ausente' %}
+                                                <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Ausente</span>
+                                            {% elif a.estado == 'permiso' %}
+                                                <span class="badge bg-info text-dark"><i class="fas fa-hand-paper me-1"></i>Permiso remun.</span>
+                                            {% elif a.estado == 'permiso_no_remunerado' %}
+                                                <span class="badge bg-secondary"><i class="fas fa-hand-paper me-1"></i>Permiso no rem.</span>
+                                            {% elif a.estado == 'incapacidad' %}
+                                                <span class="badge bg-warning text-dark"><i class="fas fa-heart me-1"></i>Incapacidad</span>
+                                            {% elif a.estado == 'en_vacaciones' %}
+                                                <span class="badge bg-primary"><i class="fas fa-umbrella-beach me-1"></i>Vacaciones</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ a.get_estado_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small">{{ a.motivo|default:"—" }}</td>
+                                        <td class="small text-muted">{{ a.registrado_por.nombre_completo|default:"—" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-2 small text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Mostrando registros de los últimos 6 meses (máximo 100). Para reportes históricos completos, usa el módulo de reportes de RRHH.
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                        <h5 class="text-success">Sin ausencias en el período</h5>
+                        <p class="text-muted mb-0">Este empleado no tiene ausencias registradas en los últimos 6 meses.</p>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
