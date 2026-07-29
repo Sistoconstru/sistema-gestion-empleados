@@ -116,6 +116,35 @@
     <form method="post" id="formAsistencia">
         {% csrf_token %}
 
+        {% if total_empleados_editables > 15 %}
+        <div class="card border-corporativo shadow-sm mb-3">
+            <div class="card-body py-2">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-auto">
+                        <label for="buscadorEmpleado" class="form-label mb-0 fw-bold">
+                            <i class="fas fa-search me-1 text-corporativo"></i>Buscar empleado:
+                        </label>
+                    </div>
+                    <div class="col-md">
+                        <input type="text" id="buscadorEmpleado" class="form-control"
+                               placeholder="Escribe nombre, apellido o cédula..."
+                               autocomplete="off">
+                    </div>
+                    <div class="col-md-auto">
+                        <button type="button" id="btnLimpiarBuscador" class="btn btn-sm btn-outline-secondary" title="Limpiar filtro">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="col-12">
+                        <div id="contadorBuscador" class="small text-muted">
+                            {{ total_empleados_editables }} empleados en total. Escribe para filtrar.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         {% for g in grupos_ui %}
             <div class="card border-{% if g.motivo_grupo == 'ausencia' %}warning{% elif g.motivo_grupo == 'delegacion' %}info{% else %}corporativo{% endif %} shadow-sm mb-3">
                 <div class="card-header {% if g.motivo_grupo == 'ausencia' %}bg-warning bg-opacity-25{% elif g.motivo_grupo == 'delegacion' %}bg-info bg-opacity-25{% else %}bg-light{% endif %} d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -158,7 +187,8 @@
                             </thead>
                             <tbody>
                                 {% for f in g.filas %}
-                                    <tr class="{% if f.estado == 'presente' %}{% elif f.estado == 'en_vacaciones' %}table-info{% elif f.estado == 'incapacidad' %}table-warning{% elif f.estado == 'ausente' %}table-danger{% else %}table-secondary{% endif %}">
+                                    <tr class="fila-empleado {% if f.estado == 'presente' %}{% elif f.estado == 'en_vacaciones' %}table-info{% elif f.estado == 'incapacidad' %}table-warning{% elif f.estado == 'ausente' %}table-danger{% else %}table-secondary{% endif %}"
+                                        data-buscar="{{ f.empleado.nombre_completo|lower }} {{ f.empleado.numero_documento|lower }}">
                                         <td>
                                             <strong>{{ f.empleado.nombre_completo }}</strong>
                                             <div class="small text-muted">
@@ -220,6 +250,58 @@
     </form>
 
     <script>
+        // -------- Buscador de empleados (solo aparece si equipo > 15) --------
+        (function() {
+            const buscador = document.getElementById('buscadorEmpleado');
+            if (!buscador) return;
+
+            const btnLimpiar = document.getElementById('btnLimpiarBuscador');
+            const contador = document.getElementById('contadorBuscador');
+            const filas = document.querySelectorAll('.fila-empleado');
+            const total = filas.length;
+
+            // Normaliza texto: minúsculas + sin acentos + sin espacios extra
+            const normalizar = (txt) =>
+                (txt || '')
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[̀-ͯ]/g, '')
+                    .trim();
+
+            const filtrar = () => {
+                const q = normalizar(buscador.value);
+                if (!q) {
+                    filas.forEach(f => f.style.display = '');
+                    contador.textContent = total + ' empleados en total. Escribe para filtrar.';
+                    contador.classList.remove('text-warning');
+                    return;
+                }
+                let visibles = 0;
+                filas.forEach(f => {
+                    const dato = normalizar(f.dataset.buscar);
+                    const match = dato.includes(q);
+                    f.style.display = match ? '' : 'none';
+                    if (match) visibles++;
+                });
+                contador.textContent = visibles === 0
+                    ? 'Sin coincidencias para "' + buscador.value + '".'
+                    : 'Mostrando ' + visibles + ' de ' + total + ' empleados.';
+                contador.classList.toggle('text-warning', visibles === 0);
+            };
+
+            buscador.addEventListener('input', filtrar);
+            btnLimpiar.addEventListener('click', () => {
+                buscador.value = '';
+                filtrar();
+                buscador.focus();
+            });
+            // Enter en el buscador no debe enviar el form
+            buscador.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') e.preventDefault();
+            });
+        })();
+
+        // -------- Validación y sincronización del formulario --------
         (function() {
             const form = document.getElementById('formAsistencia');
 
