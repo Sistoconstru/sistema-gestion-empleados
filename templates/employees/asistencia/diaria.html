@@ -60,6 +60,31 @@
 
 {# Los mensajes flash los renderiza base.html — no duplicar aquí. #}
 
+{% if dia_completamente_registrado %}
+    <div class="alert alert-success border-success d-flex align-items-center gap-3 flex-wrap">
+        <i class="fas fa-check-circle fa-2x text-success"></i>
+        <div class="flex-grow-1">
+            <strong>Asistencia del día ya registrada</strong> — todos los {{ total_empleados_editables }} empleado{{ total_empleados_editables|pluralize }} tienen su estado marcado.
+            {% if ultima_actualizacion %}
+                <div class="small text-muted">
+                    Última actualización: {{ ultima_actualizacion|date:"d/m/Y" }} a las {{ ultima_actualizacion|date:"H:i" }}
+                </div>
+            {% endif %}
+            <div class="small text-muted">
+                Puedes modificar cualquier fila y volver a guardar si necesitas corregir.
+            </div>
+        </div>
+    </div>
+{% elif dia_parcialmente_registrado %}
+    <div class="alert alert-info border-info d-flex align-items-center gap-3 flex-wrap">
+        <i class="fas fa-info-circle fa-2x text-info"></i>
+        <div class="flex-grow-1">
+            <strong>Registro parcial:</strong> ya has marcado {{ total_registrados }} de {{ total_empleados_editables }} empleado{{ total_empleados_editables|pluralize }}.
+            Completa los faltantes y guarda.
+        </div>
+    </div>
+{% endif %}
+
 {% if dias_sin_registrar %}
     <div class="alert alert-warning border-warning">
         <div class="d-flex align-items-start gap-3">
@@ -107,6 +132,9 @@
                             <i class="fas fa-users me-2"></i>Mi equipo
                         {% endif %}
                         <span class="badge bg-corporativo ms-1">{{ g.filas|length }}</span>
+                        {% if forloop.first and dia_completamente_registrado %}
+                            <span class="badge bg-success ms-2"><i class="fas fa-check me-1"></i>Registrado</span>
+                        {% endif %}
                     </div>
                     <div class="small text-muted">
                         {% if g.motivo_grupo == 'propio' %}
@@ -179,9 +207,15 @@
             <a href="{% url 'employees:asistencia_diaria' %}?fecha={{ fecha|date:'Y-m-d' }}" class="btn btn-outline-secondary">
                 Descartar cambios
             </a>
-            <button type="submit" class="btn btn-corporativo">
-                <i class="fas fa-save me-1"></i>Guardar día
-            </button>
+            {% if dia_completamente_registrado %}
+                <button type="submit" class="btn btn-outline-corporativo">
+                    <i class="fas fa-sync-alt me-1"></i>Actualizar cambios
+                </button>
+            {% else %}
+                <button type="submit" class="btn btn-corporativo">
+                    <i class="fas fa-save me-1"></i>Guardar día
+                </button>
+            {% endif %}
         </div>
     </form>
 

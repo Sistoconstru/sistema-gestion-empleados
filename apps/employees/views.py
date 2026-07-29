@@ -4596,8 +4596,13 @@ def asistencia_diaria(request):
             )
         return redirect(f'{reverse("employees:asistencia_diaria")}?fecha={fecha.isoformat()}')
 
-    # GET — armar filas con auto-detección, agrupadas por sección
+    # GET — armar filas con auto-detección, agrupadas por sección.
+    # También calculamos estado global del día para que la UI muestre
+    # claramente que el día ya se registró.
     grupos_ui = []
+    total_empleados_editables = 0
+    total_registrados = 0
+    ultima_actualizacion = None
     for g in grupos:
         filas = []
         for emp in g['empleados']:
@@ -4616,11 +4621,23 @@ def asistencia_diaria(request):
                 'readonly': readonly,
                 'registrado_previamente': reg is not None,
             })
+            if not readonly:
+                total_empleados_editables += 1
+                if reg:
+                    total_registrados += 1
+                    if ultima_actualizacion is None or reg.fecha_actualizacion > ultima_actualizacion:
+                        ultima_actualizacion = reg.fecha_actualizacion
         grupos_ui.append({
             'jefe_ausente': g['jefe'],  # None si es equipo propio
             'motivo_grupo': g['motivo'],  # 'propio' | 'ausencia' | 'delegacion'
             'filas': filas,
         })
+
+    dia_completamente_registrado = (
+        total_empleados_editables > 0
+        and total_registrados == total_empleados_editables
+    )
+    dia_parcialmente_registrado = 0 < total_registrados < total_empleados_editables
 
     fecha_anterior = (fecha - timedelta(days=1)) if fecha > ventana_min else None
     fecha_siguiente = (fecha + timedelta(days=1)) if fecha < hoy else None
@@ -4641,6 +4658,11 @@ def asistencia_diaria(request):
         'jornada_salida': JORNADA_HORA_SALIDA,
         'jornada_descansos': JORNADA_DESCANSOS_MIN,
         'dias_sin_registrar': dias_sin_registrar,
+        'dia_completamente_registrado': dia_completamente_registrado,
+        'dia_parcialmente_registrado': dia_parcialmente_registrado,
+        'total_empleados_editables': total_empleados_editables,
+        'total_registrados': total_registrados,
+        'ultima_actualizacion': ultima_actualizacion,
     })
 
 
