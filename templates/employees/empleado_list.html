@@ -146,7 +146,7 @@
                         {{ empleado.numero_documento }}
                     </td>
                     <td>
-                        {% with empleado.historialcargo_set.all|first as cargo_actual %}
+                        {% with cargo_actual=empleado.cargo_actual_list.0 %}
                             {% if cargo_actual %}
                                 {{ cargo_actual.cargo.nombre }}
                             {% else %}
@@ -155,8 +155,8 @@
                         {% endwith %}
                     </td>
                     <td>
-                        {% with empleado.historialcargo_set.all|first as cargo_actual %}
-                            {% if cargo_actual %}
+                        {% with cargo_actual=empleado.cargo_actual_list.0 %}
+                            {% if cargo_actual and cargo_actual.cargo.area %}
                                 {{ cargo_actual.cargo.area.nombre }}
                             {% else %}
                                 <span class="text-muted">-</span>
