@@ -64,4 +64,8 @@ urlpatterns = [
     path('sesiones/<uuid:pk>/', views_sesiones.SesionDetailView.as_view(), name='sesion_detail'),
     path('sesiones/<uuid:pk>/inscribirse/', views_sesiones.inscribirse_sesion, name='inscribirse_sesion'),
     path('sesiones/inscripcion/<uuid:pk>/cancelar/', views_sesiones.cancelar_inscripcion_sesion, name='cancelar_inscripcion_sesion'),
+
+    # Encargado — tomar asistencia
+    path('sesiones/a-cargo/', views_sesiones.SesionesACargoView.as_view(), name='sesiones_a_cargo'),
+    path('sesiones/<uuid:pk>/asistencia/', views_sesiones.tomar_asistencia, name='tomar_asistencia'),
 ]

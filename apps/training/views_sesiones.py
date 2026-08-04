@@ -7,7 +7,7 @@ Cubre la Fase 2 del módulo:
 - Cancelación de la propia inscripción antes de iniciar la sesión.
 """
 
-from datetime import date
+from datetime import date, timedelta
 import logging
 
 from django.contrib import messages
@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseForbidden, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -23,7 +23,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, ListView
 
 from apps.employees.models import Empleado
-from .models import InscripcionCapacitacion, SesionCapacitacion
+from .models import AsistenciaSesion, InscripcionCapacitacion, SesionCapacitacion
 
 logger = logging.getLogger(__name__)
 
@@ -216,3 +216,169 @@ class MisSesionesView(LoginRequiredMixin, ListView):
             )
         ctx['hoy'] = hoy
         return ctx
+
+
+# =============================================================================
+# Vistas para el encargado de una sesión (tomar asistencia)
+# =============================================================================
+
+class SesionesACargoView(LoginRequiredMixin, ListView):
+    """Sesiones donde el usuario logueado es el encargado."""
+
+    model = SesionCapacitacion
+    template_name = 'training/sesiones/a_cargo.html'
+    context_object_name = 'sesiones'
+    paginate_by = 20
+
+    def get_queryset(self):
+        empleado = _get_empleado(self.request)
+        if empleado is None:
+            return SesionCapacitacion.objects.none()
+        return SesionCapacitacion.objects.filter(
+            encargado=empleado,
+        ).select_related('capacitacion').annotate(
+            total_inscritos=Count('inscripciones'),
+        ).order_by('-fecha_inicio', 'codigo')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['empleado'] = _get_empleado(self.request)
+        ctx['hoy'] = date.today()
+        return ctx
+
+
+def _dias_de_sesion(sesion):
+    """Genera las fechas calendario que abarca la sesión."""
+    dias = []
+    d = sesion.fecha_inicio
+    while d <= sesion.fecha_fin:
+        dias.append(d)
+        d += timedelta(days=1)
+    return dias
+
+
+def _guard_encargado(request, sesion):
+    """Retorna (empleado, error_response) — error si no es encargado ni staff."""
+    empleado = _get_empleado(request)
+    if empleado is None:
+        return None, HttpResponseForbidden('Tu usuario no está vinculado a un empleado.')
+    es_encargado = sesion.encargado_id == empleado.id
+    es_staff = request.user.is_staff or request.user.is_superuser
+    if not (es_encargado or es_staff):
+        return None, HttpResponseForbidden('Solo el encargado de la sesión puede tomar asistencia.')
+    return empleado, None
+
+
+@login_required
+def tomar_asistencia(request, pk):
+    """Matriz inscritos × días para que el encargado marque asistencia.
+
+    GET: muestra la tabla.
+    POST: recibe checkboxes con name="asis_<inscripcion_id>_<YYYY-MM-DD>" y
+    sincroniza (create/update/delete implícito = no-marcado → asistio=False).
+    """
+    sesion = get_object_or_404(
+        SesionCapacitacion.objects.select_related('capacitacion', 'encargado'),
+        pk=pk,
+    )
+    empleado, err = _guard_encargado(request, sesion)
+    if err is not None:
+        return err
+
+    dias = _dias_de_sesion(sesion)
+    inscripciones = list(
+        InscripcionCapacitacion.objects.filter(sesion=sesion)
+        .select_related('empleado').order_by('empleado__apellidos', 'empleado__nombres')
+    )
+
+    if request.method == 'POST':
+        # Índice existente {(inscripcion_id, fecha): AsistenciaSesion}
+        existentes = {
+            (a.inscripcion_id, a.fecha): a
+            for a in AsistenciaSesion.objects.filter(
+                inscripcion__in=inscripciones, fecha__in=dias,
+            )
+        }
+        marcados = set()
+        for key in request.POST:
+            if not key.startswith('asis_'):
+                continue
+            try:
+                _, insc_id, fecha_str = key.split('_', 2)
+                fecha = date.fromisoformat(fecha_str)
+            except ValueError:
+                continue
+            marcados.add((insc_id, fecha))
+
+        creadas = actualizadas = descontadas = 0
+        insc_ids = {str(i.pk) for i in inscripciones}
+        with transaction.atomic():
+            for insc in inscripciones:
+                for dia in dias:
+                    key = (insc.pk, dia)
+                    debe_estar = (str(insc.pk), dia) in marcados
+                    existente = existentes.get(key)
+                    if existente is None and debe_estar:
+                        AsistenciaSesion.objects.create(
+                            inscripcion=insc, fecha=dia, asistio=True,
+                            registrado_por=empleado,
+                        )
+                        creadas += 1
+                    elif existente is not None and existente.asistio != debe_estar:
+                        existente.asistio = debe_estar
+                        existente.registrado_por = empleado
+                        existente.save(update_fields=['asistio', 'registrado_por', 'fecha_registro'])
+                        actualizadas += 1
+                        if not debe_estar:
+                            descontadas += 1
+
+        total = creadas + actualizadas
+        if total:
+            partes = []
+            if creadas:
+                partes.append(f'{creadas} nueva(s)')
+            if actualizadas:
+                partes.append(f'{actualizadas} actualizada(s)')
+            messages.success(request, 'Asistencia guardada: ' + ', '.join(partes) + '.')
+        else:
+            messages.info(request, 'No hubo cambios en la asistencia.')
+        return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+    # GET: construir matriz para la plantilla
+    asistencias_map = {
+        (a.inscripcion_id, a.fecha): a
+        for a in AsistenciaSesion.objects.filter(
+            inscripcion__in=inscripciones, fecha__in=dias,
+        )
+    }
+    filas = []
+    for insc in inscripciones:
+        celdas = []
+        presentes = 0
+        for dia in dias:
+            asis = asistencias_map.get((insc.pk, dia))
+            asistio = bool(asis and asis.asistio)
+            if asistio:
+                presentes += 1
+            celdas.append({
+                'fecha': dia,
+                'name': f'asis_{insc.pk}_{dia.isoformat()}',
+                'asistio': asistio,
+                'observaciones': asis.observaciones if asis else '',
+            })
+        porcentaje = int(round(100 * presentes / len(dias))) if dias else 0
+        filas.append({
+            'inscripcion': insc,
+            'celdas': celdas,
+            'presentes': presentes,
+            'porcentaje': porcentaje,
+            'cumple_minimo': porcentaje >= sesion.porcentaje_asistencia_minimo,
+        })
+
+    return render(request, 'training/sesiones/tomar_asistencia.html', {
+        'sesion': sesion,
+        'dias': dias,
+        'filas': filas,
+        'hoy': date.today(),
+        'total_dias': len(dias),
+    })
