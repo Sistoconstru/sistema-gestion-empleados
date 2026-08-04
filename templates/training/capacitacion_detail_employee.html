@@ -142,9 +142,15 @@
 
                 {% if capacitacion.es_externa %}
                 <div class="d-grid">
-                    <a href="{{ capacitacion.url_externa }}" target="_blank" class="btn btn-corporativo">
+                    {% if capacitacion.url_curso_externo %}
+                    <a href="{{ capacitacion.url_curso_externo }}" target="_blank" rel="noopener noreferrer" class="btn btn-corporativo">
                         <i class="fas fa-external-link-alt me-2"></i>Ir al sitio del curso
                     </a>
+                    {% else %}
+                    <button type="button" class="btn btn-corporativo" disabled title="La capacitación no tiene URL configurada.">
+                        <i class="fas fa-external-link-alt me-2"></i>Sin URL configurada
+                    </button>
+                    {% endif %}
                 </div>
                 {% else %}
                 <div class="d-grid">
