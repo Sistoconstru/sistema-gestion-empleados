@@ -13,10 +13,18 @@
         <h1 class="h2 mb-2">Mis Capacitaciones</h1>
         <p class="text-muted">Gestiona tu desarrollo profesional y capacitaciones</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
     <a href="{% url 'training:mis_certificados' %}" class="btn btn-outline-corporativo">
             <i class="fas fa-certificate"></i>
             Mis Certificados
+        </a>
+    <a href="{% url 'training:mis_sesiones' %}" class="btn btn-outline-primary">
+            <i class="fas fa-user-check"></i>
+            Mis sesiones presenciales
+        </a>
+    <a href="{% url 'training:sesiones_abiertas' %}" class="btn btn-outline-primary">
+            <i class="fas fa-chalkboard-teacher"></i>
+            Sesiones presenciales abiertas
         </a>
     <a href="{% url 'training:catalogo' %}" class="btn btn-corporativo">
             <i class="fas fa-search"></i>

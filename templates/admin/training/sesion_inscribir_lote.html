@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'change' sesion.pk %}">{{ sesion.codigo }}</a>
+    &rsaquo; Inscribir empleados
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Inscribir empleados a la sesión</h1>
+
+<div class="module aligned" style="padding: 15px;">
+    <p><strong>Capacitación:</strong> {{ sesion.capacitacion.nombre }}</p>
+    <p><strong>Código sesión:</strong> {{ sesion.codigo }}</p>
+    <p><strong>Fechas:</strong> {{ sesion.fecha_inicio|date:"d/m/Y" }}
+        {% if sesion.fecha_fin != sesion.fecha_inicio %} → {{ sesion.fecha_fin|date:"d/m/Y" }}{% endif %}</p>
+    <p><strong>Lugar:</strong> {{ sesion.lugar }}</p>
+    <p><strong>Inscritos actuales:</strong> {{ total_inscritos }}
+        {% if sesion.cupo_maximo %}
+            de {{ sesion.cupo_maximo }} — <strong>{{ cupo_disponible }} cupos disponibles</strong>
+            {% if cupo_disponible == 0 %}
+                <span style="color: #c00;">(sin cupo, no se pueden inscribir más)</span>
+            {% endif %}
+        {% else %}
+            (cupo ilimitado)
+        {% endif %}
+    </p>
+</div>
+
+<form method="get" style="margin: 15px 0;">
+    <input type="search" name="q" value="{{ query }}" placeholder="Buscar por nombre, apellido o documento"
+           style="width: 320px; padding: 6px;">
+    <button type="submit" class="button">Buscar</button>
+    {% if query %}<a href="?" class="button">Limpiar</a>{% endif %}
+</form>
+
+<form method="post">
+    {% csrf_token %}
+    <div style="margin-bottom: 12px;">
+        <label>
+            <input type="checkbox" name="obligatoria" value="on">
+            Marcar como capacitación <strong>obligatoria</strong> para los empleados seleccionados
+        </label>
+    </div>
+
+    {% if empleados %}
+    <table class="results" style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width: 30px;">
+                    <input type="checkbox" onchange="document.querySelectorAll('input[name=empleados]').forEach(c => c.checked = this.checked)">
+                </th>
+                <th>Documento</th>
+                <th>Empleado</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in empleados %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+                <td><input type="checkbox" name="empleados" value="{{ emp.id }}"></td>
+                <td>{{ emp.numero_documento }}</td>
+                <td>{{ emp.apellidos }}, {{ emp.nombres }}</td>
+                <td>{{ emp.estado.nombre|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="margin-top: 10px; color: #666;">
+        Mostrando {{ empleados|length }} candidato(s). Los ya inscritos a esta sesión no aparecen.
+        {% if empleados|length >= 500 %}
+            <strong>Se limitó a 500 resultados</strong> — refina con el buscador para ver más.
+        {% endif %}
+    </p>
+    <div style="margin-top: 15px;">
+        <button type="submit" class="default">Inscribir seleccionados</button>
+        <a href="{% url opts|admin_urlname:'change' sesion.pk %}" class="button">Cancelar</a>
+    </div>
+    {% else %}
+    <div class="module" style="padding: 15px;">
+        <p>No hay empleados disponibles para inscribir
+            {% if query %}con la búsqueda "<strong>{{ query }}</strong>"{% endif %}.
+        </p>
+        <a href="{% url opts|admin_urlname:'change' sesion.pk %}" class="button">Volver</a>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}

@@ -4,7 +4,7 @@
 
 from django.urls import path
 from django.views.generic import TemplateView
-from . import views
+from . import views, views_sesiones
 from .views import MisCertificadosView, PlayerPreviewView
 from .views_pdf import PDFMediaView
  # PDF seguro con CORS
@@ -57,4 +57,11 @@ urlpatterns = [
     path('quiz/intento/<int:intento_id>/respuesta/', views.guardar_respuesta_quiz, name='guardar_respuesta_quiz'),
     path('quiz/intento/<int:intento_id>/finalizar/', views.finalizar_quiz, name='finalizar_quiz'),
     path('media-pdf/<path:path>/', PDFMediaView.as_view(), name='media_pdf'),
+
+    # Capacitaciones presenciales — sesiones
+    path('sesiones/', views_sesiones.SesionesAbiertasView.as_view(), name='sesiones_abiertas'),
+    path('sesiones/mis-sesiones/', views_sesiones.MisSesionesView.as_view(), name='mis_sesiones'),
+    path('sesiones/<uuid:pk>/', views_sesiones.SesionDetailView.as_view(), name='sesion_detail'),
+    path('sesiones/<uuid:pk>/inscribirse/', views_sesiones.inscribirse_sesion, name='inscribirse_sesion'),
+    path('sesiones/inscripcion/<uuid:pk>/cancelar/', views_sesiones.cancelar_inscripcion_sesion, name='cancelar_inscripcion_sesion'),
 ]

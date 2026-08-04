@@ -3,10 +3,16 @@
 # =============================================================================
 
 from django.contrib import admin, messages
+from django.db import IntegrityError, transaction
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import path, reverse
 from .models import (TipoCapacitacion, Capacitacion, CapacitacionCargo, ModuloCapacitacion,
                      Leccion, TipoContenido, ContenidoLeccion, InscripcionCapacitacion, ProgresoCapacitacion,
-                     QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
+                     QuizLeccion, PreguntaQuiz, OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla,
+                     SesionCapacitacion, AsistenciaSesion)
 from .certificate_generator import CertificateGenerator
+from apps.employees.models import Empleado
 
 
 def _emitir_certificados_para(inscripciones_qs):
@@ -38,13 +44,13 @@ class TipoCapacitacionAdmin(admin.ModelAdmin):
 
 @admin.register(Capacitacion)
 class CapacitacionAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'tipo', 'es_externa_display', 'duracion_estimada_horas', 'activa', 'fecha_creacion')
-    list_filter = ('activa', 'tipo', 'es_capacitacion_externa', 'fecha_creacion')
+    list_display = ('codigo', 'nombre', 'tipo', 'modalidad', 'es_externa_display', 'duracion_estimada_horas', 'activa', 'fecha_creacion')
+    list_filter = ('activa', 'modalidad', 'tipo', 'es_capacitacion_externa', 'fecha_creacion')
     search_fields = ('codigo', 'nombre', 'nombre_proveedor')
 
     fieldsets = (
         ('Información Básica', {
-            'fields': ('codigo', 'nombre', 'descripcion', 'tipo', 'activa', 'nivel_dificultad')
+            'fields': ('codigo', 'nombre', 'descripcion', 'tipo', 'modalidad', 'activa', 'nivel_dificultad')
         }),
         ('Capacitación Externa', {
             'fields': ('es_capacitacion_externa', 'nombre_proveedor', 'url_curso_externo', 'requiere_certificado_externo'),
@@ -222,9 +228,10 @@ class ContenidoLeccionAdmin(admin.ModelAdmin):
 
 @admin.register(InscripcionCapacitacion)
 class InscripcionCapacitacionAdmin(admin.ModelAdmin):
-    list_display = ('empleado', 'capacitacion', 'estado', 'obligatoria', 'fecha_inscripcion', 'puntaje_final')
-    list_filter = ('estado', 'obligatoria', 'fecha_inscripcion')
-    search_fields = ('empleado__nombres', 'empleado__apellidos', 'capacitacion__nombre')
+    list_display = ('empleado', 'capacitacion', 'sesion', 'estado', 'obligatoria', 'fecha_inscripcion', 'puntaje_final')
+    list_filter = ('estado', 'obligatoria', 'sesion', 'fecha_inscripcion')
+    search_fields = ('empleado__nombres', 'empleado__apellidos', 'capacitacion__nombre', 'sesion__codigo')
+    autocomplete_fields = ('empleado', 'capacitacion', 'sesion')
 
     exclude = ('inscrito_por',)
     actions = ['emitir_certificado_inscripciones']
@@ -353,3 +360,175 @@ class CertificadoPlantillaAdmin(admin.ModelAdmin):
                 '</div>'
             )
     vista_previa_info.short_description = ''
+
+
+# -----------------------------------------------------------------------------
+# Capacitaciones presenciales: sesiones + asistencia
+# -----------------------------------------------------------------------------
+
+class AsistenciaSesionInline(admin.TabularInline):
+    model = AsistenciaSesion
+    extra = 0
+    fields = ('fecha', 'asistio', 'hora_llegada', 'observaciones', 'registrado_por')
+    readonly_fields = ('registrado_por', 'fecha_registro')
+    autocomplete_fields = ('inscripcion',)
+
+
+@admin.register(SesionCapacitacion)
+class SesionCapacitacionAdmin(admin.ModelAdmin):
+    list_display = ('codigo', 'capacitacion', 'modalidad', 'fecha_inicio', 'fecha_fin',
+                    'encargado', 'estado', 'inscripcion_abierta', 'cupo_maximo', 'inscritos_count',
+                    'acciones_sesion')
+    list_filter = ('estado', 'modalidad', 'inscripcion_abierta', 'fecha_inicio')
+    search_fields = ('codigo', 'capacitacion__nombre', 'capacitacion__codigo',
+                     'lugar', 'encargado__nombres', 'encargado__apellidos')
+    autocomplete_fields = ('capacitacion', 'encargado')
+    date_hierarchy = 'fecha_inicio'
+    readonly_fields = ('fecha_creacion', 'fecha_actualizacion', 'creado_por')
+
+    fieldsets = (
+        ('Capacitación y modalidad', {
+            'fields': ('capacitacion', 'codigo', 'modalidad', 'estado')
+        }),
+        ('Programación', {
+            'fields': ('lugar', 'fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin', 'encargado')
+        }),
+        ('Inscripción', {
+            'fields': ('inscripcion_abierta', 'cupo_maximo',
+                       'ventana_inscripcion_desde', 'ventana_inscripcion_hasta'),
+            'description': 'Si "Inscripción abierta" está marcado y hoy está dentro de la ventana, '
+                           'los empleados pueden auto-inscribirse desde el catálogo.',
+        }),
+        ('Aprobación', {
+            'fields': ('porcentaje_asistencia_minimo',),
+            'description': '% mínimo de días asistidos para aprobar la capacitación y emitir certificado.',
+        }),
+        ('Notas', {
+            'fields': ('observaciones',),
+            'classes': ('collapse',),
+        }),
+        ('Auditoría', {
+            'fields': ('creado_por', 'fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def inscritos_count(self, obj):
+        return obj.inscripciones.count()
+    inscritos_count.short_description = 'Inscritos'
+
+    def acciones_sesion(self, obj):
+        from django.utils.html import format_html
+        url = reverse('admin:training_sesioncapacitacion_inscribir_lote', args=[obj.pk])
+        return format_html('<a class="button" href="{}">Inscribir empleados</a>', url)
+    acciones_sesion.short_description = 'Acciones'
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.creado_por = request.user
+        super().save_model(request, obj, form, change)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom = [
+            path(
+                '<uuid:sesion_id>/inscribir-lote/',
+                self.admin_site.admin_view(self.inscribir_lote_view),
+                name='training_sesioncapacitacion_inscribir_lote',
+            ),
+        ]
+        return custom + urls
+
+    def inscribir_lote_view(self, request, sesion_id):
+        """Pantalla para inscribir uno o varios empleados a la sesión en un solo paso."""
+        from apps.employees.models import Empleado
+        sesion = SesionCapacitacion.objects.get(pk=sesion_id)
+
+        ya_inscritos_ids = set(
+            InscripcionCapacitacion.objects.filter(sesion=sesion).values_list('empleado_id', flat=True)
+        )
+
+        if request.method == 'POST':
+            seleccionados = request.POST.getlist('empleados')
+            obligatoria = request.POST.get('obligatoria') == 'on'
+            if not seleccionados:
+                self.message_user(request, 'No seleccionaste ningún empleado.', level=messages.WARNING)
+                return HttpResponseRedirect(request.path)
+
+            # Cupo restante
+            cupo_restante = None
+            if sesion.cupo_maximo is not None:
+                cupo_restante = max(0, sesion.cupo_maximo - InscripcionCapacitacion.objects.filter(sesion=sesion).count())
+
+            candidatos = [eid for eid in seleccionados if eid not in {str(x) for x in ya_inscritos_ids}]
+            omitidos_por_duplicado = len(seleccionados) - len(candidatos)
+
+            if cupo_restante is not None and len(candidatos) > cupo_restante:
+                candidatos_a_inscribir = candidatos[:cupo_restante]
+                omitidos_por_cupo = len(candidatos) - cupo_restante
+            else:
+                candidatos_a_inscribir = candidatos
+                omitidos_por_cupo = 0
+
+            empleados_qs = Empleado.objects.filter(id__in=candidatos_a_inscribir)
+            creadas = 0
+            errores = 0
+            with transaction.atomic():
+                for emp in empleados_qs:
+                    try:
+                        InscripcionCapacitacion.objects.create(
+                            empleado=emp,
+                            capacitacion=sesion.capacitacion,
+                            sesion=sesion,
+                            estado='no_iniciado',
+                            obligatoria=obligatoria,
+                            inscrito_por=request.user,
+                        )
+                        creadas += 1
+                    except IntegrityError:
+                        errores += 1
+
+            if creadas:
+                self.message_user(request, f'{creadas} empleado(s) inscrito(s) a la sesión.', level=messages.SUCCESS)
+            if omitidos_por_duplicado:
+                self.message_user(request, f'{omitidos_por_duplicado} ya estaban inscritos y se omitieron.', level=messages.INFO)
+            if omitidos_por_cupo:
+                self.message_user(request, f'{omitidos_por_cupo} no cupieron por cupo lleno.', level=messages.WARNING)
+            if errores:
+                self.message_user(request, f'{errores} fallaron por integridad y no se inscribieron.', level=messages.ERROR)
+            return HttpResponseRedirect(reverse('admin:training_sesioncapacitacion_change', args=[sesion.pk]))
+
+        # GET: mostrar formulario
+        query = request.GET.get('q', '').strip()
+        empleados = Empleado.objects.exclude(id__in=ya_inscritos_ids).select_related('estado').order_by('apellidos', 'nombres')
+        if query:
+            from django.db.models import Q
+            empleados = empleados.filter(
+                Q(nombres__icontains=query) | Q(apellidos__icontains=query) | Q(numero_documento__icontains=query)
+            )
+        # Limitar para no reventar la vista
+        empleados = empleados[:500]
+
+        cupo_disponible = sesion.cupo_disponible
+        context = {
+            **self.admin_site.each_context(request),
+            'sesion': sesion,
+            'empleados': empleados,
+            'query': query,
+            'cupo_disponible': cupo_disponible,
+            'total_inscritos': InscripcionCapacitacion.objects.filter(sesion=sesion).count(),
+            'opts': self.model._meta,
+            'title': f'Inscribir empleados a {sesion.codigo}',
+        }
+        return render(request, 'admin/training/sesion_inscribir_lote.html', context)
+
+
+@admin.register(AsistenciaSesion)
+class AsistenciaSesionAdmin(admin.ModelAdmin):
+    list_display = ('inscripcion', 'fecha', 'asistio', 'hora_llegada', 'registrado_por', 'fecha_registro')
+    list_filter = ('asistio', 'fecha')
+    search_fields = ('inscripcion__empleado__nombres', 'inscripcion__empleado__apellidos',
+                     'inscripcion__capacitacion__nombre', 'inscripcion__sesion__codigo')
+    autocomplete_fields = ('inscripcion',)
+    date_hierarchy = 'fecha'
+    readonly_fields = ('fecha_registro',)

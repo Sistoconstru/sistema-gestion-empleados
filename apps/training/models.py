@@ -209,19 +209,33 @@ class ProveedorExterno(models.Model):
 
 class Capacitacion(models.Model):
     """Capacitaciones del sistema"""
-    
+
     NIVELES_DIFICULTAD = [
         ('basico', 'Básico'),
         ('intermedio', 'Intermedio'),
         ('avanzado', 'Avanzado'),
     ]
-    
+
+    MODALIDAD_CHOICES = [
+        ('online', 'Online / Autoservicio'),
+        ('presencial', 'Presencial'),
+        ('mixta', 'Mixta (presencial + online)'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     codigo = models.CharField(max_length=30, unique=True)
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField()
     tipo = models.ForeignKey(TipoCapacitacion, on_delete=models.CASCADE)
-    
+    modalidad = models.CharField(
+        max_length=15, choices=MODALIDAD_CHOICES, default='online',
+        help_text=(
+            "Presencial: se dicta en aula/sitio en una fecha programada (sesiones). "
+            "Online: contenido en la plataforma. "
+            "Mixta: combina ambas."
+        ),
+    )
+
     # Configuración básica
     duracion_estimada_horas = models.IntegerField(validators=[MinValueValidator(1)])
     nivel_dificultad = models.CharField(max_length=20, choices=NIVELES_DIFICULTAD, default='basico')
@@ -747,10 +761,19 @@ class InscripcionCapacitacion(models.Model):
     # Usuarios relacionados
     inscrito_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE, related_name='inscripciones_creadas')
     aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='inscripciones_aprobadas')
-    
+
+    # Sesión presencial concreta (null = inscripción sin sesión programada, ej. curso online)
+    sesion = models.ForeignKey(
+        'SesionCapacitacion', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='inscripciones',
+        help_text="Convocatoria/sesión presencial específica a la que pertenece esta inscripción.",
+    )
+
     class Meta:
         db_table = 'inscripciones_capacitacion'
-        unique_together = ['empleado', 'capacitacion']
+        # unique compuesto por sesión: un empleado puede inscribirse al MISMO
+        # curso en distintas sesiones (repetir toma, por ejemplo).
+        unique_together = ['empleado', 'capacitacion', 'sesion']
         verbose_name = 'Inscripción a Capacitación'
         verbose_name_plural = 'Inscripciones a Capacitación'
         ordering = ['-fecha_inscripcion']
@@ -976,4 +999,178 @@ class CertificadoPlantilla(models.Model):
     def __str__(self):
         return f"Plantilla de certificado: {self.capacitacion.nombre}"
 
+
+# =============================================================================
+# CAPACITACIONES PRESENCIALES — SESIONES PROGRAMADAS
+# =============================================================================
+
+class SesionCapacitacion(models.Model):
+    """Convocatoria presencial de una capacitación.
+
+    Una misma Capacitacion puede programarse varias veces (ej: SST cada mes).
+    Cada convocatoria es una SesionCapacitacion con su propia fecha, cupo,
+    encargado y ventana de inscripción. Los empleados se inscriben a la sesión
+    específica, no al curso abstracto.
+
+    Estados:
+      - programada: creada, aún no arranca.
+      - en_curso: se pasó fecha_inicio, aún no termina.
+      - finalizada: pasada fecha_fin, se cerró y calcularon aprobados.
+      - cancelada: no se realizó.
+    """
+    MODALIDAD_CHOICES = [
+        ('presencial', 'Presencial'),
+        ('mixta', 'Mixta (presencial + online)'),
+    ]
+    ESTADO_CHOICES = [
+        ('programada', 'Programada'),
+        ('en_curso', 'En curso'),
+        ('finalizada', 'Finalizada'),
+        ('cancelada', 'Cancelada'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    capacitacion = models.ForeignKey(
+        Capacitacion, on_delete=models.CASCADE, related_name='sesiones',
+        help_text="Capacitación (contenido) que se dicta en esta sesión.",
+    )
+    codigo = models.CharField(
+        max_length=40,
+        help_text="Código único de la convocatoria (ej: SST-2026-SEP).",
+    )
+
+    modalidad = models.CharField(max_length=15, choices=MODALIDAD_CHOICES, default='presencial')
+    lugar = models.CharField(
+        max_length=200,
+        help_text="Aula, sede o sala virtual (ej: Aula planta Caldas).",
+    )
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    hora_inicio = models.TimeField(null=True, blank=True)
+    hora_fin = models.TimeField(null=True, blank=True)
+
+    encargado = models.ForeignKey(
+        'employees.Empleado', on_delete=models.PROTECT,
+        related_name='sesiones_a_cargo',
+        help_text="Empleado responsable de dictar y tomar asistencia.",
+    )
+
+    # Cupo e inscripción
+    cupo_maximo = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text="Cupo máximo de inscritos. Null = ilimitado.",
+    )
+    inscripcion_abierta = models.BooleanField(
+        default=False,
+        help_text="Si está marcado, los empleados pueden auto-inscribirse desde el catálogo.",
+    )
+    ventana_inscripcion_desde = models.DateField(null=True, blank=True)
+    ventana_inscripcion_hasta = models.DateField(null=True, blank=True)
+
+    # Aprobación
+    porcentaje_asistencia_minimo = models.PositiveIntegerField(
+        default=80,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="% mínimo de días asistidos para aprobar y recibir certificado.",
+    )
+
+    estado = models.CharField(max_length=15, choices=ESTADO_CHOICES, default='programada')
+    observaciones = models.TextField(blank=True)
+
+    # Auditoría
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    creado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='sesiones_creadas',
+    )
+
+    class Meta:
+        db_table = 'training_sesiones_capacitacion'
+        verbose_name = 'Sesión de capacitación'
+        verbose_name_plural = 'Sesiones de capacitación'
+        ordering = ['-fecha_inicio', 'codigo']
+        constraints = [
+            models.UniqueConstraint(fields=['capacitacion', 'codigo'], name='unique_capacitacion_codigo_sesion'),
+        ]
+        indexes = [
+            models.Index(fields=['estado', 'fecha_inicio']),
+            models.Index(fields=['encargado', '-fecha_inicio']),
+        ]
+
+    def __str__(self):
+        return f"{self.capacitacion.nombre} — {self.codigo} ({self.fecha_inicio:%d/%m/%Y})"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.fecha_fin < self.fecha_inicio:
+            raise ValidationError({'fecha_fin': 'La fecha fin no puede ser anterior a la fecha inicio.'})
+        if self.ventana_inscripcion_desde and self.ventana_inscripcion_hasta:
+            if self.ventana_inscripcion_hasta < self.ventana_inscripcion_desde:
+                raise ValidationError({'ventana_inscripcion_hasta': 'La ventana de inscripción hasta no puede ser anterior al desde.'})
+
+    @property
+    def dias_totales(self):
+        """Número de días calendario entre fecha_inicio y fecha_fin (inclusive)."""
+        return (self.fecha_fin - self.fecha_inicio).days + 1
+
+    @property
+    def cupo_disponible(self):
+        """Cupo disponible actual. None si es ilimitado."""
+        if self.cupo_maximo is None:
+            return None
+        return max(0, self.cupo_maximo - self.inscripciones.count())
+
+    def inscripcion_permitida_hoy(self):
+        """True si hoy está dentro de la ventana de inscripción y hay cupo."""
+        from datetime import date as _date
+        hoy = _date.today()
+        if not self.inscripcion_abierta:
+            return False
+        if self.ventana_inscripcion_desde and hoy < self.ventana_inscripcion_desde:
+            return False
+        if self.ventana_inscripcion_hasta and hoy > self.ventana_inscripcion_hasta:
+            return False
+        if self.cupo_disponible is not None and self.cupo_disponible <= 0:
+            return False
+        if self.estado != 'programada':
+            return False
+        return True
+
+
+class AsistenciaSesion(models.Model):
+    """Asistencia de un inscrito a un día específico de una sesión.
+
+    Un registro por (inscripcion, fecha). El encargado marca los checkboxes
+    día por día. Al finalizar la sesión se calcula el % y se aprueba/reprueba.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    inscripcion = models.ForeignKey(
+        InscripcionCapacitacion, on_delete=models.CASCADE,
+        related_name='asistencias_sesion',
+    )
+    fecha = models.DateField(help_text="Día concreto de la sesión.")
+    asistio = models.BooleanField(default=False)
+    hora_llegada = models.TimeField(null=True, blank=True)
+    observaciones = models.TextField(blank=True)
+    registrado_por = models.ForeignKey(
+        'employees.Empleado', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='asistencias_sesion_registradas',
+    )
+    fecha_registro = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'training_asistencia_sesion'
+        verbose_name = 'Asistencia a sesión'
+        verbose_name_plural = 'Asistencias a sesiones'
+        constraints = [
+            models.UniqueConstraint(fields=['inscripcion', 'fecha'], name='unique_asistencia_inscripcion_fecha'),
+        ]
+        indexes = [
+            models.Index(fields=['inscripcion', 'fecha']),
+        ]
+        ordering = ['fecha']
+
+    def __str__(self):
+        return f"{self.inscripcion.empleado.nombre_completo} - {self.fecha} - {'✓' if self.asistio else '✗'}"
 

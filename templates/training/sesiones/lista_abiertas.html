@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sesiones presenciales abiertas{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'training:mis_capacitaciones' %}">Capacitaciones</a></li>
+<li class="breadcrumb-item active">Sesiones presenciales</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-chalkboard-teacher text-primary me-2"></i>
+            Sesiones presenciales abiertas
+        </h1>
+        <p class="text-muted mb-0">Capacitaciones programadas dentro de la empresa en las que puedes inscribirte.</p>
+    </div>
+    <a href="{% url 'training:mis_sesiones' %}" class="btn btn-outline-corporativo">
+        <i class="fas fa-user-check me-1"></i> Mis sesiones
+    </a>
+</div>
+
+{% if sesiones %}
+<div class="row">
+    {% for sesion in sesiones %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary text-uppercase">{{ sesion.get_modalidad_display }}</span>
+                    {% if sesion.disponibles is None %}
+                        <span class="badge bg-success">Cupo ilimitado</span>
+                    {% elif sesion.disponibles == 0 %}
+                        <span class="badge bg-danger">Sin cupo</span>
+                    {% else %}
+                        <span class="badge bg-info text-dark">{{ sesion.disponibles }} de {{ sesion.cupo_maximo }} disponibles</span>
+                    {% endif %}
+                </div>
+                <h5 class="card-title mb-1">{{ sesion.capacitacion.nombre }}</h5>
+                <div class="text-muted small mb-3">
+                    <i class="fas fa-hashtag"></i> {{ sesion.codigo }}
+                </div>
+
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-1">
+                        <i class="fas fa-calendar-day text-muted me-1"></i>
+                        {{ sesion.fecha_inicio|date:"d M Y" }}
+                        {% if sesion.fecha_fin != sesion.fecha_inicio %}
+                            → {{ sesion.fecha_fin|date:"d M Y" }}
+                        {% endif %}
+                    </li>
+                    {% if sesion.hora_inicio %}
+                    <li class="mb-1">
+                        <i class="fas fa-clock text-muted me-1"></i>
+                        {{ sesion.hora_inicio|time:"H:i" }}
+                        {% if sesion.hora_fin %} – {{ sesion.hora_fin|time:"H:i" }}{% endif %}
+                    </li>
+                    {% endif %}
+                    <li class="mb-1">
+                        <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                        {{ sesion.lugar }}
+                    </li>
+                    <li>
+                        <i class="fas fa-user-tie text-muted me-1"></i>
+                        {{ sesion.encargado.nombre_completo }}
+                    </li>
+                </ul>
+
+                <div class="mt-auto d-flex gap-2">
+                    <a href="{% url 'training:sesion_detail' sesion.pk %}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                        <i class="fas fa-info-circle me-1"></i>Ver detalle
+                    </a>
+                    {% if sesion.ya_inscrito %}
+                        <span class="btn btn-success btn-sm disabled">
+                            <i class="fas fa-check me-1"></i>Inscrito
+                        </span>
+                    {% elif sesion.disponibles == 0 %}
+                        <span class="btn btn-secondary btn-sm disabled">Sin cupo</span>
+                    {% else %}
+                        <form method="post" action="{% url 'training:inscribirse_sesion' sesion.pk %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user-plus me-1"></i>Inscribirme
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav aria-label="paginación" class="mt-3">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-info text-center">
+    <i class="fas fa-info-circle me-1"></i>
+    En este momento no hay sesiones presenciales abiertas a inscripción.
+</div>
+{% endif %}
+{% endblock %}

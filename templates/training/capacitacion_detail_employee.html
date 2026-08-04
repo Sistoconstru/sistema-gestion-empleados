@@ -31,7 +31,18 @@
                         
                         <p class="text-muted mb-1">Tipo</p>
                         <p class="h6 mb-3">{{ capacitacion.tipo.nombre }}</p>
-                        
+
+                        <p class="text-muted mb-1">Modalidad</p>
+                        <p class="h6 mb-3">
+                            {% if capacitacion.modalidad == 'presencial' %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-chalkboard-teacher me-1"></i>Presencial</span>
+                            {% elif capacitacion.modalidad == 'mixta' %}
+                                <span class="badge bg-secondary"><i class="fas fa-random me-1"></i>Mixta (presencial + online)</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark border"><i class="fas fa-laptop me-1"></i>Online / Autoservicio</span>
+                            {% endif %}
+                        </p>
+
                         <p class="text-muted mb-1">Duración Estimada</p>
                         <p class="h6 mb-3">{{ capacitacion.get_duracion_display }}</p>
                     </div>

@@ -44,9 +44,18 @@
                     </div>
                     <div>
                         <h5 class="card-title mb-1">{{ capacitacion.nombre }}</h5>
-                        <span class="badge {% if capacitacion.es_externa %}bg-info{% else %}bg-corporativo{% endif %}">
-                            {{ capacitacion.tipo.nombre }}
-                        </span>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <span class="badge {% if capacitacion.es_externa %}bg-info{% else %}bg-corporativo{% endif %}">
+                                {{ capacitacion.tipo.nombre }}
+                            </span>
+                            {% if capacitacion.modalidad == 'presencial' %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-chalkboard-teacher me-1"></i>Presencial</span>
+                            {% elif capacitacion.modalidad == 'mixta' %}
+                                <span class="badge bg-secondary"><i class="fas fa-random me-1"></i>Mixta</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark"><i class="fas fa-laptop me-1"></i>Online</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
 
