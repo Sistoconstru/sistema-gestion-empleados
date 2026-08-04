@@ -68,4 +68,6 @@ urlpatterns = [
     # Encargado — tomar asistencia
     path('sesiones/a-cargo/', views_sesiones.SesionesACargoView.as_view(), name='sesiones_a_cargo'),
     path('sesiones/<uuid:pk>/asistencia/', views_sesiones.tomar_asistencia, name='tomar_asistencia'),
+    path('sesiones/<uuid:pk>/finalizar/', views_sesiones.finalizar_sesion, name='finalizar_sesion'),
+    path('sesiones/<uuid:pk>/reabrir/', views_sesiones.reabrir_sesion, name='reabrir_sesion'),
 ]

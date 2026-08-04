@@ -382,3 +382,124 @@ def tomar_asistencia(request, pk):
         'hoy': date.today(),
         'total_dias': len(dias),
     })
+
+
+# =============================================================================
+# Fase 4 — finalizar sesión: aprueba/reprueba por asistencia y emite certificados
+# =============================================================================
+
+@login_required
+@require_POST
+def finalizar_sesion(request, pk):
+    """Calcula % de asistencia de cada inscrito, marca la inscripción como
+    aprobada o reprobada según ``porcentaje_asistencia_minimo``, dispara la
+    emisión de certificados a los aprobados y deja la sesión en 'finalizada'.
+    """
+    from .certificate_generator import CertificateGenerator
+
+    sesion = get_object_or_404(
+        SesionCapacitacion.objects.select_related('capacitacion'),
+        pk=pk,
+    )
+    empleado, err = _guard_encargado(request, sesion)
+    if err is not None:
+        return err
+
+    if sesion.estado == 'finalizada':
+        messages.info(request, 'Esta sesión ya está finalizada.')
+        return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+    dias = _dias_de_sesion(sesion)
+    total_dias = len(dias)
+    if total_dias == 0:
+        messages.error(request, 'La sesión no tiene días válidos.')
+        return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+    inscripciones = list(
+        InscripcionCapacitacion.objects.filter(sesion=sesion)
+        .select_related('empleado', 'capacitacion')
+    )
+    if not inscripciones:
+        messages.warning(request, 'No hay inscritos en esta sesión.')
+        return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+    presentes_por_insc = {
+        row['inscripcion']: row['n']
+        for row in AsistenciaSesion.objects.filter(
+            inscripcion__in=inscripciones, asistio=True,
+        ).values('inscripcion').annotate(n=Count('id'))
+    }
+
+    aprobados = reprobados = certificados = 0
+    ahora = timezone.now()
+    with transaction.atomic():
+        for insc in inscripciones:
+            presentes = presentes_por_insc.get(insc.pk, 0)
+            porcentaje = round(100 * presentes / total_dias, 2)
+            cumple = porcentaje >= sesion.porcentaje_asistencia_minimo
+
+            insc.puntaje_final = porcentaje
+            insc.fecha_finalizacion = ahora
+            insc.porcentaje_completado = int(round(porcentaje))
+            if cumple:
+                insc.estado = 'aprobado'
+                insc.fecha_aprobacion = ahora
+                aprobados += 1
+            else:
+                insc.estado = 'reprobado'
+                reprobados += 1
+            insc.save(update_fields=[
+                'estado', 'puntaje_final', 'fecha_finalizacion',
+                'fecha_aprobacion', 'porcentaje_completado',
+            ])
+
+            if cumple:
+                try:
+                    if CertificateGenerator.emitir_certificado(insc):
+                        certificados += 1
+                except Exception as exc:
+                    logger.error(f'Fallo al emitir certificado para {insc.pk}: {exc}')
+
+        sesion.estado = 'finalizada'
+        sesion.save(update_fields=['estado', 'fecha_actualizacion'])
+
+    partes = [f'{aprobados} aprobado(s)', f'{reprobados} reprobado(s)']
+    if certificados:
+        partes.append(f'{certificados} certificado(s) emitido(s)')
+    messages.success(request, 'Sesión finalizada: ' + ', '.join(partes) + '.')
+    return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+
+@login_required
+@require_POST
+def reabrir_sesion(request, pk):
+    """Reabre una sesión finalizada para corregir asistencias o resultados.
+
+    Devuelve las inscripciones a 'no_iniciado' para que puedan volver a
+    procesarse con `finalizar_sesion`. No borra las AsistenciaSesion existentes
+    ni los números de certificado ya emitidos (evita duplicados si se re-emite).
+    """
+    sesion = get_object_or_404(SesionCapacitacion, pk=pk)
+    empleado, err = _guard_encargado(request, sesion)
+    if err is not None:
+        return err
+
+    if sesion.estado != 'finalizada':
+        messages.info(request, 'La sesión no está finalizada, no hay nada que reabrir.')
+        return redirect('training:tomar_asistencia', pk=sesion.pk)
+
+    with transaction.atomic():
+        InscripcionCapacitacion.objects.filter(sesion=sesion).update(
+            estado='no_iniciado',
+            fecha_aprobacion=None,
+            fecha_finalizacion=None,
+        )
+        sesion.estado = 'en_curso'
+        sesion.save(update_fields=['estado', 'fecha_actualizacion'])
+
+    messages.warning(
+        request,
+        'Sesión reabierta. Corrige la asistencia y vuelve a finalizarla. '
+        'Los certificados ya emitidos conservan su número.',
+    )
+    return redirect('training:tomar_asistencia', pk=sesion.pk)
