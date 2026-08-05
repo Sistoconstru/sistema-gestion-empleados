@@ -788,7 +788,18 @@ class InscripcionCapacitacion(models.Model):
     
     def __str__(self):
         return f"{self.empleado.nombre_completo} - {self.capacitacion.nombre}"
-    
+
+    def save(self, *args, **kwargs):
+        # Auto-asignar sesión cuando la capacitación es presencial/mixta y
+        # se está creando la inscripción sin sesión explícita. Toma la próxima
+        # sesión futura disponible (programada, con cupo); si no hay, deja la
+        # inscripción "en espera" y el admin sabrá que debe crear una sesión.
+        if self._state.adding and self.sesion_id is None:
+            capacitacion = self.capacitacion
+            if capacitacion and capacitacion.modalidad in ('presencial', 'mixta'):
+                self.sesion = SesionCapacitacion.proxima_disponible_para(capacitacion)
+        super().save(*args, **kwargs)
+
     def get_estado_color(self):
         """Color para badges según estado"""
         colores = {
@@ -1144,6 +1155,54 @@ class SesionCapacitacion(models.Model):
         if self.estado != 'programada':
             return False
         return True
+
+    # Ventana del link de asistencia virtual: se activa 5 min antes del
+    # inicio de la sesión y sigue disponible hasta el fin de la última
+    # jornada. Si no hay hora_inicio configurada se abre desde las 00:00
+    # del primer día; si no hay hora_fin se cierra a las 23:59 del último.
+    LINK_LEAD_MINUTES = 5
+
+    @property
+    def link_disponible_desde(self):
+        from datetime import datetime, time, timedelta
+        inicio = datetime.combine(self.fecha_inicio, self.hora_inicio or time.min)
+        return inicio - timedelta(minutes=self.LINK_LEAD_MINUTES)
+
+    @property
+    def link_disponible_hasta(self):
+        from datetime import datetime, time
+        return datetime.combine(self.fecha_fin, self.hora_fin or time.max)
+
+    def link_activo_ahora(self):
+        """True si el link de reunión debe estar disponible en este momento."""
+        from datetime import datetime
+        ahora = datetime.now()
+        return self.link_disponible_desde <= ahora <= self.link_disponible_hasta
+
+    @classmethod
+    def proxima_disponible_para(cls, capacitacion):
+        """Retorna la sesión más adecuada para inscribir a un empleado ahora.
+
+        Prioriza sesiones futuras con cupo, luego sesiones en curso, luego
+        cualquier futura sin cupo (para que el admin sepa que no cupo pero
+        haya visibilidad). Retorna None si no hay ninguna sesión programada.
+        """
+        from datetime import date as _date
+        hoy = _date.today()
+        candidatas = cls.objects.filter(
+            capacitacion=capacitacion,
+            estado__in=('programada', 'en_curso'),
+        ).order_by('fecha_inicio')
+        for sesion in candidatas.filter(fecha_inicio__gte=hoy):
+            if sesion.cupo_disponible is None or sesion.cupo_disponible > 0:
+                return sesion
+        # Fallback: sesión en curso (por si el empleado se une tarde)
+        en_curso = candidatas.filter(estado='en_curso', fecha_fin__gte=hoy).first()
+        if en_curso is not None:
+            return en_curso
+        # Último recurso: la primera futura aunque esté llena, para no dejar
+        # al empleado sin visibilidad de que el curso tiene programación.
+        return candidatas.filter(fecha_inicio__gte=hoy).first()
 
 
 class AsistenciaSesion(models.Model):

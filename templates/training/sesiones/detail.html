@@ -63,11 +63,25 @@
                     {% if sesion.capacitacion.url_reunion %}
                     <div class="col-12">
                         <div class="small text-muted">Link de asistencia virtual (para quienes no puedan asistir presencialmente)</div>
-                        <div>
-                            <a href="{{ sesion.capacitacion.url_reunion }}" target="_blank" rel="noopener noreferrer" class="text-break">
-                                <i class="fas fa-video text-muted me-1"></i>{{ sesion.capacitacion.url_reunion }}
-                            </a>
-                        </div>
+                        {% if sesion.link_activo_ahora %}
+                            <div>
+                                <a href="{{ sesion.capacitacion.url_reunion }}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm">
+                                    <i class="fas fa-video me-1"></i>Conectarme ahora
+                                </a>
+                                <div class="small text-muted mt-1 text-break">{{ sesion.capacitacion.url_reunion }}</div>
+                            </div>
+                        {% else %}
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" disabled
+                                        title="El link se activa 5 minutos antes de la sesión">
+                                    <i class="fas fa-lock me-1"></i>Link bloqueado
+                                </button>
+                                <div class="small text-muted mt-1">
+                                    Se activará el {{ sesion.link_disponible_desde|date:"d/m/Y H:i" }}
+                                    (5 minutos antes del inicio).
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                     {% endif %}
                     <div class="col-md-6">
