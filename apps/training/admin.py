@@ -57,6 +57,10 @@ class CapacitacionAdmin(admin.ModelAdmin):
             'description': 'Marcar "Es capacitación externa" si es ofrecida por un proveedor externo (Coursera, Udemy, etc.). Esto simplifica la gestión: solo necesitas la URL del curso.',
             'classes': ('collapse',)
         }),
+        ('Presencial / Asistencia virtual', {
+            'fields': ('url_reunion',),
+            'description': 'Solo aplica cuando la capacitación es presencial o mixta. El link es opcional para empleados que no puedan asistir físicamente al lugar de la sesión.',
+        }),
         ('Configuración', {
             'fields': ('duracion_estimada_horas', 'puntaje_aprobacion', 'intentos_maximos', 'puntos_gamificacion', 'costo_inscripcion', 'emite_certificado')
         }),

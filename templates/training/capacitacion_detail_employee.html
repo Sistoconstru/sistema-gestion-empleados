@@ -59,8 +59,24 @@
                     </div>
                 </div>
                 
+                {% if capacitacion.url_reunion %}
                 <hr>
-                
+                <div class="alert alert-info d-flex align-items-start">
+                    <i class="fas fa-video me-2 mt-1"></i>
+                    <div>
+                        <strong>Link de asistencia virtual:</strong>
+                        <a href="{{ capacitacion.url_reunion }}" target="_blank" rel="noopener noreferrer" class="text-break ms-1">
+                            {{ capacitacion.url_reunion }}
+                        </a>
+                        <div class="small text-muted mt-1">
+                            Para empleados que no puedan asistir presencialmente al lugar de la sesión.
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <hr>
+
                 <h5 class="mb-3">Descripción</h5>
                 <p class="mb-4">{{ capacitacion.descripcion|linebreaks }}</p>
 

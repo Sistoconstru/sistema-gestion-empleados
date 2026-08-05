@@ -235,6 +235,14 @@ class Capacitacion(models.Model):
             "Mixta: combina ambas."
         ),
     )
+    url_reunion = models.URLField(
+        blank=True,
+        verbose_name="Link de asistencia virtual (opcional)",
+        help_text=(
+            "URL de Meet, Zoom o similar para empleados que no puedan asistir "
+            "presencialmente. Aplica a todas las sesiones de este curso."
+        ),
+    )
 
     # Configuración básica
     duracion_estimada_horas = models.IntegerField(validators=[MinValueValidator(1)])

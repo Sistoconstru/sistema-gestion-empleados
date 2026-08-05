@@ -60,6 +60,16 @@
                         <div class="small text-muted">Encargado</div>
                         <div><i class="fas fa-user-tie text-muted me-1"></i>{{ sesion.encargado.nombre_completo }}</div>
                     </div>
+                    {% if sesion.capacitacion.url_reunion %}
+                    <div class="col-12">
+                        <div class="small text-muted">Link de asistencia virtual (para quienes no puedan asistir presencialmente)</div>
+                        <div>
+                            <a href="{{ sesion.capacitacion.url_reunion }}" target="_blank" rel="noopener noreferrer" class="text-break">
+                                <i class="fas fa-video text-muted me-1"></i>{{ sesion.capacitacion.url_reunion }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="col-md-6">
                         <div class="small text-muted">Asistencia mínima para aprobar</div>
                         <div><i class="fas fa-percentage text-muted me-1"></i>{{ sesion.porcentaje_asistencia_minimo }}%</div>
