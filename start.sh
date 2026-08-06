@@ -135,6 +135,12 @@ python manage.py collectstatic --noinput
 
 # Crea un superusuario si no existe
 
+# Asegura claves VAPID para Web Push (primera vez genera, resto lee de DB).
+# La regeneración invalida todas las suscripciones activas, así que este
+# comando SOLO genera si no existen — es idempotente entre deploys.
+echo "🔑 Verificando claves VAPID para notificaciones push..."
+eval "$(python manage.py asegurar_vapid_keys)" || echo "⚠️  No se pudo asegurar VAPID; push quedará deshabilitado."
+
 # Inicia el scheduler de tareas automáticas en segundo plano (modo daemon)
 echo "🔄 Iniciando scheduler de evaluaciones automáticas..."
 python manage.py start_scheduler --daemon > /dev/null 2>&1 &
