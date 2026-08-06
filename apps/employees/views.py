@@ -4774,7 +4774,7 @@ def asistencia_historial(request):
 # y vigilancias no cuentan para este tope. Se computa sobre novedades ya
 # guardadas en estado 'pendiente' o 'aprobada'; las rechazadas no suman.
 from decimal import Decimal as _DecimalLimite
-LIMITE_HORAS_EXTRAS_DIA = _DecimalLimite('7')
+LIMITE_HORAS_EXTRAS_DIA = _DecimalLimite('12')
 
 
 def _lunes_de_semana(fecha):
@@ -4836,7 +4836,9 @@ def novedades_semana(request):
             registrado_por = None
 
         empleado_id = request.POST.get('empleado_id')
-        fecha_str = request.POST.get('fecha')
+        # Multi-día: el modal envía uno o varios `fechas` (checkboxes).
+        # Fallback: si vino el `fecha` singular (compatibilidad), lo usamos.
+        fechas_str = request.POST.getlist('fechas') or [request.POST.get('fecha')]
         tipo = (request.POST.get('tipo') or '').strip()
         total_horas_str = (request.POST.get('total_horas') or '').strip()
         motivo = (request.POST.get('motivo') or '').strip()
@@ -4854,15 +4856,20 @@ def novedades_semana(request):
             messages.error(request, 'No tienes permiso para registrar novedades de este empleado.')
             return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
 
-        try:
-            from datetime import datetime as _dt
-            fecha_nov = _dt.strptime(fecha_str, '%Y-%m-%d').date()
-        except (TypeError, ValueError):
-            messages.error(request, 'Fecha inválida.')
-            return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-
-        if fecha_nov not in dias_semana:
-            messages.error(request, 'La fecha debe pertenecer a la semana visible.')
+        # Parsear y validar todas las fechas objetivo
+        from datetime import datetime as _dt_parse
+        fechas_objetivo = []
+        for fs in fechas_str:
+            if not fs:
+                continue
+            try:
+                f = _dt_parse.strptime(fs, '%Y-%m-%d').date()
+            except (TypeError, ValueError):
+                continue
+            if f in dias_semana and f not in fechas_objetivo:
+                fechas_objetivo.append(f)
+        if not fechas_objetivo:
+            messages.error(request, 'Debes seleccionar al menos un día de la semana visible.')
             return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
 
         # 'hora_extra_auto' es un tipo virtual del formulario: el sistema
@@ -4876,7 +4883,7 @@ def novedades_semana(request):
             messages.error(request, 'El motivo es obligatorio.')
             return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
 
-        # Parsear horas
+        # Parsear horas (comunes a todas las fechas seleccionadas)
         from datetime import datetime as _dt, timedelta as _td
         hora_inicio = None
         hora_fin = None
@@ -4891,35 +4898,23 @@ def novedades_semana(request):
             except ValueError:
                 pass
 
-        # Determinar las novedades a crear:
-        # - 'hora_extra_auto' → segmentar el rango en 1..N tramos (diurna/
-        #   nocturna/dominical) usando el helper. Requiere ambas horas.
-        # - Otros tipos → 1 sola novedad; horas opcionales, total desde rango
-        #   o manual.
+        # Validaciones que aplican por igual a TODAS las fechas — fallan una vez,
+        # no por día. Ejemplo: si es hora_extra_auto y falta hora_fin, ni tiene
+        # sentido intentar por día alguno.
         from apps.employees.utils.jornadas import segmentar_hora_extra
-        novedades_a_crear = []
+        redirect_semana = redirect(
+            f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}'
+        )
 
+        total_horas_base = None  # para tipos no-auto: total pre-calculado
         if tipo == 'hora_extra_auto':
             if not (hora_inicio and hora_fin):
                 messages.error(
                     request,
                     'Para hora extra automática debes ingresar hora de inicio y hora de fin.',
                 )
-                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-            try:
-                tramos = segmentar_hora_extra(fecha_nov, hora_inicio, hora_fin)
-            except ValueError as err:
-                messages.error(request, str(err))
-                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-            for tr in tramos:
-                novedades_a_crear.append({
-                    'tipo': tr['tipo'],
-                    'hora_inicio': tr['hora_inicio'],
-                    'hora_fin': tr['hora_fin'],
-                    'total_horas': tr['total_horas'],
-                })
+                return redirect_semana
         else:
-            # Cálculo simple de total_horas para tipos no-auto
             if hora_inicio and hora_fin:
                 anchor = _dt(2000, 1, 1)
                 dt_ini = _dt.combine(anchor.date(), hora_inicio)
@@ -4927,96 +4922,125 @@ def novedades_semana(request):
                 if dt_fin <= dt_ini:
                     dt_fin += _td(days=1)
                 horas_calc = Decimal((dt_fin - dt_ini).total_seconds()) / Decimal('3600')
-                total_horas = horas_calc.quantize(Decimal('0.01'))
-                if total_horas <= 0:
+                total_horas_base = horas_calc.quantize(Decimal('0.01'))
+                if total_horas_base <= 0:
                     messages.error(request, 'El rango de horas debe resultar en un tiempo mayor a 0.')
-                    return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+                    return redirect_semana
             else:
                 try:
-                    total_horas = Decimal(total_horas_str)
-                    if total_horas <= 0:
+                    total_horas_base = Decimal(total_horas_str)
+                    if total_horas_base <= 0:
                         raise InvalidOperation
                 except (InvalidOperation, TypeError, ValueError):
                     messages.error(
                         request,
                         'Debes ingresar el rango de horas (inicio y fin) o el total manual.',
                     )
-                    return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-            novedades_a_crear.append({
-                'tipo': tipo,
-                'hora_inicio': hora_inicio,
-                'hora_fin': hora_fin,
-                'total_horas': total_horas,
-            })
+                    return redirect_semana
 
-        # Validación del límite diario de horas extras.
-        # Suma solo los tramos que sean hora_extra_* + lo ya acumulado
-        # (pendiente + aprobada; rechazadas no cuentan).
-        nuevas_extras = sum(
-            (n['total_horas'] for n in novedades_a_crear if n['tipo'].startswith('hora_extra_')),
-            Decimal('0'),
-        )
-        if nuevas_extras > 0:
-            from django.db.models import Sum
-            ya_acumuladas = (
-                NovedadNomina.objects
-                .filter(
-                    empleado=empleado_obj,
-                    fecha=fecha_nov,
-                    tipo__startswith='hora_extra_',
-                    estado_aprobacion__in=('pendiente', 'aprobada'),
-                )
-                .aggregate(t=Sum('total_horas'))
-                .get('t') or Decimal('0')
+        # Procesar cada día por separado. Un día que falle su validación
+        # (ej: límite diario excedido) solo se salta a sí mismo; los demás
+        # siguen adelante. Best-effort explícito para no perder trabajo.
+        from django.db.models import Sum
+        dias_ok = []       # [(fecha, [novedades])]
+        dias_saltados = []  # [(fecha, motivo)]
+
+        for fecha_nov in fechas_objetivo:
+            # 1. Determinar novedades para esta fecha
+            novedades_a_crear = []
+            if tipo == 'hora_extra_auto':
+                try:
+                    tramos = segmentar_hora_extra(fecha_nov, hora_inicio, hora_fin)
+                except ValueError as err:
+                    dias_saltados.append((fecha_nov, str(err)))
+                    continue
+                for tr in tramos:
+                    novedades_a_crear.append({
+                        'tipo': tr['tipo'],
+                        'hora_inicio': tr['hora_inicio'],
+                        'hora_fin': tr['hora_fin'],
+                        'total_horas': tr['total_horas'],
+                    })
+            else:
+                novedades_a_crear.append({
+                    'tipo': tipo,
+                    'hora_inicio': hora_inicio,
+                    'hora_fin': hora_fin,
+                    'total_horas': total_horas_base,
+                })
+
+            # 2. Validar límite diario para este día
+            nuevas_extras = sum(
+                (n['total_horas'] for n in novedades_a_crear if n['tipo'].startswith('hora_extra_')),
+                Decimal('0'),
             )
-            si_se_agrega = ya_acumuladas + nuevas_extras
-            if si_se_agrega > LIMITE_HORAS_EXTRAS_DIA:
-                disponible = LIMITE_HORAS_EXTRAS_DIA - ya_acumuladas
-                if disponible < 0:
-                    disponible = Decimal('0')
-                messages.error(
+            if nuevas_extras > 0:
+                ya_acumuladas = (
+                    NovedadNomina.objects
+                    .filter(
+                        empleado=empleado_obj,
+                        fecha=fecha_nov,
+                        tipo__startswith='hora_extra_',
+                        estado_aprobacion__in=('pendiente', 'aprobada'),
+                    )
+                    .aggregate(t=Sum('total_horas'))
+                    .get('t') or Decimal('0')
+                )
+                si_se_agrega = ya_acumuladas + nuevas_extras
+                if si_se_agrega > LIMITE_HORAS_EXTRAS_DIA:
+                    disponible = LIMITE_HORAS_EXTRAS_DIA - ya_acumuladas
+                    if disponible < 0:
+                        disponible = Decimal('0')
+                    dias_saltados.append((
+                        fecha_nov,
+                        f'excede el tope diario ({LIMITE_HORAS_EXTRAS_DIA}h); '
+                        f'ya tenía {ya_acumuladas}h y se pueden agregar hasta {disponible}h más',
+                    ))
+                    continue
+
+            # 3. Insertar en su propia transacción para aislar fallos por día
+            with transaction.atomic():
+                for n in novedades_a_crear:
+                    NovedadNomina.objects.create(
+                        empleado=empleado_obj,
+                        fecha=fecha_nov,
+                        tipo=n['tipo'],
+                        hora_inicio=n['hora_inicio'],
+                        hora_fin=n['hora_fin'],
+                        total_horas=n['total_horas'],
+                        motivo=motivo,
+                        observaciones=observaciones,
+                        registrado_por=registrado_por,
+                        creado_por=request.user,
+                        estado_aprobacion='pendiente',
+                    )
+            dias_ok.append((fecha_nov, novedades_a_crear))
+
+        # 4. Mensaje único con el resumen
+        if dias_ok:
+            total_nov = sum(len(n) for _, n in dias_ok)
+            if len(dias_ok) == 1 and total_nov == 1:
+                fecha_unica, _ = dias_ok[0]
+                messages.success(
                     request,
-                    f'{empleado_obj.nombre_completo} ya tiene {ya_acumuladas}h '
-                    f'extras acumuladas el {fecha_nov.strftime("%d/%m/%Y")}. '
-                    f'Con esta novedad ({nuevas_extras}h) llegaría a {si_se_agrega}h '
-                    f'y el límite por día son {LIMITE_HORAS_EXTRAS_DIA}h. '
-                    f'Puedes registrar hasta {disponible}h más.'
+                    f'Novedad registrada para {empleado_obj.nombre_completo} el '
+                    f'{fecha_unica.strftime("%d/%m/%Y")}.',
                 )
-                return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-
-        # Crear todas las novedades en una transacción
-        with transaction.atomic():
-            for n in novedades_a_crear:
-                NovedadNomina.objects.create(
-                    empleado=empleado_obj,
-                    fecha=fecha_nov,
-                    tipo=n['tipo'],
-                    hora_inicio=n['hora_inicio'],
-                    hora_fin=n['hora_fin'],
-                    total_horas=n['total_horas'],
-                    motivo=motivo,
-                    observaciones=observaciones,
-                    registrado_por=registrado_por,
-                    creado_por=request.user,
-                    estado_aprobacion='pendiente',
+            else:
+                dias_txt = ', '.join(f.strftime('%d/%m') for f, _ in dias_ok)
+                messages.success(
+                    request,
+                    f'Se registraron {total_nov} novedad(es) para '
+                    f'{empleado_obj.nombre_completo} en {len(dias_ok)} día(s): {dias_txt}.',
                 )
-
-        if len(novedades_a_crear) == 1:
-            messages.success(
+        for fecha_sk, motivo_sk in dias_saltados:
+            messages.warning(
                 request,
-                f'Novedad registrada para {empleado_obj.nombre_completo} el {fecha_nov.strftime("%d/%m/%Y")}.',
+                f'No se registró el {fecha_sk.strftime("%d/%m/%Y")}: {motivo_sk}.',
             )
-        else:
-            resumen = ', '.join(
-                f'{n["total_horas"]}h {dict(NovedadNomina.TIPO_CHOICES).get(n["tipo"], n["tipo"]).lower()}'
-                for n in novedades_a_crear
-            )
-            messages.success(
-                request,
-                f'Se registraron {len(novedades_a_crear)} novedades para '
-                f'{empleado_obj.nombre_completo} el {fecha_nov.strftime("%d/%m/%Y")}: {resumen}.',
-            )
-        return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
+        if not dias_ok and not dias_saltados:
+            messages.error(request, 'No se pudo registrar ninguna novedad.')
+        return redirect_semana
 
     # GET: cargar novedades de la semana y armar matriz
     novedades = (
@@ -5283,11 +5307,8 @@ def descargar_carta_vacaciones(request, pk):
         )
         return redirect('employees:mis_vacaciones')
 
-    # Registrar constancia (solo la primera vez). Si ya existía descarga
-    # previa, esta impresión es una copia — el PDF debe conservar la fecha
-    # original y marcarlo claramente.
-    es_copia = solicitud.carta_descargada_fecha is not None
-    if not es_copia:
+    # Registrar constancia (solo la primera vez)
+    if not solicitud.carta_descargada_fecha:
         ahora = timezone.now()
         hash_input = f'{empleado.id}|{solicitud.id}|{ahora.isoformat()}'.encode()
         SolicitudVacacion.objects.filter(pk=solicitud.pk).update(
@@ -5297,7 +5318,7 @@ def descargar_carta_vacaciones(request, pk):
         solicitud.refresh_from_db()
 
     # Generar y devolver PDF
-    pdf_bytes = generar_carta_vacaciones(solicitud, es_copia=es_copia)
+    pdf_bytes = generar_carta_vacaciones(solicitud)
     filename = (
         f'carta_vacaciones_{empleado.numero_documento}_'
         f'{solicitud.fecha_inicio.strftime("%Y%m%d") if solicitud.fecha_inicio else solicitud.pk}.pdf'

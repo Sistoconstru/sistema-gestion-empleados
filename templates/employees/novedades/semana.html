@@ -150,7 +150,6 @@
             <form method="post" action="{% url 'employees:novedades_semana' %}?fecha={{ lunes|date:'Y-m-d' }}">
                 {% csrf_token %}
                 <input type="hidden" name="empleado_id" id="modal_empleado_id">
-                <input type="hidden" name="fecha" id="modal_fecha">
                 <div class="modal-header bg-corporativo text-white">
                     <h5 class="modal-title">
                         <i class="fas fa-business-time me-2"></i>Agregar novedad
@@ -159,7 +158,29 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3 small text-muted">
-                        <strong id="modal_empleado_nombre"></strong> · <span id="modal_fecha_display"></span>
+                        <strong id="modal_empleado_nombre"></strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Aplicar la novedad a:
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-2" id="btn_marcar_todos">Todos</button>
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="btn_marcar_lv">L-V</button>
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="btn_desmarcar_todos">Ninguno</button>
+                        </label>
+                        <div class="d-flex flex-wrap gap-2" id="dias_checks">
+                            {% for d, label in dias_labels %}
+                            <label class="form-check border rounded px-2 py-1 mb-0" style="cursor:pointer;">
+                                <input type="checkbox" class="form-check-input me-1 dia-check"
+                                       name="fechas" value="{{ d|date:'Y-m-d' }}"
+                                       data-fecha="{{ d|date:'Y-m-d' }}">
+                                <span class="small"><strong>{{ label }}</strong> {{ d|date:'d/m' }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        <div class="form-text small">
+                            El día que hiciste clic viene precheckeado. Marca los adicionales si aplica la misma novedad.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tipo de novedad *</label>
@@ -225,12 +246,17 @@
     var tipoSel = document.getElementById('nov_tipo');
     var hintAuto = document.getElementById('hint_tipo_auto');
 
+    var diaChecks = document.querySelectorAll('.dia-check');
+    function marcarSoloFecha(fecha) {
+        diaChecks.forEach(function(c) { c.checked = (c.dataset.fecha === fecha); });
+    }
+
     modal.addEventListener('show.bs.modal', function(ev) {
         var btn = ev.relatedTarget;
         document.getElementById('modal_empleado_id').value = btn.getAttribute('data-empleado-id');
         document.getElementById('modal_empleado_nombre').textContent = btn.getAttribute('data-empleado-nombre');
-        document.getElementById('modal_fecha').value = btn.getAttribute('data-fecha');
-        document.getElementById('modal_fecha_display').textContent = btn.getAttribute('data-fecha-display');
+        // Precheckear solo el día del clic; el jefe puede marcar más manualmente.
+        marcarSoloFecha(btn.getAttribute('data-fecha'));
         // Reset campos
         hi.value = '';
         hf.value = '';
@@ -238,6 +264,17 @@
         th.readOnly = false;
         tipoSel.value = '';
         hintAuto.style.display = 'none';
+    });
+
+    document.getElementById('btn_marcar_todos').addEventListener('click', function() {
+        diaChecks.forEach(function(c) { c.checked = true; });
+    });
+    document.getElementById('btn_marcar_lv').addEventListener('click', function() {
+        // Los primeros 5 checkboxes corresponden a L-V (orden del template)
+        diaChecks.forEach(function(c, i) { c.checked = (i < 5); });
+    });
+    document.getElementById('btn_desmarcar_todos').addEventListener('click', function() {
+        diaChecks.forEach(function(c) { c.checked = false; });
     });
 
     // Mostrar el hint y marcar total_horas readonly cuando es auto.
