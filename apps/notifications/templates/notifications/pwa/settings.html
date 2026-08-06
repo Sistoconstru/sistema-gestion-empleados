@@ -12,6 +12,21 @@
     <div class="col-lg-8">
         <h1 class="h3 mb-3"><i class="fas fa-bell text-primary me-2"></i>Notificaciones</h1>
 
+        <div id="install-card" class="card shadow-sm mb-3 d-none">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-mobile-alt text-primary me-1"></i>Instalar SIGHU en tu celular
+                </h5>
+                <p class="text-muted small mb-3">
+                    Instálala como app para tener el ícono en tu pantalla y recibir notificaciones sin abrir el navegador.
+                </p>
+                <button id="install-btn" type="button" class="btn btn-primary">
+                    <i class="fas fa-download me-1"></i><span id="install-btn-label">Instalar app</span>
+                </button>
+                <div id="install-instructions" class="alert alert-info small mt-3 d-none"></div>
+            </div>
+        </div>
+
         <div class="card shadow-sm mb-3">
             <div class="card-body">
                 <h5 class="card-title">Activar notificaciones en este dispositivo</h5>
@@ -75,6 +90,56 @@
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isIOS && !isStandalone) iosHint.classList.remove('d-none');
+
+    // Card de instalación — mostrar si NO está instalada
+    const installCard = document.getElementById('install-card');
+    const installBtn = document.getElementById('install-btn');
+    const installLabel = document.getElementById('install-btn-label');
+    const installInstr = document.getElementById('install-instructions');
+
+    function refreshInstallCard() {
+        if (window.SIGHU_PWA && window.SIGHU_PWA.isStandalone()) {
+            installCard.classList.add('d-none');
+            return;
+        }
+        installCard.classList.remove('d-none');
+        if (isIOS) {
+            installLabel.textContent = 'Ver cómo instalar';
+            installBtn.onclick = () => {
+                installInstr.classList.remove('d-none');
+                installInstr.innerHTML =
+                    '<strong>Pasos en iPhone/iPad:</strong><ol class="mb-0 mt-1">' +
+                    '<li>Toca el ícono <b>compartir</b> (⬆️) abajo en Safari.</li>' +
+                    '<li>Elige <b>"Añadir a pantalla de inicio"</b>.</li>' +
+                    '<li>Abre SIGHU desde el ícono en tu pantalla, no desde Safari.</li>' +
+                    '</ol>';
+            };
+        } else if (window.SIGHU_PWA && window.SIGHU_PWA.canInstall()) {
+            installLabel.textContent = 'Instalar app';
+            installBtn.disabled = false;
+            installBtn.onclick = async () => {
+                installBtn.disabled = true;
+                const result = await window.SIGHU_PWA.installApp();
+                if (result.outcome === 'accepted') {
+                    installCard.classList.add('d-none');
+                } else {
+                    installBtn.disabled = false;
+                }
+            };
+        } else {
+            // Android sin beforeinstallprompt aún — mostrar instrucciones
+            installLabel.textContent = 'Ver cómo instalar';
+            installBtn.onclick = () => {
+                installInstr.classList.remove('d-none');
+                installInstr.innerHTML =
+                    '<strong>Si no aparece el botón "Instalar":</strong><br>' +
+                    'Toca el menú (⋮) de tu navegador y elige <b>"Instalar app"</b> o <b>"Añadir a pantalla de inicio"</b>.';
+            };
+        }
+    }
+    refreshInstallCard();
+    window.addEventListener('sighu-pwa-installable', refreshInstallCard);
+    window.addEventListener('sighu-pwa-installed', () => installCard.classList.add('d-none'));
 
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
         statusEl.className = 'alert alert-warning small mb-3';
