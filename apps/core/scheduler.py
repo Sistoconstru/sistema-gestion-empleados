@@ -133,6 +133,20 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Recordatorio de sesiones de capacitación: cada 10 min chequea
+        # sesiones que arrancan en <=24h o <=30min y avisa vía push a los
+        # inscritos que no hayan sido notificados aún.
+        scheduler.add_job(
+            _recordatorios_sesiones_capacitacion,
+            'interval',
+            minutes=10,
+            id='recordatorios_sesiones',
+            name='Recordatorios de sesiones de capacitación',
+            replace_existing=True,
+            misfire_grace_time=300,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -380,3 +394,70 @@ def get_scheduler_status():
             })
 
     return status
+
+
+def _recordatorios_sesiones_capacitacion():
+    """Envía push a los inscritos cuando su sesión arranca en <=24h y en <=30min.
+
+    Idempotente: marca en `Notificacion.datos_adicionales` qué ventana ya se
+    notificó para no duplicar. Corre cada 10 min.
+    """
+    from datetime import datetime, timedelta, time
+    from django.utils import timezone as django_tz
+    from apps.training.models import SesionCapacitacion, InscripcionCapacitacion
+    from apps.notifications.models import Notificacion
+    from apps.notifications.push_utils import send_push
+
+    ahora = datetime.now()
+    ventana_24h_desde = ahora + timedelta(hours=23, minutes=45)
+    ventana_24h_hasta = ahora + timedelta(hours=24, minutes=15)
+    ventana_30m_desde = ahora + timedelta(minutes=20)
+    ventana_30m_hasta = ahora + timedelta(minutes=40)
+
+    sesiones = SesionCapacitacion.objects.filter(
+        estado__in=('programada', 'en_curso'),
+    ).select_related('capacitacion')
+
+    enviadas = 0
+    for sesion in sesiones:
+        inicio = datetime.combine(sesion.fecha_inicio, sesion.hora_inicio or time.min)
+        for tag_kind, desde, hasta, mensaje in (
+            ('24h', ventana_24h_desde, ventana_24h_hasta,
+             f'Tu sesión "{sesion.capacitacion.nombre}" ({sesion.codigo}) es mañana '
+             f'a las {(sesion.hora_inicio.strftime("%H:%M") if sesion.hora_inicio else "primera hora")} en {sesion.lugar}.'),
+            ('30m', ventana_30m_desde, ventana_30m_hasta,
+             f'Tu sesión "{sesion.capacitacion.nombre}" empieza en menos de 30 min '
+             f'en {sesion.lugar}.'),
+        ):
+            if not (desde <= inicio <= hasta):
+                continue
+            for insc in InscripcionCapacitacion.objects.filter(
+                sesion=sesion,
+            ).select_related('empleado__usuario'):
+                if insc.empleado is None or insc.empleado.usuario is None:
+                    continue
+                tag = f'sesion-{sesion.pk}-{tag_kind}'
+                # Idempotencia: si ya hay una notif con este tag para este user, saltar
+                ya_enviada = Notificacion.objects.filter(
+                    usuario=insc.empleado.usuario,
+                    datos_adicionales__contains={'push_tag': tag},
+                ).exists()
+                if ya_enviada:
+                    continue
+                enviadas_i, _ = send_push(
+                    insc.empleado.usuario,
+                    'Sesión de capacitación',
+                    mensaje,
+                    url=f'/capacitaciones/sesiones/{sesion.pk}/',
+                    tag=tag,
+                )
+                Notificacion.objects.create(
+                    usuario=insc.empleado.usuario,
+                    titulo='Sesión de capacitación',
+                    mensaje=mensaje,
+                    datos_adicionales={'push_tag': tag, 'sesion_id': str(sesion.pk)},
+                )
+                if enviadas_i:
+                    enviadas += 1
+    if enviadas:
+        logger.info(f'Recordatorios sesiones capacitación: {enviadas} push enviadas.')

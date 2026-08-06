@@ -23,9 +23,19 @@ from django.contrib.auth import views as auth_views
 from apps.authentication.views import EmpleadoLoginView
 from django.urls import reverse_lazy
 from apps.core.views import dashboard_view
+from apps.notifications import pwa_views
 
 urlpatterns = [
-    
+    # PWA: manifest y service worker deben estar en la raíz para tener scope global
+    path('manifest.webmanifest', pwa_views.manifest, name='pwa_manifest'),
+    path('sw.js', pwa_views.service_worker, name='pwa_service_worker'),
+    path('pwa/offline/', pwa_views.OfflinePage.as_view(), name='pwa_offline'),
+    path('pwa/vapid-key/', pwa_views.vapid_public_key, name='pwa_vapid_key'),
+    path('pwa/subscribe/', pwa_views.subscribe, name='pwa_subscribe'),
+    path('pwa/unsubscribe/', pwa_views.unsubscribe, name='pwa_unsubscribe'),
+    path('pwa/test-notification/', pwa_views.send_test, name='pwa_test'),
+    path('pwa/notificaciones/', pwa_views.NotificacionesSettingsView.as_view(), name='pwa_settings'),
+
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/dashboard/', permanent=False)),
     path('login/', EmpleadoLoginView.as_view(), name='login'),

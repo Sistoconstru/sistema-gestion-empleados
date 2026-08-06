@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SIGHU - Sistema de Gestión de Empleados{% endblock %}</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0d3b66">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SIGHU">
+    <link rel="apple-touch-icon" href="{% static 'pwa/icon-192.png' %}">
     
     <!-- Bootstrap 5 CSS con fallback -->
     <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet" onerror="this.onerror=null; this.href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';">
@@ -105,6 +113,11 @@
                                     {% endif %}
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'pwa_settings' %}">
+                                    <i class="fas fa-mobile-alt me-1"></i> Notificaciones en el celular
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{% url 'authentication:logout' %}" method="post" style="margin: 0; padding: 0;">
@@ -202,5 +215,89 @@
         }
     });
     </script>
+
+    {% if user.is_authenticated %}
+    <script>
+    // ============================================================
+    // SIGHU PWA — registro del service worker y suscripción push
+    // ============================================================
+    (function () {
+        if (!('serviceWorker' in navigator)) return;
+
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function (err) {
+            console.warn('SW registro falló:', err);
+        });
+
+        // Helper: convierte base64url (VAPID pubkey) al formato Uint8Array
+        function urlB64ToUint8Array(b64) {
+            const padding = '='.repeat((4 - b64.length % 4) % 4);
+            const base64 = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const raw = atob(base64);
+            const out = new Uint8Array(raw.length);
+            for (let i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i);
+            return out;
+        }
+
+        function csrfToken() {
+            const m = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+            return m ? m[1] : '';
+        }
+
+        window.SIGHU_PWA = {
+            // Suscribe al usuario a push. Devuelve promesa que resuelve con true/false.
+            enableNotifications: async function () {
+                if (!('Notification' in window) || !('PushManager' in window)) {
+                    alert('Tu navegador no soporta notificaciones push.');
+                    return false;
+                }
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    alert('No podemos enviarte notificaciones sin tu permiso.');
+                    return false;
+                }
+                const reg = await navigator.serviceWorker.ready;
+                let sub = await reg.pushManager.getSubscription();
+                if (!sub) {
+                    const resp = await fetch('/pwa/vapid-key/');
+                    const { public_key } = await resp.json();
+                    if (!public_key) {
+                        alert('El servidor aún no tiene configuradas las claves de notificación.');
+                        return false;
+                    }
+                    sub = await reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlB64ToUint8Array(public_key),
+                    });
+                }
+                await fetch('/pwa/subscribe/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken() },
+                    body: JSON.stringify(sub),
+                });
+                return true;
+            },
+            disableNotifications: async function () {
+                const reg = await navigator.serviceWorker.ready;
+                const sub = await reg.pushManager.getSubscription();
+                if (!sub) return true;
+                await fetch('/pwa/unsubscribe/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken() },
+                    body: JSON.stringify({ endpoint: sub.endpoint }),
+                });
+                await sub.unsubscribe();
+                return true;
+            },
+            sendTest: async function () {
+                const resp = await fetch('/pwa/test-notification/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrfToken() },
+                });
+                return resp.json();
+            },
+        };
+    })();
+    </script>
+    {% endif %}
 </body>
 </html>

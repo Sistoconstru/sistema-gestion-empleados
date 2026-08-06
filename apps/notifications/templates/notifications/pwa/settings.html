@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notificaciones — SIGHU{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">Notificaciones</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="h3 mb-3"><i class="fas fa-bell text-primary me-2"></i>Notificaciones</h1>
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Activar notificaciones en este dispositivo</h5>
+                <p class="text-muted">
+                    Recibe avisos de sesiones de capacitación programadas, novedades de nómina aprobadas o rechazadas,
+                    y ausencias registradas por tu jefe. Puedes desactivarlas en cualquier momento.
+                </p>
+
+                <div id="pwa-status" class="alert alert-secondary small mb-3">
+                    <i class="fas fa-spinner fa-spin me-1"></i> Verificando estado…
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button id="btn-enable" class="btn btn-primary d-none">
+                        <i class="fas fa-bell me-1"></i>Activar notificaciones
+                    </button>
+                    <button id="btn-disable" class="btn btn-outline-danger d-none">
+                        <i class="fas fa-bell-slash me-1"></i>Desactivar
+                    </button>
+                    <button id="btn-test" class="btn btn-outline-secondary d-none">
+                        <i class="fas fa-paper-plane me-1"></i>Enviar prueba
+                    </button>
+                </div>
+
+                <div id="pwa-install-hint" class="alert alert-info small mt-3 d-none">
+                    <strong>Consejo para iPhone/iPad:</strong> instala la app primero desde Safari
+                    (menú compartir → "Añadir a pantalla de inicio") y luego actívala desde el ícono
+                    en tu pantalla, no en Safari.
+                </div>
+            </div>
+        </div>
+
+        {% if subs_activas %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">Dispositivos suscritos</h6>
+                <ul class="list-unstyled mb-0 small">
+                    {% for s in subs_activas %}
+                    <li class="mb-1">
+                        <i class="fas fa-mobile-alt text-muted me-1"></i>
+                        {{ s.user_agent|truncatechars:80|default:"Dispositivo sin identificar" }}
+                        <span class="text-muted">— desde {{ s.fecha_creacion|date:"d/m/Y" }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+(async function () {
+    const statusEl = document.getElementById('pwa-status');
+    const btnEnable = document.getElementById('btn-enable');
+    const btnDisable = document.getElementById('btn-disable');
+    const btnTest = document.getElementById('btn-test');
+    const iosHint = document.getElementById('pwa-install-hint');
+
+    // Mostrar hint en iOS si no está instalada como PWA
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isIOS && !isStandalone) iosHint.classList.remove('d-none');
+
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        statusEl.className = 'alert alert-warning small mb-3';
+        statusEl.innerHTML = 'Tu navegador no soporta notificaciones push.';
+        return;
+    }
+
+    async function refresh() {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub && Notification.permission === 'granted') {
+            statusEl.className = 'alert alert-success small mb-3';
+            statusEl.innerHTML = '<i class="fas fa-check-circle me-1"></i>Notificaciones activas en este dispositivo.';
+            btnEnable.classList.add('d-none');
+            btnDisable.classList.remove('d-none');
+            btnTest.classList.remove('d-none');
+        } else {
+            statusEl.className = 'alert alert-secondary small mb-3';
+            statusEl.innerHTML = 'Notificaciones desactivadas en este dispositivo.';
+            btnEnable.classList.remove('d-none');
+            btnDisable.classList.add('d-none');
+            btnTest.classList.add('d-none');
+        }
+    }
+
+    btnEnable.addEventListener('click', async () => {
+        btnEnable.disabled = true;
+        try {
+            await window.SIGHU_PWA.enableNotifications();
+        } finally {
+            btnEnable.disabled = false;
+            refresh();
+        }
+    });
+    btnDisable.addEventListener('click', async () => {
+        btnDisable.disabled = true;
+        try {
+            await window.SIGHU_PWA.disableNotifications();
+        } finally {
+            btnDisable.disabled = false;
+            refresh();
+        }
+    });
+    btnTest.addEventListener('click', async () => {
+        btnTest.disabled = true;
+        try {
+            const r = await window.SIGHU_PWA.sendTest();
+            if (r && r.ok && r.enviadas > 0) {
+                alert('Notificación de prueba enviada. Debería llegarte en unos segundos.');
+            } else {
+                alert('No se pudo enviar. Verifica que las notificaciones estén activas.');
+            }
+        } finally {
+            btnTest.disabled = false;
+        }
+    });
+
+    refresh();
+})();
+</script>
+{% endblock %}

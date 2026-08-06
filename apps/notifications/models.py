@@ -52,3 +52,35 @@ class Notificacion(models.Model):
     
     def __str__(self):
         return f"{self.titulo} - {self.usuario.username}"
+
+class PushSubscription(models.Model):
+    """Suscripción de Web Push por dispositivo/navegador.
+
+    Un usuario puede tener varias (celular + laptop, etc.). El endpoint
+    identifica de forma única la suscripción emitida por el navegador;
+    p256dh y auth son las claves que devuelve pushManager.subscribe() y
+    que pywebpush necesita para cifrar el payload.
+    """
+    usuario = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.CASCADE,
+        related_name='push_subscriptions',
+    )
+    endpoint = models.URLField(max_length=500, unique=True)
+    p256dh = models.CharField(max_length=200)
+    auth = models.CharField(max_length=200)
+    user_agent = models.CharField(max_length=300, blank=True)
+    activa = models.BooleanField(default=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_ultimo_uso = models.DateTimeField(null=True, blank=True)
+    fallos_consecutivos = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        db_table = 'push_subscriptions'
+        verbose_name = 'Suscripción push'
+        verbose_name_plural = 'Suscripciones push'
+        indexes = [
+            models.Index(fields=['usuario', 'activa']),
+        ]
+
+    def __str__(self):
+        return f"{self.usuario.username} — {self.user_agent[:40] or 'device'}"

@@ -309,3 +309,10 @@ import os
 logs_dir = BASE_DIR / 'logs'
 if not logs_dir.exists():
     logs_dir.mkdir(exist_ok=True)
+
+# Web Push (VAPID). Public key va al navegador; private se queda en el server.
+# Ambas en formato base64url raw (no PEM) — pywebpush las acepta así directamente.
+# Para generar nuevas: `python manage.py generar_vapid_keys`.
+VAPID_PUBLIC_KEY = config('VAPID_PUBLIC_KEY', default='')
+VAPID_PRIVATE_KEY = config('VAPID_PRIVATE_KEY', default='')
+VAPID_ADMIN_EMAIL = config('VAPID_ADMIN_EMAIL', default='mailto:admin@sighu.local')
