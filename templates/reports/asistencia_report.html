@@ -60,7 +60,31 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-12 d-flex justify-content-end">
+            <div class="col-md-6">
+                <label class="form-label">Empleado</label>
+                <select name="empleado" class="form-select">
+                    <option value="">Todos los empleados</option>
+                    {% for e in empleados_selector %}
+                        <option value="{{ e.id }}" {% if empleado_seleccionado_id == e.id|stringformat:'s' %}selected{% endif %}>
+                            {{ e.apellidos }}, {{ e.nombres }} — {{ e.numero_documento }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="form-text small">Al elegir uno, aparece el detalle con fechas y motivos abajo.</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tipo de ausencia</label>
+                <select name="tipo_ausencia" class="form-select">
+                    {% for cod, label in tipos_ausencia_choices %}
+                        <option value="{{ cod }}" {% if tipo_ausencia_seleccionado == cod %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <a href="{% url 'reports:asistencia_ausencias_excel' %}?desde={{ fecha_desde|date:'Y-m-d' }}&hasta={{ fecha_hasta|date:'Y-m-d' }}{% if area_seleccionada %}&area={{ area_seleccionada }}{% endif %}{% if sede_seleccionada %}&sede={{ sede_seleccionada }}{% endif %}{% if empleado_seleccionado_id %}&empleado={{ empleado_seleccionado_id }}{% endif %}&tipo_ausencia={{ tipo_ausencia_seleccionado }}"
+                   class="btn btn-outline-success">
+                    <i class="fas fa-file-excel me-1"></i>Descargar Excel de ausencias
+                </a>
                 <button type="submit" class="btn btn-corporativo">
                     <i class="fas fa-search me-1"></i>Aplicar filtros
                 </button>
@@ -68,6 +92,58 @@
         </div>
     </div>
 </form>
+
+{# Detalle por empleado cuando hay uno seleccionado #}
+{% if empleado_detalle %}
+<div class="card border-corporativo shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <i class="fas fa-user-clock me-2"></i>
+        Ausencias de <strong>{{ empleado_detalle.nombre_completo }}</strong>
+        <span class="text-muted small">— {{ empleado_detalle.numero_documento }}</span>
+        {% if empleado_detalle.sede %}<span class="text-muted small">· {{ empleado_detalle.sede.nombre }}</span>{% endif %}
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Día</th>
+                        <th>Estado</th>
+                        <th>Motivo</th>
+                        <th>Registrado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in detalle_ausencias %}
+                        <tr>
+                            <td>{{ r.fecha|date:"d/m/Y" }}</td>
+                            <td class="small text-muted">{{ r.fecha|date:"l"|capfirst }}</td>
+                            <td>
+                                {% if r.estado == 'ausente' %}<span class="badge bg-danger">{{ r.get_estado_display }}</span>
+                                {% elif r.estado == 'retardo' %}<span class="badge bg-warning text-dark">{{ r.get_estado_display }}</span>
+                                {% elif r.estado == 'permiso' %}<span class="badge bg-info text-dark">{{ r.get_estado_display }}</span>
+                                {% elif r.estado == 'permiso_no_remunerado' %}<span class="badge bg-secondary">{{ r.get_estado_display }}</span>
+                                {% elif r.estado == 'incapacidad' %}<span class="badge bg-warning text-dark">{{ r.get_estado_display }}</span>
+                                {% elif r.estado == 'en_vacaciones' %}<span class="badge bg-primary">{{ r.get_estado_display }}</span>
+                                {% else %}<span class="badge bg-light text-dark">{{ r.get_estado_display }}</span>{% endif %}
+                            </td>
+                            <td class="small">{{ r.motivo|default:"—" }}</td>
+                            <td class="small">{{ r.registrado_por.nombre_completo|default:"—" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                Sin ausencias del tipo seleccionado en el rango.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {# KPIs #}
 <div class="row g-3 mb-4">

@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Reporte de asistencia (RRHH)
     path('asistencia/', views.AsistenciaReportView.as_view(), name='asistencia_report'),
+    path('asistencia/ausencias/excel/', views.AsistenciaAusenciasExcelView.as_view(), name='asistencia_ausencias_excel'),
 
     # Novedades de nómina (RRHH y jefes — la vista detecta el scope)
     path('novedades/', views.NovedadesReportView.as_view(), name='novedades_report'),

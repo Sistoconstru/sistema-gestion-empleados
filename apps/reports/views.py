@@ -997,6 +997,17 @@ class AsistenciaReportView(TemplateView):
         fecha_hasta_raw = (self.request.GET.get('hasta') or '').strip()
         area_id = (self.request.GET.get('area') or '').strip()
         sede_id = (self.request.GET.get('sede') or '').strip()
+        # Filtros nuevos:
+        # - empleado_id: acota todo el reporte a un solo empleado y activa el
+        #   panel de detalle con fechas y motivos de sus ausencias.
+        # - tipo_ausencia: 'todos' (default) o un estado específico. Aplica al
+        #   listado de por_empleado y al detalle.
+        empleado_id = (self.request.GET.get('empleado') or '').strip()
+        tipo_ausencia = (self.request.GET.get('tipo_ausencia') or 'todos').strip()
+        tipos_validos = {'todos', 'ausente', 'retardo', 'permiso',
+                         'permiso_no_remunerado', 'incapacidad', 'en_vacaciones'}
+        if tipo_ausencia not in tipos_validos:
+            tipo_ausencia = 'todos'
 
         try:
             fecha_desde = datetime.strptime(fecha_desde_raw, '%Y-%m-%d').date() if fecha_desde_raw else hoy.replace(day=1)
@@ -1020,6 +1031,8 @@ class AsistenciaReportView(TemplateView):
             ).distinct()
         if sede_id:
             qs = qs.filter(empleado__sede_id=sede_id)
+        if empleado_id:
+            qs = qs.filter(empleado_id=empleado_id)
 
         # === KPIs generales ===
         total_registros = qs.count()
@@ -1046,12 +1059,13 @@ class AsistenciaReportView(TemplateView):
         ) if base_asistencia else 0
 
         # === Desglose por empleado (top 100 por más ausencias) ===
-        # Solo se listan empleados con AL MENOS 1 ausencia (ausente, retardo,
-        # permiso, permiso_no_remunerado o incapacidad) en el rango. Se anota
-        # sobre TODO el queryset (para mantener conteos correctos de 'presente'
-        # y 'vacaciones') y luego se filtra sobre las anotaciones.
-        # Vacaciones no cuenta como ausencia por ausentismo.
-        por_empleado = (
+        # Se anota sobre TODO el queryset (para mantener conteos correctos de
+        # 'presente' y 'vacaciones'). El filtro final depende de tipo_ausencia:
+        # - 'todos': empleados con al menos 1 ausencia de cualquier tipo
+        # - 'ausente'/'retardo'/etc: solo empleados con >=1 de ese tipo específico
+        # Vacaciones no cuenta como ausencia por ausentismo (a menos que sea el
+        # tipo elegido explícitamente).
+        por_empleado_qs = (
             qs.values('empleado__id', 'empleado__nombres', 'empleado__apellidos', 'empleado__numero_documento')
             .annotate(
                 total=Count('id'),
@@ -1063,12 +1077,36 @@ class AsistenciaReportView(TemplateView):
                 incapacidad=Count('id', filter=Q(estado='incapacidad')),
                 en_vacaciones=Count('id', filter=Q(estado='en_vacaciones')),
             )
-            .filter(
+        )
+        if tipo_ausencia == 'todos':
+            por_empleado_qs = por_empleado_qs.filter(
                 Q(ausente__gt=0) | Q(retardo__gt=0) | Q(permiso__gt=0)
                 | Q(permiso_no_remunerado__gt=0) | Q(incapacidad__gt=0)
             )
-            .order_by('-ausente', '-retardo', 'empleado__apellidos')[:100]
-        )
+        else:
+            por_empleado_qs = por_empleado_qs.filter(**{f'{tipo_ausencia}__gt': 0})
+        por_empleado = por_empleado_qs.order_by(
+            '-ausente', '-retardo', 'empleado__apellidos',
+        )[:100]
+
+        # === Detalle: fechas y motivos cuando hay 1 empleado seleccionado ===
+        # Aplicamos el filtro tipo_ausencia también aquí. Excluimos 'presente'
+        # por defecto (no es ausencia); si el usuario eligió un tipo específico,
+        # solo mostramos ese.
+        empleado_detalle = None
+        detalle_ausencias = []
+        if empleado_id:
+            try:
+                empleado_detalle = Empleado.objects.select_related('sede').get(pk=empleado_id)
+            except (Empleado.DoesNotExist, ValueError):
+                empleado_detalle = None
+        if empleado_detalle:
+            det_qs = qs.filter(empleado=empleado_detalle).select_related('registrado_por')
+            if tipo_ausencia == 'todos':
+                det_qs = det_qs.exclude(estado='presente')
+            else:
+                det_qs = det_qs.filter(estado=tipo_ausencia)
+            detalle_ausencias = list(det_qs.order_by('-fecha'))
 
         # === Cumplimiento de registro por jefe ===
         # Un jefe "cumple" un día laboral (L-V) si tiene AL MENOS 1 registro
@@ -1077,6 +1115,19 @@ class AsistenciaReportView(TemplateView):
         # arranque del módulo (antes no era omisión del jefe).
         cumplimiento_jefes = self._calcular_cumplimiento_jefes(
             fecha_desde, fecha_hasta, area_id=area_id, sede_id=sede_id,
+        )
+
+        # Lista de empleados con al menos un registro en el rango, para el selector.
+        empleados_con_registro = (
+            Empleado.objects
+            .filter(pk__in=qs.values_list('empleado_id', flat=True))
+            .order_by('apellidos', 'nombres')
+            if not empleado_id else
+            Empleado.objects
+            .filter(pk__in=AsistenciaDiaria.objects.filter(
+                fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+            ).values_list('empleado_id', flat=True))
+            .order_by('apellidos', 'nombres')
         )
 
         context.update({
@@ -1092,6 +1143,21 @@ class AsistenciaReportView(TemplateView):
             'sedes': Sede.objects.filter(activa=True).order_by('nombre'),
             'area_seleccionada': int(area_id) if area_id.isdigit() else None,
             'sede_seleccionada': sede_id or None,
+            # Filtros nuevos:
+            'empleado_seleccionado_id': empleado_id or None,
+            'tipo_ausencia_seleccionado': tipo_ausencia,
+            'empleado_detalle': empleado_detalle,
+            'detalle_ausencias': detalle_ausencias,
+            'empleados_selector': empleados_con_registro,
+            'tipos_ausencia_choices': [
+                ('todos', 'Todas las ausencias'),
+                ('ausente', 'Ausente sin justificar'),
+                ('retardo', 'Retardo'),
+                ('permiso', 'Permiso remunerado'),
+                ('permiso_no_remunerado', 'Permiso no remunerado'),
+                ('incapacidad', 'Incapacidad'),
+                ('en_vacaciones', 'En vacaciones'),
+            ],
         })
         return context
 
@@ -1445,4 +1511,92 @@ class NovedadesExportExcelView(View):
         )
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         response['Cache-Control'] = 'no-store'
+        return response
+
+@method_decorator(login_required, name='dispatch')
+class AsistenciaAusenciasExcelView(View):
+    """Exporta a Excel las ausencias del rango con los mismos filtros del
+    reporte web: rango, área, sede, empleado, tipo_ausencia. Una fila por
+    ausencia con fecha, estado, motivo y jefe que registró.
+    """
+
+    def get(self, request):
+        hoy = timezone.now().date()
+
+        # Reutilizar la misma lógica de parseo que la vista del reporte
+        def _parse(name, default):
+            raw = (request.GET.get(name) or '').strip()
+            try:
+                return datetime.strptime(raw, '%Y-%m-%d').date() if raw else default
+            except ValueError:
+                return default
+
+        fecha_desde = _parse('desde', hoy.replace(day=1))
+        fecha_hasta = _parse('hasta', hoy)
+        if fecha_desde > fecha_hasta:
+            fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+        area_id = (request.GET.get('area') or '').strip()
+        sede_id = (request.GET.get('sede') or '').strip()
+        empleado_id = (request.GET.get('empleado') or '').strip()
+        tipo_ausencia = (request.GET.get('tipo_ausencia') or 'todos').strip()
+
+        qs = AsistenciaDiaria.objects.filter(
+            fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+        ).select_related('empleado', 'registrado_por').order_by('empleado__apellidos', 'fecha')
+        if area_id:
+            qs = qs.filter(
+                empleado__historialcargo__cargo__area_id=area_id,
+                empleado__historialcargo__activo=True,
+            ).distinct()
+        if sede_id:
+            qs = qs.filter(empleado__sede_id=sede_id)
+        if empleado_id:
+            qs = qs.filter(empleado_id=empleado_id)
+        # Solo ausencias (excluye presentes) — el reporte se llama "ausencias"
+        if tipo_ausencia == 'todos':
+            qs = qs.exclude(estado='presente')
+        else:
+            qs = qs.filter(estado=tipo_ausencia)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Ausencias'
+
+        headers = ['Documento', 'Empleado', 'Sede', 'Fecha', 'Día', 'Estado', 'Motivo', 'Registrado por']
+        ws.append(headers)
+        header_font = Font(bold=True, color='FFFFFF')
+        header_fill = PatternFill('solid', fgColor='0E5F3F')
+        for cell in ws[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+        estados_display = dict(AsistenciaDiaria.ESTADO_CHOICES)
+        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        for r in qs:
+            ws.append([
+                r.empleado.numero_documento,
+                r.empleado.nombre_completo,
+                r.empleado.sede.nombre if r.empleado.sede else '',
+                r.fecha.strftime('%d/%m/%Y'),
+                dias_semana[r.fecha.weekday()],
+                estados_display.get(r.estado, r.estado),
+                r.motivo or '',
+                r.registrado_por.nombre_completo if r.registrado_por else '',
+            ])
+
+        # Anchos
+        anchos = [14, 32, 18, 12, 12, 22, 40, 26]
+        for i, w in enumerate(anchos, 1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+        ws.freeze_panes = 'A2'
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        sufijo = f'_{empleado_id[:8]}' if empleado_id else ''
+        filename = f'ausencias_{fecha_desde:%Y%m%d}_{fecha_hasta:%Y%m%d}{sufijo}.xlsx'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        wb.save(response)
         return response
