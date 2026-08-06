@@ -5283,8 +5283,11 @@ def descargar_carta_vacaciones(request, pk):
         )
         return redirect('employees:mis_vacaciones')
 
-    # Registrar constancia (solo la primera vez)
-    if not solicitud.carta_descargada_fecha:
+    # Registrar constancia (solo la primera vez). Si ya existía descarga
+    # previa, esta impresión es una copia — el PDF debe conservar la fecha
+    # original y marcarlo claramente.
+    es_copia = solicitud.carta_descargada_fecha is not None
+    if not es_copia:
         ahora = timezone.now()
         hash_input = f'{empleado.id}|{solicitud.id}|{ahora.isoformat()}'.encode()
         SolicitudVacacion.objects.filter(pk=solicitud.pk).update(
@@ -5294,7 +5297,7 @@ def descargar_carta_vacaciones(request, pk):
         solicitud.refresh_from_db()
 
     # Generar y devolver PDF
-    pdf_bytes = generar_carta_vacaciones(solicitud)
+    pdf_bytes = generar_carta_vacaciones(solicitud, es_copia=es_copia)
     filename = (
         f'carta_vacaciones_{empleado.numero_documento}_'
         f'{solicitud.fecha_inicio.strftime("%Y%m%d") if solicitud.fecha_inicio else solicitud.pk}.pdf'

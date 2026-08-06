@@ -176,15 +176,25 @@ def _construir_estilos():
     }
 
 
-def generar_carta_vacaciones(solicitud):
+def generar_carta_vacaciones(solicitud, es_copia=False):
     """Genera el PDF de la carta de vacaciones. Retorna bytes.
 
     La solicitud debe estar en estado 'aprobada_rrhh'. Si es tipo=tiempo y
     existe una compensación en dinero del mismo período, se incluye como
     línea adicional.
+
+    Si `es_copia=True` la carta conserva la fecha original de descarga en
+    el encabezado y pie, y agrega un aviso visible arriba indicando que se
+    trata de una reimpresión.
     """
     empleado = solicitud.empleado
-    hoy = date.today()
+    # Cuando es copia usamos la fecha en que se descargó la primera vez
+    # (guardada en carta_descargada_fecha). Si por algún motivo es_copia
+    # pero no hay fecha guardada, caemos a hoy — no debería pasar.
+    if es_copia and solicitud.carta_descargada_fecha:
+        fecha_carta = solicitud.carta_descargada_fecha.date()
+    else:
+        fecha_carta = date.today()
     ciudad = (empleado.sede.nombre if empleado.sede else 'Caldas').strip()
 
     # Desglose
@@ -227,8 +237,24 @@ def generar_carta_vacaciones(solicitud):
     st = _construir_estilos()
     story = []
 
-    # Encabezado: ciudad + fecha
-    story.append(Paragraph(f'{ciudad}, {_fecha_larga(hoy)}', st['meta']))
+    # Aviso "COPIA" cuando la carta ya se había descargado antes
+    if es_copia:
+        fecha_reimp = date.today()
+        aviso = (
+            f'<font color="#c62828"><b>COPIA</b> — Documento original '
+            f'descargado el {_fecha_larga(fecha_carta)}. '
+            f'Reimpresión del {_fecha_larga(fecha_reimp)}.</font>'
+        )
+        story.append(Paragraph(aviso, ParagraphStyle(
+            'copia_aviso', parent=st['meta'],
+            fontSize=10, alignment=TA_CENTER, spaceAfter=8,
+            borderColor=colors.HexColor('#c62828'), borderWidth=1,
+            borderPadding=6, borderRadius=4,
+        )))
+        story.append(Spacer(1, 0.3 * cm))
+
+    # Encabezado: ciudad + fecha (fecha original si es copia)
+    story.append(Paragraph(f'{ciudad}, {_fecha_larga(fecha_carta)}', st['meta']))
     story.append(Spacer(1, 0.8 * cm))
 
     # Destinatario
@@ -298,11 +324,7 @@ def generar_carta_vacaciones(solicitud):
         saldo_txt = f'{restante:.1f}'.rstrip('0').rstrip('.')
         story.append(Paragraph(
             f'<b>NOTA:</b> Recuerde que le quedan <b>{saldo_txt} días</b> '
-            f'hábiles por pagar y disfrutar (saldo al corte de '
-            f'{MESES_ES[empleado.saldo_vacaciones_fecha_corte.month]} '
-            f'{empleado.saldo_vacaciones_fecha_corte.day:02d} del '
-            f'{empleado.saldo_vacaciones_fecha_corte.year} menos los '
-            f'días ya aprobados desde esa fecha).',
+            f'hábiles por pagar y disfrutar.',
             st['nota'],
         ))
 
@@ -335,11 +357,11 @@ def generar_carta_vacaciones(solicitud):
     ]))
     story.append(KeepTogether(firma_tbl))
 
-    # Pie discreto con constancia
+    # Pie discreto con constancia (fecha original de generación)
     story.append(Spacer(1, 1.2 * cm))
     pie_texto = (
         f'<font size=8 color="#6c757d"><i>Documento generado por SIGHU '
-        f'el {hoy.strftime("%d/%m/%Y")} como constancia de la solicitud '
+        f'el {fecha_carta.strftime("%d/%m/%Y")} como constancia de la solicitud '
         f'{solicitud.pk}. El empleado declaró estar al tanto de sus '
         f'vacaciones aprobadas al descargar este documento.</i></font>'
     )
