@@ -51,6 +51,62 @@ def _fecha_larga_may(d):
     return f'{d.day:02d} DE {MESES_ES[d.month].upper()} DE {d.year}'
 
 
+def _saldo_restante_al_dia(empleado, solicitud, dias_habiles_actual, dias_dinero_actual, compensacion_pareada):
+    """Calcula el saldo de vacaciones que le queda al empleado tras aprobar
+    esta solicitud (y su compensación pareada, si aplica).
+
+    Odoo lleva el saldo en DÍAS HÁBILES, así que solo se descuentan hábiles
+    y días en dinero — los festivos dentro del rango de la solicitud no
+    consumen saldo.
+
+    Cálculo:
+        saldo_restante = saldo_al_corte
+                         - habiles/dinero de la solicitud actual (+ compensación pareada)
+                         - habiles/dinero de OTRAS solicitudes aprobadas después del corte
+
+    Retorna Decimal o None si no hay saldo/corte guardado.
+    """
+    from .models import SolicitudVacacion
+
+    if empleado.saldo_vacaciones_dias is None or empleado.saldo_vacaciones_fecha_corte is None:
+        return None
+
+    fecha_corte = empleado.saldo_vacaciones_fecha_corte
+    saldo = Decimal(empleado.saldo_vacaciones_dias)
+
+    # Descontar la solicitud actual (y su compensación pareada si vino en la misma carta)
+    consumo_actual = Decimal(dias_habiles_actual) + Decimal(dias_dinero_actual)
+
+    # Otras solicitudes aprobadas del empleado después del corte,
+    # excluyendo la actual y su compensación pareada (ya contadas arriba).
+    excluir_ids = {solicitud.pk}
+    if compensacion_pareada:
+        excluir_ids.add(compensacion_pareada.pk)
+
+    otras = (
+        SolicitudVacacion.objects
+        .filter(empleado=empleado, estado_local='aprobada_rrhh')
+        .exclude(pk__in=excluir_ids)
+    )
+
+    consumo_otras = Decimal(0)
+    for otra in otras:
+        if otra.tipo == 'tiempo' and otra.fecha_inicio and otra.fecha_fin:
+            if otra.fecha_inicio > fecha_corte:
+                clas_o = clasificar_rango(otra.fecha_inicio, otra.fecha_fin)
+                consumo_otras += Decimal(clas_o['habiles'])
+        elif otra.tipo == 'pago_dinero' and otra.fecha_lote_nomina:
+            if otra.fecha_lote_nomina > fecha_corte:
+                consumo_otras += (otra.dias_compensados or Decimal(0))
+
+    restante = saldo - consumo_actual - consumo_otras
+    # No mostramos saldos negativos en la carta (Odoo maneja las reglas duras);
+    # si sale negativo lo mostramos como 0 y confiamos en el bloqueo de Odoo.
+    if restante < 0:
+        restante = Decimal(0)
+    return restante
+
+
 def buscar_compensacion_del_periodo(solicitud):
     """Retorna una SolicitudVacacion de tipo=pago_dinero cercana en el tiempo
     a la solicitud de tiempo dada, o None si no hay.
@@ -231,14 +287,22 @@ def generar_carta_vacaciones(solicitud):
         story.append(Paragraph(f'<b>{int(dias_dinero):02d}</b>&nbsp;&nbsp;días en dinero', st['linea_desglose']))
     story.append(Paragraph(f'<b>Total: {int(total_dias)} días</b>', st['total']))
 
-    # Nota del saldo restante
-    if empleado.saldo_vacaciones_dias is not None and empleado.saldo_vacaciones_fecha_corte:
-        saldo_txt = f'{empleado.saldo_vacaciones_dias:.1f}'.rstrip('0').rstrip('.')
+    # Nota del saldo restante — se calcula descontando los días hábiles
+    # (y compensados en dinero) de esta solicitud y de otras solicitudes ya
+    # aprobadas después del corte. Odoo lleva el saldo en hábiles, así que
+    # los festivos incluidos en el rango NO consumen saldo.
+    restante = _saldo_restante_al_dia(
+        empleado, solicitud, dias_habiles, dias_dinero, compensacion,
+    )
+    if restante is not None:
+        saldo_txt = f'{restante:.1f}'.rstrip('0').rstrip('.')
         story.append(Paragraph(
-            f'<b>NOTA:</b> Recuerde que le quedan <b>{saldo_txt} días</b> por '
-            f'pagar y disfrutar al corte de <b>{MESES_ES[empleado.saldo_vacaciones_fecha_corte.month]} '
-            f'{empleado.saldo_vacaciones_fecha_corte.day:02d}</b> del '
-            f'{empleado.saldo_vacaciones_fecha_corte.year}.',
+            f'<b>NOTA:</b> Recuerde que le quedan <b>{saldo_txt} días</b> '
+            f'hábiles por pagar y disfrutar (saldo al corte de '
+            f'{MESES_ES[empleado.saldo_vacaciones_fecha_corte.month]} '
+            f'{empleado.saldo_vacaciones_fecha_corte.day:02d} del '
+            f'{empleado.saldo_vacaciones_fecha_corte.year} menos los '
+            f'días ya aprobados desde esa fecha).',
             st['nota'],
         ))
 
