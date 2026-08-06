@@ -28,7 +28,7 @@ def manifest(request):
         "display": "standalone",
         "orientation": "portrait-primary",
         "background_color": "#ffffff",
-        "theme_color": "#0d3b66",
+        "theme_color": "#0e5f3f",
         "lang": "es-CO",
         "icons": [
             {
