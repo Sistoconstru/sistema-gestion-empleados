@@ -53,6 +53,11 @@ def notificar_novedad_aprobada_o_rechazada(sender, instance, created, **kwargs):
             registrado_por.usuario, titulo, cuerpo,
             url='/reportes/novedades/semana/',
             tag=f'novedad-{instance.pk}',
+            tag_group='novedades',  # agrupa varias novedades bajo un tipo
+            actions=[
+                {'action': 'ver', 'title': 'Ver semana'},
+            ],
+            action_urls={'ver': '/reportes/novedades/semana/'},
         )
     except Exception as e:
         logger.error(f'Fallo notificando novedad {instance.pk}: {e}')
@@ -82,18 +87,10 @@ def notificar_ausencia_registrada(sender, instance, created, **kwargs):
     try:
         send_push(
             instance.empleado.usuario,
-            titulo='Asistencia registrada',
-            body=cuerpo,
-            url='/empleados/mi-perfil/',
-            tag=f'asistencia-{instance.pk}',
-        )
-    except TypeError:
-        # send_push firma es (usuario, title, body, url, icon, tag)
-        send_push(
-            instance.empleado.usuario,
             'Asistencia registrada', cuerpo,
             url='/empleados/mi-perfil/',
             tag=f'asistencia-{instance.pk}',
+            tag_group='asistencia',
         )
     except Exception as e:
         logger.error(f'Fallo notificando ausencia {instance.pk}: {e}')

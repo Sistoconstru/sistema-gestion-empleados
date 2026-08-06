@@ -17,8 +17,20 @@ def _vapid_claims():
     return {"sub": settings.VAPID_ADMIN_EMAIL}
 
 
-def send_push(usuario, title, body, url='/', icon='/static/pwa/icon-192.png', tag=None):
+def send_push(usuario, title, body, url='/', icon='/static/pwa/icon-192.png',
+              tag=None, tag_group=None, actions=None, action_urls=None,
+              vibrate=None):
     """Envía una notificación push a todas las suscripciones activas del usuario.
+
+    Parámetros:
+        tag       — id único de la notificación (para reemplazar duplicados exactos).
+        tag_group — id de agrupación por tipo (ej: 'novedad', 'sesion'); si
+                    varias notif del mismo grupo llegan, el navegador reemplaza
+                    en vez de acumular en la barra. Sobrepone a `tag`.
+        actions   — lista de {action, title, icon?}; Android desktop las
+                    muestra como botones. Máx 2 en Chrome.
+        action_urls — dict {action: url}; se usa al hacer clic en el botón.
+        vibrate   — patrón de vibración Android, ej [200, 100, 200].
 
     Devuelve (enviadas, desactivadas). Nunca lanza excepción — cualquier fallo
     queda en el log y en `fallos_consecutivos` de la suscripción; tras 3 fallos
@@ -32,13 +44,22 @@ def send_push(usuario, title, body, url='/', icon='/static/pwa/icon-192.png', ta
         return 0, 0
 
     subs = PushSubscription.objects.filter(usuario=usuario, activa=True)
-    payload = json.dumps({
+    payload_dict = {
         'title': title,
         'body': body,
         'url': url,
         'icon': icon,
         'tag': tag or f'sighu-{timezone.now().timestamp()}',
-    })
+    }
+    if tag_group:
+        payload_dict['tagGroup'] = tag_group
+    if actions:
+        payload_dict['actions'] = actions
+    if action_urls:
+        payload_dict['actionUrls'] = action_urls
+    if vibrate is not None:
+        payload_dict['vibrate'] = vibrate
+    payload = json.dumps(payload_dict)
 
     enviadas = 0
     desactivadas = 0

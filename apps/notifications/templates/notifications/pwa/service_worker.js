@@ -35,7 +35,10 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Push handler — el payload viene como JSON con {title, body, url, icon, tag}
+// Push handler — payload esperado:
+//   {title, body, url, icon, tag, tagGroup, actions, vibrate}
+// tagGroup permite que varias notif del mismo tipo (ej. recordatorios de
+// sesión) se agrupen bajo un solo tag → solo la última visible en la barra.
 self.addEventListener('push', (event) => {
     let data = {};
     try {
@@ -44,21 +47,35 @@ self.addEventListener('push', (event) => {
         data = { title: 'SIGHU', body: event.data ? event.data.text() : '' };
     }
     const title = data.title || 'SIGHU';
+    const tag = data.tagGroup || data.tag || 'sighu';
     const options = {
         body: data.body || '',
         icon: data.icon || '/static/pwa/icon-192.png',
         badge: '/static/pwa/icon-192.png',
-        tag: data.tag || 'sighu',
-        data: { url: data.url || '/' },
+        tag,
         renotify: true,
+        // Vibración corta (Android): dos pulsos de 200ms con 100ms de pausa.
+        // iOS ignora este campo y usa su propio patrón por defecto.
+        vibrate: data.vibrate || [200, 100, 200],
+        // actions: array de {action, title, icon}. Android desktop las muestra
+        // como botones; iOS los ignora (solo tap principal funciona).
+        actions: Array.isArray(data.actions) ? data.actions : [],
+        // Guardamos url + urls por acción para el click handler
+        data: {
+            url: data.url || '/',
+            actionUrls: data.actionUrls || {},
+        },
     };
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// Click en la notificación — enfoca la ventana existente o abre una nueva
+// Click en la notificación (o en un botón de acción) — enfoca ventana o abre nueva
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const targetUrl = (event.notification.data && event.notification.data.url) || '/';
+    const dataUrl = (event.notification.data && event.notification.data.url) || '/';
+    const actionUrls = (event.notification.data && event.notification.data.actionUrls) || {};
+    // Si tocó un botón de acción con URL propia, gana esa; si no, la general.
+    const targetUrl = (event.action && actionUrls[event.action]) || dataUrl;
     event.waitUntil(
         self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             for (const client of clientList) {

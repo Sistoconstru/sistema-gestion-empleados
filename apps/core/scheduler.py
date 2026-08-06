@@ -450,6 +450,11 @@ def _recordatorios_sesiones_capacitacion():
                     mensaje,
                     url=f'/capacitaciones/sesiones/{sesion.pk}/',
                     tag=tag,
+                    tag_group='sesion-capacitacion',
+                    actions=[
+                        {'action': 'ver', 'title': 'Ver sesión'},
+                    ],
+                    action_urls={'ver': f'/capacitaciones/sesiones/{sesion.pk}/'},
                 )
                 Notificacion.objects.create(
                     usuario=insc.empleado.usuario,
