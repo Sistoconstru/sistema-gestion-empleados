@@ -8,6 +8,7 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.evaluations.models import SeguimientoBimensual
 from apps.notifications.models import TipoNotificacion, Notificacion
+from apps.notifications.push_utils import send_push
 
 
 class Command(BaseCommand):
@@ -145,32 +146,57 @@ class Command(BaseCommand):
             }
 
             if not dry_run:
-                # Notificación al SUPERVISOR
+                # Notificación al SUPERVISOR (in-app + push)
+                titulo_sup = f'Seguimiento bimensual {seguimiento.numero_bimestre}° — {empleado.nombre_completo}'
+                mensaje_sup = (
+                    f'Vence el {datos_notificacion["fecha_limite"]} '
+                    f'({dias_restantes} día{"s" if dias_restantes != 1 else ""} restante'
+                    f'{"s" if dias_restantes != 1 else ""}). Realiza el seguimiento del plan de mejora.'
+                )
                 try:
                     Notificacion.objects.create(
                         usuario=supervisor.usuario,
                         tipo_notificacion=tipo_seguimiento,
-                        titulo=f'Recordatorio: Seguimiento Bimensual {seguimiento.numero_bimestre}° - {empleado.nombre_completo}',
-                        mensaje=f'El seguimiento bimensual {seguimiento.numero_bimestre}° de {empleado.nombre_completo} vence el {datos_notificacion["fecha_limite"]} ({dias_restantes} días restantes). Por favor, realiza el seguimiento del plan de mejora.',
-                        datos_adicionales=datos_notificacion
+                        titulo=titulo_sup,
+                        mensaje=mensaje_sup,
+                        datos_adicionales=datos_notificacion,
+                    )
+                    send_push(
+                        supervisor.usuario, titulo_sup, mensaje_sup,
+                        url='/evaluaciones/supervisor/seguimientos-pendientes/',
+                        tag=f'seguimiento-{seguimiento.id}-sup',
+                        tag_group='seguimiento-bimensual',
+                        actions=[{'action': 'ver', 'title': 'Ver seguimientos'}],
+                        action_urls={'ver': '/evaluaciones/supervisor/seguimientos-pendientes/'},
                     )
                     recordatorios_supervisores += 1
-                    self.stdout.write(self.style.SUCCESS(f'    [+] Recordatorio enviado al supervisor'))
+                    self.stdout.write(self.style.SUCCESS(f'    [+] Recordatorio enviado al supervisor (in-app + push)'))
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    [X] Error al enviar a supervisor: {e}'))
                     errores += 1
 
                 # Notificación al EMPLEADO (informativa)
+                titulo_emp = f'Próximo seguimiento bimensual {seguimiento.numero_bimestre}°'
+                mensaje_emp = (
+                    f'Tu supervisor realizará el seguimiento antes del '
+                    f'{datos_notificacion["fecha_limite"]}. Prepárate para mostrar tus avances.'
+                )
                 try:
                     Notificacion.objects.create(
                         usuario=empleado.usuario,
                         tipo_notificacion=tipo_seguimiento,
-                        titulo=f'Próximo Seguimiento Bimensual {seguimiento.numero_bimestre}°',
-                        mensaje=f'Tu supervisor realizará el seguimiento bimensual {seguimiento.numero_bimestre}° de tu plan de mejora antes del {datos_notificacion["fecha_limite"]}. Prepárate para mostrar tus avances.',
-                        datos_adicionales=datos_notificacion
+                        titulo=titulo_emp,
+                        mensaje=mensaje_emp,
+                        datos_adicionales=datos_notificacion,
+                    )
+                    send_push(
+                        empleado.usuario, titulo_emp, mensaje_emp,
+                        url='/empleados/mi-perfil/',
+                        tag=f'seguimiento-{seguimiento.id}-emp',
+                        tag_group='seguimiento-bimensual',
                     )
                     recordatorios_empleados += 1
-                    self.stdout.write(self.style.SUCCESS(f'    [+] Recordatorio enviado al empleado'))
+                    self.stdout.write(self.style.SUCCESS(f'    [+] Recordatorio enviado al empleado (in-app + push)'))
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    [X] Error al enviar a empleado: {e}'))
                     errores += 1
