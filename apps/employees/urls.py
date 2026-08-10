@@ -3,7 +3,7 @@
 # =============================================================================
 
 from django.urls import path
-from . import views, feed_views, views_polla_mundial
+from . import views, feed_views  # views_polla_mundial deshabilitado (Mundial 2026 terminó)
 
 app_name = 'employees'
 
@@ -139,12 +139,12 @@ urlpatterns = [
     path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),
 
     # =============================================================================
-    # POLLA MUNDIALISTA 2026
-    # =============================================================================
-    path('polla-mundial/', views_polla_mundial.polla_mundial_lista, name='polla_mundial'),
-    path('polla-mundial/ranking/', views_polla_mundial.ranking_mundial, name='ranking_mundial'),
-    path('polla-mundial/mis-predicciones/', views_polla_mundial.mis_predicciones, name='mis_predicciones'),
-    path('polla-mundial/partido/<int:partido_id>/predecir/', views_polla_mundial.guardar_prediccion, name='guardar_prediccion'),
-    path('polla-mundial/partido/<int:partido_id>/estadisticas/', views_polla_mundial.estadisticas_partido, name='estadisticas_partido'),
-    path('polla-mundial/aceptar-terminos/', views_polla_mundial.aceptar_terminos_polla, name='aceptar_terminos_polla'),
+    # POLLA MUNDIALISTA 2026 — DESHABILITADO (torneo terminado). Reactivar en
+    # próxima copa descomentando estas 6 rutas y el import de views_polla_mundial.
+    # path('polla-mundial/', views_polla_mundial.polla_mundial_lista, name='polla_mundial'),
+    # path('polla-mundial/ranking/', views_polla_mundial.ranking_mundial, name='ranking_mundial'),
+    # path('polla-mundial/mis-predicciones/', views_polla_mundial.mis_predicciones, name='mis_predicciones'),
+    # path('polla-mundial/partido/<int:partido_id>/predecir/', views_polla_mundial.guardar_prediccion, name='guardar_prediccion'),
+    # path('polla-mundial/partido/<int:partido_id>/estadisticas/', views_polla_mundial.estadisticas_partido, name='estadisticas_partido'),
+    # path('polla-mundial/aceptar-terminos/', views_polla_mundial.aceptar_terminos_polla, name='aceptar_terminos_polla'),
 ]

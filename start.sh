@@ -121,14 +121,13 @@ python manage.py migrate
 # echo "Resincronizando partidos finalizados desde API (correccion de marcadores)..."
 # python manage.py actualizar_resultados_mundial --resincronizar || echo "Error en resincronizacion"
 
-# TEMPORAL (2026-07-04): Reimportar partidos con detección correcta de fases
-# Fix: Usar strRound en lugar de strEvent + agregar fase dieciseisavos
-echo "🔄 Reimportando partidos del Mundial con fases corregidas..."
-python manage.py importar_partidos_mundial --season=2026 || echo "⚠️  Error al reimportar partidos"
-
-# TEMPORAL (2026-07-04): Resincronizar resultados para recalcular puntos con fases correctas
-echo "🔄 Recalculando puntos de predicciones con multiplicadores correctos..."
-python manage.py actualizar_resultados_mundial --resincronizar || echo "⚠️  Error al recalcular puntos"
+# DESHABILITADO: Polla Mundial (Mundial 2026 terminó). Estas dos líneas
+# corrían en cada arranque y llenaban los logs con requests a la API.
+# Reactivar en la próxima copa descomentando.
+# echo "🔄 Reimportando partidos del Mundial con fases corregidas..."
+# python manage.py importar_partidos_mundial --season=2026 || echo "⚠️  Error al reimportar partidos"
+# echo "🔄 Recalculando puntos de predicciones con multiplicadores correctos..."
+# python manage.py actualizar_resultados_mundial --resincronizar || echo "⚠️  Error al recalcular puntos"
 
 # Recopila archivos estáticos (incluye dependencias locales)
 python manage.py collectstatic --noinput

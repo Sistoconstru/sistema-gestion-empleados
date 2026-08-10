@@ -99,39 +99,24 @@ def start_scheduler():
             coalesce=True,
         )
 
-        # Tarea 6: Resultados de partidos cada 5 min, las 24 horas.
-        # El comando filtra solo partidos en su ventana de finalización, así que si
-        # no hay partidos terminando hace 0 requests a la API. Latencia ~5 min tras
-        # el pitazo final con consumo mínimo. Reemplaza el workflow de GitHub Actions
-        # que fallaba (railway run ejecutaba Django en un runner sin dependencias).
-        scheduler.add_job(
-            _actualizar_resultados_mundial,
-            'cron',
-            minute='*/5',
-            id='actualizar_resultados_mundial',
-            name='Actualizar resultados Polla Mundial',
-            replace_existing=True,
-            misfire_grace_time=120,
-            coalesce=True,
-        )
-
-        # Tarea 7: Fixture y equipos TBD una vez al día (5:30 AM hora Colombia).
-        # importar_partidos_mundial hace 1 request por corrida SIEMPRE, y
-        # actualizar_equipos_tbd hace 1 request por cada partido con equipo TBD.
-        # Correrlos cada 5 min reventaría el plan de la API (límite 3000/mes), así
-        # que van en un job diario: el fixture es estable y los equipos de
-        # eliminación se definen al terminar cada ronda (no minuto a minuto).
-        scheduler.add_job(
-            _actualizar_fixture_mundial,
-            'cron',
-            hour=5,
-            minute=30,
-            id='actualizar_fixture_mundial',
-            name='Actualizar fixture y equipos TBD Polla Mundial',
-            replace_existing=True,
-            misfire_grace_time=3600,
-            coalesce=True,
-        )
+        # DESHABILITADO: Polla Mundial (Mundial 2026 terminó). Reactivar en la
+        # próxima copa comentando/eliminando este bloque y descomentando los
+        # scheduler.add_job de abajo.
+        #
+        # scheduler.add_job(
+        #     _actualizar_resultados_mundial,
+        #     'cron', minute='*/5',
+        #     id='actualizar_resultados_mundial',
+        #     name='Actualizar resultados Polla Mundial',
+        #     replace_existing=True, misfire_grace_time=120, coalesce=True,
+        # )
+        # scheduler.add_job(
+        #     _actualizar_fixture_mundial,
+        #     'cron', hour=5, minute=30,
+        #     id='actualizar_fixture_mundial',
+        #     name='Actualizar fixture y equipos TBD Polla Mundial',
+        #     replace_existing=True, misfire_grace_time=3600, coalesce=True,
+        # )
 
         # Recordatorio de sesiones de capacitación: cada 10 min chequea
         # sesiones que arrancan en <=24h o <=30min y avisa vía push a los
@@ -156,8 +141,7 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
-        logger.info('  - Cada 5 min (24h): Resultados Polla Mundial (solo partidos en ventana de finalización)')
-        logger.info('  - 05:30 AM: Fixture y equipos TBD Polla Mundial (1 vez al día, ahorro de API)')
+        # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
 

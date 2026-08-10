@@ -52,16 +52,7 @@
                 <a href="{% url 'employees:producto_list' %}" class="btn btn-success">
                     <i class="fas fa-shopping-bag me-1"></i>El Toldo
                 </a>
-                {% if user.empleado %}
-                    <a href="{% url 'employees:polla_mundial' %}" class="btn btn-outline-success">
-                        <i class="fas fa-trophy me-1"></i>Polla Mundial 2026
-                    </a>
-                {% else %}
-                    <button type="button" class="btn btn-outline-success"
-                            onclick="alert('Para participar en la Polla Mundial debes tener un perfil de empleado. Contacta al administrador del sistema.');">
-                        <i class="fas fa-trophy me-1"></i>Polla Mundial 2026
-                    </button>
-                {% endif %}
+                {# Polla Mundial 2026 — deshabilitada (torneo terminó). Reactivar en próxima copa. #}
                 <a href="{% url 'employees:mis_productos' %}" class="btn btn-outline-success">
                     <i class="fas fa-box me-1"></i>Mis Productos
                 </a>
