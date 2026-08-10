@@ -4482,7 +4482,11 @@ def asistencia_diaria(request):
             f'Para fechas anteriores solicítalo a RRHH.'
         )
         return redirect('employees:asistencia_diaria')
+    # Festivos oficiales de Colombia (Ley Emiliani ya aplicada) NO son días
+    # laborables — ni el jefe registra ni cuentan como omisión.
+    from apps.employees.utils.dias_habiles import es_festivo_oficial
     es_fin_de_semana = fecha.weekday() >= 5
+    es_festivo = es_festivo_oficial(fecha)
 
     # Grupos a cargo del usuario en esta fecha:
     # - Su equipo propio (si tiene subordinados directos).
@@ -4519,13 +4523,22 @@ def asistencia_diaria(request):
         )
         cursor = hoy
         while cursor >= limite_inferior:
-            if cursor.weekday() < 5 and cursor != fecha and cursor not in fechas_con_registro:
+            # Los festivos entre semana NO cuentan como omisión del jefe.
+            if (
+                cursor.weekday() < 5
+                and not es_festivo_oficial(cursor)
+                and cursor != fecha
+                and cursor not in fechas_con_registro
+            ):
                 dias_sin_registrar.append(cursor)
             cursor -= timedelta(days=1)
 
     if request.method == 'POST':
         if es_fin_de_semana:
             messages.warning(request, 'No se puede registrar asistencia en sábado/domingo.')
+            return redirect('employees:asistencia_diaria')
+        if es_festivo:
+            messages.warning(request, 'No se puede registrar asistencia en festivos.')
             return redirect('employees:asistencia_diaria')
 
         try:

@@ -1171,16 +1171,19 @@ class AsistenciaReportView(TemplateView):
         from datetime import timedelta
         from apps.employees.models import HistorialCargo, Empleado
         from apps.employees.views import ASISTENCIA_FECHA_ARRANQUE
+        from apps.employees.utils.dias_habiles import es_festivo_oficial
 
         # Corte inferior: antes de la fecha de arranque el módulo no operaba,
         # así que esos días no cuentan como omisión del jefe.
         fecha_inicio_efectiva = max(fecha_desde, ASISTENCIA_FECHA_ARRANQUE)
 
-        # 1) Días laborales L-V en el rango efectivo
+        # 1) Días laborales L-V en el rango efectivo — EXCLUYE festivos.
+        # Un festivo entre semana no es día laboral, así que no cuenta como
+        # omisión del jefe si no registró asistencia esa fecha.
         dias_laborales = []
         cursor = fecha_inicio_efectiva
         while cursor <= fecha_hasta:
-            if cursor.weekday() < 5:
+            if cursor.weekday() < 5 and not es_festivo_oficial(cursor):
                 dias_laborales.append(cursor)
             cursor += timedelta(days=1)
 
