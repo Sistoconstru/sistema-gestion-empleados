@@ -132,6 +132,21 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Recordatorio a jefes de registrar la asistencia del equipo.
+        # Corre L-V a las 8:00 (arranque de jornada). Solo dispara push si el
+        # jefe no tiene NINGÚN registro de su equipo hoy y hoy es día hábil
+        # (excluye festivos oficiales).
+        scheduler.add_job(
+            _recordar_asistencia_jefes,
+            'cron',
+            day_of_week='mon-fri', hour=8, minute=0,
+            id='recordar_asistencia_jefes',
+            name='Recordatorio asistencia a jefes',
+            replace_existing=True,
+            misfire_grace_time=1800,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -141,6 +156,7 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
+        logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -450,3 +466,105 @@ def _recordatorios_sesiones_capacitacion():
                     enviadas += 1
     if enviadas:
         logger.info(f'Recordatorios sesiones capacitación: {enviadas} push enviadas.')
+
+
+def _recordar_asistencia_jefes():
+    """Envía push a los jefes que hoy no han registrado NINGÚN dato de asistencia
+    de su equipo. Solo corre en días hábiles (L-V no festivos). Idempotente
+    por día vía tag en Notificacion.datos_adicionales.
+    """
+    from datetime import date as _date
+    from apps.employees.models import AsistenciaDiaria, Empleado, HistorialCargo
+    from apps.employees.utils.dias_habiles import es_festivo_oficial
+    from apps.notifications.models import Notificacion, TipoNotificacion
+    from apps.notifications.push_utils import send_push
+
+    hoy = _date.today()
+    if hoy.weekday() >= 5 or es_festivo_oficial(hoy):
+        logger.info('Hoy no es día laboral — no se envía recordatorio a jefes.')
+        return
+
+    tipo_notif, _ = TipoNotificacion.objects.get_or_create(
+        codigo='recordatorio_asistencia',
+        defaults={
+            'nombre': 'Recordatorio de asistencia del equipo',
+            'descripcion': 'Aviso al jefe cuando no ha registrado la asistencia de su equipo en el día.',
+            'plantilla_titulo': 'Falta registrar la asistencia de tu equipo',
+            'plantilla_mensaje': 'Aún no has registrado la asistencia hoy.',
+            'enviar_email': False,
+            'enviar_push': True,
+            'activo': True,
+        },
+    )
+
+    # Jefes activos: empleados que son jefe_directo de al menos un
+    # HistorialCargo activo. Reuso el mismo criterio que el reporte RRHH.
+    jefes_ids = HistorialCargo.objects.filter(
+        activo=True, jefe_directo__isnull=False,
+    ).values_list('jefe_directo', flat=True).distinct()
+    jefes = Empleado.objects.filter(
+        pk__in=list(jefes_ids),
+        usuario__isnull=False, usuario__is_active=True,
+    ).select_related('usuario')
+
+    enviadas = 0
+    saltados_ya_notificados = 0
+    saltados_ya_registro = 0
+    for jefe in jefes:
+        # ¿Su equipo tiene AL MENOS 1 registro hoy?
+        tiene_registro = AsistenciaDiaria.objects.filter(
+            fecha=hoy,
+            empleado__historialcargo__activo=True,
+            empleado__historialcargo__jefe_directo=jefe,
+        ).exists()
+        if tiene_registro:
+            saltados_ya_registro += 1
+            continue
+
+        # ¿Tiene subordinados activos (elegibles para registro)?
+        # Si no tiene equipo elegible hoy, no molestar.
+        tiene_equipo = Empleado.objects.filter(
+            historialcargo__activo=True,
+            historialcargo__jefe_directo=jefe,
+            estado__codigo__in=['999', 'p-prue'],
+        ).exists()
+        if not tiene_equipo:
+            continue
+
+        # Idempotencia: no repetir si ya se envió hoy
+        tag = f'asistencia-recordatorio-{jefe.pk}-{hoy.isoformat()}'
+        ya = Notificacion.objects.filter(
+            usuario=jefe.usuario,
+            datos_adicionales__contains={'push_tag': tag},
+        ).exists()
+        if ya:
+            saltados_ya_notificados += 1
+            continue
+
+        titulo = 'Recuerda registrar la asistencia de tu equipo'
+        cuerpo = (
+            f'Hoy {hoy:%d/%m/%Y} debes registrar la asistencia de tu equipo. '
+            f'Puedes hacerlo desde el módulo de asistencia.'
+        )
+        enviadas_i, _ = send_push(
+            jefe.usuario, titulo, cuerpo,
+            url='/empleados/asistencia/',
+            tag=tag,
+            tag_group='asistencia-recordatorio',
+            actions=[{'action': 'ir', 'title': 'Ir a registrar'}],
+            action_urls={'ir': '/empleados/asistencia/'},
+        )
+        Notificacion.objects.create(
+            usuario=jefe.usuario,
+            tipo_notificacion=tipo_notif,
+            titulo=titulo,
+            mensaje=cuerpo,
+            datos_adicionales={'push_tag': tag, 'jefe_id': str(jefe.pk), 'fecha': hoy.isoformat()},
+        )
+        if enviadas_i:
+            enviadas += 1
+
+    logger.info(
+        f'Recordatorio asistencia a jefes: {enviadas} push enviadas · '
+        f'{saltados_ya_registro} con registro · {saltados_ya_notificados} ya notificados hoy.'
+    )
