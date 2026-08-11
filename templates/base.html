@@ -118,7 +118,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{% url 'pwa_settings' %}">
-                                    <i class="fas fa-mobile-alt me-1"></i> Notificaciones en el celular
+                                    <i class="fas fa-mobile-alt me-1"></i> Notificaciones del dispositivo
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
@@ -220,37 +220,45 @@
     </script>
 
     {% if user.is_authenticated %}
-    <!-- Banner de instalación PWA — se muestra solo si aplica -->
+    <!-- Banner de instalación PWA — barra superior fija, muy visible -->
     <div id="sighu-install-banner" style="
         display: none;
-        position: fixed; bottom: 0; left: 0; right: 0; z-index: 2000;
-        background: #ffffff; border-top: 3px solid #0e5f3f;
-        box-shadow: 0 -4px 16px rgba(0,0,0,0.12);
-        padding: 12px 16px;
+        position: fixed; top: 0; left: 0; right: 0; z-index: 2000;
+        background: linear-gradient(90deg, #0e5f3f 0%, #14804f 100%);
+        color: #ffffff;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.20);
+        padding: 10px 16px;
         font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
     ">
-        <div style="max-width: 700px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <div style="max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
             <img src="{% static 'pwa/icon-192.png' %}" alt="SIGHU"
-                 style="width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0;">
-            <div id="sighu-install-text" style="flex: 1; min-width: 200px; font-size: 14px; color: #333;">
-                <strong>Instala SIGHU en tu celular</strong><br>
-                <span id="sighu-install-hint" style="color: #666;">
+                 style="width: 44px; height: 44px; border-radius: 8px; flex-shrink: 0; background: #ffffff; padding: 2px;">
+            <div id="sighu-install-text" style="flex: 1; min-width: 200px; font-size: 14px; line-height: 1.35;">
+                <strong style="font-size: 15px;">Instala SIGHU como aplicación</strong><br>
+                <span id="sighu-install-hint" style="opacity: 0.9;">
                     Recibe notificaciones de capacitaciones, nómina y asistencia sin abrir el navegador.
                 </span>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button id="sighu-install-dismiss" type="button" style="
-                    background: transparent; color: #666; border: 1px solid #ccc;
+                <button id="sighu-install-action" type="button" style="
+                    background: #f5c518; color: #0e5f3f; border: 0;
+                    padding: 8px 18px; border-radius: 4px; cursor: pointer;
+                    font-weight: 700; font-size: 14px;
+                ">Instalar</button>
+                <button id="sighu-install-dismiss" type="button" title="Ocultar por 7 días" style="
+                    background: transparent; color: #ffffff; border: 1px solid rgba(255,255,255,0.5);
                     padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;
                 ">Ahora no</button>
-                <button id="sighu-install-action" type="button" style="
-                    background: #0e5f3f; color: white; border: 0;
-                    padding: 8px 14px; border-radius: 4px; cursor: pointer;
-                    font-weight: 600; font-size: 13px;
-                ">Instalar</button>
             </div>
         </div>
     </div>
+    <style>
+        /* Cuando el banner está visible, empuja el contenido para que no lo tape */
+        body.sighu-install-banner-open { padding-top: 78px; }
+        @media (max-width: 600px) {
+            body.sighu-install-banner-open { padding-top: 108px; }
+        }
+    </style>
 
     <script>
     // ============================================================
@@ -290,6 +298,7 @@
             deferredInstallPrompt = null;
             const banner = document.getElementById('sighu-install-banner');
             if (banner) banner.style.display = 'none';
+            document.body.classList.remove('sighu-install-banner-open');
         });
 
         window.SIGHU_PWA = {
@@ -385,6 +394,15 @@
 
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+            function abrirBanner() {
+                banner.style.display = 'block';
+                document.body.classList.add('sighu-install-banner-open');
+            }
+            function cerrarBanner() {
+                banner.style.display = 'none';
+                document.body.classList.remove('sighu-install-banner-open');
+            }
+
             function mostrarBanner(modo) {
                 if (modo === 'ios') {
                     btnAction.textContent = 'Cómo instalar';
@@ -397,18 +415,18 @@
                         btnAction.disabled = true;
                         const result = await window.SIGHU_PWA.installApp();
                         if (result.outcome === 'accepted') {
-                            banner.style.display = 'none';
+                            cerrarBanner();
                         } else {
                             btnAction.disabled = false;
                         }
                     };
                 }
-                banner.style.display = 'block';
+                abrirBanner();
             }
 
             btnDismiss.onclick = function () {
                 localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 86400000));
-                banner.style.display = 'none';
+                cerrarBanner();
             };
 
             if (isIOS) {
