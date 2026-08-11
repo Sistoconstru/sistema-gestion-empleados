@@ -30,9 +30,7 @@
     </div>
 </div>
 
-{# ============================================================
-   Card principal con semáforo, cuota y sanción
-   ============================================================ #}
+{# Card principal con semáforo, cuota y sanción #}
 <div class="row g-3 mb-4">
     <div class="col-lg-8">
         <div class="card shadow-sm h-100
@@ -128,9 +126,7 @@
     </div>
 </div>
 
-{# ============================================================
-   Aprendices próximos a vencer
-   ============================================================ #}
+{# Aprendices próximos a vencer #}
 {% if estado.proximos_a_vencer %}
 <div class="card border-warning shadow-sm mb-4">
     <div class="card-header bg-warning text-dark">
@@ -178,9 +174,7 @@
 </div>
 {% endif %}
 
-{# ============================================================
-   Lista completa de aprendices activos
-   ============================================================ #}
+{# Lista completa de aprendices activos #}
 <div class="card border-corporativo shadow-sm mb-4">
     <div class="card-header bg-light">
         <i class="fas fa-users me-2"></i>Aprendices activos ({{ estado.aprendices_actuales }})
