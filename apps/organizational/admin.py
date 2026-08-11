@@ -4,7 +4,7 @@
 
 from django.contrib import admin
 from apps.evaluations.models import EvaluacionCargo
-from .models import Sede, AreaEmpresa, Cargo, CentroCosto, ResolucionSena
+from .models import Sede, AreaEmpresa, Cargo, CentroCosto, ResolucionSena, SalarioMinimoAnual
 
 @admin.register(Sede)
 class SedeAdmin(admin.ModelAdmin):
@@ -153,4 +153,30 @@ class ResolucionSenaAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             obj.creado_por = request.user
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(SalarioMinimoAnual)
+class SalarioMinimoAnualAdmin(admin.ModelAdmin):
+    list_display = ('year', 'valor_formateado', 'decreto', 'fecha_expedicion', 'actualizado_por', 'fecha_actualizacion')
+    list_filter = ('year',)
+    search_fields = ('year', 'decreto')
+    readonly_fields = ('fecha_creacion', 'fecha_actualizacion', 'actualizado_por')
+
+    fieldsets = (
+        ('Vigencia', {'fields': ('year',)}),
+        ('Valor', {'fields': ('valor', 'decreto', 'fecha_expedicion')}),
+        ('Notas', {'fields': ('observaciones',)}),
+        ('Auditoría', {
+            'fields': ('actualizado_por', 'fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def valor_formateado(self, obj):
+        return f'${obj.valor:,.0f}'.replace(',', '.')
+    valor_formateado.short_description = 'Valor'
+
+    def save_model(self, request, obj, form, change):
+        obj.actualizado_por = request.user
         super().save_model(request, obj, form, change)

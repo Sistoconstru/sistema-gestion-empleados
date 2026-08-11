@@ -160,6 +160,20 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Recordatorio SMMLV en enero: si el año actual no está registrado
+        # en SalarioMinimoAnual, avisar a RRHH. Corre los primeros 20 días
+        # de enero a las 10:00 (una vez al día — idempotente por día).
+        scheduler.add_job(
+            _recordar_actualizar_smmlv,
+            'cron',
+            month=1, day='1-20', hour=10, minute=0,
+            id='recordar_smmlv',
+            name='Recordatorio actualizar SMMLV',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -171,6 +185,7 @@ def start_scheduler():
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
+        logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -686,3 +701,64 @@ def _alertas_aprendices_sena():
     logger.info(
         f'Alertas SENA enviadas: cuota={enviadas_cuota} vencimientos={enviadas_venc}'
     )
+
+
+def _recordar_actualizar_smmlv():
+    """Alerta a RRHH en enero cuando el SMMLV del año en curso aún no está
+    registrado en la BD. Idempotente por día vía tag en Notificacion.
+    """
+    from datetime import date as _date
+    from django.contrib.auth import get_user_model
+    from apps.organizational.models import SalarioMinimoAnual
+    from apps.notifications.models import Notificacion, TipoNotificacion
+    from apps.notifications.push_utils import send_push
+
+    hoy = _date.today()
+    if SalarioMinimoAnual.objects.filter(year=hoy.year).exists():
+        return  # ya está actualizado
+
+    tipo_notif, _ = TipoNotificacion.objects.get_or_create(
+        codigo='smmlv_pendiente',
+        defaults={
+            'nombre': 'SMMLV pendiente de actualizar',
+            'descripcion': 'El SMMLV del año en curso no está registrado.',
+            'plantilla_titulo': 'Actualizar SMMLV',
+            'plantilla_mensaje': 'Registrar el nuevo SMMLV del año.',
+            'enviar_email': False,
+            'enviar_push': True,
+            'activo': True,
+        },
+    )
+
+    User = get_user_model()
+    staff = User.objects.filter(is_active=True, is_superuser=True)
+    if not staff.exists():
+        staff = User.objects.filter(is_active=True, is_staff=True)
+
+    titulo = f'Actualiza el SMMLV {hoy.year}'
+    cuerpo = (
+        f'El decreto del salario mínimo {hoy.year} aún no está registrado. '
+        f'Cálculos legales (sanción SENA, etc.) siguen usando el último año conocido.'
+    )
+    enviados = 0
+    for u in staff:
+        tag = f'smmlv-recordar-{hoy.year}-{u.pk}-{hoy.isoformat()}'
+        if Notificacion.objects.filter(
+            usuario=u, datos_adicionales__contains={'push_tag': tag},
+        ).exists():
+            continue
+        envi, _ = send_push(
+            u, titulo, cuerpo,
+            url='/admin/organizational/salariominimoanual/add/',
+            tag=tag, tag_group='smmlv',
+            actions=[{'action': 'ir', 'title': 'Registrar ahora'}],
+            action_urls={'ir': '/admin/organizational/salariominimoanual/add/'},
+        )
+        Notificacion.objects.create(
+            usuario=u, tipo_notificacion=tipo_notif,
+            titulo=titulo, mensaje=cuerpo,
+            datos_adicionales={'push_tag': tag, 'fecha': hoy.isoformat(), 'year': hoy.year},
+        )
+        if envi:
+            enviados += 1
+    logger.info(f'Recordatorio SMMLV enero: {enviados} push enviadas.')

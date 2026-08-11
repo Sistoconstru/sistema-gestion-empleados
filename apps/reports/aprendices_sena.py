@@ -12,11 +12,17 @@ from django.db.models import Q
 
 # Duración máxima del contrato de aprendizaje según Ley 789 art. 30: 2 años.
 CONTRATO_APRENDIZAJE_MAX_MESES = 24
-# Salario mínimo mensual legal vigente en Colombia (2026). Actualizar cada año.
-# Se usa para estimar la sanción: 1 SMMLV mensual por aprendiz faltante
-# (Ley 789 art. 51). En empresas monopolio: 2 SMMLV; aquí asumimos caso base.
-SMMLV_2026 = Decimal('1423500')
+# Fallback si no hay SalarioMinimoAnual cargado — solo se usa como último
+# recurso en caso de BD vacía. La fuente autoritativa es el modelo.
+SMMLV_FALLBACK = Decimal('1423500')
 DIAS_ALERTA_VENCIMIENTO = 60
+
+
+def _smmlv_vigente() -> Decimal:
+    """Retorna el SMMLV vigente desde la BD; cae al fallback si no hay registros."""
+    from apps.organizational.models import SalarioMinimoAnual
+    valor = SalarioMinimoAnual.valor_vigente()
+    return valor if valor is not None else SMMLV_FALLBACK
 
 
 @dataclass
@@ -99,7 +105,7 @@ def calcular_estado(fecha: Optional[date] = None) -> EstadoCuotaSena:
 
     actuales = len(aprendices)
     faltantes = max(cuota - actuales, 0)
-    sancion = Decimal(faltantes) * SMMLV_2026
+    sancion = Decimal(faltantes) * _smmlv_vigente()
 
     return EstadoCuotaSena(
         fecha=hoy,

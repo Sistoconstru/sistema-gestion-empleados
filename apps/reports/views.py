@@ -1618,8 +1618,9 @@ class AprendicesSenaReportView(TemplateView):
     template_name = 'reports/aprendices_sena.html'
 
     def get_context_data(self, **kwargs):
-        from apps.reports.aprendices_sena import calcular_estado, SMMLV_2026
-        from apps.organizational.models import ResolucionSena
+        from datetime import date as _date
+        from apps.reports.aprendices_sena import calcular_estado, _smmlv_vigente
+        from apps.organizational.models import ResolucionSena, SalarioMinimoAnual
         context = super().get_context_data(**kwargs)
         estado = calcular_estado()
 
@@ -1629,10 +1630,136 @@ class AprendicesSenaReportView(TemplateView):
         else:
             pct = 0
 
+        smmlv_row = SalarioMinimoAnual.objects.filter(year=_date.today().year).first()
         context.update({
             'estado': estado,
             'pct_cumplimiento': pct,
-            'smmlv': SMMLV_2026,
+            'smmlv': _smmlv_vigente(),
+            'smmlv_actualizado': smmlv_row is not None,
+            'smmlv_year_actual': _date.today().year,
+            'smmlv_row': smmlv_row,
             'historial_resoluciones': ResolucionSena.objects.order_by('-fecha_vigencia_inicio')[:5],
         })
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class AprendicesSenaExcelView(View):
+    """Descarga XLSX del reporte SENA — pensado para inspección/auditoría.
+
+    Hoja única con 3 secciones apiladas:
+    1. Encabezado + resolución vigente.
+    2. Resumen de cumplimiento (X/Y, faltantes, sanción estimada).
+    3. Tabla completa de aprendices actuales con detalle por columna.
+    """
+
+    def get(self, request):
+        from datetime import date
+        from apps.reports.aprendices_sena import calcular_estado, _smmlv_vigente
+
+        estado = calcular_estado()
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Cuota SENA'
+
+        titulo_font = Font(bold=True, size=14, color='FFFFFF')
+        titulo_fill = PatternFill('solid', fgColor='0E5F3F')
+        header_font = Font(bold=True, color='FFFFFF')
+        header_fill = PatternFill('solid', fgColor='0E5F3F')
+        label_font = Font(bold=True)
+
+        row = 1
+        # Encabezado
+        ws.cell(row=row, column=1, value='REPORTE CUOTA DE APRENDICES SENA').font = titulo_font
+        ws.cell(row=row, column=1).fill = titulo_fill
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        ws.row_dimensions[row].height = 24
+        row += 1
+        ws.cell(row=row, column=1, value=f'Generado el {date.today():%d/%m/%Y}').font = Font(italic=True, size=10)
+        row += 2
+
+        # Resolución vigente
+        ws.cell(row=row, column=1, value='RESOLUCIÓN VIGENTE').font = label_font
+        ws.cell(row=row, column=1).fill = PatternFill('solid', fgColor='DDDDDD')
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        row += 1
+        if estado.resolucion:
+            r = estado.resolucion
+            for label, value in [
+                ('Número', r.numero),
+                ('Expedida', r.fecha_expedicion.strftime('%d/%m/%Y')),
+                ('Vigencia desde', r.fecha_vigencia_inicio.strftime('%d/%m/%Y')),
+                ('Vigencia hasta', r.fecha_vigencia_fin.strftime('%d/%m/%Y') if r.fecha_vigencia_fin else 'Vigente'),
+                ('Cuota (aprendices)', r.cuota_aprendices),
+                ('Trabajadores base (informativo)', r.total_trabajadores_base or '—'),
+            ]:
+                ws.cell(row=row, column=1, value=label).font = label_font
+                ws.cell(row=row, column=2, value=value)
+                row += 1
+        else:
+            ws.cell(row=row, column=1, value='(No hay resolución vigente registrada)').font = Font(italic=True, color='990000')
+            row += 1
+        row += 1
+
+        # Cumplimiento
+        ws.cell(row=row, column=1, value='CUMPLIMIENTO ACTUAL').font = label_font
+        ws.cell(row=row, column=1).fill = PatternFill('solid', fgColor='DDDDDD')
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        row += 1
+        smmlv = _smmlv_vigente()
+        for label, value in [
+            ('Aprendices activos hoy', estado.aprendices_actuales),
+            ('Cuota requerida', estado.cuota_requerida),
+            ('Faltantes', estado.faltantes),
+            ('Cumple', 'SÍ' if estado.cumple else 'NO'),
+            ('SMMLV usado (base sanción)', f'${smmlv:,.0f}'.replace(',', '.')),
+            ('Sanción mensual estimada', f'${estado.sancion_mensual_estimada:,.0f}'.replace(',', '.')),
+        ]:
+            ws.cell(row=row, column=1, value=label).font = label_font
+            cell = ws.cell(row=row, column=2, value=value)
+            if label == 'Cumple' and value == 'NO':
+                cell.font = Font(bold=True, color='C62828')
+            row += 1
+        row += 1
+
+        # Tabla de aprendices
+        ws.cell(row=row, column=1, value='APRENDICES ACTIVOS').font = label_font
+        ws.cell(row=row, column=1).fill = PatternFill('solid', fgColor='DDDDDD')
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        row += 1
+
+        headers = ['Documento', 'Aprendiz', 'Cargo', 'Etapa', 'Inicio', 'Fin estimado', 'Días restantes']
+        for col, h in enumerate(headers, 1):
+            c = ws.cell(row=row, column=col, value=h)
+            c.font = header_font
+            c.fill = header_fill
+            c.alignment = Alignment(horizontal='center', vertical='center')
+        row += 1
+
+        for a in estado.aprendices:
+            ws.cell(row=row, column=1, value=a.empleado.numero_documento)
+            ws.cell(row=row, column=2, value=a.empleado.nombre_completo)
+            ws.cell(row=row, column=3, value=a.cargo.nombre)
+            ws.cell(row=row, column=4, value=a.etapa.capitalize())
+            ws.cell(row=row, column=5, value=a.fecha_inicio.strftime('%d/%m/%Y'))
+            ws.cell(row=row, column=6, value=a.fecha_fin_estimada.strftime('%d/%m/%Y'))
+            cell_rest = ws.cell(row=row, column=7, value=a.dias_restantes)
+            if a.dias_restantes <= 60:
+                cell_rest.font = Font(bold=True, color='C62828')
+            elif a.dias_restantes <= 180:
+                cell_rest.font = Font(color='E65100')
+            row += 1
+
+        # Anchos de columna
+        anchos = [16, 34, 30, 14, 14, 14, 18]
+        for i, w in enumerate(anchos, 1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+        ws.freeze_panes = 'A2'
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        filename = f'aprendices_sena_{date.today():%Y%m%d}.xlsx'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        wb.save(response)
+        return response

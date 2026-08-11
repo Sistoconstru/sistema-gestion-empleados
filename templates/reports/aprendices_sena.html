@@ -24,11 +24,28 @@
                             Cumplimiento con base en la resolución vigente. Ley 789 de 2002.
                         </div>
                     </div>
+                    <div>
+                        <a href="{% url 'reports:aprendices_sena_excel' %}" class="btn btn-light">
+                            <i class="fas fa-file-excel me-1 text-success"></i>Descargar Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% if not smmlv_actualizado %}
+<div class="alert alert-warning d-flex align-items-start">
+    <i class="fas fa-exclamation-triangle me-2 mt-1"></i>
+    <div>
+        <strong>SMMLV {{ smmlv_year_actual }} sin registrar.</strong>
+        Los cálculos de sanción están usando el último año conocido
+        (${{ smmlv|floatformat:0|intcomma }}).
+        <a href="/admin/organizational/salariominimoanual/add/" class="alert-link">Registrar ahora</a>.
+    </div>
+</div>
+{% endif %}
 
 {# Card principal con semáforo, cuota y sanción #}
 <div class="row g-3 mb-4">

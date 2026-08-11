@@ -29,6 +29,7 @@ urlpatterns = [
 
     # Aprendices SENA — cuota, cumplimiento y sanción estimada
     path('aprendices-sena/', views.AprendicesSenaReportView.as_view(), name='aprendices_sena_report'),
+    path('aprendices-sena/excel/', views.AprendicesSenaExcelView.as_view(), name='aprendices_sena_excel'),
 
     # URLs para futuras funcionalidades
     # path('generate/', views.GenerateReportView.as_view(), name='generate_report'),

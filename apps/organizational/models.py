@@ -196,3 +196,68 @@ class ResolucionSena(models.Model):
             .order_by('-fecha_vigencia_inicio')
             .first()
         )
+
+
+class SalarioMinimoAnual(models.Model):
+    """Salario mínimo mensual legal vigente (SMMLV) por año en Colombia.
+
+    Cada enero el gobierno emite un decreto con el nuevo SMMLV; RRHH lo
+    registra aquí. La app lo consume para cualquier cálculo legal (sanción
+    SENA, prestaciones, etc.) via `vigente()`.
+
+    Si el año en curso no está registrado, `vigente()` devuelve el más
+    reciente conocido — así el sistema no se queda sin valor mientras
+    RRHH actualiza. Un cron avisa cuando llega enero sin actualización.
+    """
+    year = models.PositiveSmallIntegerField(
+        unique=True,
+        help_text='Año al que aplica este SMMLV (ej: 2026).',
+    )
+    valor = models.DecimalField(
+        max_digits=12, decimal_places=2,
+        help_text='Valor mensual del SMMLV en pesos (ej: 1423500.00 para 2026).',
+    )
+    decreto = models.CharField(
+        max_length=60, blank=True,
+        help_text='Número de decreto/norma que lo fija (ej: Decreto 1435 de 2025).',
+    )
+    fecha_expedicion = models.DateField(
+        null=True, blank=True,
+        help_text='Fecha del decreto (opcional).',
+    )
+    observaciones = models.TextField(blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    actualizado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='smmlv_actualizados',
+    )
+
+    class Meta:
+        db_table = 'salario_minimo_anual'
+        verbose_name = 'Salario mínimo anual (SMMLV)'
+        verbose_name_plural = 'Salarios mínimos anuales (SMMLV)'
+        ordering = ['-year']
+
+    def __str__(self):
+        return f'SMMLV {self.year}: ${self.valor:,.0f}'
+
+    @classmethod
+    def valor_vigente(cls, year=None):
+        """Retorna el valor SMMLV para el año dado (por defecto: actual).
+
+        Si el año exacto no está en la BD, devuelve el más reciente registrado.
+        Si no hay ninguno, devuelve None — el llamador decide qué hacer.
+        """
+        from datetime import date as _date
+        target = year or _date.today().year
+        row = cls.objects.filter(year=target).first()
+        if row is None:
+            row = cls.objects.order_by('-year').first()
+        return row.valor if row else None
+
+    @classmethod
+    def esta_actualizado(cls):
+        """True si el SMMLV del año actual está registrado en la BD."""
+        from datetime import date as _date
+        return cls.objects.filter(year=_date.today().year).exists()
