@@ -4,7 +4,7 @@
 
 from django.contrib import admin
 from apps.evaluations.models import EvaluacionCargo
-from .models import Sede, AreaEmpresa, Cargo, CentroCosto
+from .models import Sede, AreaEmpresa, Cargo, CentroCosto, ResolucionSena
 
 @admin.register(Sede)
 class SedeAdmin(admin.ModelAdmin):
@@ -47,9 +47,9 @@ class EvaluacionCargoInline(admin.TabularInline):
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'crea_usuario_sistema', 'nivel_jerarquico', 'activo')
+    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz', 'nivel_jerarquico', 'activo')
     inlines = [EvaluacionCargoInline]
-    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico', 'crea_usuario_sistema')
+    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz')
     search_fields = ('codigo', 'nombre', 'area__nombre')
 
     fieldsets = (
@@ -62,6 +62,10 @@ class CargoAdmin(admin.ModelAdmin):
         ('Rol del Sistema', {
             'fields': ('rol_automatico', 'crea_usuario_sistema'),
             'description': 'Rol que se asignará automáticamente a empleados con este cargo. Desmarca "¿Crea usuario en el sistema?" para cargos sin acceso (ej: aprendiz en etapa lectiva).'
+        }),
+        ('SENA', {
+            'fields': ('es_cargo_aprendiz',),
+            'description': 'Los cargos marcados como aprendiz SENA cuentan para la cuota de la resolución vigente.',
         }),
         ('Salarios', {
             'fields': ('salario_minimo', 'salario_maximo')
@@ -106,3 +110,47 @@ class CentroCostoAdmin(admin.ModelAdmin):
     list_filter = ('activo',)
     search_fields = ('cuenta_analitica', 'referencia', 'nombre')
     ordering = ('referencia',)
+
+
+@admin.register(ResolucionSena)
+class ResolucionSenaAdmin(admin.ModelAdmin):
+    list_display = ('numero', 'fecha_expedicion', 'fecha_vigencia_inicio', 'fecha_vigencia_fin',
+                    'cuota_aprendices', 'total_trabajadores_base', 'esta_vigente')
+    list_filter = ('fecha_vigencia_inicio',)
+    search_fields = ('numero', 'observaciones')
+    readonly_fields = ('fecha_creacion', 'fecha_actualizacion', 'creado_por')
+    fieldsets = (
+        ('Identificación', {
+            'fields': ('numero', 'fecha_expedicion'),
+        }),
+        ('Vigencia', {
+            'fields': ('fecha_vigencia_inicio', 'fecha_vigencia_fin'),
+            'description': 'Deja fecha fin vacío si esta resolución sigue vigente hasta que llegue una nueva.',
+        }),
+        ('Cuota', {
+            'fields': ('cuota_aprendices', 'total_trabajadores_base'),
+        }),
+        ('Documentación', {
+            'fields': ('archivo_pdf', 'observaciones'),
+        }),
+        ('Auditoría', {
+            'fields': ('creado_por', 'fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def esta_vigente(self, obj):
+        from datetime import date
+        hoy = date.today()
+        if obj.fecha_vigencia_inicio > hoy:
+            return False
+        if obj.fecha_vigencia_fin and obj.fecha_vigencia_fin < hoy:
+            return False
+        return True
+    esta_vigente.boolean = True
+    esta_vigente.short_description = 'Vigente hoy'
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.creado_por = request.user
+        super().save_model(request, obj, form, change)

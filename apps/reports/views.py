@@ -32,11 +32,13 @@ class DashboardView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        from apps.reports.aprendices_sena import calcular_estado
         # Datos reales de módulos que funcionan
         context.update({
             'total_empleados': Empleado.objects.count(),
             'capacitaciones_activas': Capacitacion.objects.filter(activa=True).count(),
             'evaluaciones_pendientes': AsignacionEvaluacion.objects.filter(estado='pendiente').count(),
+            'sena_estado': calcular_estado(),
 
             # Placeholders para módulos no implementados
             'satisfaccion_general': 0.0,  # Pendiente: módulo surveys
@@ -1603,3 +1605,34 @@ class AsistenciaAusenciasExcelView(View):
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         wb.save(response)
         return response
+
+
+@method_decorator(login_required, name='dispatch')
+class AprendicesSenaReportView(TemplateView):
+    """Dashboard de cumplimiento de cuota SENA (aprendices).
+
+    Muestra: cuota vigente vs aprendices actuales, semáforo, sanción estimada
+    si hay faltantes, lista de aprendices con fecha_fin estimada, próximos a
+    vencer y la resolución vigente con acceso al PDF.
+    """
+    template_name = 'reports/aprendices_sena.html'
+
+    def get_context_data(self, **kwargs):
+        from apps.reports.aprendices_sena import calcular_estado, SMMLV_2026
+        from apps.organizational.models import ResolucionSena
+        context = super().get_context_data(**kwargs)
+        estado = calcular_estado()
+
+        # Porcentaje de cumplimiento (para barra visual). Cap 100.
+        if estado.cuota_requerida > 0:
+            pct = min(100, int(round(100 * estado.aprendices_actuales / estado.cuota_requerida)))
+        else:
+            pct = 0
+
+        context.update({
+            'estado': estado,
+            'pct_cumplimiento': pct,
+            'smmlv': SMMLV_2026,
+            'historial_resoluciones': ResolucionSena.objects.order_by('-fecha_vigencia_inicio')[:5],
+        })
+        return context

@@ -27,6 +27,9 @@ urlpatterns = [
     path('novedades/accion/', views.NovedadesAccionView.as_view(), name='novedades_accion'),
     path('novedades/export/excel/', views.NovedadesExportExcelView.as_view(), name='novedades_export_excel'),
 
+    # Aprendices SENA — cuota, cumplimiento y sanción estimada
+    path('aprendices-sena/', views.AprendicesSenaReportView.as_view(), name='aprendices_sena_report'),
+
     # URLs para futuras funcionalidades
     # path('generate/', views.GenerateReportView.as_view(), name='generate_report'),
     # path('list/', views.ReportListView.as_view(), name='report_list'),

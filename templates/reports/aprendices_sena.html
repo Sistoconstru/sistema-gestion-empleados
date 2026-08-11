@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Aprendices SENA — Cuota{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'reports:index' %}">Reportes</a></li>
+<li class="breadcrumb-item active">Aprendices SENA</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-graduation-cap fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Cuota de Aprendices SENA</h2>
+                        <div class="opacity-75 small">
+                            Cumplimiento con base en la resolución vigente. Ley 789 de 2002.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ============================================================
+   Card principal con semáforo, cuota y sanción
+   ============================================================ #}
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100
+            {% if not estado.resolucion %}border-secondary
+            {% elif estado.cumple %}border-success
+            {% else %}border-danger{% endif %}">
+            <div class="card-body">
+                {% if not estado.resolucion %}
+                    <h5 class="text-secondary">
+                        <i class="fas fa-info-circle me-2"></i>Sin resolución vigente
+                    </h5>
+                    <p class="text-muted mb-2">
+                        Aún no se ha registrado una resolución SENA vigente para hoy.
+                        Súbela desde <a href="/admin/organizational/resolucionsena/add/">Admin → Resoluciones SENA</a>
+                        para activar el seguimiento de cuota y sanción.
+                    </p>
+                    <div class="text-muted">
+                        <strong>{{ estado.aprendices_actuales }}</strong> aprendices activos hoy (sin cuota configurada).
+                    </div>
+                {% else %}
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                        <div>
+                            <div class="text-muted small">Cumplimiento actual</div>
+                            <div class="display-5 fw-bold {% if estado.cumple %}text-success{% else %}text-danger{% endif %}">
+                                {{ estado.aprendices_actuales }} / {{ estado.cuota_requerida }}
+                            </div>
+                            <div class="small text-muted">aprendices activos vs cuota resolución</div>
+                        </div>
+                        <div class="text-end">
+                            {% if estado.cumple %}
+                                <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>Al día</span>
+                            {% else %}
+                                <span class="badge bg-danger fs-6"><i class="fas fa-exclamation-triangle me-1"></i>Faltan {{ estado.faltantes }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="progress mb-2" style="height: 12px;">
+                        <div class="progress-bar {% if estado.cumple %}bg-success{% else %}bg-danger{% endif %}"
+                             role="progressbar" style="width: {{ pct_cumplimiento }}%;"
+                             aria-valuenow="{{ pct_cumplimiento }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ pct_cumplimiento }}%
+                        </div>
+                    </div>
+
+                    {% if not estado.cumple %}
+                    <div class="alert alert-warning small mt-3 mb-0">
+                        <i class="fas fa-money-bill-wave me-1"></i>
+                        <strong>Sanción mensual estimada:</strong>
+                        ${{ estado.sancion_mensual_estimada|floatformat:0|intcomma }}
+                        ({{ estado.faltantes }} aprendiz{{ estado.faltantes|pluralize:"es faltantes,es faltante" }}
+                        × 1 SMMLV = ${{ smmlv|floatformat:0|intcomma }})
+                        <div class="text-muted mt-1">
+                            Basado en Ley 789 art. 51. En empresas monopolio la sanción sube a 2 SMMLV.
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Resolución vigente</h6>
+                {% if estado.resolucion %}
+                    <div class="fw-bold">{{ estado.resolucion.numero }}</div>
+                    <div class="small text-muted">Expedida el {{ estado.resolucion.fecha_expedicion|date:"d/m/Y" }}</div>
+                    <div class="small mt-2">
+                        Vigencia: <strong>{{ estado.resolucion.fecha_vigencia_inicio|date:"d/m/Y" }}</strong> →
+                        {% if estado.resolucion.fecha_vigencia_fin %}
+                            {{ estado.resolucion.fecha_vigencia_fin|date:"d/m/Y" }}
+                        {% else %}
+                            <em>vigente</em>
+                        {% endif %}
+                    </div>
+                    <div class="small mt-1">Cuota: <strong>{{ estado.resolucion.cuota_aprendices }} aprendices</strong></div>
+                    {% if estado.resolucion.archivo_pdf %}
+                    <a href="{{ estado.resolucion.archivo_pdf.url }}" target="_blank"
+                       class="btn btn-outline-corporativo btn-sm mt-2">
+                        <i class="fas fa-file-pdf me-1"></i>Ver PDF
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <div class="text-muted small">No hay resolución vigente registrada.</div>
+                {% endif %}
+                <a href="/admin/organizational/resolucionsena/" class="btn btn-outline-secondary btn-sm mt-2 w-100">
+                    <i class="fas fa-cog me-1"></i>Gestionar resoluciones
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ============================================================
+   Aprendices próximos a vencer
+   ============================================================ #}
+{% if estado.proximos_a_vencer %}
+<div class="card border-warning shadow-sm mb-4">
+    <div class="card-header bg-warning text-dark">
+        <i class="fas fa-clock me-2"></i>
+        Aprendices próximos a terminar (≤ 60 días)
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Aprendiz</th>
+                        <th>Cargo / Etapa</th>
+                        <th>Inicio</th>
+                        <th>Fin estimado</th>
+                        <th class="text-center">Días restantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in estado.proximos_a_vencer %}
+                    <tr>
+                        <td>
+                            <strong>{{ a.empleado.nombre_completo }}</strong>
+                            <div class="small text-muted">{{ a.empleado.numero_documento }}</div>
+                        </td>
+                        <td class="small">
+                            {{ a.cargo.nombre }}
+                            <span class="badge bg-light text-dark ms-1">{{ a.etapa|capfirst }}</span>
+                        </td>
+                        <td class="small">{{ a.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td class="small">{{ a.fecha_fin_estimada|date:"d/m/Y" }}</td>
+                        <td class="text-center">
+                            {% if a.dias_restantes <= 15 %}
+                                <span class="badge bg-danger">{{ a.dias_restantes }}</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">{{ a.dias_restantes }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# ============================================================
+   Lista completa de aprendices activos
+   ============================================================ #}
+<div class="card border-corporativo shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <i class="fas fa-users me-2"></i>Aprendices activos ({{ estado.aprendices_actuales }})
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Aprendiz</th>
+                        <th>Documento</th>
+                        <th>Cargo</th>
+                        <th class="text-center">Etapa</th>
+                        <th>Inicio</th>
+                        <th>Fin estimado</th>
+                        <th class="text-center">Restantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in estado.aprendices %}
+                    <tr>
+                        <td><strong>{{ a.empleado.nombre_completo }}</strong></td>
+                        <td class="small text-muted">{{ a.empleado.numero_documento }}</td>
+                        <td class="small">{{ a.cargo.nombre }}</td>
+                        <td class="text-center">
+                            {% if a.etapa == 'productiva' %}
+                                <span class="badge bg-info text-dark">Productiva</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Lectiva</span>
+                            {% endif %}
+                        </td>
+                        <td class="small">{{ a.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td class="small">{{ a.fecha_fin_estimada|date:"d/m/Y" }}</td>
+                        <td class="text-center small">
+                            {% if a.dias_restantes < 0 %}
+                                <span class="text-danger">vencido</span>
+                            {% else %}
+                                {{ a.dias_restantes }} d
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">Sin aprendices activos.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{# Historial reciente de resoluciones #}
+{% if historial_resoluciones %}
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <i class="fas fa-history me-2"></i>Historial de resoluciones (últimas 5)
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Número</th>
+                        <th>Expedida</th>
+                        <th>Vigencia</th>
+                        <th class="text-center">Cuota</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in historial_resoluciones %}
+                    <tr>
+                        <td class="small">{{ r.numero }}</td>
+                        <td class="small">{{ r.fecha_expedicion|date:"d/m/Y" }}</td>
+                        <td class="small">
+                            {{ r.fecha_vigencia_inicio|date:"d/m/Y" }} →
+                            {% if r.fecha_vigencia_fin %}{{ r.fecha_vigencia_fin|date:"d/m/Y" }}{% else %}vigente{% endif %}
+                        </td>
+                        <td class="text-center">{{ r.cuota_aprendices }}</td>
+                        <td>
+                            {% if r.archivo_pdf %}
+                            <a href="{{ r.archivo_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                            {% else %}
+                                <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

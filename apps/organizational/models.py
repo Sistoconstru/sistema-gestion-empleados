@@ -77,7 +77,17 @@ class Cargo(models.Model):
             "lo permita."
         ),
     )
-    
+
+    es_cargo_aprendiz = models.BooleanField(
+        default=False,
+        verbose_name="¿Es cargo de aprendiz SENA?",
+        help_text=(
+            "Marca este cargo si corresponde a un aprendiz del SENA (etapa lectiva o "
+            "productiva). Los empleados con este cargo cuentan para la cuota de aprendices "
+            "definida en la resolución vigente del SENA."
+        ),
+    )
+
     class Meta:
         db_table = 'cargos'
         unique_together = ['nombre', 'area']
@@ -109,3 +119,80 @@ class CentroCosto(models.Model):
 
     def __str__(self):
         return self.cuenta_analitica
+
+
+class ResolucionSena(models.Model):
+    """Resolución del SENA que fija la cuota de aprendices para la empresa.
+
+    Ley 789 de 2002 (Colombia): las empresas con >=15 trabajadores tienen cuota
+    obligatoria de aprendices SENA. La cuota efectiva la define la resolución
+    que emite la Regional del SENA (típicamente 1 por cada 20 trabajadores),
+    no el conteo automático. Este modelo guarda esa resolución como fuente
+    autoritativa. Múltiples resoluciones se archivan; la que cubre "hoy" con
+    su ventana de vigencia es la que rige.
+    """
+    numero = models.CharField(
+        max_length=60,
+        help_text="Número de resolución (ej: 1-0001-2026-0007890)",
+    )
+    fecha_expedicion = models.DateField(
+        help_text="Fecha en que el SENA expidió la resolución.",
+    )
+    fecha_vigencia_inicio = models.DateField(
+        help_text="Inicio de vigencia de esta cuota.",
+    )
+    fecha_vigencia_fin = models.DateField(
+        null=True, blank=True,
+        help_text="Fin de vigencia. Dejar vacío si aún no se conoce (se aplica hasta que llegue una nueva).",
+    )
+    cuota_aprendices = models.PositiveIntegerField(
+        help_text="Cantidad total de aprendices que la empresa debe mantener según la resolución.",
+    )
+    total_trabajadores_base = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text="Total de trabajadores que consideró el SENA al calcular la cuota (informativo).",
+    )
+    archivo_pdf = models.FileField(
+        upload_to='resoluciones_sena/',
+        null=True, blank=True,
+        help_text="PDF oficial de la resolución (opcional pero recomendado).",
+    )
+    observaciones = models.TextField(blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    creado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='resoluciones_sena_creadas',
+    )
+
+    class Meta:
+        db_table = 'resoluciones_sena'
+        verbose_name = 'Resolución SENA'
+        verbose_name_plural = 'Resoluciones SENA'
+        ordering = ['-fecha_vigencia_inicio', '-fecha_expedicion']
+        indexes = [
+            models.Index(fields=['-fecha_vigencia_inicio']),
+        ]
+
+    def __str__(self):
+        return f'Res. {self.numero} — cuota {self.cuota_aprendices} (desde {self.fecha_vigencia_inicio})'
+
+    @classmethod
+    def vigente(cls, fecha=None):
+        """Retorna la resolución vigente en la fecha dada (por defecto: hoy).
+
+        La vigente es la que tiene fecha_vigencia_inicio <= fecha y
+        (fecha_vigencia_fin es null O fecha_vigencia_fin >= fecha). Si hay
+        varias que cumplan (traslape mal registrado), gana la de inicio más
+        reciente.
+        """
+        from datetime import date as _date
+        from django.db.models import Q
+        f = fecha or _date.today()
+        return (
+            cls.objects
+            .filter(fecha_vigencia_inicio__lte=f)
+            .filter(Q(fecha_vigencia_fin__isnull=True) | Q(fecha_vigencia_fin__gte=f))
+            .order_by('-fecha_vigencia_inicio')
+            .first()
+        )

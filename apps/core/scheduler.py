@@ -147,6 +147,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Alertas SENA a RRHH: cuota incompleta + aprendices próximos a vencer.
+        # Corre L-V a las 9:00. Idempotente por día.
+        scheduler.add_job(
+            _alertas_aprendices_sena,
+            'cron',
+            day_of_week='mon-fri', hour=9, minute=0,
+            id='alertas_aprendices_sena',
+            name='Alertas SENA: cuota + vencimientos',
+            replace_existing=True,
+            misfire_grace_time=1800,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -157,6 +170,7 @@ def start_scheduler():
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
+        logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -567,4 +581,108 @@ def _recordar_asistencia_jefes():
     logger.info(
         f'Recordatorio asistencia a jefes: {enviadas} push enviadas · '
         f'{saltados_ya_registro} con registro · {saltados_ya_notificados} ya notificados hoy.'
+    )
+
+
+def _alertas_aprendices_sena():
+    """Envía push a RRHH (staff) sobre estado SENA. Corre L-V a las 9am.
+
+    Dos tipos de alerta:
+    1. Cuota incompleta: si hay resolución vigente y faltan aprendices.
+    2. Aprendices próximos a vencer (≤ 60 días para fin estimado).
+
+    Idempotente por día vía tag en Notificacion.datos_adicionales — cada
+    alerta se envía una sola vez al día por destinatario.
+    """
+    from datetime import date as _date
+    from django.contrib.auth import get_user_model
+    from apps.reports.aprendices_sena import calcular_estado
+    from apps.notifications.models import Notificacion, TipoNotificacion
+    from apps.notifications.push_utils import send_push
+
+    hoy = _date.today()
+    estado = calcular_estado(hoy)
+
+    tipo_notif, _ = TipoNotificacion.objects.get_or_create(
+        codigo='alerta_sena',
+        defaults={
+            'nombre': 'Alertas SENA',
+            'descripcion': 'Cuota SENA incompleta o aprendices próximos a terminar.',
+            'plantilla_titulo': 'Alerta SENA',
+            'plantilla_mensaje': 'Revisar cuota de aprendices.',
+            'enviar_email': False,
+            'enviar_push': True,
+            'activo': True,
+        },
+    )
+
+    User = get_user_model()
+    destinatarios = User.objects.filter(is_active=True, is_staff=True)
+    if not destinatarios.exists():
+        logger.info('Alertas SENA: sin usuarios staff activos, no se envía nada.')
+        return
+
+    enviadas_cuota = 0
+    enviadas_venc = 0
+
+    # -- Alerta 1: cuota incompleta ---------------------------------------
+    if estado.resolucion and not estado.cumple:
+        titulo = f'Cuota SENA incompleta: faltan {estado.faltantes} aprendiz(es)'
+        cuerpo = (
+            f'Actual: {estado.aprendices_actuales}/{estado.cuota_requerida}. '
+            f'Sanción mensual estimada: ${estado.sancion_mensual_estimada:,.0f}.'
+        ).replace(',', '.')
+        for u in destinatarios:
+            tag = f'sena-cuota-{u.pk}-{hoy.isoformat()}'
+            if Notificacion.objects.filter(
+                usuario=u, datos_adicionales__contains={'push_tag': tag},
+            ).exists():
+                continue
+            envi, _ = send_push(
+                u, titulo, cuerpo,
+                url='/reportes/aprendices-sena/',
+                tag=tag, tag_group='sena-cuota',
+                actions=[{'action': 'ver', 'title': 'Ver detalle'}],
+                action_urls={'ver': '/reportes/aprendices-sena/'},
+            )
+            Notificacion.objects.create(
+                usuario=u, tipo_notificacion=tipo_notif,
+                titulo=titulo, mensaje=cuerpo,
+                datos_adicionales={'push_tag': tag, 'fecha': hoy.isoformat(),
+                                   'tipo': 'cuota', 'faltantes': estado.faltantes},
+            )
+            if envi:
+                enviadas_cuota += 1
+
+    # -- Alerta 2: aprendices próximos a vencer ---------------------------
+    for a in estado.proximos_a_vencer:
+        titulo = f'Aprendiz SENA termina en {a.dias_restantes} días'
+        cuerpo = (
+            f'{a.empleado.nombre_completo} ({a.cargo.nombre}) termina el '
+            f'{a.fecha_fin_estimada:%d/%m/%Y}. Planifica su reemplazo.'
+        )
+        for u in destinatarios:
+            tag = f'sena-venc-{a.empleado.pk}-{u.pk}-{hoy.isoformat()}'
+            if Notificacion.objects.filter(
+                usuario=u, datos_adicionales__contains={'push_tag': tag},
+            ).exists():
+                continue
+            envi, _ = send_push(
+                u, titulo, cuerpo,
+                url='/reportes/aprendices-sena/',
+                tag=tag, tag_group='sena-venc',
+            )
+            Notificacion.objects.create(
+                usuario=u, tipo_notificacion=tipo_notif,
+                titulo=titulo, mensaje=cuerpo,
+                datos_adicionales={'push_tag': tag, 'fecha': hoy.isoformat(),
+                                   'tipo': 'vencimiento',
+                                   'empleado_id': str(a.empleado.pk),
+                                   'dias_restantes': a.dias_restantes},
+            )
+            if envi:
+                enviadas_venc += 1
+
+    logger.info(
+        f'Alertas SENA enviadas: cuota={enviadas_cuota} vencimientos={enviadas_venc}'
     )

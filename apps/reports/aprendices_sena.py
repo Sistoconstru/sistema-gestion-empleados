@@ -1,0 +1,114 @@
+"""Cálculos del módulo de aprendices SENA.
+
+Aísla la lógica de conteo, vencimientos y sanción para que la vista, los
+widgets del dashboard y los cron jobs consuman la misma fuente.
+"""
+from dataclasses import dataclass, field
+from datetime import date, timedelta
+from decimal import Decimal
+from typing import List, Optional
+
+from django.db.models import Q
+
+# Duración máxima del contrato de aprendizaje según Ley 789 art. 30: 2 años.
+CONTRATO_APRENDIZAJE_MAX_MESES = 24
+# Salario mínimo mensual legal vigente en Colombia (2026). Actualizar cada año.
+# Se usa para estimar la sanción: 1 SMMLV mensual por aprendiz faltante
+# (Ley 789 art. 51). En empresas monopolio: 2 SMMLV; aquí asumimos caso base.
+SMMLV_2026 = Decimal('1423500')
+DIAS_ALERTA_VENCIMIENTO = 60
+
+
+@dataclass
+class AprendizItem:
+    empleado: object            # apps.employees.models.Empleado
+    cargo: object               # apps.organizational.models.Cargo
+    fecha_inicio: date          # inicio del HistorialCargo activo
+    fecha_fin_estimada: date    # fecha_inicio + 24 meses
+    dias_restantes: int         # (fecha_fin_estimada - hoy).days
+    etapa: str                  # 'lectiva' | 'productiva'
+    proximo_a_vencer: bool      # dias_restantes <= 60
+
+
+@dataclass
+class EstadoCuotaSena:
+    """Snapshot del estado de cumplimiento de la cuota SENA hoy."""
+    fecha: date
+    resolucion: Optional[object]                # ResolucionSena o None
+    cuota_requerida: int                        # 0 si no hay resolución vigente
+    aprendices_actuales: int
+    faltantes: int                              # max(cuota - actuales, 0)
+    sancion_mensual_estimada: Decimal           # faltantes * 1 SMMLV
+    cumple: bool                                # aprendices_actuales >= cuota_requerida
+    aprendices: List[AprendizItem] = field(default_factory=list)
+    proximos_a_vencer: List[AprendizItem] = field(default_factory=list)
+
+
+def _etapa_desde_cargo(cargo) -> str:
+    """En SIGHU, la lectiva se identifica porque su cargo no crea usuario del sistema."""
+    return 'productiva' if getattr(cargo, 'crea_usuario_sistema', True) else 'lectiva'
+
+
+def _fecha_fin_estimada(fecha_inicio: date) -> date:
+    """Fin estimado del contrato de aprendizaje: 24 meses desde el inicio."""
+    # Aproximación segura sin dependencia de dateutil.
+    anios_extra, meses = divmod(CONTRATO_APRENDIZAJE_MAX_MESES, 12)
+    nuevo_mes = fecha_inicio.month + meses
+    nuevo_anio = fecha_inicio.year + anios_extra
+    if nuevo_mes > 12:
+        nuevo_mes -= 12
+        nuevo_anio += 1
+    from calendar import monthrange
+    dia = min(fecha_inicio.day, monthrange(nuevo_anio, nuevo_mes)[1])
+    return date(nuevo_anio, nuevo_mes, dia)
+
+
+def calcular_estado(fecha: Optional[date] = None) -> EstadoCuotaSena:
+    """Retorna el snapshot completo del cumplimiento SENA para la fecha dada."""
+    from apps.employees.models import HistorialCargo
+    from apps.organizational.models import ResolucionSena
+
+    hoy = fecha or date.today()
+    resolucion = ResolucionSena.vigente(hoy)
+    cuota = resolucion.cuota_aprendices if resolucion else 0
+
+    hcs = list(
+        HistorialCargo.objects
+        .filter(activo=True, cargo__es_cargo_aprendiz=True)
+        .select_related('empleado', 'cargo')
+        .order_by('fecha_inicio')
+    )
+
+    aprendices = []
+    proximos = []
+    for h in hcs:
+        fin = _fecha_fin_estimada(h.fecha_inicio)
+        dias_rest = (fin - hoy).days
+        item = AprendizItem(
+            empleado=h.empleado,
+            cargo=h.cargo,
+            fecha_inicio=h.fecha_inicio,
+            fecha_fin_estimada=fin,
+            dias_restantes=dias_rest,
+            etapa=_etapa_desde_cargo(h.cargo),
+            proximo_a_vencer=(0 <= dias_rest <= DIAS_ALERTA_VENCIMIENTO),
+        )
+        aprendices.append(item)
+        if item.proximo_a_vencer:
+            proximos.append(item)
+
+    actuales = len(aprendices)
+    faltantes = max(cuota - actuales, 0)
+    sancion = Decimal(faltantes) * SMMLV_2026
+
+    return EstadoCuotaSena(
+        fecha=hoy,
+        resolucion=resolucion,
+        cuota_requerida=cuota,
+        aprendices_actuales=actuales,
+        faltantes=faltantes,
+        sancion_mensual_estimada=sancion,
+        cumple=(actuales >= cuota),
+        aprendices=aprendices,
+        proximos_a_vencer=sorted(proximos, key=lambda x: x.dias_restantes),
+    )
