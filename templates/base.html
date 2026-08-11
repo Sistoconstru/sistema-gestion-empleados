@@ -371,28 +371,30 @@
         };
 
         // ------------------------------------------------------------
-        // Banner automático "Instala SIGHU"
-        // ------------------------------------------------------------
-        // Se muestra solo si:
-        //  - No está instalada (no en modo standalone)
-        //  - Navegador Android/Chrome/Edge (beforeinstallprompt dispara) O iOS Safari
-        //  - No fue descartada en los últimos 7 días
-        (function initInstallBanner() {
-            const DISMISS_KEY = 'sighu-install-dismissed-until';
+        // Banner PWA — dos modos según el estado del usuario:
+        //   1) 'install' — sitio abierto en navegador, aún no instalado.
+        //   2) 'notif'   — ya instalada, pero notificaciones no activadas.
+        //                  Se dispara automáticamente al instalar (evento
+        //                  appinstalled) o al abrir la PWA en modo standalone
+        //                  sin permiso concedido todavía.
+        //
+        // Cada modo tiene su propia clave de descarte en localStorage: si el
+        // usuario dice "Ahora no" al instalar, en 7 días se le vuelve a pedir;
+        // igual y por separado para las notificaciones.
+        (function initPwaBanner() {
+            const DISMISS_INSTALL = 'sighu-install-dismissed-until';
+            const DISMISS_NOTIF = 'sighu-notif-dismissed-until';
             const DISMISS_DAYS = 7;
-
-            if (window.SIGHU_PWA.isStandalone()) return;  // ya instalada
-
-            const dismissedUntil = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
-            if (Date.now() < dismissedUntil) return;
 
             const banner = document.getElementById('sighu-install-banner');
             const btnAction = document.getElementById('sighu-install-action');
             const btnDismiss = document.getElementById('sighu-install-dismiss');
+            const title = banner ? banner.querySelector('strong') : null;
             const hint = document.getElementById('sighu-install-hint');
             if (!banner) return;
 
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            let modoActual = null;
 
             function abrirBanner() {
                 banner.style.display = 'block';
@@ -401,10 +403,21 @@
             function cerrarBanner() {
                 banner.style.display = 'none';
                 document.body.classList.remove('sighu-install-banner-open');
+                modoActual = null;
+            }
+            function fueDescartada(key) {
+                const t = parseInt(localStorage.getItem(key) || '0', 10);
+                return Date.now() < t;
+            }
+            function descartar(key) {
+                localStorage.setItem(key, String(Date.now() + DISMISS_DAYS * 86400000));
             }
 
-            function mostrarBanner(modo) {
-                if (modo === 'ios') {
+            function mostrarInstall(subModo) {
+                modoActual = 'install';
+                title.textContent = 'Instala SIGHU como aplicación';
+                hint.textContent = 'Recibe notificaciones de capacitaciones, nómina y asistencia sin abrir el navegador.';
+                if (subModo === 'ios') {
                     btnAction.textContent = 'Cómo instalar';
                     btnAction.onclick = function () {
                         alert('Para instalar SIGHU:\n\n1. Toca el ícono compartir (⬆️) abajo en Safari\n2. Elige "Añadir a pantalla de inicio"\n3. Abre SIGHU desde el ícono de tu pantalla, no desde Safari');
@@ -416,6 +429,7 @@
                         const result = await window.SIGHU_PWA.installApp();
                         if (result.outcome === 'accepted') {
                             cerrarBanner();
+                            // El evento 'appinstalled' se encargará de pedir notifs.
                         } else {
                             btnAction.disabled = false;
                         }
@@ -424,23 +438,68 @@
                 abrirBanner();
             }
 
+            function mostrarNotif() {
+                modoActual = 'notif';
+                title.textContent = 'Activar notificaciones para facilitar tu trabajo';
+                hint.textContent = 'Te avisamos cuando aprueben tu nómina, tengas asistencia registrada o esté cerca una capacitación.';
+                btnAction.textContent = 'Activar';
+                btnAction.disabled = false;
+                btnAction.onclick = async function () {
+                    btnAction.disabled = true;
+                    try {
+                        const ok = await window.SIGHU_PWA.enableNotifications();
+                        if (ok) cerrarBanner();
+                        else btnAction.disabled = false;
+                    } catch (e) {
+                        btnAction.disabled = false;
+                    }
+                };
+                abrirBanner();
+            }
+
             btnDismiss.onclick = function () {
-                localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 86400000));
+                if (modoActual === 'notif') descartar(DISMISS_NOTIF);
+                else descartar(DISMISS_INSTALL);
                 cerrarBanner();
             };
 
-            if (isIOS) {
-                // Safari nunca dispara beforeinstallprompt — mostramos ya
-                mostrarBanner('ios');
-            } else if (window.SIGHU_PWA.canInstall()) {
-                // El evento ya vino antes de que este script corriera
-                mostrarBanner('prompt');
-            } else {
-                // Esperamos a que Chrome decida que somos instalable
-                window.addEventListener('sighu-pwa-installable', function () {
-                    if (!window.SIGHU_PWA.isStandalone()) mostrarBanner('prompt');
-                }, { once: true });
+            // --- Decisión de qué mostrar al cargar la página ---
+            const yaInstalada = window.SIGHU_PWA.isStandalone();
+            const permNotif = ('Notification' in window) ? Notification.permission : 'default';
+
+            function decidirBannerInicial() {
+                // Prioridad 1: instalada + notifs no activadas → pedir notifs
+                if (yaInstalada && permNotif === 'default' && !fueDescartada(DISMISS_NOTIF)
+                    && 'serviceWorker' in navigator && 'PushManager' in window) {
+                    mostrarNotif();
+                    return;
+                }
+                // Prioridad 2: no instalada → pedir instalar
+                if (!yaInstalada && !fueDescartada(DISMISS_INSTALL)) {
+                    if (isIOS) {
+                        mostrarInstall('ios');
+                    } else if (window.SIGHU_PWA.canInstall()) {
+                        mostrarInstall('prompt');
+                    } else {
+                        window.addEventListener('sighu-pwa-installable', function () {
+                            if (!window.SIGHU_PWA.isStandalone() && !fueDescartada(DISMISS_INSTALL)) {
+                                mostrarInstall('prompt');
+                            }
+                        }, { once: true });
+                    }
+                }
             }
+            decidirBannerInicial();
+
+            // Al instalarse recién en esta sesión, pedir notifs si aún no se activaron.
+            window.addEventListener('appinstalled', function () {
+                if (Notification.permission === 'default' && !fueDescartada(DISMISS_NOTIF)) {
+                    // Damos un pequeño respiro antes de pedir el permiso — evita
+                    // que el diálogo choque con el toast del navegador que
+                    // confirma la instalación.
+                    setTimeout(mostrarNotif, 1200);
+                }
+            });
         })();
     })();
     </script>
