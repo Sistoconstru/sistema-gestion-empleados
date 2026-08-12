@@ -1763,3 +1763,61 @@ class AprendicesSenaExcelView(View):
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         wb.save(response)
         return response
+
+
+@method_decorator(login_required, name='dispatch')
+class AprendizSenaActualizarFinView(View):
+    """POST JSON: {historial_id, fecha_fin} → actualiza HistorialCargo.
+    fecha_fin_contrato_aprendizaje. Solo staff. Fecha vacía la limpia
+    (vuelve al cálculo automático de 6 meses).
+    """
+
+    def post(self, request):
+        import json
+        from django.http import JsonResponse
+        from datetime import datetime
+        from apps.employees.models import HistorialCargo
+
+        if not request.user.is_staff:
+            return JsonResponse({'ok': False, 'error': 'No autorizado.'}, status=403)
+
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            historial_id = int(data['historial_id'])
+            fecha_str = (data.get('fecha_fin') or '').strip()
+        except (ValueError, KeyError, TypeError):
+            return JsonResponse({'ok': False, 'error': 'Payload inválido.'}, status=400)
+
+        try:
+            h = HistorialCargo.objects.select_related('cargo').get(pk=historial_id)
+        except HistorialCargo.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Historial no encontrado.'}, status=404)
+
+        if not getattr(h.cargo, 'es_cargo_aprendiz', False):
+            return JsonResponse({'ok': False, 'error': 'Este cargo no es de aprendiz SENA.'}, status=400)
+
+        if fecha_str:
+            try:
+                fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            except ValueError:
+                return JsonResponse({'ok': False, 'error': 'Fecha inválida (YYYY-MM-DD).'}, status=400)
+            if fecha < h.fecha_inicio:
+                return JsonResponse({'ok': False, 'error': 'La fecha fin no puede ser anterior al inicio del contrato.'}, status=400)
+            h.fecha_fin_contrato_aprendizaje = fecha
+        else:
+            h.fecha_fin_contrato_aprendizaje = None
+        h.save(update_fields=['fecha_fin_contrato_aprendizaje'])
+
+        # Recalculo el item para devolver los datos frescos
+        from apps.reports.aprendices_sena import _fecha_fin_estimada, DIAS_ALERTA_VENCIMIENTO
+        from datetime import date as _date
+        hoy = _date.today()
+        efectiva = h.fecha_fin_contrato_aprendizaje or _fecha_fin_estimada(h.fecha_inicio)
+        dias = (efectiva - hoy).days
+        return JsonResponse({
+            'ok': True,
+            'manual': h.fecha_fin_contrato_aprendizaje is not None,
+            'fecha_efectiva': efectiva.isoformat(),
+            'dias_restantes': dias,
+            'proximo_a_vencer': 0 <= dias <= DIAS_ALERTA_VENCIMIENTO,
+        })

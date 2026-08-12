@@ -206,13 +206,15 @@
                         <th>Cargo</th>
                         <th class="text-center">Etapa</th>
                         <th>Inicio</th>
-                        <th>Fin estimado</th>
+                        <th style="min-width:170px;">Fin de contrato
+                            {% if user.is_staff %}<i class="fas fa-pen text-muted small ms-1" title="Editable"></i>{% endif %}
+                        </th>
                         <th class="text-center">Restantes</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a in estado.aprendices %}
-                    <tr>
+                    <tr data-historial-id="{{ a.historial_id }}">
                         <td><strong>{{ a.empleado.nombre_completo }}</strong></td>
                         <td class="small text-muted">{{ a.empleado.numero_documento }}</td>
                         <td class="small">{{ a.cargo.nombre }}</td>
@@ -224,13 +226,32 @@
                             {% endif %}
                         </td>
                         <td class="small">{{ a.fecha_inicio|date:"d/m/Y" }}</td>
-                        <td class="small">{{ a.fecha_fin_estimada|date:"d/m/Y" }}</td>
-                        <td class="text-center small">
-                            {% if a.dias_restantes < 0 %}
-                                <span class="text-danger">vencido</span>
+                        <td>
+                            {% if user.is_staff %}
+                                <div class="d-flex align-items-center gap-1">
+                                    <input type="date" class="form-control form-control-sm fin-input"
+                                           value="{{ a.fecha_fin_estimada|date:'Y-m-d' }}"
+                                           min="{{ a.fecha_inicio|date:'Y-m-d' }}"
+                                           title="{% if a.fecha_fin_manual %}Fecha manual{% else %}Auto (6 meses)—edítalo para fijar manual{% endif %}"
+                                           style="max-width:150px;">
+                                    <span class="fin-marker small text-muted" style="min-width:16px;">
+                                        {% if a.fecha_fin_manual %}<i class="fas fa-lock text-primary" title="Manual"></i>{% endif %}
+                                    </span>
+                                </div>
                             {% else %}
-                                {{ a.dias_restantes }} d
+                                <span class="small">{{ a.fecha_fin_estimada|date:"d/m/Y" }}
+                                    {% if a.fecha_fin_manual %}<i class="fas fa-lock text-primary small" title="Manual"></i>{% endif %}
+                                </span>
                             {% endif %}
+                        </td>
+                        <td class="text-center small">
+                            <span class="restantes-cell">
+                                {% if a.dias_restantes < 0 %}
+                                    <span class="text-danger">vencido</span>
+                                {% else %}
+                                    {{ a.dias_restantes }} d
+                                {% endif %}
+                            </span>
                         </td>
                     </tr>
                     {% empty %}
@@ -286,5 +307,67 @@
         </div>
     </div>
 </div>
+{% endif %}
+
+{% if user.is_staff %}
+<script>
+(function () {
+    function csrfToken() {
+        const m = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+        return m ? m[1] : '';
+    }
+    const url = '{% url "reports:aprendiz_sena_actualizar_fin" %}';
+
+    document.querySelectorAll('tr[data-historial-id]').forEach(function (row) {
+        const input = row.querySelector('.fin-input');
+        const marker = row.querySelector('.fin-marker');
+        const rest = row.querySelector('.restantes-cell');
+        if (!input) return;
+
+        let debounce = null;
+        async function guardar() {
+            const historial_id = row.dataset.historialId;
+            const fecha_fin = input.value;
+            input.classList.remove('is-invalid', 'is-valid');
+            marker.innerHTML = '<i class="fas fa-spinner fa-spin text-muted"></i>';
+            try {
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken()},
+                    body: JSON.stringify({ historial_id, fecha_fin }),
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    input.classList.add('is-valid');
+                    marker.innerHTML = data.manual
+                        ? '<i class="fas fa-lock text-primary" title="Manual"></i>'
+                        : '<i class="fas fa-check text-success" title="Volvió al automático"></i>';
+                    // Actualizar celda de días restantes
+                    if (rest) {
+                        if (data.dias_restantes < 0) {
+                            rest.innerHTML = '<span class="text-danger">vencido</span>';
+                        } else {
+                            rest.textContent = data.dias_restantes + ' d';
+                        }
+                    }
+                    // Quitar el "is-valid" a los 2s
+                    setTimeout(() => input.classList.remove('is-valid'), 2000);
+                } else {
+                    input.classList.add('is-invalid');
+                    marker.innerHTML = '<i class="fas fa-exclamation-circle text-danger" title="' + (data.error || 'Error') + '"></i>';
+                }
+            } catch (e) {
+                input.classList.add('is-invalid');
+                marker.innerHTML = '<i class="fas fa-exclamation-circle text-danger" title="Sin red"></i>';
+            }
+        }
+
+        input.addEventListener('change', function () {
+            clearTimeout(debounce);
+            debounce = setTimeout(guardar, 300);
+        });
+    });
+})();
+</script>
 {% endif %}
 {% endblock %}
