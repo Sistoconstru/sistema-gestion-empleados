@@ -1821,3 +1821,43 @@ class AprendizSenaActualizarFinView(View):
             'dias_restantes': dias,
             'proximo_a_vencer': 0 <= dias <= DIAS_ALERTA_VENCIMIENTO,
         })
+
+
+@method_decorator(login_required, name='dispatch')
+class AprendicesSenaReemplazosView(View):
+    """POST JSON {conseguidos, notas} → actualiza singleton
+    SeguimientoReemplazosSena. Solo staff. Retorna estado recalculado.
+    """
+
+    def post(self, request):
+        import json
+        from django.http import JsonResponse
+        from apps.organizational.models import SeguimientoReemplazosSena
+        from apps.reports.aprendices_sena import calcular_estado
+
+        if not request.user.is_staff:
+            return JsonResponse({'ok': False, 'error': 'No autorizado.'}, status=403)
+
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            conseguidos = int(data.get('conseguidos', 0))
+            notas = str(data.get('notas', '') or '').strip()[:2000]
+        except (ValueError, TypeError):
+            return JsonResponse({'ok': False, 'error': 'Payload inválido.'}, status=400)
+
+        if conseguidos < 0:
+            return JsonResponse({'ok': False, 'error': 'El valor no puede ser negativo.'}, status=400)
+
+        seg = SeguimientoReemplazosSena.instancia()
+        seg.conseguidos = conseguidos
+        seg.notas = notas
+        seg.actualizado_por = request.user
+        seg.save()
+
+        estado = calcular_estado()
+        return JsonResponse({
+            'ok': True,
+            'conseguidos': estado.reemplazos_conseguidos,
+            'requeridos': len(estado.salidas_proximas),
+            'faltantes': estado.reemplazos_faltantes,
+        })

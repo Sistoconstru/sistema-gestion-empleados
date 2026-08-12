@@ -191,6 +191,104 @@
 </div>
 {% endif %}
 
+{# Planeación de reemplazos: aprendices que salen en <=30 días #}
+{% if estado.salidas_proximas %}
+<div class="card border-danger shadow-sm mb-4">
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <i class="fas fa-user-plus me-2"></i>
+            Reemplazos requeridos —
+            <strong>{{ estado.salidas_proximas|length }}</strong>
+            aprendiz{{ estado.salidas_proximas|length|pluralize:"es salen,e sale" }} en los próximos {{ 30 }} días
+        </div>
+        <div class="small opacity-75">
+            {% if estado.reemplazos_faltantes > 0 %}
+                Faltan por conseguir: <strong>{{ estado.reemplazos_faltantes }}</strong>
+            {% else %}
+                <i class="fas fa-check-circle me-1"></i>Reemplazos cubiertos
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 align-items-end mb-3">
+            <div class="col-md-3">
+                <label class="form-label small text-muted mb-1">Van a salir</label>
+                <div class="fs-3 fw-bold text-danger">{{ estado.salidas_proximas|length }}</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted mb-1">Conseguidos hasta hoy</label>
+                {% if user.is_staff %}
+                <input type="number" min="0" id="reemplazos-conseguidos"
+                       value="{{ estado.reemplazos_conseguidos }}"
+                       class="form-control form-control-lg fw-bold text-primary">
+                {% else %}
+                <div class="fs-3 fw-bold text-primary">{{ estado.reemplazos_conseguidos }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted mb-1">Faltan por conseguir</label>
+                <div class="fs-3 fw-bold {% if estado.reemplazos_faltantes > 0 %}text-danger{% else %}text-success{% endif %}"
+                     id="reemplazos-faltantes">{{ estado.reemplazos_faltantes }}</div>
+            </div>
+            <div class="col-md-3 text-end">
+                {% if user.is_staff %}
+                <button type="button" id="btn-guardar-reemplazos" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Guardar
+                </button>
+                <div id="reemplazos-status" class="small mt-1"></div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if user.is_staff %}
+        <div class="mb-3">
+            <label class="form-label small text-muted mb-1">Notas (opcional — candidatos, estatus, etc.)</label>
+            <textarea id="reemplazos-notas" class="form-control" rows="2"
+                      placeholder="Ej: 3 candidatos con SENA, esperando confirmación">{{ estado.reemplazos_notas }}</textarea>
+        </div>
+        {% elif estado.reemplazos_notas %}
+        <div class="alert alert-light border small mb-3">
+            <strong>Notas:</strong> {{ estado.reemplazos_notas|linebreaksbr }}
+        </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Aprendiz que sale</th>
+                        <th>Cargo</th>
+                        <th>Termina</th>
+                        <th class="text-center">Días</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in estado.salidas_proximas %}
+                    <tr>
+                        <td>
+                            <strong>{{ a.empleado.nombre_completo }}</strong>
+                            <div class="small text-muted">{{ a.empleado.numero_documento }}</div>
+                        </td>
+                        <td class="small">{{ a.cargo.nombre }}
+                            <span class="badge bg-light text-dark ms-1">{{ a.etapa|capfirst }}</span>
+                        </td>
+                        <td class="small">{{ a.fecha_fin_estimada|date:"d/m/Y" }}</td>
+                        <td class="text-center">
+                            {% if a.dias_restantes <= 7 %}
+                                <span class="badge bg-danger">{{ a.dias_restantes }}</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">{{ a.dias_restantes }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {# Lista completa de aprendices activos #}
 <div class="card border-corporativo shadow-sm mb-4">
     <div class="card-header bg-light">
@@ -367,6 +465,40 @@
             debounce = setTimeout(guardar, 300);
         });
     });
+
+    // -- Reemplazos requeridos: guardar contador + notas --
+    const btnR = document.getElementById('btn-guardar-reemplazos');
+    if (btnR) {
+        btnR.addEventListener('click', async function () {
+            const conseguidos = parseInt(document.getElementById('reemplazos-conseguidos').value || '0', 10);
+            const notas = document.getElementById('reemplazos-notas').value || '';
+            const status = document.getElementById('reemplazos-status');
+            const faltantesEl = document.getElementById('reemplazos-faltantes');
+            btnR.disabled = true;
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando…';
+            try {
+                const resp = await fetch('{% url "reports:aprendices_sena_reemplazos" %}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken()},
+                    body: JSON.stringify({ conseguidos, notas }),
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    faltantesEl.textContent = data.faltantes;
+                    faltantesEl.classList.toggle('text-danger', data.faltantes > 0);
+                    faltantesEl.classList.toggle('text-success', data.faltantes === 0);
+                    status.innerHTML = '<span class="text-success"><i class="fas fa-check"></i> Guardado</span>';
+                    setTimeout(() => { status.innerHTML = ''; }, 2500);
+                } else {
+                    status.innerHTML = '<span class="text-danger"><i class="fas fa-times"></i> ' + (data.error || 'Error') + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML = '<span class="text-danger"><i class="fas fa-times"></i> Sin red</span>';
+            } finally {
+                btnR.disabled = false;
+            }
+        });
+    }
 })();
 </script>
 {% endif %}

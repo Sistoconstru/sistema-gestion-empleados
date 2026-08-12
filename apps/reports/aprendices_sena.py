@@ -20,6 +20,9 @@ CONTRATO_APRENDIZAJE_MAX_MESES = 6
 # recurso en caso de BD vacía. La fuente autoritativa es el modelo.
 SMMLV_FALLBACK = Decimal('1423500')
 DIAS_ALERTA_VENCIMIENTO = 60
+# Ventana operativa para planear reemplazos: aprendices con <=30 días para
+# terminar → RRHH debe estar buscando sus reemplazos ya.
+DIAS_VENTANA_REEMPLAZO = 30
 
 
 def _smmlv_vigente() -> Decimal:
@@ -54,6 +57,11 @@ class EstadoCuotaSena:
     cumple: bool                                # aprendices_actuales >= cuota_requerida
     aprendices: List[AprendizItem] = field(default_factory=list)
     proximos_a_vencer: List[AprendizItem] = field(default_factory=list)
+    # Planeación de reemplazos (ventana ≤30 días):
+    salidas_proximas: List[AprendizItem] = field(default_factory=list)
+    reemplazos_conseguidos: int = 0
+    reemplazos_faltantes: int = 0
+    reemplazos_notas: str = ''
 
 
 def _etapa_desde_cargo(cargo) -> str:
@@ -118,6 +126,13 @@ def calcular_estado(fecha: Optional[date] = None) -> EstadoCuotaSena:
     faltantes = max(cuota - actuales, 0)
     sancion = Decimal(faltantes) * _smmlv_vigente()
 
+    # Salidas próximas (≤30 días): candidatos que hay que reemplazar YA.
+    salidas = [a for a in aprendices if 0 <= a.dias_restantes <= DIAS_VENTANA_REEMPLAZO]
+    from apps.organizational.models import SeguimientoReemplazosSena
+    seguimiento = SeguimientoReemplazosSena.instancia()
+    conseguidos = seguimiento.conseguidos
+    faltan_reemplazo = max(len(salidas) - conseguidos, 0)
+
     return EstadoCuotaSena(
         fecha=hoy,
         resolucion=resolucion,
@@ -128,4 +143,8 @@ def calcular_estado(fecha: Optional[date] = None) -> EstadoCuotaSena:
         cumple=(actuales >= cuota),
         aprendices=aprendices,
         proximos_a_vencer=sorted(proximos, key=lambda x: x.dias_restantes),
+        salidas_proximas=sorted(salidas, key=lambda x: x.dias_restantes),
+        reemplazos_conseguidos=conseguidos,
+        reemplazos_faltantes=faltan_reemplazo,
+        reemplazos_notas=seguimiento.notas or '',
     )

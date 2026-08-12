@@ -261,3 +261,41 @@ class SalarioMinimoAnual(models.Model):
         """True si el SMMLV del año actual está registrado en la BD."""
         from datetime import date as _date
         return cls.objects.filter(year=_date.today().year).exists()
+
+
+class SeguimientoReemplazosSena(models.Model):
+    """Estado momentáneo del proceso de conseguir aprendices para reemplazar
+    a los que están próximos a terminar (contratos con ≤30 días restantes).
+
+    Diseño singleton: mantiene UN solo registro global. RRHH actualiza el
+    contador `conseguidos` a medida que va identificando candidatos; el
+    resto (cantidad requerida, faltantes) se calcula dinámicamente
+    comparando contra los aprendices reales próximos a vencer.
+    """
+    conseguidos = models.PositiveIntegerField(
+        default=0,
+        help_text='Cantidad de aprendices candidatos ya identificados/en proceso de contratación.',
+    )
+    notas = models.TextField(
+        blank=True,
+        help_text='Notas internas (nombres candidatos, estatus con SENA, etc.).',
+    )
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+    actualizado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='reemplazos_sena_actualizados',
+    )
+
+    class Meta:
+        db_table = 'seguimiento_reemplazos_sena'
+        verbose_name = 'Seguimiento reemplazos SENA'
+        verbose_name_plural = 'Seguimientos reemplazos SENA'
+
+    def __str__(self):
+        return f'Conseguidos {self.conseguidos} (actualizado {self.fecha_actualizacion:%d/%m/%Y})'
+
+    @classmethod
+    def instancia(cls):
+        """Devuelve el registro único, creándolo si no existe."""
+        obj, _ = cls.objects.get_or_create(pk=1, defaults={'conseguidos': 0})
+        return obj

@@ -698,8 +698,42 @@ def _alertas_aprendices_sena():
             if envi:
                 enviadas_venc += 1
 
+    # -- Alerta 3: reemplazos por conseguir (aprendices salen en <=30 días) --
+    enviadas_reemp = 0
+    if estado.reemplazos_faltantes > 0:
+        titulo = f'Faltan {estado.reemplazos_faltantes} aprendiz(es) por conseguir'
+        cuerpo = (
+            f'{len(estado.salidas_proximas)} aprendices terminan en los próximos 30 días '
+            f'y solo hay {estado.reemplazos_conseguidos} candidato(s) identificado(s). '
+            f'Actualiza el contador cuando consigas más.'
+        )
+        for u in destinatarios:
+            tag = f'sena-reemp-{u.pk}-{hoy.isoformat()}'
+            if Notificacion.objects.filter(
+                usuario=u, datos_adicionales__contains={'push_tag': tag},
+            ).exists():
+                continue
+            envi, _ = send_push(
+                u, titulo, cuerpo,
+                url='/reportes/aprendices-sena/',
+                tag=tag, tag_group='sena-reemp',
+                actions=[{'action': 'ir', 'title': 'Actualizar'}],
+                action_urls={'ir': '/reportes/aprendices-sena/'},
+            )
+            Notificacion.objects.create(
+                usuario=u, tipo_notificacion=tipo_notif,
+                titulo=titulo, mensaje=cuerpo,
+                datos_adicionales={'push_tag': tag, 'fecha': hoy.isoformat(),
+                                   'tipo': 'reemplazos',
+                                   'faltantes': estado.reemplazos_faltantes,
+                                   'requeridos': len(estado.salidas_proximas)},
+            )
+            if envi:
+                enviadas_reemp += 1
+
     logger.info(
-        f'Alertas SENA enviadas: cuota={enviadas_cuota} vencimientos={enviadas_venc}'
+        f'Alertas SENA enviadas: cuota={enviadas_cuota} '
+        f'vencimientos={enviadas_venc} reemplazos={enviadas_reemp}'
     )
 
 

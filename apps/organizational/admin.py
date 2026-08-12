@@ -4,7 +4,7 @@
 
 from django.contrib import admin
 from apps.evaluations.models import EvaluacionCargo
-from .models import Sede, AreaEmpresa, Cargo, CentroCosto, ResolucionSena, SalarioMinimoAnual
+from .models import Sede, AreaEmpresa, Cargo, CentroCosto, ResolucionSena, SalarioMinimoAnual, SeguimientoReemplazosSena
 
 @admin.register(Sede)
 class SedeAdmin(admin.ModelAdmin):
@@ -176,6 +176,16 @@ class SalarioMinimoAnualAdmin(admin.ModelAdmin):
     def valor_formateado(self, obj):
         return f'${obj.valor:,.0f}'.replace(',', '.')
     valor_formateado.short_description = 'Valor'
+
+    def save_model(self, request, obj, form, change):
+        obj.actualizado_por = request.user
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(SeguimientoReemplazosSena)
+class SeguimientoReemplazosSenaAdmin(admin.ModelAdmin):
+    list_display = ('conseguidos', 'fecha_actualizacion', 'actualizado_por')
+    readonly_fields = ('fecha_actualizacion', 'actualizado_por')
 
     def save_model(self, request, obj, form, change):
         obj.actualizado_por = request.user
