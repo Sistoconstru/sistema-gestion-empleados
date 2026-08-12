@@ -135,9 +135,12 @@
                 {% else %}
                     <div class="text-muted small">No hay resolución vigente registrada.</div>
                 {% endif %}
-                <a href="/admin/organizational/resolucionsena/" class="btn btn-outline-secondary btn-sm mt-2 w-100">
-                    <i class="fas fa-cog me-1"></i>Gestionar resoluciones
-                </a>
+                {% if user.is_staff %}
+                <button type="button" class="btn btn-outline-secondary btn-sm mt-2 w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalNuevaResolucion">
+                    <i class="fas fa-plus me-1"></i>Nueva resolución
+                </button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -408,6 +411,68 @@
 {% endif %}
 
 {% if user.is_staff %}
+{# Modal para crear una nueva resolución SENA sin ir al admin #}
+<div class="modal fade" id="modalNuevaResolucion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="form-resolucion-sena" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header bg-corporativo text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-signature me-2"></i>Nueva resolución SENA
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Número de resolución *</label>
+                            <input type="text" name="numero" class="form-control" required
+                                   placeholder="1-0001-2026-0007890" maxlength="60">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de expedición *</label>
+                            <input type="date" name="fecha_expedicion" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vigencia desde *</label>
+                            <input type="date" name="fecha_vigencia_inicio" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vigencia hasta <span class="text-muted small">(opcional)</span></label>
+                            <input type="date" name="fecha_vigencia_fin" class="form-control">
+                            <div class="form-text small">Deja vacío si esta resolución sigue hasta que llegue una nueva.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cuota de aprendices *</label>
+                            <input type="number" name="cuota_aprendices" class="form-control" required min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trabajadores base <span class="text-muted small">(informativo)</span></label>
+                            <input type="number" name="total_trabajadores_base" class="form-control" min="0">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">PDF oficial <span class="text-muted small">(opcional)</span></label>
+                            <input type="file" name="archivo_pdf" class="form-control" accept="application/pdf">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Observaciones</label>
+                            <textarea name="observaciones" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div id="resolucion-error" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-corporativo">
+                        <i class="fas fa-save me-1"></i>Guardar resolución
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 (function () {
     function csrfToken() {
@@ -465,6 +530,42 @@
             debounce = setTimeout(guardar, 300);
         });
     });
+
+    // -- Nueva resolución SENA: submit del modal --
+    const formRes = document.getElementById('form-resolucion-sena');
+    if (formRes) {
+        const errBox = document.getElementById('resolucion-error');
+        formRes.addEventListener('submit', async function (ev) {
+            ev.preventDefault();
+            errBox.classList.add('d-none');
+            const submitBtn = formRes.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Guardando…';
+            try {
+                const fd = new FormData(formRes);
+                const resp = await fetch('{% url "reports:aprendices_sena_crear_resolucion" %}', {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrfToken()},
+                    body: fd,
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    // Recargar para que el card superior y todos los cálculos
+                    // reflejen la nueva resolución vigente.
+                    window.location.reload();
+                } else {
+                    errBox.textContent = data.error || 'No se pudo guardar la resolución.';
+                    errBox.classList.remove('d-none');
+                }
+            } catch (e) {
+                errBox.textContent = 'Error de red. Intenta de nuevo.';
+                errBox.classList.remove('d-none');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Guardar resolución';
+            }
+        });
+    }
 
     // -- Reemplazos requeridos: guardar contador + notas --
     const btnR = document.getElementById('btn-guardar-reemplazos');

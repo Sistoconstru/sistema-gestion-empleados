@@ -1861,3 +1861,86 @@ class AprendicesSenaReemplazosView(View):
             'requeridos': len(estado.salidas_proximas),
             'faltantes': estado.reemplazos_faltantes,
         })
+
+
+@method_decorator(login_required, name='dispatch')
+class AprendicesSenaResolucionView(View):
+    """POST multipart/form-data → crea una ResolucionSena desde el modal
+    del reporte SENA. Solo staff. Devuelve JSON con el resultado; el
+    frontend recarga la página al guardar.
+    """
+
+    def post(self, request):
+        from django.http import JsonResponse
+        from datetime import datetime
+        from decimal import Decimal, InvalidOperation
+        from apps.organizational.models import ResolucionSena
+
+        if not request.user.is_staff:
+            return JsonResponse({'ok': False, 'error': 'No autorizado.'}, status=403)
+
+        def _fecha(name, requerido=True):
+            raw = (request.POST.get(name) or '').strip()
+            if not raw:
+                if requerido:
+                    raise ValueError(f'{name} es obligatorio.')
+                return None
+            try:
+                return datetime.strptime(raw, '%Y-%m-%d').date()
+            except ValueError:
+                raise ValueError(f'{name}: fecha inválida (YYYY-MM-DD).')
+
+        def _entero(name, requerido=True):
+            raw = (request.POST.get(name) or '').strip()
+            if not raw:
+                if requerido:
+                    raise ValueError(f'{name} es obligatorio.')
+                return None
+            try:
+                v = int(raw)
+                if v < 0:
+                    raise ValueError
+                return v
+            except (ValueError, InvalidOperation):
+                raise ValueError(f'{name}: número inválido.')
+
+        try:
+            numero = (request.POST.get('numero') or '').strip()
+            if not numero:
+                raise ValueError('numero es obligatorio.')
+            fecha_expedicion = _fecha('fecha_expedicion')
+            fecha_vigencia_inicio = _fecha('fecha_vigencia_inicio')
+            fecha_vigencia_fin = _fecha('fecha_vigencia_fin', requerido=False)
+            cuota = _entero('cuota_aprendices')
+            trabajadores = _entero('total_trabajadores_base', requerido=False)
+            observaciones = (request.POST.get('observaciones') or '').strip()
+            pdf = request.FILES.get('archivo_pdf')
+        except ValueError as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=400)
+
+        if fecha_vigencia_fin and fecha_vigencia_fin < fecha_vigencia_inicio:
+            return JsonResponse(
+                {'ok': False, 'error': 'La fecha fin no puede ser anterior al inicio de vigencia.'},
+                status=400,
+            )
+
+        res = ResolucionSena.objects.create(
+            numero=numero,
+            fecha_expedicion=fecha_expedicion,
+            fecha_vigencia_inicio=fecha_vigencia_inicio,
+            fecha_vigencia_fin=fecha_vigencia_fin,
+            cuota_aprendices=cuota,
+            total_trabajadores_base=trabajadores,
+            observaciones=observaciones,
+            creado_por=request.user,
+        )
+        if pdf:
+            res.archivo_pdf = pdf
+            res.save(update_fields=['archivo_pdf'])
+
+        return JsonResponse({
+            'ok': True,
+            'id': res.pk,
+            'numero': res.numero,
+            'cuota': res.cuota_aprendices,
+        })
