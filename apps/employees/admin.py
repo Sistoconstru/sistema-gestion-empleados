@@ -52,7 +52,7 @@ class HistorialCargoInline(admin.TabularInline):
     model = HistorialCargo
     fk_name = 'empleado'  # Especificar cuál ForeignKey usar (hay dos: empleado y jefe_directo)
     extra = 1
-    fields = ('cargo', 'jefe_directo', 'fecha_inicio', 'fecha_fin', 'activo', 'motivo_cambio')
+    fields = ('cargo', 'jefe_directo', 'fecha_inicio', 'fecha_fin', 'fecha_fin_contrato_aprendizaje', 'activo', 'motivo_cambio')
     readonly_fields = ('fecha_creacion', 'creado_por')
     ordering = ('-fecha_inicio',)
 
@@ -320,6 +320,10 @@ class HistorialCargoAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Información del Cargo', {
             'fields': ('empleado', 'cargo', 'jefe_directo', 'fecha_inicio', 'fecha_fin', 'activo')
+        }),
+        ('Aprendiz SENA', {
+            'fields': ('fecha_fin_contrato_aprendizaje',),
+            'description': 'Solo aplica si el cargo es aprendiz SENA. Deja vacío para usar el default de 6 meses desde la fecha de inicio.',
         }),
         ('Detalles', {
             'fields': ('salario', 'motivo_cambio', 'observaciones'),

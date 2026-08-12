@@ -545,6 +545,14 @@ class HistorialCargo(BaseModel):
         related_name='subordinados',
         help_text="Jefe directo del empleado (empleado que ocupa el cargo jefe)"
     )
+    # Fin de contrato de aprendizaje: solo aplica cuando el cargo es aprendiz
+    # SENA. Si se deja vacío, el reporte SENA calcula 6 meses desde fecha_inicio
+    # (contrato productivo típico). Se usa manual para aprendices profesionales
+    # con contratos más cortos u otros casos particulares.
+    fecha_fin_contrato_aprendizaje = models.DateField(
+        null=True, blank=True,
+        help_text="Solo para cargos de aprendiz SENA. Deja vacío para usar el default de 6 meses desde fecha_inicio.",
+    )
     # Campos de auditoría heredados de BaseModel: fecha_creacion, fecha_actualizacion, creado_por
     
     class Meta:

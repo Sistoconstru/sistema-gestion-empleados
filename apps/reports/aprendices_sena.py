@@ -10,8 +10,12 @@ from typing import List, Optional
 
 from django.db.models import Q
 
-# Duración máxima del contrato de aprendizaje según Ley 789 art. 30: 2 años.
-CONTRATO_APRENDIZAJE_MAX_MESES = 24
+# Duración típica de la ETAPA PRODUCTIVA del contrato de aprendizaje.
+# El máximo legal es 2 años (Ley 789 art. 30) pero en Construinmuniza la
+# productiva se firma por 6 meses por defecto. Para aprendices profesionales
+# u otros casos particulares, RRHH puede fijar manualmente
+# HistorialCargo.fecha_fin_contrato_aprendizaje y ese valor prevalece.
+CONTRATO_APRENDIZAJE_MAX_MESES = 6
 # Fallback si no hay SalarioMinimoAnual cargado — solo se usa como último
 # recurso en caso de BD vacía. La fuente autoritativa es el modelo.
 SMMLV_FALLBACK = Decimal('1423500')
@@ -88,7 +92,9 @@ def calcular_estado(fecha: Optional[date] = None) -> EstadoCuotaSena:
     aprendices = []
     proximos = []
     for h in hcs:
-        fin = _fecha_fin_estimada(h.fecha_inicio)
+        # Si RRHH cargó una fecha fin manual (aprendiz profesional u otros
+        # casos), esa gana sobre el cálculo automático de 6 meses.
+        fin = h.fecha_fin_contrato_aprendizaje or _fecha_fin_estimada(h.fecha_inicio)
         dias_rest = (fin - hoy).days
         item = AprendizItem(
             empleado=h.empleado,
