@@ -1219,12 +1219,21 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         context['puede_ver_vacaciones_admin'] = self.request.user.is_staff
         # Asistencia: tiene subordinados directos, O es encargado de un jefe
         # ausente hoy (reemplazo puntual), O es encargado de un jefe con
-        # equipo grande (delegación permanente).
+        # equipo grande (delegación permanente). Si el propio empleado tiene
+        # cargo excluido del control (gerente/directores), no se le muestra
+        # el tile — no participa en el módulo de asistencia.
         from datetime import date as _date_hoy
         es_encargado_hoy = bool(_jefes_ausentes_reemplazados(self.request.user, _date_hoy.today()))
         tiene_delegacion = bool(_jefes_con_delegacion_permanente(self.request.user))
+        cargo_activo = empleado.historialcargo_set.filter(activo=True).select_related('cargo').first()
+        excluido_asistencia = (
+            cargo_activo is not None and cargo_activo.cargo is not None
+            and cargo_activo.cargo.excluido_control_asistencia
+        )
         context['puede_ver_asistencia_equipo'] = (
-            context['puede_ver_vacaciones_equipo'] or es_encargado_hoy or tiene_delegacion
+            not excluido_asistencia and (
+                context['puede_ver_vacaciones_equipo'] or es_encargado_hoy or tiene_delegacion
+            )
         )
 
         # Novedades — aprobación del director: pendientes de coordinadores
@@ -4233,6 +4242,9 @@ def _equipo_del_jefe(usuario):
     Para staff/RRHH NO devuelve "todos los activos": eso vive en la vista admin
     de vacaciones. Aquí siempre son los subordinados directos del jefe; si el
     usuario es staff y además jefe, ve solo a su propio equipo.
+
+    Excluye a empleados con cargo marcado `excluido_control_asistencia`
+    (típicamente directores) — no aparecen en el tablero del jefe/gerente.
     """
     try:
         solicitante = Empleado.objects.get(usuario=usuario)
@@ -4242,6 +4254,9 @@ def _equipo_del_jefe(usuario):
         historialcargo__activo=True,
         historialcargo__jefe_directo=solicitante,
         estado__codigo__in=['999', 'p-prue'],
+    ).exclude(
+        historialcargo__activo=True,
+        historialcargo__cargo__excluido_control_asistencia=True,
     ).distinct().order_by('apellidos', 'nombres')
 
 
@@ -4362,13 +4377,19 @@ def _empleado_de_usuario(usuario):
 
 
 def _subalternos_activos_de(empleado):
-    """Queryset de subalternos directos activos del empleado."""
+    """Queryset de subalternos directos activos del empleado, excluyendo
+    a los que tienen cargo marcado como excluido del control de asistencia
+    (típicamente directores)."""
     return (
         Empleado.objects
         .filter(
             historialcargo__activo=True,
             historialcargo__jefe_directo=empleado,
             estado__codigo__in=['999', 'p-prue'],
+        )
+        .exclude(
+            historialcargo__activo=True,
+            historialcargo__cargo__excluido_control_asistencia=True,
         )
         .distinct()
     )

@@ -531,9 +531,14 @@ def _recordar_asistencia_jefes():
     jefes_ids = HistorialCargo.objects.filter(
         activo=True, jefe_directo__isnull=False,
     ).values_list('jefe_directo', flat=True).distinct()
+    # Excluimos gerente/directores (cargo excluido_control_asistencia): no
+    # les corresponde registrar asistencia, así que tampoco recordatorio.
     jefes = Empleado.objects.filter(
         pk__in=list(jefes_ids),
         usuario__isnull=False, usuario__is_active=True,
+    ).exclude(
+        historialcargo__activo=True,
+        historialcargo__cargo__excluido_control_asistencia=True,
     ).select_related('usuario')
 
     enviadas = 0

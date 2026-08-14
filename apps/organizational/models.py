@@ -88,6 +88,17 @@ class Cargo(models.Model):
         ),
     )
 
+    excluido_control_asistencia = models.BooleanField(
+        default=False,
+        verbose_name="¿Excluido del control de asistencia?",
+        help_text=(
+            "Marca este cargo para excluir a sus ocupantes del módulo de asistencia: "
+            "no aparecen como subordinados a los que se les registra asistencia, y si "
+            "el cargo es jefe/gerente, no se le muestra el tablero para registrar la "
+            "de otros (típico en gerente y directores)."
+        ),
+    )
+
     class Meta:
         db_table = 'cargos'
         unique_together = ['nombre', 'area']

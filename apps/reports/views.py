@@ -1192,19 +1192,34 @@ class AsistenciaReportView(TemplateView):
         if not dias_laborales:
             return []
 
-        # 2) Jefes activos: empleados que son jefe_directo de al menos uno
+        # 2) Jefes activos: empleados que son jefe_directo de al menos uno.
+        # Excluimos a los que tienen cargo activo marcado como excluido del
+        # control de asistencia (típicamente gerente y directores) — ellos
+        # no registran asistencia y no se les debe medir cumplimiento.
         jefes_ids = HistorialCargo.objects.filter(
             activo=True, jefe_directo__isnull=False,
         ).values_list('jefe_directo', flat=True).distinct()
-        jefes = Empleado.objects.filter(pk__in=list(jefes_ids)).select_related('sede')
+        jefes = (
+            Empleado.objects
+            .filter(pk__in=list(jefes_ids))
+            .exclude(
+                historialcargo__activo=True,
+                historialcargo__cargo__excluido_control_asistencia=True,
+            )
+            .select_related('sede')
+        )
 
         resultado = []
         for jefe in jefes:
-            # Subordinados activos del jefe
+            # Subordinados activos del jefe (excluyendo también los excluidos
+            # del control de asistencia — un director bajo el gerente no cuenta).
             subs_qs = Empleado.objects.filter(
                 historialcargo__activo=True,
                 historialcargo__jefe_directo=jefe,
                 estado__codigo__in=['999', 'p-prue'],
+            ).exclude(
+                historialcargo__activo=True,
+                historialcargo__cargo__excluido_control_asistencia=True,
             ).distinct()
             if area_id:
                 subs_qs = subs_qs.filter(
