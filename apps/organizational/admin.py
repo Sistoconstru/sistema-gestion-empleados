@@ -47,9 +47,9 @@ class EvaluacionCargoInline(admin.TabularInline):
 
 @admin.register(Cargo)
 class CargoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz', 'excluido_control_asistencia', 'nivel_jerarquico', 'activo')
+    list_display = ('codigo', 'nombre', 'area', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz', 'excluido_control_asistencia', 'excluido_gestion_asistencia', 'nivel_jerarquico', 'activo')
     inlines = [EvaluacionCargoInline]
-    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz', 'excluido_control_asistencia')
+    list_filter = ('activo', 'area', 'nivel_jerarquico', 'rol_automatico', 'crea_usuario_sistema', 'es_cargo_aprendiz', 'excluido_control_asistencia', 'excluido_gestion_asistencia')
     search_fields = ('codigo', 'nombre', 'area__nombre')
 
     fieldsets = (
@@ -68,8 +68,13 @@ class CargoAdmin(admin.ModelAdmin):
             'description': 'Los cargos marcados como aprendiz SENA cuentan para la cuota de la resolución vigente.',
         }),
         ('Asistencia', {
-            'fields': ('excluido_control_asistencia',),
-            'description': 'Marca este cargo para excluir a sus ocupantes del módulo de asistencia diaria (no se les registra ni ellos registran a otros).',
+            'fields': ('excluido_control_asistencia', 'excluido_gestion_asistencia'),
+            'description': (
+                'Dos exclusiones distintas: '
+                '"No se le registra asistencia" = no aparece como subordinado (gerente + directores). '
+                '"No gestiona asistencia de otros" = no ve el tile ni recibe recordatorios ni se le mide (solo gerente típicamente). '
+                'Los directores mantienen la gestión de la asistencia de su equipo.'
+            ),
         }),
         ('Salarios', {
             'fields': ('salario_minimo', 'salario_maximo')

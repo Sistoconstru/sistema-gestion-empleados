@@ -1220,18 +1220,18 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         # Asistencia: tiene subordinados directos, O es encargado de un jefe
         # ausente hoy (reemplazo puntual), O es encargado de un jefe con
         # equipo grande (delegación permanente). Si el propio empleado tiene
-        # cargo excluido del control (gerente/directores), no se le muestra
-        # el tile — no participa en el módulo de asistencia.
+        # cargo "no gestiona asistencia" (gerente), no se le muestra el tile.
+        # Los directores mantienen el tile — gestionan la de su equipo.
         from datetime import date as _date_hoy
         es_encargado_hoy = bool(_jefes_ausentes_reemplazados(self.request.user, _date_hoy.today()))
         tiene_delegacion = bool(_jefes_con_delegacion_permanente(self.request.user))
         cargo_activo = empleado.historialcargo_set.filter(activo=True).select_related('cargo').first()
-        excluido_asistencia = (
+        no_gestiona = (
             cargo_activo is not None and cargo_activo.cargo is not None
-            and cargo_activo.cargo.excluido_control_asistencia
+            and cargo_activo.cargo.excluido_gestion_asistencia
         )
         context['puede_ver_asistencia_equipo'] = (
-            not excluido_asistencia and (
+            not no_gestiona and (
                 context['puede_ver_vacaciones_equipo'] or es_encargado_hoy or tiene_delegacion
             )
         )

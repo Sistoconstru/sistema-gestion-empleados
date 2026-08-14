@@ -90,12 +90,20 @@ class Cargo(models.Model):
 
     excluido_control_asistencia = models.BooleanField(
         default=False,
-        verbose_name="¿Excluido del control de asistencia?",
+        verbose_name="¿No se le registra asistencia?",
         help_text=(
-            "Marca este cargo para excluir a sus ocupantes del módulo de asistencia: "
-            "no aparecen como subordinados a los que se les registra asistencia, y si "
-            "el cargo es jefe/gerente, no se le muestra el tablero para registrar la "
-            "de otros (típico en gerente y directores)."
+            "Los ocupantes de este cargo NO aparecen como subordinados a los que se "
+            "les registra asistencia (típico en gerente y directores)."
+        ),
+    )
+    excluido_gestion_asistencia = models.BooleanField(
+        default=False,
+        verbose_name="¿No gestiona asistencia de otros?",
+        help_text=(
+            "Los ocupantes NO ven el módulo para registrar la asistencia de otros ni "
+            "reciben recordatorios ni se les mide cumplimiento (típico en gerente). "
+            "Los directores usualmente NO tienen este flag: siguen registrando la "
+            "asistencia de su equipo aunque a ellos no se les controle."
         ),
     )
 
