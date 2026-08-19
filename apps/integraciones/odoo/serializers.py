@@ -28,6 +28,7 @@ class OdooEmpleadoSerializer(serializers.Serializer):
     telefono_contacto = serializers.CharField()
     direccion = serializers.CharField()
     fecha_ingreso = serializers.DateField()
+    fecha_retiro = serializers.DateField(allow_null=True, required=False)
     estado = serializers.SerializerMethodField()
     sede = serializers.SerializerMethodField()
     escolaridad = serializers.SerializerMethodField()
