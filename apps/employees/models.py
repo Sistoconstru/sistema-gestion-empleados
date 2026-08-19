@@ -122,6 +122,14 @@ class Empleado(BaseModel):
     apellidos = models.CharField(max_length=100)  # Apellidos
     telefono_contacto = models.CharField(max_length=15)  # Teléfono de contacto
     fecha_ingreso = models.DateField()  # Fecha de ingreso
+    fecha_retiro = models.DateField(
+        null=True, blank=True,
+        help_text=(
+            "Último día laborado por el empleado. Se registra al inactivarlo desde "
+            "el sistema; Odoo la usa para generar la liquidación. Se limpia al "
+            "reactivar si aplica."
+        ),
+    )
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
     centro_costo = models.ForeignKey(
         'organizational.CentroCosto',

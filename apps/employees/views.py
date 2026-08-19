@@ -734,10 +734,12 @@ class EmpleadoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
     permission_required = 'employees.change_empleado'
     
     def get_context_data(self, **kwargs):
+        from datetime import date as _date
         context = super().get_context_data(**kwargs)
         context['titulo'] = f'Editar Empleado - {self.object.nombre_completo}'
+        context['hoy_iso'] = _date.today().isoformat()
         return context
-    
+
     def get_initial(self):
         """Preparar datos iniciales del formulario"""
         initial = super().get_initial()
@@ -863,6 +865,35 @@ def empleado_inactivar(request, pk):
                 'message': 'El empleado ya está inactivo'
             }, status=400)
 
+        # Parsear fecha de retiro del payload. Es obligatoria — Odoo la
+        # necesita para la liquidación. Si viene vacía o mal formada usamos
+        # el default sensato: hoy.
+        import json as _json
+        from datetime import datetime as _dt, date as _date
+        hoy = _date.today()
+        fecha_retiro = hoy
+        try:
+            body = _json.loads(request.body.decode('utf-8')) if request.body else {}
+            raw = (body.get('fecha_retiro') or '').strip()
+            if raw:
+                fecha_retiro = _dt.strptime(raw, '%Y-%m-%d').date()
+        except (ValueError, TypeError):
+            return JsonResponse({
+                'success': False,
+                'message': 'Fecha de retiro inválida (formato YYYY-MM-DD).'
+            }, status=400)
+
+        if fecha_retiro > hoy:
+            return JsonResponse({
+                'success': False,
+                'message': 'La fecha de retiro no puede ser futura.'
+            }, status=400)
+        if empleado.fecha_ingreso and fecha_retiro < empleado.fecha_ingreso:
+            return JsonResponse({
+                'success': False,
+                'message': 'La fecha de retiro no puede ser anterior a la fecha de ingreso.'
+            }, status=400)
+
         with transaction.atomic():
             # Buscar el estado INACTIVO
             estado_inactivo = EstadoEmpleado.objects.filter(
@@ -876,17 +907,20 @@ def empleado_inactivar(request, pk):
                     nombre='Inactivo'
                 )
 
-            # Cambiar estado del empleado
+            # Cambiar estado del empleado + guardar fecha de retiro
             empleado.estado = estado_inactivo
+            empleado.fecha_retiro = fecha_retiro
             empleado.save()
 
-            # Desactivar todos los cargos activos del empleado
+            # Desactivar todos los cargos activos del empleado, cerrándolos
+            # con la fecha de retiro (no la de hoy) para que el historial
+            # muestre el último día real de labor.
             HistorialCargo.objects.filter(
                 empleado=empleado,
                 activo=True
             ).update(
                 activo=False,
-                fecha_fin=timezone.now().date()
+                fecha_fin=fecha_retiro,
             )
 
             # Desactivar usuario (no puede acceder al sistema)
@@ -896,12 +930,17 @@ def empleado_inactivar(request, pk):
 
             logger.info(
                 f"Empleado inactivado: {empleado.nombre_completo} "
-                f"(ID: {empleado.pk}) por {request.user.username}"
+                f"(ID: {empleado.pk}) fecha_retiro={fecha_retiro} "
+                f"por {request.user.username}"
             )
 
         return JsonResponse({
             'success': True,
-            'message': f'Empleado {empleado.nombre_completo} inactivado exitosamente'
+            'message': (
+                f'Empleado {empleado.nombre_completo} inactivado exitosamente. '
+                f'Fecha de retiro: {fecha_retiro:%d/%m/%Y}'
+            ),
+            'fecha_retiro': fecha_retiro.isoformat(),
         })
 
     except Exception as e:

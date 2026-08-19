@@ -423,14 +423,26 @@
                             </div>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="inputFechaRetiro" class="form-label fw-bold">
+                                Fecha de retiro <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" id="inputFechaRetiro" class="form-control"
+                                   value="{{ hoy_iso }}" max="{{ hoy_iso }}" required>
+                            <div class="form-text">
+                                Último día laborado por el empleado. Odoo la usa para generar la liquidación.
+                            </div>
+                        </div>
+
                         <div class="alert alert-warning mb-3">
                             <h6 class="alert-heading">
                                 <i class="fas fa-info-circle me-1"></i>
                                 Esta acción realizará lo siguiente:
                             </h6>
                             <ul class="mb-0 small">
+                                <li>Guardará la <strong>fecha de retiro</strong> en el perfil del empleado</li>
                                 <li>Cambiará el estado del empleado a <strong>INACTIVO</strong></li>
-                                <li>Desactivará todos sus cargos actuales</li>
+                                <li>Desactivará todos sus cargos actuales (fecha fin = fecha de retiro)</li>
                                 <li>Bloqueará el acceso al sistema</li>
                                 <li>Quedará registrado en el historial</li>
                             </ul>
@@ -746,6 +758,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const btn = this;
             const originalText = btn.innerHTML;
 
+            const inputFecha = document.getElementById('inputFechaRetiro');
+            const fechaRetiro = inputFecha ? inputFecha.value : '';
+            if (!fechaRetiro) {
+                alert('Debes ingresar la fecha de retiro.');
+                if (inputFecha) inputFecha.focus();
+                return;
+            }
+
             // Deshabilitar botón y mostrar spinner
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Inactivando...';
@@ -756,7 +776,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
-                }
+                },
+                body: JSON.stringify({ fecha_retiro: fechaRetiro })
             })
             .then(response => response.json())
             .then(data => {
