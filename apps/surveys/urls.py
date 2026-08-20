@@ -24,4 +24,5 @@ urlpatterns = [
 
     # Resultados
     path('admin/<uuid:pk>/resultados/', views.ResultadosEncuestaView.as_view(), name='resultados_encuesta'),
+    path('admin/<uuid:pk>/exportar/', views.ExportarRespuestasEncuestaView.as_view(), name='exportar_respuestas_encuesta'),
 ]

@@ -174,6 +174,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Encuestas: recordatorio 24h antes del vencimiento + auto-cierre.
+        # Corre diario 7:00 AM.
+        scheduler.add_job(
+            _encuestas_mantenimiento_diario,
+            'cron',
+            hour=7, minute=0,
+            id='encuestas_mantenimiento',
+            name='Encuestas: recordatorios y auto-cierre',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -186,6 +199,7 @@ def start_scheduler():
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
+        logger.info('  - 07:00 (diario): Encuestas — recordatorio 24h y auto-cierre')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -802,3 +816,94 @@ def _recordar_actualizar_smmlv():
         if envi:
             enviados += 1
     logger.info(f'Recordatorio SMMLV enero: {enviados} push enviadas.')
+
+
+def _encuestas_mantenimiento_diario():
+    """Corre diario a las 7 AM. Hace dos cosas:
+
+    1) Envía recordatorio push a los destinatarios que NO han completado
+       una encuesta activa cuya fecha_fin está entre hoy y hoy+1 día.
+       Idempotente vía tag en Notificacion.
+
+    2) Marca activa=False a las encuestas cuya fecha_fin < hoy.
+    """
+    from datetime import date as _date, timedelta as _td
+    from apps.surveys.models import Encuesta, ParticipacionEncuesta
+    from apps.surveys.views import _destinatarios_encuesta
+    from apps.notifications.models import Notificacion, TipoNotificacion
+    from apps.notifications.push_utils import send_push
+
+    hoy = _date.today()
+
+    # === 1) Auto-cierre ===
+    cerradas = Encuesta.objects.filter(
+        activa=True, fecha_fin__lt=hoy,
+    ).update(activa=False)
+
+    # === 2) Recordatorio 24h antes ===
+    manana = hoy + _td(days=1)
+    proximas = Encuesta.objects.filter(
+        activa=True, fecha_fin=manana,
+    )
+
+    tipo_notif = None
+    enviadas = 0
+    for enc in proximas:
+        destinatarios = list(_destinatarios_encuesta(enc))
+        if not destinatarios:
+            continue
+        # Excluir quienes ya completaron
+        completados_ids = set(
+            ParticipacionEncuesta.objects.filter(
+                encuesta=enc, completada=True,
+            ).values_list('empleado_id', flat=True)
+        )
+        pendientes = [e for e in destinatarios if e.id not in completados_ids]
+        if not pendientes:
+            continue
+
+        if tipo_notif is None:
+            tipo_notif, _ = TipoNotificacion.objects.get_or_create(
+                codigo='encuesta_recordatorio',
+                defaults={
+                    'nombre': 'Recordatorio de encuesta',
+                    'descripcion': 'Aviso 24h antes del cierre a quienes no han respondido.',
+                    'plantilla_titulo': 'Encuesta cierra mañana',
+                    'plantilla_mensaje': 'Tu encuesta cierra mañana.',
+                    'enviar_email': False,
+                    'enviar_push': True,
+                    'activo': True,
+                },
+            )
+
+        titulo = 'Encuesta cierra mañana'
+        cuerpo = f'"{enc.nombre}" cierra el {enc.fecha_fin:%d/%m/%Y}. Aún no la has respondido.'
+        url = f'/encuestas/responder/{enc.pk}/'
+
+        for emp in pendientes:
+            tag = f'encuesta-rec-{enc.pk}-{emp.usuario.pk}-{hoy.isoformat()}'
+            if Notificacion.objects.filter(
+                usuario=emp.usuario, datos_adicionales__contains={'push_tag': tag},
+            ).exists():
+                continue
+            try:
+                envi, _ = send_push(
+                    emp.usuario, titulo, cuerpo,
+                    url=url, tag=tag, tag_group='encuesta',
+                    actions=[{'action': 'responder', 'title': 'Responder'}],
+                    action_urls={'responder': url},
+                )
+                Notificacion.objects.create(
+                    usuario=emp.usuario, tipo_notificacion=tipo_notif,
+                    titulo=titulo, mensaje=cuerpo,
+                    datos_adicionales={'push_tag': tag, 'encuesta_id': str(enc.pk),
+                                       'fecha': hoy.isoformat()},
+                )
+                if envi:
+                    enviadas += 1
+            except Exception as exc:
+                logger.warning(f'Fallo recordatorio encuesta {enc.codigo}: {exc}')
+
+    logger.info(
+        f'Encuestas mantenimiento: {cerradas} cerradas · {enviadas} recordatorios push.'
+    )

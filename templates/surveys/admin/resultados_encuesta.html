@@ -27,6 +27,11 @@
                             {{ encuesta.fecha_fin|date:"d/m/Y" }}
                         </div>
                     </div>
+                    <div>
+                        <a href="{% url 'surveys:exportar_respuestas_encuesta' encuesta.pk %}" class="btn btn-light">
+                            <i class="fas fa-file-excel me-1 text-success"></i>Descargar Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -711,3 +711,123 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
             'pct_respuesta': pct_respuesta,
             'preguntas_data': preguntas_data,
         })
+
+
+def _destinatarios_encuesta(encuesta):
+    """Retorna queryset de Empleados asignados a la encuesta.
+
+    - Si hay EncuestaCargo: los empleados con cargo activo en esa lista.
+    - Si hay EncuestaArea: los empleados con cargo activo cuyo cargo pertenece
+      al área listada.
+    - Ambos se OR (unión).
+    - Si no hay ninguna asignación → queryset vacío (evita spamear a todos).
+    - Filtra por estado activo/prueba y usuario activo.
+    """
+    from apps.employees.models import Empleado
+    from .models import EncuestaCargo, EncuestaArea
+
+    cargo_ids = list(
+        EncuestaCargo.objects.filter(encuesta=encuesta).values_list('cargo_id', flat=True)
+    )
+    area_ids = list(
+        EncuestaArea.objects.filter(encuesta=encuesta).values_list('area_id', flat=True)
+    )
+    if not (cargo_ids or area_ids):
+        return Empleado.objects.none()
+
+    filtro = Q()
+    if cargo_ids:
+        filtro |= Q(historialcargo__cargo_id__in=cargo_ids)
+    if area_ids:
+        filtro |= Q(historialcargo__cargo__area_id__in=area_ids)
+
+    return (
+        Empleado.objects
+        .filter(filtro, historialcargo__activo=True, estado__codigo__in=['999', 'p-prue'])
+        .filter(usuario__isnull=False, usuario__is_active=True)
+        .distinct()
+    )
+
+
+class ExportarRespuestasEncuestaView(LoginRequiredMixin, View):
+    """Descarga XLSX con las respuestas de una encuesta. Solo staff.
+
+    Formato: una hoja "Respuestas" con una fila por (participación x pregunta).
+    Columnas: participación, empleado (o "Anónimo"), documento, cargo, área,
+    pregunta, tipo, opción elegida, texto libre, fecha respuesta.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            messages.error(request, 'No tienes permisos.')
+            return redirect('surveys:index')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, pk):
+        from django.http import HttpResponse
+        from openpyxl import Workbook
+        from openpyxl.styles import Font, PatternFill, Alignment
+        from openpyxl.utils import get_column_letter
+
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+
+        respuestas = (
+            RespuestaEncuesta.objects
+            .filter(participacion__encuesta=encuesta, participacion__completada=True)
+            .select_related(
+                'participacion__empleado',
+                'pregunta__tipo_pregunta',
+                'opcion_seleccionada',
+            )
+            .order_by('participacion__fecha_completada', 'pregunta__orden')
+        )
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Respuestas'
+
+        headers = ['Participación', 'Empleado', 'Documento', 'Cargo actual', 'Área',
+                   'Pregunta', 'Tipo pregunta', 'Opción elegida', 'Texto libre',
+                   'Fecha respuesta']
+        ws.append(headers)
+        for cell in ws[1]:
+            cell.font = Font(bold=True, color='FFFFFF')
+            cell.fill = PatternFill('solid', fgColor='0E5F3F')
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+        for r in respuestas:
+            emp = r.participacion.empleado
+            if emp:
+                hc = emp.historialcargo_set.filter(activo=True).select_related('cargo__area').first()
+                cargo = hc.cargo.nombre if hc and hc.cargo else ''
+                area = hc.cargo.area.nombre if hc and hc.cargo and hc.cargo.area_id else ''
+                nombre = emp.nombre_completo
+                documento = emp.numero_documento
+            else:
+                nombre = 'Anónimo'
+                documento = cargo = area = ''
+            ws.append([
+                str(r.participacion.id),
+                nombre,
+                documento,
+                cargo,
+                area,
+                r.pregunta.pregunta,
+                r.pregunta.tipo_pregunta.nombre,
+                r.opcion_seleccionada.opcion if r.opcion_seleccionada else '',
+                r.respuesta_texto or '',
+                r.fecha_respuesta.strftime('%d/%m/%Y %H:%M'),
+            ])
+
+        anchos = [12, 32, 14, 28, 24, 45, 22, 30, 40, 16]
+        for i, w in enumerate(anchos, 1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+        ws.freeze_panes = 'A2'
+
+        resp = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        filename = f'encuesta_{encuesta.codigo}_respuestas.xlsx'
+        resp['Content-Disposition'] = f'attachment; filename="{filename}"'
+        wb.save(resp)
+        return resp
