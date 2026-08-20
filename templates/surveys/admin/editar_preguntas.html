@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const codigo = selectedOption.getAttribute('data-codigo');
 
         // Tipos que requieren opciones (a/b/c/d… escoge una)
-        const tiposConOpciones = ['multiple_choice', 'PREGMULT', 'checkbox', 'select', 'rating'];
+        const tiposConOpciones = ['multiple_choice', 'PREGMULT', 'CHECKMULT', 'checkbox', 'select', 'rating'];
 
         if (tiposConOpciones.includes(codigo)) {
             seccionOpciones.style.display = 'block';

@@ -99,6 +99,7 @@
         </div>
         <div class="small text-muted">
             {{ item.total_respuestas }} respuesta{{ item.total_respuestas|pluralize }}
+            {% if item.es_multiple %}<span class="badge bg-warning text-dark ms-1">Múltiple</span>{% endif %}
             · <span class="badge bg-light text-dark border">{{ item.pregunta.tipo_pregunta.nombre }}</span>
         </div>
     </div>

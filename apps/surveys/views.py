@@ -191,56 +191,76 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
         # OpcionEncuesta.pk es UUID — validamos que el valor recibido
         # corresponda efectivamente a una opción de la pregunta antes de
         # guardarlo en opcion_seleccionada_id. Si no matchea, cae a texto.
-        tipos_con_opciones = [
+        tipos_con_opciones_unica = {
             'multiple_choice', 'select', 'rating',
-            'PREGMULT', 'ESCALA_5', 'SI_NO', 'ESCALA_3', 'checkbox',
-        ]
+            'PREGMULT', 'ESCALA_5', 'SI_NO', 'ESCALA_3',
+        }
+        tipos_con_opciones_multiple = {'checkbox', 'CHECKMULT'}
 
-        def _guardar(pregunta, valor):
-            if pregunta.tipo_pregunta.codigo in tipos_con_opciones:
+        def _guardar_unica(pregunta, valor):
+            if pregunta.tipo_pregunta.codigo in tipos_con_opciones_unica:
                 opcion = pregunta.opcionencuesta_set.filter(pk=valor).first()
                 if opcion:
-                    RespuestaEncuesta.objects.update_or_create(
+                    # Reemplazar cualquier respuesta previa a esta pregunta
+                    RespuestaEncuesta.objects.filter(
                         participacion=participacion, pregunta=pregunta,
-                        defaults={'opcion_seleccionada': opcion, 'respuesta_texto': ''},
+                    ).delete()
+                    RespuestaEncuesta.objects.create(
+                        participacion=participacion, pregunta=pregunta,
+                        opcion_seleccionada=opcion, respuesta_texto='',
                     )
                     return True
-                # No matchea ninguna opción → guardamos el texto crudo por si el
-                # frontend mandó un valor libre (ej: "Otro").
-                RespuestaEncuesta.objects.update_or_create(
+                # No matchea ninguna opción → guardamos texto libre ("Otro")
+                RespuestaEncuesta.objects.filter(
                     participacion=participacion, pregunta=pregunta,
-                    defaults={'opcion_seleccionada': None, 'respuesta_texto': str(valor)},
+                ).delete()
+                RespuestaEncuesta.objects.create(
+                    participacion=participacion, pregunta=pregunta,
+                    opcion_seleccionada=None, respuesta_texto=str(valor),
                 )
                 return True
             # Texto libre / texto corto
             RespuestaEncuesta.objects.update_or_create(
                 participacion=participacion, pregunta=pregunta,
+                opcion_seleccionada=None,
                 defaults={'respuesta_texto': str(valor)},
             )
             return True
 
+        def _guardar_multiple(pregunta, valores):
+            """Checkbox: N filas, una por opción marcada. Reemplaza previas."""
+            RespuestaEncuesta.objects.filter(
+                participacion=participacion, pregunta=pregunta,
+            ).delete()
+            opciones = pregunta.opcionencuesta_set.filter(pk__in=valores)
+            for opcion in opciones:
+                RespuestaEncuesta.objects.create(
+                    participacion=participacion, pregunta=pregunta,
+                    opcion_seleccionada=opcion, respuesta_texto='',
+                )
+            return opciones.count() > 0
+
         for pregunta in preguntas:
             campo_nombre = f'pregunta_{pregunta.id}'
 
-            if pregunta.tipo_pregunta.codigo == 'checkbox':
-                # Múltiple selección: hoy el modelo tiene unique_together
-                # (participacion, pregunta) → solo persiste la ÚLTIMA opción.
-                # Se registra la última para no romper; para soportar checkbox
-                # real hay que ajustar el modelo (fuera de este fix).
+            if pregunta.tipo_pregunta.codigo in tipos_con_opciones_multiple:
                 valores = request.POST.getlist(f'{campo_nombre}[]')
-                if valores:
-                    _guardar(pregunta, valores[-1])
+                if valores and _guardar_multiple(pregunta, valores):
                     respuestas_guardadas += 1
             else:
                 valor = request.POST.get(campo_nombre)
                 if valor:
-                    _guardar(pregunta, valor)
+                    _guardar_unica(pregunta, valor)
                     respuestas_guardadas += 1
 
-        # Calcular porcentaje de completado
+        # Calcular porcentaje de completado (cuenta preguntas distintas con
+        # al menos una respuesta — importante para checkbox que persiste N filas)
         total_preguntas = preguntas.count()
-        total_respuestas = RespuestaEncuesta.objects.filter(participacion=participacion).count()
-        porcentaje = round((total_respuestas / total_preguntas * 100)) if total_preguntas > 0 else 0
+        preguntas_respondidas = (
+            RespuestaEncuesta.objects.filter(participacion=participacion)
+            .values('pregunta_id').distinct().count()
+        )
+        porcentaje = round((preguntas_respondidas / total_preguntas * 100)) if total_preguntas > 0 else 0
 
         # Actualizar participación
         participacion.porcentaje_completado = porcentaje
@@ -637,18 +657,24 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
         preguntas_data = []
         tipos_con_opciones = {
             'multiple_choice', 'PREGMULT', 'select', 'rating',
-            'ESCALA_5', 'ESCALA_3', 'SI_NO', 'checkbox',
+            'ESCALA_5', 'ESCALA_3', 'SI_NO', 'checkbox', 'CHECKMULT',
         }
+        tipos_multiples = {'checkbox', 'CHECKMULT'}
         for p in preguntas:
             respuestas_p = RespuestaEncuesta.objects.filter(
                 pregunta=p, participacion_id__in=part_ids_completas,
             )
-            total_resp = respuestas_p.count()
+            # Personas que respondieron (denominador para %)
+            personas_resp = respuestas_p.values('participacion_id').distinct().count()
+            es_multiple = p.tipo_pregunta.codigo in tipos_multiples
+            # Total mostrado: en múltiple es personas; en única es filas (=personas)
+            total_resp = personas_resp
 
             item = {
                 'pregunta': p,
                 'total_respuestas': total_resp,
                 'tiene_opciones': p.tipo_pregunta.codigo in tipos_con_opciones,
+                'es_multiple': es_multiple,
                 'opciones': [],
                 'respuestas_texto': [],
                 'otras_texto_count': 0,
@@ -663,7 +689,9 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
                 )
                 for o in opciones:
                     n = conteos.get(o.id, 0)
-                    pct = round(100 * n / total_resp, 1) if total_resp else 0
+                    # Siempre % sobre personas que respondieron la pregunta.
+                    # En múltiple, la suma de % puede superar 100 (esperado).
+                    pct = round(100 * n / personas_resp, 1) if personas_resp else 0
                     item['opciones'].append({'opcion': o, 'n': n, 'pct': pct})
                 # Texto libre ("Otro" o mismatch): respuestas sin opción pero con texto
                 otras = respuestas_p.filter(

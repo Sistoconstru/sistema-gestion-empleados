@@ -135,7 +135,7 @@ class RespuestaEncuesta(models.Model):
     
     class Meta:
         db_table = 'respuestas_encuesta'
-        unique_together = ['participacion', 'pregunta']
+        unique_together = ['participacion', 'pregunta', 'opcion_seleccionada']
         verbose_name = 'Respuesta de Encuesta'
         verbose_name_plural = 'Respuestas de Encuesta'
 
