@@ -176,6 +176,11 @@
                                    title="Asignar Encuesta">
                                     <i class="fas fa-users me-1"></i>Asignar
                                 </a>
+                                <a href="{% url 'surveys:resultados_encuesta' encuesta.pk %}"
+                                   class="btn btn-sm btn-outline-warning"
+                                   title="Ver Resultados">
+                                    <i class="fas fa-chart-pie me-1"></i>Resultados
+                                </a>
                                 <a href="{% url 'surveys:responder_encuesta' encuesta.pk %}"
                                    class="btn btn-sm btn-outline-info"
                                    title="Vista Previa">

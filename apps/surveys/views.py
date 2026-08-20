@@ -594,3 +594,120 @@ class AsignarEncuestaView(LoginRequiredMixin, View):
         except Exception as e:
             messages.error(request, f'Error al asignar encuesta: {str(e)}')
             return redirect('surveys:asignar_encuesta', pk=encuesta.pk)
+
+class ResultadosEncuestaView(LoginRequiredMixin, View):
+    """Dashboard de resultados de una encuesta específica. Solo staff.
+
+    Muestra por pregunta:
+    - Con opciones: distribución (conteos + %) para cada OpcionEncuesta,
+      más una fila "Otro (texto libre)" cuando hay respuestas sueltas.
+    - Texto libre: lista de respuestas paginadas por respuesta_texto.
+    """
+    template_name = 'surveys/admin/resultados_encuesta.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            messages.error(request, 'No tienes permisos para ver resultados.')
+            return redirect('surveys:index')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+
+        # === KPIs ===
+        participaciones = ParticipacionEncuesta.objects.filter(encuesta=encuesta)
+        total_part = participaciones.count()
+        completadas = participaciones.filter(completada=True).count()
+        en_progreso = total_part - completadas
+        tiempo_promedio = participaciones.filter(
+            completada=True, tiempo_empleado_minutos__isnull=False,
+        ).aggregate(m=Avg('tiempo_empleado_minutos'))['m']
+
+        # === Preguntas y distribuciones ===
+        preguntas = list(
+            PreguntaEncuesta.objects.filter(encuesta=encuesta, activa=True)
+            .select_related('tipo_pregunta').order_by('orden')
+        )
+
+        # IDs de participaciones completadas — solo estas cuentan para agregación
+        part_ids_completas = list(
+            participaciones.filter(completada=True).values_list('id', flat=True)
+        )
+
+        preguntas_data = []
+        tipos_con_opciones = {
+            'multiple_choice', 'PREGMULT', 'select', 'rating',
+            'ESCALA_5', 'ESCALA_3', 'SI_NO', 'checkbox',
+        }
+        for p in preguntas:
+            respuestas_p = RespuestaEncuesta.objects.filter(
+                pregunta=p, participacion_id__in=part_ids_completas,
+            )
+            total_resp = respuestas_p.count()
+
+            item = {
+                'pregunta': p,
+                'total_respuestas': total_resp,
+                'tiene_opciones': p.tipo_pregunta.codigo in tipos_con_opciones,
+                'opciones': [],
+                'respuestas_texto': [],
+                'otras_texto_count': 0,
+            }
+
+            if item['tiene_opciones']:
+                opciones = list(p.opcionencuesta_set.filter(activa=True).order_by('orden'))
+                conteos = dict(
+                    respuestas_p.exclude(opcion_seleccionada__isnull=True)
+                    .values_list('opcion_seleccionada_id')
+                    .annotate(n=Count('id')).values_list('opcion_seleccionada_id', 'n')
+                )
+                for o in opciones:
+                    n = conteos.get(o.id, 0)
+                    pct = round(100 * n / total_resp, 1) if total_resp else 0
+                    item['opciones'].append({'opcion': o, 'n': n, 'pct': pct})
+                # Texto libre ("Otro" o mismatch): respuestas sin opción pero con texto
+                otras = respuestas_p.filter(
+                    opcion_seleccionada__isnull=True,
+                ).exclude(respuesta_texto='')
+                item['otras_texto_count'] = otras.count()
+                item['otras_texto'] = list(otras.values_list('respuesta_texto', flat=True)[:20])
+            else:
+                # Texto libre — muestro las últimas 50 respuestas
+                item['respuestas_texto'] = list(
+                    respuestas_p.exclude(respuesta_texto='')
+                    .order_by('-fecha_respuesta')
+                    .values_list('respuesta_texto', flat=True)[:50]
+                )
+
+            preguntas_data.append(item)
+
+        # Cobertura: cuántos empleados fueron elegibles (asignados por cargo/área)
+        # y cuántos respondieron. Si no hay asignación, cobertura queda como None.
+        from apps.employees.models import Empleado
+        from .models import EncuestaCargo, EncuestaArea
+        cargos_asig = EncuestaCargo.objects.filter(encuesta=encuesta).values_list('cargo_id', flat=True)
+        areas_asig = EncuestaArea.objects.filter(encuesta=encuesta).values_list('area_id', flat=True)
+        cobertura_total = None
+        if cargos_asig or areas_asig:
+            filt = Q()
+            if cargos_asig:
+                filt |= Q(historialcargo__activo=True, historialcargo__cargo_id__in=list(cargos_asig))
+            if areas_asig:
+                filt |= Q(historialcargo__activo=True, historialcargo__cargo__area_id__in=list(areas_asig))
+            cobertura_total = Empleado.objects.filter(filt, estado__codigo='999').distinct().count()
+
+        pct_respuesta = (
+            round(100 * completadas / cobertura_total, 1)
+            if cobertura_total else None
+        )
+
+        return render(request, self.template_name, {
+            'encuesta': encuesta,
+            'total_participaciones': total_part,
+            'completadas': completadas,
+            'en_progreso': en_progreso,
+            'tiempo_promedio': round(tiempo_promedio, 1) if tiempo_promedio else None,
+            'cobertura_total': cobertura_total,
+            'pct_respuesta': pct_respuesta,
+            'preguntas_data': preguntas_data,
+        })

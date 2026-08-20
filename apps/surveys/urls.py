@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/<uuid:pk>/preguntas/', views.EditarPreguntasView.as_view(), name='editar_preguntas'),
     path('admin/<uuid:pk>/asignar/', views.AsignarEncuestaView.as_view(), name='asignar_encuesta'),
 
-    # Resultados (para implementar después)
-    # path('resultados/<uuid:pk>/', views.ResultadosEncuestaView.as_view(), name='resultados_encuesta'),
+    # Resultados
+    path('admin/<uuid:pk>/resultados/', views.ResultadosEncuestaView.as_view(), name='resultados_encuesta'),
 ]

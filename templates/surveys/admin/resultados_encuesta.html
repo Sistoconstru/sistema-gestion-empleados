@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Resultados — {{ encuesta.nombre }}{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'surveys:index' %}">Encuestas</a></li>
+<li class="breadcrumb-item"><a href="{% url 'surveys:encuesta_admin_list' %}">Administrar</a></li>
+<li class="breadcrumb-item active">Resultados</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-chart-pie fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">{{ encuesta.nombre }}</h2>
+                        <div class="opacity-75 small">
+                            {{ encuesta.tipo_encuesta.nombre }} · Vigencia
+                            {{ encuesta.fecha_inicio|date:"d/m/Y" }} →
+                            {{ encuesta.fecha_fin|date:"d/m/Y" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# KPIs #}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-primary h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small">Completadas</div>
+                <div class="fs-2 fw-bold text-primary">{{ completadas }}</div>
+                {% if cobertura_total %}
+                <div class="small text-muted">de {{ cobertura_total }} asignados</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-warning h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small">En progreso</div>
+                <div class="fs-2 fw-bold text-warning">{{ en_progreso }}</div>
+                <div class="small text-muted">respuestas parciales</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small">% Respuesta</div>
+                <div class="fs-2 fw-bold text-success">
+                    {% if pct_respuesta is not None %}{{ pct_respuesta }}%{% else %}—{% endif %}
+                </div>
+                <div class="small text-muted">
+                    {% if cobertura_total %}sobre asignados{% else %}sin asignación por cargo/área{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-info h-100">
+            <div class="card-body text-center">
+                <div class="text-muted small">Tiempo promedio</div>
+                <div class="fs-2 fw-bold text-info">
+                    {% if tiempo_promedio %}{{ tiempo_promedio }} min{% else %}—{% endif %}
+                </div>
+                <div class="small text-muted">para completar</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Preguntas #}
+{% for item in preguntas_data %}
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <div>
+            <span class="badge bg-secondary me-2">Pregunta {{ item.pregunta.orden }}</span>
+            <strong>{{ item.pregunta.pregunta }}</strong>
+            {% if item.pregunta.categoria %}
+                <span class="badge bg-light text-dark border ms-1">{{ item.pregunta.categoria }}</span>
+            {% endif %}
+        </div>
+        <div class="small text-muted">
+            {{ item.total_respuestas }} respuesta{{ item.total_respuestas|pluralize }}
+            · <span class="badge bg-light text-dark border">{{ item.pregunta.tipo_pregunta.nombre }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if item.tiene_opciones %}
+            {% if item.opciones %}
+                {% for row in item.opciones %}
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ row.opcion.opcion }}</span>
+                        <span class="text-muted small">{{ row.n }} · {{ row.pct }}%</span>
+                    </div>
+                    <div class="progress" style="height: 14px;">
+                        <div class="progress-bar {% if row.pct >= 50 %}bg-success{% elif row.pct >= 20 %}bg-info{% else %}bg-secondary{% endif %}"
+                             role="progressbar" style="width: {{ row.pct }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if item.otras_texto_count %}
+                <div class="mt-3 pt-3 border-top">
+                    <div class="small text-muted mb-1">Otras respuestas ({{ item.otras_texto_count }}):</div>
+                    <ul class="small mb-0">
+                        {% for t in item.otras_texto %}
+                            <li>{{ t }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="text-muted small">Esta pregunta aún no tiene opciones configuradas.</div>
+            {% endif %}
+        {% else %}
+            {% if item.respuestas_texto %}
+                <div class="small text-muted mb-2">Últimas {{ item.respuestas_texto|length }} respuesta{{ item.respuestas_texto|length|pluralize }}:</div>
+                <ul class="mb-0">
+                    {% for t in item.respuestas_texto %}
+                        <li>{{ t }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="text-muted small">Sin respuestas todavía.</div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">Esta encuesta aún no tiene preguntas.</div>
+{% endfor %}
+
+<div class="mt-3 d-flex justify-content-between">
+    <a href="{% url 'surveys:encuesta_admin_list' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Volver
+    </a>
+    <a href="{% url 'surveys:editar_preguntas' encuesta.pk %}" class="btn btn-outline-corporativo">
+        <i class="fas fa-edit me-1"></i>Editar encuesta
+    </a>
+</div>
+{% endblock %}
