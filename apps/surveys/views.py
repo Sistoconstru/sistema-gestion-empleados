@@ -188,53 +188,53 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
         preguntas = PreguntaEncuesta.objects.filter(encuesta=encuesta, activa=True)
         respuestas_guardadas = 0
 
+        # OpcionEncuesta.pk es UUID — validamos que el valor recibido
+        # corresponda efectivamente a una opción de la pregunta antes de
+        # guardarlo en opcion_seleccionada_id. Si no matchea, cae a texto.
+        tipos_con_opciones = [
+            'multiple_choice', 'select', 'rating',
+            'PREGMULT', 'ESCALA_5', 'SI_NO', 'ESCALA_3', 'checkbox',
+        ]
+
+        def _guardar(pregunta, valor):
+            if pregunta.tipo_pregunta.codigo in tipos_con_opciones:
+                opcion = pregunta.opcionencuesta_set.filter(pk=valor).first()
+                if opcion:
+                    RespuestaEncuesta.objects.update_or_create(
+                        participacion=participacion, pregunta=pregunta,
+                        defaults={'opcion_seleccionada': opcion, 'respuesta_texto': ''},
+                    )
+                    return True
+                # No matchea ninguna opción → guardamos el texto crudo por si el
+                # frontend mandó un valor libre (ej: "Otro").
+                RespuestaEncuesta.objects.update_or_create(
+                    participacion=participacion, pregunta=pregunta,
+                    defaults={'opcion_seleccionada': None, 'respuesta_texto': str(valor)},
+                )
+                return True
+            # Texto libre / texto corto
+            RespuestaEncuesta.objects.update_or_create(
+                participacion=participacion, pregunta=pregunta,
+                defaults={'respuesta_texto': str(valor)},
+            )
+            return True
+
         for pregunta in preguntas:
             campo_nombre = f'pregunta_{pregunta.id}'
 
-            # Obtener valor del campo
             if pregunta.tipo_pregunta.codigo == 'checkbox':
-                # Múltiples selecciones
+                # Múltiple selección: hoy el modelo tiene unique_together
+                # (participacion, pregunta) → solo persiste la ÚLTIMA opción.
+                # Se registra la última para no romper; para soportar checkbox
+                # real hay que ajustar el modelo (fuera de este fix).
                 valores = request.POST.getlist(f'{campo_nombre}[]')
-                for valor in valores:
-                    if valor:
-                        RespuestaEncuesta.objects.update_or_create(
-                            participacion=participacion,
-                            pregunta=pregunta,
-                            defaults={
-                                'opcion_seleccionada_id': valor if valor.isdigit() else None,
-                                'respuesta_texto': valor if not valor.isdigit() else ''
-                            }
-                        )
-                        respuestas_guardadas += 1
+                if valores:
+                    _guardar(pregunta, valores[-1])
+                    respuestas_guardadas += 1
             else:
-                # Respuesta única
                 valor = request.POST.get(campo_nombre)
-
                 if valor:
-                    # Determinar si es opción o texto
-                    tipos_con_opciones = [
-                        'multiple_choice', 'select', 'rating',
-                        'PREGMULT', 'ESCALA_5', 'SI_NO'
-                    ]
-
-                    if pregunta.tipo_pregunta.codigo in tipos_con_opciones:
-                        RespuestaEncuesta.objects.update_or_create(
-                            participacion=participacion,
-                            pregunta=pregunta,
-                            defaults={
-                                'opcion_seleccionada_id': valor if valor.isdigit() else None,
-                                'respuesta_texto': valor if not valor.isdigit() else ''
-                            }
-                        )
-                    else:
-                        # Texto libre o texto corto (text, short_text, TEXTO_LIBRE)
-                        RespuestaEncuesta.objects.update_or_create(
-                            participacion=participacion,
-                            pregunta=pregunta,
-                            defaults={
-                                'respuesta_texto': valor
-                            }
-                        )
+                    _guardar(pregunta, valor)
                     respuestas_guardadas += 1
 
         # Calcular porcentaje de completado
