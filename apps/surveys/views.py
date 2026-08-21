@@ -16,86 +16,88 @@ from .models import (
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    """Dashboard principal del módulo de encuestas"""
+    """Dashboard principal del módulo de encuestas.
+
+    Para staff/superuser: métricas GLOBALES de toda la organización.
+    Para empleado normal: métricas PERSONALES.
+    """
     template_name = 'surveys/index.html'
-    
+
     def get_context_data(self, **kwargs):
+        from datetime import date
         context = super().get_context_data(**kwargs)
-        
-        # Métricas generales
+        user = self.request.user
+        es_admin = user.is_staff or user.is_superuser
+        hoy = date.today()
+
+        context['es_admin'] = es_admin
         context['total_encuestas'] = Encuesta.objects.filter(activa=True).count()
-        context['encuestas_pendientes'] = self.get_encuestas_pendientes_count()
-        context['encuestas_completadas'] = self.get_encuestas_completadas_count()
         context['tipos_encuesta'] = TipoEncuesta.objects.filter(activo=True).count()
-        
-        # Encuestas disponibles para el usuario
-        context['encuestas_disponibles'] = self.get_encuestas_disponibles()
-        
-        # Encuestas recientes
-        context['encuestas_recientes'] = Encuesta.objects.filter(
-            activa=True,
-            fecha_inicio__lte=timezone.now().date(),
-            fecha_fin__gte=timezone.now().date()
-        ).order_by('-fecha_creacion')[:5]
-        
-        # Estadísticas de participación
-        context['participacion_stats'] = self.get_participacion_stats()
-        
-        return context
-    
-    def get_encuestas_pendientes_count(self):
-        """Conteo de encuestas pendientes para el usuario actual"""
-        # Encuestas activas donde el usuario no ha participado
-        encuestas_activas = Encuesta.objects.filter(
-            activa=True,
-            fecha_inicio__lte=timezone.now().date(),
-            fecha_fin__gte=timezone.now().date()
+
+        encuestas_vigentes = Encuesta.objects.filter(
+            activa=True, fecha_inicio__lte=hoy, fecha_fin__gte=hoy,
         )
-        
-        participaciones_completadas = ParticipacionEncuesta.objects.filter(
-            empleado__usuario=self.request.user,
-            completada=True
-        ).values_list('encuesta_id', flat=True)
-        
-        return encuestas_activas.exclude(id__in=participaciones_completadas).count()
-    
-    def get_encuestas_completadas_count(self):
-        """Conteo de encuestas completadas por el usuario actual"""
-        return ParticipacionEncuesta.objects.filter(
-            empleado__usuario=self.request.user,
-            completada=True
-        ).count()
-    
-    def get_encuestas_disponibles(self):
-        """Encuestas disponibles para el usuario actual"""
-        encuestas_activas = Encuesta.objects.filter(
-            activa=True,
-            fecha_inicio__lte=timezone.now().date(),
-            fecha_fin__gte=timezone.now().date()
-        )
-        
-        participaciones_completadas = ParticipacionEncuesta.objects.filter(
-            empleado__usuario=self.request.user,
-            completada=True
-        ).values_list('encuesta_id', flat=True)
-        
-        return encuestas_activas.exclude(id__in=participaciones_completadas)[:6]
-    
-    def get_participacion_stats(self):
-        """Estadísticas de participación general"""
-        total_participaciones = ParticipacionEncuesta.objects.count()
-        participaciones_completadas = ParticipacionEncuesta.objects.filter(completada=True).count()
-        
-        if total_participaciones > 0:
-            porcentaje_completado = round((participaciones_completadas / total_participaciones) * 100, 1)
+        context['encuestas_recientes'] = encuestas_vigentes.order_by('-fecha_creacion')[:5]
+
+        if es_admin:
+            # Métricas GLOBALES de la organización
+            participaciones = ParticipacionEncuesta.objects.filter(
+                encuesta__in=encuestas_vigentes,
+            )
+            completadas_globales = participaciones.filter(completada=True).count()
+            pendientes_globales = participaciones.filter(completada=False).count()
+            total_part_vigentes = completadas_globales + pendientes_globales
+            pct = round(100 * completadas_globales / total_part_vigentes, 1) if total_part_vigentes else 0
+
+            context['encuestas_pendientes'] = pendientes_globales
+            context['encuestas_completadas'] = completadas_globales
+            context['participacion_stats'] = {
+                'total_participaciones': total_part_vigentes,
+                'participaciones_completadas': completadas_globales,
+                'porcentaje_completado': pct,
+            }
+            # Vista global no muestra "Encuestas disponibles" por usuario
+            context['encuestas_disponibles'] = []
+            # Métricas propias (para el bloque "Mi actividad")
+            context['mis_pendientes'] = self._mis_pendientes(hoy)
+            context['mis_completadas'] = ParticipacionEncuesta.objects.filter(
+                empleado__usuario=user, completada=True,
+            ).count()
         else:
-            porcentaje_completado = 0
-            
-        return {
-            'total_participaciones': total_participaciones,
-            'participaciones_completadas': participaciones_completadas,
-            'porcentaje_completado': porcentaje_completado
-        }
+            # Métricas PERSONALES del empleado
+            context['encuestas_pendientes'] = self._mis_pendientes(hoy)
+            context['encuestas_completadas'] = ParticipacionEncuesta.objects.filter(
+                empleado__usuario=user, completada=True,
+            ).count()
+            context['encuestas_disponibles'] = self._encuestas_disponibles(hoy)
+            # Participación global sigue mostrándose como referencia informativa
+            total_participaciones = ParticipacionEncuesta.objects.count()
+            comp = ParticipacionEncuesta.objects.filter(completada=True).count()
+            pct = round(100 * comp / total_participaciones, 1) if total_participaciones else 0
+            context['participacion_stats'] = {
+                'total_participaciones': total_participaciones,
+                'participaciones_completadas': comp,
+                'porcentaje_completado': pct,
+            }
+        return context
+
+    def _mis_pendientes(self, hoy):
+        vigentes = Encuesta.objects.filter(
+            activa=True, fecha_inicio__lte=hoy, fecha_fin__gte=hoy,
+        )
+        completadas_ids = ParticipacionEncuesta.objects.filter(
+            empleado__usuario=self.request.user, completada=True,
+        ).values_list('encuesta_id', flat=True)
+        return vigentes.exclude(id__in=completadas_ids).count()
+
+    def _encuestas_disponibles(self, hoy):
+        vigentes = Encuesta.objects.filter(
+            activa=True, fecha_inicio__lte=hoy, fecha_fin__gte=hoy,
+        )
+        completadas_ids = ParticipacionEncuesta.objects.filter(
+            empleado__usuario=self.request.user, completada=True,
+        ).values_list('encuesta_id', flat=True)
+        return vigentes.exclude(id__in=completadas_ids)[:6]
 
 
 class EncuestaListView(LoginRequiredMixin, ListView):
