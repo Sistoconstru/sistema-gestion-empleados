@@ -94,13 +94,16 @@
                 <div class="card-body">
                     {% if preguntas %}
                         {% for pregunta in preguntas %}
-                        <div class="pregunta-card">
+                        <div class="pregunta-card {% if not pregunta.activa %}opacity-75{% endif %}">
                             <div class="d-flex align-items-start">
                                 <div class="pregunta-numero me-3">{{ forloop.counter }}</div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="mb-1">{{ pregunta.pregunta }}</h6>
                                         <div>
+                                            {% if not pregunta.activa %}
+                                            <span class="badge bg-secondary">Inactiva</span>
+                                            {% endif %}
                                             {% if pregunta.obligatoria %}
                                             <span class="badge bg-danger">Obligatoria</span>
                                             {% endif %}
@@ -118,21 +121,139 @@
                                     <p class="small text-muted mt-2 mb-2">{{ pregunta.descripcion }}</p>
                                     {% endif %}
 
-                                    <!-- Mostrar opciones si las tiene -->
+                                    <!-- Toolbar de acciones -->
+                                    <div class="d-flex gap-1 flex-wrap mt-2 mb-2">
+                                        <form method="post" action="{% url 'surveys:mover_pregunta' encuesta.pk pregunta.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="direccion" value="up">
+                                            <button class="btn btn-sm btn-outline-secondary" title="Subir" {% if forloop.first %}disabled{% endif %}>
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'surveys:mover_pregunta' encuesta.pk pregunta.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="direccion" value="down">
+                                            <button class="btn btn-sm btn-outline-secondary" title="Bajar" {% if forloop.last %}disabled{% endif %}>
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editP{{ pregunta.pk }}">
+                                            <i class="fas fa-edit me-1"></i>Editar
+                                        </button>
+                                        <form method="post" action="{% url 'surveys:eliminar_pregunta' encuesta.pk pregunta.pk %}" class="d-inline"
+                                              onsubmit="return confirm('¿Eliminar esta pregunta? Si tiene respuestas, se desactiva en su lugar.')">
+                                            {% csrf_token %}
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal editar pregunta -->
+                                    <div class="modal fade" id="editP{{ pregunta.pk }}" tabindex="-1">
+                                      <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                          <form method="post" action="{% url 'surveys:editar_pregunta' encuesta.pk pregunta.pk %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                              <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar pregunta</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <div class="mb-2">
+                                                <label class="form-label">Tipo de Pregunta *</label>
+                                                <select name="tipo_pregunta" class="form-select" required>
+                                                  {% for t in tipos_pregunta %}
+                                                    <option value="{{ t.id }}" {% if t.id == pregunta.tipo_pregunta_id %}selected{% endif %}>{{ t.nombre }}</option>
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+                                              <div class="mb-2">
+                                                <label class="form-label">Categoría</label>
+                                                <input type="text" name="categoria" class="form-control" value="{{ pregunta.categoria|default:'' }}">
+                                              </div>
+                                              <div class="mb-2">
+                                                <label class="form-label">Pregunta *</label>
+                                                <textarea name="pregunta" class="form-control" rows="2" required>{{ pregunta.pregunta }}</textarea>
+                                              </div>
+                                              <div class="mb-2">
+                                                <label class="form-label">Descripción</label>
+                                                <textarea name="descripcion" class="form-control" rows="2">{{ pregunta.descripcion|default:'' }}</textarea>
+                                              </div>
+                                              <div class="form-check">
+                                                <input type="checkbox" name="obligatoria" id="oblP{{ pregunta.pk }}" class="form-check-input" {% if pregunta.obligatoria %}checked{% endif %}>
+                                                <label class="form-check-label" for="oblP{{ pregunta.pk }}">Obligatoria</label>
+                                              </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                              <button class="btn btn-primary">Guardar</button>
+                                            </div>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <!-- Opciones -->
                                     {% with opciones=pregunta.opcionencuesta_set.all %}
-                                    {% if opciones %}
-                                    <div class="mt-2">
+                                    {% if opciones or pregunta.tipo_pregunta.codigo in 'PREGMULT,CHECKMULT,SI_NO,ESCALA_5,ESCALA_3,multiple_choice,checkbox,select,rating' %}
+                                    <div class="mt-3">
                                         <small class="text-muted d-block mb-1">
                                             <i class="fas fa-check-circle me-1"></i>Opciones:
                                         </small>
                                         {% for opcion in opciones %}
-                                        <div class="opcion-item">
-                                            {{ forloop.counter }}. {{ opcion.opcion }}
-                                            {% if opcion.valor_numerico %}
-                                            <span class="badge bg-secondary">Valor: {{ opcion.valor_numerico }}</span>
-                                            {% endif %}
+                                        <div class="opcion-item d-flex align-items-center gap-2 {% if not opcion.activa %}opacity-50{% endif %}">
+                                            <span class="text-muted">{{ forloop.counter }}.</span>
+                                            <span class="flex-grow-1">{{ opcion.opcion }}
+                                              {% if opcion.valor_numerico %}<span class="badge bg-secondary ms-1">Valor: {{ opcion.valor_numerico }}</span>{% endif %}
+                                              {% if not opcion.activa %}<span class="badge bg-secondary ms-1">Inactiva</span>{% endif %}
+                                            </span>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editO{{ opcion.pk }}" title="Editar opción">
+                                              <i class="fas fa-pen"></i>
+                                            </button>
+                                            <form method="post" action="{% url 'surveys:eliminar_opcion' encuesta.pk pregunta.pk opcion.pk %}"
+                                                  onsubmit="return confirm('¿Eliminar esta opción?')" class="d-inline">
+                                              {% csrf_token %}
+                                              <button class="btn btn-sm btn-outline-danger" title="Eliminar opción"><i class="fas fa-times"></i></button>
+                                            </form>
+                                        </div>
+                                        <!-- Modal editar opción -->
+                                        <div class="modal fade" id="editO{{ opcion.pk }}" tabindex="-1">
+                                          <div class="modal-dialog">
+                                            <div class="modal-content">
+                                              <form method="post" action="{% url 'surveys:editar_opcion' encuesta.pk pregunta.pk opcion.pk %}">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title">Editar opción</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div class="mb-2">
+                                                    <label class="form-label">Texto *</label>
+                                                    <input type="text" name="opcion" class="form-control" value="{{ opcion.opcion }}" required>
+                                                  </div>
+                                                  <div class="mb-2">
+                                                    <label class="form-label">Valor numérico (opcional)</label>
+                                                    <input type="number" name="valor_numerico" class="form-control" value="{{ opcion.valor_numerico|default:'' }}">
+                                                  </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                  <button class="btn btn-primary">Guardar</button>
+                                                </div>
+                                              </form>
+                                            </div>
+                                          </div>
                                         </div>
                                         {% endfor %}
+
+                                        <!-- Agregar opción inline -->
+                                        <form method="post" action="{% url 'surveys:crear_opcion' encuesta.pk pregunta.pk %}" class="d-flex gap-2 mt-2">
+                                          {% csrf_token %}
+                                          <input type="text" name="opcion" class="form-control form-control-sm" placeholder="Nueva opción" required>
+                                          <input type="number" name="valor_numerico" class="form-control form-control-sm" placeholder="Valor" style="max-width: 90px;">
+                                          <button class="btn btn-sm btn-success"><i class="fas fa-plus"></i></button>
+                                        </form>
                                     </div>
                                     {% endif %}
                                     {% endwith %}

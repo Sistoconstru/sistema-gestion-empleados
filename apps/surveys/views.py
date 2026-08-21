@@ -850,3 +850,204 @@ class ExportarRespuestasEncuestaView(LoginRequiredMixin, View):
         resp['Content-Disposition'] = f'attachment; filename="{filename}"'
         wb.save(resp)
         return resp
+
+
+# =============================================================================
+# EDICIÓN DE ENCUESTA, PREGUNTAS Y OPCIONES (Bloque A)
+# =============================================================================
+
+
+class _StaffRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not (request.user.is_staff or request.user.is_superuser):
+            messages.error(request, 'No tienes permisos.')
+            return redirect('surveys:index')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class EditarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Editar metadata de la encuesta (nombre, descripción, fechas, tipo)."""
+    template_name = 'surveys/admin/editar_encuesta.html'
+
+    def get(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        tipos_encuesta = TipoEncuesta.objects.filter(activo=True).order_by('nombre')
+        return render(request, self.template_name, {
+            'encuesta': encuesta, 'tipos_encuesta': tipos_encuesta,
+        })
+
+    def post(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        try:
+            nombre = request.POST.get('nombre', '').strip()
+            descripcion = request.POST.get('descripcion', '').strip()
+            instrucciones = request.POST.get('instrucciones', '').strip()
+            tipo_id = request.POST.get('tipo_encuesta')
+            fecha_inicio = request.POST.get('fecha_inicio')
+            fecha_fin = request.POST.get('fecha_fin')
+            if not all([nombre, tipo_id, fecha_inicio, fecha_fin]):
+                messages.error(request, 'Todos los campos obligatorios deben ser completados.')
+                return redirect('surveys:editar_encuesta', pk=pk)
+            encuesta.nombre = nombre
+            encuesta.descripcion = descripcion
+            encuesta.instrucciones = instrucciones
+            encuesta.tipo_encuesta_id = tipo_id
+            encuesta.fecha_inicio = fecha_inicio
+            encuesta.fecha_fin = fecha_fin
+            encuesta.save()
+            messages.success(request, 'Encuesta actualizada.')
+            return redirect('surveys:encuesta_admin_list')
+        except Exception as e:
+            messages.error(request, f'Error al actualizar: {e}')
+            return redirect('surveys:editar_encuesta', pk=pk)
+
+
+class ToggleActivaEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Cerrar (activa=False) o reactivar una encuesta manualmente."""
+
+    def post(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        encuesta.activa = not encuesta.activa
+        encuesta.save()
+        estado = 'reactivada' if encuesta.activa else 'cerrada'
+        messages.success(request, f'Encuesta {estado}.')
+        # Volver a la lista o al referer
+        return redirect(request.META.get('HTTP_REFERER', 'surveys:encuesta_admin_list'))
+
+
+class EditarPreguntaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Editar los campos de una pregunta existente."""
+
+    def post(self, request, pk, pregunta_id):
+        pregunta = get_object_or_404(PreguntaEncuesta, pk=pregunta_id, encuesta_id=pk)
+        try:
+            texto = request.POST.get('pregunta', '').strip()
+            tipo_id = request.POST.get('tipo_pregunta')
+            categoria = request.POST.get('categoria', '')
+            descripcion = request.POST.get('descripcion', '')
+            obligatoria = request.POST.get('obligatoria') == 'on'
+            if not texto or not tipo_id:
+                messages.error(request, 'Texto y tipo son obligatorios.')
+                return redirect('surveys:editar_preguntas', pk=pk)
+
+            # Si cambia el tipo y ya hay respuestas: advertir pero permitir
+            if str(pregunta.tipo_pregunta_id) != str(tipo_id):
+                if RespuestaEncuesta.objects.filter(pregunta=pregunta).exists():
+                    messages.warning(request,
+                        'Cambiaste el tipo de una pregunta que ya tenía respuestas. '
+                        'Las respuestas antiguas quedaron en el histórico pero pueden '
+                        'no verse coherentes en el nuevo tipo.')
+            pregunta.pregunta = texto
+            pregunta.tipo_pregunta_id = tipo_id
+            pregunta.categoria = categoria
+            pregunta.descripcion = descripcion
+            pregunta.obligatoria = obligatoria
+            pregunta.save()
+            messages.success(request, 'Pregunta actualizada.')
+        except Exception as e:
+            messages.error(request, f'Error: {e}')
+        return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class EliminarPreguntaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Elimina una pregunta. Si tiene respuestas, la desactiva en su lugar."""
+
+    def post(self, request, pk, pregunta_id):
+        pregunta = get_object_or_404(PreguntaEncuesta, pk=pregunta_id, encuesta_id=pk)
+        if RespuestaEncuesta.objects.filter(pregunta=pregunta).exists():
+            pregunta.activa = False
+            pregunta.save()
+            messages.info(request,
+                f'La pregunta tenía respuestas: se desactivó (no se elimina para '
+                f'preservar el histórico).')
+        else:
+            pregunta.delete()
+            messages.success(request, 'Pregunta eliminada.')
+        return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class MoverPreguntaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Sube o baja una pregunta en el orden. Intercambia con la vecina.
+
+    El unique_together (encuesta, orden) impide el swap directo, así que
+    usamos un orden puente fuera del rango (max+1) para uno de los dos saves.
+    """
+
+    def post(self, request, pk, pregunta_id):
+        from django.db import transaction
+        direccion = request.POST.get('direccion')
+        pregunta = get_object_or_404(PreguntaEncuesta, pk=pregunta_id, encuesta_id=pk)
+        qs = PreguntaEncuesta.objects.filter(encuesta_id=pk)
+        if direccion == 'up':
+            vecina = qs.filter(orden__lt=pregunta.orden).order_by('-orden').first()
+        else:
+            vecina = qs.filter(orden__gt=pregunta.orden).order_by('orden').first()
+        if vecina:
+            puente = (qs.aggregate(m=models.Max('orden'))['m'] or 0) + 1
+            orden_p, orden_v = pregunta.orden, vecina.orden
+            with transaction.atomic():
+                pregunta.orden = puente
+                pregunta.save(update_fields=['orden'])
+                vecina.orden = orden_p
+                vecina.save(update_fields=['orden'])
+                pregunta.orden = orden_v
+                pregunta.save(update_fields=['orden'])
+        return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class CrearOpcionView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Agrega una opción a una pregunta existente."""
+
+    def post(self, request, pk, pregunta_id):
+        pregunta = get_object_or_404(PreguntaEncuesta, pk=pregunta_id, encuesta_id=pk)
+        texto = request.POST.get('opcion', '').strip()
+        valor_raw = request.POST.get('valor_numerico', '').strip()
+        if not texto:
+            messages.error(request, 'La opción no puede estar vacía.')
+            return redirect('surveys:editar_preguntas', pk=pk)
+        ultimo = pregunta.opcionencuesta_set.aggregate(m=models.Max('orden'))['m'] or 0
+        OpcionEncuesta.objects.create(
+            pregunta=pregunta, opcion=texto,
+            valor_numerico=int(valor_raw) if valor_raw.isdigit() else None,
+            orden=ultimo + 1, activa=True,
+        )
+        messages.success(request, 'Opción agregada.')
+        return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class EditarOpcionView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    def post(self, request, pk, pregunta_id, opcion_id):
+        opcion = get_object_or_404(
+            OpcionEncuesta, pk=opcion_id, pregunta_id=pregunta_id,
+            pregunta__encuesta_id=pk,
+        )
+        texto = request.POST.get('opcion', '').strip()
+        valor_raw = request.POST.get('valor_numerico', '').strip()
+        if not texto:
+            messages.error(request, 'La opción no puede estar vacía.')
+            return redirect('surveys:editar_preguntas', pk=pk)
+        opcion.opcion = texto
+        opcion.valor_numerico = int(valor_raw) if valor_raw.isdigit() else None
+        opcion.save()
+        messages.success(request, 'Opción actualizada.')
+        return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class EliminarOpcionView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Elimina opción. Si tiene respuestas, la desactiva."""
+
+    def post(self, request, pk, pregunta_id, opcion_id):
+        opcion = get_object_or_404(
+            OpcionEncuesta, pk=opcion_id, pregunta_id=pregunta_id,
+            pregunta__encuesta_id=pk,
+        )
+        if RespuestaEncuesta.objects.filter(opcion_seleccionada=opcion).exists():
+            opcion.activa = False
+            opcion.save()
+            messages.info(request,
+                'La opción tenía respuestas: se desactivó (no se elimina para '
+                'preservar el histórico).')
+        else:
+            opcion.delete()
+            messages.success(request, 'Opción eliminada.')
+        return redirect('surveys:editar_preguntas', pk=pk)

@@ -25,4 +25,14 @@ urlpatterns = [
     # Resultados
     path('admin/<uuid:pk>/resultados/', views.ResultadosEncuestaView.as_view(), name='resultados_encuesta'),
     path('admin/<uuid:pk>/exportar/', views.ExportarRespuestasEncuestaView.as_view(), name='exportar_respuestas_encuesta'),
+
+    # Edición: encuesta, preguntas y opciones (Bloque A)
+    path('admin/<uuid:pk>/editar/', views.EditarEncuestaView.as_view(), name='editar_encuesta'),
+    path('admin/<uuid:pk>/toggle-activa/', views.ToggleActivaEncuestaView.as_view(), name='toggle_activa_encuesta'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/editar/', views.EditarPreguntaView.as_view(), name='editar_pregunta'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/eliminar/', views.EliminarPreguntaView.as_view(), name='eliminar_pregunta'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/mover/', views.MoverPreguntaView.as_view(), name='mover_pregunta'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/crear/', views.CrearOpcionView.as_view(), name='crear_opcion'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/<uuid:opcion_id>/editar/', views.EditarOpcionView.as_view(), name='editar_opcion'),
+    path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/<uuid:opcion_id>/eliminar/', views.EliminarOpcionView.as_view(), name='eliminar_opcion'),
 ]

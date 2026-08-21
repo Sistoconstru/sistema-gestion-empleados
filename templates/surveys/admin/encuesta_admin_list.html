@@ -186,12 +186,19 @@
                                    title="Vista Previa">
                                     <i class="fas fa-eye me-1"></i>Vista Previa
                                 </a>
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-secondary"
-                                        title="Resultados"
-                                        disabled>
-                                    <i class="fas fa-chart-bar me-1"></i>Resultados
-                                </button>
+                                <a href="{% url 'surveys:editar_encuesta' encuesta.pk %}"
+                                   class="btn btn-sm btn-outline-dark"
+                                   title="Editar encuesta">
+                                    <i class="fas fa-cog me-1"></i>Editar
+                                </a>
+                                <form method="post" action="{% url 'surveys:toggle_activa_encuesta' encuesta.pk %}" class="d-inline"
+                                      onsubmit="return confirm('{% if encuesta.activa %}¿Cerrar esta encuesta? Los empleados dejarán de verla como pendiente.{% else %}¿Reactivar esta encuesta?{% endif %}')">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm {% if encuesta.activa %}btn-outline-danger{% else %}btn-outline-success{% endif %}"
+                                            title="{% if encuesta.activa %}Cerrar{% else %}Reactivar{% endif %}">
+                                        <i class="fas fa-{% if encuesta.activa %}stop{% else %}play{% endif %} me-1"></i>{% if encuesta.activa %}Cerrar{% else %}Reactivar{% endif %}
+                                    </button>
+                                </form>
                             </div>
 
                             <div class="mt-3">
