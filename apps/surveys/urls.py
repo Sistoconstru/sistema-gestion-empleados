@@ -35,4 +35,8 @@ urlpatterns = [
     path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/crear/', views.CrearOpcionView.as_view(), name='crear_opcion'),
     path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/<uuid:opcion_id>/editar/', views.EditarOpcionView.as_view(), name='editar_opcion'),
     path('admin/<uuid:pk>/pregunta/<uuid:pregunta_id>/opcion/<uuid:opcion_id>/eliminar/', views.EliminarOpcionView.as_view(), name='eliminar_opcion'),
+
+    # Preview y duplicar (Bloque B)
+    path('admin/<uuid:pk>/preview/', views.PreviewEncuestaView.as_view(), name='preview_encuesta'),
+    path('admin/<uuid:pk>/duplicar/', views.DuplicarEncuestaView.as_view(), name='duplicar_encuesta'),
 ]

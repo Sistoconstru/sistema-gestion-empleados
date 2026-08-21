@@ -159,8 +159,18 @@
             </div>
         </div>
 
+        {% if preview %}
+        <div class="alert alert-info d-flex align-items-center mb-3">
+          <i class="fas fa-eye me-2"></i>
+          <div class="flex-grow-1">
+            <strong>Vista previa (staff)</strong> — así verán los empleados la encuesta. No se guardan respuestas.
+          </div>
+          <a href="{% url 'surveys:encuesta_admin_list' %}" class="btn btn-sm btn-outline-secondary">Cerrar</a>
+        </div>
+        {% endif %}
+
         <!-- Formulario de la encuesta -->
-        <form method="post" id="surveyForm">
+        <form method="post" id="surveyForm" {% if preview %}onsubmit="return false;"{% endif %}>
             {% csrf_token %}
             
             {% if preguntas %}
@@ -374,12 +384,16 @@
                         </a>
                         
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-corporativo" onclick="guardarBorrador()">
-                                <i class="fas fa-save me-1"></i>Guardar Borrador
-                            </button>
-                            <button type="submit" class="btn btn-survey-submit">
-                                <i class="fas fa-check me-1"></i>Finalizar Encuesta
-                            </button>
+                            {% if preview %}
+                              <span class="badge bg-info text-dark align-self-center"><i class="fas fa-eye me-1"></i>Vista previa — sin envío</span>
+                            {% else %}
+                              <button type="button" class="btn btn-outline-corporativo" onclick="guardarBorrador()">
+                                  <i class="fas fa-save me-1"></i>Guardar Borrador
+                              </button>
+                              <button type="submit" class="btn btn-survey-submit">
+                                  <i class="fas fa-check me-1"></i>Finalizar Encuesta
+                              </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

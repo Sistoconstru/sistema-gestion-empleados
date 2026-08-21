@@ -331,7 +331,37 @@ class EncuestaAdminListView(LoginRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Encuesta.objects.all().select_related('tipo_encuesta', 'creada_por').order_by('-fecha_creacion')
+        from datetime import date
+        qs = Encuesta.objects.all().select_related('tipo_encuesta', 'creada_por').order_by('-fecha_creacion')
+        hoy = date.today()
+        estado = self.request.GET.get('estado', 'todas')
+        if estado == 'activa':
+            qs = qs.filter(activa=True, fecha_fin__gte=hoy)
+        elif estado == 'inactiva':
+            qs = qs.filter(activa=False)
+        elif estado == 'vencida':
+            qs = qs.filter(fecha_fin__lt=hoy)
+        elif estado == 'borrador':
+            qs = qs.filter(activa=False, fecha_inicio__gt=hoy)
+        # 'todas' → sin filtro adicional
+        buscar = self.request.GET.get('q', '').strip()
+        if buscar:
+            qs = qs.filter(Q(nombre__icontains=buscar) | Q(codigo__icontains=buscar))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['estado_filtro'] = self.request.GET.get('estado', 'todas')
+        ctx['buscar'] = self.request.GET.get('q', '')
+        # Conteos por estado (para badges en botones de filtro)
+        from datetime import date
+        hoy = date.today()
+        todas = Encuesta.objects.all()
+        ctx['count_todas'] = todas.count()
+        ctx['count_activa'] = todas.filter(activa=True, fecha_fin__gte=hoy).count()
+        ctx['count_inactiva'] = todas.filter(activa=False).count()
+        ctx['count_vencida'] = todas.filter(fecha_fin__lt=hoy).count()
+        return ctx
 
 
 class CrearEncuestaView(LoginRequiredMixin, View):
@@ -1051,3 +1081,88 @@ class EliminarOpcionView(LoginRequiredMixin, _StaffRequiredMixin, View):
             opcion.delete()
             messages.success(request, 'Opción eliminada.')
         return redirect('surveys:editar_preguntas', pk=pk)
+
+
+class PreviewEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Vista previa (staff). No requiere activa=True ni crea participación.
+
+    Reutiliza el mismo template de respuesta pero en modo readonly.
+    """
+    template_name = 'surveys/responder_encuesta.html'
+
+    def get(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        preguntas = PreguntaEncuesta.objects.filter(
+            encuesta=encuesta, activa=True,
+        ).prefetch_related('opcionencuesta_set').order_by('orden')
+        return render(request, self.template_name, {
+            'encuesta': encuesta,
+            'participacion': None,
+            'preguntas': preguntas,
+            'respuestas_existentes': {},
+            'preview': True,
+        })
+
+
+class DuplicarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Clona una encuesta con todas sus preguntas, opciones y asignaciones.
+
+    La copia queda inactiva y con código {orig}-COPIA. Sin participaciones ni
+    respuestas. Redirige al editor de la nueva.
+    """
+
+    def post(self, request, pk):
+        from django.db import transaction
+        from .models import EncuestaCargo, EncuestaArea
+
+        original = get_object_or_404(Encuesta, pk=pk)
+        # Buscar un código único
+        base = f'{original.codigo}-COPIA'
+        codigo = base
+        n = 2
+        while Encuesta.objects.filter(codigo=codigo).exists():
+            codigo = f'{base}-{n}'
+            n += 1
+
+        with transaction.atomic():
+            nueva = Encuesta.objects.create(
+                codigo=codigo,
+                nombre=f'{original.nombre} (copia)',
+                descripcion=original.descripcion,
+                instrucciones=original.instrucciones,
+                tipo_encuesta=original.tipo_encuesta,
+                fecha_inicio=original.fecha_inicio,
+                fecha_fin=original.fecha_fin,
+                creada_por=request.user,
+                activa=False,
+            )
+            # Clonar preguntas y opciones
+            for p in PreguntaEncuesta.objects.filter(encuesta=original).order_by('orden'):
+                nueva_p = PreguntaEncuesta.objects.create(
+                    encuesta=nueva,
+                    tipo_pregunta=p.tipo_pregunta,
+                    pregunta=p.pregunta,
+                    descripcion=p.descripcion,
+                    categoria=p.categoria,
+                    obligatoria=p.obligatoria,
+                    orden=p.orden,
+                    activa=p.activa,
+                )
+                for o in p.opcionencuesta_set.order_by('orden'):
+                    OpcionEncuesta.objects.create(
+                        pregunta=nueva_p,
+                        opcion=o.opcion,
+                        valor_numerico=o.valor_numerico,
+                        orden=o.orden,
+                        activa=o.activa,
+                    )
+            # Clonar asignaciones
+            for ec in EncuestaCargo.objects.filter(encuesta=original):
+                EncuestaCargo.objects.create(encuesta=nueva, cargo=ec.cargo)
+            for ea in EncuestaArea.objects.filter(encuesta=original):
+                EncuestaArea.objects.create(encuesta=nueva, area=ea.area)
+
+        messages.success(request,
+            f'Encuesta duplicada como "{nueva.codigo}". Queda inactiva; '
+            f'revisa y publícala cuando esté lista.')
+        return redirect('surveys:editar_encuesta', pk=nueva.pk)
