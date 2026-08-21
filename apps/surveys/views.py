@@ -709,21 +709,11 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
 
             preguntas_data.append(item)
 
-        # Cobertura: cuántos empleados fueron elegibles (asignados por cargo/área)
-        # y cuántos respondieron. Si no hay asignación, cobertura queda como None.
-        from apps.employees.models import Empleado
-        from .models import EncuestaCargo, EncuestaArea
-        cargos_asig = EncuestaCargo.objects.filter(encuesta=encuesta).values_list('cargo_id', flat=True)
-        areas_asig = EncuestaArea.objects.filter(encuesta=encuesta).values_list('area_id', flat=True)
-        cobertura_total = None
-        if cargos_asig or areas_asig:
-            filt = Q()
-            if cargos_asig:
-                filt |= Q(historialcargo__activo=True, historialcargo__cargo_id__in=list(cargos_asig))
-            if areas_asig:
-                filt |= Q(historialcargo__activo=True, historialcargo__cargo__area_id__in=list(areas_asig))
-            cobertura_total = Empleado.objects.filter(filt, estado__codigo='999').distinct().count()
-
+        # Cobertura: cuántos empleados fueron elegibles y cuántos respondieron.
+        # Reutilizamos _destinatarios_encuesta para consistencia con el signal
+        # de publicación y el cron: asignación por cargo/área → esa lista;
+        # sin asignación → toda la empresa (encuesta general).
+        cobertura_total = _destinatarios_encuesta(encuesta).count()
         pct_respuesta = (
             round(100 * completadas / cobertura_total, 1)
             if cobertura_total else None
@@ -742,14 +732,14 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
 
 
 def _destinatarios_encuesta(encuesta):
-    """Retorna queryset de Empleados asignados a la encuesta.
+    """Retorna queryset de Empleados destinatarios de la encuesta.
 
-    - Si hay EncuestaCargo: los empleados con cargo activo en esa lista.
-    - Si hay EncuestaArea: los empleados con cargo activo cuyo cargo pertenece
-      al área listada.
-    - Ambos se OR (unión).
-    - Si no hay ninguna asignación → queryset vacío (evita spamear a todos).
-    - Filtra por estado activo/prueba y usuario activo.
+    - Si hay EncuestaCargo o EncuestaArea: los empleados con cargo activo
+      en esa lista (unión).
+    - Si NO hay ninguna asignación → encuesta GENERAL: todos los empleados
+      activos con usuario. Es lo esperado por el negocio: una encuesta sin
+      cargo/área es para toda la empresa.
+    - Filtra siempre por estado activo/prueba y usuario activo.
     """
     from apps.employees.models import Empleado
     from .models import EncuestaCargo, EncuestaArea
@@ -760,8 +750,14 @@ def _destinatarios_encuesta(encuesta):
     area_ids = list(
         EncuestaArea.objects.filter(encuesta=encuesta).values_list('area_id', flat=True)
     )
+
+    base = (
+        Empleado.objects
+        .filter(estado__codigo__in=['999', 'p-prue'])
+        .filter(usuario__isnull=False, usuario__is_active=True)
+    )
     if not (cargo_ids or area_ids):
-        return Empleado.objects.none()
+        return base.distinct()
 
     filtro = Q()
     if cargo_ids:
@@ -769,12 +765,7 @@ def _destinatarios_encuesta(encuesta):
     if area_ids:
         filtro |= Q(historialcargo__cargo__area_id__in=area_ids)
 
-    return (
-        Empleado.objects
-        .filter(filtro, historialcargo__activo=True, estado__codigo__in=['999', 'p-prue'])
-        .filter(usuario__isnull=False, usuario__is_active=True)
-        .distinct()
-    )
+    return base.filter(filtro, historialcargo__activo=True).distinct()
 
 
 class ExportarRespuestasEncuestaView(LoginRequiredMixin, View):

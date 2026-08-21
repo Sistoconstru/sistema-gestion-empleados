@@ -46,9 +46,17 @@ def _notificar_publicacion(sender, instance, created, **kwargs):
     destinatarios = list(_destinatarios_encuesta(instance))
     if not destinatarios:
         logger.info(
-            f'Encuesta {instance.codigo} publicada sin destinatarios asignados; no se notifica.'
+            f'Encuesta {instance.codigo} publicada pero no hay empleados '
+            f'activos para notificar.'
         )
         return
+
+    from .models import EncuestaCargo, EncuestaArea
+    tiene_asignacion = (
+        EncuestaCargo.objects.filter(encuesta=instance).exists()
+        or EncuestaArea.objects.filter(encuesta=instance).exists()
+    )
+    alcance = 'específica' if tiene_asignacion else 'GENERAL (toda la empresa)'
 
     tipo_notif, _ = TipoNotificacion.objects.get_or_create(
         codigo='encuesta_publicada',
@@ -95,5 +103,6 @@ def _notificar_publicacion(sender, instance, created, **kwargs):
             logger.warning(f'Fallo notificando encuesta {instance.codigo} a {emp.usuario.username}: {e}')
 
     logger.info(
-        f'Encuesta {instance.codigo} publicada: {enviadas} push · {len(destinatarios)} destinatarios.'
+        f'Encuesta {instance.codigo} publicada ({alcance}): '
+        f'{enviadas} push · {len(destinatarios)} destinatarios.'
     )
