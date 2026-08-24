@@ -1,7 +1,7 @@
-// SIGHU service worker — v1
+// SIGHU service worker — v2 (postMessage a clientes al recibir push)
 // Mantiene la app instalable, cachea shell mínimo y maneja push notifications.
 
-const CACHE_NAME = 'sighu-shell-v1';
+const CACHE_NAME = 'sighu-shell-v2';
 const OFFLINE_URL = '/pwa/offline/';
 const SHELL = [
     OFFLINE_URL,
@@ -66,7 +66,19 @@ self.addEventListener('push', (event) => {
             actionUrls: data.actionUrls || {},
         },
     };
-    event.waitUntil(self.registration.showNotification(title, options));
+    event.waitUntil(Promise.all([
+        self.registration.showNotification(title, options),
+        // Avisa a los clientes abiertos para que reproduzcan un beep in-app.
+        // El sistema operativo suena por su cuenta si la pestaña está en
+        // segundo plano; este ping solo suena cuando SIGHU está abierto.
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(function (clients) {
+                clients.forEach(function (c) {
+                    c.postMessage({ type: 'sighu-push', title: title, tag: tag });
+                });
+            })
+            .catch(function () { /* silencioso */ }),
+    ]));
 });
 
 // Click en la notificación (o en un botón de acción) — enfoca ventana o abre nueva

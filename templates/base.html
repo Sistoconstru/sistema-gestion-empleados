@@ -121,6 +121,12 @@
                                     <i class="fas fa-mobile-alt me-1"></i> Notificaciones del dispositivo
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="#" id="sighu-mute-toggle" role="button">
+                                    <i class="fas fa-volume-up me-1" id="sighu-mute-icon"></i>
+                                    <span id="sighu-mute-label">Sonido de notificaciones</span>
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{% url 'authentication:logout' %}" method="post" style="margin: 0; padding: 0;">
@@ -501,6 +507,121 @@
                 }
             });
         })();
+    })();
+    </script>
+
+    <script>
+    // ============================================================
+    // SIGHU — beep in-app cuando llega una notificación push nueva
+    // (mientras la pestaña está abierta) o al abrir SIGHU con
+    // notificaciones sin leer. Respeta el toggle mute (localStorage).
+    // ============================================================
+    (function () {
+        const MUTE_KEY = 'sighu_notif_mute';
+        const SESSION_PING_KEY = 'sighu_notif_ping_hecho';
+
+        function estaMuteado() {
+            try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
+        }
+        window.SIGHU_NOTIF = window.SIGHU_NOTIF || {};
+        window.SIGHU_NOTIF.toggleMute = function () {
+            const nuevo = estaMuteado() ? '0' : '1';
+            try { localStorage.setItem(MUTE_KEY, nuevo); } catch (e) {}
+            return nuevo === '1';
+        };
+        window.SIGHU_NOTIF.isMuted = estaMuteado;
+
+        // Beep programático con Web Audio API — dos tonos suaves (E5→A5) muy
+        // cortos. No necesita archivo mp3 y suena parejo entre navegadores.
+        let audioCtx = null;
+        function beep() {
+            if (estaMuteado()) return;
+            try {
+                if (!audioCtx) {
+                    const Ctx = window.AudioContext || window.webkitAudioContext;
+                    if (!Ctx) return;
+                    audioCtx = new Ctx();
+                }
+                // Algunos browsers dejan el contexto suspendido hasta interacción
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(function () {});
+                }
+                const ahora = audioCtx.currentTime;
+                function nota(freq, tStart, dur) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.0001, ahora + tStart);
+                    gain.gain.exponentialRampToValueAtTime(0.22, ahora + tStart + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ahora + tStart + dur);
+                    osc.connect(gain).connect(audioCtx.destination);
+                    osc.start(ahora + tStart);
+                    osc.stop(ahora + tStart + dur + 0.02);
+                }
+                nota(659.25, 0.00, 0.14);   // E5
+                nota(880.00, 0.13, 0.18);   // A5
+            } catch (e) { /* silencioso */ }
+        }
+        window.SIGHU_NOTIF.beep = beep;
+
+        // A) Escuchar mensajes del service worker cuando llega push nueva
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', function (evt) {
+                const data = evt && evt.data;
+                if (data && data.type === 'sighu-push') beep();
+            });
+        }
+
+        // Toggle mute en el menú de usuario — refresca ícono/label
+        function refrescarToggle() {
+            const icon = document.getElementById('sighu-mute-icon');
+            const label = document.getElementById('sighu-mute-label');
+            if (!icon || !label) return;
+            if (estaMuteado()) {
+                icon.className = 'fas fa-volume-mute me-1 text-muted';
+                label.textContent = 'Sonido silenciado';
+            } else {
+                icon.className = 'fas fa-volume-up me-1';
+                label.textContent = 'Sonido de notificaciones';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            refrescarToggle();
+            const btn = document.getElementById('sighu-mute-toggle');
+            if (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const nowMuted = window.SIGHU_NOTIF.toggleMute();
+                    refrescarToggle();
+                    if (!nowMuted) beep();  // feedback audible al reactivar
+                });
+            }
+        });
+
+        // C) Al cargar la app, si hay notif sin leer y no sonó esta sesión, beep
+        document.addEventListener('DOMContentLoaded', function () {
+            const sinLeer = parseInt('{{ notificaciones_sin_leer|default:0 }}', 10) || 0;
+            if (sinLeer <= 0) return;
+            let yaSono = false;
+            try { yaSono = sessionStorage.getItem(SESSION_PING_KEY) === '1'; } catch (e) {}
+            if (yaSono) return;
+            // Marcar antes de reproducir para no repetir si el usuario cambia de página rápido.
+            try { sessionStorage.setItem(SESSION_PING_KEY, '1'); } catch (e) {}
+            // Autoplay: en muchos browsers el AudioContext arranca "suspended"
+            // hasta la primera interacción. Si beep() no logra reproducir, se
+            // reintenta en el primer clic/tecla/touch del usuario (una vez).
+            beep();
+            const reintento = function () {
+                beep();
+                document.removeEventListener('click', reintento, true);
+                document.removeEventListener('keydown', reintento, true);
+                document.removeEventListener('touchstart', reintento, true);
+            };
+            document.addEventListener('click', reintento, { capture: true, once: true });
+            document.addEventListener('keydown', reintento, { capture: true, once: true });
+            document.addEventListener('touchstart', reintento, { capture: true, once: true });
+        });
     })();
     </script>
     {% endif %}
