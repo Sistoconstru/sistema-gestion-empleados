@@ -923,6 +923,7 @@ class EditarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
         })
 
     def post(self, request, pk):
+        from datetime import date as _date
         encuesta = get_object_or_404(Encuesta, pk=pk)
         try:
             nombre = request.POST.get('nombre', '').strip()
@@ -934,14 +935,35 @@ class EditarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
             if not all([nombre, tipo_id, fecha_inicio, fecha_fin]):
                 messages.error(request, 'Todos los campos obligatorios deben ser completados.')
                 return redirect('surveys:editar_encuesta', pk=pk)
+            estaba_inactiva = not encuesta.activa
+            # Parseo explícito para poder comparar con date.today() antes del
+            # save() (los strings del form no se comparan como fechas).
+            fi = _date.fromisoformat(fecha_inicio)
+            ff = _date.fromisoformat(fecha_fin)
             encuesta.nombre = nombre
             encuesta.descripcion = descripcion
             encuesta.instrucciones = instrucciones
             encuesta.tipo_encuesta_id = tipo_id
-            encuesta.fecha_inicio = fecha_inicio
-            encuesta.fecha_fin = fecha_fin
+            encuesta.fecha_inicio = fi
+            encuesta.fecha_fin = ff
+
+            # Si estaba cerrada y las nuevas fechas la ponen vigente, la
+            # reactivamos: es el caso típico de "extender la fecha para dar
+            # más plazo". Sin esto el admin cambia la fecha, ve la encuesta
+            # con nueva fecha, pero sigue apagada y los empleados no pueden
+            # continuar (se les muestra "Encuesta cerrada").
+            hoy = _date.today()
+            reactivada = False
+            if estaba_inactiva and fi <= hoy <= ff:
+                encuesta.activa = True
+                reactivada = True
             encuesta.save()
-            messages.success(request, 'Encuesta actualizada.')
+            if reactivada:
+                messages.success(request,
+                    'Encuesta actualizada y reactivada — los empleados pendientes '
+                    'ya pueden continuar respondiendo.')
+            else:
+                messages.success(request, 'Encuesta actualizada.')
             return redirect('surveys:encuesta_admin_list')
         except Exception as e:
             messages.error(request, f'Error al actualizar: {e}')
