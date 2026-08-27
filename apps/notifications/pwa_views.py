@@ -5,6 +5,7 @@ import logging
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
+from django.templatetags.static import static
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
@@ -32,13 +33,13 @@ def manifest(request):
         "lang": "es-CO",
         "icons": [
             {
-                "src": "/static/pwa/icon-192.png",
+                "src": static('pwa/icon-192.png'),
                 "sizes": "192x192",
                 "type": "image/png",
                 "purpose": "any maskable",
             },
             {
-                "src": "/static/pwa/icon-512.png",
+                "src": static('pwa/icon-512.png'),
                 "sizes": "512x512",
                 "type": "image/png",
                 "purpose": "any maskable",
@@ -48,12 +49,12 @@ def manifest(request):
             {
                 "name": "Mis capacitaciones",
                 "url": "/capacitaciones/mis-capacitaciones/",
-                "icons": [{"src": "/static/pwa/icon-192.png", "sizes": "192x192"}],
+                "icons": [{"src": static('pwa/icon-192.png'), "sizes": "192x192"}],
             },
             {
                 "name": "Sesiones a mi cargo",
                 "url": "/capacitaciones/sesiones/a-cargo/",
-                "icons": [{"src": "/static/pwa/icon-192.png", "sizes": "192x192"}],
+                "icons": [{"src": static('pwa/icon-192.png'), "sizes": "192x192"}],
             },
         ],
     }

@@ -17,7 +17,7 @@ def _vapid_claims():
     return {"sub": settings.VAPID_ADMIN_EMAIL}
 
 
-def send_push(usuario, title, body, url='/', icon='/static/pwa/icon-192.png',
+def send_push(usuario, title, body, url='/', icon=None,
               tag=None, tag_group=None, actions=None, action_urls=None,
               vibrate=None):
     """Envía una notificación push a todas las suscripciones activas del usuario.
@@ -44,6 +44,11 @@ def send_push(usuario, title, body, url='/', icon='/static/pwa/icon-192.png',
         return 0, 0
 
     subs = PushSubscription.objects.filter(usuario=usuario, activa=True)
+    if icon is None:
+        # Se resuelve aquí (no en el default arg) para que respete el manifest
+        # de whitenoise en producción (nombre hasheado).
+        from django.templatetags.static import static
+        icon = static('pwa/icon-192.png')
     payload_dict = {
         'title': title,
         'body': body,

@@ -1,12 +1,14 @@
-// SIGHU service worker — v2 (postMessage a clientes al recibir push)
+{% load static %}// SIGHU service worker — v2 (postMessage a clientes al recibir push)
 // Mantiene la app instalable, cachea shell mínimo y maneja push notifications.
 
 const CACHE_NAME = 'sighu-shell-v2';
 const OFFLINE_URL = '/pwa/offline/';
+const ICON_192 = '{% static "pwa/icon-192.png" %}';
+const ICON_512 = '{% static "pwa/icon-512.png" %}';
 const SHELL = [
     OFFLINE_URL,
-    '/static/pwa/icon-192.png',
-    '/static/pwa/icon-512.png',
+    ICON_192,
+    ICON_512,
 ];
 
 self.addEventListener('install', (event) => {
@@ -50,8 +52,8 @@ self.addEventListener('push', (event) => {
     const tag = data.tagGroup || data.tag || 'sighu';
     const options = {
         body: data.body || '',
-        icon: data.icon || '/static/pwa/icon-192.png',
-        badge: '/static/pwa/icon-192.png',
+        icon: data.icon || ICON_192,
+        badge: ICON_192,
         tag,
         renotify: true,
         // Vibración corta (Android): dos pulsos de 200ms con 100ms de pausa.
