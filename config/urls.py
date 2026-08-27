@@ -48,6 +48,7 @@ urlpatterns = [
     path('capacitaciones/', include('apps.training.urls')),
     path('evaluaciones/', include('apps.evaluations.urls')),
     path('encuestas/', include('apps.surveys.urls')),
+    path('sorteos/', include('apps.sorteos.urls')),
     path('reconocimientos/', include('apps.recognition.urls')),
     path('notificaciones/', include('apps.notifications.urls')),
     path('reportes/', include('apps.reports.urls')),

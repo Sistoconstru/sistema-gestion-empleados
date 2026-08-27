@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}{% if sorteo %}Editar{% else %}Crear{% endif %} sorteo | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0"><i class="fas fa-gift me-2"></i>{% if sorteo %}Editar sorteo{% else %}Crear sorteo{% endif %}</h4>
+      <a href="{% url 'sorteos:admin_lista' %}" class="btn btn-light btn-sm"><i class="fas fa-arrow-left me-1"></i>Volver</a>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Código *</label>
+            <input type="text" name="codigo" class="form-control" required
+                   maxlength="30"
+                   value="{{ sorteo.codigo|default:'' }}"
+                   {% if sorteo %}readonly{% endif %}
+                   placeholder="SORTEO-CEL-2026">
+            <div class="form-text">Identificador corto, sin espacios. No se puede cambiar después.</div>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Nombre *</label>
+            <input type="text" name="nombre" class="form-control" required
+                   value="{{ sorteo.nombre|default:'' }}"
+                   placeholder="Sorteo de celulares usados 2026">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="3"
+                      placeholder="Detalles del premio y del sorteo…">{{ sorteo.descripcion|default:'' }}</textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Cantidad de premios *</label>
+            <input type="number" name="cantidad_premios" class="form-control" required
+                   min="1" value="{{ sorteo.cantidad_premios|default:1 }}">
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Encuesta requisito *</label>
+            <select name="encuesta_requisito" class="form-select" required>
+              <option value="">Selecciona una encuesta…</option>
+              {% for enc in encuestas %}
+                <option value="{{ enc.id }}" {% if sorteo and sorteo.encuesta_requisito_id == enc.id %}selected{% endif %}>
+                  {{ enc.codigo }} · {{ enc.nombre }}
+                </option>
+              {% endfor %}
+            </select>
+            <div class="form-text">El empleado debe haber <strong>completado</strong> esta encuesta para inscribirse.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Inicio inscripción *</label>
+            <input type="date" name="fecha_inicio_inscripcion" class="form-control" required
+                   value="{{ sorteo.fecha_inicio_inscripcion|date:'Y-m-d'|default:hoy_iso }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fin inscripción *</label>
+            <input type="date" name="fecha_fin_inscripcion" class="form-control" required
+                   value="{{ sorteo.fecha_fin_inscripcion|date:'Y-m-d'|default:'' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fecha del sorteo *</label>
+            <input type="date" name="fecha_sorteo" class="form-control" required
+                   value="{{ sorteo.fecha_sorteo|date:'Y-m-d'|default:'' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Imagen del premio</label>
+            <input type="file" name="imagen" accept="image/*" class="form-control">
+            {% if sorteo.imagen %}
+              <div class="mt-2"><img src="{{ sorteo.imagen.url }}" style="max-height: 130px; border-radius: 6px;"></div>
+            {% endif %}
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <div>
+              <div class="form-check">
+                <input type="checkbox" name="require_pwa" id="require_pwa" class="form-check-input"
+                       {% if sorteo.require_pwa|default:True %}checked{% endif %}>
+                <label class="form-check-label" for="require_pwa">Requiere PWA instalada</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" name="activo" id="activo" class="form-check-input"
+                       {% if sorteo is None or sorteo.activo %}checked{% endif %}>
+                <label class="form-check-label" for="activo">Sorteo activo (visible para empleados)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+          <button class="btn btn-danger"><i class="fas fa-save me-1"></i>Guardar</button>
+          <a href="{% url 'sorteos:admin_lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

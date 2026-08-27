@@ -51,6 +51,7 @@ LOCAL_APPS = [
     'apps.notifications',
     'apps.reports',
     'apps.integraciones.odoo',
+    'apps.sorteos',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + [

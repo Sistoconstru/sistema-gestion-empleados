@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Inscritos: {{ sorteo.nombre }} | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h3 class="mb-0"><i class="fas fa-list-ol me-2"></i>Inscritos — {{ sorteo.nombre }}</h3>
+      <div class="text-muted small">{{ sorteo.codigo }} · {{ inscripciones|length }} participante{{ inscripciones|length|pluralize }}</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'sorteos:admin_lista' %}" class="btn btn-outline-secondary btn-sm">Volver</a>
+      <a href="{% url 'sorteos:exportar_inscritos' sorteo.pk %}" class="btn btn-success btn-sm">
+        <i class="fas fa-file-excel me-1"></i>Descargar Excel
+      </a>
+      <a href="{% url 'sorteos:realizar' sorteo.pk %}" class="btn btn-danger btn-sm">
+        <i class="fas fa-play me-1"></i>Realizar sorteo
+      </a>
+    </div>
+  </div>
+
+  {% if ganadores %}
+  <div class="card mb-3 border-warning">
+    <div class="card-header bg-warning text-dark"><i class="fas fa-trophy me-1"></i>Ganadores registrados</div>
+    <ul class="list-group list-group-flush">
+      {% for g in ganadores %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>Premio {{ g.orden_premio }}</strong> · Número {{ g.inscripcion.numero }} — {{ g.inscripcion.empleado.nombre_completo }}
+        </div>
+        <span class="small text-muted">{{ g.fecha_seleccion|date:"d/m/Y H:i" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 80px;">N°</th>
+            <th>Empleado</th>
+            <th>Documento</th>
+            <th>Fecha inscripción</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ins in inscripciones %}
+          <tr>
+            <td class="fw-bold text-danger">{{ ins.numero }}</td>
+            <td>{{ ins.empleado.nombre_completo }}</td>
+            <td>{{ ins.empleado.numero_documento }}</td>
+            <td class="small text-muted">{{ ins.fecha_inscripcion|date:"d/m/Y H:i" }}</td>
+            <td>
+              {% if ins.ganador %}
+                <span class="badge bg-warning text-dark"><i class="fas fa-trophy me-1"></i>Ganó premio {{ ins.ganador.orden_premio }}</span>
+              {% else %}
+                <span class="badge bg-secondary">En espera</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center text-muted py-4">Aún no hay inscritos.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

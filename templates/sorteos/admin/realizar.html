@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Sorteo: {{ sorteo.nombre }} | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h3 class="mb-0"><i class="fas fa-random me-2 text-danger"></i>Sorteo — {{ sorteo.nombre }}</h3>
+      <div class="text-muted small">{{ sorteo.codigo }}</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'sorteos:inscritos' sorteo.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-list-ol me-1"></i>Inscritos</a>
+      <a href="{% url 'sorteos:admin_lista' %}" class="btn btn-outline-secondary btn-sm">Volver</a>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between">
+          <span><i class="fas fa-trophy me-1"></i>Extraer ganador</span>
+          <span>Premios entregados: <strong id="entregados">{{ sorteo.total_ganadores }}</strong> / {{ sorteo.cantidad_premios }}</span>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Número extraído (entre 1 y {{ total_inscritos }})</label>
+            <div class="input-group input-group-lg">
+              <input type="number" id="numero" class="form-control text-center fs-1 fw-bold"
+                     min="1" max="{{ total_inscritos }}" autofocus placeholder="?">
+              <button class="btn btn-danger" id="btnBuscar" type="button"><i class="fas fa-search me-1"></i>Buscar ganador</button>
+            </div>
+          </div>
+
+          <div id="alertaError" class="alert alert-warning d-none"></div>
+
+          <div id="cajaGanador" class="text-center d-none border rounded p-4 bg-light">
+            <div class="display-1 text-danger fw-bold mb-3" id="numeroGrande">?</div>
+            <img id="fotoGanador" src="" alt="" style="max-height: 160px; border-radius: 50%; object-fit: cover;" class="mb-3 d-none">
+            <div class="h3 mb-1" id="nombreGanador"></div>
+            <div class="text-muted mb-1"><span id="cargoGanador"></span> · <span id="areaGanador"></span></div>
+            <div class="small text-muted mb-3">Documento: <span id="docGanador"></span></div>
+            <div class="d-flex gap-2 justify-content-center">
+              <button class="btn btn-success btn-lg" id="btnConfirmar" type="button"><i class="fas fa-check me-1"></i>Confirmar entrega</button>
+              <button class="btn btn-outline-secondary" id="btnCancelar" type="button">Descartar y buscar otro</button>
+            </div>
+          </div>
+
+          <div id="cajaCompleto" class="alert alert-success text-center d-none">
+            <i class="fas fa-check-double fa-2x mb-2 d-block"></i>
+            <strong>¡Sorteo completado!</strong> Ya se entregaron todos los premios.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark"><i class="fas fa-list me-1"></i>Ganadores</div>
+        <ul class="list-group list-group-flush" id="listaGanadores">
+          {% for g in ganadores %}
+          <li class="list-group-item d-flex justify-content-between">
+            <span><span class="badge bg-warning text-dark me-2">Premio {{ g.orden_premio }}</span>{{ g.inscripcion.empleado.nombre_completo }}</span>
+            <span class="badge bg-dark">#{{ g.inscripcion.numero }}</span>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-muted small text-center py-3" id="sinGanadores">Aún no hay ganadores.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+  const urlBuscar = "{% url 'sorteos:buscar_numero' sorteo.pk %}";
+  const urlRegistrar = "{% url 'sorteos:registrar_ganador' sorteo.pk %}";
+
+  const $ = (id) => document.getElementById(id);
+  let inscripcionActual = null;
+
+  function ocultarError() { $('alertaError').classList.add('d-none'); }
+  function mostrarError(m) { const a=$('alertaError'); a.textContent=m; a.classList.remove('d-none'); }
+  function ocultarGanador() { $('cajaGanador').classList.add('d-none'); inscripcionActual = null; }
+
+  async function buscar() {
+    ocultarError(); ocultarGanador();
+    const n = parseInt($('numero').value, 10);
+    if (!n || n < 1) { mostrarError('Ingresa un número válido.'); return; }
+    const r = await fetch(urlBuscar, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body: JSON.stringify({ numero: n }),
+    });
+    const data = await r.json();
+    if (!data.ok) { mostrarError(data.error); return; }
+    inscripcionActual = data.inscripcion_id;
+    $('numeroGrande').textContent = data.numero;
+    $('nombreGanador').textContent = data.empleado.nombre;
+    $('cargoGanador').textContent = data.empleado.cargo;
+    $('areaGanador').textContent = data.empleado.area;
+    $('docGanador').textContent = data.empleado.documento;
+    const foto = $('fotoGanador');
+    if (data.empleado.foto_url) { foto.src = data.empleado.foto_url; foto.classList.remove('d-none'); }
+    else foto.classList.add('d-none');
+    $('cajaGanador').classList.remove('d-none');
+  }
+
+  async function confirmar() {
+    if (!inscripcionActual) return;
+    const r = await fetch(urlRegistrar, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body: JSON.stringify({ inscripcion_id: inscripcionActual }),
+    });
+    const data = await r.json();
+    if (!data.ok) { mostrarError(data.error); return; }
+
+    // Añadir a la lista lateral
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between';
+    li.innerHTML = `<span><span class="badge bg-warning text-dark me-2">Premio ${data.orden_premio}</span>${$('nombreGanador').textContent}</span><span class="badge bg-dark">#${$('numeroGrande').textContent}</span>`;
+    const placeholder = $('sinGanadores');
+    if (placeholder) placeholder.remove();
+    $('listaGanadores').appendChild(li);
+
+    $('entregados').textContent = parseInt($('entregados').textContent, 10) + 1;
+    $('numero').value = '';
+    ocultarGanador();
+    if (data.sorteo_completado) {
+      $('cajaCompleto').classList.remove('d-none');
+      $('btnBuscar').disabled = true;
+      $('numero').disabled = true;
+    } else {
+      $('numero').focus();
+    }
+  }
+
+  $('btnBuscar').addEventListener('click', buscar);
+  $('numero').addEventListener('keypress', (e) => { if (e.key === 'Enter') buscar(); });
+  $('btnConfirmar').addEventListener('click', confirmar);
+  $('btnCancelar').addEventListener('click', () => { ocultarGanador(); $('numero').value = ''; $('numero').focus(); });
+
+  {% if sorteo.sorteo_completado %}
+  $('cajaCompleto').classList.remove('d-none');
+  $('btnBuscar').disabled = true;
+  $('numero').disabled = true;
+  {% endif %}
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Sorteos | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-1"><i class="fas fa-gift me-2 text-danger"></i>Sorteos</h2>
+      <div class="text-muted small">Inscríbete para participar en los sorteos activos de Construinmuniza.</div>
+    </div>
+    {% if user.is_staff or user.is_superuser %}
+    <a href="{% url 'sorteos:admin_lista' %}" class="btn btn-outline-primary">
+      <i class="fas fa-cog me-1"></i>Administrar sorteos
+    </a>
+    {% endif %}
+  </div>
+
+  {% if not estados %}
+    <div class="alert alert-info text-center py-4">
+      <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+      No hay sorteos activos en este momento.
+    </div>
+  {% endif %}
+
+  <div class="row g-3">
+    {% for e in estados %}
+    {% with s=e.sorteo %}
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100 border-0">
+        {% if s.imagen %}
+          <img src="{{ s.imagen.url }}" class="card-img-top" style="height: 220px; object-fit: cover;" alt="{{ s.nombre }}">
+        {% else %}
+          <div class="bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
+            <i class="fas fa-gift fa-4x text-secondary"></i>
+          </div>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title mb-1">{{ s.nombre }}</h5>
+          <div class="small text-muted mb-2">
+            <span class="badge bg-warning text-dark">{{ s.cantidad_premios }} premio{{ s.cantidad_premios|pluralize }}</span>
+            · Inscripción hasta el {{ s.fecha_fin_inscripcion|date:"d/m/Y" }}
+            · Sorteo el {{ s.fecha_sorteo|date:"d/m/Y" }}
+          </div>
+          {% if s.descripcion %}
+            <p class="text-muted small">{{ s.descripcion|linebreaksbr }}</p>
+          {% endif %}
+
+          {% if e.ya_inscrito %}
+            <div class="alert alert-success py-2 mb-2">
+              <i class="fas fa-check-circle me-1"></i>
+              Estás inscrito con el <strong>número {{ e.mi_numero }}</strong>. ¡Suerte!
+            </div>
+          {% elif not e.abierto %}
+            <div class="alert alert-secondary py-2 mb-2">
+              <i class="fas fa-lock me-1"></i>
+              Las inscripciones están cerradas.
+            </div>
+          {% else %}
+            <div class="mb-2">
+              <div class="small mb-1">Requisitos:</div>
+              <ul class="list-unstyled small">
+                {% if s.require_pwa %}
+                  <li>{% if e.tiene_pwa %}<span class="text-success"><i class="fas fa-check-circle me-1"></i></span>{% else %}<span class="text-danger"><i class="fas fa-times-circle me-1"></i></span>{% endif %}
+                    Aplicación SIGHU instalada (PWA con notificaciones activas)
+                  </li>
+                {% endif %}
+                <li>{% if e.respondio_encuesta %}<span class="text-success"><i class="fas fa-check-circle me-1"></i></span>{% else %}<span class="text-danger"><i class="fas fa-times-circle me-1"></i></span>{% endif %}
+                  Responder la encuesta
+                  {% if s.encuesta_requisito %}<em>«{{ s.encuesta_requisito.nombre }}»</em>{% endif %}
+                </li>
+              </ul>
+            </div>
+
+            {% if e.puede_inscribirse %}
+              <form method="post" action="{% url 'sorteos:inscribirme' s.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-danger w-100"><i class="fas fa-hand-point-up me-1"></i>Inscribirme</button>
+              </form>
+            {% elif s.require_pwa and not e.tiene_pwa %}
+              <button class="btn btn-outline-secondary w-100" disabled>
+                <i class="fas fa-mobile-alt me-1"></i>Instala la app para inscribirte
+              </button>
+            {% elif not e.respondio_encuesta and e.url_encuesta %}
+              <a href="{{ e.url_encuesta }}" class="btn btn-outline-primary w-100">
+                <i class="fas fa-clipboard-list me-1"></i>Responder encuesta para poder inscribirme
+              </a>
+            {% else %}
+              <button class="btn btn-outline-secondary w-100" disabled>No puedes inscribirte</button>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

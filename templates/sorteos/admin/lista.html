@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Administrar sorteos | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-1"><i class="fas fa-gift me-2 text-danger"></i>Administrar sorteos</h2>
+      <div class="text-muted small">Crear, editar y ejecutar sorteos entre los empleados.</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'sorteos:index' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Volver</a>
+      <a href="{% url 'sorteos:crear' %}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nuevo sorteo</a>
+    </div>
+  </div>
+
+  {% if not sorteos %}
+    <div class="alert alert-info">Todavía no hay sorteos. Crea el primero con el botón «Nuevo sorteo».</div>
+  {% endif %}
+
+  <div class="row g-3">
+    {% for s in sorteos %}
+    <div class="col-md-6 col-xl-4">
+      <div class="card h-100 shadow-sm">
+        {% if s.imagen %}
+          <img src="{{ s.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="">
+        {% endif %}
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <h5 class="card-title mb-0">{{ s.nombre }}</h5>
+            {% if s.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Apagado</span>{% endif %}
+          </div>
+          <div class="small text-muted mb-2">{{ s.codigo }}</div>
+          <div class="small mb-2">
+            <div><i class="fas fa-gift text-danger me-1"></i>{{ s.cantidad_premios }} premio{{ s.cantidad_premios|pluralize }} · entregados: {{ s.total_ganadores }}</div>
+            <div><i class="fas fa-users text-primary me-1"></i>Inscritos: {{ s.total_inscritos }}</div>
+            <div><i class="fas fa-calendar text-secondary me-1"></i>Inscripción {{ s.fecha_inicio_inscripcion|date:"d/m" }} → {{ s.fecha_fin_inscripcion|date:"d/m/Y" }}</div>
+            <div><i class="fas fa-random text-warning me-1"></i>Sorteo: {{ s.fecha_sorteo|date:"d/m/Y" }}</div>
+          </div>
+          <div class="d-flex gap-1 flex-wrap">
+            <a href="{% url 'sorteos:editar' s.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-cog me-1"></i>Editar</a>
+            <a href="{% url 'sorteos:inscritos' s.pk %}" class="btn btn-sm btn-outline-secondary"><i class="fas fa-list-ol me-1"></i>Inscritos ({{ s.total_inscritos }})</a>
+            <a href="{% url 'sorteos:realizar' s.pk %}" class="btn btn-sm btn-danger"><i class="fas fa-play me-1"></i>Realizar sorteo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
