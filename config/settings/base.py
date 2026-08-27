@@ -146,10 +146,18 @@ STATICFILES_DIRS = [
 # Django 5 usa STORAGES; los legados DEFAULT_FILE_STORAGE y STATICFILES_STORAGE
 # ya no surten efecto. Se define aquí el default global (media local + whitenoise
 # para estáticos) y production.py sobrescribe 'default' con S3 (MediaStorage).
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # legado (informativo)
+#
+# staticfiles: `CompressedStaticFilesStorage` (con compresión gzip/br, SIN
+# manifest hasheado). Antes teníamos `CompressedManifestStaticFilesStorage`
+# pero rompe collectstatic cuando un CSS vendor referencia un `.map` que no
+# está en el repo (bootstrap.min.css referencia bootstrap.min.css.map). El
+# manifest es solo cache-busting: sin él, el whitenoise middleware sigue
+# sirviendo estáticos con Cache-Control largo por sus content-hash, y todos
+# los templates ({% static %}) siguen funcionando.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # legado (informativo)
 STORAGES = {
     'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
-    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage'},
 }
 
 # Media files
