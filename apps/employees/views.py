@@ -1236,6 +1236,9 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
         # === ENCUESTAS ===
         context.update(self.get_encuestas(empleado))
 
+        # === SORTEOS ===
+        context.update(self.get_sorteos(empleado))
+
         # === EMPLEADOS A CARGO ===
         context.update(self.get_empleados_a_cargo(empleado))
         
@@ -1638,6 +1641,76 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                     'lista_proximas_vencer': [], 'ultima_completada': None
                 }
             }
+
+    def get_sorteos(self, empleado):
+        """Sorteos activos + estado de inscripción del empleado.
+
+        Devuelve dict {abiertos, mis_inscripciones, disponibles_para_mi, lista}
+        para pintar el tile y el card de sorteos en el perfil.
+        """
+        try:
+            from datetime import date
+            from apps.sorteos.models import Sorteo, InscripcionSorteo
+            from apps.surveys.models import ParticipacionEncuesta
+
+            hoy = date.today()
+            abiertos = Sorteo.objects.filter(
+                activo=True,
+                fecha_inicio_inscripcion__lte=hoy,
+                fecha_fin_inscripcion__gte=hoy,
+            ).select_related('encuesta_requisito').order_by('-fecha_creacion')
+
+            mis_ids = set(
+                InscripcionSorteo.objects.filter(empleado=empleado)
+                .values_list('sorteo_id', flat=True)
+            )
+            encuestas_completadas = set(
+                ParticipacionEncuesta.objects.filter(
+                    empleado=empleado, completada=True,
+                ).values_list('encuesta_id', flat=True)
+            )
+
+            lista = []
+            disponibles = 0
+            for s in abiertos:
+                ya = s.id in mis_ids
+                if not ya and not s.sorteo_completado:
+                    disponibles += 1
+                respondio = (
+                    s.encuesta_requisito_id in encuestas_completadas
+                    if s.encuesta_requisito_id else True
+                )
+                mi_numero = None
+                if ya:
+                    ins = InscripcionSorteo.objects.filter(
+                        sorteo=s, empleado=empleado,
+                    ).values_list('numero', flat=True).first()
+                    mi_numero = ins
+                lista.append({
+                    'sorteo': s,
+                    'ya_inscrito': ya,
+                    'mi_numero': mi_numero,
+                    'respondio_encuesta': respondio,
+                    'url_encuesta': (
+                        f'/encuestas/responder/{s.encuesta_requisito_id}/'
+                        if s.encuesta_requisito_id else None
+                    ),
+                })
+
+            return {
+                'sorteos': {
+                    'abiertos': abiertos.count(),
+                    'mis_inscripciones': len(mis_ids),
+                    'disponibles_para_mi': disponibles,
+                    'lista': lista[:5],
+                }
+            }
+        except Exception as e:
+            logger.error(f'Error en get_sorteos: {e}')
+            return {'sorteos': {
+                'abiertos': 0, 'mis_inscripciones': 0,
+                'disponibles_para_mi': 0, 'lista': [],
+            }}
 
     def get_empleados_a_cargo(self, empleado):
         """Obtener empleados a cargo según jerarquía organizacional"""
