@@ -143,7 +143,14 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Django 5 usa STORAGES; los legados DEFAULT_FILE_STORAGE y STATICFILES_STORAGE
+# ya no surten efecto. Se define aquí el default global (media local + whitenoise
+# para estáticos) y production.py sobrescribe 'default' con S3 (MediaStorage).
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # legado (informativo)
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+}
 
 # Media files
 MEDIA_URL = '/media/'

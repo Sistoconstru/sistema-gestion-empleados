@@ -1,7 +1,12 @@
 from .base import *
 
-# Configuración de storage para producción
-DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'
+# Storage: media → S3 (MediaStorage), staticfiles → whitenoise (hereda de base).
+# Django 5.x usa STORAGES; el legado DEFAULT_FILE_STORAGE ya no surte efecto.
+# Sin esto Django cae al FileSystemStorage local del container Railway (que se
+# pierde en cada deploy) y ninguna imagen sin `storage=MediaStorage()` explícito
+# llega al bucket.
+DEFAULT_FILE_STORAGE = 'custom_storage.media.MediaStorage'  # legado (informativo)
+STORAGES['default'] = {'BACKEND': 'custom_storage.media.MediaStorage'}
 
 # Log para verificar el settings activo
 import os
