@@ -72,12 +72,13 @@
             </div>
 
             {% if e.puede_inscribirse %}
-              <form method="post" action="{% url 'sorteos:inscribirme' s.pk %}">
+              <form method="post" action="{% url 'sorteos:inscribirme' s.pk %}" class="form-inscripcion" data-require-pwa="{{ s.require_pwa|yesno:'1,0' }}">
                 {% csrf_token %}
+                <input type="hidden" name="standalone" value="0">
                 <button class="btn btn-danger w-100"><i class="fas fa-hand-point-up me-1"></i>Inscribirme</button>
               </form>
             {% elif s.require_pwa and not e.tiene_pwa %}
-              <button class="btn btn-outline-secondary w-100" disabled>
+              <button class="btn btn-outline-secondary w-100 btn-abrir-app-msg" type="button">
                 <i class="fas fa-mobile-alt me-1"></i>Instala la app para inscribirte
               </button>
             {% elif not e.respondio_encuesta and e.url_encuesta %}
@@ -95,4 +96,84 @@
     {% endfor %}
   </div>
 </div>
+
+<!-- Modal: instalar app antes de inscribirse -->
+<div class="modal fade" id="modalInstalarApp" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="fas fa-mobile-alt me-2"></i>Instala SIGHU para inscribirte</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Para participar en el sorteo debes tener SIGHU instalada como <strong>aplicación (PWA)</strong>.
+           Al momento de la entrega del premio te la pediremos abierta desde la app.</p>
+        <div id="hint-android" class="alert alert-info small d-none">
+          <strong>Android/Windows/Chrome:</strong> haz clic en <em>Instalar aplicación</em> abajo, o busca
+          el icono <i class="fas fa-download"></i> en la barra del navegador.
+        </div>
+        <div id="hint-ios" class="alert alert-info small d-none">
+          <strong>iPhone/iPad (Safari):</strong> toca el botón compartir <i class="fas fa-share-square"></i>
+          y elige <em>«Añadir a pantalla de inicio»</em>. Luego abre SIGHU desde ese ícono en tu pantalla.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Ahora no</button>
+        <button type="button" class="btn btn-danger" id="btnInstalarApp">
+          <i class="fas fa-download me-1"></i>Instalar aplicación
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const PWA = window.SIGHU_PWA || {};
+  const enStandalone = typeof PWA.isStandalone === 'function'
+      ? PWA.isStandalone()
+      : (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+        || window.navigator.standalone === true;
+
+  const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  function abrirModalInstalar() {
+    document.getElementById('hint-ios').classList.toggle('d-none', !esIOS);
+    document.getElementById('hint-android').classList.toggle('d-none', esIOS);
+    const btn = document.getElementById('btnInstalarApp');
+    btn.disabled = esIOS || !(PWA.canInstall && PWA.canInstall());
+    btn.textContent = esIOS ? 'Sigue las instrucciones arriba' : (btn.dataset.originalText || btn.textContent);
+    btn.dataset.originalText = 'Instalar aplicación';
+    if (!esIOS && PWA.canInstall && PWA.canInstall()) {
+      btn.innerHTML = '<i class="fas fa-download me-1"></i>Instalar aplicación';
+    }
+    new bootstrap.Modal(document.getElementById('modalInstalarApp')).show();
+  }
+
+  document.getElementById('btnInstalarApp').addEventListener('click', async function () {
+    if (PWA.installApp) {
+      await PWA.installApp();
+    }
+  });
+
+  // Bloquear el submit del form de inscripción si NO está en standalone
+  document.querySelectorAll('form.form-inscripcion').forEach(function (form) {
+    const requierePwa = form.dataset.requirePwa === '1';
+    const inputStandalone = form.querySelector('input[name="standalone"]');
+    if (inputStandalone) inputStandalone.value = enStandalone ? '1' : '0';
+
+    form.addEventListener('submit', function (e) {
+      if (requierePwa && !enStandalone) {
+        e.preventDefault();
+        abrirModalInstalar();
+      }
+    });
+  });
+
+  // Botón "Instala la app" (cuando el server ya sabía que no cumplía)
+  document.querySelectorAll('.btn-abrir-app-msg').forEach(function (btn) {
+    btn.addEventListener('click', abrirModalInstalar);
+  });
+})();
+</script>
 {% endblock %}

@@ -30,8 +30,13 @@ def _empleado_de(user):
 
 
 def _tiene_pwa(user):
-    """Proxy: tiene al menos una PushSubscription activa (indicador de PWA
-    instalada / navegador aceptando notificaciones de SIGHU)."""
+    """Proxy server-side (orientativo): existe PushSubscription activa.
+
+    La verificación DEFINITIVA la hace el cliente al momento de inscribirse
+    con `matchMedia('(display-mode: standalone)').matches` y envía el flag
+    'standalone' en el POST. Este proxy se usa solo para pintar el estado
+    inicial del requisito en la lista.
+    """
     from apps.notifications.models import PushSubscription
     return PushSubscription.objects.filter(usuario=user, activa=True).exists()
 
@@ -106,11 +111,17 @@ class InscribirseSorteoView(LoginRequiredMixin, View):
             messages.error(request, 'No tienes ficha de empleado activa.')
             return redirect('sorteos:index')
 
-        if sorteo.require_pwa and not estado['tiene_pwa']:
-            messages.error(request,
-                'Debes tener SIGHU instalada como aplicación (PWA) y notificaciones '
-                'activas para inscribirte.')
-            return redirect('sorteos:index')
+        # Verificación PWA — la definitiva es client-side vía flag `standalone`.
+        # El JS del template previene el submit si el navegador no está en
+        # display-mode: standalone; aquí validamos que ese flag venga en el POST.
+        if sorteo.require_pwa:
+            standalone_flag = request.POST.get('standalone') == '1'
+            if not standalone_flag:
+                messages.error(request,
+                    'Debes abrir SIGHU como aplicación instalada (PWA) para '
+                    'poder inscribirte. Instala la aplicación desde el banner '
+                    'y vuelve a intentarlo.')
+                return redirect('sorteos:index')
 
         if not estado['respondio_encuesta']:
             if sorteo.encuesta_requisito:
