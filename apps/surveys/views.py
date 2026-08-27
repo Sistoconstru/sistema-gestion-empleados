@@ -121,9 +121,12 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         """Mostrar formulario de encuesta"""
-        encuesta = get_object_or_404(Encuesta, pk=pk, activa=True)
+        # No filtramos por activa=True aquí — devolver 404 en una encuesta
+        # cerrada rompe el botón "Continuar" desde "Mis encuestas" cuando el
+        # admin la desactiva o el cron la cierra antes de que el empleado
+        # terminara. Chequeamos activa después para dar un mensaje claro.
+        encuesta = get_object_or_404(Encuesta, pk=pk)
 
-        # Verificar si ya completó la encuesta
         participacion = ParticipacionEncuesta.objects.filter(
             empleado__usuario=request.user,
             encuesta=encuesta
@@ -132,6 +135,12 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
         if participacion and participacion.completada:
             messages.warning(request, 'Ya has completado esta encuesta.')
             return redirect('surveys:index')
+
+        if not encuesta.activa:
+            messages.warning(request,
+                f'La encuesta "{encuesta.nombre}" ya fue cerrada. Tu progreso quedó '
+                f'guardado pero no puedes agregar más respuestas.')
+            return redirect('surveys:mis_encuestas')
 
         # Obtener o crear participación
         if not participacion:
@@ -168,7 +177,12 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         """Guardar respuestas de encuesta"""
-        encuesta = get_object_or_404(Encuesta, pk=pk, activa=True)
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        if not encuesta.activa:
+            return JsonResponse({
+                'success': False,
+                'message': 'La encuesta ya fue cerrada; no se aceptan más respuestas.',
+            }, status=400)
 
         # Obtener participación existente
         participacion = ParticipacionEncuesta.objects.filter(
