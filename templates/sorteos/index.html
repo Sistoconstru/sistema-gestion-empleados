@@ -71,16 +71,18 @@
               </ul>
             </div>
 
-            {% if e.puede_inscribirse %}
+            {% if e.puede_intentar_inscripcion %}
               <form method="post" action="{% url 'sorteos:inscribirme' s.pk %}" class="form-inscripcion" data-require-pwa="{{ s.require_pwa|yesno:'1,0' }}">
                 {% csrf_token %}
                 <input type="hidden" name="standalone" value="0">
-                <button class="btn btn-danger w-100"><i class="fas fa-hand-point-up me-1"></i>Inscribirme</button>
+                {% if e.puede_inscribirse %}
+                  <button class="btn btn-danger w-100"><i class="fas fa-hand-point-up me-1"></i>Inscribirme</button>
+                {% else %}
+                  <button class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-mobile-alt me-1"></i>Instala la app para inscribirte
+                  </button>
+                {% endif %}
               </form>
-            {% elif s.require_pwa and not e.tiene_pwa %}
-              <button class="btn btn-outline-secondary w-100 btn-abrir-app-msg" type="button">
-                <i class="fas fa-mobile-alt me-1"></i>Instala la app para inscribirte
-              </button>
             {% elif not e.respondio_encuesta and e.url_encuesta %}
               <a href="{{ e.url_encuesta }}" class="btn btn-outline-primary w-100">
                 <i class="fas fa-clipboard-list me-1"></i>Responder encuesta para poder inscribirme
@@ -214,11 +216,6 @@
     });
   });
 
-  // Botón "Instala la app" (cuando el server ya sabía que no cumplía).
-  // Aquí no hay form todavía — al continuar tras el modal reload la página.
-  document.querySelectorAll('.btn-abrir-app-msg').forEach(function (btn) {
-    btn.addEventListener('click', function () { abrirModalInstalar(null); });
-  });
 })();
 </script>
 {% endblock %}
