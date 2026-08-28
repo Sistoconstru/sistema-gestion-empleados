@@ -116,6 +116,10 @@
           <strong>iPhone/iPad (Safari):</strong> toca el botón compartir <i class="fas fa-share-square"></i>
           y elige <em>«Añadir a pantalla de inicio»</em>. Luego abre SIGHU desde ese ícono en tu pantalla.
         </div>
+        <div id="hint-ya-instalada" class="alert alert-success small d-none">
+          <strong>¿Ya la tienes instalada?</strong> Al momento de entregarte el premio te la pediremos
+          abierta desde el ícono de SIGHU en tu escritorio o pantalla de inicio. Continúa para inscribirte.
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Ahora no</button>
@@ -136,27 +140,67 @@
         || window.navigator.standalone === true;
 
   const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  // ID del sorteo que gatilló el modal — lo usamos para reanudar el submit
+  // si el usuario confirma que la app ya está instalada.
+  let formPendiente = null;
 
-  function abrirModalInstalar() {
+  function abrirModalInstalar(form) {
+    formPendiente = form || null;
+    const puedeInstalar = !esIOS && PWA.canInstall && PWA.canInstall();
     document.getElementById('hint-ios').classList.toggle('d-none', !esIOS);
-    document.getElementById('hint-android').classList.toggle('d-none', esIOS);
+    document.getElementById('hint-android').classList.toggle('d-none', esIOS || !puedeInstalar);
+    // Cuando el navegador NO ofrece prompt (ya instalada, o Firefox/Safari
+    // desktop sin API) mostramos el hint verde para que el usuario continúe.
+    document.getElementById('hint-ya-instalada').classList.toggle('d-none', esIOS || puedeInstalar);
+
     const btn = document.getElementById('btnInstalarApp');
-    btn.disabled = esIOS || !(PWA.canInstall && PWA.canInstall());
-    btn.textContent = esIOS ? 'Sigue las instrucciones arriba' : (btn.dataset.originalText || btn.textContent);
-    btn.dataset.originalText = 'Instalar aplicación';
-    if (!esIOS && PWA.canInstall && PWA.canInstall()) {
+    btn.disabled = false;   // Siempre habilitado — hace algo útil en cualquier caso
+    if (esIOS) {
+      btn.innerHTML = '<i class="fas fa-check me-1"></i>Ya la tengo, continuar';
+    } else if (puedeInstalar) {
       btn.innerHTML = '<i class="fas fa-download me-1"></i>Instalar aplicación';
+    } else {
+      btn.innerHTML = '<i class="fas fa-check me-1"></i>Ya está instalada, continuar';
     }
     new bootstrap.Modal(document.getElementById('modalInstalarApp')).show();
   }
 
+  function cerrarModal() {
+    const inst = bootstrap.Modal.getInstance(document.getElementById('modalInstalarApp'));
+    if (inst) inst.hide();
+  }
+
+  function reanudarInscripcion() {
+    if (!formPendiente) return;
+    // Marcar standalone=1 (usuario declara tener la app instalada) y reenviar
+    const input = formPendiente.querySelector('input[name="standalone"]');
+    if (input) input.value = '1';
+    formPendiente.submit();
+    formPendiente = null;
+  }
+
   document.getElementById('btnInstalarApp').addEventListener('click', async function () {
-    if (PWA.installApp) {
-      await PWA.installApp();
+    const puedeInstalar = !esIOS && PWA.canInstall && PWA.canInstall();
+    if (puedeInstalar) {
+      // Dispara el prompt de instalación del navegador.
+      const res = await PWA.installApp();
+      // Si aceptó, cerrar modal e ir a la inscripción (aunque el navegador
+      // aún reporte "no standalone" — el usuario acaba de instalar la app).
+      if (res && res.outcome === 'accepted') {
+        cerrarModal();
+        reanudarInscripcion();
+        return;
+      }
+      // Rechazó: dejamos el modal para que decida.
+      return;
     }
+    // No hay prompt disponible (ya instalada / iOS / navegador sin API):
+    // el usuario dice tenerla → confiamos y continuamos con la inscripción.
+    cerrarModal();
+    reanudarInscripcion();
   });
 
-  // Bloquear el submit del form de inscripción si NO está en standalone
+  // Bloquear el submit del form de inscripción si NO está en standalone.
   document.querySelectorAll('form.form-inscripcion').forEach(function (form) {
     const requierePwa = form.dataset.requirePwa === '1';
     const inputStandalone = form.querySelector('input[name="standalone"]');
@@ -165,14 +209,15 @@
     form.addEventListener('submit', function (e) {
       if (requierePwa && !enStandalone) {
         e.preventDefault();
-        abrirModalInstalar();
+        abrirModalInstalar(form);
       }
     });
   });
 
-  // Botón "Instala la app" (cuando el server ya sabía que no cumplía)
+  // Botón "Instala la app" (cuando el server ya sabía que no cumplía).
+  // Aquí no hay form todavía — al continuar tras el modal reload la página.
   document.querySelectorAll('.btn-abrir-app-msg').forEach(function (btn) {
-    btn.addEventListener('click', abrirModalInstalar);
+    btn.addEventListener('click', function () { abrirModalInstalar(null); });
   });
 })();
 </script>

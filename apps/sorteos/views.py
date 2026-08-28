@@ -70,9 +70,17 @@ def _estado_inscripcion(sorteo, request):
             if sorteo.encuesta_requisito else None
         ),
     }
+    # `puede_inscribirse` NO exige `tiene_pwa` porque el proxy server-side
+    # (PushSubscription) falla en dos casos legitimos:
+    #  1) usuario tiene la PWA instalada pero rechazo notificaciones push
+    #  2) chrome desktop con push habilitado pero abrio SIGHU en pestana normal
+    # La verificacion real la hace el JS al momento del click via
+    # matchMedia('display-mode: standalone'); si no estamos en la PWA se abre
+    # un modal que ofrece instalar o continuar (bajo declaracion del usuario).
+    # El chequeo final es fisico: al entregar el premio se pide la app abierta.
     r['puede_inscribirse'] = (
         empleado is not None and r['abierto'] and not r['ya_inscrito']
-        and r['tiene_pwa'] and r['respondio_encuesta']
+        and r['respondio_encuesta']
     )
     return r
 
