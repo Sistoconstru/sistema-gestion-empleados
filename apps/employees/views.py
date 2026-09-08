@@ -4943,6 +4943,35 @@ def _empleado_es_administrativo(empleado):
     return hc.cargo.area.codigo == AREA_CODIGO_ADMINISTRATIVA
 
 
+def _coordinadores_con_equipo_operativo():
+    """Retorna los empleados que son jefe_directo de al menos un subordinado
+    operativo activo (no administrativo). Usado por RRHH para elegir a qué
+    coordinador cargarle novedades de su equipo."""
+    subs_ids = (
+        HistorialCargo.objects.filter(activo=True)
+        .exclude(cargo__area__codigo=AREA_CODIGO_ADMINISTRATIVA)
+        .values_list('empleado_id', flat=True)
+    )
+    jefes_ids = (
+        HistorialCargo.objects.filter(
+            activo=True, empleado_id__in=subs_ids, jefe_directo__isnull=False,
+        )
+        .values_list('jefe_directo_id', flat=True).distinct()
+    )
+    return (
+        Empleado.objects.filter(pk__in=jefes_ids, estado__codigo='999')
+        .order_by('apellidos', 'nombres')
+    )
+
+
+def _equipo_operativo_de(coordinador):
+    """Subordinados directos operativos activos de un coordinador."""
+    return [
+        e for e in _subalternos_activos_de(coordinador)
+        if not _empleado_es_administrativo(e)
+    ]
+
+
 @login_required
 def novedades_semana(request):
     """Vista semanal de novedades del equipo del jefe.
@@ -5399,6 +5428,272 @@ def novedades_export_excel_jefe(request):
         fecha_desde, fecha_hasta,
     )
 
+    response = HttpResponse(
+        contenido,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Cache-Control'] = 'no-store'
+    return response
+
+
+# ============================================================================
+# NOVEDADES — MÓDULO RRHH (excepcional, auto-aprobadas)
+# ============================================================================
+
+
+@staff_member_required
+def novedades_rrhh_semana(request):
+    """Vista para RRHH: cargar novedades de cualquier empleado operativo.
+
+    Flujo:
+    - Sin ?coordinador → tabla con lista de coordinadores + link para entrar.
+    - Con ?coordinador=<id> → tabla semanal del equipo de ese coordinador.
+    - POST crea la novedad y la marca 'aprobada' automáticamente (registrada
+      por RRHH implica que ya hay aval — caso especial). Trazabilidad queda
+      en `registrado_por` (usuario RRHH) y `aprobado_por_rrhh`.
+    """
+    from datetime import date, timedelta
+    from decimal import Decimal, InvalidOperation
+    from django.db import transaction
+
+    fecha_ref = _fecha_desde_query(request, default=date.today())
+    lunes = _lunes_de_semana(fecha_ref)
+    dias_semana = [lunes + timedelta(days=i) for i in range(7)]
+
+    coord_id_raw = (request.GET.get('coordinador') or '').strip()
+    coordinador = None
+    if coord_id_raw:
+        try:
+            coordinador = Empleado.objects.get(pk=coord_id_raw)
+        except (Empleado.DoesNotExist, ValueError):
+            coordinador = None
+
+    coordinadores = _coordinadores_con_equipo_operativo()
+
+    # Empleado RRHH que registra (para trazabilidad + aprobación auto)
+    try:
+        registrado_por = Empleado.objects.get(usuario=request.user)
+    except Empleado.DoesNotExist:
+        registrado_por = None
+
+    # POST: crear novedad (misma estructura que jefe pero equipo = del coord)
+    if request.method == 'POST':
+        if not coordinador:
+            messages.error(request, 'Debes seleccionar un coordinador primero.')
+            return redirect('employees:novedades_rrhh_semana')
+
+        equipo = _equipo_operativo_de(coordinador)
+        equipo_ids = {e.pk for e in equipo}
+
+        empleado_id = request.POST.get('empleado_id')
+        fechas_str = request.POST.getlist('fechas') or [request.POST.get('fecha')]
+        tipo = (request.POST.get('tipo') or '').strip()
+        total_horas_str = (request.POST.get('total_horas') or '').strip()
+        motivo = (request.POST.get('motivo') or '').strip()
+        observaciones = (request.POST.get('observaciones') or '').strip()
+        hora_inicio_str = (request.POST.get('hora_inicio') or '').strip()
+        hora_fin_str = (request.POST.get('hora_fin') or '').strip()
+
+        redirect_url = (
+            f'{reverse("employees:novedades_rrhh_semana")}'
+            f'?coordinador={coordinador.pk}&fecha={lunes.isoformat()}'
+        )
+
+        try:
+            empleado_obj = Empleado.objects.get(pk=empleado_id)
+        except (Empleado.DoesNotExist, ValueError):
+            messages.error(request, 'Empleado inválido.')
+            return redirect(redirect_url)
+
+        if empleado_obj.pk not in equipo_ids:
+            messages.error(request, 'Ese empleado no pertenece al equipo del coordinador seleccionado.')
+            return redirect(redirect_url)
+
+        from datetime import datetime as _dt_parse
+        fechas_objetivo = []
+        for fs in fechas_str:
+            if not fs:
+                continue
+            try:
+                f = _dt_parse.strptime(fs, '%Y-%m-%d').date()
+            except (TypeError, ValueError):
+                continue
+            if f in dias_semana and f not in fechas_objetivo:
+                fechas_objetivo.append(f)
+        if not fechas_objetivo:
+            messages.error(request, 'Debes seleccionar al menos un día de la semana visible.')
+            return redirect(redirect_url)
+
+        tipos_validos = {c[0] for c in NovedadNomina.TIPO_CHOICES} | {'hora_extra_auto'}
+        if tipo not in tipos_validos:
+            messages.error(request, f'Tipo de novedad inválido: {tipo}')
+            return redirect(redirect_url)
+
+        # Parseo horas
+        hi = hf = None
+        if hora_inicio_str:
+            try:
+                hi = _dt_parse.strptime(hora_inicio_str, '%H:%M').time()
+            except ValueError:
+                hi = None
+        if hora_fin_str:
+            try:
+                hf = _dt_parse.strptime(hora_fin_str, '%H:%M').time()
+            except ValueError:
+                hf = None
+
+        try:
+            total_horas = Decimal(total_horas_str) if total_horas_str else None
+        except (InvalidOperation, TypeError):
+            total_horas = None
+
+        if not motivo:
+            messages.error(request, 'El motivo es obligatorio.')
+            return redirect(redirect_url)
+
+        creadas = 0
+        ahora = timezone.now()
+        try:
+            with transaction.atomic():
+                for f in fechas_objetivo:
+                    # Nota: para 'hora_extra_auto' aquí no segmentamos; usamos
+                    # 'hora_extra_diurna' por defecto. La segmentación
+                    # automatica queda para el flujo del jefe (ya probado).
+                    tipo_final = tipo if tipo != 'hora_extra_auto' else 'hora_extra_diurna'
+                    NovedadNomina.objects.create(
+                        empleado=empleado_obj,
+                        fecha=f,
+                        tipo=tipo_final,
+                        total_horas=total_horas or Decimal('0'),
+                        hora_inicio=hi, hora_fin=hf,
+                        motivo=motivo,
+                        observaciones=observaciones,
+                        registrado_por=registrado_por,
+                        creado_por=request.user,
+                        # Auto-aprobación: RRHH la registra ya avalada.
+                        estado_aprobacion='aprobada',
+                        aprobado_por_rrhh=request.user,
+                        fecha_aprobacion=ahora,
+                    )
+                    creadas += 1
+        except Exception as e:
+            messages.error(request, f'Error al guardar: {e}')
+            return redirect(redirect_url)
+
+        messages.success(
+            request,
+            f'Novedad registrada y aprobada automáticamente en {creadas} día(s).',
+        )
+        return redirect(redirect_url)
+
+    # GET: renderizar tabla semanal (o placeholder si no hay coordinador)
+    filas = []
+    if coordinador:
+        equipo = _equipo_operativo_de(coordinador)
+        emp_ids = [e.pk for e in equipo]
+        novedades = list(
+            NovedadNomina.objects.filter(
+                empleado_id__in=emp_ids,
+                fecha__gte=dias_semana[0], fecha__lte=dias_semana[-1],
+            ).select_related('registrado_por').order_by('empleado', 'fecha', 'hora_inicio')
+        )
+        # Indexar por (empleado_id, fecha)
+        idx = {}
+        for n in novedades:
+            idx.setdefault((n.empleado_id, n.fecha), []).append(n)
+        from decimal import Decimal as _D
+        for emp in equipo:
+            celdas = []
+            total_semana = _D('0')
+            for d in dias_semana:
+                lst = idx.get((emp.pk, d), [])
+                total = sum((x.total_horas or _D('0')) for x in lst)
+                total_semana += total
+                celdas.append({'fecha': d, 'novedades': lst, 'total_horas': total})
+            filas.append({'empleado': emp, 'celdas': celdas, 'total_semana': total_semana})
+
+    dias_labels = list(zip(dias_semana, ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']))
+
+    context = {
+        'coordinador': coordinador,
+        'coordinadores': coordinadores,
+        'lunes': lunes,
+        'domingo': dias_semana[-1],
+        'semana_anterior': lunes - timedelta(days=7),
+        'semana_siguiente': lunes + timedelta(days=7),
+        'dias_labels': dias_labels,
+        'filas': filas,
+        'tipo_choices': NovedadNomina.TIPO_CHOICES,
+    }
+    return render(request, 'employees/novedades/rrhh_semana.html', context)
+
+
+@staff_member_required
+def novedades_rrhh_export_excel(request):
+    """Exporta un Excel de novedades agrupadas por coordinador con firma.
+
+    Query params:
+      - ?coordinador=<id>  → solo ese coordinador y su equipo
+      - sin filtro         → todos los coordinadores con equipo operativo
+      - ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD  → rango (default: semana actual)
+    """
+    from datetime import date, timedelta, datetime as _dt
+    from django.http import HttpResponse
+    from apps.employees.utils.excel_novedades import (
+        generar_excel_novedades_por_coordinador, nombre_archivo_novedades,
+    )
+
+    hoy = date.today()
+    default_lunes = hoy - timedelta(days=hoy.weekday())
+    try:
+        fecha_desde = _dt.strptime(request.GET.get('desde', ''), '%Y-%m-%d').date()
+    except ValueError:
+        fecha_desde = default_lunes
+    try:
+        fecha_hasta = _dt.strptime(request.GET.get('hasta', ''), '%Y-%m-%d').date()
+    except ValueError:
+        fecha_hasta = default_lunes + timedelta(days=6)
+    if fecha_desde > fecha_hasta:
+        fecha_desde, fecha_hasta = fecha_hasta, fecha_desde
+
+    coord_id_raw = (request.GET.get('coordinador') or '').strip()
+    if coord_id_raw:
+        try:
+            coordinadores = [Empleado.objects.get(pk=coord_id_raw)]
+        except (Empleado.DoesNotExist, ValueError):
+            messages.error(request, 'Coordinador inválido.')
+            return redirect('employees:novedades_rrhh_semana')
+    else:
+        coordinadores = list(_coordinadores_con_equipo_operativo())
+
+    # Bloques {coordinador, equipo, novedades} para el generador
+    bloques = []
+    for coord in coordinadores:
+        equipo = _equipo_operativo_de(coord)
+        emp_ids = [e.pk for e in equipo]
+        if not emp_ids:
+            continue
+        novs = list(
+            NovedadNomina.objects.filter(
+                empleado_id__in=emp_ids,
+                fecha__gte=fecha_desde, fecha__lte=fecha_hasta,
+            )
+            .select_related('empleado', 'registrado_por', 'aprobado_por_rrhh')
+            .order_by('empleado__apellidos', 'fecha', 'hora_inicio')
+        )
+        # Solo añadimos el bloque si hay novedades — ahorra papel de firma
+        # sobre coordinadores sin novedades en el período.
+        if novs:
+            bloques.append({'coordinador': coord, 'equipo': equipo, 'novedades': novs})
+
+    contenido = generar_excel_novedades_por_coordinador(
+        bloques, fecha_desde=fecha_desde, fecha_hasta=fecha_hasta,
+    )
+    sufijo = f'_{coordinadores[0].apellidos.split()[0].lower()}' if coord_id_raw and coordinadores else ''
+    filename = nombre_archivo_novedades(
+        f'novedades_rrhh{sufijo}', fecha_desde, fecha_hasta,
+    )
     response = HttpResponse(
         contenido,
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

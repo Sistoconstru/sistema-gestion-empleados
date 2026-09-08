@@ -57,6 +57,9 @@ urlpatterns = [
     path('novedades/<int:pk>/eliminar/', views.novedad_eliminar, name='novedad_eliminar'),
     path('novedades/export/excel/', views.novedades_export_excel_jefe, name='novedades_export_excel'),
     path('novedades/aprobacion/', views.novedades_aprobacion, name='novedades_aprobacion'),
+    # Novedades — RRHH (casos especiales, auto-aprobadas)
+    path('admin/novedades/', views.novedades_rrhh_semana, name='novedades_rrhh_semana'),
+    path('admin/novedades/export/excel/', views.novedades_rrhh_export_excel, name='novedades_rrhh_export_excel'),
     path('asistencia/encargado/', views.asistencia_designar_encargado, name='asistencia_designar_encargado'),
 
     # Vacaciones — Administración (staff/RRHH)

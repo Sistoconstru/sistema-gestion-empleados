@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block title %}Novedades — RRHH{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'employees:panel_admin' %}">Panel RRHH</a></li>
+<li class="breadcrumb-item active">Novedades</li>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-corporativo text-white border-corporativo">
+            <div class="card-body">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <div class="profile-avatar bg-white bg-opacity-25 rounded-circle"
+                         style="width: 72px; height: 72px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-business-time fa-2x text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h2 class="mb-1">Novedades — RRHH</h2>
+                        <div class="opacity-75 small">
+                            Casos especiales cargados desde RRHH. Se registran <strong>aprobadas automáticamente</strong>
+                            porque RRHH ya valida el aval del director al momento de cargarlas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    {% for m in messages %}
+        <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show">
+            {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{# Selector de coordinador + Export #}
+<div class="card border-corporativo shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label small text-muted">Coordinador / Jefe directo</label>
+                <select name="coordinador" class="form-select" onchange="this.form.submit()">
+                    <option value="">— Selecciona un coordinador —</option>
+                    {% for c in coordinadores %}
+                    <option value="{{ c.pk }}" {% if coordinador and coordinador.pk == c.pk %}selected{% endif %}>
+                        {{ c.nombre_completo }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Semana</label>
+                <input type="date" name="fecha" value="{{ lunes|date:'Y-m-d' }}" class="form-control">
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-corporativo flex-grow-1" type="submit">
+                    <i class="fas fa-sync me-1"></i>Ver
+                </button>
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalExport">
+                    <i class="fas fa-file-excel"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if not coordinador %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-1"></i>
+        Selecciona un coordinador arriba para ver y cargar novedades de su equipo.
+        Total coordinadores con equipo operativo: <strong>{{ coordinadores|length }}</strong>.
+    </div>
+{% else %}
+
+{# Navegación entre semanas #}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div class="btn-group">
+        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}&fecha={{ semana_anterior|date:'Y-m-d' }}">
+            <i class="fas fa-chevron-left me-1"></i>Semana anterior
+        </a>
+        <a class="btn btn-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}">
+            <i class="fas fa-calendar-day me-1"></i>Esta semana
+        </a>
+        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}&fecha={{ semana_siguiente|date:'Y-m-d' }}">
+            Semana siguiente<i class="fas fa-chevron-right ms-1"></i>
+        </a>
+    </div>
+    <div class="text-muted small">
+        Equipo de <strong>{{ coordinador.nombre_completo }}</strong> ·
+        Semana del {{ lunes|date:"d/m/Y" }} al {{ domingo|date:"d/m/Y" }}
+    </div>
+</div>
+
+<div class="card border-corporativo shadow-sm">
+    <div class="card-header bg-light">
+        <i class="fas fa-users me-2"></i>Novedades por empleado
+        <span class="badge bg-corporativo ms-1">{{ filas|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0" style="min-width: 900px;">
+                <thead class="table-light">
+                    <tr>
+                        <th style="min-width: 200px;">Empleado</th>
+                        {% for f, label in dias_labels %}
+                            <th class="text-center" style="min-width: 90px;">
+                                {{ label }}<br/><small class="text-muted">{{ f|date:"d/m" }}</small>
+                            </th>
+                        {% endfor %}
+                        <th class="text-center">Total sem.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in filas %}
+                        <tr>
+                            <td>
+                                <strong>{{ row.empleado.nombre_completo }}</strong>
+                                <div class="small text-muted">{{ row.empleado.numero_documento }}</div>
+                            </td>
+                            {% for c in row.celdas %}
+                                <td class="text-center align-top" style="padding: 4px;">
+                                    {% if c.novedades %}
+                                        <div class="fw-bold text-corporativo">{{ c.total_horas }}h</div>
+                                        {% for n in c.novedades %}
+                                            <div class="mb-1">
+                                                <span class="badge bg-{% if n.estado_aprobacion == 'aprobada' %}success{% elif n.estado_aprobacion == 'rechazada' %}danger{% else %}warning text-dark{% endif %}"
+                                                      title="{{ n.get_tipo_display }} — {{ n.motivo|truncatechars:60 }}"
+                                                      data-bs-toggle="tooltip">
+                                                    {{ n.total_horas }}h
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <button type="button" class="btn btn-sm btn-outline-corporativo mt-1"
+                                            data-bs-toggle="modal" data-bs-target="#modalNovedad"
+                                            data-empleado-id="{{ row.empleado.id }}"
+                                            data-empleado-nombre="{{ row.empleado.nombre_completo }}"
+                                            data-fecha="{{ c.fecha|date:'Y-m-d' }}"
+                                            title="Agregar novedad">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                            {% endfor %}
+                            <td class="text-center align-middle">
+                                <span class="badge bg-corporativo fs-6">{{ row.total_semana }}h</span>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="9" class="text-center text-muted py-4">Este coordinador no tiene equipo operativo activo.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">
+        <i class="fas fa-info-circle me-1"></i>
+        Todas las novedades que carga RRHH se marcan <span class="badge bg-success">Aprobada</span> automáticamente.
+    </div>
+</div>
+
+{# Modal agregar novedad #}
+<div class="modal fade" id="modalNovedad" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coordinador.pk }}&fecha={{ lunes|date:'Y-m-d' }}">
+                {% csrf_token %}
+                <input type="hidden" name="empleado_id" id="modal_empleado_id">
+                <div class="modal-header bg-corporativo text-white">
+                    <h5 class="modal-title"><i class="fas fa-business-time me-2"></i>Agregar novedad (RRHH)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3 small text-muted"><strong id="modal_empleado_nombre"></strong></div>
+
+                    <div class="alert alert-info small mb-3 py-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Esta novedad se registrará como <strong>aprobada automáticamente</strong>.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Aplicar la novedad a:
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-2" id="btn_marcar_todos">Todos</button>
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="btn_marcar_lv">L-V</button>
+                            <button type="button" class="btn btn-link btn-sm p-0 ms-1" id="btn_desmarcar_todos">Ninguno</button>
+                        </label>
+                        <div class="d-flex flex-wrap gap-2" id="dias_checks">
+                            {% for d, label in dias_labels %}
+                            <label class="form-check border rounded px-2 py-1 mb-0" style="cursor:pointer;">
+                                <input type="checkbox" class="form-check-input me-1 dia-check"
+                                       name="fechas" value="{{ d|date:'Y-m-d' }}"
+                                       data-fecha="{{ d|date:'Y-m-d' }}">
+                                <span class="small"><strong>{{ label }}</strong> {{ d|date:'d/m' }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de novedad *</label>
+                        <select name="tipo" class="form-select" required>
+                            <option value="">— Seleccionar —</option>
+                            {% for cod, label in tipo_choices %}
+                                <option value="{{ cod }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Hora inicio</label>
+                            <input type="time" name="hora_inicio" id="nov_hora_inicio" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Hora fin</label>
+                            <input type="time" name="hora_fin" id="nov_hora_fin" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Total horas *</label>
+                            <input type="number" name="total_horas" id="nov_total_horas"
+                                   step="0.25" min="0.25" class="form-control" required>
+                            <div class="form-text small">Se calcula si ingresas hora inicio y fin.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Motivo *</label>
+                        <textarea name="motivo" class="form-control" rows="2" required
+                                  placeholder="Ej: reemplazo urgente, cobertura por incapacidad..."></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Observaciones</label>
+                        <textarea name="observaciones" class="form-control" rows="2"
+                                  placeholder="(opcional — quién autorizó, contexto...)"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-corporativo">
+                        <i class="fas fa-save me-1"></i>Guardar y aprobar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Modal export Excel #}
+<div class="modal fade" id="modalExport" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="get" action="{% url 'employees:novedades_rrhh_export_excel' %}">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-file-excel me-2"></i>Exportar reporte firmable</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">
+                        Descarga un Excel con las novedades del período, <strong>agrupadas por coordinador</strong>
+                        y con línea de firma al final de cada bloque. Ideal para llevar a firma en físico.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Coordinador</label>
+                        <select name="coordinador" class="form-select">
+                            <option value="">Todos los coordinadores (reporte completo)</option>
+                            {% for c in coordinadores %}
+                            <option value="{{ c.pk }}" {% if coordinador and coordinador.pk == c.pk %}selected{% endif %}>
+                                {{ c.nombre_completo }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Desde</label>
+                            <input type="date" name="desde" value="{{ lunes|date:'Y-m-d' }}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Hasta</label>
+                            <input type="date" name="hasta" value="{{ domingo|date:'Y-m-d' }}" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-success"><i class="fas fa-download me-1"></i>Descargar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var modal = document.getElementById('modalNovedad');
+    if (!modal) return;
+    var hi = document.getElementById('nov_hora_inicio');
+    var hf = document.getElementById('nov_hora_fin');
+    var th = document.getElementById('nov_total_horas');
+    var diaChecks = document.querySelectorAll('.dia-check');
+
+    modal.addEventListener('show.bs.modal', function(ev) {
+        var btn = ev.relatedTarget;
+        document.getElementById('modal_empleado_id').value = btn.getAttribute('data-empleado-id');
+        document.getElementById('modal_empleado_nombre').textContent = btn.getAttribute('data-empleado-nombre');
+        var fecha = btn.getAttribute('data-fecha');
+        diaChecks.forEach(function(c) { c.checked = (c.dataset.fecha === fecha); });
+        hi.value = ''; hf.value = ''; th.value = '';
+    });
+
+    document.getElementById('btn_marcar_todos').addEventListener('click', function() {
+        diaChecks.forEach(function(c) { c.checked = true; });
+    });
+    document.getElementById('btn_marcar_lv').addEventListener('click', function() {
+        diaChecks.forEach(function(c, i) { c.checked = (i < 5); });
+    });
+    document.getElementById('btn_desmarcar_todos').addEventListener('click', function() {
+        diaChecks.forEach(function(c) { c.checked = false; });
+    });
+
+    function recalcular() {
+        if (!hi.value || !hf.value) return;
+        var p1 = hi.value.split(':').map(Number);
+        var p2 = hf.value.split(':').map(Number);
+        var mins = (p2[0]*60 + p2[1]) - (p1[0]*60 + p1[1]);
+        if (mins <= 0) mins += 24*60;
+        th.value = (mins / 60).toFixed(2);
+    }
+    hi.addEventListener('change', recalcular);
+    hf.addEventListener('change', recalcular);
+})();
+</script>
+{% endblock %}

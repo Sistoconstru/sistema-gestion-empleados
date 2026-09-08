@@ -257,3 +257,168 @@ def nombre_archivo_novedades(prefijo='novedades', fecha_desde=None, fecha_hasta=
     if fecha_desde and fecha_hasta:
         return f'{prefijo}_{fecha_desde.isoformat()}_al_{fecha_hasta.isoformat()}.xlsx'
     return f'{prefijo}_{_date.today().isoformat()}.xlsx'
+
+
+# ---------------------------------------------------------------------------
+# Reporte agrupado por coordinador (formato firmable — uso RRHH)
+# ---------------------------------------------------------------------------
+
+FONT_COORD = Font(name='Calibri', size=12, bold=True, color='FFFFFF')
+FILL_COORD = PatternFill('solid', fgColor='2C5282')
+FONT_SUBTOTAL = Font(name='Calibri', size=11, bold=True, italic=True)
+FILL_SUBTOTAL = PatternFill('solid', fgColor='EDF2F7')
+FONT_FIRMA = Font(name='Calibri', size=10, italic=True, color='555555')
+
+
+def generar_excel_novedades_por_coordinador(
+    bloques, fecha_desde=None, fecha_hasta=None,
+):
+    """Excel firmable agrupado por coordinador.
+
+    Args:
+        bloques: lista de dicts {coordinador, equipo, novedades}, uno por
+            coordinador. Se itera 1 vez.
+        fecha_desde, fecha_hasta: rango para el encabezado.
+
+    Returns:
+        bytes del .xlsx.
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Novedades'
+    ncols = len(COLUMNAS)
+
+    # -------- 1) Encabezado global --------
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncols)
+    c = ws.cell(row=1, column=1, value='Reporte de Novedades por Coordinador — RRHH')
+    c.font = FONT_TITULO
+    c.fill = FILL_TITULO
+    c.alignment = ALIGN_CENTER
+    ws.row_dimensions[1].height = 28
+
+    fila = 2
+    if fecha_desde and fecha_hasta:
+        ws.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=ncols)
+        c = ws.cell(row=fila, column=1,
+                    value=f'Período: {_fmt_fecha(fecha_desde)} — {_fmt_fecha(fecha_hasta)}')
+        c.font = FONT_META
+        c.alignment = ALIGN_LEFT
+        fila += 1
+
+    if not bloques:
+        ws.merge_cells(start_row=fila + 1, start_column=1, end_row=fila + 1, end_column=ncols)
+        c = ws.cell(row=fila + 1, column=1,
+                    value='No hay novedades registradas en el período seleccionado.')
+        c.font = FONT_META
+        c.alignment = ALIGN_CENTER
+        buffer = BytesIO()
+        wb.save(buffer)
+        return buffer.getvalue()
+
+    # -------- 2) Cada coordinador es una sección --------
+    for bloque in bloques:
+        coord = bloque['coordinador']
+        novs = bloque['novedades']
+
+        fila += 1  # espacio previo
+
+        # Barra del coordinador
+        ws.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=ncols)
+        cargo_activo = coord.historialcargo_set.filter(activo=True).select_related('cargo').first()
+        cargo_str = f' — {cargo_activo.cargo.nombre}' if cargo_activo and cargo_activo.cargo else ''
+        c = ws.cell(row=fila, column=1,
+                    value=f'Coordinador: {coord.nombre_completo}{cargo_str}   ·   '
+                          f'CC {coord.numero_documento}   ·   {len(novs)} novedad(es)')
+        c.font = FONT_COORD
+        c.fill = FILL_COORD
+        c.alignment = ALIGN_LEFT
+        ws.row_dimensions[fila].height = 22
+        fila += 1
+
+        # Header de columnas
+        for i, (label, width) in enumerate(COLUMNAS, 1):
+            c = ws.cell(row=fila, column=i, value=label)
+            c.font = FONT_HEADER
+            c.fill = FILL_HEADER
+            c.alignment = ALIGN_CENTER
+            c.border = BORDE_FINO
+            ws.column_dimensions[get_column_letter(i)].width = width
+        ws.row_dimensions[fila].height = 20
+        fila_header = fila
+        fila += 1
+
+        # Datos
+        total_horas_bloque = Decimal('0')
+        for n in novs:
+            emp = n.empleado
+            reg = n.registrado_por
+            apr = n.aprobado_por_rrhh
+            estado = n.estado_aprobacion
+            valores = [
+                _fmt_fecha(n.fecha),
+                emp.nombre_completo if emp else '',
+                emp.numero_documento if emp else '',
+                n.get_tipo_display() if hasattr(n, 'get_tipo_display') else n.tipo,
+                _fmt_hora(n.hora_inicio),
+                _fmt_hora(n.hora_fin),
+                float(n.total_horas or 0),
+                n.motivo or '',
+                n.observaciones or '',
+                reg.nombre_completo if reg else '',
+                estado.capitalize() if estado else '',
+                # aprobado_por_rrhh es Usuario (auth), no Empleado
+                (apr.get_full_name() or apr.username) if apr else '',
+                _fmt_datetime(n.fecha_aprobacion),
+                n.motivo_rechazo or '' if hasattr(n, 'motivo_rechazo') else '',
+            ]
+            fill_estado = _get_fill_por_estado(estado)
+            for i, v in enumerate(valores, 1):
+                c = ws.cell(row=fila, column=i, value=v)
+                c.font = FONT_CELDA
+                c.border = BORDE_FINO
+                if i == 7:
+                    c.alignment = ALIGN_RIGHT
+                    c.number_format = '0.00'
+                elif i in (1, 3, 5, 6, 11):
+                    c.alignment = ALIGN_CENTER
+                else:
+                    c.alignment = ALIGN_LEFT
+                if fill_estado:
+                    c.fill = fill_estado
+            total_horas_bloque += (n.total_horas or Decimal('0'))
+            fila += 1
+
+        # Subtotal del coordinador
+        for i in range(1, ncols + 1):
+            c = ws.cell(row=fila, column=i, value=None)
+            c.fill = FILL_SUBTOTAL
+            c.border = BORDE_FINO
+        ws.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=6)
+        c = ws.cell(row=fila, column=1, value=f'Subtotal — {coord.nombre_completo}')
+        c.font = FONT_SUBTOTAL
+        c.alignment = ALIGN_RIGHT
+        c = ws.cell(row=fila, column=7, value=float(total_horas_bloque))
+        c.font = FONT_SUBTOTAL
+        c.alignment = ALIGN_RIGHT
+        c.number_format = '0.00'
+        fila += 1
+
+        # Línea de firma
+        fila += 2
+        ws.merge_cells(start_row=fila, start_column=2, end_row=fila, end_column=6)
+        c = ws.cell(row=fila, column=2, value='_________________________________')
+        c.alignment = ALIGN_CENTER
+        fila += 1
+        ws.merge_cells(start_row=fila, start_column=2, end_row=fila, end_column=6)
+        c = ws.cell(row=fila, column=2,
+                    value=f'Firma — {coord.nombre_completo}  (Coordinador / Director)')
+        c.font = FONT_FIRMA
+        c.alignment = ALIGN_CENTER
+        fila += 3  # espacio entre bloques
+
+    # -------- 3) Freeze en el título global --------
+    ws.freeze_panes = 'A3'
+
+    buffer = BytesIO()
+    wb.save(buffer)
+    return buffer.getvalue()
