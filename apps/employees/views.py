@@ -5120,8 +5120,11 @@ def novedades_semana(request):
         dias_ok = []       # [(fecha, [novedades])]
         dias_saltados = []  # [(fecha, motivo)]
 
+        from apps.employees.utils.jornadas import dividir_por_medianoche
+
         for fecha_nov in fechas_objetivo:
-            # 1. Determinar novedades para esta fecha
+            # 1. Determinar novedades para esta fecha (cada tramo trae su propia
+            # fecha; los que cruzan medianoche se marcan con el día siguiente)
             novedades_a_crear = []
             if tipo == 'hora_extra_auto':
                 try:
@@ -5131,54 +5134,80 @@ def novedades_semana(request):
                     continue
                 for tr in tramos:
                     novedades_a_crear.append({
+                        'fecha': tr['fecha'],
                         'tipo': tr['tipo'],
                         'hora_inicio': tr['hora_inicio'],
                         'hora_fin': tr['hora_fin'],
                         'total_horas': tr['total_horas'],
                     })
             else:
-                novedades_a_crear.append({
-                    'tipo': tipo,
-                    'hora_inicio': hora_inicio,
-                    'hora_fin': hora_fin,
-                    'total_horas': total_horas_base,
-                })
+                if hora_inicio and hora_fin:
+                    # Rango: partir por medianoche si cruza
+                    try:
+                        partes = dividir_por_medianoche(fecha_nov, hora_inicio, hora_fin)
+                    except ValueError as err:
+                        dias_saltados.append((fecha_nov, str(err)))
+                        continue
+                    for p in partes:
+                        novedades_a_crear.append({
+                            'fecha': p['fecha'],
+                            'tipo': tipo,
+                            'hora_inicio': p['hora_inicio'],
+                            'hora_fin': p['hora_fin'],
+                            'total_horas': p['total_horas'],
+                        })
+                else:
+                    # Total manual sin rango horario → una sola novedad
+                    novedades_a_crear.append({
+                        'fecha': fecha_nov,
+                        'tipo': tipo,
+                        'hora_inicio': None,
+                        'hora_fin': None,
+                        'total_horas': total_horas_base,
+                    })
 
-            # 2. Validar límite diario para este día
-            nuevas_extras = sum(
-                (n['total_horas'] for n in novedades_a_crear if n['tipo'].startswith('hora_extra_')),
-                Decimal('0'),
-            )
-            if nuevas_extras > 0:
+            # 2. Validar límite diario POR CADA fecha implicada por los tramos
+            fechas_implicadas = {n['fecha'] for n in novedades_a_crear}
+            excedio = False
+            for f_target in fechas_implicadas:
+                nuevas_extras_f = sum(
+                    (n['total_horas'] for n in novedades_a_crear
+                     if n['fecha'] == f_target and n['tipo'].startswith('hora_extra_')),
+                    Decimal('0'),
+                )
+                if nuevas_extras_f <= 0:
+                    continue
                 ya_acumuladas = (
                     NovedadNomina.objects
                     .filter(
                         empleado=empleado_obj,
-                        fecha=fecha_nov,
+                        fecha=f_target,
                         tipo__startswith='hora_extra_',
                         estado_aprobacion__in=('pendiente', 'aprobada'),
                     )
                     .aggregate(t=Sum('total_horas'))
                     .get('t') or Decimal('0')
                 )
-                si_se_agrega = ya_acumuladas + nuevas_extras
-                if si_se_agrega > LIMITE_HORAS_EXTRAS_DIA:
+                if ya_acumuladas + nuevas_extras_f > LIMITE_HORAS_EXTRAS_DIA:
                     disponible = LIMITE_HORAS_EXTRAS_DIA - ya_acumuladas
                     if disponible < 0:
                         disponible = Decimal('0')
                     dias_saltados.append((
-                        fecha_nov,
+                        f_target,
                         f'excede el tope diario ({LIMITE_HORAS_EXTRAS_DIA}h); '
                         f'ya tenía {ya_acumuladas}h y se pueden agregar hasta {disponible}h más',
                     ))
-                    continue
+                    excedio = True
+                    break
+            if excedio:
+                continue
 
             # 3. Insertar en su propia transacción para aislar fallos por día
             with transaction.atomic():
                 for n in novedades_a_crear:
                     NovedadNomina.objects.create(
                         empleado=empleado_obj,
-                        fecha=fecha_nov,
+                        fecha=n['fecha'],
                         tipo=n['tipo'],
                         hora_inicio=n['hora_inicio'],
                         hora_fin=n['hora_fin'],
@@ -5582,11 +5611,14 @@ def novedades_rrhh_semana(request):
                     )
                     return redirect(redirect_url)
 
+        from apps.employees.utils.jornadas import dividir_por_medianoche
+
         creadas = 0
         dias_saltados = []
         ahora = timezone.now()
         for fecha_nov in fechas_objetivo:
-            # Segmentar si es auto; si no, una sola novedad con los datos dados.
+            # Segmentar si es auto; si no y hay rango, partir por medianoche.
+            # Cada tramo trae su propia fecha (puede ser fecha_nov + 1).
             novedades_a_crear = []
             if tipo == 'hora_extra_auto':
                 try:
@@ -5596,25 +5628,42 @@ def novedades_rrhh_semana(request):
                     continue
                 for tr in tramos:
                     novedades_a_crear.append({
+                        'fecha': tr['fecha'],
                         'tipo': tr['tipo'],
                         'hora_inicio': tr['hora_inicio'],
                         'hora_fin': tr['hora_fin'],
                         'total_horas': tr['total_horas'],
                     })
             else:
-                novedades_a_crear.append({
-                    'tipo': tipo,
-                    'hora_inicio': hora_inicio,
-                    'hora_fin': hora_fin,
-                    'total_horas': total_horas_base,
-                })
+                if hora_inicio and hora_fin:
+                    try:
+                        partes = dividir_por_medianoche(fecha_nov, hora_inicio, hora_fin)
+                    except ValueError as err:
+                        dias_saltados.append((fecha_nov, str(err)))
+                        continue
+                    for p in partes:
+                        novedades_a_crear.append({
+                            'fecha': p['fecha'],
+                            'tipo': tipo,
+                            'hora_inicio': p['hora_inicio'],
+                            'hora_fin': p['hora_fin'],
+                            'total_horas': p['total_horas'],
+                        })
+                else:
+                    novedades_a_crear.append({
+                        'fecha': fecha_nov,
+                        'tipo': tipo,
+                        'hora_inicio': None,
+                        'hora_fin': None,
+                        'total_horas': total_horas_base,
+                    })
 
             try:
                 with transaction.atomic():
                     for n in novedades_a_crear:
                         NovedadNomina.objects.create(
                             empleado=empleado_obj,
-                            fecha=fecha_nov,
+                            fecha=n['fecha'],
                             tipo=n['tipo'],
                             hora_inicio=n['hora_inicio'],
                             hora_fin=n['hora_fin'],
