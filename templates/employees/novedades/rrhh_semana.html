@@ -203,12 +203,18 @@
 
                     <div class="mb-3">
                         <label class="form-label">Tipo de novedad *</label>
-                        <select name="tipo" class="form-select" required>
+                        <select name="tipo" id="nov_tipo" class="form-select" required>
                             <option value="">— Seleccionar —</option>
                             {% for cod, label in tipo_choices %}
                                 <option value="{{ cod }}">{{ label }}</option>
                             {% endfor %}
                         </select>
+                        <div class="form-text small" id="hint_tipo_auto" style="display:none;">
+                            <i class="fas fa-magic me-1 text-info"></i>
+                            El sistema separará automáticamente en <strong>diurna</strong> (6am–7pm),
+                            <strong>nocturna</strong> (7pm–6am) y <strong>dominical/festivo</strong>
+                            según la fecha y el rango. Es <strong>obligatorio</strong> ingresar hora inicio y fin.
+                        </div>
                     </div>
 
                     <div class="row g-2">
@@ -221,10 +227,11 @@
                             <input type="time" name="hora_fin" id="nov_hora_fin" class="form-control">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Total horas *</label>
+                            <label class="form-label">Total horas</label>
                             <input type="number" name="total_horas" id="nov_total_horas"
-                                   step="0.25" min="0.25" class="form-control" required>
-                            <div class="form-text small">Se calcula si ingresas hora inicio y fin.</div>
+                                   step="0.25" min="0.25" class="form-control"
+                                   placeholder="Se calcula del rango">
+                            <div class="form-text small">Si ingresas hora inicio y fin, se calcula automáticamente.</div>
                         </div>
                     </div>
 
@@ -305,6 +312,8 @@
     var hi = document.getElementById('nov_hora_inicio');
     var hf = document.getElementById('nov_hora_fin');
     var th = document.getElementById('nov_total_horas');
+    var tipoSel = document.getElementById('nov_tipo');
+    var hintAuto = document.getElementById('hint_tipo_auto');
     var diaChecks = document.querySelectorAll('.dia-check');
 
     modal.addEventListener('show.bs.modal', function(ev) {
@@ -313,7 +322,25 @@
         document.getElementById('modal_empleado_nombre').textContent = btn.getAttribute('data-empleado-nombre');
         var fecha = btn.getAttribute('data-fecha');
         diaChecks.forEach(function(c) { c.checked = (c.dataset.fecha === fecha); });
-        hi.value = ''; hf.value = ''; th.value = '';
+        hi.value = ''; hf.value = ''; th.value = ''; th.readOnly = false;
+        tipoSel.value = '';
+        hintAuto.style.display = 'none';
+    });
+
+    // Al seleccionar "auto", mostrar hint y bloquear total_horas (el sistema
+    // lo calcula desde el rango). Otros tipos: si hay rango se autocalcula
+    // en recalcular(); si no, el usuario lo escribe.
+    tipoSel.addEventListener('change', function() {
+        if (tipoSel.value === 'hora_extra_auto') {
+            hintAuto.style.display = 'block';
+            th.readOnly = true;
+            th.value = '';
+            th.placeholder = 'Se calcula al guardar';
+        } else {
+            hintAuto.style.display = 'none';
+            th.readOnly = !!(hi.value && hf.value);
+            th.placeholder = 'Se calcula del rango';
+        }
     });
 
     document.getElementById('btn_marcar_todos').addEventListener('click', function() {
@@ -327,15 +354,24 @@
     });
 
     function recalcular() {
-        if (!hi.value || !hf.value) return;
+        // En modo auto NO calculamos: el servidor segmenta y suma.
+        if (tipoSel.value === 'hora_extra_auto') return;
+        if (!hi.value || !hf.value) { th.readOnly = false; return; }
         var p1 = hi.value.split(':').map(Number);
         var p2 = hf.value.split(':').map(Number);
         var mins = (p2[0]*60 + p2[1]) - (p1[0]*60 + p1[1]);
         if (mins <= 0) mins += 24*60;
         th.value = (mins / 60).toFixed(2);
+        th.readOnly = true;
     }
     hi.addEventListener('change', recalcular);
     hf.addEventListener('change', recalcular);
+    function permitirManual() {
+        if (tipoSel.value === 'hora_extra_auto') return;
+        if (!hi.value || !hf.value) th.readOnly = false;
+    }
+    hi.addEventListener('input', permitirManual);
+    hf.addEventListener('input', permitirManual);
 })();
 </script>
 {% endblock %}

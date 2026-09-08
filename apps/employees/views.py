@@ -5531,60 +5531,114 @@ def novedades_rrhh_semana(request):
             return redirect(redirect_url)
 
         # Parseo horas
-        hi = hf = None
+        hora_inicio = hora_fin = None
         if hora_inicio_str:
             try:
-                hi = _dt_parse.strptime(hora_inicio_str, '%H:%M').time()
+                hora_inicio = _dt_parse.strptime(hora_inicio_str, '%H:%M').time()
             except ValueError:
-                hi = None
+                hora_inicio = None
         if hora_fin_str:
             try:
-                hf = _dt_parse.strptime(hora_fin_str, '%H:%M').time()
+                hora_fin = _dt_parse.strptime(hora_fin_str, '%H:%M').time()
             except ValueError:
-                hf = None
-
-        try:
-            total_horas = Decimal(total_horas_str) if total_horas_str else None
-        except (InvalidOperation, TypeError):
-            total_horas = None
+                hora_fin = None
 
         if not motivo:
             messages.error(request, 'El motivo es obligatorio.')
             return redirect(redirect_url)
 
-        creadas = 0
-        ahora = timezone.now()
-        try:
-            with transaction.atomic():
-                for f in fechas_objetivo:
-                    # Nota: para 'hora_extra_auto' aquí no segmentamos; usamos
-                    # 'hora_extra_diurna' por defecto. La segmentación
-                    # automatica queda para el flujo del jefe (ya probado).
-                    tipo_final = tipo if tipo != 'hora_extra_auto' else 'hora_extra_diurna'
-                    NovedadNomina.objects.create(
-                        empleado=empleado_obj,
-                        fecha=f,
-                        tipo=tipo_final,
-                        total_horas=total_horas or Decimal('0'),
-                        hora_inicio=hi, hora_fin=hf,
-                        motivo=motivo,
-                        observaciones=observaciones,
-                        registrado_por=registrado_por,
-                        creado_por=request.user,
-                        # Auto-aprobación: RRHH la registra ya avalada.
-                        estado_aprobacion='aprobada',
-                        aprobado_por_rrhh=request.user,
-                        fecha_aprobacion=ahora,
+        # Validar entrada según sea auto o directo — mismo criterio que jefe.
+        from apps.employees.utils.jornadas import segmentar_hora_extra
+        from datetime import datetime as _dt2, timedelta as _td2
+        total_horas_base = None
+        if tipo == 'hora_extra_auto':
+            if not (hora_inicio and hora_fin):
+                messages.error(
+                    request,
+                    'Para hora extra automática debes ingresar hora de inicio y hora de fin.',
+                )
+                return redirect(redirect_url)
+        else:
+            if hora_inicio and hora_fin:
+                anchor = _dt2(2000, 1, 1)
+                dt_ini = _dt2.combine(anchor.date(), hora_inicio)
+                dt_fin = _dt2.combine(anchor.date(), hora_fin)
+                if dt_fin <= dt_ini:
+                    dt_fin += _td2(days=1)
+                horas_calc = Decimal((dt_fin - dt_ini).total_seconds()) / Decimal('3600')
+                total_horas_base = horas_calc.quantize(Decimal('0.01'))
+                if total_horas_base <= 0:
+                    messages.error(request, 'El rango de horas debe resultar en un tiempo mayor a 0.')
+                    return redirect(redirect_url)
+            else:
+                try:
+                    total_horas_base = Decimal(total_horas_str)
+                    if total_horas_base <= 0:
+                        raise InvalidOperation
+                except (InvalidOperation, TypeError, ValueError):
+                    messages.error(
+                        request,
+                        'Debes ingresar el rango de horas (inicio y fin) o el total manual.',
                     )
-                    creadas += 1
-        except Exception as e:
-            messages.error(request, f'Error al guardar: {e}')
-            return redirect(redirect_url)
+                    return redirect(redirect_url)
 
-        messages.success(
-            request,
-            f'Novedad registrada y aprobada automáticamente en {creadas} día(s).',
-        )
+        creadas = 0
+        dias_saltados = []
+        ahora = timezone.now()
+        for fecha_nov in fechas_objetivo:
+            # Segmentar si es auto; si no, una sola novedad con los datos dados.
+            novedades_a_crear = []
+            if tipo == 'hora_extra_auto':
+                try:
+                    tramos = segmentar_hora_extra(fecha_nov, hora_inicio, hora_fin)
+                except ValueError as err:
+                    dias_saltados.append((fecha_nov, str(err)))
+                    continue
+                for tr in tramos:
+                    novedades_a_crear.append({
+                        'tipo': tr['tipo'],
+                        'hora_inicio': tr['hora_inicio'],
+                        'hora_fin': tr['hora_fin'],
+                        'total_horas': tr['total_horas'],
+                    })
+            else:
+                novedades_a_crear.append({
+                    'tipo': tipo,
+                    'hora_inicio': hora_inicio,
+                    'hora_fin': hora_fin,
+                    'total_horas': total_horas_base,
+                })
+
+            try:
+                with transaction.atomic():
+                    for n in novedades_a_crear:
+                        NovedadNomina.objects.create(
+                            empleado=empleado_obj,
+                            fecha=fecha_nov,
+                            tipo=n['tipo'],
+                            hora_inicio=n['hora_inicio'],
+                            hora_fin=n['hora_fin'],
+                            total_horas=n['total_horas'],
+                            motivo=motivo,
+                            observaciones=observaciones,
+                            registrado_por=registrado_por,
+                            creado_por=request.user,
+                            # Auto-aprobación: RRHH la registra ya avalada.
+                            estado_aprobacion='aprobada',
+                            aprobado_por_rrhh=request.user,
+                            fecha_aprobacion=ahora,
+                        )
+                        creadas += 1
+            except Exception as e:
+                dias_saltados.append((fecha_nov, str(e)))
+
+        if creadas:
+            messages.success(
+                request,
+                f'Novedades registradas y aprobadas automáticamente: {creadas}.',
+            )
+        for f, motivo_skip in dias_saltados:
+            messages.warning(request, f'{f.strftime("%d/%m/%Y")}: {motivo_skip}')
         return redirect(redirect_url)
 
     # GET: renderizar tabla semanal (o placeholder si no hay coordinador)
@@ -5615,6 +5669,15 @@ def novedades_rrhh_semana(request):
 
     dias_labels = list(zip(dias_semana, ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']))
 
+    # Mismas opciones que el flujo del jefe: la primera es el tipo virtual
+    # "auto" que segmenta el rango en diurna/nocturna/dominical según la
+    # fecha y las horas ingresadas.
+    tipo_choices_ui = [
+        ('hora_extra_auto', 'Hora extra (auto — clasifica según jornada)'),
+    ] + [
+        c for c in NovedadNomina.TIPO_CHOICES if not c[0].startswith('hora_extra_')
+    ]
+
     context = {
         'coordinador': coordinador,
         'coordinadores': coordinadores,
@@ -5624,7 +5687,7 @@ def novedades_rrhh_semana(request):
         'semana_siguiente': lunes + timedelta(days=7),
         'dias_labels': dias_labels,
         'filas': filas,
-        'tipo_choices': NovedadNomina.TIPO_CHOICES,
+        'tipo_choices': tipo_choices_ui,
     }
     return render(request, 'employees/novedades/rrhh_semana.html', context)
 
