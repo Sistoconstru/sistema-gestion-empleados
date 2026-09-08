@@ -5301,7 +5301,16 @@ def novedades_semana(request):
 @login_required
 @require_POST
 def novedad_eliminar(request, pk):
-    """Elimina una novedad — solo el jefe que la creó puede, y solo si sigue pendiente."""
+    """Elimina una novedad.
+
+    Reglas:
+    - Staff/superuser (RRHH): puede eliminar cualquier novedad, incluso las
+      aprobadas. Útil cuando se registró por error o mal generada.
+    - Jefe/coordinador: solo puede eliminar las que él mismo registró y solo
+      si siguen pendientes.
+
+    Acepta `?next=<url>` para volver al origen correcto (RRHH vs. jefe).
+    """
     novedad = get_object_or_404(NovedadNomina, pk=pk)
     try:
         empleado_actual = Empleado.objects.get(usuario=request.user)
@@ -5313,14 +5322,18 @@ def novedad_eliminar(request, pk):
         or (empleado_actual and novedad.registrado_por_id == empleado_actual.id
             and novedad.estado_aprobacion == 'pendiente')
     )
+    next_url = request.POST.get('next') or request.GET.get('next') or ''
     if not puede:
         messages.error(request, 'No puedes eliminar esta novedad (o ya fue aprobada/rechazada por RRHH).')
-    else:
-        lunes = _lunes_de_semana(novedad.fecha)
-        novedad.delete()
-        messages.success(request, 'Novedad eliminada.')
-        return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
-    return redirect('employees:novedades_semana')
+        return redirect(next_url or 'employees:novedades_semana')
+
+    lunes = _lunes_de_semana(novedad.fecha)
+    novedad.delete()
+    messages.success(request, 'Novedad eliminada.')
+    # Preferir el next explícito; si no vino, caer a la semanal del jefe
+    if next_url:
+        return redirect(next_url)
+    return redirect(f'{reverse("employees:novedades_semana")}?fecha={lunes.isoformat()}')
 
 
 def _novedades_pendientes_para_director(director_empleado):

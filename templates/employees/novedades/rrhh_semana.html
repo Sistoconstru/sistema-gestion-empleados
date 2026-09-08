@@ -127,12 +127,20 @@
                                     {% if c.novedades %}
                                         <div class="fw-bold text-corporativo">{{ c.total_horas }}h</div>
                                         {% for n in c.novedades %}
-                                            <div class="mb-1">
+                                            <div class="mb-1 d-flex align-items-center justify-content-center gap-1">
                                                 <span class="badge bg-{% if n.estado_aprobacion == 'aprobada' %}success{% elif n.estado_aprobacion == 'rechazada' %}danger{% else %}warning text-dark{% endif %}"
                                                       title="{{ n.get_tipo_display }} — {{ n.motivo|truncatechars:60 }}"
                                                       data-bs-toggle="tooltip">
                                                     {{ n.total_horas }}h
                                                 </span>
+                                                <form method="post" action="{% url 'employees:novedad_eliminar' n.pk %}" class="d-inline"
+                                                      onsubmit="return confirm('¿Eliminar esta novedad? Esta acción no se puede deshacer.');">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="next" value="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coordinador.pk }}&fecha={{ lunes|date:'Y-m-d' }}">
+                                                    <button type="submit" class="btn btn-sm btn-link p-0 text-danger" title="Eliminar (RRHH)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         {% endfor %}
                                     {% endif %}
