@@ -347,7 +347,9 @@ def generar_excel_novedades_por_coordinador(
         fila_header = fila
         fila += 1
 
-        # Datos
+        # Datos + acumuladores por tipo (para separar HE vs Recargo en el subtotal)
+        from collections import defaultdict as _dd
+        horas_por_tipo = _dd(lambda: Decimal('0'))
         total_horas_bloque = Decimal('0')
         for n in novs:
             emp = n.empleado
@@ -385,23 +387,64 @@ def generar_excel_novedades_por_coordinador(
                     c.alignment = ALIGN_LEFT
                 if fill_estado:
                     c.fill = fill_estado
+            horas_por_tipo[n.tipo] += (n.total_horas or Decimal('0'))
             total_horas_bloque += (n.total_horas or Decimal('0'))
             fila += 1
 
-        # Subtotal del coordinador
-        for i in range(1, ncols + 1):
-            c = ws.cell(row=fila, column=i, value=None)
-            c.fill = FILL_SUBTOTAL
-            c.border = BORDE_FINO
-        ws.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=6)
-        c = ws.cell(row=fila, column=1, value=f'Subtotal — {coord.nombre_completo}')
-        c.font = FONT_SUBTOTAL
-        c.alignment = ALIGN_RIGHT
-        c = ws.cell(row=fila, column=7, value=float(total_horas_bloque))
-        c.font = FONT_SUBTOTAL
-        c.alignment = ALIGN_RIGHT
-        c.number_format = '0.00'
-        fila += 1
+        # --- Subtotales diferenciados por familia y por tipo ---
+        # Familias: Horas extras (diurna/nocturna/dominical), Recargos
+        # (nocturno/dominical), Vigilancia. Solo se pintan las filas de
+        # tipos que tienen horas > 0 para no ensuciar el bloque.
+        FAMILIAS = [
+            ('Horas extras', [
+                ('hora_extra_diurna', 'diurnas'),
+                ('hora_extra_nocturna', 'nocturnas'),
+                ('hora_extra_dominical', 'dominicales/festivos'),
+            ]),
+            ('Recargos', [
+                ('recargo_nocturno', 'nocturnos'),
+                ('recargo_dominical', 'dominicales/festivos'),
+            ]),
+            ('Vigilancia', [
+                ('vigilancia', ''),
+            ]),
+        ]
+
+        def _fila_subtotal(etiqueta, horas, bold=False):
+            """Escribe una fila con etiqueta a la izquierda y valor en columna 7."""
+            nonlocal fila
+            for i in range(1, ncols + 1):
+                c = ws.cell(row=fila, column=i, value=None)
+                c.fill = FILL_SUBTOTAL
+                c.border = BORDE_FINO
+            ws.merge_cells(start_row=fila, start_column=1, end_row=fila, end_column=6)
+            c = ws.cell(row=fila, column=1, value=etiqueta)
+            c.font = FONT_SUBTOTAL if bold else FONT_CELDA
+            c.alignment = ALIGN_RIGHT
+            c = ws.cell(row=fila, column=7, value=float(horas))
+            c.font = FONT_SUBTOTAL if bold else FONT_CELDA
+            c.alignment = ALIGN_RIGHT
+            c.number_format = '0.00'
+            fila += 1
+
+        for familia_label, tipos in FAMILIAS:
+            horas_familia = sum(
+                (horas_por_tipo[t] for t, _ in tipos), Decimal('0'),
+            )
+            if horas_familia <= 0:
+                continue
+            # Un subtipo por línea con horas > 0
+            subtipos_con_horas = [(t, sub) for t, sub in tipos if horas_por_tipo[t] > 0]
+            if len(subtipos_con_horas) == 1 and subtipos_con_horas[0][1] == '':
+                # Vigilancia u otra familia con un solo tipo — línea única
+                _fila_subtotal(f'{familia_label}', horas_familia, bold=True)
+            else:
+                for t, sub in subtipos_con_horas:
+                    _fila_subtotal(f'{familia_label} — {sub}', horas_por_tipo[t])
+                _fila_subtotal(f'Subtotal {familia_label}', horas_familia, bold=True)
+
+        # Total del bloque (todas las familias)
+        _fila_subtotal(f'TOTAL — {coord.nombre_completo}', total_horas_bloque, bold=True)
 
         # Línea de firma
         fila += 2
