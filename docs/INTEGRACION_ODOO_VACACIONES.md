@@ -83,9 +83,10 @@ claves de upsert distintas:
   "fecha_inicio": "2026-08-01",
   "fecha_fin": "2026-08-15",
   "dias": 10,                       // informativo
-  "estado": "aprobada",             // "aprobada" | "cancelada"
+  "estado": "pendiente",            // "pendiente" | "aprobada" | "cancelada"
   "motivo": "opcional",
-  "aprobada_por": "user@odoo",
+  "registrada_por": "user@odoo",    // opcional — quien creó la solicitud en Odoo
+  "aprobada_por": "user@odoo",      // opcional — solo aplica para "aprobada"
   "fecha_estado": "2026-06-30T14:00:00Z"
 }
 ```
@@ -131,10 +132,22 @@ claves de upsert distintas:
   manteniendo la misma clave de upsert (`leave_id` o `compensacion_id`).
 - **Notificación al empleado:** cada transición terminal dispara una notificación
   in-app específica para cada tipo (`vacacion_aprobada` vs `vacacion_comp_aprobada`).
-  Idempotente: `ya_procesado` no notifica.
-- **Estados permitidos:** solo `aprobada` y `cancelada`. Los estados intermedios
-  (`borrador`, `enviada_pendiente_rrhh`) no aplican porque las solicitudes creadas
-  en Odoo llegan a SIGHU solo cuando ya son un hecho.
+  Idempotente: `ya_procesado` no notifica. Un update de `pendiente → pendiente`
+  con cambio de fechas (corrección de RRHH) tampoco notifica.
+- **Estados permitidos:** `pendiente`, `aprobada`, `cancelada`.
+  - `pendiente` → `estado_local='enviada_pendiente_rrhh'`. Solo informativo:
+    el empleado y el jefe ven la solicitud como "en trámite" pero la aprobación
+    es de RRHH desde Odoo. Uso típico: RRHH creó la solicitud en Odoo y aún
+    no la aprueba, o cambió sus fechas antes de aprobar.
+  - `aprobada` → `estado_local='aprobada_rrhh'`. Notifica al empleado.
+  - `cancelada` → `estado_local='cancelada_rrhh'`. Notifica al empleado.
+- **Update con fechas nuevas:** para `tipo=tiempo`, si Odoo re-envía con la
+  misma `leave_id` pero cambia `fecha_inicio` y/o `fecha_fin`, SIGHU actualiza
+  esos campos aunque el estado no cambie. Devuelve `status: "actualizado"`.
+  Solo devuelve `ya_procesado` cuando ni estado ni fechas cambian.
+- **`registrada_por`** (opcional, string): usuario/correo de Odoo que creó la
+  solicitud. Se guarda como texto en `observaciones` para trazabilidad.
+  Es distinto de `aprobada_por` (usuario que aprobó).
 
 ---
 
@@ -247,7 +260,10 @@ con el modelo mensual — el saldo solo cambia en el corte.
 
 ## Ejemplos
 
-### Ejemplo 1 — crear vacación en tiempo
+### Ejemplo 1 — crear vacación en tiempo, inicialmente en trámite
+
+RRHH creó la solicitud en Odoo, aún no la aprueba. SIGHU la mostrará al
+empleado y al jefe como "en trámite".
 
 ```http
 POST /api/v1/odoo/vacaciones/importar/
@@ -261,6 +277,43 @@ Content-Type: application/json
   "fecha_inicio": "2026-08-01",
   "fecha_fin": "2026-08-10",
   "dias": 10,
+  "estado": "pendiente",
+  "registrada_por": "rrhh@empresa.com"
+}
+```
+
+Respuesta:
+```json
+{ "status": "creado", "sighu_uuid": "b1c2...", "leave_id": 8891, "estado_local": "enviada_pendiente_rrhh" }
+```
+
+### Ejemplo 1b — corregir las fechas antes de aprobar
+
+Mismo `leave_id`, aún en estado `pendiente`, pero con las fechas nuevas:
+
+```http
+POST /api/v1/odoo/vacaciones/importar/
+{
+  "tipo": "tiempo",
+  "leave_id": 8891,
+  "fecha_inicio": "2026-08-05",
+  "fecha_fin": "2026-08-15",
+  "estado": "pendiente"
+}
+```
+
+Respuesta:
+```json
+{ "status": "actualizado", "sighu_uuid": "b1c2...", "leave_id": 8891, "estado_local": "enviada_pendiente_rrhh" }
+```
+
+### Ejemplo 1c — RRHH la aprueba
+
+```http
+POST /api/v1/odoo/vacaciones/importar/
+{
+  "tipo": "tiempo",
+  "leave_id": 8891,
   "estado": "aprobada",
   "aprobada_por": "rrhh@empresa.com"
 }
@@ -268,7 +321,7 @@ Content-Type: application/json
 
 Respuesta:
 ```json
-{ "status": "creado", "sighu_uuid": "b1c2...", "leave_id": 8891, "estado_local": "aprobada_rrhh" }
+{ "status": "actualizado", "sighu_uuid": "b1c2...", "leave_id": 8891, "estado_local": "aprobada_rrhh" }
 ```
 
 ### Ejemplo 2 — crear compensación en dinero

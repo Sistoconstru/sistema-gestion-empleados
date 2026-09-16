@@ -226,6 +226,11 @@ class OdooVacacionEstadoView(APIView):
 # Estados que Odoo puede enviar por el endpoint de importación (vacaciones
 # nacidas en Odoo por RRHH, sin pasar por SIGHU).
 ESTADO_ODOO_IMPORTAR_A_SIGHU = {
+    # 'pendiente' viene del flujo B: RRHH creó la vacación en Odoo y aún no
+    # la aprueba. Es solo informativo para el empleado y el jefe ("en trámite
+    # por Odoo"); no dispara ninguna acción en SIGHU. Se mapea al mismo estado
+    # que usa el flujo del jefe cuando está en trámite.
+    'pendiente': 'enviada_pendiente_rrhh',
     'aprobada': 'aprobada_rrhh',
     'cancelada': 'cancelada_rrhh',
 }
@@ -357,6 +362,10 @@ class OdooVacacionImportarView(APIView):
                 )
 
             aprobada_por = (data.get('aprobada_por') or '').strip()
+            # Odoo puede enviar `registrada_por` con el usuario RRHH que creó
+            # la solicitud (útil cuando el estado inicial es "pendiente" y aún
+            # no hay `aprobada_por`).
+            registrada_por = (data.get('registrada_por') or '').strip()
             User = get_user_model()
             creador_sistema = User.objects.filter(is_superuser=True).first()
 
@@ -386,6 +395,8 @@ class OdooVacacionImportarView(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 observaciones = 'Origen: Odoo (RRHH).'
+                if registrada_por:
+                    observaciones += f' Registrada por: {registrada_por}.'
                 if aprobada_por:
                     observaciones += f' Aprobada por: {aprobada_por}.'
                 campos_base.update(
@@ -419,6 +430,8 @@ class OdooVacacionImportarView(APIView):
                             status=status.HTTP_400_BAD_REQUEST,
                         )
                 observaciones = motivo or 'Compensación de vacaciones en dinero aplicada por RRHH.'
+                if registrada_por:
+                    observaciones += f' Registrada por: {registrada_por}.'
                 if aprobada_por:
                     observaciones += f' Aprobada por: {aprobada_por}.'
                 campos_base.update(
@@ -444,8 +457,40 @@ class OdooVacacionImportarView(APIView):
             return Response(respuesta, status=status.HTTP_201_CREATED)
 
         # --- ACTUALIZAR (upsert) ---
-        if solicitud.estado_local == nuevo_estado:
-            # Aunque el estado no cambie, refrescamos el saldo si vino en el payload.
+        # Para tipo=tiempo, si Odoo re-envía con la misma leave_id pero cambian
+        # las fechas o los días (RRHH corrigió la solicitud sin cancelar),
+        # actualizamos esos datos también. Antes solo mirábamos el estado y
+        # respondíamos ya_procesado cuando coincidía.
+        campos_a_guardar = set()
+        fechas_cambiadas = False
+
+        if tipo == 'tiempo':
+            try:
+                nueva_fi = date.fromisoformat(data.get('fecha_inicio', '')) if data.get('fecha_inicio') else None
+                nueva_ff = date.fromisoformat(data.get('fecha_fin', '')) if data.get('fecha_fin') else None
+            except (TypeError, ValueError):
+                return Response(
+                    {'error': 'fecha_inicio/fecha_fin en formato YYYY-MM-DD'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if nueva_fi and nueva_ff and nueva_ff < nueva_fi:
+                return Response(
+                    {'error': 'fecha_fin no puede ser anterior a fecha_inicio'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if nueva_fi and solicitud.fecha_inicio != nueva_fi:
+                solicitud.fecha_inicio = nueva_fi
+                campos_a_guardar.add('fecha_inicio')
+                fechas_cambiadas = True
+            if nueva_ff and solicitud.fecha_fin != nueva_ff:
+                solicitud.fecha_fin = nueva_ff
+                campos_a_guardar.add('fecha_fin')
+                fechas_cambiadas = True
+
+        estado_cambio = solicitud.estado_local != nuevo_estado
+
+        if not estado_cambio and not fechas_cambiadas:
+            # Nada material cambió — solo refrescamos saldo si vino
             _actualizar_saldo_empleado(solicitud.empleado, data)
             respuesta = {
                 'status': 'ya_procesado',
@@ -457,15 +502,21 @@ class OdooVacacionImportarView(APIView):
                 respuesta['compensacion_id'] = compensacion_id
             return Response(respuesta, status=status.HTTP_200_OK)
 
-        solicitud.estado_local = nuevo_estado
+        if estado_cambio:
+            solicitud.estado_local = nuevo_estado
+            campos_a_guardar.add('estado_local')
         if motivo:
             solicitud.motivo_rechazo = motivo
+            campos_a_guardar.add('motivo_rechazo')
         solicitud.respuesta_odoo = data
-        solicitud.save(update_fields=[
-            'estado_local', 'motivo_rechazo', 'respuesta_odoo', 'fecha_actualizacion',
-        ])
+        campos_a_guardar.add('respuesta_odoo')
+        campos_a_guardar.add('fecha_actualizacion')
+        solicitud.save(update_fields=list(campos_a_guardar))
         _actualizar_saldo_empleado(solicitud.empleado, data)
-        _notificar_empleado_vacacion(solicitud, motivo=motivo)
+        # Notificar solo si cambió el estado (una corrección de fechas en el
+        # mismo estado no requiere reenviar la notificación al empleado).
+        if estado_cambio:
+            _notificar_empleado_vacacion(solicitud, motivo=motivo)
         respuesta = {
             'status': 'actualizado',
             'sighu_uuid': str(solicitud.pk),
