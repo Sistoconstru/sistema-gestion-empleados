@@ -1,0 +1,68 @@
+{# Modal reutilizable para editar fechas de una solicitud de vacaciones en
+   estado 'enviada_pendiente_rrhh'. Los botones que lo activan deben tener:
+     class="btn-editar-fechas" data-pk data-empleado data-fi data-ff
+   Se hace POST a employees:vacacion_editar_fechas con fecha_inicio y fecha_fin. #}
+<div class="modal fade" id="modalEditarFechasVacacion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" id="formEditarFechasVacacion">
+        {% csrf_token %}
+        <div class="modal-header bg-corporativo text-white">
+          <h5 class="modal-title">
+            <i class="fas fa-calendar-alt me-2"></i>Editar fechas — solicitud en trámite
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info small mb-3 py-2">
+            <i class="fas fa-info-circle me-1"></i>
+            Solo se pueden editar las fechas mientras la solicitud esté <strong>pendiente por RRHH</strong>.
+            El cambio se sincroniza con Odoo antes de guardarse.
+          </div>
+          <div class="mb-3 small text-muted">
+            Empleado: <strong id="editar_fechas_empleado"></strong>
+          </div>
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label">Nueva fecha inicio *</label>
+              <input type="date" name="fecha_inicio" id="editar_fechas_fi" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Nueva fecha fin *</label>
+              <input type="date" name="fecha_fin" id="editar_fechas_ff" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-corporativo">
+            <i class="fas fa-save me-1"></i>Guardar y sincronizar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const modalEl = document.getElementById('modalEditarFechasVacacion');
+  if (!modalEl) return;
+  const form = document.getElementById('formEditarFechasVacacion');
+  const fi = document.getElementById('editar_fechas_fi');
+  const ff = document.getElementById('editar_fechas_ff');
+  const nombre = document.getElementById('editar_fechas_empleado');
+
+  document.querySelectorAll('.btn-editar-fechas').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const pk = btn.dataset.pk;
+      const url = '/empleados/vacaciones/' + pk + '/editar-fechas/';
+      form.setAttribute('action', url);
+      fi.value = btn.dataset.fi || '';
+      ff.value = btn.dataset.ff || '';
+      nombre.textContent = btn.dataset.empleado || '—';
+      new bootstrap.Modal(modalEl).show();
+    });
+  });
+})();
+</script>

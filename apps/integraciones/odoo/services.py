@@ -114,6 +114,12 @@ def enviar_vacacion_a_odoo(solicitud):
         'fecha_fin': solicitud.fecha_fin.isoformat(),
         'aprobado_por': solicitud.jefe_solicitante.nombre_completo if solicitud.jefe_solicitante_id else '',
     }
+    # Si la solicitud ya existe en Odoo (tiene leave_id_odoo), enviamos ese
+    # id para que Odoo trate el POST como UPDATE de la solicitud existente
+    # en lugar de crear una nueva. Uso típico: edición de fechas mientras
+    # sigue en trámite (enviada_pendiente_rrhh).
+    if getattr(solicitud, 'leave_id_odoo', None):
+        payload['leave_id'] = solicitud.leave_id_odoo
     timeout = getattr(settings, 'SIGHU_ODOO_VACACIONES_TIMEOUT', 20)
     evento = 'vacacion'
 

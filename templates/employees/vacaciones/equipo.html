@@ -124,6 +124,14 @@
                                 <td>
                                     {% if s.estado_local == 'enviada_pendiente_rrhh' %}
                                         <span class="badge bg-info">Pendiente RRHH</span>
+                                        <button type="button" class="btn btn-sm btn-outline-corporativo ms-1 btn-editar-fechas"
+                                                data-pk="{{ s.pk }}"
+                                                data-empleado="{{ s.empleado.nombre_completo }}"
+                                                data-fi="{{ s.fecha_inicio|date:'Y-m-d' }}"
+                                                data-ff="{{ s.fecha_fin|date:'Y-m-d' }}"
+                                                title="Editar fechas mientras está en trámite">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
                                     {% elif s.estado_local == 'aprobada_rrhh' %}
                                         <span class="badge bg-success">Aprobada</span>
                                     {% elif s.estado_local == 'rechazada_rrhh' %}
@@ -158,4 +166,6 @@
     </div>
 
 </div>
+
+{% include "employees/vacaciones/_modal_editar_fechas.html" %}
 {% endblock %}

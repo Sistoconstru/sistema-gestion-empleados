@@ -43,6 +43,7 @@ urlpatterns = [
     # Vacaciones (jefe → Odoo)
     path('jefe/vacaciones/', views.vacaciones_equipo, name='vacaciones_equipo'),
     path('jefe/vacaciones/nueva/<uuid:empleado_id>/', views.vacacion_nueva, name='vacacion_nueva'),
+    path('vacaciones/<uuid:pk>/editar-fechas/', views.vacacion_editar_fechas, name='vacacion_editar_fechas'),
 
     # Mis vacaciones (empleado, solo lectura)
     path('mis-vacaciones/', views.mis_vacaciones, name='mis_vacaciones'),

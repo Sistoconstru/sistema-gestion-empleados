@@ -6016,6 +6016,88 @@ def vacacion_nueva(request, empleado_id):
     })
 
 
+@login_required
+@require_POST
+def vacacion_editar_fechas(request, pk):
+    """Edita fecha_inicio y fecha_fin de una SolicitudVacacion que sigue
+    en trámite (estado 'enviada_pendiente_rrhh').
+
+    Permisos:
+      - staff (RRHH) — cualquier solicitud.
+      - jefe directo del empleado (activo) — solo la de su subordinado.
+    Propagación: se llama al mismo webhook de Odoo (`enviar_vacacion_a_odoo`)
+    incluyendo `leave_id` para que Odoo lo trate como UPDATE. Si Odoo no
+    responde OK, NO se guarda el cambio en SIGHU (evita desincronización).
+    """
+    from datetime import date as _date
+    solicitud = get_object_or_404(SolicitudVacacion, pk=pk)
+
+    # Permisos
+    if not _puede_solicitar_vacacion_para(request.user, solicitud.empleado):
+        messages.error(request, 'No tienes permiso para editar esta solicitud.')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    # Estado
+    if solicitud.estado_local != 'enviada_pendiente_rrhh':
+        messages.error(request,
+            'Solo se puede editar mientras la solicitud está en trámite '
+            '(pendiente por RRHH).')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    # Parseo
+    fi_str = (request.POST.get('fecha_inicio') or '').strip()
+    ff_str = (request.POST.get('fecha_fin') or '').strip()
+    try:
+        nueva_fi = _date.fromisoformat(fi_str)
+        nueva_ff = _date.fromisoformat(ff_str)
+    except (TypeError, ValueError):
+        messages.error(request, 'Fechas inválidas (usa YYYY-MM-DD).')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    if nueva_ff < nueva_fi:
+        messages.error(request, 'La fecha de fin no puede ser anterior al inicio.')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    # Sin cambios reales
+    if nueva_fi == solicitud.fecha_inicio and nueva_ff == solicitud.fecha_fin:
+        messages.info(request, 'No hay cambios en las fechas.')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    # Push a Odoo con las fechas nuevas (leave_id ya incluido por el service)
+    from apps.integraciones.odoo.services import enviar_vacacion_a_odoo
+    fi_original, ff_original = solicitud.fecha_inicio, solicitud.fecha_fin
+    solicitud.fecha_inicio = nueva_fi
+    solicitud.fecha_fin = nueva_ff
+    ok, data = enviar_vacacion_a_odoo(solicitud)
+    if not ok:
+        # Rollback y no persistir
+        solicitud.fecha_inicio = fi_original
+        solicitud.fecha_fin = ff_original
+        messages.error(request,
+            f'No se pudo actualizar en Odoo: {data.get("motivo", "error desconocido")}. '
+            f'La solicitud no se modificó en SIGHU.')
+        return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+    # Odoo aceptó — persistimos y anexamos rastro
+    marca = (
+        f'Fechas editadas por {request.user.get_full_name() or request.user.username} '
+        f'el {timezone.localtime().strftime("%d/%m/%Y %H:%M")}: '
+        f'{fi_original.strftime("%d/%m/%Y")}–{ff_original.strftime("%d/%m/%Y")} → '
+        f'{nueva_fi.strftime("%d/%m/%Y")}–{nueva_ff.strftime("%d/%m/%Y")}.'
+    )
+    obs = solicitud.observaciones or ''
+    solicitud.observaciones = (obs + '\n' + marca).strip() if obs else marca
+    solicitud.respuesta_odoo = data
+    solicitud.save(update_fields=[
+        'fecha_inicio', 'fecha_fin', 'observaciones', 'respuesta_odoo',
+        'fecha_actualizacion',
+    ])
+    messages.success(request,
+        f'Fechas actualizadas y sincronizadas con Odoo '
+        f'({nueva_fi.strftime("%d/%m/%Y")} → {nueva_ff.strftime("%d/%m/%Y")}).')
+    return redirect(request.META.get('HTTP_REFERER', 'core:dashboard'))
+
+
 @staff_member_required
 def vacaciones_admin_panel(request):
     """Panel RRHH: buscar empleado para solicitar + historial global con filtros."""
