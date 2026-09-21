@@ -4972,6 +4972,35 @@ def _equipo_operativo_de(coordinador):
     ]
 
 
+# Valor especial usado en el selector para agrupar empleados operativos que
+# aún no tienen jefe_directo asignado (nuevos, provisionales, en tránsito).
+COORDINADOR_SIN_JEFE = 'SIN_JEFE'
+
+
+def _empleados_operativos_sin_jefe():
+    """Empleados operativos activos cuyo cargo actual no tiene jefe_directo.
+
+    Cubre casos de personal nuevo, provisional o en tránsito. RRHH necesita
+    poder cargarles horas extras antes de que se les asigne el jefe formal.
+    """
+    from apps.organizational.models import Cargo  # noqa: F401 (usado en filtro)
+    empleados_con_cargo_sin_jefe = (
+        HistorialCargo.objects.filter(
+            activo=True, jefe_directo__isnull=True,
+        )
+        .exclude(cargo__area__codigo=AREA_CODIGO_ADMINISTRATIVA)
+        .values_list('empleado_id', flat=True)
+        .distinct()
+    )
+    return (
+        Empleado.objects.filter(
+            pk__in=empleados_con_cargo_sin_jefe,
+            estado__codigo='999',
+        )
+        .order_by('apellidos', 'nombres')
+    )
+
+
 @login_required
 def novedades_semana(request):
     """Vista semanal de novedades del equipo del jefe.
@@ -5505,13 +5534,15 @@ def novedades_rrhh_semana(request):
 
     coord_id_raw = (request.GET.get('coordinador') or '').strip()
     coordinador = None
-    if coord_id_raw:
+    modo_sin_jefe = coord_id_raw == COORDINADOR_SIN_JEFE
+    if coord_id_raw and not modo_sin_jefe:
         try:
             coordinador = Empleado.objects.get(pk=coord_id_raw)
         except (Empleado.DoesNotExist, ValueError):
             coordinador = None
 
     coordinadores = _coordinadores_con_equipo_operativo()
+    empleados_sin_jefe_count = _empleados_operativos_sin_jefe().count()
 
     # Empleado RRHH que registra (para trazabilidad + aprobación auto)
     try:
@@ -5519,13 +5550,28 @@ def novedades_rrhh_semana(request):
     except Empleado.DoesNotExist:
         registrado_por = None
 
-    # POST: crear novedad (misma estructura que jefe pero equipo = del coord)
+    def _equipo_actual():
+        """Equipo elegible según el modo (coordinador específico o sin jefe)."""
+        if modo_sin_jefe:
+            return list(_empleados_operativos_sin_jefe())
+        if coordinador:
+            return _equipo_operativo_de(coordinador)
+        return []
+
+    def _redirect_semana():
+        if modo_sin_jefe:
+            return (f'{reverse("employees:novedades_rrhh_semana")}'
+                    f'?coordinador={COORDINADOR_SIN_JEFE}&fecha={lunes.isoformat()}')
+        return (f'{reverse("employees:novedades_rrhh_semana")}'
+                f'?coordinador={coordinador.pk}&fecha={lunes.isoformat()}')
+
+    # POST: crear novedad
     if request.method == 'POST':
-        if not coordinador:
+        if not (coordinador or modo_sin_jefe):
             messages.error(request, 'Debes seleccionar un coordinador primero.')
             return redirect('employees:novedades_rrhh_semana')
 
-        equipo = _equipo_operativo_de(coordinador)
+        equipo = _equipo_actual()
         equipo_ids = {e.pk for e in equipo}
 
         empleado_id = request.POST.get('empleado_id')
@@ -5537,10 +5583,7 @@ def novedades_rrhh_semana(request):
         hora_inicio_str = (request.POST.get('hora_inicio') or '').strip()
         hora_fin_str = (request.POST.get('hora_fin') or '').strip()
 
-        redirect_url = (
-            f'{reverse("employees:novedades_rrhh_semana")}'
-            f'?coordinador={coordinador.pk}&fecha={lunes.isoformat()}'
-        )
+        redirect_url = _redirect_semana()
 
         try:
             empleado_obj = Empleado.objects.get(pk=empleado_id)
@@ -5549,7 +5592,10 @@ def novedades_rrhh_semana(request):
             return redirect(redirect_url)
 
         if empleado_obj.pk not in equipo_ids:
-            messages.error(request, 'Ese empleado no pertenece al equipo del coordinador seleccionado.')
+            msg = ('Ese empleado no pertenece al equipo del coordinador seleccionado.'
+                   if not modo_sin_jefe
+                   else 'Ese empleado ya no está sin jefe (le asignaron uno) o no es operativo.')
+            messages.error(request, msg)
             return redirect(redirect_url)
 
         from datetime import datetime as _dt_parse
@@ -5705,8 +5751,8 @@ def novedades_rrhh_semana(request):
 
     # GET: renderizar tabla semanal (o placeholder si no hay coordinador)
     filas = []
-    if coordinador:
-        equipo = _equipo_operativo_de(coordinador)
+    equipo = _equipo_actual() if (coordinador or modo_sin_jefe) else []
+    if equipo:
         emp_ids = [e.pk for e in equipo]
         novedades = list(
             NovedadNomina.objects.filter(
@@ -5740,9 +5786,14 @@ def novedades_rrhh_semana(request):
         c for c in NovedadNomina.TIPO_CHOICES if not c[0].startswith('hora_extra_')
     ]
 
+    coord_param = COORDINADOR_SIN_JEFE if modo_sin_jefe else (coordinador.pk if coordinador else '')
     context = {
         'coordinador': coordinador,
         'coordinadores': coordinadores,
+        'modo_sin_jefe': modo_sin_jefe,
+        'COORDINADOR_SIN_JEFE': COORDINADOR_SIN_JEFE,
+        'coord_param': coord_param,
+        'empleados_sin_jefe_count': empleados_sin_jefe_count,
         'lunes': lunes,
         'domingo': dias_semana[-1],
         'semana_anterior': lunes - timedelta(days=7),

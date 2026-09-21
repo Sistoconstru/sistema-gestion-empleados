@@ -46,6 +46,11 @@
                 <label class="form-label small text-muted">Coordinador / Jefe directo</label>
                 <select name="coordinador" class="form-select" onchange="this.form.submit()">
                     <option value="">— Selecciona un coordinador —</option>
+                    {% if empleados_sin_jefe_count %}
+                    <option value="{{ COORDINADOR_SIN_JEFE }}" {% if modo_sin_jefe %}selected{% endif %}>
+                        — Sin jefe asignado ({{ empleados_sin_jefe_count }} empleado{{ empleados_sin_jefe_count|pluralize }}) —
+                    </option>
+                    {% endif %}
                     {% for c in coordinadores %}
                     <option value="{{ c.pk }}" {% if coordinador and coordinador.pk == c.pk %}selected{% endif %}>
                         {{ c.nombre_completo }}
@@ -69,29 +74,38 @@
     </div>
 </div>
 
-{% if not coordinador %}
+{% if not coordinador and not modo_sin_jefe %}
     <div class="alert alert-info">
         <i class="fas fa-info-circle me-1"></i>
         Selecciona un coordinador arriba para ver y cargar novedades de su equipo.
         Total coordinadores con equipo operativo: <strong>{{ coordinadores|length }}</strong>.
+        {% if empleados_sin_jefe_count %}
+            También hay <strong>{{ empleados_sin_jefe_count }}</strong> empleado{{ empleados_sin_jefe_count|pluralize }}
+            operativo{{ empleados_sin_jefe_count|pluralize }} sin jefe asignado — usa la opción
+            «Sin jefe asignado» para cargarles horas extras.
+        {% endif %}
     </div>
 {% else %}
 
 {# Navegación entre semanas #}
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
     <div class="btn-group">
-        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}&fecha={{ semana_anterior|date:'Y-m-d' }}">
+        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coord_param }}&fecha={{ semana_anterior|date:'Y-m-d' }}">
             <i class="fas fa-chevron-left me-1"></i>Semana anterior
         </a>
-        <a class="btn btn-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}">
+        <a class="btn btn-corporativo btn-sm" href="?coordinador={{ coord_param }}">
             <i class="fas fa-calendar-day me-1"></i>Esta semana
         </a>
-        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coordinador.pk }}&fecha={{ semana_siguiente|date:'Y-m-d' }}">
+        <a class="btn btn-outline-corporativo btn-sm" href="?coordinador={{ coord_param }}&fecha={{ semana_siguiente|date:'Y-m-d' }}">
             Semana siguiente<i class="fas fa-chevron-right ms-1"></i>
         </a>
     </div>
     <div class="text-muted small">
-        Equipo de <strong>{{ coordinador.nombre_completo }}</strong> ·
+        {% if modo_sin_jefe %}
+            <strong>Empleados sin jefe asignado</strong> ·
+        {% else %}
+            Equipo de <strong>{{ coordinador.nombre_completo }}</strong> ·
+        {% endif %}
         Semana del {{ lunes|date:"d/m/Y" }} al {{ domingo|date:"d/m/Y" }}
     </div>
 </div>
@@ -136,7 +150,7 @@
                                                 <form method="post" action="{% url 'employees:novedad_eliminar' n.pk %}" class="d-inline"
                                                       onsubmit="return confirm('¿Eliminar esta novedad? Esta acción no se puede deshacer.');">
                                                     {% csrf_token %}
-                                                    <input type="hidden" name="next" value="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coordinador.pk }}&fecha={{ lunes|date:'Y-m-d' }}">
+                                                    <input type="hidden" name="next" value="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coord_param }}&fecha={{ lunes|date:'Y-m-d' }}">
                                                     <button type="submit" class="btn btn-sm btn-link p-0 text-danger" title="Eliminar (RRHH)">
                                                         <i class="fas fa-times"></i>
                                                     </button>
@@ -175,7 +189,7 @@
 <div class="modal fade" id="modalNovedad" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="post" action="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coordinador.pk }}&fecha={{ lunes|date:'Y-m-d' }}">
+            <form method="post" action="{% url 'employees:novedades_rrhh_semana' %}?coordinador={{ coord_param }}&fecha={{ lunes|date:'Y-m-d' }}">
                 {% csrf_token %}
                 <input type="hidden" name="empleado_id" id="modal_empleado_id">
                 <div class="modal-header bg-corporativo text-white">
