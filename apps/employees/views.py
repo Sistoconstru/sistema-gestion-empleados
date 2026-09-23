@@ -5149,7 +5149,10 @@ def novedades_semana(request):
         dias_ok = []       # [(fecha, [novedades])]
         dias_saltados = []  # [(fecha, motivo)]
 
-        from apps.employees.utils.jornadas import dividir_por_medianoche
+        from apps.employees.utils.jornadas import (
+            dividir_por_medianoche, segmentar_recargo_nocturno,
+        )
+        recortes_por_franja = []  # [(fecha, str_descripcion)]
 
         for fecha_nov in fechas_objetivo:
             # 1. Determinar novedades para esta fecha (cada tramo trae su propia
@@ -5169,6 +5172,34 @@ def novedades_semana(request):
                         'hora_fin': tr['hora_fin'],
                         'total_horas': tr['total_horas'],
                     })
+            elif tipo == 'recargo_nocturno' and hora_inicio and hora_fin:
+                # Recorta a franja legal 19:00-06:00. Si el rango cae en día
+                # dominical/festivo, se reclasifica automáticamente. Los
+                # tramos diurnos se descartan.
+                try:
+                    tramos, descartados = segmentar_recargo_nocturno(
+                        fecha_nov, hora_inicio, hora_fin,
+                    )
+                except ValueError as err:
+                    dias_saltados.append((fecha_nov, str(err)))
+                    continue
+                if not tramos:
+                    dias_saltados.append((
+                        fecha_nov,
+                        f'el rango {hora_inicio.strftime("%H:%M")}-'
+                        f'{hora_fin.strftime("%H:%M")} está completamente fuera '
+                        f'de la franja nocturna (19:00-06:00). No se registró.',
+                    ))
+                    continue
+                for tr in tramos:
+                    novedades_a_crear.append(tr)
+                for d in descartados:
+                    recortes_por_franja.append((
+                        d['fecha'],
+                        f'se descartó {d["hora_inicio"].strftime("%H:%M")}-'
+                        f'{d["hora_fin"].strftime("%H:%M")} ({d["total_horas"]}h) '
+                        f'por estar fuera de la franja nocturna 19:00-06:00',
+                    ))
             else:
                 if hora_inicio and hora_fin:
                     # Rango: partir por medianoche si cruza
@@ -5270,6 +5301,11 @@ def novedades_semana(request):
             messages.warning(
                 request,
                 f'No se registró el {fecha_sk.strftime("%d/%m/%Y")}: {motivo_sk}.',
+            )
+        for fecha_rc, motivo_rc in recortes_por_franja:
+            messages.info(
+                request,
+                f'{fecha_rc.strftime("%d/%m/%Y")}: {motivo_rc}.',
             )
         if not dias_ok and not dias_saltados:
             messages.error(request, 'No se pudo registrar ninguna novedad.')
@@ -5670,10 +5706,13 @@ def novedades_rrhh_semana(request):
                     )
                     return redirect(redirect_url)
 
-        from apps.employees.utils.jornadas import dividir_por_medianoche
+        from apps.employees.utils.jornadas import (
+            dividir_por_medianoche, segmentar_recargo_nocturno,
+        )
 
         creadas = 0
         dias_saltados = []
+        recortes_por_franja = []  # [(fecha, str_descripcion)]
         ahora = timezone.now()
         for fecha_nov in fechas_objetivo:
             # Segmentar si es auto; si no y hay rango, partir por medianoche.
@@ -5693,6 +5732,31 @@ def novedades_rrhh_semana(request):
                         'hora_fin': tr['hora_fin'],
                         'total_horas': tr['total_horas'],
                     })
+            elif tipo == 'recargo_nocturno' and hora_inicio and hora_fin:
+                try:
+                    tramos, descartados = segmentar_recargo_nocturno(
+                        fecha_nov, hora_inicio, hora_fin,
+                    )
+                except ValueError as err:
+                    dias_saltados.append((fecha_nov, str(err)))
+                    continue
+                if not tramos:
+                    dias_saltados.append((
+                        fecha_nov,
+                        f'el rango {hora_inicio.strftime("%H:%M")}-'
+                        f'{hora_fin.strftime("%H:%M")} está completamente fuera '
+                        f'de la franja nocturna (19:00-06:00). No se registró.',
+                    ))
+                    continue
+                for tr in tramos:
+                    novedades_a_crear.append(tr)
+                for d in descartados:
+                    recortes_por_franja.append((
+                        d['fecha'],
+                        f'se descartó {d["hora_inicio"].strftime("%H:%M")}-'
+                        f'{d["hora_fin"].strftime("%H:%M")} ({d["total_horas"]}h) '
+                        f'por estar fuera de la franja nocturna 19:00-06:00',
+                    ))
             else:
                 if hora_inicio and hora_fin:
                     try:
@@ -5747,6 +5811,8 @@ def novedades_rrhh_semana(request):
             )
         for f, motivo_skip in dias_saltados:
             messages.warning(request, f'{f.strftime("%d/%m/%Y")}: {motivo_skip}')
+        for f_rc, motivo_rc in recortes_por_franja:
+            messages.info(request, f'{f_rc.strftime("%d/%m/%Y")}: {motivo_rc}')
         return redirect(redirect_url)
 
     # GET: renderizar tabla semanal (o placeholder si no hay coordinador)
