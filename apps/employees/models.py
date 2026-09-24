@@ -178,6 +178,13 @@ class Empleado(BaseModel):
         related_name='reemplaza_a',
         help_text="Subalterno directo autorizado para registrar el equipo cuando este jefe esté ausente",
     )
+    # Bypass del umbral de 30 subalternos para delegación permanente.
+    # Cuando es True y hay `encargado_asistencia`, el encargado puede
+    # registrar TODOS los días aunque el equipo sea pequeño. Solo RRHH.
+    delegacion_asistencia_permanente = models.BooleanField(
+        default=False,
+        help_text="Permite al encargado de asistencia registrar todos los días sin importar el tamaño del equipo (uso excepcional autorizado por RRHH).",
+    )
 
     # Saldo de vacaciones (calculado y devuelto por Odoo, consultado bajo demanda).
     # SIGHU NO calcula saldo — solo muestra el valor autoritativo de Odoo.

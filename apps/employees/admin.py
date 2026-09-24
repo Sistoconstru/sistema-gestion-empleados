@@ -98,11 +98,16 @@ class EmpleadoAdmin(admin.ModelAdmin):
         }),
         ('Información del Sistema', {
             'fields': (
-                'id', 'fecha_creacion', 'fecha_actualizacion', 
+                'id', 'fecha_creacion', 'fecha_actualizacion',
                 'creado_por', 'get_antiguedad', 'get_cargo_actual', 'get_area_actual'
             ),
             'classes': ('collapse',),
             'description': 'El usuario se crea automáticamente al guardar el empleado .'
+        }),
+        ('Configuración avanzada', {
+            'fields': ('delegacion_asistencia_permanente',),
+            'classes': ('collapse',),
+            'description': 'Uso excepcional. Activar solo cuando RRHH autorice la delegación permanente de asistencia.',
         }),
     )
     

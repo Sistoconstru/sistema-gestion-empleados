@@ -4528,10 +4528,12 @@ def _jefes_ausentes_reemplazados(usuario, fecha):
 
 
 def _jefes_con_delegacion_permanente(usuario):
-    """Jefes con equipo grande (≥ umbral) que designaron a `usuario` como encargado.
+    """Jefes que delegaron permanentemente la asistencia en `usuario`.
 
-    Estos jefes delegan la asistencia de forma permanente — el encargado
-    puede registrar todos los días, no solo cuando el jefe está ausente.
+    Un jefe delega de forma permanente si:
+    - tiene equipo grande (≥ UMBRAL_EQUIPO_GRANDE_ENCARGADO subalternos), o
+    - tiene el flag `delegacion_asistencia_permanente=True` (bypass RRHH
+      para jefes con equipo pequeño que igual necesitan delegar).
     """
     emp = _empleado_de_usuario(usuario)
     if not emp:
@@ -4540,7 +4542,8 @@ def _jefes_con_delegacion_permanente(usuario):
     candidatos = Empleado.objects.filter(encargado_asistencia=emp)
     return [
         j for j in candidatos
-        if _subalternos_activos_de(j).count() >= UMBRAL_EQUIPO_GRANDE_ENCARGADO
+        if j.delegacion_asistencia_permanente
+        or _subalternos_activos_de(j).count() >= UMBRAL_EQUIPO_GRANDE_ENCARGADO
     ]
 
 
