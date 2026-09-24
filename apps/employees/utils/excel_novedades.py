@@ -399,11 +399,13 @@ def generar_excel_novedades_por_coordinador(
             ('Horas extras', [
                 ('hora_extra_diurna', 'diurnas'),
                 ('hora_extra_nocturna', 'nocturnas'),
-                ('hora_extra_dominical', 'dominicales/festivos'),
+                ('hora_extra_dominical_diurna', 'dominicales/festivos diurnas'),
+                ('hora_extra_dominical_nocturna', 'dominicales/festivos nocturnas'),
             ]),
             ('Recargos', [
                 ('recargo_nocturno', 'nocturnos'),
-                ('recargo_dominical', 'dominicales/festivos'),
+                ('recargo_dominical_diurno', 'dominicales/festivos diurnos'),
+                ('recargo_dominical_nocturno', 'dominicales/festivos nocturnos'),
             ]),
             ('Vigilancia', [
                 ('vigilancia', ''),

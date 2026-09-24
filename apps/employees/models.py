@@ -723,9 +723,13 @@ class NovedadNomina(BaseModel):
     TIPO_CHOICES = [
         ('hora_extra_diurna', 'Hora extra diurna'),
         ('hora_extra_nocturna', 'Hora extra nocturna'),
-        ('hora_extra_dominical', 'Hora extra dominical/festivo'),
+        # Dominical/festivo se separa en diurna (06:00-19:00) y nocturna
+        # (19:00-06:00) porque el recargo legal es distinto (100% vs 150%).
+        ('hora_extra_dominical_diurna', 'Hora extra dominical/festivo diurna'),
+        ('hora_extra_dominical_nocturna', 'Hora extra dominical/festivo nocturna'),
         ('recargo_nocturno', 'Recargo nocturno'),
-        ('recargo_dominical', 'Recargo dominical/festivo'),
+        ('recargo_dominical_diurno', 'Recargo dominical/festivo diurno'),
+        ('recargo_dominical_nocturno', 'Recargo dominical/festivo nocturno'),
         ('vigilancia', 'Vigilancia'),
     ]
 
@@ -740,7 +744,7 @@ class NovedadNomina(BaseModel):
         help_text="Empleado al que corresponde la novedad",
     )
     fecha = models.DateField(help_text="Fecha en que ocurrió la novedad")
-    tipo = models.CharField(max_length=25, choices=TIPO_CHOICES)
+    tipo = models.CharField(max_length=32, choices=TIPO_CHOICES)
 
     hora_inicio = models.TimeField(
         null=True, blank=True,

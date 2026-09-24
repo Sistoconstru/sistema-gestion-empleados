@@ -60,7 +60,9 @@ def segmentar_hora_extra(fecha: date, hora_inicio: time, hora_fin: time) -> list
     #  a) cambio de día (medianoche)  → nueva fecha, posible cambio de tipo
     #     por domingo/festivo del día siguiente
     #  b) corte 06:00 y 19:00 dentro del día → cambio diurna/nocturna
-    # En un día domingo/festivo TODO cuenta como dominical.
+    # En un día domingo/festivo distinguimos:
+    #   06:00-19:00 → hora_extra_dominical_diurna
+    #   19:00-06:00 → hora_extra_dominical_nocturna
     tramos = []
     cursor = dt_ini
     while cursor < dt_fin:
@@ -71,28 +73,24 @@ def segmentar_hora_extra(fecha: date, hora_inicio: time, hora_fin: time) -> list
         # El próximo cambio de día siempre es un candidato de corte
         prox_dia = datetime.combine(fecha_actual + timedelta(days=1), time(0, 0))
 
-        if es_dominical:
-            # Todo el día cuenta como dominical/festivo — cortamos solo en el
-            # cambio de día (por si el rango se prolonga a un día laboral).
-            fin_tramo = min(prox_dia, dt_fin)
-            tipo = 'hora_extra_dominical'
-        elif HORA_INICIO_DIURNA <= hora_actual < HORA_FIN_DIURNA:
-            # Diurno — corta en 19:00 o al cambio de día (nunca debería llegar
-            # al día siguiente sin cambiar de tipo, pero mantenemos min).
+        if HORA_INICIO_DIURNA <= hora_actual < HORA_FIN_DIURNA:
+            # Franja diurna — corta en 19:00 o al cambio de día.
             corte_diurna = datetime.combine(fecha_actual, HORA_FIN_DIURNA)
             fin_tramo = min(corte_diurna, prox_dia, dt_fin)
-            tipo = 'hora_extra_diurna'
+            tipo = ('hora_extra_dominical_diurna' if es_dominical
+                    else 'hora_extra_diurna')
         else:
-            # Nocturno — corta en 06:00 del día en que estemos y en el cambio
-            # de día. Cuando estamos en 19:00-23:59, el corte de 06:00 cae
-            # en el día siguiente y NO se usa hasta cruzar medianoche.
+            # Franja nocturna — corta en 06:00 del día en que estemos y en
+            # el cambio de día. Cuando estamos en 19:00-23:59, el corte de
+            # 06:00 cae en el día siguiente y NO se usa hasta cruzar medianoche.
             if hora_actual >= HORA_FIN_DIURNA:
                 corte_dia = datetime.combine(fecha_actual + timedelta(days=1),
                                              HORA_INICIO_DIURNA)
             else:
                 corte_dia = datetime.combine(fecha_actual, HORA_INICIO_DIURNA)
             fin_tramo = min(corte_dia, prox_dia, dt_fin)
-            tipo = 'hora_extra_nocturna'
+            tipo = ('hora_extra_dominical_nocturna' if es_dominical
+                    else 'hora_extra_nocturna')
 
         tramos.append({
             'fecha': fecha_actual,
@@ -193,7 +191,9 @@ def segmentar_recargo_nocturno(fecha: date, hora_inicio: time, hora_fin: time) -
         def _push_valido(dt_a, dt_b):
             if dt_b <= dt_a:
                 return
-            tipo = ('recargo_dominical'
+            # Los tramos válidos por definición están en franja nocturna
+            # (00-06 o 19-24), así que en día festivo son 'recargo_dominical_nocturno'.
+            tipo = ('recargo_dominical_nocturno'
                     if _es_domingo_o_festivo(fecha_actual)
                     else 'recargo_nocturno')
             validos.append({
