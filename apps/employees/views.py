@@ -4923,6 +4923,20 @@ from decimal import Decimal as _DecimalLimite
 LIMITE_HORAS_EXTRAS_DIA = _DecimalLimite('12')
 
 
+def _novedad_duplicada_existente(empleado, fecha, tipo, hora_inicio, hora_fin):
+    """Retorna una novedad ya registrada con misma tupla, o None.
+
+    Evita crear duplicados por double-submit o re-carga humana. Considera
+    equivalentes hora_inicio/hora_fin nulos (novedades sin rango).
+    Ignora las rechazadas: si el coordinador quiere insistir, puede.
+    """
+    return (NovedadNomina.objects
+            .filter(empleado=empleado, fecha=fecha, tipo=tipo,
+                    hora_inicio=hora_inicio, hora_fin=hora_fin)
+            .exclude(estado_aprobacion='rechazada')
+            .first())
+
+
 def _lunes_de_semana(fecha):
     """Retorna el lunes de la semana a la que pertenece la fecha."""
     from datetime import timedelta
@@ -5262,9 +5276,35 @@ def novedades_semana(request):
             if excedio:
                 continue
 
-            # 3. Insertar en su propia transacción para aislar fallos por día
+            # 3. Filtrar duplicados: mismo empleado/fecha/tipo/rango ya
+            # registrado (pendiente o aprobada). Evita double-submit y
+            # re-cargas humanas del mismo turno.
+            novedades_finales = []
+            for n in novedades_a_crear:
+                dup = _novedad_duplicada_existente(
+                    empleado_obj, n['fecha'], n['tipo'],
+                    n['hora_inicio'], n['hora_fin'],
+                )
+                if dup:
+                    rango_txt = (
+                        f'{n["hora_inicio"].strftime("%H:%M")}-'
+                        f'{n["hora_fin"].strftime("%H:%M")} '
+                        if n['hora_inicio'] and n['hora_fin'] else ''
+                    )
+                    dias_saltados.append((
+                        n['fecha'],
+                        f'ya existe una novedad idéntica ({rango_txt}'
+                        f'{dup.get_tipo_display()}) registrada previamente',
+                    ))
+                    continue
+                novedades_finales.append(n)
+
+            if not novedades_finales:
+                continue
+
+            # 4. Insertar en su propia transacción para aislar fallos por día
             with transaction.atomic():
-                for n in novedades_a_crear:
+                for n in novedades_finales:
                     NovedadNomina.objects.create(
                         empleado=empleado_obj,
                         fecha=n['fecha'],
@@ -5278,7 +5318,7 @@ def novedades_semana(request):
                         creado_por=request.user,
                         estado_aprobacion='pendiente',
                     )
-            dias_ok.append((fecha_nov, novedades_a_crear))
+            dias_ok.append((fecha_nov, novedades_finales))
 
         # 4. Mensaje único con el resumen
         if dias_ok:
@@ -5781,9 +5821,34 @@ def novedades_rrhh_semana(request):
                         'total_horas': total_horas_base,
                     })
 
+            # Filtrar duplicados idénticos ya cargados (previene re-carga
+            # y double-submit; RRHH también los sufre).
+            novedades_finales = []
+            for n in novedades_a_crear:
+                dup = _novedad_duplicada_existente(
+                    empleado_obj, n['fecha'], n['tipo'],
+                    n['hora_inicio'], n['hora_fin'],
+                )
+                if dup:
+                    rango_txt = (
+                        f'{n["hora_inicio"].strftime("%H:%M")}-'
+                        f'{n["hora_fin"].strftime("%H:%M")} '
+                        if n['hora_inicio'] and n['hora_fin'] else ''
+                    )
+                    dias_saltados.append((
+                        n['fecha'],
+                        f'ya existe una novedad idéntica ({rango_txt}'
+                        f'{dup.get_tipo_display()}) registrada previamente',
+                    ))
+                    continue
+                novedades_finales.append(n)
+
+            if not novedades_finales:
+                continue
+
             try:
                 with transaction.atomic():
-                    for n in novedades_a_crear:
+                    for n in novedades_finales:
                         NovedadNomina.objects.create(
                             empleado=empleado_obj,
                             fecha=n['fecha'],

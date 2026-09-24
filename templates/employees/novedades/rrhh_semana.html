@@ -394,6 +394,24 @@
     }
     hi.addEventListener('input', permitirManual);
     hf.addEventListener('input', permitirManual);
+
+    // Anti double-submit: al enviar, deshabilitar botón y cambiar texto.
+    var form = modal.querySelector('form');
+    form.addEventListener('submit', function() {
+        var btn = form.querySelector('button[type="submit"]');
+        if (!btn || btn.disabled) return;
+        btn.disabled = true;
+        btn.dataset.origHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Guardando...';
+    });
+    modal.addEventListener('hidden.bs.modal', function() {
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn && btn.dataset.origHtml) {
+            btn.disabled = false;
+            btn.innerHTML = btn.dataset.origHtml;
+            delete btn.dataset.origHtml;
+        }
+    });
 })();
 </script>
 {% endblock %}
