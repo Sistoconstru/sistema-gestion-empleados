@@ -187,6 +187,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Limpieza de notificaciones antiguas: domingos 3:30 AM.
+        # Elimina leídas con >30 días y no leídas con >90 días.
+        scheduler.add_job(
+            _limpiar_notificaciones_antiguas,
+            'cron',
+            day_of_week='sun', hour=3, minute=30,
+            id='limpiar_notificaciones',
+            name='Limpiar notificaciones antiguas',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -200,6 +213,7 @@ def start_scheduler():
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
         logger.info('  - 07:00 (diario): Encuestas — recordatorio 24h y auto-cierre')
+        logger.info('  - 03:30 AM (domingos): Limpieza de notificaciones antiguas')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -907,3 +921,17 @@ def _encuestas_mantenimiento_diario():
     logger.info(
         f'Encuestas mantenimiento: {cerradas} cerradas · {enviadas} recordatorios push.'
     )
+
+
+def _limpiar_notificaciones_antiguas():
+    """Corre los domingos a las 3:30 AM.
+
+    Elimina notificaciones leídas con más de 30 días desde fecha_leida y
+    no leídas con más de 90 días desde fecha_creacion. Evita acumulación
+    indefinida en la tabla de notificaciones.
+    """
+    try:
+        call_command('limpiar_notificaciones_antiguas', '--apply')
+        logger.info('Limpieza de notificaciones antiguas completada.')
+    except Exception as exc:
+        logger.error(f'Error en limpieza de notificaciones: {exc}', exc_info=True)
