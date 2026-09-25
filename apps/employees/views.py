@@ -6079,6 +6079,43 @@ def descargar_carta_vacaciones(request, pk):
     return response
 
 
+@staff_member_required
+def descargar_carta_vacaciones_rrhh(request, pk):
+    """Descarga de la carta de vacaciones para RRHH.
+
+    Sin modal ni consentimiento (es una constancia oficial, no una
+    declaración personal). Registra en campos aparte para no pisar la
+    fecha del empleado.
+    """
+    from django.http import HttpResponse
+    from django.utils import timezone
+    from apps.employees.vacaciones_carta import generar_carta_vacaciones
+
+    solicitud = get_object_or_404(SolicitudVacacion, pk=pk)
+
+    if solicitud.estado_local != 'aprobada_rrhh':
+        messages.warning(
+            request,
+            'Solo puedes descargar la carta cuando la solicitud está aprobada por RRHH.'
+        )
+        return redirect('employees:vacaciones_admin_panel')
+
+    SolicitudVacacion.objects.filter(pk=solicitud.pk).update(
+        carta_descargada_rrhh_fecha=timezone.now(),
+        carta_descargada_rrhh_por=request.user,
+    )
+
+    pdf_bytes = generar_carta_vacaciones(solicitud)
+    emp = solicitud.empleado
+    filename = (
+        f'carta_vacaciones_{emp.numero_documento}_'
+        f'{solicitud.fecha_inicio.strftime("%Y%m%d") if solicitud.fecha_inicio else solicitud.pk}.pdf'
+    )
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
 @login_required
 def vacaciones_equipo(request):
     """Panel del jefe: equipo + TODAS las solicitudes de vacaciones del equipo.

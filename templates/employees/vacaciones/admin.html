@@ -149,6 +149,11 @@
                                         </button>
                                     {% elif s.estado_local == 'aprobada_rrhh' %}
                                         <span class="badge bg-success">Aprobada</span>
+                                        <a class="btn btn-sm btn-outline-corporativo ms-1"
+                                           href="{% url 'employees:descargar_carta_vacaciones_rrhh' s.pk %}"
+                                           title="{% if s.carta_descargada_rrhh_fecha %}Última descarga RRHH {{ s.carta_descargada_rrhh_fecha|date:'d/m/Y H:i' }}{% else %}Descargar carta{% endif %}">
+                                            <i class="fas fa-file-download"></i> Carta
+                                        </a>
                                     {% elif s.estado_local == 'rechazada_rrhh' %}
                                         <span class="badge bg-danger">Rechazada por RRHH</span>
                                     {% elif s.estado_local == 'cancelada_rrhh' %}

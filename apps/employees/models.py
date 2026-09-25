@@ -5,6 +5,7 @@ from django.db import models
 # =============================================================================
 
 import uuid
+from django.conf import settings
 from django.db import models
 from apps.core.models import BaseModel as CoreBaseModel
 from custom_storage.media import MediaStorage
@@ -503,6 +504,16 @@ class SolicitudVacacion(BaseModel):
     carta_confirmada_hash = models.CharField(
         max_length=64, blank=True,
         help_text="Hash SHA-256 del consentimiento (empleado_id + solicitud_id + fecha).",
+    )
+    # Descarga por RRHH — trazabilidad separada; NO pisa la constancia del empleado.
+    carta_descargada_rrhh_fecha = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Fecha/hora de la última descarga hecha por RRHH.",
+    )
+    carta_descargada_rrhh_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='cartas_vacaciones_descargadas',
+        help_text="Usuario RRHH que hizo la última descarga.",
     )
 
     class Meta:

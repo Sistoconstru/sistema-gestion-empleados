@@ -48,6 +48,7 @@ urlpatterns = [
     # Mis vacaciones (empleado, solo lectura)
     path('mis-vacaciones/', views.mis_vacaciones, name='mis_vacaciones'),
     path('mis-vacaciones/<uuid:pk>/carta/', views.descargar_carta_vacaciones, name='descargar_carta_vacaciones'),
+    path('admin/vacaciones/<uuid:pk>/carta/', views.descargar_carta_vacaciones_rrhh, name='descargar_carta_vacaciones_rrhh'),
 
     # Asistencia diaria (jefe)
     path('asistencia/', views.asistencia_diaria, name='asistencia_diaria'),
