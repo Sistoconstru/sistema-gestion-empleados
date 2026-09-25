@@ -121,11 +121,15 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         cargo = self.request.GET.get('cargo')
         sede = self.request.GET.get('sede')
         
-        # Aplicar filtro de búsqueda
+        # Aplicar filtro de búsqueda: nombres, apellidos y número de documento.
+        # `icontains` para permitir matches parciales (ej. "espinal" encuentra
+        # "Diego Alejandro Espinal") y buscar cédulas aunque se pegue solo
+        # parte del número.
         if search:
             queryset = queryset.filter(
-                Q(nombres__istartswith=search) |
-                Q(apellidos__istartswith=search)
+                Q(nombres__icontains=search) |
+                Q(apellidos__icontains=search) |
+                Q(numero_documento__icontains=search)
             )
         
         # Aplicar filtros específicos

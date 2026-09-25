@@ -473,7 +473,7 @@ class BusquedaEmpleadoForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Buscar por nombre, documento o email...'
+            'placeholder': 'Buscar por nombre, apellido o cédula...'
         })
     )
     
