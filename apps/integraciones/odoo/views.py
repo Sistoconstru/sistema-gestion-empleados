@@ -527,3 +527,143 @@ class OdooVacacionImportarView(APIView):
         else:
             respuesta['compensacion_id'] = compensacion_id
         return Response(respuesta, status=status.HTTP_200_OK)
+
+
+# Motivos de retiro aceptados desde Odoo (deben coincidir con
+# Empleado.MOTIVOS_RETIRO).
+MOTIVOS_RETIRO_ODOO = {
+    'terminacion_contrato',
+    'vencimiento_termino_fijo',
+    'fin_aprendizaje',
+    'otro',
+}
+
+# Estado terminal al que se envía el empleado tras el retiro.
+ESTADO_RETIRO_CODIGO = 'RETIRADO'
+
+
+class OdooEmpleadoInactivarView(APIView):
+    """Registra el retiro/inactivación de un empleado, disparado desde Odoo.
+
+    Contrato:
+    - Auth: `Authorization: Token <SIGHU_ODOO_TOKEN>`.
+    - Body JSON:
+        {
+          "sighu_uuid": "<uuid>",
+          "numero_documento": "<cedula>",   # respaldo/conciliación
+          "fecha_retiro": "YYYY-MM-DD",
+          "motivo": "terminacion_contrato" | "vencimiento_termino_fijo"
+                    | "fin_aprendizaje" | "otro",
+          "observacion": "texto libre (opcional)",
+          "origen": "odoo"
+        }
+    - Empleado se busca por `sighu_uuid`; si no aparece, se intenta por
+      `numero_documento` como conciliación.
+    - Idempotente: si ya está en RETIRADO con la misma fecha_retiro, responde
+      200 con `ya_inactivo: true`. Si la fecha cambia (corrección de RRHH),
+      actualiza en 200.
+    - `fecha_retiro` puede ser del pasado — Odoo suele registrar retiros con
+      días de atraso.
+
+    Ver docs/INTEGRACION_ODOO_RETIROS.md.
+    """
+    authentication_classes = [OdooServiceTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from datetime import date as _date
+        from apps.employees.models import EstadoEmpleado
+
+        data = request.data if isinstance(request.data, dict) else {}
+
+        sighu_uuid = (data.get('sighu_uuid') or '').strip()
+        numero_documento = (data.get('numero_documento') or '').strip()
+        fecha_retiro_raw = (data.get('fecha_retiro') or '').strip()
+        motivo = (data.get('motivo') or '').strip()
+        observacion = (data.get('observacion') or '').strip()
+        origen = (data.get('origen') or '').strip()
+
+        # --- Validaciones ---
+        if not sighu_uuid and not numero_documento:
+            return Response(
+                {'ok': False, 'error': 'sighu_uuid o numero_documento requerido'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if origen != 'odoo':
+            return Response(
+                {'ok': False, 'error': "origen debe ser 'odoo'"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not fecha_retiro_raw:
+            return Response(
+                {'ok': False, 'error': 'fecha_retiro requerida (YYYY-MM-DD)'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            fecha_retiro = _date.fromisoformat(fecha_retiro_raw)
+        except (TypeError, ValueError):
+            return Response(
+                {'ok': False, 'error': 'fecha_retiro debe tener formato YYYY-MM-DD'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if motivo not in MOTIVOS_RETIRO_ODOO:
+            return Response(
+                {'ok': False,
+                 'error': f"motivo invalido: '{motivo}'. Permitidos: {sorted(MOTIVOS_RETIRO_ODOO)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- Buscar empleado: sighu_uuid primero, fallback numero_documento ---
+        empleado = None
+        if sighu_uuid:
+            empleado = Empleado.objects.filter(pk=sighu_uuid).first()
+        if not empleado and numero_documento:
+            empleado = Empleado.objects.filter(numero_documento=numero_documento).first()
+        if not empleado:
+            return Response(
+                {'ok': False, 'error': 'empleado no encontrado'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            estado_retirado = EstadoEmpleado.objects.get(codigo=ESTADO_RETIRO_CODIGO)
+        except EstadoEmpleado.DoesNotExist:
+            return Response(
+                {'ok': False,
+                 'error': f"EstadoEmpleado con codigo='{ESTADO_RETIRO_CODIGO}' no existe en SIGHU"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        ya_retirado = (
+            empleado.estado_id == estado_retirado.pk
+            and empleado.fecha_retiro == fecha_retiro
+            and empleado.motivo_retiro == motivo
+        )
+
+        if ya_retirado:
+            return Response(
+                {'ok': True, 'ya_inactivo': True,
+                 'sighu_uuid': str(empleado.pk),
+                 'estado': ESTADO_RETIRO_CODIGO,
+                 'fecha_retiro': fecha_retiro.isoformat()},
+                status=status.HTTP_200_OK,
+            )
+
+        # Update (sobreescribe si RRHH corrige la fecha o el motivo).
+        Empleado.objects.filter(pk=empleado.pk).update(
+            estado=estado_retirado,
+            fecha_retiro=fecha_retiro,
+            motivo_retiro=motivo,
+            observacion_retiro=observacion,
+        )
+
+        return Response(
+            {'ok': True,
+             'sighu_uuid': str(empleado.pk),
+             'estado': ESTADO_RETIRO_CODIGO,
+             'fecha_retiro': fecha_retiro.isoformat()},
+            status=status.HTTP_200_OK,
+        )

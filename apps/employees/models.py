@@ -131,6 +131,20 @@ class Empleado(BaseModel):
             "reactivar si aplica."
         ),
     )
+    MOTIVOS_RETIRO = [
+        ('terminacion_contrato', 'Terminación de contrato'),
+        ('vencimiento_termino_fijo', 'Vencimiento de término fijo'),
+        ('fin_aprendizaje', 'Fin de contrato de aprendizaje'),
+        ('otro', 'Otro'),
+    ]
+    motivo_retiro = models.CharField(
+        max_length=40, choices=MOTIVOS_RETIRO, blank=True,
+        help_text="Motivo del retiro registrado por RRHH (Odoo).",
+    )
+    observacion_retiro = models.TextField(
+        blank=True,
+        help_text="Observación libre del retiro (Odoo).",
+    )
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
     centro_costo = models.ForeignKey(
         'organizational.CentroCosto',
