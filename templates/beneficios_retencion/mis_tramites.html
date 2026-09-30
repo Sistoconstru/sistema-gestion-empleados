@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis beneficios de retención{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'employees:empleado_perfil' %}">Mi Perfil</a></li>
+            <li class="breadcrumb-item active">Beneficios de retención</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Mis beneficios de retención</h4>
+        <a href="{% url 'beneficios_retencion:nuevo_tramite' %}" class="btn btn-corporativo">
+            <i class="fas fa-plus me-1"></i>Nuevo trámite
+        </a>
+    </div>
+
+    <div class="alert alert-info small">
+        <i class="fas fa-info-circle me-1"></i>
+        Carga aquí los soportes que reducen tu retención en la fuente (intereses de vivienda, medicina prepagada,
+        dependientes). RRHH los revisa y te notifica cuando estén validados.
+        Los soportes de <strong>vivienda</strong> y <strong>medicina prepagada</strong> se renuevan cada año y
+        pierden vigencia el 30 de abril.
+    </div>
+
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags|default:'info' }} small">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Año</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                            <th>Observación RRHH</th>
+                            <th>Cargado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tramites %}
+                        <tr>
+                            <td><strong>{{ t.get_tipo_display }}</strong></td>
+                            <td>{{ t.anio_aplicacion }}</td>
+                            <td>
+                                {% if t.valor %}${{ t.valor|floatformat:0 }} ({{ t.get_periodicidad_display|lower }}){% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% if t.estado == 'pendiente_rrhh' %}
+                                    <span class="badge bg-warning text-dark">Pendiente RRHH</span>
+                                {% elif t.estado == 'validado' %}
+                                    <span class="badge bg-success">Validado</span>
+                                    {% if not t.carta_firmada %}
+                                        <span class="badge bg-info ms-1">Firma pendiente</span>
+                                    {% endif %}
+                                {% elif t.estado == 'rechazado' %}
+                                    <span class="badge bg-danger">Rechazado</span>
+                                {% elif t.estado == 'revocado' %}
+                                    <span class="badge bg-secondary">Revocado</span>
+                                {% elif t.estado == 'error_envio_odoo' %}
+                                    <span class="badge bg-warning text-dark">En envío</span>
+                                {% endif %}
+                            </td>
+                            <td class="small">{{ t.observacion_rrhh|default:'—'|truncatechars:80 }}</td>
+                            <td class="small text-muted">{{ t.fecha_creacion|date:'d/m/Y' }}</td>
+                            <td>
+                                {% if t.estado == 'pendiente_rrhh' %}
+                                    <form method="post" action="{% url 'beneficios_retencion:cancelar_tramite' t.pk %}"
+                                          class="d-inline" onsubmit="return confirm('¿Cancelar este trámite?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                Aún no has cargado ningún trámite.
+                                <a href="{% url 'beneficios_retencion:nuevo_tramite' %}">Cargá el primero</a>.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

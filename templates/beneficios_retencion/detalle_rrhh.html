@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ tramite.get_tipo_display }} — {{ tramite.empleado.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'beneficios_retencion:bandeja_rrhh' %}">Beneficios de retención — RRHH</a></li>
+            <li class="breadcrumb-item active">Trámite</li>
+        </ol>
+    </nav>
+
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags|default:'info' }} small">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">{{ tramite.get_tipo_display }} — Año {{ tramite.anio_aplicacion }}</h5>
+                        <small class="text-muted">Período certificado: {{ tramite.periodo_certificado }}</small>
+                    </div>
+                    <div>
+                        {% if tramite.estado == 'pendiente_rrhh' %}
+                            <span class="badge bg-warning text-dark fs-6">Pendiente RRHH</span>
+                        {% elif tramite.estado == 'validado' %}
+                            <span class="badge bg-success fs-6">Validado</span>
+                        {% elif tramite.estado == 'rechazado' %}
+                            <span class="badge bg-danger fs-6">Rechazado</span>
+                        {% elif tramite.estado == 'revocado' %}
+                            <span class="badge bg-secondary fs-6">Revocado</span>
+                        {% elif tramite.estado == 'error_envio_odoo' %}
+                            <span class="badge bg-warning text-dark fs-6">Error Odoo</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Empleado</dt>
+                        <dd class="col-sm-8">{{ tramite.empleado.nombre_completo }} ({{ tramite.empleado.numero_documento }})</dd>
+
+                        {% if tramite.valor %}
+                        <dt class="col-sm-4">Valor certificado</dt>
+                        <dd class="col-sm-8">${{ tramite.valor|floatformat:0 }} ({{ tramite.get_periodicidad_display|lower }})</dd>
+                        {% endif %}
+
+                        {% if tramite.observacion_empleado %}
+                        <dt class="col-sm-4">Observación del empleado</dt>
+                        <dd class="col-sm-8">{{ tramite.observacion_empleado }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">Cargado el</dt>
+                        <dd class="col-sm-8">{{ tramite.fecha_creacion|date:'d/m/Y H:i' }}</dd>
+
+                        {% if tramite.validado_por %}
+                        <dt class="col-sm-4">Revisado por</dt>
+                        <dd class="col-sm-8">{{ tramite.validado_por.get_full_name|default:tramite.validado_por.username }}
+                            el {{ tramite.validado_el|date:'d/m/Y' }}</dd>
+                        {% endif %}
+
+                        {% if tramite.observacion_rrhh %}
+                        <dt class="col-sm-4">Observación RRHH</dt>
+                        <dd class="col-sm-8">{{ tramite.observacion_rrhh }}</dd>
+                        {% endif %}
+
+                        {% if tramite.odoo_id %}
+                        <dt class="col-sm-4">ID en Odoo</dt>
+                        <dd class="col-sm-8">{{ tramite.odoo_id }}
+                            {% if tramite.aplica_desde %}· Aplica desde {{ tramite.aplica_desde|date:'d/m/Y' }}{% endif %}
+                            {% if tramite.vence_el %}· Vence el {{ tramite.vence_el|date:'d/m/Y' }}{% endif %}
+                        </dd>
+                        {% endif %}
+
+                        {% if tramite.ultimo_error_odoo %}
+                        <dt class="col-sm-4">Último error Odoo</dt>
+                        <dd class="col-sm-8 text-danger small">{{ tramite.ultimo_error_odoo }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {# Soportes principales #}
+            <div class="card mt-3">
+                <div class="card-header"><h6 class="mb-0"><i class="fas fa-paperclip me-2"></i>Soportes</h6></div>
+                <div class="card-body">
+                    {% for s in tramite.soportes.all %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-1">
+                            <span><i class="far fa-file me-1"></i>{{ s.nombre_original|default:s.archivo.name }}</span>
+                            <a href="{{ s.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-corporativo">
+                                <i class="fas fa-download"></i> Ver
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted small mb-0">Sin soportes principales.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Dependientes #}
+            {% if tramite.dependientes.all %}
+            <div class="card mt-3">
+                <div class="card-header"><h6 class="mb-0"><i class="fas fa-users me-2"></i>Dependientes</h6></div>
+                <div class="card-body">
+                    {% for d in tramite.dependientes.all %}
+                        <div class="mb-3 pb-2 border-bottom">
+                            <strong>{{ d.nombres }}</strong>
+                            {% if d.numero_documento %}<small class="text-muted">— {{ d.numero_documento }}</small>{% endif %}
+                            <span class="badge bg-info ms-2">{{ d.get_causal_display }}</span>
+                            {% if d.parentesco %}<small class="text-muted"> · {{ d.parentesco }}</small>{% endif %}
+                            <div class="mt-1 small">
+                                {% for s in d.soportes.all %}
+                                    <a href="{{ s.archivo.url }}" target="_blank" class="me-2">
+                                        <i class="far fa-file me-1"></i>{{ s.nombre_original|default:s.archivo.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {# Acciones #}
+            {% if tramite.estado == 'pendiente_rrhh' or tramite.estado == 'error_envio_odoo' or tramite.estado == 'rechazado' %}
+            <div class="card">
+                <div class="card-header"><h6 class="mb-0">Validar y enviar a Odoo</h6></div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'beneficios_retencion:validar_tramite' tramite.pk %}">
+                        {% csrf_token %}
+                        <label class="form-label small">Comentario (opcional)</label>
+                        <textarea name="observacion" class="form-control form-control-sm mb-2" rows="2">{{ tramite.observacion_rrhh }}</textarea>
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-check me-1"></i>Validar y enviar a Odoo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if tramite.estado != 'rechazado' %}
+            <div class="card mt-2">
+                <div class="card-header"><h6 class="mb-0">Rechazar</h6></div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'beneficios_retencion:rechazar_tramite' tramite.pk %}">
+                        {% csrf_token %}
+                        <label class="form-label small">Motivo del rechazo *</label>
+                        <textarea name="observacion" class="form-control form-control-sm mb-2" rows="2" required></textarea>
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-times me-1"></i>Rechazar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if tramite.estado == 'validado' %}
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="fas fa-check-circle me-2"></i>Trámite validado</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'beneficios_retencion:descargar_carta' tramite.pk %}" class="btn btn-corporativo w-100 mb-2">
+                        <i class="fas fa-print me-1"></i>Imprimir carta juramentada
+                    </a>
+
+                    {% if not tramite.carta_firmada %}
+                    <form method="post" action="{% url 'beneficios_retencion:marcar_carta_firmada' tramite.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-success btn-sm w-100">
+                            <i class="fas fa-signature me-1"></i>Marcar carta como firmada
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-success small mb-0">
+                        <i class="fas fa-check me-1"></i>
+                        Firmada el {{ tramite.carta_firmada_el|date:'d/m/Y H:i' }}.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <div class="card-header"><h6 class="mb-0 text-danger">Revocar beneficio</h6></div>
+                <div class="card-body">
+                    <p class="small text-muted">
+                        Si el empleado dejó de cumplir la condición (canceló medicina, perdió dependiente, etc.),
+                        revocar avisa a Odoo para que deje de aplicar la deducción.
+                    </p>
+                    <form method="post" action="{% url 'beneficios_retencion:revocar_tramite' tramite.pk %}"
+                          onsubmit="return confirm('¿Confirmar la revocación? Odoo dejará de aplicar la deducción.');">
+                        {% csrf_token %}
+                        <label class="form-label small">Motivo de la revocación *</label>
+                        <textarea name="observacion" class="form-control form-control-sm mb-2" rows="2" required></textarea>
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                            <i class="fas fa-ban me-1"></i>Revocar y notificar a Odoo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if tramite.estado == 'error_envio_odoo' %}
+            <div class="card mt-2">
+                <div class="card-body">
+                    <form method="post" action="{% url 'beneficios_retencion:reintentar_envio_odoo' tramite.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning btn-sm w-100">
+                            <i class="fas fa-redo me-1"></i>Reintentar envío a Odoo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

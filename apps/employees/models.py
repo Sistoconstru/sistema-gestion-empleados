@@ -145,6 +145,13 @@ class Empleado(BaseModel):
         blank=True,
         help_text="Observación libre del retiro (Odoo).",
     )
+    # Renta / retención en la fuente: el empleado declara si está obligado
+    # a presentar renta. Solo los declarantes ven el módulo de beneficios
+    # de retención (Art. 383/387/388 ET).
+    es_declarante = models.BooleanField(
+        default=False,
+        help_text="El empleado declaró estar obligado a presentar renta.",
+    )
     sede = models.ForeignKey('organizational.Sede', on_delete=models.CASCADE)  # Sede asociada
     centro_costo = models.ForeignKey(
         'organizational.CentroCosto',

@@ -532,8 +532,64 @@
                             {% endif %}
                         </a>
                     </div>
+
+                    {# Beneficios de retención #}
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        {% if empleado.es_declarante %}
+                            <a href="{% url 'beneficios_retencion:mis_tramites' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
+                                <strong>Beneficios de retención</strong>
+                                <div class="small text-muted">Deducciones para tu retención en la fuente</div>
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary w-100 py-3"
+                                    data-bs-toggle="modal" data-bs-target="#modalDeclarante">
+                                <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
+                                <strong>¿Eres declarante?</strong>
+                                <div class="small text-muted">Beneficios de retención en la fuente</div>
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+{# Modal: ¿Eres declarante? #}
+<div class="modal fade" id="modalDeclarante" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{% url 'beneficios_retencion:marcar_declarante' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-corporativo text-white">
+                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i>¿Eres declarante de renta?</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Este módulo es solo para empleados obligados a declarar renta.</strong>
+                        Si NO declaras renta, no necesitas ingresar aquí; te recomendamos cerrar este mensaje.
+                    </div>
+                    <p class="mb-2">
+                        Al confirmar que eres declarante, habilitamos el módulo de <strong>Beneficios de retención en la
+                        fuente</strong> donde podrás cargar tus soportes (intereses de vivienda, medicina prepagada,
+                        dependientes) para que RRHH los valide y los aplique a tu retención mensual.
+                    </p>
+                    <p class="small text-muted mb-0">
+                        Si más adelante cambia tu situación, RRHH puede desmarcarte desde su panel.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="respuesta" value="no" class="btn btn-outline-secondary">
+                        No, no soy declarante
+                    </button>
+                    <button type="submit" name="respuesta" value="si" class="btn btn-corporativo">
+                        <i class="fas fa-check me-1"></i>Sí, soy declarante — entrar al módulo
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
