@@ -1,18 +1,36 @@
 """Generación de la carta juramentada de beneficios de retención.
 
-Formato genérico — RRHH puede pedir ajustes de texto/logo/firma después.
+Formato oficial con logo Construinmuniza. RRHH puede pedir ajustes finos
+de texto después de usarlo con los primeros empleados.
 """
 import io
+import os
 from datetime import date
 
+from django.conf import settings
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
+from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
 from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
 from reportlab.platypus import (
-    Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+    Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
 )
+
+
+def _ruta_logo():
+    """Busca el logo oficial en static/img/. Devuelve ruta absoluta o None."""
+    for base in (
+        getattr(settings, 'STATIC_ROOT', None),
+        os.path.join(settings.BASE_DIR, 'static'),
+        os.path.join(settings.BASE_DIR, 'staticfiles'),
+    ):
+        if not base:
+            continue
+        ruta = os.path.join(base, 'img', 'construinmuniza_logo.jpg')
+        if os.path.exists(ruta):
+            return ruta
+    return None
 
 
 MESES_ES = [
@@ -61,13 +79,23 @@ def generar_carta_juramentada(tramite):
 
     story = []
 
-    # Encabezado
+    # Encabezado con logo
+    ruta_logo = _ruta_logo()
+    if ruta_logo:
+        try:
+            logo = Image(ruta_logo, width=4.5 * cm, height=4.5 * cm, kind='proportional')
+            logo.hAlign = 'CENTER'
+            story.append(logo)
+        except Exception:
+            pass
+
     story.append(Paragraph('DECLARACIÓN JURAMENTADA PARA DEDUCCIÓN DE RETENCIÓN EN LA FUENTE', titulo))
     story.append(Paragraph(
-        f'Construinmuniza S.A.S. &nbsp;·&nbsp; Expedida el {_fecha_larga(date.today())}',
+        f'Construinmuniza S.A.S. &nbsp;·&nbsp; Madera inmunizada &nbsp;·&nbsp; '
+        f'Expedida el {_fecha_larga(date.today())}',
         small,
     ))
-    story.append(Spacer(1, 0.6 * cm))
+    story.append(Spacer(1, 0.4 * cm))
 
     # Bloque del empleado
     datos_emp = [

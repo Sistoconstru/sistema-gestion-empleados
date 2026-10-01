@@ -43,6 +43,8 @@
                             <th>Año</th>
                             <th>Valor</th>
                             <th>Estado</th>
+                            <th>Aplica desde</th>
+                            <th>Vence el</th>
                             <th>Observación RRHH</th>
                             <th>Cargado</th>
                             <th></th>
@@ -72,7 +74,16 @@
                                     <span class="badge bg-warning text-dark">En envío</span>
                                 {% endif %}
                             </td>
-                            <td class="small">{{ t.observacion_rrhh|default:'—'|truncatechars:80 }}</td>
+                            <td class="small">{% if t.aplica_desde %}{{ t.aplica_desde|date:'d/m/Y' }}{% else %}—{% endif %}</td>
+                            <td class="small">
+                                {% if t.vence_el %}
+                                    {{ t.vence_el|date:'d/m/Y' }}
+                                    {% if t.vence_el|timeuntil|slice:':4' == '1 mo' or t.vence_el|timeuntil|slice:':4' == '0 mo' %}
+                                        <span class="badge bg-warning text-dark ms-1" title="Vence pronto"><i class="fas fa-exclamation"></i></span>
+                                    {% endif %}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td class="small">{{ t.observacion_rrhh|default:'—'|truncatechars:60 }}</td>
                             <td class="small text-muted">{{ t.fecha_creacion|date:'d/m/Y' }}</td>
                             <td>
                                 {% if t.estado == 'pendiente_rrhh' %}
@@ -88,7 +99,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="9" class="text-center text-muted py-4">
                                 Aún no has cargado ningún trámite.
                                 <a href="{% url 'beneficios_retencion:nuevo_tramite' %}">Cargá el primero</a>.
                             </td>

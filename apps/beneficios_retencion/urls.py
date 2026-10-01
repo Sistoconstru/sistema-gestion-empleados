@@ -10,6 +10,7 @@ urlpatterns = [
     path('marcar-declarante/', views.marcar_declarante, name='marcar_declarante'),
     path('mis-tramites/', views.mis_tramites, name='mis_tramites'),
     path('mis-tramites/nuevo/', views.nuevo_tramite, name='nuevo_tramite'),
+    path('mis-tramites/familiares.json', views.familiares_json, name='familiares_json'),
     path('mis-tramites/<uuid:pk>/cancelar/', views.cancelar_tramite, name='cancelar_tramite'),
 
     # RRHH

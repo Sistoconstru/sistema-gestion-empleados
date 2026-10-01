@@ -86,9 +86,15 @@
                         certificado médico, etc. según la causal).
                     </p>
                     <div id="listaDependientes"></div>
-                    <button type="button" class="btn btn-sm btn-outline-corporativo" id="btnAgregarDep">
-                        <i class="fas fa-plus me-1"></i>Agregar dependiente
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-corporativo" id="btnAgregarDep">
+                            <i class="fas fa-plus me-1"></i>Agregar dependiente
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success" id="btnImportarFamilia">
+                            <i class="fas fa-users me-1"></i>Importar desde Mi Familia
+                        </button>
+                    </div>
+                    <div id="hintImportar" class="form-text small"></div>
                 </div>
 
                 <div class="mt-4 d-flex justify-content-end gap-2">
@@ -126,26 +132,31 @@
     }
     tipoSel.addEventListener('change', toggleBloques);
 
-    function agregarDependiente() {
+    function agregarDependiente(prefill) {
+        prefill = prefill || {};
         var i = contador++;
         var opcCausales = causales.map(function(c) {
-            return '<option value="' + c.value + '">' + c.label + '</option>';
+            var sel = (c.value === prefill.causal) ? ' selected' : '';
+            return '<option value="' + c.value + '"' + sel + '>' + c.label + '</option>';
         }).join('');
+        var nombre = prefill.nombres || '';
+        var doc = prefill.numero_documento || '';
+        var parentesco = prefill.parentesco || '';
         var html = '' +
             '<div class="card mb-2 border-corporativo">' +
               '<div class="card-body py-2">' +
                 '<div class="row g-2">' +
                   '<div class="col-md-4">' +
                     '<label class="form-label small mb-0">Nombre *</label>' +
-                    '<input type="text" name="dep_nombres[]" class="form-control form-control-sm" required>' +
+                    '<input type="text" name="dep_nombres[]" class="form-control form-control-sm" value="' + nombre.replace(/"/g, '&quot;') + '" required>' +
                   '</div>' +
                   '<div class="col-md-3">' +
                     '<label class="form-label small mb-0">Documento</label>' +
-                    '<input type="text" name="dep_documento[]" class="form-control form-control-sm">' +
+                    '<input type="text" name="dep_documento[]" class="form-control form-control-sm" value="' + doc + '">' +
                   '</div>' +
                   '<div class="col-md-2">' +
                     '<label class="form-label small mb-0">Parentesco</label>' +
-                    '<input type="text" name="dep_parentesco[]" class="form-control form-control-sm" placeholder="hijo/a">' +
+                    '<input type="text" name="dep_parentesco[]" class="form-control form-control-sm" value="' + parentesco + '" placeholder="hijo/a">' +
                   '</div>' +
                   '<div class="col-md-3">' +
                     '<label class="form-label small mb-0">Causal *</label>' +
@@ -167,7 +178,43 @@
             '</div>';
         lista.insertAdjacentHTML('beforeend', html);
     }
-    document.getElementById('btnAgregarDep').addEventListener('click', agregarDependiente);
+    document.getElementById('btnAgregarDep').addEventListener('click', function() { agregarDependiente(); });
+
+    // Importar desde "Mi Familia"
+    var btnImportar = document.getElementById('btnImportarFamilia');
+    var hintImportar = document.getElementById('hintImportar');
+    btnImportar.addEventListener('click', function() {
+        btnImportar.disabled = true;
+        hintImportar.textContent = 'Cargando tu familia…';
+        fetch("{% url 'beneficios_retencion:familiares_json' %}", {
+            credentials: 'same-origin',
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            btnImportar.disabled = false;
+            var fs = data.familiares || [];
+            if (!fs.length) {
+                hintImportar.innerHTML = '<span class="text-warning">No tenés familiares registrados en Mi Familia. ' +
+                    'Podés agregarlos manualmente o ir a <a href="/empleados/mi-familia/">Mi Familia</a> primero.</span>';
+                return;
+            }
+            fs.forEach(function(f) {
+                agregarDependiente({
+                    nombres: f.nombres,
+                    numero_documento: f.numero_documento,
+                    parentesco: f.parentesco,
+                    causal: f.causal_sugerida,
+                });
+            });
+            hintImportar.innerHTML = '<span class="text-success">Importados ' + fs.length +
+                ' familiar(es). Revisá la causal sugerida y adjuntá el soporte correspondiente.</span>';
+        })
+        .catch(function() {
+            btnImportar.disabled = false;
+            hintImportar.innerHTML = '<span class="text-danger">Error al cargar tu familia.</span>';
+        });
+    });
 
     toggleBloques();
 })();

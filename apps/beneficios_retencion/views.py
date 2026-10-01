@@ -8,10 +8,9 @@
 from datetime import date
 
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -24,6 +23,7 @@ from .models import (
     DependienteBeneficio, SoporteBeneficio, SoporteDependiente, TramiteBeneficio,
 )
 from .odoo_client import OdooBeneficioError, enviar_a_odoo
+from .permisos import rrhh_required
 
 
 # ============================================================================
@@ -95,6 +95,53 @@ def mis_tramites(request):
         'anio_actual': date.today().year,
         'tipos': TramiteBeneficio.TIPO_CHOICES,
     })
+
+
+def _causal_sugerida(familiar):
+    """Mapea un Familiar al código `causal` que mejor aplica para dependientes.
+
+    - hijo con edad < 18 → hijo_menor_18
+    - hijo 18-23 → hijo_18_23_estudiando (requiere certif. estudio)
+    - hijo > 23 → hijo_mayor_23_dependiente (requiere certif. médico)
+    - pareja → conyuge_dependiente
+    - padre/madre/hermano/otro → familiar_dependiente
+    """
+    edad = familiar.edad
+    tipo = familiar.tipo
+    if tipo == 'hijo':
+        if edad is None:
+            return 'hijo_menor_18'
+        if edad < 18:
+            return 'hijo_menor_18'
+        if edad <= 23:
+            return 'hijo_18_23_estudiando'
+        return 'hijo_mayor_23_dependiente'
+    if tipo == 'pareja':
+        return 'conyuge_dependiente'
+    return 'familiar_dependiente'
+
+
+@login_required
+def familiares_json(request):
+    """Devuelve los familiares activos del empleado logueado, para prellenar
+    el formulario de dependientes."""
+    emp = _empleado_de_usuario(request.user)
+    if not emp or not emp.es_declarante:
+        return JsonResponse({'familiares': []})
+
+    familiares = emp.familiares.filter(activo=True).order_by('tipo', 'fecha_nacimiento')
+    data = []
+    for f in familiares:
+        data.append({
+            'id': str(f.pk),
+            'nombres': f.nombre_completo,
+            'numero_documento': f.numero_documento or '',
+            'parentesco': f.get_tipo_display(),
+            'tipo': f.tipo,
+            'edad': f.edad,
+            'causal_sugerida': _causal_sugerida(f),
+        })
+    return JsonResponse({'familiares': data})
 
 
 @login_required
@@ -257,7 +304,7 @@ def cancelar_tramite(request, pk):
 # RRHH
 # ============================================================================
 
-@staff_member_required
+@rrhh_required
 def bandeja_rrhh(request):
     """Bandeja de trámites por revisar + historial."""
     estado_filtro = (request.GET.get('estado') or 'pendiente_rrhh').strip()
@@ -283,7 +330,7 @@ def bandeja_rrhh(request):
     })
 
 
-@staff_member_required
+@rrhh_required
 def detalle_rrhh(request, pk):
     """Detalle de un trámite con acciones para RRHH."""
     tramite = get_object_or_404(
@@ -320,7 +367,7 @@ def _notificar_empleado(tramite, codigo):
     )
 
 
-@staff_member_required
+@rrhh_required
 @require_POST
 def validar_tramite(request, pk):
     """RRHH valida → intenta enviar a Odoo y notifica al empleado."""
@@ -357,7 +404,7 @@ def validar_tramite(request, pk):
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
 
-@staff_member_required
+@rrhh_required
 @require_POST
 def rechazar_tramite(request, pk):
     """RRHH rechaza — queda en SIGHU con observación. NO se envía a Odoo."""
@@ -384,7 +431,7 @@ def rechazar_tramite(request, pk):
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
 
-@staff_member_required
+@rrhh_required
 @require_POST
 def revocar_tramite(request, pk):
     """RRHH revoca un beneficio ya validado — avisa a Odoo con estado 'revocado'."""
@@ -419,7 +466,7 @@ def revocar_tramite(request, pk):
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
 
-@staff_member_required
+@rrhh_required
 @require_POST
 def reintentar_envio_odoo(request, pk):
     """Reintento manual cuando quedó en estado_envio_odoo."""
@@ -442,7 +489,7 @@ def reintentar_envio_odoo(request, pk):
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
 
-@staff_member_required
+@rrhh_required
 def descargar_carta(request, pk):
     """Genera el PDF de la carta juramentada del trámite. Solo trámites validados."""
     tramite = get_object_or_404(TramiteBeneficio, pk=pk)
@@ -464,7 +511,7 @@ def descargar_carta(request, pk):
     return resp
 
 
-@staff_member_required
+@rrhh_required
 @require_POST
 def marcar_carta_firmada(request, pk):
     """RRHH marca que el empleado firmó físicamente la carta."""
