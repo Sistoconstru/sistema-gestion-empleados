@@ -70,8 +70,6 @@
                                     <span class="badge bg-danger">Rechazado</span>
                                 {% elif t.estado == 'revocado' %}
                                     <span class="badge bg-secondary">Revocado</span>
-                                {% elif t.estado == 'error_envio_odoo' %}
-                                    <span class="badge bg-warning text-dark">En envío</span>
                                 {% endif %}
                             </td>
                             <td class="small">{% if t.aplica_desde %}{{ t.aplica_desde|date:'d/m/Y' }}{% else %}—{% endif %}</td>

@@ -61,7 +61,6 @@ class TramiteBeneficio(models.Model):
         ('validado', 'Validado por RRHH'),
         ('rechazado', 'Rechazado'),
         ('revocado', 'Revocado'),
-        ('error_envio_odoo', 'Error al enviar a Odoo (reintentar)'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -166,6 +165,18 @@ class TramiteBeneficio(models.Model):
 
     def __str__(self):
         return f'{self.get_tipo_display()} {self.anio_aplicacion} — {self.empleado}'
+
+    @property
+    def sync_odoo_pendiente(self):
+        """True si el trámite está validado pero no logró llegar a Odoo todavía.
+
+        La validación de RRHH es un acto humano independiente del envío a Odoo.
+        Si Odoo estaba caído, el trámite queda validado localmente y la carta
+        puede imprimirse; el sync queda marcado como pendiente para reintentar.
+        """
+        if self.estado != 'validado':
+            return False
+        return not self.enviado_a_odoo_el or bool(self.ultimo_error_odoo)
 
 
 class SoporteBeneficio(models.Model):

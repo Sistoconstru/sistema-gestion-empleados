@@ -310,11 +310,16 @@ def bandeja_rrhh(request):
     estado_filtro = (request.GET.get('estado') or 'pendiente_rrhh').strip()
     empleado_q = (request.GET.get('q') or '').strip()
 
+    from django.db.models import Q
     qs = TramiteBeneficio.objects.select_related('empleado', 'validado_por')
-    if estado_filtro and estado_filtro != 'todos':
+    if estado_filtro == 'odoo_pendiente':
+        # Validados que todavía no llegaron a Odoo (nunca se envió o hubo error).
+        qs = qs.filter(estado='validado').filter(
+            Q(enviado_a_odoo_el__isnull=True) | ~Q(ultimo_error_odoo='')
+        )
+    elif estado_filtro and estado_filtro != 'todos':
         qs = qs.filter(estado=estado_filtro)
     if empleado_q:
-        from django.db.models import Q
         qs = qs.filter(
             Q(empleado__nombres__icontains=empleado_q) |
             Q(empleado__apellidos__icontains=empleado_q) |
@@ -370,9 +375,13 @@ def _notificar_empleado(tramite, codigo):
 @rrhh_required
 @require_POST
 def validar_tramite(request, pk):
-    """RRHH valida → intenta enviar a Odoo y notifica al empleado."""
+    """RRHH valida → el trámite queda validado localmente y se intenta
+    sincronizar con Odoo. Si Odoo falla, el estado SIGUE siendo 'validado'
+    (la validación de RRHH es independiente del sync); el error de envío
+    queda registrado para reintentar más tarde.
+    """
     tramite = get_object_or_404(TramiteBeneficio, pk=pk)
-    if tramite.estado not in ('pendiente_rrhh', 'error_envio_odoo', 'rechazado'):
+    if tramite.estado not in ('pendiente_rrhh', 'rechazado'):
         messages.warning(request, 'Este trámite no está en un estado que permita validar.')
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
@@ -380,25 +389,29 @@ def validar_tramite(request, pk):
     tramite.validado_el = date.today()
     tramite.observacion_rrhh = (request.POST.get('observacion') or '').strip()
     tramite.estado = 'validado'
+    tramite.ultimo_error_odoo = ''
     tramite.save(update_fields=[
         'validado_por', 'validado_el', 'observacion_rrhh', 'estado',
-        'fecha_actualizacion',
+        'ultimo_error_odoo', 'fecha_actualizacion',
     ])
+
+    # Notificamos al empleado SIEMPRE que RRHH valida: la carta ya puede
+    # firmarse aunque Odoo esté caído.
+    _notificar_empleado(tramite, 'beneficio_ret_validado')
 
     try:
         enviar_a_odoo(tramite, estado='validado')
     except OdooBeneficioError as exc:
-        tramite.estado = 'error_envio_odoo'
+        # Solo guardamos el error de sync; el trámite SIGUE validado.
         tramite.ultimo_error_odoo = str(exc)[:1000]
-        tramite.save(update_fields=['estado', 'ultimo_error_odoo', 'fecha_actualizacion'])
+        tramite.save(update_fields=['ultimo_error_odoo', 'fecha_actualizacion'])
         messages.warning(
             request,
-            f'Trámite marcado como validado, pero falló el envío a Odoo: {exc}. '
-            'Podés reintentar desde el detalle.',
+            f'Trámite validado. El envío a Odoo falló ({exc}); podés reintentarlo '
+            'más tarde. La carta juramentada ya puede imprimirse.',
         )
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
-    _notificar_empleado(tramite, 'beneficio_ret_validado')
     messages.success(request,
                      'Trámite validado y enviado a Odoo. Notificamos al empleado para que firme la carta.')
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
@@ -409,7 +422,7 @@ def validar_tramite(request, pk):
 def rechazar_tramite(request, pk):
     """RRHH rechaza — queda en SIGHU con observación. NO se envía a Odoo."""
     tramite = get_object_or_404(TramiteBeneficio, pk=pk)
-    if tramite.estado not in ('pendiente_rrhh', 'error_envio_odoo'):
+    if tramite.estado != 'pendiente_rrhh':
         messages.warning(request, 'Este trámite no puede rechazarse en su estado actual.')
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
@@ -469,22 +482,21 @@ def revocar_tramite(request, pk):
 @rrhh_required
 @require_POST
 def reintentar_envio_odoo(request, pk):
-    """Reintento manual cuando quedó en estado_envio_odoo."""
+    """Reintento manual del envío a Odoo cuando quedó pendiente."""
     tramite = get_object_or_404(TramiteBeneficio, pk=pk)
-    if tramite.estado not in ('validado', 'error_envio_odoo'):
-        messages.warning(request, 'Este trámite no requiere reintento.')
+    if tramite.estado != 'validado':
+        messages.warning(request, 'Solo se puede reenviar un trámite validado.')
+        return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
+    if not tramite.sync_odoo_pendiente:
+        messages.info(request, 'El trámite ya está sincronizado con Odoo.')
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
     try:
         enviar_a_odoo(tramite, estado='validado')
     except OdooBeneficioError as exc:
-        tramite.estado = 'error_envio_odoo'
         tramite.ultimo_error_odoo = str(exc)[:1000]
-        tramite.save(update_fields=['estado', 'ultimo_error_odoo', 'fecha_actualizacion'])
+        tramite.save(update_fields=['ultimo_error_odoo', 'fecha_actualizacion'])
         messages.error(request, f'Odoo devolvió error: {exc}')
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
-    tramite.estado = 'validado'
-    tramite.save(update_fields=['estado', 'fecha_actualizacion'])
-    _notificar_empleado(tramite, 'beneficio_ret_validado')
     messages.success(request, 'Envío a Odoo exitoso.')
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 

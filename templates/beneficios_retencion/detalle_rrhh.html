@@ -31,12 +31,15 @@
                             <span class="badge bg-warning text-dark fs-6">Pendiente RRHH</span>
                         {% elif tramite.estado == 'validado' %}
                             <span class="badge bg-success fs-6">Validado</span>
+                            {% if tramite.sync_odoo_pendiente %}
+                                <span class="badge bg-warning text-dark fs-6 ms-1" title="Validado localmente, falta sincronizar con Odoo">
+                                    <i class="fas fa-sync-alt"></i> Odoo pendiente
+                                </span>
+                            {% endif %}
                         {% elif tramite.estado == 'rechazado' %}
                             <span class="badge bg-danger fs-6">Rechazado</span>
                         {% elif tramite.estado == 'revocado' %}
                             <span class="badge bg-secondary fs-6">Revocado</span>
-                        {% elif tramite.estado == 'error_envio_odoo' %}
-                            <span class="badge bg-warning text-dark fs-6">Error Odoo</span>
                         {% endif %}
                     </div>
                 </div>
@@ -128,8 +131,8 @@
         </div>
 
         <div class="col-md-4">
-            {# Acciones #}
-            {% if tramite.estado == 'pendiente_rrhh' or tramite.estado == 'error_envio_odoo' or tramite.estado == 'rechazado' %}
+            {# Acciones Validar/Rechazar — solo cuando está pendiente #}
+            {% if tramite.estado == 'pendiente_rrhh' or tramite.estado == 'rechazado' %}
             <div class="card">
                 <div class="card-header"><h6 class="mb-0">Validar y enviar a Odoo</h6></div>
                 <div class="card-body">
@@ -140,11 +143,15 @@
                         <button type="submit" class="btn btn-success btn-sm w-100">
                             <i class="fas fa-check me-1"></i>Validar y enviar a Odoo
                         </button>
+                        <div class="form-text small mt-1">
+                            Si Odoo no responde, el trámite igual queda validado y la carta se puede imprimir;
+                            el envío se reintenta más tarde.
+                        </div>
                     </form>
                 </div>
             </div>
 
-            {% if tramite.estado != 'rechazado' %}
+            {% if tramite.estado == 'pendiente_rrhh' %}
             <div class="card mt-2">
                 <div class="card-header"><h6 class="mb-0">Rechazar</h6></div>
                 <div class="card-body">
@@ -161,7 +168,31 @@
             {% endif %}
             {% endif %}
 
+            {# Validado — la carta y las acciones post-validación siempre aparecen
+               cuando el estado es validado, independientemente del sync a Odoo. #}
             {% if tramite.estado == 'validado' %}
+            {% if tramite.sync_odoo_pendiente %}
+            <div class="card mb-2 border-warning">
+                <div class="card-body py-2">
+                    <div class="alert alert-warning small mb-2 py-2">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Falta sincronizar con Odoo.</strong>
+                        El trámite ya está validado y la carta se puede imprimir, pero Odoo
+                        todavía no lo recibió.
+                        {% if tramite.ultimo_error_odoo %}
+                        <br><span class="text-muted">Último error: {{ tramite.ultimo_error_odoo|truncatechars:150 }}</span>
+                        {% endif %}
+                    </div>
+                    <form method="post" action="{% url 'beneficios_retencion:reintentar_envio_odoo' tramite.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning btn-sm w-100">
+                            <i class="fas fa-redo me-1"></i>Reintentar envío a Odoo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <h6 class="mb-0"><i class="fas fa-check-circle me-2"></i>Trámite validado</h6>
@@ -201,19 +232,6 @@
                         <textarea name="observacion" class="form-control form-control-sm mb-2" rows="2" required></textarea>
                         <button type="submit" class="btn btn-outline-danger btn-sm w-100">
                             <i class="fas fa-ban me-1"></i>Revocar y notificar a Odoo
-                        </button>
-                    </form>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if tramite.estado == 'error_envio_odoo' %}
-            <div class="card mt-2">
-                <div class="card-body">
-                    <form method="post" action="{% url 'beneficios_retencion:reintentar_envio_odoo' tramite.pk %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-warning btn-sm w-100">
-                            <i class="fas fa-redo me-1"></i>Reintentar envío a Odoo
                         </button>
                     </form>
                 </div>

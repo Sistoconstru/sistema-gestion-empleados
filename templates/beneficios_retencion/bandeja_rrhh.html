@@ -19,9 +19,9 @@
             <select name="estado" class="form-select form-select-sm">
                 <option value="pendiente_rrhh" {% if estado_filtro == 'pendiente_rrhh' %}selected{% endif %}>Pendientes de revisar</option>
                 <option value="validado" {% if estado_filtro == 'validado' %}selected{% endif %}>Validados</option>
+                <option value="odoo_pendiente" {% if estado_filtro == 'odoo_pendiente' %}selected{% endif %}>Validados sin sincronizar a Odoo</option>
                 <option value="rechazado" {% if estado_filtro == 'rechazado' %}selected{% endif %}>Rechazados</option>
                 <option value="revocado" {% if estado_filtro == 'revocado' %}selected{% endif %}>Revocados</option>
-                <option value="error_envio_odoo" {% if estado_filtro == 'error_envio_odoo' %}selected{% endif %}>Error de envío a Odoo</option>
                 <option value="todos" {% if estado_filtro == 'todos' %}selected{% endif %}>Todos</option>
             </select>
         </div>
@@ -65,6 +65,11 @@
                                     <span class="badge bg-warning text-dark">Pendiente RRHH</span>
                                 {% elif t.estado == 'validado' %}
                                     <span class="badge bg-success">Validado</span>
+                                    {% if t.sync_odoo_pendiente %}
+                                        <span class="badge bg-warning text-dark ms-1" title="Falta sincronizar con Odoo">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </span>
+                                    {% endif %}
                                     {% if not t.carta_firmada %}
                                         <span class="badge bg-info ms-1">Firma pendiente</span>
                                     {% endif %}
@@ -72,8 +77,6 @@
                                     <span class="badge bg-danger">Rechazado</span>
                                 {% elif t.estado == 'revocado' %}
                                     <span class="badge bg-secondary">Revocado</span>
-                                {% elif t.estado == 'error_envio_odoo' %}
-                                    <span class="badge bg-warning text-dark">Error Odoo</span>
                                 {% endif %}
                             </td>
                             <td class="small text-muted">{{ t.fecha_creacion|date:'d/m/Y H:i' }}</td>
