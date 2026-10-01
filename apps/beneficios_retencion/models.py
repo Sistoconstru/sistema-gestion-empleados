@@ -41,12 +41,14 @@ class TramiteBeneficio(models.Model):
     dependientes. El `tramite_uuid` es la llave que se envía a Odoo.
     """
 
+    # Nota: los aportes voluntarios a pensión y AFC NO se incluyen aquí.
+    # La empresa los descuenta directamente por nómina y Odoo ya los tiene
+    # como deducción del recibo; enviarlos por este flujo los contaría dos
+    # veces (según §8.1 del contrato Odoo del 30/09/2026).
     TIPO_CHOICES = [
         ('intereses_vivienda', 'Intereses de vivienda'),
         ('medicina_prepagada', 'Medicina prepagada'),
         ('dependientes', 'Dependientes'),
-        ('aportes_voluntarios_pension', 'Aportes voluntarios a pensión'),
-        ('afc', 'AFC (Ahorro para el Fomento a la Construcción)'),
     ]
 
     PERIODICIDAD_CHOICES = [

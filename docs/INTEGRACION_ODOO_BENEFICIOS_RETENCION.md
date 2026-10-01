@@ -1,9 +1,12 @@
 # Integración SIGHU ↔ Odoo — Beneficios de retención en la fuente
 
 Estado en SIGHU: **listo**. Módulo desplegado con la Fase 1 (soportes de vivienda,
-medicina prepagada y dependientes). Aportes voluntarios y AFC quedan para una
-segunda entrega cuando aclaremos el punto §8.1 del contrato de Odoo (si la
-empresa los descuenta por nómina o si el empleado los paga por su cuenta).
+medicina prepagada y dependientes).
+
+**Aportes voluntarios de pensión y AFC** quedan **fuera** de este flujo por
+decisión del 01/10/2026 (resolución de §8.1 del contrato Odoo): la empresa los
+descuenta directamente por nómina, Odoo ya los tiene como deducción del recibo,
+y enviarlos también por este endpoint los contaría dos veces.
 
 Pendiente en Odoo: implementar el endpoint `POST /sighu_sync/webhook/beneficio_retencion`.
 
@@ -158,9 +161,9 @@ En el servicio Railway (`sighu-web`) hay que setear:
 
 Del §8 del contrato Odoo:
 
-1. **Aportes voluntarios (AFP + AFC)**: pendiente confirmar si la empresa los
-   descuenta por nómina. Mientras tanto, esos dos tipos existen en el modelo
-   pero no se ofrecen en el formulario del empleado.
+1. **Aportes voluntarios (AFP + AFC)**: ✅ resuelto el 01/10/2026 — la empresa los
+   descuenta por nómina, Odoo ya los contempla como deducción del recibo, por lo
+   que NO entran por este flujo. Se eliminaron del catálogo de tipos.
 2. **1% por facturas electrónicas**: no aplica en nómina. No se implementa en
    SIGHU.
 3. **Campaña de carga**: pendiente definir fecha y recordatorios (Fase 4).
