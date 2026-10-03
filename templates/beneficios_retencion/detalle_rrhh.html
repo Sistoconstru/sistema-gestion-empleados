@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load beneficios_filters %}
 
 {% block title %}{{ tramite.get_tipo_display }} — {{ tramite.empleado.nombre_completo }}{% endblock %}
 
@@ -40,6 +41,8 @@
                             <span class="badge bg-danger fs-6">Rechazado</span>
                         {% elif tramite.estado == 'revocado' %}
                             <span class="badge bg-secondary fs-6">Revocado</span>
+                        {% else %}
+                            <span class="badge bg-dark fs-6">{{ tramite.estado }}</span>
                         {% endif %}
                     </div>
                 </div>
@@ -50,7 +53,7 @@
 
                         {% if tramite.valor %}
                         <dt class="col-sm-4">Valor certificado</dt>
-                        <dd class="col-sm-8">${{ tramite.valor|floatformat:0 }} ({{ tramite.get_periodicidad_display|lower }})</dd>
+                        <dd class="col-sm-8">{{ tramite.valor|pesos }} ({{ tramite.get_periodicidad_display|lower }})</dd>
                         {% endif %}
 
                         {% if tramite.observacion_empleado %}
@@ -168,8 +171,10 @@
             {% endif %}
             {% endif %}
 
-            {# Validado — la carta y las acciones post-validación siempre aparecen
-               cuando el estado es validado, independientemente del sync a Odoo. #}
+            {% comment %}
+            Validado: la carta y las acciones post-validación siempre aparecen
+            cuando el estado es validado, independientemente del sync a Odoo.
+            {% endcomment %}
             {% if tramite.estado == 'validado' %}
             {% if tramite.sync_odoo_pendiente %}
             <div class="card mb-2 border-warning">
