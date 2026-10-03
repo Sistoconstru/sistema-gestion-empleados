@@ -50,10 +50,16 @@
                 <div class="row g-3 mt-1" id="bloqueValor">
                     <div class="col-md-6">
                         <label class="form-label">Valor certificado (COP)</label>
-                        <input type="text" name="valor" class="form-control"
-                               placeholder="Ej: 12.480.000"
-                               inputmode="numeric">
-                        <div class="form-text small">Ingresá el valor tal como está en el soporte, sin aplicar topes.</div>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" name="valor" id="inputValor" class="form-control"
+                                   placeholder="Ej: 12.480.000"
+                                   inputmode="numeric" autocomplete="off">
+                        </div>
+                        <div class="form-text small">
+                            <span id="valorEnLetras" class="text-corporativo fw-bold"></span>
+                            Ingresá el valor tal como está en el soporte, sin aplicar topes.
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Periodicidad</label>
@@ -131,6 +137,26 @@
         });
     }
     tipoSel.addEventListener('change', toggleBloques);
+
+    // Formato COP en vivo para el valor certificado — separadores de miles con punto.
+    var inputValor = document.getElementById('inputValor');
+    var valorLetras = document.getElementById('valorEnLetras');
+    var fmtCOP = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 });
+
+    function formatearValor() {
+        var raw = (inputValor.value || '').replace(/\D/g, '');  // solo dígitos
+        if (!raw) {
+            inputValor.value = '';
+            valorLetras.textContent = '';
+            return;
+        }
+        var n = parseInt(raw, 10);
+        inputValor.value = fmtCOP.format(n);
+        valorLetras.textContent = '$' + fmtCOP.format(n) + ' COP · ';
+    }
+    inputValor.addEventListener('input', formatearValor);
+    inputValor.addEventListener('blur', formatearValor);
+    formatearValor();
 
     function agregarDependiente(prefill) {
         prefill = prefill || {};

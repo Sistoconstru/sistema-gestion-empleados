@@ -331,7 +331,11 @@ def dashboard_view(request):
             'is_admin_dashboard': True
         })
         messages.error(request, f'Error al cargar estadísticas: {str(e)}')
-    
+
+    # Flag para mostrar tiles exclusivos de RRHH (coincide con rrhh_required).
+    from apps.beneficios_retencion.permisos import _usuario_puede_gestionar
+    context['puede_ver_beneficios_rrhh'] = _usuario_puede_gestionar(request.user)
+
     return render(request, 'core/dashboard.html', context)
 
 # Vista basada en clase para el dashboard, reutiliza la lógica de dashboard_view
