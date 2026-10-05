@@ -2,7 +2,8 @@
 
 Contrato del endpoint Odoo:
 `POST /sighu_sync/webhook/beneficio_retencion`
-Autenticación con `Authorization: Token <SIGHU_ODOO_TOKEN>`.
+Autenticación con `Authorization: Token <SIGHU_ODOO_WEBHOOK_TOKEN>`, el mismo
+token saliente que usa el push de empleados y vacaciones.
 
 Idempotente por `tramite_uuid`: repetir la misma llamada con el mismo uuid
 actualiza el mismo registro en Odoo (útil para reintentos y para revocación).
@@ -29,20 +30,46 @@ MAX_SOPORTE_BYTES = 10 * 1024 * 1024
 
 
 def _timeout_odoo():
-    return getattr(settings, 'ODOO_HTTP_TIMEOUT', 30)
+    return getattr(settings, 'SIGHU_ODOO_BENEFICIOS_TIMEOUT', 30)
 
 
-def _base_url():
-    url = getattr(settings, 'ODOO_BASE_URL', None)
-    if not url:
-        raise OdooBeneficioError('ODOO_BASE_URL no configurado.')
-    return url.rstrip('/')
+def _endpoint_url():
+    """URL del webhook de beneficios expuesto por Odoo.
+
+    Mismo criterio que el resto de la integración saliente (ver
+    `apps/integraciones/odoo/services.py`):
+    1) Si `SIGHU_ODOO_BENEFICIOS_URL` está definida, se usa tal cual.
+    2) Si no, se deriva de `SIGHU_ODOO_WEBHOOK_URL` cambiando el endpoint
+       final por `beneficio_retencion`, así no hace falta configurar una
+       variable nueva.
+    """
+    explicit = getattr(settings, 'SIGHU_ODOO_BENEFICIOS_URL', '') or ''
+    if explicit:
+        return explicit
+    base = getattr(settings, 'SIGHU_ODOO_WEBHOOK_URL', '') or ''
+    if base.endswith('/empleado'):
+        return base[:-len('/empleado')] + '/beneficio_retencion'
+    if not base:
+        raise OdooBeneficioError(
+            'No hay URL de Odoo configurada: definí SIGHU_ODOO_BENEFICIOS_URL '
+            'o SIGHU_ODOO_WEBHOOK_URL.'
+        )
+    raise OdooBeneficioError(
+        f'No se pudo derivar la URL de beneficios desde '
+        f'SIGHU_ODOO_WEBHOOK_URL ({base}). Definí SIGHU_ODOO_BENEFICIOS_URL.'
+    )
 
 
 def _token():
-    tk = getattr(settings, 'SIGHU_ODOO_TOKEN', None)
+    """Token para llamar a Odoo.
+
+    Es `SIGHU_ODOO_WEBHOOK_TOKEN` (el saliente, el mismo que usa el push de
+    empleados y vacaciones), NO `SIGHU_ODOO_TOKEN`, que es el que Odoo usa
+    para autenticarse contra SIGHU.
+    """
+    tk = getattr(settings, 'SIGHU_ODOO_WEBHOOK_TOKEN', '')
     if not tk:
-        raise OdooBeneficioError('SIGHU_ODOO_TOKEN no configurado.')
+        raise OdooBeneficioError('SIGHU_ODOO_WEBHOOK_TOKEN no configurado.')
     return tk
 
 
@@ -132,7 +159,7 @@ def enviar_a_odoo(tramite, estado='validado'):
     from django.utils import timezone
 
     payload = _build_payload(tramite, estado)
-    url = f'{_base_url()}/sighu_sync/webhook/beneficio_retencion'
+    url = _endpoint_url()
     headers = {
         'Authorization': f'Token {_token()}',
         'Content-Type': 'application/json',

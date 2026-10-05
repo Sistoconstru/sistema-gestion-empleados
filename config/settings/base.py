@@ -203,6 +203,11 @@ SIGHU_ODOO_TOKEN = config('SIGHU_ODOO_TOKEN', default='')
 SIGHU_ODOO_WEBHOOK_URL = config('SIGHU_ODOO_WEBHOOK_URL', default='')
 SIGHU_ODOO_WEBHOOK_TOKEN = config('SIGHU_ODOO_WEBHOOK_TOKEN', default='')
 SIGHU_ODOO_PUSH_TIMEOUT = config('SIGHU_ODOO_PUSH_TIMEOUT', default=2, cast=int)
+# Beneficios de retención: si no se define, la URL se deriva de
+# SIGHU_ODOO_WEBHOOK_URL. El timeout es mayor que el del push de empleados
+# porque el payload lleva los soportes en base64.
+SIGHU_ODOO_BENEFICIOS_URL = config('SIGHU_ODOO_BENEFICIOS_URL', default='')
+SIGHU_ODOO_BENEFICIOS_TIMEOUT = config('SIGHU_ODOO_BENEFICIOS_TIMEOUT', default=30, cast=int)
 
 # Email Configuration (Para notificaciones)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

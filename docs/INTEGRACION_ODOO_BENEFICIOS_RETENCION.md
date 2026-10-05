@@ -118,11 +118,24 @@ Con el mismo `tramite_uuid` del beneficio que se revoca:
 
 ## Configuración
 
-En el servicio Railway (`sighu-web`) hay que setear:
+**No hace falta configurar nada nuevo en Railway.** La integración reutiliza
+las variables del push de empleados y vacaciones:
 
-- `SIGHU_ODOO_TOKEN`: token compartido con Odoo (ya existe).
-- `ODOO_BASE_URL`: URL base del servicio Odoo (ej. `https://odoo.construinmuniza.com`).
-- `ODOO_HTTP_TIMEOUT`: opcional, default 30s.
+- `SIGHU_ODOO_WEBHOOK_TOKEN`: token **saliente**, el que SIGHU usa para
+  autenticarse ante Odoo. Ya configurado.
+- `SIGHU_ODOO_WEBHOOK_URL`: webhook de empleados. La URL de beneficios se
+  deriva de esta cambiando el endpoint final:
+  `…/sighu_sync/webhook/empleado` → `…/sighu_sync/webhook/beneficio_retencion`.
+
+Opcionales, si Odoo expone el endpoint en otra ruta o necesita más tiempo:
+
+- `SIGHU_ODOO_BENEFICIOS_URL`: URL completa, tiene prioridad sobre la derivación.
+- `SIGHU_ODOO_BENEFICIOS_TIMEOUT`: segundos, default 30 (mayor que el push de
+  empleados porque el payload lleva los soportes en base64).
+
+> Ojo con los dos tokens: `SIGHU_ODOO_TOKEN` es el **entrante** (el que Odoo
+> usa para llamar a SIGHU) y `SIGHU_ODOO_WEBHOOK_TOKEN` el **saliente**. Este
+> módulo llama hacia Odoo, así que usa el segundo.
 
 ## Flujo del lado SIGHU
 
