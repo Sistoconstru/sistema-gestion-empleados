@@ -70,6 +70,12 @@ def generar_carta_juramentada(empleado, anio, tramites):
         buffer, pagesize=LETTER,
         leftMargin=2.5 * cm, rightMargin=2.5 * cm,
         topMargin=2.5 * cm, bottomMargin=2.5 * cm,
+        # Metadatos del PDF: sin ellos los visores muestran «(anonymous)» y
+        # el archivo queda sin identificación al imprimirlo o archivarlo.
+        title=f'Declaración juramentada {anio} - {emp.nombre_completo}',
+        author='Construinmuniza S.A.S.',
+        subject=f'Deducciones de retención en la fuente, año gravable {anio}',
+        creator='SIGHU - Sistema de Gestión Humana',
     )
     styles = getSampleStyleSheet()
     body = ParagraphStyle(
