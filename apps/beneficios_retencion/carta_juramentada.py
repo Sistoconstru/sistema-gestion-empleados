@@ -51,9 +51,20 @@ def _fmt_pesos(v):
     return f'${v:,.0f}'.replace(',', '.')
 
 
-def generar_carta_juramentada(tramite):
-    """Devuelve bytes del PDF de la carta juramentada del trámite."""
-    emp = tramite.empleado
+def generar_carta_juramentada(empleado, anio, tramites):
+    """Carta juramentada consolidada: un solo documento por empleado y año.
+
+    Incluye todos los beneficios validados del empleado para ese año fiscal,
+    de modo que firme una sola vez. Si después se valida uno nuevo, la carta
+    se reemite completa y vuelve a firmarse.
+
+    Args:
+        empleado: Empleado titular de la declaración.
+        anio: año de aplicación que cubre la carta.
+        tramites: iterable de TramiteBeneficio validados de ese empleado/año.
+    """
+    emp = empleado
+    tramites = list(tramites)
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer, pagesize=LETTER,
@@ -115,66 +126,75 @@ def generar_carta_juramentada(tramite):
     story.append(Spacer(1, 0.5 * cm))
 
     # Cuerpo declarativo
+    plural = 'los siguientes beneficios' if len(tramites) > 1 else 'el siguiente beneficio'
     story.append(Paragraph(
         'Yo, identificado como aparece al pie de mi firma, en mi calidad de trabajador '
         'de <b>Construinmuniza S.A.S.</b>, y con el fin de que la empresa pueda aplicar '
         'las deducciones correspondientes al cálculo de la retención en la fuente por '
-        f'concepto de rentas de trabajo del año {tramite.anio_aplicacion}, '
-        '<b>declaro bajo la gravedad del juramento</b> lo siguiente:',
+        f'concepto de rentas de trabajo del año {anio}, '
+        f'<b>declaro bajo la gravedad del juramento</b> que {plural} corresponden a la '
+        'realidad y cuento con los soportes que los respaldan:',
         body,
     ))
-
-    # Detalle del beneficio
     story.append(Spacer(1, 0.2 * cm))
-    story.append(Paragraph('Beneficio declarado:', bold))
 
-    detalle_rows = [
-        ['Concepto:', tramite.get_tipo_display()],
-        ['Año de aplicación:', str(tramite.anio_aplicacion)],
-        ['Período del certificado:', str(tramite.periodo_certificado)],
-    ]
-    if tramite.valor is not None:
-        detalle_rows.append([
-            'Valor certificado:',
-            f'{_fmt_pesos(tramite.valor)} ({tramite.get_periodicidad_display() or "anual"})',
+    # Resumen de todos los beneficios declarados
+    resumen_rows = [['#', 'Concepto', 'Período cert.', 'Valor certificado']]
+    for i, tr in enumerate(tramites, 1):
+        if tr.valor is not None:
+            valor_txt = f'{_fmt_pesos(tr.valor)} ({tr.get_periodicidad_display() or "anual"})'
+        else:
+            n_dep = tr.dependientes.count()
+            valor_txt = f'{n_dep} dependiente(s) — ver detalle'
+        resumen_rows.append([
+            str(i), tr.get_tipo_display(), str(tr.periodo_certificado), valor_txt,
         ])
-    if tramite.observacion_empleado:
-        detalle_rows.append(['Observación:', tramite.observacion_empleado])
-
-    t = Table(detalle_rows, colWidths=[4.5 * cm, 10.5 * cm])
+    t = Table(resumen_rows, colWidths=[0.9 * cm, 6.1 * cm, 2.5 * cm, 5.5 * cm])
     t.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F1F5F9')),
-        ('LINEBELOW', (0, 0), (-1, -1), 0.3, colors.HexColor('#CBD5E1')),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E3A5F')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTSIZE', (0, 0), (-1, -1), 9.5),
+        ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor('#CBD5E1')),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (0, 0), (0, -1), 'CENTER'),
+        ('ALIGN', (2, 0), (2, -1), 'CENTER'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
     ]))
     story.append(t)
     story.append(Spacer(1, 0.4 * cm))
 
-    # Dependientes (si aplica)
-    dependientes = list(tramite.dependientes.all())
-    if dependientes:
-        story.append(Paragraph('Dependientes reportados:', bold))
-        rows = [['#', 'Nombre', 'Documento', 'Parentesco', 'Causal']]
-        for i, d in enumerate(dependientes, 1):
-            rows.append([str(i), d.nombres, d.numero_documento or '—',
-                         d.parentesco or '—', d.get_causal_display()])
-        t = Table(rows, colWidths=[0.8 * cm, 5.2 * cm, 3 * cm, 2.5 * cm, 3.5 * cm])
-        t.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E3A5F')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor('#CBD5E1')),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('LEFTPADDING', (0, 0), (-1, -1), 5),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 5),
-        ]))
-        story.append(t)
+    # Detalle por beneficio: observación del empleado y dependientes
+    for i, tr in enumerate(tramites, 1):
+        dependientes = list(tr.dependientes.all())
+        if not dependientes and not tr.observacion_empleado:
+            continue
+
+        story.append(Paragraph(f'{i}. {tr.get_tipo_display()}', bold))
+        if tr.observacion_empleado:
+            story.append(Paragraph(
+                f'<i>{tr.observacion_empleado}</i>', body,
+            ))
+        if dependientes:
+            rows = [['#', 'Nombre', 'Documento', 'Parentesco', 'Causal']]
+            for j, d in enumerate(dependientes, 1):
+                rows.append([str(j), d.nombres, d.numero_documento or '—',
+                             d.parentesco or '—', d.get_causal_display()])
+            t = Table(rows, colWidths=[0.8 * cm, 5.2 * cm, 3 * cm, 2.5 * cm, 3.5 * cm])
+            t.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2C5282')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('GRID', (0, 0), (-1, -1), 0.3, colors.HexColor('#CBD5E1')),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 5),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+            ]))
+            story.append(t)
         story.append(Spacer(1, 0.3 * cm))
 
     # Cláusulas juramentadas
@@ -186,19 +206,20 @@ def generar_carta_juramentada(tramite):
     ))
     story.append(Paragraph(
         '<b>2.</b> Me obligo a informar por escrito a Construinmuniza S.A.S. cualquier '
-        'cambio que modifique la procedencia o el valor de la presente deducción '
-        '(cancelación del servicio, cambio del titular, retiro del dependiente, etc.) '
-        'dentro de los cinco (5) días hábiles siguientes a su ocurrencia.',
+        'cambio que modifique la procedencia o el valor de las deducciones aquí '
+        'declaradas (cancelación del servicio, cambio del titular, retiro del '
+        'dependiente, etc.) dentro de los cinco (5) días hábiles siguientes a su '
+        'ocurrencia.',
         body,
     ))
     story.append(Paragraph(
-        '<b>3.</b> Autorizo a Construinmuniza S.A.S. a suspender la aplicación de esta '
-        'deducción si detecta inconsistencias, si vencen los soportes o si no entrego '
-        'a tiempo los certificados de renovación anual.',
+        '<b>3.</b> Autorizo a Construinmuniza S.A.S. a suspender la aplicación de '
+        'cualquiera de estas deducciones si detecta inconsistencias, si vencen los '
+        'soportes o si no entrego a tiempo los certificados de renovación anual.',
         body,
     ))
     story.append(Paragraph(
-        '<b>4.</b> Reconozco que la aplicación indebida de esta deducción, por errores '
+        '<b>4.</b> Reconozco que la aplicación indebida de estas deducciones, por errores '
         'u omisiones que me sean atribuibles, podrá ser recuperada por la empresa a '
         'través de descuento en nómina, sin perjuicio de las responsabilidades legales '
         'que se deriven ante la DIAN.',
@@ -224,8 +245,10 @@ def generar_carta_juramentada(tramite):
     ]))
     story.append(t)
     story.append(Spacer(1, 0.8 * cm))
+    refs = ', '.join(str(tr.pk)[:8] for tr in tramites)
     story.append(Paragraph(
-        f'Documento generado electrónicamente por SIGHU — trámite {tramite.pk}',
+        f'Documento generado electrónicamente por SIGHU — '
+        f'{len(tramites)} beneficio(s) del año {anio} · refs: {refs}',
         small,
     ))
 

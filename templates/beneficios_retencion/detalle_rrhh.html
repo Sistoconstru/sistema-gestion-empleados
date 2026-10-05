@@ -200,19 +200,43 @@
 
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="fas fa-check-circle me-2"></i>Trámite validado</h6>
+                    <h6 class="mb-0"><i class="fas fa-check-circle me-2"></i>Carta juramentada {{ tramite.anio_aplicacion }}</h6>
                 </div>
                 <div class="card-body">
+                    <p class="small text-muted mb-2">
+                        Documento único con <strong>todos</strong> los beneficios validados del
+                        empleado para {{ tramite.anio_aplicacion }}. El empleado firma una sola vez.
+                    </p>
+
+                    <ul class="list-group list-group-flush small mb-3">
+                        {% for t in tramites_carta %}
+                        <li class="list-group-item px-0 py-1 d-flex justify-content-between align-items-center">
+                            <span>
+                                {% if t.pk == tramite.pk %}<strong>{{ t.get_tipo_display }}</strong>
+                                {% else %}{{ t.get_tipo_display }}{% endif %}
+                            </span>
+                            {% if t.carta_firmada %}
+                                <span class="badge bg-success">Firmado</span>
+                            {% else %}
+                                <span class="badge bg-info">Pendiente</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
                     <a href="{% url 'beneficios_retencion:descargar_carta' tramite.pk %}" class="btn btn-corporativo w-100 mb-2">
                         <i class="fas fa-print me-1"></i>Imprimir carta juramentada
                     </a>
 
-                    {% if not tramite.carta_firmada %}
+                    {% if not carta_firmada_completa %}
                     <form method="post" action="{% url 'beneficios_retencion:marcar_carta_firmada' tramite.pk %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-success btn-sm w-100">
                             <i class="fas fa-signature me-1"></i>Marcar carta como firmada
                         </button>
+                        <div class="form-text small mt-1">
+                            Marca como firmados los {{ tramites_carta|length }} beneficio(s) del documento.
+                        </div>
                     </form>
                     {% else %}
                     <div class="alert alert-success small mb-0">

@@ -344,8 +344,17 @@ def detalle_rrhh(request, pk):
         .prefetch_related('soportes', 'dependientes__soportes'),
         pk=pk,
     )
+    # La carta es consolidada: mostramos qué otros beneficios del mismo año
+    # entran en el documento que se va a imprimir.
+    tramites_carta = list(
+        _tramites_de_la_carta(tramite.empleado, tramite.anio_aplicacion)
+    )
     return render(request, 'beneficios_retencion/detalle_rrhh.html', {
         'tramite': tramite,
+        'tramites_carta': tramites_carta,
+        'carta_firmada_completa': bool(tramites_carta) and all(
+            t.carta_firmada for t in tramites_carta
+        ),
     })
 
 
@@ -394,6 +403,23 @@ def validar_tramite(request, pk):
         'validado_por', 'validado_el', 'observacion_rrhh', 'estado',
         'ultimo_error_odoo', 'fecha_actualizacion',
     ])
+
+    # La carta es consolidada por empleado + año. Al sumarse un beneficio
+    # nuevo, el documento firmado queda incompleto: se reemite con todos y
+    # vuelve a firmarse, así queda un único documento vigente.
+    reabiertos = (TramiteBeneficio.objects
+                  .filter(empleado=tramite.empleado,
+                          anio_aplicacion=tramite.anio_aplicacion,
+                          estado='validado', carta_firmada=True)
+                  .exclude(pk=tramite.pk)
+                  .update(carta_firmada=False, carta_firmada_el=None))
+    if reabiertos:
+        messages.info(
+            request,
+            f'La carta del año {tramite.anio_aplicacion} ya estaba firmada: se '
+            f'reemite incluyendo este beneficio y debe firmarse de nuevo '
+            f'({reabiertos + 1} beneficios en total).',
+        )
 
     # Notificamos al empleado SIEMPRE que RRHH valida: la carta ya puede
     # firmarse aunque Odoo esté caído.
@@ -501,23 +527,46 @@ def reintentar_envio_odoo(request, pk):
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
 
+def _tramites_de_la_carta(empleado, anio):
+    """Trámites que entran en la carta juramentada de un empleado y año.
+
+    La carta es consolidada: un solo documento con todos los beneficios
+    validados del año, para que el empleado firme una sola vez.
+    """
+    return (TramiteBeneficio.objects
+            .filter(empleado=empleado, anio_aplicacion=anio, estado='validado')
+            .prefetch_related('dependientes')
+            .order_by('tipo'))
+
+
 @rrhh_required
 def descargar_carta(request, pk):
-    """Genera el PDF de la carta juramentada del trámite. Solo trámites validados."""
-    tramite = get_object_or_404(TramiteBeneficio, pk=pk)
-    if tramite.estado not in ('validado', 'revocado'):
-        messages.warning(request,
-                         'La carta juramentada solo se genera para trámites validados.')
+    """Carta juramentada consolidada del empleado y año del trámite indicado.
+
+    Incluye todos los beneficios validados de ese empleado para ese año, no
+    solo el trámite por el que se entró.
+    """
+    tramite = get_object_or_404(
+        TramiteBeneficio.objects.select_related('empleado'), pk=pk,
+    )
+    tramites = list(_tramites_de_la_carta(tramite.empleado, tramite.anio_aplicacion))
+    if not tramites:
+        messages.warning(
+            request,
+            'La carta juramentada solo se genera cuando hay beneficios validados '
+            'para ese año.',
+        )
         return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
 
-    if not tramite.carta_generada_el:
-        TramiteBeneficio.objects.filter(pk=tramite.pk).update(
-            carta_generada_el=timezone.now(),
-        )
+    TramiteBeneficio.objects.filter(
+        pk__in=[t.pk for t in tramites], carta_generada_el__isnull=True,
+    ).update(carta_generada_el=timezone.now())
 
-    pdf = generar_carta_juramentada(tramite)
+    pdf = generar_carta_juramentada(
+        tramite.empleado, tramite.anio_aplicacion, tramites,
+    )
     filename = (f'carta_juramentada_{tramite.empleado.numero_documento}_'
-                f'{tramite.tipo}_{tramite.anio_aplicacion}.pdf')
+                f'{tramite.anio_aplicacion}.pdf')
     resp = HttpResponse(pdf, content_type='application/pdf')
     resp['Content-Disposition'] = f'attachment; filename="{filename}"'
     return resp
@@ -526,10 +575,24 @@ def descargar_carta(request, pk):
 @rrhh_required
 @require_POST
 def marcar_carta_firmada(request, pk):
-    """RRHH marca que el empleado firmó físicamente la carta."""
-    tramite = get_object_or_404(TramiteBeneficio, pk=pk)
-    TramiteBeneficio.objects.filter(pk=pk).update(
+    """Marca como firmados todos los beneficios que cubre la carta.
+
+    La firma es una sola para el documento consolidado, así que se aplica a
+    todos los trámites validados del empleado en ese año.
+    """
+    tramite = get_object_or_404(
+        TramiteBeneficio.objects.select_related('empleado'), pk=pk,
+    )
+    tramites = _tramites_de_la_carta(tramite.empleado, tramite.anio_aplicacion)
+    n = tramites.filter(carta_firmada=False).update(
         carta_firmada=True, carta_firmada_el=timezone.now(),
     )
-    messages.success(request, 'Carta marcada como firmada.')
+    if n:
+        messages.success(
+            request,
+            f'Carta marcada como firmada ({n} beneficio(s) del año '
+            f'{tramite.anio_aplicacion}).',
+        )
+    else:
+        messages.info(request, 'Esta carta ya estaba marcada como firmada.')
     return redirect('beneficios_retencion:detalle_rrhh', pk=pk)
