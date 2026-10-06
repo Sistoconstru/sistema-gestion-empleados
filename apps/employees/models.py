@@ -248,8 +248,20 @@ class Empleado(BaseModel):
     
     @property
     def cargo_actual(self):
-        """Retorna el historial de cargo actual del empleado"""
+        """Retorna el historial de cargo actual del empleado.
+
+        Si la consulta trajo `historialcargo_set` con prefetch_related, resuelve
+        en memoria. Hacer `.filter()` sobre el related manager descarta el
+        prefetch y dispara una consulta por cada lectura: en un listado de 300
+        empleados leído tres veces desde la plantilla, eso son miles de queries.
+        """
         try:
+            cache = getattr(self, '_prefetched_objects_cache', None) or {}
+            if 'historialcargo' in cache or 'historialcargo_set' in cache:
+                for h in self.historialcargo_set.all():
+                    if h.activo:
+                        return h
+                return None
             return self.historialcargo_set.filter(activo=True).first()
         except (AttributeError, TypeError, ValueError) as e:
             # Log específico del error para debugging
@@ -257,12 +269,12 @@ class Empleado(BaseModel):
             logger = logging.getLogger(__name__)
             logger.warning(f"Error obteniendo cargo actual para empleado {self.id}: {e}")
             return None
-    
+
     @property
     def nombre_cargo_actual(self):
         """Retorna el nombre del cargo actual del empleado"""
         try:
-            historial = self.historialcargo_set.filter(activo=True).first()
+            historial = self.cargo_actual
             if historial:
                 return historial.cargo.nombre
             return None
@@ -274,11 +286,17 @@ class Empleado(BaseModel):
     
     @property
     def area_actual(self):
-        """Retorna el área actual del empleado basada en su cargo"""
+        """Retorna el área actual del empleado basada en su cargo.
+
+        Se apoya en `cargo_actual`, que resuelve en memoria cuando la consulta
+        trajo el prefetch. Antes hacía su propio `.filter()` sobre el related
+        manager, lo que descartaba el prefetch y disparaba una consulta por
+        cada lectura.
+        """
         try:
-            historial = self.historialcargo_set.filter(activo=True).select_related('cargo', 'cargo__area').first()
-            if historial and historial.cargo:
-                return historial.cargo.area if hasattr(historial.cargo, 'area') else None
+            historial = self.cargo_actual
+            if historial and historial.cargo_id:
+                return getattr(historial.cargo, 'area', None)
             return None
         except Exception as e:
             import logging

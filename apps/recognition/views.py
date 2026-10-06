@@ -25,6 +25,13 @@ from .models import (
 from apps.employees.models import Empleado
 
 
+# Empleados que no participan del programa de reconocimientos. Los códigos van
+# en MAYÚSCULA porque así están en `estados_empleado`: el filtro anterior usaba
+# 'inactivo' en minúscula y por eso no excluía a nadie — el selector del panel
+# traía los 394 empleados en vez de los ~307 vigentes.
+ESTADOS_SIN_RECONOCIMIENTO = ['INACTIVO', 'RETIRADO']
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     """Dashboard principal del módulo de reconocimientos"""
     
@@ -52,7 +59,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # Métricas generales del sistema
         context['total_reconocimientos'] = Reconocimiento.objects.count()
         context['total_insignias_otorgadas'] = InsigniaEmpleado.objects.count()
-        context['total_empleados'] = Empleado.objects.exclude(estado__codigo='inactivo').count()
+        context['total_empleados'] = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).count()
         context['beneficios_disponibles'] = TipoBeneficio.objects.filter(disponible=True).count()
         
         # Top empleados por puntos
@@ -73,7 +80,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         
         # Lista de empleados para selector
         empleados_queryset = Empleado.objects.exclude(
-            estado__codigo='inactivo'
+            estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO
         ).prefetch_related(
             'historialcargo_set__cargo__area'
         ).annotate(
@@ -140,7 +147,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # Métricas generales del sistema (para referencia)
         context['total_reconocimientos'] = Reconocimiento.objects.count()
         context['total_insignias_otorgadas'] = InsigniaEmpleado.objects.count()
-        context['empleados_activos'] = Empleado.objects.exclude(estado__codigo='inactivo').count()
+        context['empleados_activos'] = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).count()
         context['beneficios_disponibles'] = TipoBeneficio.objects.filter(disponible=True).count()
         
         # Top 5 ranking general
@@ -189,7 +196,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_posicion_ranking(self, empleado):
         """Posición del empleado en el ranking general"""
         # Obtener todos los empleados con sus puntos totales
-        ranking = Empleado.objects.exclude(estado__codigo='inactivo').annotate(
+        ranking = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).annotate(
             puntos_totales=Coalesce(
                 Sum('historialpuntos__puntos', filter=Q(historialpuntos__validado=True)), 
                 Value(0)
@@ -205,7 +212,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     
     def get_top_ranking(self):
         """Top 5 empleados con más puntos"""
-        return Empleado.objects.exclude(estado__codigo='inactivo').annotate(
+        return Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).annotate(
             puntos_totales=Coalesce(
                 Sum('historialpuntos__puntos', filter=Q(historialpuntos__validado=True)), 
                 Value(0)
@@ -222,7 +229,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     
     def get_stats_participacion(self):
         """Estadísticas de participación en el sistema"""
-        total_empleados = Empleado.objects.exclude(estado__codigo='inactivo').count()
+        total_empleados = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).count()
         empleados_con_puntos = HistorialPuntos.objects.values('empleado').distinct().count()
         empleados_con_insignias = InsigniaEmpleado.objects.values('empleado').distinct().count()
         
@@ -310,7 +317,7 @@ class RankingView(LoginRequiredMixin, ListView):
         return ['recognition/ranking.html']
     
     def get_queryset(self):
-        queryset = Empleado.objects.exclude(estado__codigo='inactivo').annotate(
+        queryset = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).annotate(
             puntos_totales=Coalesce(
                 Sum('historialpuntos__puntos', filter=Q(historialpuntos__validado=True)), 
                 Value(0)
@@ -341,11 +348,11 @@ class RankingView(LoginRequiredMixin, ListView):
         
         # Estadísticas generales
         context['total_empleados'] = Empleado.objects.exclude(
-            estado__codigo='inactivo'
+            estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO
         ).count()
         
         context['empleados_con_puntos'] = Empleado.objects.exclude(
-            estado__codigo='inactivo'
+            estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO
         ).filter(historialpuntos__validado=True).distinct().count()
         
         # Puntos totales distribuidos
@@ -361,7 +368,7 @@ class RankingView(LoginRequiredMixin, ListView):
         
         # Distribución por áreas
         context['ranking_areas'] = Empleado.objects.exclude(
-            estado__codigo='inactivo'
+            estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO
         ).values('historialcargo__cargo__area__nombre').annotate(
             total_puntos=Sum('historialpuntos__puntos', 
                            filter=Q(historialpuntos__validado=True)),
@@ -461,7 +468,7 @@ class BeneficiosView(LoginRequiredMixin, ListView):
         
         # Lista de empleados para filtros
         context['empleados_lista'] = Empleado.objects.exclude(
-            estado__codigo='inactivo'
+            estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO
         ).select_related('posicion', 'posicion__area').order_by('nombres', 'apellidos')[:50]
         
         # Lista de áreas para filtros
@@ -1279,7 +1286,7 @@ class GenerarReporteView(LoginRequiredMixin, View):
         ws.append(headers)
         
         # Datos
-        empleados = Empleado.objects.exclude(estado__codigo='inactivo').annotate(
+        empleados = Empleado.objects.exclude(estado__codigo__in=ESTADOS_SIN_RECONOCIMIENTO).annotate(
             puntos_totales=Coalesce(
                 Sum('historialpuntos__puntos', filter=Q(historialpuntos__validado=True)), 
                 Value(0)
