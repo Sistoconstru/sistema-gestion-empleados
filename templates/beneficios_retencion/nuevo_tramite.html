@@ -76,9 +76,9 @@
                               placeholder="Ej: crédito 4400-123456 Bancolombia"></textarea>
                 </div>
 
-                <div class="mt-3">
+                <div class="mt-3" id="bloqueSoportePrincipal">
                     <label class="form-label">Soporte(s) *</label>
-                    <input type="file" name="soportes" class="form-control" multiple
+                    <input type="file" name="soportes" id="inputSoportes" class="form-control" multiple
                            accept=".pdf,.jpg,.jpeg,.png" required>
                     <div class="form-text small">PDF o imagen, máximo 10 MB por archivo. Podés adjuntar varios.</div>
                 </div>
@@ -128,6 +128,9 @@
         {% endfor %}
     ];
 
+    var bloqueSoportePrincipal = document.getElementById('bloqueSoportePrincipal');
+    var inputSoportes = document.getElementById('inputSoportes');
+
     function toggleBloques() {
         var esDep = tipoSel.value === 'dependientes';
         bloqueValor.style.display = esDep ? 'none' : '';
@@ -135,6 +138,11 @@
         bloqueValor.querySelectorAll('input,select').forEach(function(el) {
             el.disabled = esDep;
         });
+        // En dependientes la prueba va por cada dependiente; el soporte
+        // general no se pide (el certificado juramentado lo emite SIGHU).
+        bloqueSoportePrincipal.style.display = esDep ? 'none' : '';
+        inputSoportes.required = !esDep;
+        inputSoportes.disabled = esDep;
     }
     tipoSel.addEventListener('change', toggleBloques);
 
@@ -158,6 +166,14 @@
     inputValor.addEventListener('blur', formatearValor);
     formatearValor();
 
+    // Los nombres y descripciones vienen de la BD y se insertan con
+    // insertAdjacentHTML, así que hay que escaparlos.
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     function agregarDependiente(prefill) {
         prefill = prefill || {};
         var i = contador++;
@@ -168,21 +184,65 @@
         var nombre = prefill.nombres || '';
         var doc = prefill.numero_documento || '';
         var parentesco = prefill.parentesco || '';
+
+        // Documentos que el familiar ya tiene cargados en «Mi Familia».
+        // Si hay alguno, subir archivo deja de ser obligatorio: alcanza con
+        // marcar uno de los existentes.
+        var docs = prefill.documentos || [];
+        var hayDocs = docs.length > 0;
+        var docsHtml = '';
+        if (hayDocs) {
+            docsHtml =
+                '<label class="form-label small mb-1">Documentos ya cargados en Mi Familia</label>' +
+                '<div class="border rounded p-2 mb-2 bg-light">' +
+                docs.map(function (d) {
+                    var etiquetas = '';
+                    if (d.sugerido) {
+                        etiquetas += ' <span class="badge bg-success">Recomendado para esta causal</span>';
+                    }
+                    if (d.vencido) {
+                        etiquetas += ' <span class="badge bg-danger">Vencido el ' +
+                                     (d.vencimiento || '') + '</span>';
+                    } else if (d.vencimiento) {
+                        etiquetas += ' <span class="badge bg-secondary">Vence ' + d.vencimiento + '</span>';
+                    }
+                    var desc = d.descripcion ? ' <span class="text-muted">— ' + esc(d.descripcion) + '</span>' : '';
+                    return '' +
+                        '<div class="form-check">' +
+                          '<input class="form-check-input" type="checkbox" ' +
+                                 'name="dep_docs_familia_' + i + '" value="' + d.id + '"' +
+                                 (d.sugerido ? ' checked' : '') + '>' +
+                          '<label class="form-check-label small">' +
+                            '<strong>' + esc(d.tipo) + '</strong> ' +
+                            '<span class="text-muted">' + esc(d.nombre) + '</span>' +
+                            desc + etiquetas +
+                          '</label>' +
+                        '</div>';
+                }).join('') +
+                '<div class="form-text small mt-1">' +
+                  'Podés marcar <strong>varios</strong>: suele hacer falta uno que acredite el ' +
+                  'parentesco y otro que pruebe la causal. Si falta alguno, adjuntalo abajo.' +
+                '</div>' +
+                '</div>';
+        }
+        var etiquetaArchivo = hayDocs
+            ? 'Adjuntar otro documento (opcional)'
+            : 'Soportes *';
         var html = '' +
             '<div class="card mb-2 border-corporativo">' +
               '<div class="card-body py-2">' +
                 '<div class="row g-2">' +
                   '<div class="col-md-4">' +
                     '<label class="form-label small mb-0">Nombre *</label>' +
-                    '<input type="text" name="dep_nombres[]" class="form-control form-control-sm" value="' + nombre.replace(/"/g, '&quot;') + '" required>' +
+                    '<input type="text" name="dep_nombres[]" class="form-control form-control-sm" value="' + esc(nombre) + '" required>' +
                   '</div>' +
                   '<div class="col-md-3">' +
                     '<label class="form-label small mb-0">Documento</label>' +
-                    '<input type="text" name="dep_documento[]" class="form-control form-control-sm" value="' + doc + '">' +
+                    '<input type="text" name="dep_documento[]" class="form-control form-control-sm" value="' + esc(doc) + '">' +
                   '</div>' +
                   '<div class="col-md-2">' +
                     '<label class="form-label small mb-0">Parentesco</label>' +
-                    '<input type="text" name="dep_parentesco[]" class="form-control form-control-sm" value="' + parentesco + '" placeholder="hijo/a">' +
+                    '<input type="text" name="dep_parentesco[]" class="form-control form-control-sm" value="' + esc(parentesco) + '" placeholder="hijo/a">' +
                   '</div>' +
                   '<div class="col-md-3">' +
                     '<label class="form-label small mb-0">Causal *</label>' +
@@ -191,9 +251,10 @@
                     '</select>' +
                   '</div>' +
                   '<div class="col-md-11">' +
-                    '<label class="form-label small mb-0">Soportes *</label>' +
+                    docsHtml +
+                    '<label class="form-label small mb-0">' + etiquetaArchivo + '</label>' +
                     '<input type="file" name="dep_soportes_' + i + '" class="form-control form-control-sm" multiple ' +
-                    'accept=".pdf,.jpg,.jpeg,.png" required>' +
+                    'accept=".pdf,.jpg,.jpeg,.png"' + (hayDocs ? '' : ' required') + '>' +
                   '</div>' +
                   '<div class="col-md-1 d-flex align-items-end">' +
                     '<button type="button" class="btn btn-sm btn-outline-danger w-100" onclick="this.closest(\'.card\').remove();">' +
@@ -225,16 +286,22 @@
                     'Podés agregarlos manualmente o ir a <a href="/empleados/mi-familia/">Mi Familia</a> primero.</span>';
                 return;
             }
+            var conDocs = 0;
             fs.forEach(function(f) {
+                if (f.documentos && f.documentos.length) conDocs++;
                 agregarDependiente({
                     nombres: f.nombres,
                     numero_documento: f.numero_documento,
                     parentesco: f.parentesco,
                     causal: f.causal_sugerida,
+                    documentos: f.documentos,
                 });
             });
+            var detalle = conDocs
+                ? conDocs + ' con documentos ya cargados: revisá cuáles sirven como prueba de la causal.'
+                : 'Ninguno tiene documentos cargados en Mi Familia, así que hay que adjuntarlos.';
             hintImportar.innerHTML = '<span class="text-success">Importados ' + fs.length +
-                ' familiar(es). Revisá la causal sugerida y adjuntá el soporte correspondiente.</span>';
+                ' familiar(es). ' + detalle + '</span>';
         })
         .catch(function() {
             btnImportar.disabled = false;

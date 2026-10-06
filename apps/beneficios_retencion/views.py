@@ -5,6 +5,7 @@
 - RRHH: bandeja de trámites por revisar, validar/rechazar/revocar, imprimir
   carta juramentada, marcar carta firmada.
 """
+import mimetypes
 from datetime import date
 
 from django.contrib import messages
@@ -16,7 +17,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from apps.employees.models import Empleado
+from apps.employees.models import DocumentoFamiliar, Empleado
 
 from .carta_juramentada import generar_carta_juramentada
 from .models import (
@@ -121,17 +122,52 @@ def _causal_sugerida(familiar):
     return 'familiar_dependiente'
 
 
+# Qué documento de «Mi Familia» sirve como prueba de cada causal. Es una
+# sugerencia para el empleado: el catálogo de DocumentoFamiliar no cubre todas
+# las causales (no hay certificado médico ni de ausencia de rentas), así que
+# para varias no habrá un tipo exacto y tendrá que subir el documento.
+DOCS_SUGERIDOS_POR_CAUSAL = {
+    'hijo_menor_18': ['registro_civil', 'tarjeta_identidad'],
+    'hijo_18_23_estudiando': ['certificado_estudio'],
+    'hijo_mayor_23_dependiente': ['otro'],
+    'conyuge_dependiente': ['otro', 'cedula'],
+    'familiar_dependiente': ['otro', 'cedula'],
+}
+
+
 @login_required
 def familiares_json(request):
-    """Devuelve los familiares activos del empleado logueado, para prellenar
-    el formulario de dependientes."""
+    """Familiares activos del empleado con sus documentos ya cargados.
+
+    El formulario de dependientes los usa para prellenar la lista y para
+    ofrecer los documentos existentes en vez de pedir que se suban de nuevo.
+    """
     emp = _empleado_de_usuario(request.user)
     if not emp or not emp.es_declarante:
         return JsonResponse({'familiares': []})
 
-    familiares = emp.familiares.filter(activo=True).order_by('tipo', 'fecha_nacimiento')
+    hoy = date.today()
+    familiares = (emp.familiares.filter(activo=True)
+                  .prefetch_related('documentos')
+                  .order_by('tipo', 'fecha_nacimiento'))
     data = []
     for f in familiares:
+        causal = _causal_sugerida(f)
+        sugeridos = DOCS_SUGERIDOS_POR_CAUSAL.get(causal, [])
+        documentos = []
+        for d in f.documentos.all():
+            vencido = bool(d.fecha_vencimiento and d.fecha_vencimiento < hoy)
+            documentos.append({
+                'id': str(d.pk),
+                'tipo': d.get_tipo_display(),
+                'tipo_codigo': d.tipo,
+                'nombre': d.filename,
+                'descripcion': d.descripcion,
+                'vencimiento': d.fecha_vencimiento.isoformat() if d.fecha_vencimiento else None,
+                'vencido': vencido,
+                # Marca el que corresponde a la causal, para destacarlo
+                'sugerido': d.tipo in sugeridos and not vencido,
+            })
         data.append({
             'id': str(f.pk),
             'nombres': f.nombre_completo,
@@ -139,7 +175,8 @@ def familiares_json(request):
             'parentesco': f.get_tipo_display(),
             'tipo': f.tipo,
             'edad': f.edad,
-            'causal_sugerida': _causal_sugerida(f),
+            'causal_sugerida': causal,
+            'documentos': documentos,
         })
     return JsonResponse({'familiares': data})
 
@@ -161,6 +198,32 @@ def nuevo_tramite(request):
         'causales': DependienteBeneficio.CAUSAL_CHOICES,
         'anio_actual': date.today().year,
     })
+
+
+def _copiar_documento_familiar(dependiente, doc_familiar):
+    """Copia un DocumentoFamiliar como soporte propio del dependiente.
+
+    Se copia el archivo en vez de referenciarlo: el soporte respalda una
+    deducción ante la DIAN y debe quedar congelado tal como RRHH lo validó.
+    Si se referenciara, borrar el familiar (cascade) o reemplazar el archivo
+    en «Mi Familia» alteraría un trámite ya aprobado.
+    """
+    from django.core.files.base import ContentFile
+
+    doc_familiar.archivo.open('rb')
+    try:
+        contenido = doc_familiar.archivo.read()
+    finally:
+        doc_familiar.archivo.close()
+
+    nombre = doc_familiar.filename or f'{doc_familiar.tipo}.pdf'
+    soporte = SoporteDependiente(
+        dependiente=dependiente,
+        nombre_original=f'{doc_familiar.get_tipo_display()} — {nombre}',
+        tipo_mime=mimetypes.guess_type(nombre)[0] or 'application/octet-stream',
+    )
+    soporte.archivo.save(nombre, ContentFile(contenido), save=True)
+    return soporte
 
 
 def _procesar_nuevo_tramite(request, emp):
@@ -205,9 +268,11 @@ def _procesar_nuevo_tramite(request, emp):
 
     observacion = (request.POST.get('observacion') or '').strip()
 
-    # Soportes principales
+    # Soportes principales. En `dependientes` no se piden: la prueba va por
+    # cada dependiente y el certificado bajo juramento es la carta que genera
+    # SIGHU, así que exigir uno acá sería redundante.
     archivos_principales = request.FILES.getlist('soportes')
-    if not archivos_principales:
+    if not archivos_principales and tipo != 'dependientes':
         messages.error(request, 'Debes adjuntar al menos un soporte.')
         return redirect('beneficios_retencion:nuevo_tramite')
     for a in archivos_principales:
@@ -233,9 +298,32 @@ def _procesar_nuevo_tramite(request, emp):
                 messages.error(request, f'Dependiente {nombre}: causal inválida.')
                 return redirect('beneficios_retencion:nuevo_tramite')
             archivos_dep = request.FILES.getlist(f'dep_soportes_{i}')
-            if not archivos_dep:
-                messages.error(request,
-                               f'Dependiente {nombre}: adjunta al menos un soporte.')
+            # Documentos reutilizados de «Mi Familia». Se filtran contra los
+            # familiares del propio empleado para que nadie pueda referenciar
+            # el documento de otra persona pasando un id a mano.
+            ids_reusados = request.POST.getlist(f'dep_docs_familia_{i}')
+            docs_reusados = []
+            if ids_reusados:
+                docs_reusados = list(
+                    DocumentoFamiliar.objects
+                    .filter(pk__in=ids_reusados, familiar__empleado=emp,
+                            familiar__activo=True)
+                    .select_related('familiar')
+                )
+                if len(docs_reusados) != len(set(ids_reusados)):
+                    messages.error(
+                        request,
+                        f'Dependiente {nombre}: alguno de los documentos '
+                        'seleccionados no te pertenece o ya no existe.',
+                    )
+                    return redirect('beneficios_retencion:nuevo_tramite')
+
+            if not archivos_dep and not docs_reusados:
+                messages.error(
+                    request,
+                    f'Dependiente {nombre}: selecciona un documento existente '
+                    'o adjunta uno nuevo.',
+                )
                 return redirect('beneficios_retencion:nuevo_tramite')
             for a in archivos_dep:
                 err = _validar_soporte_upload(a)
@@ -248,6 +336,7 @@ def _procesar_nuevo_tramite(request, emp):
                 'parentesco': (parentescos[i] if i < len(parentescos) else '').strip(),
                 'causal': causal,
                 'archivos': archivos_dep,
+                'docs_reusados': docs_reusados,
             })
         if not dependientes_data:
             messages.error(request, 'Agrega al menos un dependiente.')
@@ -278,6 +367,8 @@ def _procesar_nuevo_tramite(request, emp):
                     dependiente=dep, archivo=a,
                     nombre_original=a.name, tipo_mime=a.content_type or '',
                 )
+            for doc in d.get('docs_reusados', []):
+                _copiar_documento_familiar(dep, doc)
 
     messages.success(request, 'Trámite enviado. RRHH lo revisará y te avisará.')
     return redirect('beneficios_retencion:mis_tramites')
