@@ -11,6 +11,7 @@ from datetime import timedelta, date
 from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth import get_user_model
 from django.contrib import messages
@@ -984,8 +985,15 @@ def empleado_search_api(request):
 
 
 
+@staff_member_required
 def empleado_export(request):
-    """Exportar lista de empleados - VERSIÓN MEJORADA"""
+    """Exportar lista de empleados - VERSIÓN MEJORADA
+
+    Requiere staff: entrega la nómina completa (documento, correo, teléfono,
+    jerarquía) en un solo archivo. Sin el decorador quedaba accesible sin
+    sesión, porque instanciar EmpleadoListView() a mano y llamar get_queryset()
+    no pasa por el LoginRequiredMixin de la clase.
+    """
     formato = request.GET.get('export', 'excel')
     
     # Obtener empleados con los mismos filtros de la lista
