@@ -24,6 +24,35 @@ logging.getLogger('django').info('Prueba de logging django desde Railway')
 
 DEBUG = False
 
+# SECRET_KEY: en producción no se acepta el default de base.py ni la clave que
+# estuvo versionada en config/settings.py (ese archivo ya se retiró, pero sigue
+# en el historial de git, así que la clave debe considerarse pública). Si falta
+# la env var, el arranque falla en vez de firmar sesiones y tokens de reset de
+# contraseña con una clave conocida, que permitiría suplantar a cualquier usuario.
+# Se comparan hashes para no volver a escribir las claves quemadas en el repo.
+import hashlib
+from django.core.exceptions import ImproperlyConfigured
+
+_HASHES_COMPROMETIDOS = {
+    # 'django-insecure-change-me' (default de base.py)
+    'f2fa7aab1e63937c7e25568d78c688259f87351b4dc95bb5aaf28e1935669837',
+    # clave que estuvo publicada en config/settings.py
+    '4fd82742888df885b944904357e7c6a01fa5a8c291ee97d249f86d967d83154a',
+}
+
+if not SECRET_KEY:
+    raise ImproperlyConfigured(
+        'SECRET_KEY no está definida. Configúrala en las variables de entorno '
+        'de Railway antes de desplegar.'
+    )
+if hashlib.sha256(SECRET_KEY.encode()).hexdigest() in _HASHES_COMPROMETIDOS:
+    raise ImproperlyConfigured(
+        'SECRET_KEY comprometida (estuvo publicada en git o es el default). '
+        'Genera una nueva y cámbiala en las variables de entorno de Railway: '
+        'python -c "from django.core.management.utils import '
+        'get_random_secret_key; print(get_random_secret_key())"'
+    )
+
 ALLOWED_HOSTS = [h for h in [
     'empleados.sistemaconstruinmuniza.com',
     'localhost',
