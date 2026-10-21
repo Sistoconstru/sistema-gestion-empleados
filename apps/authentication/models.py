@@ -15,7 +15,14 @@ class Usuario(AbstractUser):
     fecha_creacion = models.DateTimeField(auto_now_add=True)  # Fecha de creación
     fecha_actualizacion = models.DateTimeField(auto_now=True)  # Fecha de última actualización
     ultimo_acceso = models.DateTimeField(null=True, blank=True)  # Último acceso al sistema
-    
+    # Obliga a cambiar la contraseña antes de poder usar el resto del sistema.
+    # Se activa en el alta automática de usuarios, cuya contraseña inicial se
+    # deriva del número de documento, y la limpia CambiarPasswordView.
+    debe_cambiar_password = models.BooleanField(
+        default=False,
+        verbose_name='Debe cambiar la contraseña en el próximo ingreso',
+    )
+
     class Meta:
         db_table = 'usuarios'  # Nombre de la tabla en la BD
         verbose_name = 'Usuario'

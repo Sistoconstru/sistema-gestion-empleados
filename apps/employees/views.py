@@ -695,7 +695,11 @@ class EmpleadoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 first_name=empleado.nombres,
                 last_name=empleado.apellidos,
                 password=password,
-                is_active=True
+                is_active=True,
+                # Derivada del número de documento, que aparece en listados y
+                # exportaciones: hay que cambiarla en el primer ingreso
+                # (ForzarCambioPasswordMiddleware).
+                debe_cambiar_password=True,
             )
             
             # Mostrar mensaje con credenciales

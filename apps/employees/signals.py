@@ -43,6 +43,10 @@ def _crear_usuario_para_empleado(empleado, cargo=None):
             last_name=empleado.apellidos,
             password=password,
             is_active=True,
+            # Esta contraseña se deriva del número de documento, que aparece en
+            # listados y exportaciones: el usuario tiene que cambiarla antes de
+            # poder usar el sistema (ForzarCambioPasswordMiddleware).
+            debe_cambiar_password=True,
         )
 
         if cargo is None:
