@@ -170,6 +170,16 @@ class AuditLogMiddleware(MiddlewareMixin):
 
         return modelo, objeto_id
 
+    # Subcadenas que marcan un campo como no auditable. Cubren los nombres de
+    # los formularios de Django (old_password, new_password1/2), los del alta de
+    # usuarios (password1/2) y los secretos de integraciones.
+    FRAGMENTOS_SENSIBLES = ('password', 'passwd', 'contrasena', 'contraseña',
+                            'token', 'secret', 'csrfmiddlewaretoken')
+
+    def _es_campo_sensible(self, nombre):
+        nombre_lower = str(nombre).lower()
+        return any(fragmento in nombre_lower for fragmento in self.FRAGMENTOS_SENSIBLES)
+
     def _extraer_cambios(self, request):
         """Extrae los cambios del request.POST o request.body"""
         cambios = {}
@@ -178,15 +188,26 @@ class AuditLogMiddleware(MiddlewareMixin):
             # Intentar obtener datos de POST
             if request.POST:
                 cambios = dict(request.POST.lists())
-                # Excluir campos sensibles
-                campos_sensibles = ['password', 'csrfmiddlewaretoken', 'password1', 'password2']
-                for campo in campos_sensibles:
-                    cambios.pop(campo, None)
+                # Excluir campos sensibles. Se filtra por subcadena y no por
+                # lista exacta: la lista anterior ('password', 'password1',
+                # 'password2') no cubría los nombres que usan los formularios de
+                # Django ('old_password', 'new_password1', 'new_password2'), así
+                # que cada cambio o reset de contraseña quedaba guardado en claro
+                # en LogActividad.cambios_realizados.
+                cambios = {
+                    clave: valor for clave, valor in cambios.items()
+                    if not self._es_campo_sensible(clave)
+                }
 
             # Si no hay POST, intentar leer el body (para APIs JSON)
             elif request.body:
                 try:
                     cambios = json.loads(request.body)
+                    if isinstance(cambios, dict):
+                        cambios = {
+                            clave: valor for clave, valor in cambios.items()
+                            if not self._es_campo_sensible(clave)
+                        }
                 except (json.JSONDecodeError, UnicodeDecodeError):
                     pass
 

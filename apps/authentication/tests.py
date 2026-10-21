@@ -61,6 +61,30 @@ class ForzarCambioPasswordTests(TestCase):
         respuesta = self.client.get('/empleados/')
         self.assertNotIn(self.url_cambio, respuesta.get('Location', ''))
 
+    def test_el_cambio_no_queda_registrado_en_claro_en_la_auditoria(self):
+        """El POST del cambio de contraseña pasa por AuditLogMiddleware."""
+        from apps.core.models import LogActividad
+
+        self.client.force_login(self.usuario)
+        nueva = 'Clave-Auditada-2026'
+        self.client.post(self.url_cambio, {
+            'old_password': self.password,
+            'new_password1': nueva,
+            'new_password2': nueva,
+        })
+
+        # Si no se registrara nada, la comprobación de abajo pasaría sola.
+        self.assertTrue(
+            LogActividad.objects.exists(),
+            'La auditoría no registró el POST: el test no estaría probando nada.',
+        )
+        registrado = ' '.join(
+            str(log.cambios_realizados)
+            for log in LogActividad.objects.all()
+        )
+        self.assertNotIn(nueva, registrado)
+        self.assertNotIn(self.password, registrado)
+
 
 class ProxyPdfTests(TestCase):
     """El proxy de PDF no puede entregar nada fuera de MEDIA_ROOT ni sin sesión."""
