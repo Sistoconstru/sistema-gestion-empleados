@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso bloqueado</title>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border-radius: 1.2rem;
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            margin: 1rem;
+        }
+        .login-avatar {
+            font-size: 4.5rem;
+            color: #c62828;
+            margin-bottom: 1rem;
+        }
+        .login-container h2 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2193b0;
+        }
+        p { color: #555; }
+        a { color: #2193b0; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-avatar">
+            <i class="fa fa-lock"></i>
+        </div>
+        <h2>Acceso bloqueado</h2>
+        <p>
+            Se superó el número de intentos permitidos. Por seguridad, el acceso a
+            esta cuenta queda bloqueado durante <strong>30 minutos</strong>.
+        </p>
+        <p class="small">
+            Puedes volver a intentarlo pasado ese tiempo. Si no recuerdas tu
+            contraseña, usa la opción de recuperarla en vez de seguir probando.
+        </p>
+        <div style="margin-top:1.5rem;">
+            <a href="{% url 'authentication:password_reset' %}">Recuperar mi contraseña</a>
+            <span style="color:#bbb; margin:0 .5rem;">·</span>
+            <a href="{% url 'authentication:login' %}">Volver al login</a>
+        </div>
+    </div>
+</body>
+</html>

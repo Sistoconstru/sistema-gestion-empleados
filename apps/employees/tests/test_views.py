@@ -58,26 +58,26 @@ class ProductoListViewTest(TestCase):
 
     def test_view_accessible(self):
         """Test que la vista es accesible"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:producto_list'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
         """Test que usa el template correcto"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:producto_list'))
         self.assertTemplateUsed(response, 'employees/marketplace/producto_list.html')
 
     def test_view_context_has_productos(self):
         """Test que el contexto tiene productos"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:producto_list'))
         self.assertIn('productos', response.context)
         self.assertEqual(len(response.context['productos']), 5)
 
     def test_view_pagination(self):
         """Test paginación"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:producto_list'))
         self.assertTrue('is_paginated' in response.context)
 
@@ -124,7 +124,7 @@ class ProductoDetailViewTest(TestCase):
 
     def test_view_accessible(self):
         """Test que la vista es accesible"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse('employees:producto_detail', args=[self.producto.id])
         )
@@ -132,7 +132,7 @@ class ProductoDetailViewTest(TestCase):
 
     def test_view_context_has_producto(self):
         """Test que el contexto tiene el producto"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(
             reverse('employees:producto_detail', args=[self.producto.id])
         )
@@ -174,12 +174,12 @@ class InboxViewTest(TestCase):
 
     def test_view_accessible_with_login(self):
         """Test que la vista es accesible con login"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:inbox'))
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
         """Test que usa el template correcto"""
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(reverse('employees:inbox'))
         self.assertTemplateUsed(response, 'employees/messaging/inbox.html')

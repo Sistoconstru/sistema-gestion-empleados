@@ -377,3 +377,15 @@ def documentos_institucionales(request):
         'grupos': grupos,
         'total': qs.count(),
     })
+
+
+@login_required
+def configuracion(request):
+    """Configuración de la cuenta del empleado.
+
+    El menú de usuario ya ofrecía "Configuración", pero apuntaba a `#` y no
+    abría nada. De momento reúne lo que cada persona puede cambiar por su
+    cuenta; el cambio de contraseña es voluntario salvo que la cuenta tenga
+    activo `debe_cambiar_password`.
+    """
+    return render(request, 'core/configuracion.html')

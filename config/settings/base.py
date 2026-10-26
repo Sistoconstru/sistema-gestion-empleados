@@ -2,6 +2,7 @@
 
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
@@ -36,6 +37,7 @@ THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_filters',
+    'axes',  # Límite de intentos de login (ver bloque AXES más abajo)
 ]
 
 LOCAL_APPS = [
@@ -74,6 +76,17 @@ MIDDLEWARE = [
     'apps.authentication.middleware.ForzarCambioPasswordMiddleware',
     'apps.core.middleware.AuditLogMiddleware',  # Auditoría automática de todas las operaciones
     #'apps.core.middleware.ActivityLogMiddleware', # Descomentar cuando esté implementado muestra actividad de usuarios
+    # Axes va al final: necesita envolver a los demás para capturar el resultado
+    # del login y convertir el bloqueo en una respuesta.
+    'axes.middleware.AxesMiddleware',
+]
+
+# Backends de autenticación. AxesStandaloneBackend va PRIMERO: es el que corta
+# el intento cuando la cuenta está bloqueada. Si se quita, el bloqueo deja de
+# aplicarse aunque el resto de la configuración de axes siga puesta.
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 
@@ -294,6 +307,28 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 86400  # 24 horas
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = not DEBUG
+
+# Límite de intentos de login (django-axes)
+# Cinco fallos y la cuenta queda bloqueada media hora. El bloqueo se levanta
+# solo: con 343 empleados, un bloqueo permanente que exija intervención de RRHH
+# convertiría cada olvido de contraseña en un ticket.
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(minutes=30)
+# Se bloquea la pareja (usuario, IP), no cada una por separado:
+#  - solo por IP, un empleado tecleando mal dejaría fuera a toda la oficina,
+#    que sale a internet por una IP compartida;
+#  - solo por usuario, cualquiera podría bloquear la cuenta de otro a voluntad,
+#    porque los nombres de usuario son predecibles (nombre.apellido).
+AXES_LOCKOUT_PARAMETERS = [['username', 'ip_address']]
+# Un login correcto borra los fallos previos: el contador cuenta intentos
+# seguidos, no fallos acumulados en el tiempo.
+AXES_RESET_ON_SUCCESS = True
+# Railway termina TLS en su proxy, así que REMOTE_ADDR es el del proxy y la IP
+# real viene en X-Forwarded-For. ipware toma la entrada que añadió el proxy de
+# confianza (la de la derecha) en vez de la primera, que el cliente puede
+# falsificar enviando su propia cabecera.
+AXES_IPWARE_PROXY_COUNT = 1
+AXES_LOCKOUT_TEMPLATE = 'authentication/bloqueado.html'
 
 # Configuración de seguridad
 SECURE_BROWSER_XSS_FILTER = True

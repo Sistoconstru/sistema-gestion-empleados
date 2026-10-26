@@ -221,3 +221,99 @@ class DashboardAdministrativoTests(TestCase):
         self.client.force_login(admin)
         r = self.client.get('/dashboard/')
         self.assertEqual(r.status_code, 200)
+
+
+class LimiteIntentosLoginTests(TestCase):
+    """django-axes: cinco fallos seguidos y la cuenta queda bloqueada."""
+
+    PASSWORD = 'Correcta-9slek31'
+
+    def setUp(self):
+        from axes.utils import reset
+        reset()  # el contador vive en BD y en caché; se limpia entre tests
+        self.usuario = User.objects.create_user(username='victima', password=self.PASSWORD)
+
+    def _fallar(self, veces):
+        for _ in range(veces):
+            self.client.post('/login/', {'username': 'victima', 'password': 'incorrecta'})
+
+    def test_el_sexto_intento_queda_bloqueado(self):
+        self._fallar(5)
+        # Incluso con la contraseña correcta: el bloqueo es por cuenta, no por
+        # acierto. Si esto devolviera 302 el límite no se estaría aplicando.
+        r = self.client.post('/login/', {'username': 'victima', 'password': self.PASSWORD})
+        self.assertEqual(r.status_code, 429, 'axes responde 429 Too Many Requests al bloquear')
+        self.assertNotIn('_auth_user_id', self.client.session)
+        # Y se muestra la plantilla propia, no el 429 pelado de axes.
+        self.assertContains(r, 'Acceso bloqueado', status_code=429)
+        self.assertContains(r, '30 minutos', status_code=429)
+
+    def test_cuatro_fallos_no_bloquean(self):
+        self._fallar(4)
+        r = self.client.post('/login/', {'username': 'victima', 'password': self.PASSWORD})
+        self.assertEqual(r.status_code, 302)
+        self.assertIn('_auth_user_id', self.client.session)
+
+    def test_un_acierto_reinicia_el_contador(self):
+        """AXES_RESET_ON_SUCCESS: cuenta intentos seguidos, no acumulados."""
+        self._fallar(4)
+        self.client.post('/login/', {'username': 'victima', 'password': self.PASSWORD})
+        self.client.logout()
+        self._fallar(4)
+        r = self.client.post('/login/', {'username': 'victima', 'password': self.PASSWORD})
+        self.assertEqual(r.status_code, 302, 'el contador no se reinició tras un login correcto')
+
+    def test_el_bloqueo_no_alcanza_a_otra_cuenta(self):
+        """Se bloquea la pareja (usuario, IP), no la IP entera."""
+        User.objects.create_user(username='companero', password=self.PASSWORD)
+        self._fallar(5)
+        r = self.client.post('/login/', {'username': 'companero', 'password': self.PASSWORD})
+        self.assertEqual(r.status_code, 302, 'bloquear a uno dejó fuera a un compañero')
+
+
+class ConfiguracionCuentaTests(TestCase):
+    """La página de Configuración del menú de usuario y el cambio voluntario."""
+
+    def setUp(self):
+        self.url = reverse('core:configuracion')
+        self.usuario = User.objects.create_user(username='empleado.conf', password='Actual-9slek31')
+
+    def test_exige_sesion(self):
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 302)
+        self.assertIn('login', r['Location'])
+
+    def test_un_empleado_normal_puede_abrirla(self):
+        """Es su propia configuración: no puede quedar restringida a staff."""
+        self.client.force_login(self.usuario)
+        r = self.client.get(self.url)
+        self.assertEqual(r.status_code, 200)
+
+    def test_ofrece_el_cambio_de_contrasena(self):
+        self.client.force_login(self.usuario)
+        r = self.client.get(self.url)
+        self.assertContains(r, reverse('authentication:password_change'))
+
+    def test_el_cambio_voluntario_funciona_sin_tener_el_flag(self):
+        self.assertFalse(self.usuario.debe_cambiar_password)
+        self.client.force_login(self.usuario)
+        nueva = 'Elegida-Por-Mi-2026'
+        r = self.client.post(reverse('authentication:password_change'), {
+            'old_password': 'Actual-9slek31',
+            'new_password1': nueva,
+            'new_password2': nueva,
+        })
+        self.assertEqual(r.status_code, 302)
+        self.usuario.refresh_from_db()
+        self.assertTrue(self.usuario.check_password(nueva))
+
+    def test_el_menu_enlaza_la_configuracion_y_no_un_ancla(self):
+        """El item del menú existía apuntando a href="#" y no abría nada.
+
+        Se comprueba sobre la propia página de configuración, que extiende
+        base.html y por tanto renderiza el mismo menú de usuario.
+        """
+        self.client.force_login(self.usuario)
+        r = self.client.get(self.url)
+        self.assertContains(r, f'href="{self.url}"')
+        self.assertContains(r, 'Configuración')
