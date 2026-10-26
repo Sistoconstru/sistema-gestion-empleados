@@ -478,6 +478,13 @@
 .quick-post-error { margin-top: .75rem; font-size: .85rem; padding: .5rem .75rem; }
 .btn-foto { background: #eef6f9; color: #19708a; border: 1px solid #cfe6ee; font-weight: 600; }
 .btn-foto:hover { background: #ddeef5; color: #12566b; }
+/* Cámara y Galería por separado solo en pantallas táctiles: en PC no hay cámara
+   que abrir y basta con un botón "Foto". */
+.solo-movil { display: none !important; }
+@media (pointer: coarse) {
+    .solo-movil { display: inline-block !important; }
+    .solo-pc { display: none !important; }
+}
 
 /* ---- Reacciones ---- */
 .btn-reaccion {
@@ -582,10 +589,15 @@
                 <div class="quick-post-error alert alert-danger d-none" id="quick-post-error" role="alert"></div>
 
                 <input type="file" name="imagen" id="quick-post-imagen" accept="image/*" class="d-none">
+                {# capture abre directo la cámara trasera en el celular; en PC se ignora. #}
+                <input type="file" id="quick-post-camara" accept="image/*" capture="environment" class="d-none">
 
                 <div class="quick-post-footer">
+                    <button type="button" class="btn btn-foto solo-movil" id="quick-post-boton-camara">
+                        <i class="fas fa-camera me-1"></i>Cámara
+                    </button>
                     <button type="button" class="btn btn-foto" id="quick-post-boton-foto">
-                        <i class="fas fa-camera me-1"></i>Foto
+                        <i class="fas fa-image me-1"></i><span class="solo-pc">Foto</span><span class="solo-movil">Galería</span>
                     </button>
                     <button type="submit" class="btn btn-quick-publish" id="quick-post-enviar">
                         <i class="fas fa-share me-1"></i>Publicar
@@ -838,12 +850,18 @@ function eliminarComentario(comentarioId) {
         preview.classList.remove('d-none');
     }
 
+    const camara      = document.getElementById('quick-post-camara');
+    const botonCamara = document.getElementById('quick-post-boton-camara');
+
     boton.addEventListener('click', function () { input.click(); });
     input.addEventListener('change', function () { aceptarArchivo(input.files[0]); });
+    botonCamara.addEventListener('click', function () { camara.click(); });
+    camara.addEventListener('change', function () { aceptarArchivo(camara.files[0]); });
 
     quitar.addEventListener('click', function () {
         archivoListo = null;
         input.value = '';
+        camara.value = '';
         preview.classList.add('d-none');
         limpiarError();
     });
