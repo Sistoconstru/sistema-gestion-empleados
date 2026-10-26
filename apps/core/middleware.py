@@ -210,8 +210,12 @@ class AuditLogMiddleware(MiddlewareMixin):
                     if not self._es_campo_sensible(clave)
                 }
 
-            # Si no hay POST, intentar leer el body (para APIs JSON)
-            elif request.body:
+            # Si no hay POST, intentar leer el body (para APIs JSON).
+            # Se filtra por content_type: en una subida multipart el stream ya
+            # lo consumió el parser de archivos y tocar request.body lanza
+            # RawPostDataException. Antes eso pasaba en cada imagen subida al
+            # feed: llenaba el log de avisos y dejaba la acción sin auditar.
+            elif request.content_type == 'application/json' and request.body:
                 try:
                     cambios = json.loads(request.body)
                     if isinstance(cambios, dict):

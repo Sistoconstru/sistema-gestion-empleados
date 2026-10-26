@@ -4,18 +4,20 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
-from django.db.models import Q, Count
+from django.db.models import BooleanField, Count, Exists, OuterRef, Q, Value
 from django.utils import timezone
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST, require_http_methods
 from datetime import timedelta
 import json
 import logging
 
-from .models import Publicacion, Comentario, Empleado
+from .models import Publicacion, Comentario, Empleado, Reaccion
 from .forms import PublicacionForm, AnuncioImportanteForm, ComentarioForm
 from .views import EmpleadoRequiredMixin
 
@@ -103,8 +105,25 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
         else:
             queryset = queryset_activas
 
+        try:
+            empleado_actual = self.request.user.empleado
+        except Exception:
+            empleado_actual = None
+
         queryset = queryset.select_related('autor').prefetch_related('comentarios').annotate(
-            num_comentarios=Count('comentarios')
+            # distinct=True en ambos: al unir comentarios y reacciones en la
+            # misma consulta, las filas se multiplican y sin distinct los dos
+            # contadores saldrían inflados.
+            num_comentarios=Count('comentarios', distinct=True),
+            num_reacciones=Count('reacciones', distinct=True),
+            # Si el empleado actual ya reaccionó, resuelto en la misma consulta
+            # para no lanzar una query por publicación al pintar el feed.
+            reaccionado=Exists(
+                Reaccion.objects.filter(
+                    publicacion=OuterRef('pk'),
+                    autor=empleado_actual,
+                )
+            ) if empleado_actual else Value(False, output_field=BooleanField()),
         ).order_by(
             # Anuncios importantes primero
             '-es_importante',
@@ -335,40 +354,98 @@ def editor_estilos(request):
 @login_required
 @require_POST
 def crear_publicacion_rapida(request):
-    """Vista para crear una publicación rápida sin estilos avanzados"""
+    """Publicación rápida desde el propio feed: texto, imagen o ambos.
+
+    Antes solo aceptaba texto y para adjuntar una foto había que irse al editor
+    completo, que en realidad es un diseñador de carteles. Ahora el caso común
+    —compartir una imagen— se resuelve sin salir del feed.
+
+    Responde JSON con la tarjeta ya renderizada cuando la llamada es AJAX, para
+    insertarla arriba sin recargar; si llega sin JavaScript, redirige al feed
+    como siempre.
+    """
+    es_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    def _error(mensaje, status=400):
+        if es_ajax:
+            return JsonResponse({'success': False, 'error': mensaje}, status=status)
+        messages.error(request, mensaje)
+        return redirect('employees:feed_list')
+
     try:
-        from datetime import timedelta
-
         contenido = request.POST.get('contenido', '').strip()
+        imagen = request.FILES.get('imagen')
 
-        if not contenido:
-            return redirect('employees:feed_list')
+        # Una foto sin pie de texto es una publicación válida; lo que no vale
+        # es enviar el formulario vacío.
+        if not contenido and not imagen:
+            return _error('Escribe algo o adjunta una imagen.')
 
-        # Limitar longitud
         if len(contenido) > 1000:
             contenido = contenido[:1000]
 
-        # Calcular fecha de eliminación (6 meses desde ahora)
-        fecha_eliminacion = timezone.now() + timedelta(days=180)
+        if imagen:
+            if not (imagen.content_type or '').startswith('image/'):
+                return _error('El archivo debe ser una imagen.')
+            if imagen.size > 5 * 1024 * 1024:
+                return _error('La imagen no debe superar 5MB.')
 
-        # Crear publicación simple (sin imagen, sin estilos)
         publicacion = Publicacion.objects.create(
             autor=request.user.empleado,
-            titulo='',  # Sin título en publicaciones rápidas
+            titulo='',  # Las publicaciones rápidas no llevan título
             contenido=contenido,
+            imagen=imagen,
             es_anuncio=False,
             es_importante=False,
-            es_rapida=True,  # Marcar como publicación rápida
-            fecha_eliminacion_automatica=fecha_eliminacion  # 6 meses
+            es_rapida=True,
+            fecha_eliminacion_automatica=timezone.now() + timedelta(days=180),
         )
 
-        logger.info(f"[QUICK_POST] Usuario {request.user.username} creó publicación rápida #{publicacion.id} (exp: {fecha_eliminacion})")
+        logger.info(
+            f"[QUICK_POST] {request.user.username} creó publicación rápida "
+            f"{publicacion.id} (imagen={'sí' if imagen else 'no'})"
+        )
+
+        if es_ajax:
+            # Se recarga con las anotaciones que espera la tarjeta; recién
+            # creada no tiene comentarios ni reacciones.
+            publicacion.num_comentarios = 0
+            publicacion.num_reacciones = 0
+            publicacion.reaccionado = False
+            html = render_to_string(
+                'employees/feed/_publicacion_card.html',
+                {'publicacion': publicacion, 'user': request.user},
+                request=request,
+            )
+            return JsonResponse({'success': True, 'html': html})
 
         return redirect('employees:feed_list')
 
     except Exception as e:
         logger.error(f"[QUICK_POST] Error al crear publicación rápida: {e}", exc_info=True)
-        return redirect('employees:feed_list')
+        return _error('No se pudo publicar. Inténtalo de nuevo.', status=500)
+
+
+@login_required
+@require_POST
+def alternar_reaccion(request, publicacion_pk):
+    """Pone o quita el "me gusta" del empleado actual en una publicación."""
+    publicacion = get_object_or_404(Publicacion, id=publicacion_pk)
+    empleado = get_object_or_404(Empleado, usuario=request.user)
+
+    # get_or_create + delete en vez de contar primero: con doble clic rápido,
+    # la restricción única de la tabla evita duplicados.
+    reaccion, creada = Reaccion.objects.get_or_create(
+        publicacion=publicacion, autor=empleado,
+    )
+    if not creada:
+        reaccion.delete()
+
+    return JsonResponse({
+        'success': True,
+        'reaccionado': creada,
+        'total': publicacion.reacciones.count(),
+    })
 
 
 @login_required

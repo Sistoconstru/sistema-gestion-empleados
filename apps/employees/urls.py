@@ -139,6 +139,7 @@ urlpatterns = [
     path('feed/publicacion/<uuid:pk>/eliminar/', feed_views.EliminarPublicacionView.as_view(), name='eliminar_publicacion'),
     path('feed/publicacion/<uuid:publicacion_pk>/comentario/', feed_views.agregar_comentario, name='agregar_comentario'),
     path('feed/comentario/<uuid:comentario_id>/eliminar/', feed_views.eliminar_comentario, name='eliminar_comentario'),
+    path('feed/publicacion/<uuid:publicacion_pk>/reaccion/', feed_views.alternar_reaccion, name='alternar_reaccion'),
     path('feed/anuncio/crear/', feed_views.CrearAnuncioImportanteView.as_view(), name='crear_anuncio'),
     path('feed/preview-renderizado/', feed_views.preview_renderizado_anuncio, name='preview_renderizado_anuncio'),
     path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),

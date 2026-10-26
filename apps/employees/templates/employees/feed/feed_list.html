@@ -464,6 +464,47 @@
             flex: 1;
         }
     }
+
+/* ---- Composer rapido: foto, vista previa y zona de arrastre ---- */
+.quick-post-input-wrapper { position: relative; }
+.quick-post-hint { margin: .35rem 0 0; font-size: .78rem; color: #9aa0a6; }
+#quick-post-dropzone.arrastrando {
+    outline: 2px dashed #2193b0; outline-offset: 4px; border-radius: .6rem;
+    background: rgba(33,147,176,.05);
+}
+.quick-post-preview { position: relative; margin-top: .75rem; display: inline-block; max-width: 100%; }
+.quick-post-preview img { max-width: 100%; max-height: 320px; border-radius: .6rem; display: block; }
+.quick-post-preview-quitar {
+    position: absolute; top: .4rem; right: .4rem;
+    background: rgba(0,0,0,.6); color: #fff; border: 0;
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; line-height: 1;
+}
+.quick-post-preview-quitar:hover { background: rgba(0,0,0,.8); }
+.quick-post-preview-peso {
+    position: absolute; bottom: .4rem; left: .4rem;
+    background: rgba(0,0,0,.6); color: #fff; font-size: .7rem;
+    padding: .15rem .45rem; border-radius: .4rem;
+}
+.quick-post-error { margin-top: .75rem; font-size: .85rem; padding: .5rem .75rem; }
+.btn-foto { background: #eef6f9; color: #19708a; border: 1px solid #cfe6ee; font-weight: 600; }
+.btn-foto:hover { background: #ddeef5; color: #12566b; }
+
+/* ---- Reacciones ---- */
+.btn-reaccion {
+    background: transparent; border: 0; padding: 0 .25rem 0 0; cursor: pointer;
+    color: #65676b; font-size: inherit; display: inline-flex; align-items: center; gap: .35rem;
+    transition: color .15s, transform .15s;
+}
+.btn-reaccion:hover { color: #2193b0; }
+.btn-reaccion:active { transform: scale(.92); }
+.btn-reaccion.activa { color: #2193b0; font-weight: 700; }
+
+/* ---- Visor de imagen ---- */
+.visor-imagen {
+    position: fixed; inset: 0; background: rgba(0,0,0,.9); z-index: 2000;
+    display: flex; align-items: center; justify-content: center; cursor: zoom-out;
+}
+.visor-imagen img { max-width: 95vw; max-height: 95vh; border-radius: .3rem; }
 </style>
 {% endblock %}
 
@@ -533,17 +574,40 @@
                 </div>
             </div>
 
-            <form id="quick-post-form" method="POST" action="{% url 'employees:crear_publicacion_rapida' %}">
+            <form id="quick-post-form" method="POST" action="{% url 'employees:crear_publicacion_rapida' %}"
+                  enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="quick-post-input-wrapper">
-                    <textarea class="quick-post-textarea" name="contenido" placeholder="Escribe o pregunta algo..." maxlength="1000" required></textarea>
+                <div class="quick-post-input-wrapper" id="quick-post-dropzone">
+                    <textarea class="quick-post-textarea" name="contenido" id="quick-post-texto"
+                              placeholder="Escribe algo, o arrastra y suelta una foto aquí..."
+                              maxlength="1000"></textarea>
+                    <p class="quick-post-hint" id="quick-post-hint">
+                        <i class="fas fa-image me-1"></i>También puedes pegar una imagen con Ctrl+V
+                    </p>
                 </div>
 
+                {# Vista previa: aparece al elegir una imagen, antes de publicar. #}
+                <div class="quick-post-preview d-none" id="quick-post-preview">
+                    <img id="quick-post-preview-img" alt="Vista previa">
+                    <button type="button" class="quick-post-preview-quitar" id="quick-post-quitar"
+                            title="Quitar imagen" aria-label="Quitar imagen">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <span class="quick-post-preview-peso" id="quick-post-peso"></span>
+                </div>
+
+                <div class="quick-post-error alert alert-danger d-none" id="quick-post-error" role="alert"></div>
+
+                <input type="file" name="imagen" id="quick-post-imagen" accept="image/*" class="d-none">
+
                 <div class="quick-post-footer">
+                    <button type="button" class="btn btn-foto" id="quick-post-boton-foto">
+                        <i class="fas fa-camera me-1"></i>Foto
+                    </button>
                     <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-editor-completo">
                         <i class="fas fa-palette me-1"></i>Editor Completo
                     </a>
-                    <button type="submit" class="btn btn-quick-publish">
+                    <button type="submit" class="btn btn-quick-publish" id="quick-post-enviar">
                         <i class="fas fa-share me-1"></i>Publicar
                     </button>
                 </div>
@@ -552,155 +616,15 @@
         {% endif %}
 
         <!-- Lista de Publicaciones -->
-        {% if publicaciones %}
+        {# Contenedor fijo: existe aunque no haya publicaciones, para poder
+           insertar arriba la recién creada sin recargar la página. #}
+        <div id="lista-publicaciones">
             {% for publicacion in publicaciones %}
-            <div class="publicacion-card {% if publicacion.es_importante %}anuncio-importante{% endif %}" id="publicacion-{{ publicacion.id }}">
-                <!-- Header -->
-                <div class="publicacion-header">
-                    <div class="publicacion-autor">
-                        <div class="publicacion-avatar">
-                            {{ publicacion.autor.nombres|first|upper }}
-                        </div>
-                        <div class="publicacion-info">
-                            <h5>{{ publicacion.autor.nombre_completo }}</h5>
-                            <small>{{ publicacion.fecha_creacion|date:"d/m/Y H:i" }}</small>
-                        </div>
-                    </div>
-                    <div class="publicacion-badges">
-                        {% if publicacion.es_importante %}
-                        <span class="badge badge-anuncio-importante">
-                            <i class="fas fa-bullhorn me-1"></i>Importante
-                        </span>
-                        {% endif %}
-                        {% if publicacion.es_anuncio %}
-                        <span class="badge bg-warning text-dark">
-                            <i class="fas fa-megaphone me-1"></i>Anuncio
-                        </span>
-                        {% endif %}
-                        {% if not publicacion.esta_publicada %}
-                        <span class="badge bg-danger">
-                            <i class="fas fa-clock me-1"></i>Pendiente de publicación
-                        </span>
-                        <br>
-                        <small class="text-danger">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Se publicará el: {{ publicacion.fecha_inicio|date:"d/m/Y H:i" }}
-                        </small>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Body -->
-                {% if publicacion.imagen_renderizada %}
-                <!-- Imagen renderizada con texto (publicación con estilos) -->
-                <div class="publicacion-body-con-imagen">
-                    <img src="{{ publicacion.imagen_renderizada.url }}" alt="{% if publicacion.es_anuncio %}Anuncio{% else %}Publicación{% endif %}">
-                </div>
-                {% elif publicacion.imagen %}
-                <!-- Imagen sin renderizar (sin estilos de texto) -->
-                <div class="publicacion-body-con-imagen">
-                    <img src="{{ publicacion.imagen.url }}" alt="Imagen"
-                         style="opacity: {% if publicacion.estilos.background_opacity %}{{ publicacion.estilos.background_opacity|add:0|floatformat:2|add:"%"|slice:":-1" }}{% else %}100{% endif %}%;">
-                </div>
-                {% else %}
-                <!-- Contenido sin imagen -->
-                <div class="publicacion-body">
-                    {% if publicacion.estilos %}
-                    <div class="publicacion-contenido"
-                         style="font-size: {{ publicacion.estilos.contenido_font_size|default:publicacion.estilos.font_size|default:'1rem' }}px;
-                                font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
-                                color: {{ publicacion.estilos.text_color|default:'inherit' }};
-                                text-align: {{ publicacion.estilos.text_align|default:'left' }};
-                                text-shadow: {{ publicacion.estilos.text_shadow|default:'none' }};">
-                        {% if publicacion.titulo %}
-                        <h5 style="font-size: {{ publicacion.estilos.titulo_font_size|default:publicacion.estilos.font_size|default:'1rem' }}px;
-                                   font-family: {{ publicacion.estilos.font_family|default:'inherit' }};
-                                   color: {{ publicacion.estilos.text_color|default:'inherit' }};
-                                   text-shadow: {{ publicacion.estilos.text_shadow|default:'none' }};
-                                   margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
-                        {% endif %}
-                        <p style="margin: 0; white-space: normal;">{{ publicacion.contenido }}</p>
-                    </div>
-                    {% else %}
-                    <!-- Publicación rápida sin estilos -->
-                    <div class="publicacion-contenido" style="font-size: 1rem; text-align: left;">
-                        {% if publicacion.titulo %}
-                        <h5 style="margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
-                        {% endif %}
-                        <p style="margin: 0; white-space: normal;">{{ publicacion.contenido }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                <!-- Footer -->
-                <div class="publicacion-footer">
-                    <div class="publicacion-stats">
-                        <span>
-                            <i class="fas fa-comments"></i>
-                            {{ publicacion.num_comentarios }} comentario{{ publicacion.num_comentarios|pluralize }}
-                        </span>
-                        {% if publicacion.es_importante and publicacion.fecha_fin %}
-                        <span>
-                            <i class="fas fa-clock"></i>
-                            Hasta: {{ publicacion.fecha_fin|date:"d/m/Y H:i" }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    <div class="publicacion-acciones">
-                        {% if publicacion.autor.usuario == user or user.is_staff %}
-                        <a href="{% url 'employees:eliminar_publicacion' publicacion.pk %}" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Comentarios -->
-                <div class="comentarios-section">
-                    <div class="comentarios-titulo">
-                        <i class="fas fa-comments me-1"></i>Comentarios ({{ publicacion.comentarios.count }})
-                    </div>
-
-                    <!-- Lista de comentarios -->
-                    <div class="comentarios-lista">
-                        {% for comentario in publicacion.comentarios.all %}
-                        <div class="comentario-item" data-comentario-id="{{ comentario.id }}">
-                            <div class="comentario-header">
-                                <span class="comentario-autor">{{ comentario.autor.nombre_completo }}</span>
-                                <span class="comentario-fecha">{{ comentario.fecha_creacion|date:"d/m H:i" }}</span>
-                            </div>
-                            <div class="comentario-contenido">{{ comentario.contenido }}</div>
-                            {% if comentario.autor.usuario == user or user.is_staff %}
-                            <div class="comentario-acciones">
-                                <a onclick="eliminarComentario({{ comentario.id }})">Eliminar</a>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% empty %}
-                        <p class="text-muted small">No hay comentarios aún. ¡Sé el primero en comentar!</p>
-                        {% endfor %}
-                    </div>
-
-                    <!-- Formulario para agregar comentario -->
-                    {% if user.empleado %}
-                    <div class="form-comentario">
-                        <form method="post" action="{% url 'employees:agregar_comentario' publicacion.pk %}"
-                              onsubmit="return agregarComentarioAjax(event, '{{ publicacion.pk }}')">
-                            {% csrf_token %}
-                            <div class="input-group">
-                                <textarea class="form-control" name="contenido" placeholder="Escribe un comentario..."
-                                          rows="2" required></textarea>
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+            {% include 'employees/feed/_publicacion_card.html' %}
             {% endfor %}
+        </div>
+
+        {% if publicaciones %}
 
             <!-- Paginación -->
             {% if is_paginated %}
@@ -852,5 +776,234 @@ function eliminarComentario(comentarioId) {
 }
 
 // El texto ahora se renderiza en servidor, no se necesita posicionamiento JavaScript
+
+// ===================== Composer rapido con imagen =====================
+(function () {
+    const form = document.getElementById('quick-post-form');
+    if (!form) return;  // los usuarios sin ficha de empleado no ven el composer
+
+    const input    = document.getElementById('quick-post-imagen');
+    const boton    = document.getElementById('quick-post-boton-foto');
+    const preview  = document.getElementById('quick-post-preview');
+    const previmg  = document.getElementById('quick-post-preview-img');
+    const peso     = document.getElementById('quick-post-peso');
+    const quitar   = document.getElementById('quick-post-quitar');
+    const texto    = document.getElementById('quick-post-texto');
+    const dropzone = document.getElementById('quick-post-dropzone');
+    const error    = document.getElementById('quick-post-error');
+    const enviar   = document.getElementById('quick-post-enviar');
+
+    const MAX_LADO = 1600;   // px del lado mayor tras redimensionar
+    const CALIDAD  = 0.82;   // calidad JPEG
+
+    let archivoListo = null;
+
+    function mostrarError(msg) {
+        error.textContent = msg;
+        error.classList.remove('d-none');
+    }
+    function limpiarError() { error.classList.add('d-none'); }
+
+    function formatoPeso(bytes) {
+        return bytes > 1048576
+            ? (bytes / 1048576).toFixed(1) + ' MB'
+            : Math.round(bytes / 1024) + ' KB';
+    }
+
+    // Las fotos de celular pesan entre 4 y 12 MB y el limite del servidor son 5.
+    // Redimensionar y recomprimir en el navegador evita que el empleado se tope
+    // con un error que no puede resolver.
+    function comprimir(file) {
+        return new Promise(function (resolve) {
+            if (!file.type.startsWith('image/')) { resolve(null); return; }
+            // Los GIF pueden estar animados: pasarlos por canvas los congela.
+            if (file.type === 'image/gif') { resolve(file); return; }
+
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+            img.onload = function () {
+                URL.revokeObjectURL(url);
+                let width = img.width;
+                let height = img.height;
+                const escala = Math.min(1, MAX_LADO / Math.max(width, height));
+                width  = Math.round(width * escala);
+                height = Math.round(height * escala);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                canvas.toBlob(function (blob) {
+                    // Si comprimir no mejora (imagen ya pequena), se envia la original.
+                    if (!blob || blob.size >= file.size) { resolve(file); return; }
+                    const nombre = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+                    resolve(new File([blob], nombre, { type: 'image/jpeg' }));
+                }, 'image/jpeg', CALIDAD);
+            };
+            img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+            img.src = url;
+        });
+    }
+
+    async function aceptarArchivo(file) {
+        limpiarError();
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            mostrarError('Ese archivo no es una imagen.');
+            return;
+        }
+        const comprimido = await comprimir(file);
+        if (!comprimido) { mostrarError('No se pudo leer la imagen.'); return; }
+        if (comprimido.size > 5 * 1024 * 1024) {
+            mostrarError('La imagen sigue pesando mas de 5MB. Prueba con otra.');
+            return;
+        }
+        archivoListo = comprimido;
+        previmg.src = URL.createObjectURL(comprimido);
+        peso.textContent = formatoPeso(comprimido.size);
+        preview.classList.remove('d-none');
+    }
+
+    boton.addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () { aceptarArchivo(input.files[0]); });
+
+    quitar.addEventListener('click', function () {
+        archivoListo = null;
+        input.value = '';
+        preview.classList.add('d-none');
+        limpiarError();
+    });
+
+    // Arrastrar y soltar
+    ['dragenter', 'dragover'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) {
+            e.preventDefault();
+            dropzone.classList.add('arrastrando');
+        });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+        dropzone.addEventListener(ev, function (e) {
+            e.preventDefault();
+            dropzone.classList.remove('arrastrando');
+        });
+    });
+    dropzone.addEventListener('drop', function (e) {
+        if (e.dataTransfer.files.length) { aceptarArchivo(e.dataTransfer.files[0]); }
+    });
+
+    // Pegar con Ctrl+V (capturas de pantalla)
+    texto.addEventListener('paste', function (e) {
+        const items = (e.clipboardData || {}).items || [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith('image/')) {
+                e.preventDefault();
+                aceptarArchivo(items[i].getAsFile());
+                return;
+            }
+        }
+    });
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        limpiarError();
+
+        const contenido = texto.value.trim();
+        if (!contenido && !archivoListo) {
+            mostrarError('Escribe algo o adjunta una imagen.');
+            return;
+        }
+
+        const datos = new FormData();
+        datos.append('contenido', contenido);
+        datos.append('csrfmiddlewaretoken',
+                     form.querySelector('[name=csrfmiddlewaretoken]').value);
+        if (archivoListo) { datos.append('imagen', archivoListo); }
+
+        enviar.disabled = true;
+        const textoOriginal = enviar.innerHTML;
+        enviar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Publicando...';
+
+        try {
+            const resp = await fetch(form.action, {
+                method: 'POST',
+                body: datos,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await resp.json();
+            if (!data.success) {
+                mostrarError(data.error || 'No se pudo publicar.');
+                return;
+            }
+            // Insertar la tarjeta arriba, sin recargar.
+            const lista = document.getElementById('lista-publicaciones');
+            const vacio = document.querySelector('.empty-state');
+            if (vacio) { vacio.remove(); }
+            if (lista) { lista.insertAdjacentHTML('afterbegin', data.html); }
+
+            texto.value = '';
+            quitar.click();
+        } catch (err) {
+            mostrarError('No se pudo publicar. Revisa tu conexion.');
+        } finally {
+            enviar.disabled = false;
+            enviar.innerHTML = textoOriginal;
+        }
+    });
+})();
+
+// ===================== Reacciones =====================
+function alternarReaccion(boton) {
+    const id = boton.dataset.publicacion;
+    const icono = boton.querySelector('i');
+    const total = boton.querySelector('.reaccion-total');
+    const activaAntes = boton.classList.contains('activa');
+
+    // Respuesta optimista: se pinta ya y se revierte si el servidor falla.
+    boton.classList.toggle('activa');
+    icono.classList.toggle('fas');
+    icono.classList.toggle('far');
+    total.textContent = parseInt(total.textContent || '0', 10) + (activaAntes ? -1 : 1);
+
+    fetch('/empleados/feed/publicacion/' + id + '/reaccion/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (!data.success) { throw new Error('fallo'); }
+        total.textContent = data.total;
+        boton.classList.toggle('activa', data.reaccionado);
+        icono.classList.toggle('fas', data.reaccionado);
+        icono.classList.toggle('far', !data.reaccionado);
+        boton.setAttribute('aria-pressed', data.reaccionado ? 'true' : 'false');
+    })
+    .catch(function () {
+        boton.classList.toggle('activa', activaAntes);
+        icono.classList.toggle('fas', activaAntes);
+        icono.classList.toggle('far', !activaAntes);
+        total.textContent = parseInt(total.textContent || '0', 10) + (activaAntes ? 1 : -1);
+    });
+}
+
+// ===================== Visor de imagen =====================
+function abrirVisorImagen(src) {
+    const visor = document.createElement('div');
+    visor.className = 'visor-imagen';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Imagen ampliada';
+    visor.appendChild(img);
+    visor.addEventListener('click', function () { visor.remove(); });
+    document.addEventListener('keydown', function esc(ev) {
+        if (ev.key === 'Escape') {
+            visor.remove();
+            document.removeEventListener('keydown', esc);
+        }
+    });
+    document.body.appendChild(visor);
+}
 </script>
 {% endblock %}

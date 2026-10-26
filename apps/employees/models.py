@@ -1597,6 +1597,47 @@ class Comentario(models.Model):
         return f"Comentario de {self.autor.nombre_completo} en {self.publicacion}"
 
 
+class Reaccion(models.Model):
+    """Reacciones ("me gusta") en las publicaciones del feed.
+
+    Una sola reacción por persona y publicación: el endpoint alterna entre
+    poner y quitar, no acumula. Es la interacción más barata del feed —
+    mucha gente que no comenta sí reacciona.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    publicacion = models.ForeignKey(
+        Publicacion,
+        on_delete=models.CASCADE,
+        related_name='reacciones'
+    )
+    autor = models.ForeignKey(
+        Empleado,
+        on_delete=models.CASCADE,
+        related_name='mis_reacciones'
+    )
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'feed_reacciones'
+        ordering = ['-fecha_creacion']
+        constraints = [
+            # Respaldo en BD del alternado: dos clics simultáneos no pueden
+            # dejar dos filas para la misma persona.
+            models.UniqueConstraint(
+                fields=['publicacion', 'autor'],
+                name='reaccion_unica_por_empleado',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['publicacion']),
+        ]
+        verbose_name = 'Reacción'
+        verbose_name_plural = 'Reacciones'
+
+    def __str__(self):
+        return f"{self.autor.nombre_completo} reaccionó a {self.publicacion_id}"
+
+
 # ===================== POLLA MUNDIALISTA 2026 =====================
 
 class PartidoMundial(models.Model):
