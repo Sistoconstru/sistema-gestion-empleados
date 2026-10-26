@@ -1438,6 +1438,11 @@ class LecturaConversacion(models.Model):
 
 # ===================== FEED/PUBLICACIONES (MINIFACEBOOK) =====================
 
+# Días que dura en el feed una publicación de empleado. Los anuncios no la usan:
+# vencen en su fecha_fin.
+DIAS_VIGENCIA_PUBLICACION = 30
+
+
 class Publicacion(models.Model):
     """Publicaciones en el feed del marketplace (minifacebook)"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

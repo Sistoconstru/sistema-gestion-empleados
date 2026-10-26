@@ -347,12 +347,17 @@ def notificar_nuevo_mensaje(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Publicacion)
 def establecer_fecha_eliminacion_automatica(sender, instance, created, **kwargs):
-    """Establece la fecha de eliminación automática a los 15 días para publicaciones normales"""
+    """Fija la fecha de eliminación de las publicaciones de empleados.
+
+    Antes ponía 15 días a todas y pisaba los 6 meses que asignaba la vista de
+    publicación rápida. Ahora ambas usan DIAS_VIGENCIA_PUBLICACION.
+    """
     if created and not instance.es_anuncio:
         from django.utils import timezone
         from datetime import timedelta
+        from .models import DIAS_VIGENCIA_PUBLICACION
 
-        fecha_eliminacion = timezone.now() + timedelta(days=15)
+        fecha_eliminacion = timezone.now() + timedelta(days=DIAS_VIGENCIA_PUBLICACION)
         Publicacion.objects.filter(pk=instance.pk).update(fecha_eliminacion_automatica=fecha_eliminacion)
         logger.info(f"Publicación {instance.pk} será eliminada el {fecha_eliminacion}")
 

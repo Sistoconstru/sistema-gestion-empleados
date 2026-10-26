@@ -3,6 +3,7 @@
 # =============================================================================
 
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views, feed_views  # views_polla_mundial deshabilitado (Mundial 2026 terminó)
 
 app_name = 'employees'
@@ -134,7 +135,9 @@ urlpatterns = [
     # FEED/PUBLICACIONES (MINIFACEBOOK)
     # =============================================================================
     path('feed/', feed_views.FeedListView.as_view(), name='feed_list'),
-    path('feed/publicacion/crear/', feed_views.CrearPublicacionView.as_view(), name='crear_publicacion'),
+    # El editor completo se retiró: se publica desde el propio feed. La ruta
+    # queda redirigiendo para no romper enlaces guardados.
+    path('feed/publicacion/crear/', RedirectView.as_view(pattern_name='employees:feed_list'), name='crear_publicacion'),
     path('feed/publicacion/rapida/', feed_views.crear_publicacion_rapida, name='crear_publicacion_rapida'),
     path('feed/publicacion/<uuid:pk>/eliminar/', feed_views.EliminarPublicacionView.as_view(), name='eliminar_publicacion'),
     path('feed/publicacion/<uuid:publicacion_pk>/comentario/', feed_views.agregar_comentario, name='agregar_comentario'),
@@ -142,7 +145,6 @@ urlpatterns = [
     path('feed/publicacion/<uuid:publicacion_pk>/reaccion/', feed_views.alternar_reaccion, name='alternar_reaccion'),
     path('feed/anuncio/crear/', feed_views.CrearAnuncioImportanteView.as_view(), name='crear_anuncio'),
     path('feed/preview-renderizado/', feed_views.preview_renderizado_anuncio, name='preview_renderizado_anuncio'),
-    path('feed/estilos-editor/', feed_views.editor_estilos, name='editor_estilos'),
 
     # =============================================================================
     # POLLA MUNDIALISTA 2026 — DESHABILITADO (torneo terminado). Reactivar en

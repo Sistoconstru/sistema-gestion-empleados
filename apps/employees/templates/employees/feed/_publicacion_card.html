@@ -8,7 +8,7 @@ JavaScript, las dos copias acabarían divergiendo.
 
 Contexto esperado: `publicacion` (con las anotaciones num_comentarios,
 num_reacciones y reaccionado) y `user`.
-{% endcomment %}
+{% endcomment %}{% load feed_extras %}
 <div class="publicacion-card {% if publicacion.es_importante %}anuncio-importante{% endif %}" id="publicacion-{{ publicacion.id }}">
     <!-- Header -->
     <div class="publicacion-header">
@@ -74,14 +74,14 @@ num_reacciones y reaccionado) y `user`.
                        text-shadow: {{ publicacion.estilos.text_shadow|default:'none' }};
                        margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
             {% endif %}
-            <p style="margin: 0; white-space: pre-line;">{{ publicacion.contenido }}</p>
+            <p style="margin: 0; white-space: pre-line;">{{ publicacion.contenido|enlazar }}</p>
         </div>
         {% else %}
         <div class="publicacion-contenido" style="font-size: 1rem; text-align: left;">
             {% if publicacion.titulo %}
             <h5 style="margin: 0 0 0.3rem 0;">{{ publicacion.titulo }}</h5>
             {% endif %}
-            <p style="margin: 0; white-space: pre-line;">{{ publicacion.contenido }}</p>
+            <p style="margin: 0; white-space: pre-line;">{{ publicacion.contenido|enlazar }}</p>
         </div>
         {% endif %}
     </div>

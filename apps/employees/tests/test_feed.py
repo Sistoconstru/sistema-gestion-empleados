@@ -181,3 +181,52 @@ class ContadoresDelFeedTests(FeedBaseTestCase):
         r = self.client.get(reverse('employees:feed_list'))
         encontrada = next(p for p in r.context['publicaciones'] if p.pk == publicacion.pk)
         self.assertTrue(encontrada.reaccionado)
+
+
+class VigenciaYEnlacesTests(FeedBaseTestCase):
+    """Las publicaciones de empleados duran 30 días y sus URL son enlaces."""
+
+    def publicar(self, texto):
+        self.client.post(self.url_rapida, {'contenido': texto},
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        return Publicacion.objects.latest('fecha_creacion')
+
+    def test_la_publicacion_vence_a_los_30_dias(self):
+        """La señal post_save le ponía 15 días y pisaba lo que fijaba la vista."""
+        from django.utils import timezone
+        publicacion = self.publicar('Hola')
+        dias = (publicacion.fecha_eliminacion_automatica - timezone.now()).days
+        self.assertIn(dias, (29, 30))
+
+    def test_el_feed_oculta_las_vencidas(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        vencida = self.publicar('vieja')
+        Publicacion.objects.filter(pk=vencida.pk).update(
+            fecha_eliminacion_automatica=timezone.now() - timedelta(minutes=1))
+        vigente = self.publicar('nueva')
+        ids = [p.pk for p in self.client.get(reverse('employees:feed_list')).context['publicaciones']]
+        self.assertIn(vigente.pk, ids)
+        self.assertNotIn(vencida.pk, ids)
+
+    def test_las_url_se_vuelven_enlaces_que_abren_en_otra_pestana(self):
+        self.publicar('Miren esto https://www.ejemplo.com/noticia?id=5 y www.otro.co')
+        html = self.client.get(reverse('employees:feed_list')).content.decode()
+        self.assertIn('<a href="https://www.ejemplo.com/noticia?id=5" target="_blank" '
+                      'rel="nofollow noopener noreferrer">', html)
+        self.assertIn('href="http://www.otro.co"', html)
+
+    def test_el_texto_sigue_escapado(self):
+        self.publicar('<script>alert(1)</script> https://ejemplo.com')
+        html = self.client.get(reverse('employees:feed_list')).content.decode()
+        self.assertNotIn('<script>alert(1)</script>', html)
+        self.assertIn('&lt;script&gt;', html)
+
+    def test_el_editor_completo_redirige_al_feed(self):
+        r = self.client.get('/empleados/feed/publicacion/crear/')
+        self.assertRedirects(r, reverse('employees:feed_list'), fetch_redirect_response=False)
+
+    def test_el_comentario_de_plantilla_no_se_ve_en_la_pagina(self):
+        html = self.client.get(reverse('employees:feed_list')).content.decode()
+        self.assertNotIn('{#', html)
+        self.assertNotIn('Editor Completo', html)

@@ -17,8 +17,8 @@ from datetime import timedelta
 import json
 import logging
 
-from .models import Publicacion, Comentario, Empleado, Reaccion
-from .forms import PublicacionForm, AnuncioImportanteForm, ComentarioForm
+from .models import DIAS_VIGENCIA_PUBLICACION, Publicacion, Comentario, Empleado, Reaccion
+from .forms import AnuncioImportanteForm, ComentarioForm
 from .views import EmpleadoRequiredMixin
 
 logger = logging.getLogger(__name__)
@@ -85,6 +85,10 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
         ).exclude(
             # Excluir anuncios importantes que ya no están vigentes
             es_anuncio=True, es_importante=True, fecha_fin__lte=ahora
+        ).exclude(
+            # Vencidas por vigencia: se ocultan aquí aunque el borrado físico
+            # (limpiar_publicaciones_expiradas) no haya corrido todavía.
+            fecha_eliminacion_automatica__lte=ahora
         )
 
         # Si es admin, también mostrar publicaciones pendientes
@@ -165,28 +169,6 @@ class FeedListView(EmpleadoRequiredMixin, LoginRequiredMixin, ListView):
             ('importantes', 'Importantes'),
         ]
         return context
-
-
-class CrearPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, CreateView):
-    """Vista para crear una nueva publicación"""
-    model = Publicacion
-    form_class = PublicacionForm
-    template_name = 'employees/feed/publicacion_crear_nuevo.html'
-    success_url = reverse_lazy('employees:feed_list')
-
-    def form_valid(self, form):
-        """Establecer el autor y fecha de eliminación automáticamente"""
-        from datetime import timedelta
-
-        form.instance.autor = self.request.user.empleado
-        form.instance.es_anuncio = False
-
-        # Si tiene imagen, se elimina en 15 días
-        if form.instance.imagen:
-            form.instance.fecha_eliminacion_automatica = timezone.now() + timedelta(days=15)
-            logger.info(f"[PUB_CREATE] Publicación con imagen. Eliminación en 15 días.")
-
-        return super().form_valid(form)
 
 
 class EliminarPublicacionView(EmpleadoRequiredMixin, LoginRequiredMixin, DeleteView):
@@ -299,56 +281,6 @@ def eliminar_comentario(request, comentario_id):
     return JsonResponse({'success': True})
 
 
-# ===================== VISTAS DE UTILIDAD =====================
-
-@login_required
-def editor_estilos(request):
-    """Vista AJAX para obtener el editor de estilos"""
-    if request.method == 'GET':
-        # Retornar HTML del editor de estilos
-        html = '''
-        <div class="editor-estilos">
-            <div class="form-group">
-                <label for="font-size">Tamaño de letra</label>
-                <select id="font-size" class="form-control" onchange="actualizarEstilo('font_size', this.value)">
-                    <option value="">Por defecto</option>
-                    <option value="12px">12px (Pequeño)</option>
-                    <option value="14px">14px (Normal)</option>
-                    <option value="16px">16px (Grande)</option>
-                    <option value="18px">18px (Muy grande)</option>
-                    <option value="20px">20px (Extra grande)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="font-family">Tipografía</label>
-                <select id="font-family" class="form-control" onchange="actualizarEstilo('font_family', this.value)">
-                    <option value="">Por defecto</option>
-                    <option value="Arial">Arial</option>
-                    <option value="'Times New Roman'">Times New Roman</option>
-                    <option value="'Courier New'">Courier New</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Verdana">Verdana</option>
-                    <option value="'Comic Sans MS'">Comic Sans</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="text-color">Color del texto</label>
-                <input type="color" id="text-color" class="form-control" style="max-width: 100px;"
-                       onchange="actualizarEstilo('text_color', this.value)">
-            </div>
-            <div class="form-group">
-                <label for="background-opacity">Opacidad del fondo (imagen)</label>
-                <input type="range" id="background-opacity" class="form-control-range" min="0" max="100" value="50"
-                       onchange="actualizarEstilo('background_opacity', this.value)">
-                <small class="form-text text-muted"><span id="opacity-value">50</span>%</small>
-            </div>
-        </div>
-        '''
-        return JsonResponse({'html': html})
-
-    return JsonResponse({'error': 'Método no permitido'})
-
-
 # ===================== PUBLICACIÓN RÁPIDA =====================
 
 @login_required
@@ -398,7 +330,7 @@ def crear_publicacion_rapida(request):
             es_anuncio=False,
             es_importante=False,
             es_rapida=True,
-            fecha_eliminacion_automatica=timezone.now() + timedelta(days=180),
+            fecha_eliminacion_automatica=timezone.now() + timedelta(days=DIAS_VIGENCIA_PUBLICACION),
         )
 
         logger.info(

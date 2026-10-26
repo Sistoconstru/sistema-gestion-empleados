@@ -2,8 +2,8 @@
 Comando para limpiar automáticamente publicaciones expiradas del sistema.
 
 Política de expiración:
-- Publicaciones con imagen: 15 días (se eliminan completamente)
-- Publicaciones rápidas: 6 meses (se eliminan completamente)
+- Publicaciones de empleados: DIAS_VIGENCIA_PUBLICACION (30 días)
+  El feed ya las oculta al vencer; este comando borra el registro y la imagen.
 - Anuncios: Manual basado en fecha_fin (se eliminan cuando llega la fecha)
 
 Ejecutar con: python manage.py limpiar_publicaciones_expiradas

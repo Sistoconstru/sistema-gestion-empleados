@@ -67,17 +67,6 @@
         flex: 0 1 auto;
     }
 
-    .btn-nueva-publicacion {
-        background-color: #28a745;
-        border-color: #28a745;
-        white-space: nowrap;
-    }
-
-    .btn-nueva-publicacion:hover {
-        background-color: #218838;
-        border-color: #218838;
-    }
-
     /* Publicaciones */
     .publicacion-card {
         background: white;
@@ -412,13 +401,14 @@
         transform: none;
     }
 
-    .btn-editor-completo {
-        background: #f0f0f0;
-        color: #333;
+    /* Enlaces dentro del texto: las URL largas no deben desbordar la tarjeta */
+    .publicacion-contenido a {
+        color: #1a73e8;
+        overflow-wrap: anywhere;
     }
 
-    .btn-editor-completo:hover {
-        background: #e0e0e0;
+    .publicacion-contenido a:hover {
+        text-decoration: underline;
     }
 
     /* Empty state */
@@ -543,13 +533,6 @@
                     </select>
                 </div>
 
-                <!-- Botón Nueva Publicación -->
-                {% if user.empleado %}
-                <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-nueva-publicacion">
-                    <i class="fas fa-plus me-1"></i>Nueva Publicación
-                </a>
-                {% endif %}
-
                 <!-- Botón Anuncio (Solo Admin) -->
                 {% if user.is_staff %}
                 <a href="{% url 'employees:crear_anuncio' %}" class="btn btn-danger">
@@ -579,7 +562,7 @@
                 {% csrf_token %}
                 <div class="quick-post-input-wrapper" id="quick-post-dropzone">
                     <textarea class="quick-post-textarea" name="contenido" id="quick-post-texto"
-                              placeholder="Escribe algo, o arrastra y suelta una foto aquí..."
+                              placeholder="Escribe algo, pega un enlace o arrastra una foto aquí..."
                               maxlength="1000"></textarea>
                     <p class="quick-post-hint" id="quick-post-hint">
                         <i class="fas fa-image me-1"></i>También puedes pegar una imagen con Ctrl+V
@@ -604,9 +587,6 @@
                     <button type="button" class="btn btn-foto" id="quick-post-boton-foto">
                         <i class="fas fa-camera me-1"></i>Foto
                     </button>
-                    <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-editor-completo">
-                        <i class="fas fa-palette me-1"></i>Editor Completo
-                    </a>
                     <button type="submit" class="btn btn-quick-publish" id="quick-post-enviar">
                         <i class="fas fa-share me-1"></i>Publicar
                     </button>
@@ -616,8 +596,7 @@
         {% endif %}
 
         <!-- Lista de Publicaciones -->
-        {# Contenedor fijo: existe aunque no haya publicaciones, para poder
-           insertar arriba la recién creada sin recargar la página. #}
+        {# Contenedor fijo: existe aunque no haya publicaciones (inserción sin recargar). #}
         <div id="lista-publicaciones">
             {% for publicacion in publicaciones %}
             {% include 'employees/feed/_publicacion_card.html' %}
@@ -669,11 +648,6 @@
                     ¡Sé el primero en publicar algo en la Cartelera!
                     {% endif %}
                 </p>
-                {% if user.empleado %}
-                <a href="{% url 'employees:crear_publicacion' %}" class="btn btn-primary mt-3">
-                    <i class="fas fa-plus me-2"></i>Nueva Publicación
-                </a>
-                {% endif %}
             </div>
         {% endif %}
     </div>
