@@ -2102,44 +2102,30 @@ class EmpleadoDetailSupervisorView(LoginRequiredMixin, DetailView):
     context_object_name = 'empleado'
     
     def dispatch(self, request, *args, **kwargs):
-        """Verificar permisos antes de procesar la vista"""
+        """Solo el personal administrativo o alguien en la cadena de jefes.
+
+        La jerarquía se resuelve por HistorialCargo.jefe_directo, igual que el
+        resto del sistema (ver docs/PERMISOS_JERARQUIA.md). Antes esta vista
+        era la única que la decidía por cargo (cargo_jefe y nivel_jerarquico):
+        el perfil listaba a los subalternos por jefe_directo pero aquí se
+        validaba por cargo, así que un jefe podía ver a alguien en su lista y
+        recibir un 404 al abrirlo. Y la regla de "misma área con nivel mayor"
+        dejaba ver a todo el nivel inferior del área, aunque fuera de otro
+        equipo.
+        """
         empleado_a_ver = get_object_or_404(Empleado, pk=kwargs['pk'])
-        
-        # Si es superusuario, permitir acceso
-        if request.user.is_superuser:
+
+        if request.user.is_superuser or request.user.is_staff:
             return super().dispatch(request, *args, **kwargs)
-        
-        # Verificar si el usuario actual es supervisor del empleado
+
         try:
             usuario_actual = Empleado.objects.get(usuario=request.user)
-            cargo_actual = usuario_actual.cargo_actual
-            
-            if not cargo_actual:
-                raise Http404("No tienes permisos para ver este perfil.")
-            
-            # Verificar si el empleado está bajo mi supervisión
-            empleado_cargo = empleado_a_ver.cargo_actual
-            if not empleado_cargo:
-                raise Http404("Empleado sin cargo asignado.")
-            
-            # Verificar jerarquía: debe ser mi subordinado directo o indirecto
-            es_subordinado = False
-            
-            # 1. Subordinado directo (mi cargo es su cargo_jefe)
-            if empleado_cargo.cargo.cargo_jefe == cargo_actual.cargo:
-                es_subordinado = True
-            
-            # 2. Misma área y nivel jerárquico mayor (subordinado indirecto)
-            elif (empleado_cargo.cargo.area == cargo_actual.cargo.area and 
-                  empleado_cargo.cargo.nivel_jerarquico > cargo_actual.cargo.nivel_jerarquico):
-                es_subordinado = True
-            
-            if not es_subordinado:
-                raise Http404("No tienes permisos para ver este perfil.")
-                
         except Empleado.DoesNotExist:
             raise Http404("Usuario sin perfil de empleado.")
-        
+
+        if not _es_superior_en_cadena(usuario_actual, empleado_a_ver):
+            raise Http404("No tienes permisos para ver este perfil.")
+
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
@@ -4532,6 +4518,36 @@ def _subalternos_activos_de(empleado):
         )
         .distinct()
     )
+
+
+def _es_superior_en_cadena(superior, empleado, max_niveles=10):
+    """True si `superior` está por encima de `empleado` en la cadena de
+    jefe_directo: su jefe, el jefe de su jefe, etc.
+
+    A diferencia de _subalternos_activos_de, que solo mira el primer nivel,
+    esto deja a un director ver a los operarios de sus coordinadores. Se
+    recorre hacia arriba desde el empleado (pocas consultas) con tope de
+    niveles y control de visitados, por si una asignación mal hecha deja un
+    ciclo en los datos.
+    """
+    if superior.pk == empleado.pk:
+        return False
+    frontera = {empleado.pk}
+    visitados = set(frontera)
+    for _ in range(max_niveles):
+        jefes = set(
+            HistorialCargo.objects.filter(
+                empleado_id__in=frontera, activo=True, jefe_directo__isnull=False,
+            ).values_list('jefe_directo_id', flat=True)
+        )
+        if superior.pk in jefes:
+            return True
+        jefes -= visitados
+        if not jefes:
+            return False
+        visitados |= jefes
+        frontera = jefes
+    return False
 
 
 def _jefes_ausentes_reemplazados(usuario, fecha):

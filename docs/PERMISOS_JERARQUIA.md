@@ -42,8 +42,8 @@ HistorialCargo(empleado=X, activo=True, jefe_directo=Y)   →   Y es jefe direct
   operarios de sus coordinadores, salvo donde se indica.
 - Se asigna a mano en la ficha. No se deduce del cargo.
 
-> **Excepción:** `EmpleadoDetailSupervisorView` usa jerarquía **por cargo**
-> (`Cargo.cargo_jefe` y `nivel_jerarquico`). Ver la sección 5.
+La estructura de cargos (`Cargo.cargo_jefe`, `nivel_jerarquico`) **no se usa
+para permisos** en ninguna vista. Ver la sección 5 para la que la usaba.
 
 ---
 
@@ -104,7 +104,7 @@ vista de todos los activos es la administrativa, aparte.
 | Vista | Quién la abre | Regla |
 |---|---|---|
 | `EmpleadoPerfilView` (`/empleados/perfil/<pk>/`) | El propio empleado o staff | `empleado.usuario == request.user or is_staff` |
-| `EmpleadoDetailSupervisorView` (`/empleados/supervisor/<pk>/`) | Superusuario o un "supervisor" **por cargo** | Ver sección 5 |
+| `EmpleadoDetailSupervisorView` (`/empleados/supervisor/<pk>/`) | Staff, o alguien **por encima en la cadena de `jefe_directo`** (su jefe, el jefe de su jefe…) | `_es_superior_en_cadena` |
 | `EmpleadoDetailView` (`/empleados/<pk>/`) | Solo staff | `StaffRequiredMixin` |
 | `EmpleadoListView` (`/empleados/`) | Solo staff | `StaffRequiredMixin` — trae la cédula de toda la nómina |
 
@@ -128,25 +128,34 @@ Exclusivo de staff, sin excepción por jerarquía:
 
 ---
 
-## 5. Inconsistencia conocida: `EmpleadoDetailSupervisorView`
+## 5. La ficha de supervisor: de jerarquía por cargo a cadena de jefes
 
-Es la única vista que decide la jerarquía **por cargo** y no por persona:
+Es la única vista que permite ver hacia abajo **más de un nivel**: un director
+abre la ficha de los operarios de sus coordinadores. Se resuelve con
+`_es_superior_en_cadena`, que sube por `jefe_directo` desde el empleado (tope de
+10 niveles y control de ciclos, por si una asignación mal hecha encadena a dos
+personas entre sí). Staff entra siempre.
 
-1. **Subordinado directo:** el `cargo_jefe` del cargo del empleado es mi cargo.
-2. **Subordinado indirecto:** mismo área y `nivel_jerarquico` del empleado
-   **mayor** que el mío.
+**Hasta octubre de 2026 esta vista decidía por cargo**, y era la única:
 
-Consecuencias:
+1. Subordinado directo: el `cargo_jefe` del cargo del empleado es mi cargo.
+2. Subordinado indirecto: misma área y `nivel_jerarquico` del empleado mayor
+   que el mío.
 
-- Puede no coincidir con `jefe_directo`. Si a alguien se le asigna un jefe
-  directo distinto del que dice la estructura de cargos, esta vista y el resto
-  del sistema darán respuestas diferentes.
-- La regla 2 es amplia: cualquiera de nivel superior en un área ve a **todos**
-  los de nivel inferior de esa área, aunque pertenezcan a otro equipo.
-- RRHH no-superusuario recibe 404 aquí; usa `EmpleadoDetailView`.
+Medido sobre producción antes de cambiarlo, eso tenía dos fallos:
 
-No se ha cambiado porque alteraría lo que ven hoy los jefes. Si se unifica,
-lo coherente es pasarla a `jefe_directo` como el resto.
+- **Exposición.** La regla 2 ignoraba los equipos: 237 personas podían abrir la
+  ficha de unas 209 cada una, 5.914 accesos en total. **216 de ellas eran
+  empleados sin nadie a cargo**, casi todos de nivel 4, que "superaban" a los
+  cargos de nivel 5 de su área. La ficha muestra documento, dirección,
+  teléfono, contacto de emergencia y correo. No tenían el enlace, pero la URL
+  respondía.
+- **404 a jefes legítimos.** La lista "empleados a cargo" del perfil se arma por
+  `jefe_directo`, pero esta vista validaba por cargo: 13 parejas de jefe y
+  subalterno directo veían a la persona en su lista y recibían un 404 al
+  abrirla, porque la estructura de cargos no coincidía con la asignación real.
+
+Además RRHH no-superusuario recibía 404; ahora entra.
 
 ---
 
