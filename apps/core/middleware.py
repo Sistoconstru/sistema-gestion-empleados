@@ -97,7 +97,9 @@ class AuditLogMiddleware(MiddlewareMixin):
             LogActividad.objects.create(
                 usuario=audit_data['user'],
                 accion=accion,
-                modelo=modelo,
+                # `modelo` es NOT NULL en la tabla: red de seguridad para que un
+                # path inesperado no tumbe el registro de auditoría entero.
+                modelo=modelo or '',
                 objeto_id=objeto_id,
                 descripcion=descripcion,
                 cambios_realizados=cambios,
@@ -149,24 +151,33 @@ class AuditLogMiddleware(MiddlewareMixin):
         objeto_id = None
 
         # Rutas comunes: /app/model/id/ o /app/model/id/action/
+        modelo_candidato = None
         if len(path_parts) >= 2:
             # El segundo elemento suele ser el modelo
             modelo_candidato = path_parts[1]
+        elif path_parts and path_parts[0]:
+            # Rutas de un solo segmento, como /login/ o /logout/: no hay modelo
+            # que extraer, pero el registro igual tiene que guardarse. Antes
+            # `modelo` quedaba en None y el INSERT reventaba contra la columna
+            # NOT NULL, así que esas acciones no se auditaban: los accesos por
+            # /login/ no dejaban rastro (los de /auth/login/ sí, por tener dos
+            # segmentos).
+            modelo_candidato = path_parts[0]
 
-            # Limpiar y formatear el nombre del modelo
-            if modelo_candidato:
-                modelo = modelo_candidato.rstrip('s')  # Quitar plural simple
+        # Limpiar y formatear el nombre del modelo
+        if modelo_candidato:
+            modelo = modelo_candidato.rstrip('s')  # Quitar plural simple
 
-                # Buscar ID en la URL (usualmente es UUID o número)
-                for part in path_parts[2:]:
-                    # Detectar UUID
-                    if len(part) == 36 and part.count('-') == 4:
-                        objeto_id = part
-                        break
-                    # Detectar ID numérico
-                    elif part.isdigit():
-                        objeto_id = part
-                        break
+            # Buscar ID en la URL (usualmente es UUID o número)
+            for part in path_parts[2:]:
+                # Detectar UUID
+                if len(part) == 36 and part.count('-') == 4:
+                    objeto_id = part
+                    break
+                # Detectar ID numérico
+                elif part.isdigit():
+                    objeto_id = part
+                    break
 
         return modelo, objeto_id
 
