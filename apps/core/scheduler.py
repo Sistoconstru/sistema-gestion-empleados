@@ -200,6 +200,20 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Borrado de publicaciones y anuncios vencidos de la cartelera:
+        # domingos 3:45 AM. El feed ya las oculta al vencer; esto libera la
+        # base y las imágenes en S3.
+        scheduler.add_job(
+            _limpiar_publicaciones_expiradas,
+            'cron',
+            day_of_week='sun', hour=3, minute=45,
+            id='limpiar_publicaciones',
+            name='Borrar publicaciones vencidas de la cartelera',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         scheduler.start()
 
         logger.info('✅ Scheduler iniciado exitosamente')
@@ -214,6 +228,7 @@ def start_scheduler():
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
         logger.info('  - 07:00 (diario): Encuestas — recordatorio 24h y auto-cierre')
         logger.info('  - 03:30 AM (domingos): Limpieza de notificaciones antiguas')
+        logger.info('  - 03:45 AM (domingos): Borrar publicaciones vencidas de la cartelera')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -935,3 +950,16 @@ def _limpiar_notificaciones_antiguas():
         logger.info('Limpieza de notificaciones antiguas completada.')
     except Exception as exc:
         logger.error(f'Error en limpieza de notificaciones: {exc}', exc_info=True)
+
+
+def _limpiar_publicaciones_expiradas():
+    """Corre los domingos a las 3:45 AM.
+
+    Borra las publicaciones de empleados que pasaron sus 30 días y los anuncios
+    cuya fecha_fin ya pasó, junto con sus imágenes.
+    """
+    try:
+        call_command('limpiar_publicaciones_expiradas')
+        logger.info('Limpieza de publicaciones vencidas completada.')
+    except Exception as exc:
+        logger.error(f'Error en limpieza de publicaciones: {exc}', exc_info=True)

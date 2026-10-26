@@ -21,6 +21,12 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = 'Elimina automáticamente publicaciones expiradas del sistema'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry-run', action='store_true',
+            help='Lista lo que se borraría sin borrar nada.',
+        )
+
     def handle(self, *args, **options):
         ahora = timezone.now()
 
@@ -50,6 +56,21 @@ class Command(BaseCommand):
         anuncios = todas_expiradas.filter(es_anuncio=True).count()
 
         total = todas_expiradas.count()
+
+        if options['dry_run']:
+            for pub in todas_expiradas.select_related('autor').order_by('fecha_creacion'):
+                tipo = 'anuncio' if pub.es_anuncio else 'publicación'
+                texto = (pub.titulo or pub.contenido or '').replace('\n', ' ')[:50]
+                self.stdout.write(
+                    f'  {pub.fecha_creacion:%Y-%m-%d}  {tipo:11}  '
+                    f'{"con imagen" if pub.imagen else "sin imagen"}  '
+                    f'{pub.autor.nombre_completo}: {texto}'
+                )
+            self.stdout.write(self.style.WARNING(
+                f'DRY-RUN: se borrarían {total} (rápidas {rapidas}, '
+                f'con imagen {con_imagen}, anuncios {anuncios}). No se borró nada.'
+            ))
+            return
 
         # Limpiar notificaciones asociadas a anuncios expirados
         from apps.notifications.models import Notificacion
