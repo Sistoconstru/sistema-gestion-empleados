@@ -1339,12 +1339,19 @@ class NovedadesReportView(StaffRequiredMixin, TemplateView):
         return context
 
 
-class NovedadesAccionView(StaffRequiredMixin, View):
+@method_decorator(login_required, name='dispatch')
+class NovedadesAccionView(View):
     """Aprueba o rechaza novedades en batch (POST). Autorizados:
 
     - RRHH (is_staff=True): puede accionar sobre CUALQUIER novedad pendiente.
     - Director: puede accionar solo sobre novedades registradas por
       coordinadores/jefes que le reportan directamente.
+
+    NO lleva StaffRequiredMixin a propósito, a diferencia del resto de vistas
+    de este módulo: los directores no son is_staff y aquí sí tienen que entrar.
+    La autorización la hace el cuerpo, acotando el queryset por jefe_directo,
+    así que un empleado sin subalternos no acciona nada aunque llegue.
+    Ponerle el mixin deja a los directores con un 403 al aprobar.
     """
 
     def post(self, request):
@@ -1372,7 +1379,11 @@ class NovedadesAccionView(StaffRequiredMixin, View):
         # filtro explícito. Preserva rango de fechas si venía en el referer.
         from urllib.parse import urlparse, parse_qs
         from django.urls import reverse
-        base_url = reverse('reports:novedades_report')
+        # El listado de reports es de RRHH; el director vuelve a su bandeja.
+        # Mandarlo a reports:novedades_report le daría un 403.
+        vista_origen = ('reports:novedades_report' if request.user.is_staff
+                        else 'employees:novedades_aprobacion')
+        base_url = reverse(vista_origen)
         query_extra = ''
         referer = request.META.get('HTTP_REFERER', '')
         if referer:
@@ -1416,7 +1427,7 @@ class NovedadesAccionView(StaffRequiredMixin, View):
                 request,
                 'Ninguna de las novedades seleccionadas te corresponde para aprobar/rechazar.',
             )
-            return redirect(request.META.get('HTTP_REFERER') or 'reports:novedades_report')
+            return redirect(request.META.get('HTTP_REFERER') or vista_origen)
 
         if accion == 'aprobar':
             qs.update(
@@ -1435,7 +1446,7 @@ class NovedadesAccionView(StaffRequiredMixin, View):
             )
             django_messages.warning(request, f'{n_afectadas} novedad(es) rechazadas.')
 
-        return redirect(request.META.get('HTTP_REFERER') or 'reports:novedades_report')
+        return redirect(request.META.get('HTTP_REFERER') or vista_origen)
 
 
 class NovedadesExportExcelView(StaffRequiredMixin, View):
