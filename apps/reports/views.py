@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+from apps.core.mixins import StaffRequiredMixin
 from django.db.models import Avg, Count, Q, F, Case, When, IntegerField
 from django.utils import timezone
 from django.http import HttpResponse
@@ -24,8 +26,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 
 
-@method_decorator(login_required, name='dispatch')
-class DashboardView(TemplateView):
+class DashboardView(StaffRequiredMixin, TemplateView):
     """Dashboard de reportes con datos reales"""
     template_name = 'reports/dashboard.html'
 
@@ -48,8 +49,7 @@ class DashboardView(TemplateView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-class PerformanceReportView(TemplateView):
+class PerformanceReportView(StaffRequiredMixin, TemplateView):
     """Reporte específico de evaluaciones de desempeño"""
     template_name = 'reports/evaluations_report.html'
 
@@ -490,8 +490,7 @@ class PerformanceReportView(TemplateView):
 # VISTAS DE EXPORTACIÓN
 # =============================================================================
 
-@method_decorator(login_required, name='dispatch')
-class ExportEvaluationsExcelView(View):
+class ExportEvaluationsExcelView(StaffRequiredMixin, View):
     """Exportar reporte de evaluaciones a Excel"""
 
     def get(self, request, *args, **kwargs):
@@ -777,8 +776,7 @@ class ExportEvaluationsExcelView(View):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class ExportEvaluationsPDFView(View):
+class ExportEvaluationsPDFView(StaffRequiredMixin, View):
     """Exportar reporte de evaluaciones a PDF"""
 
     def get(self, request, *args, **kwargs):
@@ -982,8 +980,7 @@ class ExportEvaluationsPDFView(View):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class AsistenciaReportView(TemplateView):
+class AsistenciaReportView(StaffRequiredMixin, TemplateView):
     """Reporte RRHH de asistencia con KPIs, filtros por rango/área/sede y desglose por empleado."""
     template_name = 'reports/asistencia_report.html'
 
@@ -1258,8 +1255,7 @@ class AsistenciaReportView(TemplateView):
         return resultado
 
 
-@method_decorator(login_required, name='dispatch')
-class NovedadesReportView(TemplateView):
+class NovedadesReportView(StaffRequiredMixin, TemplateView):
     """Reporte RRHH de novedades de nómina con aprobación batch."""
     template_name = 'reports/novedades_report.html'
 
@@ -1343,8 +1339,7 @@ class NovedadesReportView(TemplateView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-class NovedadesAccionView(View):
+class NovedadesAccionView(StaffRequiredMixin, View):
     """Aprueba o rechaza novedades en batch (POST). Autorizados:
 
     - RRHH (is_staff=True): puede accionar sobre CUALQUIER novedad pendiente.
@@ -1443,8 +1438,7 @@ class NovedadesAccionView(View):
         return redirect(request.META.get('HTTP_REFERER') or 'reports:novedades_report')
 
 
-@method_decorator(login_required, name='dispatch')
-class NovedadesExportExcelView(View):
+class NovedadesExportExcelView(StaffRequiredMixin, View):
     """Exporta a Excel las novedades globales para RRHH. Requiere is_staff.
 
     Los jefes usan un endpoint separado en apps.employees que filtra
@@ -1534,8 +1528,7 @@ class NovedadesExportExcelView(View):
         response['Cache-Control'] = 'no-store'
         return response
 
-@method_decorator(login_required, name='dispatch')
-class AsistenciaAusenciasExcelView(View):
+class AsistenciaAusenciasExcelView(StaffRequiredMixin, View):
     """Exporta a Excel las ausencias del rango con los mismos filtros del
     reporte web: rango, área, sede, empleado, tipo_ausencia. Una fila por
     ausencia con fecha, estado, motivo y jefe que registró.
@@ -1623,8 +1616,7 @@ class AsistenciaAusenciasExcelView(View):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class AprendicesSenaReportView(TemplateView):
+class AprendicesSenaReportView(StaffRequiredMixin, TemplateView):
     """Dashboard de cumplimiento de cuota SENA (aprendices).
 
     Muestra: cuota vigente vs aprendices actuales, semáforo, sanción estimada
@@ -1659,8 +1651,7 @@ class AprendicesSenaReportView(TemplateView):
         return context
 
 
-@method_decorator(login_required, name='dispatch')
-class AprendicesSenaExcelView(View):
+class AprendicesSenaExcelView(StaffRequiredMixin, View):
     """Descarga XLSX del reporte SENA — pensado para inspección/auditoría.
 
     Hoja única con 3 secciones apiladas:
@@ -1781,8 +1772,7 @@ class AprendicesSenaExcelView(View):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class AprendizSenaActualizarFinView(View):
+class AprendizSenaActualizarFinView(StaffRequiredMixin, View):
     """POST JSON: {historial_id, fecha_fin} → actualiza HistorialCargo.
     fecha_fin_contrato_aprendizaje. Solo staff. Fecha vacía la limpia
     (vuelve al cálculo automático de 6 meses).
@@ -1839,8 +1829,7 @@ class AprendizSenaActualizarFinView(View):
         })
 
 
-@method_decorator(login_required, name='dispatch')
-class AprendicesSenaReemplazosView(View):
+class AprendicesSenaReemplazosView(StaffRequiredMixin, View):
     """POST JSON {conseguidos, notas} → actualiza singleton
     SeguimientoReemplazosSena. Solo staff. Retorna estado recalculado.
     """
@@ -1879,8 +1868,7 @@ class AprendicesSenaReemplazosView(View):
         })
 
 
-@method_decorator(login_required, name='dispatch')
-class AprendicesSenaResolucionView(View):
+class AprendicesSenaResolucionView(StaffRequiredMixin, View):
     """POST multipart/form-data → crea una ResolucionSena desde el modal
     del reporte SENA. Solo staff. Devuelve JSON con el resultado; el
     frontend recarga la página al guardar.

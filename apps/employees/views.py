@@ -28,6 +28,7 @@ from django.db import transaction, IntegrityError
 from django.core.exceptions import ValidationError
 
 # Importaciones locales
+from apps.core.mixins import StaffRequiredMixin
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import (
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
@@ -96,8 +97,13 @@ class EmpleadoRequiredMixin(LoginRequiredMixin):
             return redirect('core:dashboard')
 
 
-class EmpleadoListView(LoginRequiredMixin, ListView):
-    """Vista para listar empleados con filtros y búsqueda"""
+class EmpleadoListView(StaffRequiredMixin, ListView):
+    """Vista para listar empleados con filtros y búsqueda.
+
+    Solo personal administrativo: la tabla trae el número de documento de toda
+    la nómina, que es además el insumo de la contraseña que genera el alta
+    automática.
+    """
     model = Empleado
     template_name = 'employees/empleado_list.html'
     context_object_name = 'empleados'
@@ -197,8 +203,13 @@ class EmpleadoListView(LoginRequiredMixin, ListView):
         }
 
 
-class EmpleadoDetailView(LoginRequiredMixin, DetailView):
-    """Vista de detalle completo del empleado"""
+class EmpleadoDetailView(StaffRequiredMixin, DetailView):
+    """Vista de detalle completo del empleado (administrativa).
+
+    Los empleados ven su propia ficha por EmpleadoPerfilView y los jefes la de
+    sus subordinados por EmpleadoDetailSupervisorView; ambas validan quién
+    pregunta. Esta no filtraba nada, así que servía la ficha de cualquiera.
+    """
     model = Empleado
     template_name = 'employees/empleado_detail.html'
     context_object_name = 'empleado'
@@ -2410,7 +2421,7 @@ def cambiar_cargo_empleado(request, pk):
         return JsonResponse({'success': False, 'message': 'Error interno del servidor'})
 
 
-@login_required
+@staff_member_required
 def empleados_periodo_prueba_reporte(request):
     """Vista para mostrar empleados en periodo de prueba y sus fechas de activación automática"""
     

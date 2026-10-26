@@ -116,6 +116,75 @@ class ProxyPdfTests(TestCase):
                 self.assertEqual(respuesta.status_code, 403)
 
 
+class AccesoRasoTests(TestCase):
+    """Las vistas administrativas no pueden abrirse con solo tener sesión.
+
+    LoginRequiredMixin autentica pero no autoriza, y los `{% if perms %}` de los
+    templates solo esconden botones: antes un empleado sin ningún permiso llegaba
+    a la nómina completa y a los reportes de RRHH escribiendo la URL.
+    """
+
+    # Rutas administrativas: un empleado raso no debe pasar.
+    RESTRINGIDAS = [
+        '/empleados/',
+        '/empleados/periodo-prueba/',
+        '/capacitaciones/admin/',
+        '/reportes/',
+        '/reportes/asistencia/',
+        '/reportes/evaluations/',
+        '/reportes/novedades/',
+        '/reportes/aprendices-sena/',
+    ]
+
+    def setUp(self):
+        self.raso = User.objects.create_user(username='raso.sinpermisos', password='x-9slek31')
+        self.staff = User.objects.create_user(
+            username='admin.rrhh', password='x-9slek31', is_staff=True,
+        )
+
+    def test_el_empleado_raso_no_entra(self):
+        self.client.force_login(self.raso)
+        self.assertEqual(self.raso.get_all_permissions(), set())
+        for url in self.RESTRINGIDAS:
+            with self.subTest(url=url):
+                r = self.client.get(url)
+                self.assertIn(
+                    r.status_code, (302, 403),
+                    f'{url} se abrió con status {r.status_code} para una cuenta sin permisos',
+                )
+
+    def test_el_staff_si_entra(self):
+        """Contrapeso: si esto falla, la restricción rompió a RRHH.
+
+        No se exige 200 porque algunas de estas vistas redirigen según los datos
+        (periodo-prueba vuelve al listado si falta el EstadoEmpleado 'p-prue', y
+        en la base de test no hay ninguno). Lo que se comprueba es que a staff no
+        se le niegue el paso: ni 403 ni rebote al login.
+        """
+        self.client.force_login(self.staff)
+        for url in self.RESTRINGIDAS:
+            with self.subTest(url=url):
+                r = self.client.get(url)
+                self.assertNotEqual(r.status_code, 403, f'{url} dio 403 a staff')
+                destino = r.get('Location', '')
+                self.assertNotIn('login', destino, f'{url} mandó a staff al login ({destino})')
+
+    def test_el_anonimo_va_al_login_no_a_un_403(self):
+        r = self.client.get('/empleados/')
+        self.assertEqual(r.status_code, 302)
+        self.assertIn('/auth/login/', r['Location'])
+
+    def test_el_empleado_conserva_sus_propias_secciones(self):
+        self.client.force_login(self.raso)
+        for url in ('/encuestas/', '/sorteos/', '/capacitaciones/catalogo/'):
+            with self.subTest(url=url):
+                r = self.client.get(url)
+                self.assertNotEqual(
+                    r.status_code, 403,
+                    f'{url} dejó de ser accesible para un empleado normal',
+                )
+
+
 class EmpleadoExportTests(TestCase):
     """La exportación masiva de la nómina es solo para staff."""
 
@@ -132,3 +201,23 @@ class EmpleadoExportTests(TestCase):
         respuesta = self.client.get(self.url, {'export': 'csv'})
         self.assertEqual(respuesta.status_code, 302)
         self.assertNotEqual(respuesta.get('Content-Type', ''), 'text/csv; charset=utf-8')
+
+
+class DashboardAdministrativoTests(TestCase):
+    """El dashboard administrativo no se alcanza sin privilegios."""
+
+    def test_usuario_sin_ficha_ni_privilegios_no_llega_al_dashboard(self):
+        """El `except Empleado.DoesNotExist: pass` lo dejaba caer al de admin."""
+        huerfano = User.objects.create_user(username='sin.ficha', password='x-9slek31')
+        self.client.force_login(huerfano)
+        r = self.client.get('/dashboard/')
+        self.assertEqual(r.status_code, 302)
+        self.assertNotIn('dashboard', r['Location'])
+
+    def test_staff_si_llega_al_dashboard(self):
+        admin = User.objects.create_user(
+            username='admin.dash', password='x-9slek31', is_staff=True,
+        )
+        self.client.force_login(admin)
+        r = self.client.get('/dashboard/')
+        self.assertEqual(r.status_code, 200)

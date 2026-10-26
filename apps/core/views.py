@@ -27,9 +27,16 @@ def dashboard_view(request):
     # === LÓGICA DE REDIRECCIÓN AUTOMÁTICA ===
     # Si el usuario es un empleado normal (no administrador), 
     # redirigir a su perfil personal
+    # Sin privilegios no se entra al dashboard administrativo, tenga ficha de
+    # empleado o no: antes el `except Empleado.DoesNotExist: pass` de abajo
+    # dejaba caer aquí a cualquier usuario sin ficha, aunque no fuera staff.
+    if not request.user.is_staff and not request.user.is_superuser:
+        if not Empleado.objects.filter(usuario=request.user).exists():
+            return redirect('employees:feed_list')
+
     try:
         empleado = Empleado.objects.get(usuario=request.user)
-        
+
         # Verificar si es empleado normal (no tiene permisos de administrador)
         if not request.user.is_staff and not request.user.is_superuser:
             # Verificar si no tiene roles administrativos

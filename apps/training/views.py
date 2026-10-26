@@ -5,6 +5,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from apps.core.mixins import StaffRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -72,8 +74,12 @@ class PlayerPreviewView(LoginRequiredMixin, TemplateView):
         context['solo_lectura'] = True
         return context
 
-class CapacitacionListView(LoginRequiredMixin, ListView):
-    """Vista para administradores - gestión de capacitaciones"""
+class CapacitacionListView(StaffRequiredMixin, ListView):
+    """Vista para administradores - gestión de capacitaciones.
+
+    El docstring ya decía "para administradores", pero solo exigía sesión: con
+    LoginRequiredMixin cualquier empleado entraba escribiendo /capacitaciones/admin/.
+    """
     model = Capacitacion
     template_name = 'training/capacitacion_list.html'
     context_object_name = 'capacitaciones'
