@@ -61,64 +61,21 @@ def dashboard_view(request):
     context = {}
     
     try:
-        # Total real de empleados (incluyendo todos los estados)
-        context['total_empleados'] = Empleado.objects.count()
-        
-        # Empleados activos - buscar entre los códigos posibles
-        empleados_activos = 0
-        try:
-            # Intentar con diferentes códigos de estado activo
-            codigos_activo = ['999']
-            for codigo in codigos_activo:
-                try:
-                    estado_activo = EstadoEmpleado.objects.get(codigo=codigo)
-                    count = Empleado.objects.filter(estado=estado_activo).count()
-                    if count > 0:
-                        empleados_activos += count
-                        logger.info(f"Encontrados {count} empleados activos con código '{codigo}'")
-                        break  # Solo salir si realmente encontramos empleados
-                    else:
-                        logger.info(f"Estado '{codigo}' existe pero no tiene empleados asignados")
-                        continue  # Continuar buscando con otros códigos
-                except EstadoEmpleado.DoesNotExist:
-                    logger.info(f"Estado con código '{codigo}' no existe")
-                    continue
-            
-            context['empleados_activos'] = empleados_activos
-            
-        except Exception as e:
-            logger.warning(f"Error calculando empleados activos: {e}")
-            context['empleados_activos'] = 0
+        # Plantilla de empleados vigentes: los que efectivamente trabajan hoy
+        # en la empresa. Contar también a inactivos y retirados inflaba el
+        # total y dejaba las tarjetas sin cuadrar entre sí (activos + en
+        # prueba no daba el total que se mostraba arriba).
+        from apps.employees.models import ESTADOS_NO_VIGENTES
+        vigentes = Empleado.objects.exclude(estado__codigo__in=ESTADOS_NO_VIGENTES)
 
-        # Empleados en período de prueba - buscar entre los códigos posibles
-        empleados_prueba = 0
-        try:
-            # Intentar con diferentes códigos de estado de prueba
-            codigos_prueba = ['p-prue']
-            for codigo in codigos_prueba:
-                try:
-                    estado_prueba = EstadoEmpleado.objects.get(codigo=codigo)
-                    count = Empleado.objects.filter(estado=estado_prueba).count()
-                    if count > 0:
-                        empleados_prueba += count
-                        logger.info(f"Encontrados {count} empleados en prueba con código '{codigo}'")
-                        break  # Solo salir si realmente encontramos empleados
-                    else:
-                        logger.info(f"Estado '{codigo}' existe pero no tiene empleados en prueba")
-                        continue  # Continuar buscando con otros códigos
-                except EstadoEmpleado.DoesNotExist:
-                    logger.info(f"Estado de prueba con código '{codigo}' no existe")
-                    continue
-            
-            context['empleados_prueba'] = empleados_prueba
-            
-        except Exception as e:
-            logger.warning(f"Error calculando empleados en prueba: {e}")
-            context['empleados_prueba'] = 0
-        
-        # Nuevos empleados este mes
+        context['total_empleados'] = vigentes.count()
+        context['empleados_activos'] = vigentes.filter(estado__codigo='999').count()
+        context['empleados_prueba'] = vigentes.filter(estado__codigo='p-prue').count()
+
+        # Nuevos empleados este mes (solo los que siguen vigentes: alguien que
+        # ingresó y salió dentro del mismo mes no es una incorporación)
         inicio_mes = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        context['nuevos_mes'] = Empleado.objects.filter(
+        context['nuevos_mes'] = vigentes.filter(
             fecha_ingreso__gte=inicio_mes
         ).count()
         
