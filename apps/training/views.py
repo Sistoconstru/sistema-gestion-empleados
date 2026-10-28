@@ -23,7 +23,8 @@ from datetime import date, timedelta
 import logging
 import json
 
-from .models import (Capacitacion, InscripcionCapacitacion, TipoCapacitacion,
+from .models import (ESTADOS_FINALIZADOS,
+                     Capacitacion, InscripcionCapacitacion, TipoCapacitacion,
                      CapacitacionCargo, ModuloCapacitacion, ProgresoCapacitacion,
                      Leccion, ContenidoLeccion, QuizLeccion, PreguntaQuiz,
                      OpcionPreguntaQuiz, IntentoQuiz, RespuestaQuiz, CertificadoPlantilla)
@@ -713,11 +714,11 @@ class MisCapacitacionesView(LoginRequiredMixin, ListView):
         
         # Estadísticas del empleado
         context.update({
-            'completadas': inscripciones.filter(estado='aprobado').count(),
+            'completadas': inscripciones.filter(estado__in=ESTADOS_FINALIZADOS).count(),
             'en_progreso': inscripciones.filter(estado='en_progreso').count(),
                 'horas_acumuladas': sum([
                     getattr(i.capacitacion, 'duracion_estimada_horas', 0) or 0
-                    for i in inscripciones.filter(estado='aprobado')
+                    for i in inscripciones.filter(estado__in=ESTADOS_FINALIZADOS)
                 ])
         })
         
@@ -880,7 +881,7 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
             context['inscritos_activos'] = inscripciones.exclude(
                 estado__in=['pendiente_validacion', 'cancelado', 'completado', 'aprobado']
             ).count()
-            context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
+            context['completados'] = inscripciones.filter(estado__in=ESTADOS_FINALIZADOS).count()
             
             # Lista de inscripciones pendientes para cursos externos
             if capacitacion.es_externa():
@@ -910,7 +911,7 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
             context['inscritos_activos'] = inscripciones.exclude(
                 estado__in=['pendiente_validacion', 'cancelado', 'completado', 'aprobado']
             ).count()
-            context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
+            context['completados'] = inscripciones.filter(estado__in=ESTADOS_FINALIZADOS).count()
         else:
             # Obtener la inscripción del empleado si existe
             try:
@@ -925,7 +926,7 @@ class CapacitacionDetailView(LoginRequiredMixin, DetailView):
         # Estadísticas generales (disponibles para todos los usuarios)
         context['total_inscritos'] = inscripciones.count()
         context['en_progreso'] = inscripciones.filter(estado='en_progreso').count()
-        context['completados'] = inscripciones.filter(estado__in=['completado', 'aprobado']).count()
+        context['completados'] = inscripciones.filter(estado__in=ESTADOS_FINALIZADOS).count()
         
         # Calcular porcentajes para las barras de progreso
         total = context['total_inscritos']

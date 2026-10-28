@@ -46,7 +46,7 @@ from .forms import (
     SolicitudVacacionForm,
 )
 from apps.organizational.models import AreaEmpresa, Cargo, Sede
-from apps.training.models import InscripcionCapacitacion
+from apps.training.models import ESTADOS_FINALIZADOS, InscripcionCapacitacion
 from apps.evaluations.models import AsignacionEvaluacion
 from apps.documents.models import DocumentoEmpleado, TipoDocumentoEmpleado
 from apps.recognition.models import HistorialPuntos, InsigniaEmpleado
@@ -268,7 +268,7 @@ class EmpleadoDetailView(StaffRequiredMixin, DetailView):
                     estado='en_progreso'
                 ).count(),
                 'capacitaciones_completadas': capacitaciones.filter(
-                    estado='completado'
+                    estado__in=ESTADOS_FINALIZADOS
                 ).count()
             })
             
@@ -1507,7 +1507,7 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             ).select_related('capacitacion')
             
             # Estados
-            completadas = inscripciones.filter(estado='completado')
+            completadas = inscripciones.filter(estado__in=ESTADOS_FINALIZADOS)
             en_progreso = inscripciones.filter(estado='en_progreso')
             pendientes = inscripciones.filter(
                 estado='no_iniciado'
@@ -2038,7 +2038,7 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
                 
                 caps_completadas = InscripcionCapacitacion.objects.filter(
                     empleado=empleado,
-                    estado='completado',
+                    estado__in=ESTADOS_FINALIZADOS,
                     fecha_finalizacion__gte=timezone.now() - timedelta(days=15)
                 ).order_by('-fecha_finalizacion')[:3]
                 

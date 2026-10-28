@@ -13,7 +13,9 @@ from datetime import timedelta, datetime
 from apps.employees.models import (
     ESTADOS_NO_VIGENTES, Empleado, AsistenciaDiaria, NovedadNomina,
 )
-from apps.training.models import Capacitacion, InscripcionCapacitacion
+from apps.training.models import (
+    ESTADOS_FINALIZADOS, Capacitacion, InscripcionCapacitacion,
+)
 from apps.evaluations.models import AsignacionEvaluacion, PlanMejoraPredefinido, SeguimientoBimensual
 
 # Importar bibliotecas para exportación
@@ -44,7 +46,7 @@ class DashboardView(StaffRequiredMixin, TemplateView):
         # --- Capacitaciones: tasa de finalización real ---
         inscripciones = InscripcionCapacitacion.objects.count()
         inscripciones_completadas = InscripcionCapacitacion.objects.filter(
-            estado='completado'
+            estado__in=ESTADOS_FINALIZADOS
         ).count()
         tasa_finalizacion = (
             round(inscripciones_completadas / inscripciones * 100)

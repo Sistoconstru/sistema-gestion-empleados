@@ -695,6 +695,15 @@ class ContenidoLeccion(models.Model):
     def __str__(self):
         return f"{self.leccion.nombre} - {self.nombre}"
 
+# Una inscripción terminada bien queda en 'aprobado': es el estado al que llega
+# el flujo normal (ver vistas de validación y de cierre de sesión) y el único
+# que habilita certificado. 'completado' es un caso de borde: se marca al
+# inscribir a una capacitación que no tiene contenidos activos, así que casi
+# nunca aparece —hoy, 0 de 99 inscripciones—. Contar solo 'completado' da
+# siempre cero; por eso el criterio de "finalizada" son los dos estados.
+ESTADOS_FINALIZADOS = ['completado', 'aprobado']
+
+
 class InscripcionCapacitacion(models.Model):
     """Inscripciones de empleados a capacitaciones - MEJORADO"""
     ESTADOS = [
