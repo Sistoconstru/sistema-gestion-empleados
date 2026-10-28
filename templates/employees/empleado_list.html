@@ -85,15 +85,37 @@
                 <label class="form-label" for="{{ form.sede.id_for_label }}">Sede</label>
                 {{ form.sede }}
             </div>
-            <div class="col-12">
+            <div class="col-12 d-flex flex-wrap align-items-center gap-2">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search me-1"></i>Buscar
                 </button>
                 <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-secondary">
                     <i class="fas fa-times me-1"></i>Limpiar
                 </a>
+
+                {# Los no vigentes se ocultan por defecto; este botón los trae #}
+                {% if incluir_inactivos %}
+                    <a href="{% url 'employees:empleado_list' %}{% if qs_sin_inactivos %}?{{ qs_sin_inactivos }}{% endif %}"
+                       class="btn btn-warning ms-auto">
+                        <i class="fas fa-eye-slash me-1"></i>Ocultar inactivos y retirados
+                    </a>
+                {% else %}
+                    <a href="{% url 'employees:empleado_list' %}?{% if qs_sin_inactivos %}{{ qs_sin_inactivos }}&amp;{% endif %}inactivos=1"
+                       class="btn btn-outline-secondary ms-auto"
+                       title="Los empleados inactivos y retirados no se muestran por defecto">
+                        <i class="fas fa-eye me-1"></i>Ver inactivos y retirados
+                        {% if total_no_vigentes %}<span class="badge bg-secondary ms-1">{{ total_no_vigentes }}</span>{% endif %}
+                    </a>
+                {% endif %}
             </div>
         </form>
+
+        {% if incluir_inactivos %}
+            <div class="alert alert-warning small mt-3 mb-0 py-2">
+                <i class="fas fa-info-circle me-1"></i>
+                Estás viendo también a los empleados <strong>inactivos y retirados</strong>.
+            </div>
+        {% endif %}
     </div>
 </div>
 

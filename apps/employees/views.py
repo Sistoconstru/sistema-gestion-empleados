@@ -31,6 +31,7 @@ from django.core.exceptions import ValidationError
 from apps.core.mixins import StaffRequiredMixin
 from .exports import export_empleados_excel, export_empleados_pdf, export_empleados_csv, export_empleado_perfil_pdf, export_empleado_excel
 from .models import (
+    ESTADOS_NO_VIGENTES,
     Empleado, TipoDocumento, Escolaridad, EstadoEmpleado, HistorialCargo,
     Producto, Venta, Subasta, PujaSubasta, Regalo, Reserva, Conversacion, Mensaje, Categoria,
     Familiar, DocumentoFamiliar,
@@ -108,7 +109,11 @@ class EmpleadoListView(StaffRequiredMixin, ListView):
     template_name = 'employees/empleado_list.html'
     context_object_name = 'empleados'
     paginate_by = 20
-    
+
+    def _incluir_inactivos(self):
+        """True si se pidió ver también a los que ya no están en la empresa."""
+        return self.request.GET.get('inactivos') in ('1', 'true', 'on')
+
     def get_queryset(self):
         """Obtener empleados con filtros aplicados"""
         queryset = Empleado.objects.select_related(
@@ -127,7 +132,14 @@ class EmpleadoListView(StaffRequiredMixin, ListView):
         area = self.request.GET.get('area')
         cargo = self.request.GET.get('cargo')
         sede = self.request.GET.get('sede')
-        
+
+        # Los que ya no trabajan en la empresa se ocultan salvo que se pidan
+        # explícitamente: son ~1/3 de la nómina y solo crecen con el tiempo.
+        # Si se filtra por un estado concreto gana ese filtro, porque si no
+        # elegir «Inactivo» en el selector no devolvería nada.
+        if not estado and not self._incluir_inactivos():
+            queryset = queryset.exclude(estado__codigo__in=ESTADOS_NO_VIGENTES)
+
         # Aplicar filtro de búsqueda: nombres, apellidos y número de documento.
         # `icontains` para permitir matches parciales (ej. "espinal" encuentra
         # "Diego Alejandro Espinal") y buscar cédulas aunque se pegue solo
@@ -167,34 +179,44 @@ class EmpleadoListView(StaffRequiredMixin, ListView):
         # Formulario de búsqueda
         form_data = self.request.GET.copy()
         context['form'] = BusquedaEmpleadoForm(form_data)
-        
+
         # Estadísticas generales
         context.update(self.get_estadisticas())
-        
+
+        # Estado del toggle de inactivos y cuántos quedan fuera, para que el
+        # botón pueda decir el número y nadie crea que faltan registros.
+        incluir = self._incluir_inactivos()
+        context['incluir_inactivos'] = incluir
+        context['total_no_vigentes'] = Empleado.objects.filter(
+            estado__codigo__in=ESTADOS_NO_VIGENTES
+        ).count()
+        # Querystring sin el parámetro, para armar el link del botón sin
+        # perder la búsqueda ni los demás filtros.
+        params = self.request.GET.copy()
+        params.pop('inactivos', None)
+        params.pop('page', None)
+        context['qs_sin_inactivos'] = params.urlencode()
+
         return context
-    
+
     def get_estadisticas(self):
-        """Calcular estadísticas para el dashboard"""
-        # Totales generales
-        total_empleados = Empleado.objects.count()
-        
-        # Por estado
-        try:
-            estado_activo = EstadoEmpleado.objects.get(codigo='999')
-            empleados_activos = Empleado.objects.filter(estado=estado_activo).count()
-        except EstadoEmpleado.DoesNotExist:
-            empleados_activos = 0
-        
-        try:
-            estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
-            empleados_prueba = Empleado.objects.filter(estado=estado_prueba).count()
-        except EstadoEmpleado.DoesNotExist:
-            empleados_prueba = 0
-        
+        """Estadísticas del encabezado, alineadas con lo que muestra la tabla.
+
+        Si los no vigentes están ocultos, el total no los cuenta: ver «399
+        empleados» arriba de una lista de 277 hace dudar de los datos.
+        """
+        base = Empleado.objects.all()
+        if not self._incluir_inactivos() and not self.request.GET.get('estado'):
+            base = base.exclude(estado__codigo__in=ESTADOS_NO_VIGENTES)
+
+        total_empleados = base.count()
+        empleados_activos = base.filter(estado__codigo='999').count()
+        empleados_prueba = base.filter(estado__codigo='p-prue').count()
+
         # Nuevos empleados este mes
         inicio_mes = timezone.now().replace(day=1).date()
-        nuevos_mes = Empleado.objects.filter(fecha_ingreso__gte=inicio_mes).count()
-        
+        nuevos_mes = base.filter(fecha_ingreso__gte=inicio_mes).count()
+
         return {
             'total_empleados': total_empleados,
             'empleados_activos': empleados_activos,

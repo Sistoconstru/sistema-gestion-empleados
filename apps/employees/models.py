@@ -61,6 +61,14 @@ class Escolaridad(models.Model):
     def __str__(self):
         return self.nivel
 
+# Estados de quienes ya no trabajan en la empresa. Se usan para excluirlos del
+# listado y de los totales, donde contarlos distorsiona: hoy son ~1/3 de los
+# registros y solo se acumulan. Va por código y no por `permite_acceso_sistema`
+# para que cambiar ese flag en otro estado no altere los conteos sin que nadie
+# lo haya decidido.
+ESTADOS_NO_VIGENTES = ['INACTIVO', 'RETIRADO']
+
+
 class EstadoEmpleado(models.Model):
     """Estados de empleados"""
     codigo = models.CharField(max_length=20, unique=True)  # Código único
