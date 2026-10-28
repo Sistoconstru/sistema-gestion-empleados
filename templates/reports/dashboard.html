@@ -112,9 +112,9 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Total Empleados</h6>
-                        <h2 class="mb-0" id="total-empleados">{{ total_empleados|default:127 }}</h2>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up"></i> +5% vs mes anterior
+                        <h2 class="mb-0" id="total-empleados">{{ total_empleados|default:0 }}</h2>
+                        <small class="text-muted">
+                            Activos y en período de prueba
                         </small>
                     </div>
                     <div class="bg-corporativo bg-opacity-10 rounded p-3">
@@ -131,9 +131,13 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Capacitaciones Activas</h6>
-                        <h2 class="mb-0" id="capacitaciones-activas">{{ capacitaciones_activas|default:24 }}</h2>
-                        <small class="text-info">
-                            <i class="fas fa-graduation-cap"></i> 89% completion rate
+                        <h2 class="mb-0" id="capacitaciones-activas">{{ capacitaciones_activas|default:0 }}</h2>
+                        <small class="{% if capacitaciones_tasa_finalizacion >= 70 %}text-success{% elif capacitaciones_tasa_finalizacion >= 30 %}text-warning{% else %}text-danger{% endif %}">
+                            <i class="fas fa-graduation-cap"></i>
+                            {{ capacitaciones_tasa_finalizacion|default:0 }}% completadas
+                            {% if capacitaciones_inscripciones %}
+                                <span class="text-muted">({{ capacitaciones_inscripciones }} inscripciones)</span>
+                            {% endif %}
                         </small>
                     </div>
                     <div class="bg-corporativo bg-opacity-10 rounded p-3">
@@ -150,9 +154,26 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Evaluaciones Pendientes</h6>
-                        <h2 class="mb-0" id="evaluaciones-pendientes">{{ evaluaciones_pendientes|default:8 }}</h2>
-                        <small class="text-warning">
-                            <i class="fas fa-clock"></i> 3 vencen esta semana
+                        <h2 class="mb-0" id="evaluaciones-pendientes">{{ evaluaciones_pendientes|default:0 }}</h2>
+                        <small>
+                            {% if evaluaciones_vencidas %}
+                                <span class="text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ evaluaciones_vencidas }} vencida{{ evaluaciones_vencidas|pluralize }}
+                                </span>
+                            {% endif %}
+                            {% if evaluaciones_vencidas and evaluaciones_vencen_semana %}
+                                <span class="text-muted">·</span>
+                            {% endif %}
+                            {% if evaluaciones_vencen_semana %}
+                                <span class="text-warning">
+                                    <i class="fas fa-clock"></i>
+                                    {{ evaluaciones_vencen_semana }} vence{{ evaluaciones_vencen_semana|pluralize:"n" }} esta semana
+                                </span>
+                            {% endif %}
+                            {% if not evaluaciones_vencidas and not evaluaciones_vencen_semana %}
+                                <span class="text-success"><i class="fas fa-check"></i> Sin vencimientos próximos</span>
+                            {% endif %}
                         </small>
                     </div>
                     <div class="bg-amarillo bg-opacity-10 rounded p-3">
@@ -169,10 +190,18 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Satisfacción General</h6>
-                        <h2 class="mb-0" id="satisfaccion-general">{{ satisfaccion_general|default:4.2 }}/5</h2>
-                        <small class="text-success">
-                            <i class="fas fa-arrow-up"></i> +0.3 vs trimestre anterior
-                        </small>
+                        {% if satisfaccion_general %}
+                            <h2 class="mb-0" id="satisfaccion-general">{{ satisfaccion_general|floatformat:1 }}/5</h2>
+                            <small class="text-muted">Promedio de encuestas de satisfacción</small>
+                        {% else %}
+                            <h2 class="mb-0 text-muted" id="satisfaccion-general">Sin datos</h2>
+                            <small class="text-muted">
+                                Requiere encuestas con preguntas de escala
+                                {% if encuestas_completadas %}
+                                    · {{ encuestas_completadas }} encuesta{{ encuestas_completadas|pluralize }} respondida{{ encuestas_completadas|pluralize }}
+                                {% endif %}
+                            </small>
+                        {% endif %}
                     </div>
                     <div class="bg-info bg-opacity-10 rounded p-3">
                         <i class="fas fa-heart text-info fa-2x"></i>

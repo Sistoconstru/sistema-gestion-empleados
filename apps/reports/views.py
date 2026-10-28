@@ -10,8 +10,10 @@ from django.http import HttpResponse
 from datetime import timedelta, datetime
 
 # Importar modelos que ya funcionan
-from apps.employees.models import Empleado, AsistenciaDiaria, NovedadNomina
-from apps.training.models import Capacitacion
+from apps.employees.models import (
+    ESTADOS_NO_VIGENTES, Empleado, AsistenciaDiaria, NovedadNomina,
+)
+from apps.training.models import Capacitacion, InscripcionCapacitacion
 from apps.evaluations.models import AsignacionEvaluacion, PlanMejoraPredefinido, SeguimientoBimensual
 
 # Importar bibliotecas para exportación
@@ -34,16 +36,66 @@ class DashboardView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         from apps.reports.aprendices_sena import calcular_estado
-        # Datos reales de módulos que funcionan
-        context.update({
-            'total_empleados': Empleado.objects.count(),
-            'capacitaciones_activas': Capacitacion.objects.filter(activa=True).count(),
-            'evaluaciones_pendientes': AsignacionEvaluacion.objects.filter(estado='pendiente').count(),
-            'sena_estado': calcular_estado(),
+        from apps.recognition.models import Reconocimiento
+        from apps.surveys.models import ParticipacionEncuesta
 
-            # Placeholders para módulos no implementados
-            'satisfaccion_general': 0.0,  # Pendiente: módulo surveys
-            'reconocimientos_mes': 0,     # Pendiente: módulo recognition
+        hoy = timezone.now().date()
+
+        # --- Capacitaciones: tasa de finalización real ---
+        inscripciones = InscripcionCapacitacion.objects.count()
+        inscripciones_completadas = InscripcionCapacitacion.objects.filter(
+            estado='completado'
+        ).count()
+        tasa_finalizacion = (
+            round(inscripciones_completadas / inscripciones * 100)
+            if inscripciones else 0
+        )
+
+        # --- Evaluaciones: lo accionable es cuántas están atrasadas ---
+        abiertas = AsignacionEvaluacion.objects.filter(
+            estado__in=['pendiente', 'en_progreso']
+        )
+        evaluaciones_vencidas = abiertas.filter(fecha_vencimiento__lt=hoy).count()
+        evaluaciones_vencen_semana = abiertas.filter(
+            fecha_vencimiento__gte=hoy,
+            fecha_vencimiento__lte=hoy + timedelta(days=7),
+        ).count()
+
+        # --- Encuestas: tasa de respuesta ---
+        participaciones = ParticipacionEncuesta.objects.count()
+        participaciones_completadas = ParticipacionEncuesta.objects.filter(
+            completada=True
+        ).count()
+
+        inicio_mes = timezone.now().replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
+
+        context.update({
+            # Solo los que trabajan hoy en la empresa: contar también a
+            # inactivos y retirados infla el indicador y descuadra los
+            # porcentajes que se calculan sobre él.
+            'total_empleados': Empleado.objects.exclude(
+                estado__codigo__in=ESTADOS_NO_VIGENTES
+            ).count(),
+            'capacitaciones_activas': Capacitacion.objects.filter(activa=True).count(),
+            'capacitaciones_tasa_finalizacion': tasa_finalizacion,
+            'capacitaciones_inscripciones': inscripciones,
+            'evaluaciones_pendientes': abiertas.count(),
+            'evaluaciones_vencidas': evaluaciones_vencidas,
+            'evaluaciones_vencen_semana': evaluaciones_vencen_semana,
+            'sena_estado': calcular_estado(),
+            'reconocimientos_mes': Reconocimiento.objects.filter(
+                fecha_otorgamiento__gte=inicio_mes
+            ).count(),
+
+            # Satisfacción: hoy las encuestas no tienen preguntas de escala, así
+            # que no hay promedio que calcular. Se deja la tarjeta mostrando
+            # «Sin datos» en vez de un número inventado; cuando existan encuestas
+            # con escala, acá va el promedio.
+            'satisfaccion_general': None,
+            'encuestas_participaciones': participaciones,
+            'encuestas_completadas': participaciones_completadas,
         })
 
         return context
@@ -498,7 +550,9 @@ class ExportEvaluationsExcelView(StaffRequiredMixin, View):
         wb = Workbook()
 
         # Obtener datos (reutilizamos la misma lógica)
-        total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
+        total_empleados = Empleado.objects.exclude(
+            estado__codigo__in=ESTADOS_NO_VIGENTES
+        ).count()
 
         # Solo evaluaciones de DESEMPEÑO ANUAL (puntaje en porcentaje 0-100)
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(
@@ -813,7 +867,9 @@ class ExportEvaluationsPDFView(StaffRequiredMixin, View):
         elementos.append(Spacer(1, 20))
 
         # Obtener datos
-        total_empleados = Empleado.objects.filter(estado__permite_acceso_sistema=True).count()
+        total_empleados = Empleado.objects.exclude(
+            estado__codigo__in=ESTADOS_NO_VIGENTES
+        ).count()
 
         # Solo evaluaciones de DESEMPEÑO ANUAL (puntaje en porcentaje 0-100)
         evaluaciones_completadas = AsignacionEvaluacion.objects.filter(
