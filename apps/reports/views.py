@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 from django.contrib.auth.decorators import login_required
@@ -28,6 +30,8 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+
+logger = logging.getLogger(__name__)
 
 
 class DashboardView(StaffRequiredMixin, TemplateView):
@@ -1935,6 +1939,59 @@ class AprendicesSenaReemplazosView(StaffRequiredMixin, View):
             'requeridos': len(estado.salidas_proximas),
             'faltantes': estado.reemplazos_faltantes,
         })
+
+
+class AprendicesSenaResolucionPDFView(StaffRequiredMixin, View):
+    """Abre el PDF de una resolución, comprobando antes que siga existiendo.
+
+    Enlazar directo a `archivo_pdf.url` manda al navegador a S3 aunque el
+    objeto no esté: la plantilla solo sabe si el campo tiene un nombre
+    guardado, no si el archivo existe. Cuando falta, S3 contesta con su XML
+    de NoSuchKey, que no le dice nada a quien lo ve. Pasando por esta vista
+    el caso se resuelve con un mensaje y una vuelta al reporte.
+    """
+
+    def get(self, request, pk):
+        from django.contrib import messages
+        from django.shortcuts import get_object_or_404, redirect
+        from apps.organizational.models import ResolucionSena
+
+        resolucion = get_object_or_404(ResolucionSena, pk=pk)
+        destino = redirect('reports:aprendices_sena_report')
+
+        if not resolucion.archivo_pdf:
+            messages.warning(
+                request,
+                f'La resolución {resolucion.numero} no tiene PDF adjunto.',
+            )
+            return destino
+
+        try:
+            disponible = resolucion.archivo_pdf.storage.exists(
+                resolucion.archivo_pdf.name
+            )
+        except Exception:
+            # Si el storage no responde, dejamos que el navegador lo intente:
+            # un fallo temporal no debería bloquear un archivo que sí está.
+            logger.exception(
+                'No se pudo verificar el PDF de la resolución %s', resolucion.pk
+            )
+            disponible = True
+
+        if not disponible:
+            logger.warning(
+                'PDF de resolución SENA ausente en el storage: %s (pk=%s)',
+                resolucion.archivo_pdf.name, resolucion.pk,
+            )
+            messages.error(
+                request,
+                f'El PDF de la resolución {resolucion.numero} ya no está '
+                f'disponible en el almacenamiento. Vuelve a cargarlo desde el '
+                f'administrador para poder consultarlo.',
+            )
+            return destino
+
+        return redirect(resolucion.archivo_pdf.url)
 
 
 class AprendicesSenaResolucionView(StaffRequiredMixin, View):

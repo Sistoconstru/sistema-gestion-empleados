@@ -33,6 +33,7 @@ urlpatterns = [
     path('aprendices-sena/actualizar-fin/', views.AprendizSenaActualizarFinView.as_view(), name='aprendiz_sena_actualizar_fin'),
     path('aprendices-sena/reemplazos/', views.AprendicesSenaReemplazosView.as_view(), name='aprendices_sena_reemplazos'),
     path('aprendices-sena/resolucion/', views.AprendicesSenaResolucionView.as_view(), name='aprendices_sena_crear_resolucion'),
+    path('aprendices-sena/resolucion/<int:pk>/pdf/', views.AprendicesSenaResolucionPDFView.as_view(), name='aprendices_sena_resolucion_pdf'),
 
     # URLs para futuras funcionalidades
     # path('generate/', views.GenerateReportView.as_view(), name='generate_report'),
