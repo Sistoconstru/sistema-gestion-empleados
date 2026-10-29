@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.views import View
 from datetime import datetime, timedelta
+import uuid
 
 from .models import (
     Encuesta, TipoEncuesta, ParticipacionEncuesta,
@@ -215,7 +216,19 @@ class ResponderEncuestaView(LoginRequiredMixin, View):
 
         def _guardar_unica(pregunta, valor):
             if pregunta.tipo_pregunta.codigo in tipos_con_opciones_unica:
-                opcion = pregunta.opcionencuesta_set.filter(pk=valor).first()
+                # Filtrar un UUIDField con un valor que no es UUID ("si", "3")
+                # lanza ValidationError y tumbaba el envío con un 500.
+                try:
+                    uuid.UUID(str(valor))
+                    opcion = pregunta.opcionencuesta_set.filter(pk=valor).first()
+                except ValueError:
+                    opcion = None
+                # Formularios abiertos antes de que la pregunta tuviera
+                # opciones envían "si"/"no": se asocian a la opción real.
+                if opcion is None and pregunta.tipo_pregunta.codigo == 'SI_NO':
+                    texto = {'si': 'Sí', 'no': 'No'}.get(str(valor).lower())
+                    if texto:
+                        opcion = pregunta.opcionencuesta_set.filter(opcion=texto).first()
                 if opcion:
                     # Reemplazar cualquier respuesta previa a esta pregunta
                     RespuestaEncuesta.objects.filter(
@@ -506,6 +519,7 @@ class EditarPreguntasView(LoginRequiredMixin, View):
                         orden=idx + 1,
                         activa=True
                     )
+            _asegurar_opciones_si_no(pregunta)
 
             messages.success(request, 'Pregunta agregada exitosamente')
             return redirect('surveys:editar_preguntas', pk=encuesta.pk)
@@ -777,6 +791,23 @@ class ResultadosEncuestaView(LoginRequiredMixin, View):
         })
 
 
+def _asegurar_opciones_si_no(pregunta):
+    """Una pregunta Sí/No sin opciones recibe "Sí" y "No" como opciones reales.
+
+    Sin ellas el formulario enviaba "si"/"no" en lugar del id de una opción, la
+    respuesta no se podía guardar y los resultados no tenían qué contar. El
+    editor no pide opciones para este tipo, así que se crean aquí.
+    """
+    if pregunta.tipo_pregunta.codigo != 'SI_NO':
+        return
+    if pregunta.opcionencuesta_set.exists():
+        return
+    OpcionEncuesta.objects.bulk_create([
+        OpcionEncuesta(pregunta=pregunta, opcion='Sí', valor_numerico=1, orden=1, activa=True),
+        OpcionEncuesta(pregunta=pregunta, opcion='No', valor_numerico=0, orden=2, activa=True),
+    ])
+
+
 def _destinatarios_encuesta(encuesta):
     """Retorna queryset de Empleados destinatarios de la encuesta.
 
@@ -1011,6 +1042,7 @@ class EditarPreguntaView(LoginRequiredMixin, _StaffRequiredMixin, View):
             pregunta.descripcion = descripcion
             pregunta.obligatoria = obligatoria
             pregunta.save()
+            _asegurar_opciones_si_no(pregunta)
             messages.success(request, 'Pregunta actualizada.')
         except Exception as e:
             messages.error(request, f'Error: {e}')
