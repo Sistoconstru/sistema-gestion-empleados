@@ -69,9 +69,25 @@
                 </h1>
                 <p class="mb-0">{{ encuesta.nombre }}</p>
                 <small>Código: {{ encuesta.codigo }}</small>
+                {% if encuesta.es_borrador %}
+                <span class="badge bg-warning text-dark ms-2">Borrador · los empleados aún no la ven</span>
+                {% endif %}
             </div>
-            <div>
-                <a href="{% url 'surveys:asignar_encuesta' encuesta.pk %}" class="btn btn-light me-2">
+            <div class="d-flex flex-wrap gap-2 justify-content-end">
+                {% if encuesta.es_borrador %}
+                <form method="post" action="{% url 'surveys:publicar_encuesta' encuesta.pk %}" class="d-inline"
+                      onsubmit="return confirm('¿Publicar la encuesta? Se avisará a los empleados.')">
+                    {% csrf_token %}
+                    <button class="btn btn-success">
+                        <i class="fas fa-paper-plane me-1"></i>Publicar y avisar
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'surveys:difundir_encuesta' encuesta.pk %}" class="btn btn-light">
+                    <i class="fas fa-bullhorn me-1"></i>Difundir
+                </a>
+                {% endif %}
+                <a href="{% url 'surveys:asignar_encuesta' encuesta.pk %}" class="btn btn-light">
                     <i class="fas fa-users me-1"></i>Asignar Encuesta
                 </a>
                 <a href="{% url 'surveys:encuesta_admin_list' %}" class="btn btn-light">

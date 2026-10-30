@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Encuesta de tu equipo | SIGHU{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5" style="max-width: 760px;">
+    <h1 class="h4 mb-1"><i class="fas fa-users me-2"></i>{{ encuesta.nombre }}</h1>
+    <p class="text-muted mb-4">
+        Cierra el {{ encuesta.fecha_fin|date:"d/m/Y" }}.
+        {% if pendientes %}
+        <strong>{{ pendientes }}</strong> persona{{ pendientes|pluralize }} de tu equipo no ha{{ pendientes|pluralize:"n" }} respondido.
+        Recuérdaselo: solo tienen que entrar a SIGHU, en el menú <em>Encuestas</em>.
+        {% else %}
+        Todo tu equipo ya respondió. ¡Gracias!
+        {% endif %}
+    </p>
+
+    {% if filas %}
+    <div class="list-group">
+        {% for fila in filas %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ fila.empleado.nombre_completo }}</span>
+            {% if fila.respondio %}
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Respondió</span>
+            {% else %}
+            <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pendiente</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <p class="text-muted small mt-3">Solo ves si respondieron, no lo que respondieron.</p>
+    {% else %}
+    <div class="alert alert-light">Ninguna persona de tu equipo tiene asignada esta encuesta.</div>
+    {% endif %}
+</div>
+{% endblock %}

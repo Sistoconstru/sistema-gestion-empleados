@@ -114,6 +114,14 @@ El evaluador es el `jefe_directo` asignado en `HistorialCargo`. El código lo
 dice explícitamente: *usa el jefe_directo asignado manualmente, no busca por
 cargo*. Ver `docs/AUTOMATIZACION_EVALUACIONES.md`.
 
+### 3.6 Encuestas
+
+| Quién | Qué ve | Código |
+|---|---|---|
+| Jefe | Si cada subalterno directo respondió o no una encuesta publicada. **Nunca qué respondió.** | `PendientesEquipoView` (`/encuestas/equipo/<pk>/`) |
+| Jefe | Aviso con cuántos de su equipo faltan (recordatorio manual, a mitad de plazo y víspera del cierre) | `avisos.avisar_jefes` |
+| RRHH | Avance, aviso a pendientes, mensaje de WhatsApp y QR | `DifundirEncuestaView` (solo staff) |
+
 ---
 
 ## 4. Lo que ningún jefe ve

@@ -41,14 +41,21 @@ class Encuesta(models.Model):
     activa = models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     creada_por = models.ForeignKey('authentication.Usuario', on_delete=models.CASCADE)
-    
+    # Nula mientras es borrador. Se llena al pulsar "Publicar": ahí se avisa a
+    # los empleados, ya con las preguntas puestas.
+    fecha_publicacion = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         db_table = 'encuestas'
         verbose_name = 'Encuesta'
         verbose_name_plural = 'Encuestas'
-    
+
     def __str__(self):
         return self.nombre
+
+    @property
+    def es_borrador(self):
+        return self.fecha_publicacion is None
 
 
 class EncuestaCargo(models.Model):

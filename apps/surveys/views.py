@@ -6,8 +6,11 @@ from django.db import models
 from django.db.models import Count, Q, Avg, Max
 from django.utils import timezone
 from django.http import JsonResponse
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.views import View
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from urllib.parse import quote
 import uuid
 
 from .models import (
@@ -367,11 +370,11 @@ class EncuestaAdminListView(LoginRequiredMixin, ListView):
         if estado == 'activa':
             qs = qs.filter(activa=True, fecha_fin__gte=hoy)
         elif estado == 'inactiva':
-            qs = qs.filter(activa=False)
+            qs = qs.filter(activa=False, fecha_publicacion__isnull=False)
         elif estado == 'vencida':
             qs = qs.filter(fecha_fin__lt=hoy)
         elif estado == 'borrador':
-            qs = qs.filter(activa=False, fecha_inicio__gt=hoy)
+            qs = qs.filter(fecha_publicacion__isnull=True)
         # 'todas' → sin filtro adicional
         buscar = self.request.GET.get('q', '').strip()
         if buscar:
@@ -388,7 +391,8 @@ class EncuestaAdminListView(LoginRequiredMixin, ListView):
         todas = Encuesta.objects.all()
         ctx['count_todas'] = todas.count()
         ctx['count_activa'] = todas.filter(activa=True, fecha_fin__gte=hoy).count()
-        ctx['count_inactiva'] = todas.filter(activa=False).count()
+        ctx['count_inactiva'] = todas.filter(activa=False, fecha_publicacion__isnull=False).count()
+        ctx['count_borrador'] = todas.filter(fecha_publicacion__isnull=True).count()
         ctx['count_vencida'] = todas.filter(fecha_fin__lt=hoy).count()
         return ctx
 
@@ -432,20 +436,33 @@ class CrearEncuestaView(LoginRequiredMixin, View):
                 messages.error(request, f'El código "{codigo}" ya existe. Usa otro código.')
                 return redirect('surveys:crear_encuesta')
 
-            # Crear encuesta
+            # Fechas como date, no como el texto del formulario: con texto, el
+            # aviso de publicación fallaba al formatearlas.
+            inicio = date.fromisoformat(fecha_inicio)
+            fin = date.fromisoformat(fecha_fin)
+            if fin < inicio:
+                messages.error(request, 'La fecha de cierre no puede ser anterior a la de inicio.')
+                return redirect('surveys:crear_encuesta')
+
+            # Nace como borrador: nadie la ve ni recibe aviso hasta que RRHH
+            # pulse "Publicar", con las preguntas ya puestas.
             encuesta = Encuesta.objects.create(
                 codigo=codigo,
                 nombre=nombre,
                 descripcion=descripcion,
                 instrucciones=instrucciones,
                 tipo_encuesta_id=tipo_encuesta_id,
-                fecha_inicio=fecha_inicio,
-                fecha_fin=fecha_fin,
+                fecha_inicio=inicio,
+                fecha_fin=fin,
                 creada_por=request.user,
-                activa=True
+                activa=False,
             )
 
-            messages.success(request, f'Encuesta "{nombre}" creada exitosamente. Ahora agrega las preguntas.')
+            messages.success(
+                request,
+                f'Encuesta "{nombre}" creada como borrador. Agrega las preguntas y '
+                f'pulsa "Publicar" para avisar a los empleados.'
+            )
             return redirect('surveys:editar_preguntas', pk=encuesta.pk)
 
         except Exception as e:
@@ -985,7 +1002,8 @@ class EditarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
             # continuar (se les muestra "Encuesta cerrada").
             hoy = _date.today()
             reactivada = False
-            if estaba_inactiva and fi <= hoy <= ff:
+            # Un borrador no se publica por cambiarle la fecha: eso es "Publicar".
+            if estaba_inactiva and not encuesta.es_borrador and fi <= hoy <= ff:
                 encuesta.activa = True
                 reactivada = True
             encuesta.save()
@@ -1006,6 +1024,9 @@ class ToggleActivaEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
 
     def post(self, request, pk):
         encuesta = get_object_or_404(Encuesta, pk=pk)
+        if encuesta.es_borrador:
+            messages.warning(request, 'Es un borrador: usa "Publicar" para activarla y avisar.')
+            return redirect('surveys:editar_preguntas', pk=pk)
         encuesta.activa = not encuesta.activa
         encuesta.save()
         estado = 'reactivada' if encuesta.activa else 'cerrada'
@@ -1236,3 +1257,175 @@ class DuplicarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
             f'Encuesta duplicada como "{nueva.codigo}". Queda inactiva; '
             f'revisa y publícala cuando esté lista.')
         return redirect('surveys:editar_encuesta', pk=nueva.pk)
+
+
+# =============================================================================
+# PUBLICACIÓN Y DIFUSIÓN
+# =============================================================================
+
+class PublicarEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Pasa un borrador a publicada. La señal post_save lanza el aviso."""
+
+    def post(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        if not encuesta.es_borrador:
+            messages.info(request, 'La encuesta ya estaba publicada.')
+            return redirect('surveys:difundir_encuesta', pk=pk)
+        if not encuesta.preguntaencuesta_set.filter(activa=True).exists():
+            messages.error(request, 'Agrega al menos una pregunta antes de publicar.')
+            return redirect('surveys:editar_preguntas', pk=pk)
+        hoy = timezone.localdate()
+        if encuesta.fecha_fin < hoy:
+            messages.error(request, 'La fecha de cierre ya pasó. Cámbiala antes de publicar.')
+            return redirect('surveys:editar_encuesta', pk=pk)
+
+        encuesta.activa = True
+        encuesta.fecha_publicacion = timezone.now()
+        encuesta.save()
+
+        if encuesta.fecha_inicio > hoy:
+            messages.success(request,
+                f'Encuesta publicada. Los empleados recibirán el aviso el '
+                f'{encuesta.fecha_inicio:%d/%m/%Y} a las 7:00, cuando abre.')
+        else:
+            from .avisos import destinatarios_pendientes
+            messages.success(request,
+                f'Encuesta publicada. Se está avisando a '
+                f'{destinatarios_pendientes(encuesta).count()} empleados.')
+        return redirect('surveys:difundir_encuesta', pk=pk)
+
+
+def _enlace_encuesta(request, encuesta):
+    return request.build_absolute_uri(
+        reverse('surveys:responder_encuesta', kwargs={'pk': encuesta.pk})
+    )
+
+
+def _qr_svg(texto):
+    """SVG con viewBox y sin tamaño fijo: lo dimensiona el CSS de la página
+    (pantalla o cartel impreso) sin recortarlo."""
+    import io
+    import segno
+    buffer = io.BytesIO()
+    segno.make(texto, error='m').save(buffer, kind='svg', border=2,
+                                      xmldecl=False, svgns=True, omitsize=True)
+    return mark_safe(buffer.getvalue().decode('utf-8'))
+
+
+class DifundirEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Avance de la encuesta y canales para difundirla: aviso a pendientes,
+    mensaje para WhatsApp y QR imprimible."""
+    template_name = 'surveys/admin/difundir_encuesta.html'
+
+    def get(self, request, pk):
+        from apps.notifications.models import Notificacion, PushSubscription
+        from . import avisos
+
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        hoy = timezone.localdate()
+        pendientes = list(avisos.destinatarios_pendientes(encuesta))
+        completadas = ParticipacionEncuesta.objects.filter(encuesta=encuesta, completada=True).count()
+        usuarios_pend = [e.usuario_id for e in pendientes]
+        con_push = (
+            PushSubscription.objects.filter(usuario_id__in=usuarios_pend, activa=True)
+            .values('usuario_id').distinct().count()
+        )
+        recordados_hoy = Notificacion.objects.filter(
+            usuario_id__in=usuarios_pend,
+            datos_adicionales__encuesta_id=str(encuesta.pk),
+            datos_adicionales__fecha=hoy.isoformat(),
+            tipo_notificacion__codigo='encuesta_recordatorio',
+        ).count()
+
+        enlace = _enlace_encuesta(request, encuesta)
+        mensaje = (
+            f'📋 *{encuesta.nombre}*\n'
+            f'Tienes hasta el {encuesta.fecha_fin:%d/%m/%Y} para responderla. '
+            f'Te toma pocos minutos.\n'
+            f'👉 {enlace}\n'
+            f'(Entra con tu usuario de SIGHU)'
+        )
+        total = len(pendientes) + completadas
+        return render(request, self.template_name, {
+            'encuesta': encuesta,
+            'vigente': avisos.esta_vigente(encuesta),
+            'abre_despues': encuesta.fecha_inicio > hoy,
+            'total': total,
+            'completadas': completadas,
+            'pendientes': len(pendientes),
+            'pct': round(100 * completadas / total) if total else 0,
+            'con_push': con_push,
+            'recordados_hoy': recordados_hoy,
+            'jefes': len(avisos.pendientes_por_jefe(pendientes)),
+            'enlace': enlace,
+            'mensaje_whatsapp': mensaje,
+            'whatsapp_url': 'https://wa.me/?text=' + quote(mensaje),
+            'qr_svg': _qr_svg(enlace),
+        })
+
+    def post(self, request, pk):
+        """Botón "Avisar a pendientes": recordatorio + aviso a sus jefes."""
+        from . import avisos
+
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        if not avisos.esta_vigente(encuesta):
+            messages.error(request,
+                'Solo se puede avisar con la encuesta publicada, abierta y con preguntas.')
+            return redirect('surveys:difundir_encuesta', pk=pk)
+
+        pendientes = list(avisos.destinatarios_pendientes(encuesta))
+        jefes = len(avisos.pendientes_por_jefe(pendientes))
+        avisos.en_segundo_plano(avisos.recordar_pendientes, encuesta.pk, 'manual')
+        messages.success(request,
+            f'Enviando recordatorio a {len(pendientes)} pendientes y aviso a {jefes} '
+            f'jefes. Quien ya recibió un recordatorio hoy no lo recibe de nuevo.')
+        return redirect('surveys:difundir_encuesta', pk=pk)
+
+
+class CartelEncuestaView(LoginRequiredMixin, _StaffRequiredMixin, View):
+    """Cartel imprimible con el QR de la encuesta."""
+
+    def get(self, request, pk):
+        encuesta = get_object_or_404(Encuesta, pk=pk)
+        enlace = _enlace_encuesta(request, encuesta)
+        return render(request, 'surveys/admin/cartel_encuesta.html', {
+            'encuesta': encuesta,
+            'enlace': enlace,
+            'qr_svg': _qr_svg(enlace),
+        })
+
+
+class PendientesEquipoView(LoginRequiredMixin, View):
+    """El jefe ve quiénes de su equipo directo no han respondido.
+
+    Solo muestra si respondieron o no, nunca qué respondieron. El alcance es el
+    mismo de todo el sistema: subalternos por jefe_directo activo.
+    """
+    template_name = 'surveys/equipo_pendientes.html'
+
+    def get(self, request, pk):
+        from apps.employees.models import Empleado
+        from .avisos import destinatarios_pendientes
+
+        encuesta = get_object_or_404(Encuesta, pk=pk, fecha_publicacion__isnull=False)
+        jefe = get_object_or_404(Empleado, usuario=request.user)
+
+        equipo = (
+            Empleado.objects.filter(historialcargo__activo=True, historialcargo__jefe_directo=jefe)
+            .distinct().order_by('nombres', 'apellidos')
+        )
+        pendientes_ids = set(destinatarios_pendientes(encuesta).values_list('pk', flat=True))
+        completados_ids = set(
+            ParticipacionEncuesta.objects.filter(encuesta=encuesta, completada=True)
+            .values_list('empleado_id', flat=True)
+        )
+        filas = [
+            {'empleado': e, 'respondio': e.pk in completados_ids}
+            for e in equipo if e.pk in pendientes_ids or e.pk in completados_ids
+        ]
+        filas.sort(key=lambda f: f['respondio'])
+        return render(request, self.template_name, {
+            'encuesta': encuesta,
+            'filas': filas,
+            'pendientes': sum(not f['respondio'] for f in filas),
+        })

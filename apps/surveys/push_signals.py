@@ -1,17 +1,22 @@
-"""Signals que disparan notificaciones cuando se publica una encuesta.
+"""Aviso a los empleados cuando una encuesta pasa a activa.
 
-Estrategia:
-- Al pasar `Encuesta.activa` a True (o crearla ya activa), notificar a
-  los destinatarios (según asignación por cargo/área).
-- La lista de destinatarios se calcula con el helper _destinatarios_encuesta.
-- Idempotencia: usamos un flag en cache local del modelo (`_activa_anterior`)
-  para saber si el `save` cambió el estado; y un tag en la Notificacion para
-  no duplicar aunque se reguarde el objeto.
+El envío en sí vive en avisos.py. Aquí solo se detecta la transición a activa
+(publicación o reactivación) y se lanza en segundo plano.
+
+Antes el aviso se armaba aquí mismo y se disparaba al CREAR la encuesta. Eso
+tenía dos fallos: avisaba de una encuesta todavía sin preguntas, y al crearla
+desde el formulario la fecha_fin quedaba como texto en la instancia, el
+formato %d/%m/%Y lanzaba ValueError y no salía ningún aviso. Así se quedaron
+sin aviso la encuesta de beneficios (hasta que la reactivaron) y la de la
+fiesta de fin de año. Ahora la encuesta nace como borrador y se avisa al
+publicarla.
 """
 import logging
 
+from django.db import transaction
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -24,85 +29,27 @@ def _recordar_estado_activa(sender, instance, **kwargs):
 
 @receiver(post_save, sender='surveys.Encuesta')
 def _notificar_publicacion(sender, instance, created, **kwargs):
-    """Notifica al destinatario cuando la encuesta entra en estado activa.
+    """Avisa cuando la encuesta entra en estado activa.
 
-    Casos:
-    - created=True + activa=True → publicación inicial.
-    - created=False + antes False + ahora True → reactivación (también notifica).
-    - Cualquier otro → no notifica.
+    - created=True + activa=True → creada ya activa (p. ej. desde el admin).
+    - antes False + ahora True → publicación o reactivación.
+    Los que ya recibieron el aviso no lo reciben de nuevo (tag por usuario).
+    Si aún no abre o no tiene preguntas, avisos.py no envía nada y el job de
+    las 7:00 la avisa cuando corresponda.
     """
     antes = getattr(instance, '_activa_anterior', None)
     entro_en_activa = instance.activa and (created or antes is not True)
+    instance._activa_anterior = instance.activa
     if not entro_en_activa:
         return
 
-    try:
-        from .views import _destinatarios_encuesta
-        from apps.notifications.models import Notificacion, TipoNotificacion
-        from apps.notifications.push_utils import send_push
-    except ImportError:
-        return
+    from . import avisos
+    from .models import Encuesta
 
-    destinatarios = list(_destinatarios_encuesta(instance))
-    if not destinatarios:
-        logger.info(
-            f'Encuesta {instance.codigo} publicada pero no hay empleados '
-            f'activos para notificar.'
-        )
-        return
+    # Activada por fuera de "Publicar" (admin de Django): cuenta como publicada.
+    if instance.fecha_publicacion is None:
+        instance.fecha_publicacion = timezone.now()
+        Encuesta.objects.filter(pk=instance.pk).update(fecha_publicacion=instance.fecha_publicacion)
 
-    from .models import EncuestaCargo, EncuestaArea
-    tiene_asignacion = (
-        EncuestaCargo.objects.filter(encuesta=instance).exists()
-        or EncuestaArea.objects.filter(encuesta=instance).exists()
-    )
-    alcance = 'específica' if tiene_asignacion else 'GENERAL (toda la empresa)'
-
-    tipo_notif, _ = TipoNotificacion.objects.get_or_create(
-        codigo='encuesta_publicada',
-        defaults={
-            'nombre': 'Encuesta publicada',
-            'descripcion': 'Notificación cuando se publica una encuesta al empleado.',
-            'plantilla_titulo': 'Nueva encuesta disponible',
-            'plantilla_mensaje': 'Tienes una encuesta pendiente.',
-            'enviar_email': False,
-            'enviar_push': True,
-            'activo': True,
-        },
-    )
-
-    titulo = 'Nueva encuesta disponible'
-    cuerpo = (
-        f'{instance.nombre}. Cierra el {instance.fecha_fin:%d/%m/%Y}. '
-        f'Toca para responderla.'
-    )
-    url = f'/encuestas/responder/{instance.pk}/'
-
-    enviadas = 0
-    for emp in destinatarios:
-        tag = f'encuesta-pub-{instance.pk}-{emp.usuario.pk}'
-        if Notificacion.objects.filter(
-            usuario=emp.usuario, datos_adicionales__contains={'push_tag': tag},
-        ).exists():
-            continue
-        try:
-            envi, _ = send_push(
-                emp.usuario, titulo, cuerpo,
-                url=url, tag=tag, tag_group='encuesta',
-                actions=[{'action': 'responder', 'title': 'Responder'}],
-                action_urls={'responder': url},
-            )
-            Notificacion.objects.create(
-                usuario=emp.usuario, tipo_notificacion=tipo_notif,
-                titulo=titulo, mensaje=cuerpo,
-                datos_adicionales={'push_tag': tag, 'encuesta_id': str(instance.pk)},
-            )
-            if envi:
-                enviadas += 1
-        except Exception as e:
-            logger.warning(f'Fallo notificando encuesta {instance.codigo} a {emp.usuario.username}: {e}')
-
-    logger.info(
-        f'Encuesta {instance.codigo} publicada ({alcance}): '
-        f'{enviadas} push · {len(destinatarios)} destinatarios.'
-    )
+    # on_commit: el hilo debe ver la encuesta ya guardada.
+    transaction.on_commit(lambda: avisos.en_segundo_plano(avisos.avisar_publicacion, instance.pk))

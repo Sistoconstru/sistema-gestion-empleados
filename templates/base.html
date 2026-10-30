@@ -258,6 +258,50 @@
             </div>
         </div>
     </div>
+    {% if encuestas_pendientes_lista and not request.path|slice:":11" == "/encuestas/" %}
+    {# Ventana "Tienes encuestas pendientes": una vez al día por navegador. Llega a #}
+    {# quien no tiene notificaciones push, que son la mayoría. #}
+    <div class="modal fade" id="modalEncuestasPendientes" tabindex="-1" aria-labelledby="modalEncuestasTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEncuestasTitulo">
+                        <i class="fas fa-poll-h me-2 text-primary"></i>Tienes {{ encuestas_pendientes_nav }} encuesta{{ encuestas_pendientes_nav|pluralize }} pendiente{{ encuestas_pendientes_nav|pluralize }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        {% for encuesta in encuestas_pendientes_lista %}
+                        <a href="{% url 'surveys:responder_encuesta' encuesta.pk %}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>{{ encuesta.nombre }}</span>
+                            <small class="text-muted ms-2 text-nowrap">cierra {{ encuesta.fecha_fin|date:"d/m" }}</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">Te toma pocos minutos.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Más tarde</button>
+                    <a href="{% url 'surveys:responder_encuesta' encuestas_pendientes_lista.0.pk %}" class="btn btn-primary">Responder ahora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function () {
+        const clave = 'sighu-encuestas-aviso-' + new Date().toISOString().slice(0, 10);
+        try {
+            if (localStorage.getItem(clave)) return;
+            localStorage.setItem(clave, '1');
+        } catch (e) { /* sin almacenamiento: se muestra igual */ }
+        const modal = document.getElementById('modalEncuestasPendientes');
+        if (modal && window.bootstrap) { new bootstrap.Modal(modal).show(); }
+    })();
+    </script>
+    {% endif %}
+
     <style>
         /* Cuando el banner está visible, empuja el contenido para que no lo tape */
         body.sighu-install-banner-open { padding-top: 78px; }
@@ -324,14 +368,16 @@
             },
 
             // Suscribe al usuario a push. Devuelve promesa que resuelve con true/false.
-            enableNotifications: async function () {
+            // silencioso: sin alertas, para el re-registro automático.
+            enableNotifications: async function (silencioso) {
+                const avisar = function (msg) { if (!silencioso) alert(msg); };
                 if (!('Notification' in window) || !('PushManager' in window)) {
-                    alert('Tu navegador no soporta notificaciones push.');
+                    avisar('Tu navegador no soporta notificaciones push.');
                     return false;
                 }
                 const permission = await Notification.requestPermission();
                 if (permission !== 'granted') {
-                    alert('No podemos enviarte notificaciones sin tu permiso.');
+                    avisar('No podemos enviarte notificaciones sin tu permiso.');
                     return false;
                 }
                 const reg = await navigator.serviceWorker.ready;
@@ -340,7 +386,7 @@
                     const resp = await fetch('/pwa/vapid-key/');
                     const { public_key } = await resp.json();
                     if (!public_key) {
-                        alert('El servidor aún no tiene configuradas las claves de notificación.');
+                        avisar('El servidor aún no tiene configuradas las claves de notificación.');
                         return false;
                     }
                     sub = await reg.pushManager.subscribe({
@@ -446,8 +492,8 @@
 
             function mostrarNotif() {
                 modoActual = 'notif';
-                title.textContent = 'Activar notificaciones para facilitar tu trabajo';
-                hint.textContent = 'Te avisamos cuando aprueben tu nómina, tengas asistencia registrada o esté cerca una capacitación.';
+                title.textContent = 'Activa las notificaciones en este dispositivo';
+                hint.textContent = 'Entérate al momento de encuestas, vacaciones, capacitaciones y novedades de nómina.';
                 btnAction.textContent = 'Activar';
                 btnAction.disabled = false;
                 btnAction.onclick = async function () {
@@ -473,10 +519,15 @@
             const yaInstalada = window.SIGHU_PWA.isStandalone();
             const permNotif = ('Notification' in window) ? Notification.permission : 'default';
 
+            const soportaPush = 'serviceWorker' in navigator && 'PushManager' in window;
+
             function decidirBannerInicial() {
-                // Prioridad 1: instalada + notifs no activadas → pedir notifs
-                if (yaInstalada && permNotif === 'default' && !fueDescartada(DISMISS_NOTIF)
-                    && 'serviceWorker' in navigator && 'PushManager' in window) {
+                // Prioridad 1: notifs no activadas → pedirlas. Antes solo se
+                // pedían con la app instalada, pero Chrome en Android y los
+                // navegadores de PC reciben push sin instalar nada; así solo el
+                // 22% de los empleados las tenía. En iPhone, Safari sin instalar
+                // no tiene PushManager: ahí sigue mandando instalar primero.
+                if (permNotif === 'default' && soportaPush && !fueDescartada(DISMISS_NOTIF)) {
                     mostrarNotif();
                     return;
                 }
@@ -496,6 +547,21 @@
                 }
             }
             decidirBannerInicial();
+
+            // Permiso concedido pero la suscripción pudo perderse: el servidor
+            // la desactiva tras 3 fallos de envío, o el navegador la renueva.
+            // Re-registrarla en silencio (sin diálogo, el permiso ya está) una
+            // vez al día devuelve los avisos a ese dispositivo.
+            if (permNotif === 'granted' && soportaPush) {
+                const claveResync = 'sighu-push-resync-' + new Date().toISOString().slice(0, 10);
+                let yaHoy = false;
+                try { yaHoy = !!localStorage.getItem(claveResync); } catch (e) {}
+                if (!yaHoy) {
+                    window.SIGHU_PWA.enableNotifications(true).then(function (ok) {
+                        if (ok) { try { localStorage.setItem(claveResync, '1'); } catch (e) {} }
+                    }).catch(function () {});
+                }
+            }
 
             // Al instalarse recién en esta sesión, pedir notifs si aún no se activaron.
             window.addEventListener('appinstalled', function () {

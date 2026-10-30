@@ -38,5 +38,9 @@ urlpatterns = [
 
     # Preview y duplicar (Bloque B)
     path('admin/<uuid:pk>/preview/', views.PreviewEncuestaView.as_view(), name='preview_encuesta'),
+    path('admin/<uuid:pk>/publicar/', views.PublicarEncuestaView.as_view(), name='publicar_encuesta'),
+    path('admin/<uuid:pk>/difundir/', views.DifundirEncuestaView.as_view(), name='difundir_encuesta'),
+    path('admin/<uuid:pk>/cartel/', views.CartelEncuestaView.as_view(), name='cartel_encuesta'),
+    path('equipo/<uuid:pk>/', views.PendientesEquipoView.as_view(), name='pendientes_equipo'),
     path('admin/<uuid:pk>/duplicar/', views.DuplicarEncuestaView.as_view(), name='duplicar_encuesta'),
 ]

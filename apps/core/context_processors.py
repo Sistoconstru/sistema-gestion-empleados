@@ -41,23 +41,15 @@ def surveys_context(request):
     """Agregar conteo de encuestas pendientes al contexto global"""
     if request.user.is_authenticated:
         try:
-            from apps.surveys.models import ParticipacionEncuesta
+            from apps.surveys.avisos import encuestas_pendientes_de
 
             # Verificar si el usuario tiene un empleado asociado
             if hasattr(request.user, 'empleado'):
-                empleado = request.user.empleado
-
-                # Contar encuestas pendientes activas
-                encuestas_pendientes = ParticipacionEncuesta.objects.filter(
-                    empleado=empleado,
-                    completada=False,
-                    encuesta__activa=True,
-                    encuesta__fecha_inicio__lte=date.today(),
-                    encuesta__fecha_fin__gte=date.today()
-                ).count()
-
+                pendientes = encuestas_pendientes_de(request.user.empleado)
                 return {
-                    'encuestas_pendientes_nav': encuestas_pendientes
+                    'encuestas_pendientes_nav': len(pendientes),
+                    # Para la ventana "Tienes encuestas pendientes" de base.html.
+                    'encuestas_pendientes_lista': pendientes[:3],
                 }
         except ImportError:
             # Si el módulo de encuestas no está disponible, devolver 0

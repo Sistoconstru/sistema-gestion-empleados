@@ -848,94 +848,24 @@ def _recordar_actualizar_smmlv():
 
 
 def _encuestas_mantenimiento_diario():
-    """Corre diario a las 7 AM. Hace dos cosas:
+    """Corre diario a las 7 AM.
 
-    1) Envía recordatorio push a los destinatarios que NO han completado
-       una encuesta activa cuya fecha_fin está entre hoy y hoy+1 día.
-       Idempotente vía tag en Notificacion.
-
-    2) Marca activa=False a las encuestas cuya fecha_fin < hoy.
+    1) Cierra (activa=False) las encuestas cuya fecha_fin ya pasó.
+    2) Avisos (apps/surveys/avisos.py): publicación de las que abren hoy,
+       recordatorio a mitad de plazo y en la víspera del cierre, con aviso a
+       los jefes de quienes siguen pendientes. Idempotente por día.
     """
-    from datetime import date as _date, timedelta as _td
-    from apps.surveys.models import Encuesta, ParticipacionEncuesta
-    from apps.surveys.views import _destinatarios_encuesta
-    from apps.notifications.models import Notificacion, TipoNotificacion
-    from apps.notifications.push_utils import send_push
+    from datetime import date as _date
+    from apps.surveys import avisos
+    from apps.surveys.models import Encuesta
 
     hoy = _date.today()
 
-    # === 1) Auto-cierre ===
     cerradas = Encuesta.objects.filter(
         activa=True, fecha_fin__lt=hoy,
     ).update(activa=False)
-
-    # === 2) Recordatorio 24h antes ===
-    manana = hoy + _td(days=1)
-    proximas = Encuesta.objects.filter(
-        activa=True, fecha_fin=manana,
-    )
-
-    tipo_notif = None
-    enviadas = 0
-    for enc in proximas:
-        destinatarios = list(_destinatarios_encuesta(enc))
-        if not destinatarios:
-            continue
-        # Excluir quienes ya completaron
-        completados_ids = set(
-            ParticipacionEncuesta.objects.filter(
-                encuesta=enc, completada=True,
-            ).values_list('empleado_id', flat=True)
-        )
-        pendientes = [e for e in destinatarios if e.id not in completados_ids]
-        if not pendientes:
-            continue
-
-        if tipo_notif is None:
-            tipo_notif, _ = TipoNotificacion.objects.get_or_create(
-                codigo='encuesta_recordatorio',
-                defaults={
-                    'nombre': 'Recordatorio de encuesta',
-                    'descripcion': 'Aviso 24h antes del cierre a quienes no han respondido.',
-                    'plantilla_titulo': 'Encuesta cierra mañana',
-                    'plantilla_mensaje': 'Tu encuesta cierra mañana.',
-                    'enviar_email': False,
-                    'enviar_push': True,
-                    'activo': True,
-                },
-            )
-
-        titulo = 'Encuesta cierra mañana'
-        cuerpo = f'"{enc.nombre}" cierra el {enc.fecha_fin:%d/%m/%Y}. Aún no la has respondido.'
-        url = f'/encuestas/responder/{enc.pk}/'
-
-        for emp in pendientes:
-            tag = f'encuesta-rec-{enc.pk}-{emp.usuario.pk}-{hoy.isoformat()}'
-            if Notificacion.objects.filter(
-                usuario=emp.usuario, datos_adicionales__contains={'push_tag': tag},
-            ).exists():
-                continue
-            try:
-                envi, _ = send_push(
-                    emp.usuario, titulo, cuerpo,
-                    url=url, tag=tag, tag_group='encuesta',
-                    actions=[{'action': 'responder', 'title': 'Responder'}],
-                    action_urls={'responder': url},
-                )
-                Notificacion.objects.create(
-                    usuario=emp.usuario, tipo_notificacion=tipo_notif,
-                    titulo=titulo, mensaje=cuerpo,
-                    datos_adicionales={'push_tag': tag, 'encuesta_id': str(enc.pk),
-                                       'fecha': hoy.isoformat()},
-                )
-                if envi:
-                    enviadas += 1
-            except Exception as exc:
-                logger.warning(f'Fallo recordatorio encuesta {enc.codigo}: {exc}')
-
-    logger.info(
-        f'Encuestas mantenimiento: {cerradas} cerradas · {enviadas} recordatorios push.'
-    )
+    avisos.mantenimiento_diario(hoy)
+    logger.info(f'Encuestas mantenimiento: {cerradas} cerradas.')
 
 
 def _limpiar_notificaciones_antiguas():

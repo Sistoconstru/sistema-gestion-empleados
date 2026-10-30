@@ -42,6 +42,7 @@
 
 .quick-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
 }
 </style>
@@ -133,6 +134,9 @@
                 <a href="?estado=inactiva{% if buscar %}&q={{ buscar }}{% endif %}" class="btn btn-sm {% if f == 'inactiva' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
                     Inactivas <span class="badge bg-light text-dark ms-1">{{ count_inactiva }}</span>
                 </a>
+                <a href="?estado=borrador{% if buscar %}&q={{ buscar }}{% endif %}" class="btn btn-sm {% if f == 'borrador' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    Borradores <span class="badge bg-light text-dark ms-1">{{ count_borrador }}</span>
+                </a>
                 <a href="?estado=vencida{% if buscar %}&q={{ buscar }}{% endif %}" class="btn btn-sm {% if f == 'vencida' %}btn-warning{% else %}btn-outline-warning{% endif %}">
                     Vencidas <span class="badge bg-light text-dark ms-1">{{ count_vencida }}</span>
                 </a>
@@ -154,7 +158,9 @@
                                     <div class="mb-2">
                                         <span class="badge bg-secondary me-1">{{ encuesta.codigo }}</span>
                                         <span class="badge bg-info me-1">{{ encuesta.tipo_encuesta.nombre }}</span>
-                                        {% if encuesta.activa %}
+                                        {% if encuesta.es_borrador %}
+                                        <span class="badge bg-warning text-dark badge-estado">Borrador</span>
+                                        {% elif encuesta.activa %}
                                         <span class="badge bg-success badge-estado">Activa</span>
                                         {% else %}
                                         <span class="badge bg-secondary badge-estado">Inactiva</span>
@@ -213,6 +219,19 @@
                                         <i class="fas fa-copy me-1"></i>Duplicar
                                     </button>
                                 </form>
+                                {% if encuesta.es_borrador %}
+                                <form method="post" action="{% url 'surveys:publicar_encuesta' encuesta.pk %}" class="d-inline"
+                                      onsubmit="return confirm('¿Publicar la encuesta? Se avisará a los empleados.')">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-success" title="Publicar y avisar">
+                                        <i class="fas fa-paper-plane me-1"></i>Publicar
+                                    </button>
+                                </form>
+                                {% else %}
+                                <a href="{% url 'surveys:difundir_encuesta' encuesta.pk %}"
+                                   class="btn btn-sm btn-primary" title="Avance, avisos, WhatsApp y QR">
+                                    <i class="fas fa-bullhorn me-1"></i>Difundir
+                                </a>
                                 <form method="post" action="{% url 'surveys:toggle_activa_encuesta' encuesta.pk %}" class="d-inline"
                                       onsubmit="return confirm('{% if encuesta.activa %}¿Cerrar esta encuesta? Los empleados dejarán de verla como pendiente.{% else %}¿Reactivar esta encuesta?{% endif %}')">
                                     {% csrf_token %}
@@ -221,6 +240,7 @@
                                         <i class="fas fa-{% if encuesta.activa %}stop{% else %}play{% endif %} me-1"></i>{% if encuesta.activa %}Cerrar{% else %}Reactivar{% endif %}
                                     </button>
                                 </form>
+                                {% endif %}
                             </div>
 
                             <div class="mt-3">

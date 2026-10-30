@@ -106,6 +106,9 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'apps.notifications.context_processors.notificaciones',
                 'apps.employees.context_processors.mensajes_sin_leer',
+                # Contador de encuestas del menú y ventana de pendientes. Existía
+                # pero nunca se registró: el contador no se mostraba.
+                'apps.core.context_processors.surveys_context',
             ],
         },
     },

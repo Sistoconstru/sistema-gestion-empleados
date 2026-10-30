@@ -41,3 +41,4 @@ pywebpush==2.3.0
 py-vapid==1.9.4
 django-axes==8.3.1
 django-ipware==7.0.1
+segno==1.6.1
