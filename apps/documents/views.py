@@ -18,8 +18,14 @@ from datetime import date, timedelta
 import json
 import logging
 
-from .models import DocumentoEmpleado, TipoDocumentoEmpleado, TipoDocumentoCargo
-from .forms import DocumentoEmpleadoForm, MultipleDocumentUploadForm, DocumentApprovalForm, DocumentoReemplazoForm
+from django.db.models import Count
+from django.views.decorators.http import require_POST
+
+from .models import AnexoDocumento, DocumentoEmpleado, TipoDocumentoEmpleado, TipoDocumentoCargo, VersionDocumento
+from .forms import (
+    AnexoDocumentoForm, DocumentoActualizacionForm, DocumentoEmpleadoForm,
+    MultipleDocumentUploadForm, DocumentApprovalForm, DocumentoReemplazoForm,
+)
 from apps.employees.models import Empleado
 
 logger = logging.getLogger(__name__)
@@ -43,9 +49,13 @@ def documento_replace(request, documento_id):
         form = DocumentoReemplazoForm(request.POST, request.FILES, instance=documento, usuario=request.user)
         if form.is_valid():
             with transaction.atomic():
-                # Guardar la ruta del archivo anterior
-                old_file = documento.archivo.name if documento.archivo else None
-                
+                # Antes se borraba el archivo anterior de S3. Ahora pasa al
+                # historial: también el rechazado sirve de rastro.
+                _archivar_version(
+                    DocumentoEmpleado.objects.get(pk=documento.pk), request.user,
+                    f'Reemplazo de documento rechazado: {documento.motivo_rechazo}'.strip(': '),
+                )
+
                 # Actualizar el documento
                 documento = form.save(commit=False)
                 documento.estado_aprobacion = 'pendiente'
@@ -53,15 +63,7 @@ def documento_replace(request, documento_id):
                 documento.fecha_aprobacion = None
                 documento.version += 1
                 documento.save()
-                
-                # Eliminar el archivo anterior si existe
-                if old_file:
-                    try:
-                        storages["default"].delete(old_file)
-                    except Exception as e:
-                        logger.warning(f"No se pudo eliminar el archivo anterior: {old_file}. Motivo: {str(e)}")
-                        pass
-                
+
                 messages.success(request, 'Documento reemplazado correctamente.')
                 return redirect('documents:documento_view', documento_pk=documento_id)
     else:
@@ -82,7 +84,10 @@ def documento_empleado_detail(request, empleado_pk):
         raise PermissionDenied("No tienes permisos para ver estos documentos")
     
     # Obtener documentos existentes
-    documentos_existentes = DocumentoEmpleado.objects.filter(empleado=empleado).select_related('tipo_documento')
+    documentos_existentes = (
+        DocumentoEmpleado.objects.filter(empleado=empleado).select_related('tipo_documento')
+        .annotate(num_anexos=Count('anexos'))
+    )
     
     # Obtener tipos de documentos requeridos/disponibles
     documentos_obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=True, activo=True)
@@ -332,7 +337,13 @@ def documento_approve(request, documento_pk):
         'documento': documento,
         'titulo': f'Revisar Documento - {documento.tipo_documento.nombre}',
         'modo_visualizacion': modo_visualizacion,
-        'today': timezone.now().date()
+        'today': timezone.now().date(),
+        # Anexos: los ven RRHH y el empleado. Versiones anteriores: solo RRHH.
+        'anexos': documento.anexos.select_related('cargado_por'),
+        'versiones': (
+            documento.versiones_anteriores.select_related('reemplazada_por')
+            if request.user.is_staff else []
+        ),
     }
     return render(request, 'documents/documento_approval_form.html', context)
 
@@ -536,3 +547,167 @@ class DocumentoEmpleadoListView(LoginRequiredMixin, PermissionRequiredMixin, Lis
         })
         
         return context
+
+
+# =============================================================================
+# VERSIONES Y ANEXOS (solo RRHH)
+# =============================================================================
+
+def _solo_staff(request):
+    if not request.user.is_staff:
+        raise PermissionDenied('Solo Talento Humano puede hacer esto.')
+
+
+def _archivar_version(documento, usuario, motivo):
+    """Copia los datos de la versión actual al historial antes de reemplazarla.
+
+    El archivo no se mueve ni se borra: la fila del historial apunta a la
+    misma ruta de S3, y el documento pasa a apuntar a la nueva.
+    """
+    return VersionDocumento.objects.create(
+        documento=documento,
+        version=documento.version,
+        archivo=documento.archivo.name,
+        nombre_archivo=documento.nombre_archivo,
+        fecha_documento=documento.fecha_documento,
+        fecha_vencimiento=documento.fecha_vencimiento,
+        estado_aprobacion=documento.estado_aprobacion,
+        fecha_carga=documento.fecha_carga,
+        cargado_por=documento.cargado_por,
+        aprobado_por=documento.aprobado_por,
+        fecha_aprobacion=documento.fecha_aprobacion,
+        reemplazada_por=usuario,
+        motivo=motivo,
+    )
+
+
+def _servir_archivo(archivo, nombre):
+    try:
+        response = HttpResponse(archivo.read(), content_type='application/octet-stream')
+        response['Content-Disposition'] = f'attachment; filename="{nombre}"'
+        return response
+    except Exception as e:
+        logger.error(f'Error descargando {nombre}: {e}')
+        raise Http404('No se encontró el archivo.')
+
+
+@login_required
+def documento_actualizar(request, documento_pk):
+    """RRHH reemplaza un documento en cualquier estado, también aprobado.
+
+    La versión actual queda en el historial y la nueva queda aprobada: la
+    sube Talento Humano, no hay a quién más pedirle la revisión.
+    """
+    _solo_staff(request)
+    documento = get_object_or_404(DocumentoEmpleado, pk=documento_pk)
+
+    if request.method == 'POST':
+        form = DocumentoActualizacionForm(request.POST, request.FILES, documento=documento)
+        if form.is_valid():
+            with transaction.atomic():
+                _archivar_version(documento, request.user, form.cleaned_data['motivo'])
+
+                archivo = form.cleaned_data['archivo']
+                ext = archivo.name.rsplit('.', 1)[-1].lower()
+                ahora = timezone.now()
+                documento.archivo = archivo
+                documento.nombre_archivo = (
+                    f'{documento.tipo_documento.codigo}_{documento.empleado.numero_documento}.{ext}'
+                )
+                documento.fecha_documento = form.cleaned_data['fecha_documento']
+                if documento.tipo_documento.tiene_vencimiento:
+                    documento.fecha_vencimiento = form.cleaned_data['fecha_vencimiento']
+                documento.version += 1
+                documento.cargado_por = request.user
+                documento.estado_aprobacion = 'aprobado'
+                documento.aprobado_por = request.user
+                documento.fecha_aprobacion = ahora
+                documento.rechazado_por = None
+                documento.fecha_rechazo = None
+                documento.motivo_rechazo = ''
+                documento.save()
+                # fecha_carga es auto_now_add: save() no la mueve.
+                DocumentoEmpleado.objects.filter(pk=documento.pk).update(fecha_carga=ahora)
+
+            messages.success(
+                request,
+                f'{documento.tipo_documento.nombre} actualizado a la versión {documento.version}. '
+                f'La anterior quedó en el historial.'
+            )
+            return redirect('documents:documento_view', documento_pk=documento.pk)
+    else:
+        form = DocumentoActualizacionForm(documento=documento)
+
+    return render(request, 'documents/documento_actualizar.html', {
+        'form': form,
+        'documento': documento,
+    })
+
+
+@login_required
+def anexo_crear(request, documento_pk):
+    """RRHH adjunta un otrosí, prórroga u otro anexo. Queda aprobado."""
+    _solo_staff(request)
+    documento = get_object_or_404(DocumentoEmpleado, pk=documento_pk)
+    if not documento.tipo_documento.admite_anexos:
+        messages.error(request, f'{documento.tipo_documento.nombre} no admite anexos.')
+        return redirect('documents:documento_view', documento_pk=documento.pk)
+
+    if request.method == 'POST':
+        form = AnexoDocumentoForm(request.POST, request.FILES, documento=documento)
+        if form.is_valid():
+            anexo = form.save(commit=False)
+            anexo.documento = documento
+            anexo.cargado_por = request.user
+            ext = anexo.archivo.name.rsplit('.', 1)[-1].lower()
+            anexo.nombre_archivo = (
+                f'{anexo.tipo.upper()}_{documento.empleado.numero_documento}_'
+                f'{anexo.fecha_vigencia:%Y%m%d}.{ext}'
+            )
+            anexo.save()
+            messages.success(request, f'{anexo.get_tipo_display()} agregado al {documento.tipo_documento.nombre.lower()}.')
+            return redirect('documents:documento_view', documento_pk=documento.pk)
+    else:
+        form = AnexoDocumentoForm(documento=documento)
+
+    return render(request, 'documents/anexo_form.html', {
+        'form': form,
+        'documento': documento,
+    })
+
+
+@login_required
+def anexo_descargar(request, anexo_pk):
+    """RRHH o el propio empleado."""
+    anexo = get_object_or_404(AnexoDocumento.objects.select_related('documento__empleado'), pk=anexo_pk)
+    empleado = anexo.documento.empleado
+    if not request.user.is_staff and getattr(request.user, 'empleado', None) != empleado:
+        raise PermissionDenied('No tienes permisos para descargar este anexo.')
+    return _servir_archivo(anexo.archivo, anexo.nombre_archivo)
+
+
+@login_required
+@require_POST
+def anexo_eliminar(request, anexo_pk):
+    """Para anexos cargados por error. Borra también el archivo."""
+    _solo_staff(request)
+    anexo = get_object_or_404(AnexoDocumento, pk=anexo_pk)
+    documento_pk = anexo.documento_id
+    nombre = anexo.get_tipo_display()
+    archivo = anexo.archivo.name
+    anexo.delete()
+    try:
+        storages['default'].delete(archivo)
+    except Exception as e:
+        logger.warning(f'No se pudo borrar el archivo del anexo {archivo}: {e}')
+    logger.info(f'[ANEXO] {request.user.username} eliminó {nombre} ({archivo}) del documento {documento_pk}')
+    messages.success(request, f'{nombre} eliminado.')
+    return redirect('documents:documento_view', documento_pk=documento_pk)
+
+
+@login_required
+def version_descargar(request, version_pk):
+    """Versiones anteriores: solo RRHH. El empleado ve solo la vigente."""
+    _solo_staff(request)
+    version = get_object_or_404(VersionDocumento, pk=version_pk)
+    return _servir_archivo(version.archivo, f'v{version.version}_{version.nombre_archivo}')

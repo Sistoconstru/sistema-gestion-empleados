@@ -38,6 +38,8 @@ class TipoDocumentoEmpleado(models.Model):
     tamaño_maximo_mb = models.IntegerField(default=5)  # Tamaño máximo en MB
     requiere_aprobacion = models.BooleanField(default=True)  # Si requiere aprobación
     activo = models.BooleanField(default=True)  # Estado activo/inactivo
+    # Si RRHH puede adjuntarle anexos (otrosí, prórrogas...). Hoy: contrato laboral.
+    admite_anexos = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'tipos_documento_empleado'
@@ -99,3 +101,91 @@ class DocumentoEmpleado(models.Model):
         unique_together = ['empleado', 'tipo_documento']  # Un documento por tipo y empleado
         verbose_name = 'Documento de Empleado'
         verbose_name_plural = 'Documentos de Empleado'
+
+
+def get_upload_path_anexo(instance, filename):
+    """documentos/<cedula>/<TIPO>/anexos/<tipo_anexo>_<timestamp>.<ext>"""
+    import os
+    from django.utils import timezone
+
+    documento = instance.documento
+    timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+    _, ext = os.path.splitext(filename)
+    return (
+        f'documentos/{documento.empleado.numero_documento}/'
+        f'{documento.tipo_documento.codigo}/anexos/{instance.tipo}_{timestamp}{ext}'
+    )
+
+
+class VersionDocumento(models.Model):
+    """Versión anterior de un DocumentoEmpleado, guardada al reemplazarlo.
+
+    Antes, reemplazar borraba el archivo anterior de S3: un contrato
+    actualizado perdía el original. Ahora el archivo se queda donde estaba y
+    esta fila conserva sus datos. Solo RRHH ve las versiones anteriores.
+    """
+    from custom_storage.media import MediaStorage
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    documento = models.ForeignKey(DocumentoEmpleado, on_delete=models.CASCADE, related_name='versiones_anteriores')
+    version = models.IntegerField()
+    archivo = models.FileField(upload_to=get_upload_path, storage=MediaStorage())
+    nombre_archivo = models.CharField(max_length=255)
+    fecha_documento = models.DateField(null=True, blank=True)
+    fecha_vencimiento = models.DateField(null=True, blank=True)
+    estado_aprobacion = models.CharField(max_length=20, choices=DocumentoEmpleado.ESTADOS_APROBACION)
+    fecha_carga = models.DateTimeField()
+    cargado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, related_name='+')
+    aprobado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True)
+    # Quién la reemplazó, cuándo y por qué
+    reemplazada_en = models.DateTimeField(auto_now_add=True)
+    reemplazada_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, related_name='+')
+    motivo = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'documentos_empleado_versiones'
+        ordering = ['-version']
+        verbose_name = 'Versión anterior de documento'
+        verbose_name_plural = 'Versiones anteriores de documentos'
+
+    def __str__(self):
+        return f'{self.documento} v{self.version}'
+
+
+class AnexoDocumento(models.Model):
+    """Anexo de un documento: otrosí, prórroga, modificación salarial...
+
+    No reemplaza al documento, lo complementa: el contrato sigue vigente y los
+    anexos muestran cómo cambió la relación laboral. Los sube RRHH y quedan
+    aprobados al cargarlos.
+    """
+    from custom_storage.media import MediaStorage
+
+    TIPOS = [
+        ('otrosi', 'Otrosí'),
+        ('prorroga', 'Prórroga'),
+        ('modificacion_salarial', 'Modificación salarial'),
+        ('cambio_cargo', 'Cambio de cargo'),
+        ('cambio_jornada', 'Cambio de jornada'),
+        ('otro', 'Otro'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    documento = models.ForeignKey(DocumentoEmpleado, on_delete=models.CASCADE, related_name='anexos')
+    tipo = models.CharField(max_length=30, choices=TIPOS)
+    fecha_vigencia = models.DateField(help_text='Desde cuándo rige el anexo')
+    descripcion = models.TextField(blank=True)
+    archivo = models.FileField(upload_to=get_upload_path_anexo, storage=MediaStorage())
+    nombre_archivo = models.CharField(max_length=255)
+    cargado_por = models.ForeignKey('authentication.Usuario', on_delete=models.SET_NULL, null=True, related_name='anexos_cargados')
+    fecha_carga = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'documentos_empleado_anexos'
+        ordering = ['fecha_vigencia', 'fecha_carga']
+        verbose_name = 'Anexo de documento'
+        verbose_name_plural = 'Anexos de documentos'
+
+    def __str__(self):
+        return f'{self.get_tipo_display()} {self.fecha_vigencia:%d/%m/%Y} - {self.documento}'

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Nuevo anexo · {{ documento.tipo_documento.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 820px;">
+    <h2 class="h4 mb-3">Agregar anexo al {{ documento.tipo_documento.nombre|lower }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <p class="mb-3"><strong>Empleado:</strong> {{ documento.empleado.nombre_completo }}</p>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tipo.id_for_label }}" class="form-label">Tipo de anexo</label>
+                        {{ form.tipo }}
+                        {% if form.tipo.errors %}<div class="invalid-feedback d-block">{{ form.tipo.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.fecha_vigencia.id_for_label }}" class="form-label">Vigente desde</label>
+                        {{ form.fecha_vigencia }}
+                        {% if form.fecha_vigencia.errors %}<div class="invalid-feedback d-block">{{ form.fecha_vigencia.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción <span class="text-muted">(opcional)</span></label>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.errors %}<div class="invalid-feedback d-block">{{ form.descripcion.errors }}</div>{% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.archivo.id_for_label }}" class="form-label">Archivo firmado</label>
+                    {{ form.archivo }}
+                    {% if form.archivo.errors %}<div class="invalid-feedback d-block">{{ form.archivo.errors }}</div>{% endif %}
+                </div>
+
+                <p class="text-muted small">El anexo queda aprobado al guardarlo. El empleado lo verá junto a su contrato.</p>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'documents:documento_view' documento.pk %}" class="btn btn-outline-gris">Cancelar</a>
+                    <button type="submit" class="btn btn-corporativo">
+                        <i class="fas fa-paperclip me-1"></i>Guardar anexo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

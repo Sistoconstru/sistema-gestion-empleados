@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Actualizar {{ documento.tipo_documento.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 820px;">
+    <h2 class="h4 mb-3">Actualizar {{ documento.tipo_documento.nombre|lower }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <p class="mb-1"><strong>Empleado:</strong> {{ documento.empleado.nombre_completo }}</p>
+            <p class="mb-3"><strong>Versión actual:</strong> {{ documento.version }} · cargada el {{ documento.fecha_carga|date:"d/m/Y" }}</p>
+
+            <div class="alert alert-azul small">
+                <i class="fas fa-history me-1"></i>
+                La versión actual no se borra: queda en el historial del documento, visible solo para Talento Humano.
+                La nueva queda <strong>aprobada</strong>.
+                {% if documento.tipo_documento.admite_anexos %}
+                <br><i class="fas fa-paperclip me-1"></i>
+                Si es un otrosí o una prórroga, no actualices el contrato: <a href="{% url 'documents:anexo_crear' documento.pk %}">agrégalo como anexo</a>.
+                {% endif %}
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="mb-3">
+                    <label for="{{ form.archivo.id_for_label }}" class="form-label">Nuevo archivo</label>
+                    {{ form.archivo }}
+                    {% if form.archivo.errors %}<div class="invalid-feedback d-block">{{ form.archivo.errors }}</div>{% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.fecha_documento.id_for_label }}" class="form-label">Fecha del documento</label>
+                        {{ form.fecha_documento }}
+                        {% if form.fecha_documento.errors %}<div class="invalid-feedback d-block">{{ form.fecha_documento.errors }}</div>{% endif %}
+                    </div>
+                    {% if documento.tipo_documento.tiene_vencimiento %}
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.fecha_vencimiento.id_for_label }}" class="form-label">Fecha de vencimiento</label>
+                        {{ form.fecha_vencimiento }}
+                        {% if form.fecha_vencimiento.errors %}<div class="invalid-feedback d-block">{{ form.fecha_vencimiento.errors }}</div>{% endif %}
+                    </div>
+                    {% else %}
+                    {{ form.fecha_vencimiento }}
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.motivo.id_for_label }}" class="form-label">Motivo del cambio</label>
+                    {{ form.motivo }}
+                    <div class="form-text">{{ form.motivo.help_text }}</div>
+                    {% if form.motivo.errors %}<div class="invalid-feedback d-block">{{ form.motivo.errors }}</div>{% endif %}
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'documents:documento_view' documento.pk %}" class="btn btn-outline-gris">Cancelar</a>
+                    <button type="submit" class="btn btn-corporativo">
+                        <i class="fas fa-upload me-1"></i>Actualizar documento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -152,7 +152,18 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                                 <i class="fas fa-file-alt text-azul me-2" title="Opcional"></i>
                             {% endif %}
                             <div>
-                                <div class="fw-bold">{{ documento.tipo_documento.nombre }}</div>
+                                <div class="fw-bold">
+                                    {{ documento.tipo_documento.nombre }}
+                                    {% if documento.num_anexos %}
+                                    <a href="{% url 'documents:documento_view' documento.pk %}" class="badge bg-azul text-decoration-none ms-1"
+                                       title="Ver anexos">
+                                        <i class="fas fa-paperclip me-1"></i>{{ documento.num_anexos }} anexo{{ documento.num_anexos|pluralize }}
+                                    </a>
+                                    {% endif %}
+                                    {% if documento.version > 1 and es_administrador %}
+                                    <span class="badge bg-gris-claro text-dark ms-1" title="Tiene versiones anteriores">v{{ documento.version }}</span>
+                                    {% endif %}
+                                </div>
                                 <div class="text-muted small">{{ documento.nombre_archivo }}</div>
                             </div>
                         </div>
@@ -204,11 +215,23 @@ templates/documents/empleado_documentos.html - GESTIÓN DE DOCUMENTOS POR EMPLEA
                                 <i class="fas fa-eye"></i>
                             </a>
                             {% if es_administrador and documento.estado_aprobacion == 'pendiente' %}
-                            <a href="{% url 'documents:documento_approve' documento.pk %}" 
-                               class="btn btn-outline-amarillo text-corporativo" 
+                            <a href="{% url 'documents:documento_approve' documento.pk %}"
+                               class="btn btn-outline-amarillo text-corporativo"
                                title="Aprobar/Rechazar">
                                 <i class="fas fa-check"></i>
                             </a>
+                            {% endif %}
+                            {% if es_administrador %}
+                            <a href="{% url 'documents:documento_actualizar' documento.pk %}"
+                               class="btn btn-outline-corporativo" title="Actualizar (guarda la versión anterior)">
+                                <i class="fas fa-upload"></i>
+                            </a>
+                            {% if documento.tipo_documento.admite_anexos %}
+                            <a href="{% url 'documents:anexo_crear' documento.pk %}"
+                               class="btn btn-outline-azul" title="Agregar anexo (otrosí, prórroga…)">
+                                <i class="fas fa-paperclip"></i>
+                            </a>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </td>

@@ -34,6 +34,13 @@ urlpatterns = [
     
     # Reemplazar documento rechazado
     path('documento/<uuid:documento_id>/reemplazar/', views.documento_replace, name='documento_replace'),
+
+    # Versiones y anexos (solo RRHH sube; el empleado ve la vigente y los anexos)
+    path('documento/<uuid:documento_pk>/actualizar/', views.documento_actualizar, name='documento_actualizar'),
+    path('documento/<uuid:documento_pk>/anexos/nuevo/', views.anexo_crear, name='anexo_crear'),
+    path('anexo/<uuid:anexo_pk>/descargar/', views.anexo_descargar, name='anexo_descargar'),
+    path('anexo/<uuid:anexo_pk>/eliminar/', views.anexo_eliminar, name='anexo_eliminar'),
+    path('version/<uuid:version_pk>/descargar/', views.version_descargar, name='version_descargar'),
     
     # APIs
     path('api/pendientes/', views.documentos_pendientes_api, name='documentos_pendientes_api'),

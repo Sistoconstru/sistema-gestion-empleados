@@ -174,9 +174,96 @@ templates/documents/documento_approval_form.html - FORMULARIO DE APROBACIÓN
                     </div>
                 </div>
                 {% endif %}
+
+                {% if user.is_staff %}
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a href="{% url 'documents:documento_actualizar' documento.pk %}" class="btn btn-outline-corporativo btn-sm">
+                        <i class="fas fa-upload me-1"></i>Actualizar documento
+                    </a>
+                    {% if documento.tipo_documento.admite_anexos %}
+                    <a href="{% url 'documents:anexo_crear' documento.pk %}" class="btn btn-corporativo btn-sm">
+                        <i class="fas fa-paperclip me-1"></i>Agregar anexo (otrosí, prórroga…)
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
-        
+
+        {% if documento.tipo_documento.admite_anexos %}
+        <!-- Anexos: RRHH y el empleado -->
+        <div class="card mb-4">
+            <div class="card-header bg-corporativo text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-paperclip me-2"></i>Anexos ({{ anexos|length }})
+                </h5>
+            </div>
+            {% if anexos %}
+            <ul class="list-group list-group-flush">
+                {% for anexo in anexos %}
+                <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div>
+                        <span class="badge bg-azul me-2">{{ anexo.get_tipo_display }}</span>
+                        <strong>Vigente desde {{ anexo.fecha_vigencia|date:"d/m/Y" }}</strong>
+                        {% if anexo.descripcion %}<div class="small mt-1">{{ anexo.descripcion }}</div>{% endif %}
+                        <div class="text-muted small">
+                            Cargado el {{ anexo.fecha_carga|date:"d/m/Y" }}{% if user.is_staff and anexo.cargado_por %} por {{ anexo.cargado_por.get_full_name|default:anexo.cargado_por.username }}{% endif %}
+                        </div>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="{{ anexo.archivo.url }}" target="_blank" rel="noopener" class="btn btn-outline-azul btn-sm" title="Ver">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'documents:anexo_descargar' anexo.pk %}" class="btn btn-outline-corporativo btn-sm" title="Descargar">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        {% if user.is_staff %}
+                        <form method="post" action="{% url 'documents:anexo_eliminar' anexo.pk %}"
+                              onsubmit="return confirm('¿Eliminar este anexo? Se borra también el archivo. Úsalo solo si se cargó por error.')">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-danger btn-sm" title="Eliminar (cargado por error)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="card-body text-muted small">Sin anexos.</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if versiones %}
+        <!-- Historial: solo RRHH -->
+        <div class="card mb-4">
+            <div class="card-header bg-gris-claro">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Versiones anteriores ({{ versiones|length }})
+                    <small class="text-muted ms-2">solo visible para Talento Humano</small>
+                </h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for version in versiones %}
+                <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div>
+                        <strong>Versión {{ version.version }}</strong>
+                        <span class="text-muted small ms-1">cargada el {{ version.fecha_carga|date:"d/m/Y" }} · {{ version.get_estado_aprobacion_display|lower }}</span>
+                        <div class="small">
+                            Reemplazada el {{ version.reemplazada_en|date:"d/m/Y H:i" }}{% if version.reemplazada_por %} por {{ version.reemplazada_por.get_full_name|default:version.reemplazada_por.username }}{% endif %}{% if version.motivo %}: {{ version.motivo }}{% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'documents:version_descargar' version.pk %}" class="btn btn-outline-corporativo btn-sm">
+                        <i class="fas fa-download me-1"></i>Descargar
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         <!-- Visualizador del Documento -->
         <div class="card mb-4">
             <div class="card-header bg-corporativo text-white">

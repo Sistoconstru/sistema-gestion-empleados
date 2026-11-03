@@ -5,7 +5,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
-from .models import DocumentoEmpleado, TipoDocumentoEmpleado
+from .models import AnexoDocumento, DocumentoEmpleado, TipoDocumentoEmpleado
 from .validators import DocumentValidator
 from .utils import validate_file_extension, validate_file_size
 
@@ -327,3 +327,73 @@ class DocumentApprovalForm(forms.ModelForm):
             ('aprobado', 'Aprobado'),
             ('rechazado', 'Rechazado')
         ]
+
+
+def _validar_con_tipo(archivo, tipo_documento):
+    """Mismas reglas de formato, tamaño y contenido que el tipo de documento."""
+    try:
+        DocumentValidator(tipo_documento)(archivo)
+    except ValidationError as e:
+        raise forms.ValidationError(str(e))
+    return archivo
+
+
+class DocumentoActualizacionForm(forms.Form):
+    """RRHH sube una versión nueva de un documento, aunque esté aprobado.
+
+    La versión actual pasa al historial (VersionDocumento) con su archivo
+    intacto, y la nueva queda aprobada.
+    """
+    archivo = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.jpg,.jpeg,.png'}))
+    fecha_documento = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    fecha_vencimiento = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    motivo = forms.CharField(
+        max_length=500,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control', 'rows': 2,
+            'placeholder': 'Ej.: nuevo contrato a término indefinido desde el 01/11/2026',
+        }),
+        help_text='Queda en el historial junto a la versión que se reemplaza.',
+    )
+
+    def __init__(self, *args, documento=None, **kwargs):
+        self.documento = documento
+        super().__init__(*args, **kwargs)
+        if documento and documento.tipo_documento.tiene_vencimiento:
+            self.fields['fecha_vencimiento'].required = True
+        elif documento:
+            self.fields['fecha_vencimiento'].widget = forms.HiddenInput()
+
+    def clean_archivo(self):
+        return _validar_con_tipo(self.cleaned_data['archivo'], self.documento.tipo_documento)
+
+    def clean(self):
+        datos = super().clean()
+        inicio, fin = datos.get('fecha_documento'), datos.get('fecha_vencimiento')
+        if inicio and fin and fin <= inicio:
+            raise ValidationError({'fecha_vencimiento': 'Debe ser posterior a la fecha del documento.'})
+        return datos
+
+
+class AnexoDocumentoForm(forms.ModelForm):
+    """Otrosí, prórroga u otro anexo de un documento (lo sube RRHH)."""
+
+    class Meta:
+        model = AnexoDocumento
+        fields = ['tipo', 'fecha_vigencia', 'descripcion', 'archivo']
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'fecha_vigencia': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-control', 'rows': 2,
+                'placeholder': 'Ej.: aumento a $2.100.000 desde noviembre',
+            }),
+            'archivo': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.jpg,.jpeg,.png'}),
+        }
+
+    def __init__(self, *args, documento=None, **kwargs):
+        self.documento = documento
+        super().__init__(*args, **kwargs)
+
+    def clean_archivo(self):
+        return _validar_con_tipo(self.cleaned_data['archivo'], self.documento.tipo_documento)
