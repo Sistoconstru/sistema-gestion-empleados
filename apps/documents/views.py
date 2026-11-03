@@ -26,6 +26,7 @@ from .forms import (
     AnexoDocumentoForm, DocumentoActualizacionForm, DocumentoEmpleadoForm,
     MultipleDocumentUploadForm, DocumentApprovalForm, DocumentoReemplazoForm,
 )
+from apps.core.mixins import StaffRequiredMixin
 from apps.employees.models import Empleado
 
 logger = logging.getLogger(__name__)
@@ -105,12 +106,16 @@ def documento_empleado_detail(request, empleado_pk):
     # Organizar documentos por estado
     docs_por_tipo = {doc.tipo_documento.codigo: doc for doc in documentos_existentes}
     
-    # Documentos faltantes (obligatorios y de cargo)
-    todos_requeridos = list(documentos_obligatorios) + list(documentos_cargo)
+    # Documentos faltantes (obligatorios y de cargo), sin repetir
+    todos_requeridos = list({doc.codigo: doc for doc in list(documentos_obligatorios) + list(documentos_cargo)}.values())
+    codigos_requeridos = {doc.codigo for doc in todos_requeridos}
     docs_faltantes = [doc for doc in todos_requeridos if doc.codigo not in docs_por_tipo]
-    
-    # Documentos opcionales pendientes
-    docs_opcionales_pendientes = [doc for doc in documentos_opcionales if doc.codigo not in docs_por_tipo]
+
+    # Opcionales pendientes: los que su cargo exige ya salen arriba como faltantes
+    docs_opcionales_pendientes = [
+        doc for doc in documentos_opcionales
+        if doc.codigo not in docs_por_tipo and doc.codigo not in codigos_requeridos
+    ]
     
     # Documentos próximos a vencer
     docs_por_vencer = documentos_existentes.filter(
@@ -118,15 +123,15 @@ def documento_empleado_detail(request, empleado_pk):
         fecha_vencimiento__lte=date.today() + timedelta(days=30)
     ).order_by('fecha_vencimiento')
     
-    # --- NUEVO: Progreso considerando opcionales ---
-    todos_documentos = list(documentos_obligatorios) + list(documentos_cargo) + list(documentos_opcionales)
-    total_documentos = len(todos_documentos)
+    # Progreso sobre lo que este empleado debe tener: obligatorios + los de su
+    # cargo. Antes sumaba también los opcionales y nadie llegaba al 100%.
+    requeridos = {doc.codigo: doc for doc in todos_requeridos}.values()
+    total_documentos = len(requeridos)
     aprobados = sum(
-        1 for doc in todos_documentos
+        1 for doc in requeridos
         if doc.codigo in docs_por_tipo and docs_por_tipo[doc.codigo].estado_aprobacion == 'aprobado'
     )
     progreso = int((aprobados / total_documentos) * 100) if total_documentos else 0
-    # ------------------------------------------------
     
     total_aprobados = documentos_existentes.filter(estado_aprobacion='aprobado').count()
     total_pendientes = documentos_existentes.filter(estado_aprobacion='pendiente').count()
@@ -172,21 +177,11 @@ def documento_upload(request, empleado_pk):
             try:
                 with transaction.atomic():
                     documento = form.save()
-                    import logging
-                    logger = logging.getLogger('storages')
-                    logger.debug(f'Documento subido: {documento.archivo.name}')
-                        # Log de la URL firmada generada
-                    logger.debug(f'URL firmada: {documento.archivo.url}')
-                    
                     messages.success(
                         request,
                         f'✅ Documento {documento.tipo_documento.nombre} subido exitosamente. '
                         f'Estado: {documento.get_estado_aprobacion_display()}'
                     )
-                    
-                    # Verificar si ahora el empleado puede cambiar de estado
-                    verificar_cambio_estado_empleado(empleado)
-                    
                     return redirect('documents:empleado_documentos', empleado_pk=empleado.pk)
                     
             except Exception as e:
@@ -253,9 +248,7 @@ def documento_multiple_upload(request, empleado_pk):
                             request,
                             f'✅ {documentos_creados} documentos subidos exitosamente.'
                         )
-                        
-                        # Verificar cambio de estado
-                        verificar_cambio_estado_empleado(empleado)
+
                     
                     if errores:
                         for error in errores:
@@ -303,12 +296,14 @@ def documento_approve(request, documento_pk):
                                 request,
                                 f'✅ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} aprobado exitosamente.'
                             )
-                            verificar_cambio_estado_empleado(documento.empleado)
                         else:
                             documento.rechazado_por = request.user
                             documento.fecha_rechazo = timezone.now()
                             documento.aprobado_por = None
                             documento.fecha_aprobacion = None
+                            # El formulario llama "observaciones" al motivo; la
+                            # vista del empleado y el reemplazo leen motivo_rechazo.
+                            documento.motivo_rechazo = form.cleaned_data.get('observaciones', '')
                             messages.warning(
                                 request,
                                 f'⚠️ Documento {documento.tipo_documento.nombre} de {documento.empleado.nombre_completo} rechazado.'
@@ -348,49 +343,6 @@ def documento_approve(request, documento_pk):
     return render(request, 'documents/documento_approval_form.html', context)
 
 
-def verificar_cambio_estado_empleado(empleado):
-    """Verificar si el empleado puede cambiar de estado basado en documentos"""
-    try:
-        from apps.employees.models import EstadoEmpleado
-        
-        # Solo verificar si está en prueba
-        estado_prueba = EstadoEmpleado.objects.get(codigo='p-prue')
-        if empleado.estado != estado_prueba:
-            return
-        
-        # Obtener documentos obligatorios requeridos
-        docs_obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=True, activo=True)
-        
-        # Documentos específicos del cargo
-        historial_actual = empleado.historialcargo_set.filter(activo=True).first()
-        docs_cargo = []
-        if historial_actual:
-            docs_cargo = TipoDocumentoEmpleado.objects.filter(
-                tipodocumentocargo__cargo=historial_actual.cargo,
-                activo=True
-            )
-        
-        todos_requeridos = list(docs_obligatorios) + list(docs_cargo)
-        
-        # Verificar que todos estén aprobados
-        docs_aprobados = DocumentoEmpleado.objects.filter(
-            empleado=empleado,
-            tipo_documento__in=todos_requeridos,
-            estado_aprobacion='aprobado'
-        ).count()
-        
-        if docs_aprobados >= len(todos_requeridos):
-            # Cambiar a estado activo
-            estado_activo = EstadoEmpleado.objects.get(codigo='999')
-            empleado.estado = estado_activo
-            empleado.save()
-            
-            logger.info(f"Empleado {empleado.numero_documento} cambió a estado ACTIVO por documentos completos")
-            
-    except Exception as e:
-        logger.error(f"Error verificando cambio de estado: {str(e)}")
-
-
 @login_required
 def documento_download(request, documento_pk):
     """Descargar documento"""
@@ -413,36 +365,17 @@ def documento_download(request, documento_pk):
 
 
 @login_required
-def documento_test_view(request):
-    """Vista de prueba simple"""
-    from django.http import HttpResponse
-    
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head><title>Test</title></head>
-    <body>
-        <h1>VISTA DE PRUEBA FUNCIONANDO</h1>
-        <p>Usuario: {request.user.username}</p>
-        <p>Autenticado: {request.user.is_authenticated}</p>
-        <p>Es staff: {request.user.is_staff}</p>
-        <p>GET params: {dict(request.GET)}</p>
-    </body>
-    </html>
-    """
-    
-    return HttpResponse(html)
-
-
-@login_required
 def empleados_documentos_pendientes(request):
     """Vista para mostrar empleados con documentos pendientes de aprobación"""
     from apps.employees.models import Empleado
-    from django.db.models import Count, Q
+    from django.db.models import Prefetch, Q
     
     # Verificar que el usuario tenga permisos
     if not request.user.is_staff:
-        return redirect('employees:empleado_perfil_detail', pk=request.user.empleado.pk)
+        empleado = getattr(request.user, 'empleado', None)
+        if empleado is None:
+            raise PermissionDenied('Solo Talento Humano revisa documentos pendientes.')
+        return redirect('employees:empleado_perfil_detail', pk=empleado.pk)
     
     # Obtener empleados con documentos pendientes
     empleados_con_pendientes = Empleado.objects.filter(
@@ -452,21 +385,20 @@ def empleados_documentos_pendientes(request):
             'documentoempleado', 
             filter=Q(documentoempleado__estado_aprobacion='pendiente')
         )
-    ).select_related('usuario', 'sede', 'estado').distinct().order_by('apellidos', 'nombres')
-    
-    # Obtener los documentos pendientes para cada empleado
-    empleados_data = []
-    for empleado in empleados_con_pendientes:
-        documentos_pendientes = DocumentoEmpleado.objects.filter(
-            empleado=empleado,
-            estado_aprobacion='pendiente'
-        ).select_related('tipo_documento', 'cargado_por').order_by('-fecha_carga')
-        
-        empleados_data.append({
-            'empleado': empleado,
-            'documentos_pendientes': documentos_pendientes,
-            'count': documentos_pendientes.count()
-        })
+    ).select_related('usuario', 'sede', 'estado').distinct().order_by('apellidos', 'nombres').prefetch_related(
+        # Una sola consulta para los documentos de todos, en vez de dos por empleado.
+        Prefetch(
+            'documentoempleado_set',
+            queryset=DocumentoEmpleado.objects.filter(estado_aprobacion='pendiente')
+            .select_related('tipo_documento', 'cargado_por').order_by('-fecha_carga'),
+            to_attr='pendientes',
+        )
+    )
+
+    empleados_data = [
+        {'empleado': e, 'documentos_pendientes': e.pendientes, 'count': len(e.pendientes)}
+        for e in empleados_con_pendientes
+    ]
     
     context = {
         'empleados_data': empleados_data,
@@ -505,47 +437,51 @@ def documentos_pendientes_api(request):
 # VISTA DE LISTA DE DOCUMENTOS (PARA ADMINISTRADORES)
 # =============================================================================
 
-class DocumentoEmpleadoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """Vista de lista para mostrar todos los documentos del sistema"""
+class DocumentoEmpleadoListView(StaffRequiredMixin, ListView):
+    """Todos los documentos del sistema, con filtro por estado y búsqueda.
+
+    Antes filtraba y ordenaba por campos que no existen (estado,
+    fecha_creacion) y daba error 500; y exigía un permiso de Django que el
+    personal de RRHH no-superusuario no tiene. Ahora la regla es la del resto
+    del módulo: staff.
+    """
     model = DocumentoEmpleado
     template_name = 'documents/documento_list.html'
     context_object_name = 'documentos'
-    paginate_by = 20
-    permission_required = 'documents.view_documentoempleado'
-    
+    paginate_by = 25
+    ESTADOS = [('', 'Todos'), ('pendiente', 'Pendientes'), ('aprobado', 'Aprobados'), ('rechazado', 'Rechazados')]
+
     def get_queryset(self):
-        """Obtener queryset filtrado"""
+        from django.db.models import Q
         queryset = DocumentoEmpleado.objects.select_related(
-            'empleado', 
-            'tipo_documento',
-            'empleado__sede'
-        ).order_by('-fecha_creacion')
-        
-        # Filtrar por estado si se especifica
-        estado = self.request.GET.get('estado')
-        if estado:
-            queryset = queryset.filter(estado=estado)
-            
+            'empleado', 'tipo_documento', 'cargado_por',
+        ).order_by('-fecha_carga')
+        estado = self.request.GET.get('estado', '')
+        if estado in dict(self.ESTADOS) and estado:
+            queryset = queryset.filter(estado_aprobacion=estado)
+        buscar = self.request.GET.get('q', '').strip()
+        if buscar:
+            queryset = queryset.filter(
+                Q(empleado__nombres__icontains=buscar) | Q(empleado__apellidos__icontains=buscar)
+                | Q(empleado__numero_documento__icontains=buscar)
+                | Q(tipo_documento__nombre__icontains=buscar)
+            )
         return queryset
-    
+
     def get_context_data(self, **kwargs):
-        """Agregar contexto adicional"""
         context = super().get_context_data(**kwargs)
-        
-        # Estadísticas
-        total_documentos = DocumentoEmpleado.objects.count()
-        pendientes = DocumentoEmpleado.objects.filter(estado='pendiente').count()
-        aprobados = DocumentoEmpleado.objects.filter(estado='aprobado').count()
-        rechazados = DocumentoEmpleado.objects.filter(estado='rechazado').count()
-        
+        por_estado = dict(
+            DocumentoEmpleado.objects.values_list('estado_aprobacion').annotate(n=Count('id'))
+        )
         context.update({
-            'total_documentos': total_documentos,
-            'pendientes': pendientes,
-            'aprobados': aprobados,
-            'rechazados': rechazados,
+            'total_documentos': sum(por_estado.values()),
+            'pendientes': por_estado.get('pendiente', 0),
+            'aprobados': por_estado.get('aprobado', 0),
+            'rechazados': por_estado.get('rechazado', 0),
+            'estados': self.ESTADOS,
             'estado_filtro': self.request.GET.get('estado', ''),
+            'buscar': self.request.GET.get('q', '').strip(),
         })
-        
         return context
 
 

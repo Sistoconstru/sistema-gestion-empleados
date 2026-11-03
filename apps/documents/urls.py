@@ -2,8 +2,6 @@
 # =============================================================================
 # apps/documents/urls.py
 # =============================================================================
-from django.views.generic import TemplateView
-
 from django.urls import path
 from . import views
 from . import views_proxy
@@ -45,10 +43,5 @@ urlpatterns = [
     # APIs
     path('api/pendientes/', views.documentos_pendientes_api, name='documentos_pendientes_api'),
     
-    # Lista de empleados con documentos pendientes (vista principal)
-    path('', views.empleados_documentos_pendientes, name='empleados_pendientes'),
-    
-    # APIs y vistas de prueba
-    path('test/', views.documento_test_view, name='documento_test'),
     path('proxy-pdf/', views_proxy.proxy_pdf, name='proxy_pdf'),
 ]

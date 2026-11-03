@@ -1,11 +1,12 @@
-from django.db import models
-
 # =============================================================================
 # apps/documents/models.py
 # =============================================================================
 
 import uuid
+
 from django.db import models
+
+from custom_storage.media import MediaStorage
 
 # Función para generar la ruta de subida personalizada para los archivos de documentos
 def get_upload_path(instance, filename):
@@ -60,13 +61,11 @@ class TipoDocumentoCargo(models.Model):
 
 # Modelo para los documentos subidos por empleados
 class DocumentoEmpleado(models.Model):
-    def save(self, *args, **kwargs):
-        import logging
-        logger = logging.getLogger('storages')
-        backend = type(self.archivo.storage).__name__ if hasattr(self.archivo, 'storage') else 'NoStorage'
-        logger.info(f"[DocumentoEmpleado.save] Backend de almacenamiento usado: {backend}")
-        super().save(*args, **kwargs)
-    """Documentos subidos por empleados"""
+    """Documento vigente de un empleado: uno por tipo.
+
+    Las versiones reemplazadas quedan en VersionDocumento y los otrosí y
+    prórrogas en AnexoDocumento.
+    """
     ESTADOS_APROBACION = [
         ('pendiente', 'Pendiente'),
         ('aprobado', 'Aprobado'),
@@ -77,7 +76,6 @@ class DocumentoEmpleado(models.Model):
     empleado = models.ForeignKey('employees.Empleado', on_delete=models.CASCADE)  # Empleado asociado
     tipo_documento = models.ForeignKey(TipoDocumentoEmpleado, on_delete=models.CASCADE)  # Tipo de documento
     nombre_archivo = models.CharField(max_length=255)  # Nombre del archivo
-    from custom_storage.media import MediaStorage
     archivo = models.FileField(
         upload_to=get_upload_path,
         storage=MediaStorage()
@@ -124,8 +122,6 @@ class VersionDocumento(models.Model):
     actualizado perdía el original. Ahora el archivo se queda donde estaba y
     esta fila conserva sus datos. Solo RRHH ve las versiones anteriores.
     """
-    from custom_storage.media import MediaStorage
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     documento = models.ForeignKey(DocumentoEmpleado, on_delete=models.CASCADE, related_name='versiones_anteriores')
     version = models.IntegerField()
@@ -160,8 +156,6 @@ class AnexoDocumento(models.Model):
     anexos muestran cómo cambió la relación laboral. Los sube RRHH y quedan
     aprobados al cargarlos.
     """
-    from custom_storage.media import MediaStorage
-
     TIPOS = [
         ('otrosi', 'Otrosí'),
         ('prorroga', 'Prórroga'),

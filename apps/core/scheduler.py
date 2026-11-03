@@ -200,6 +200,18 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Documentos por vencer: aviso a 30 y 7 días y el día del vencimiento.
+        scheduler.add_job(
+            _avisar_vencimientos_documentos,
+            'cron',
+            hour=8, minute=30,
+            id='vencimientos_documentos',
+            name='Avisar documentos por vencer',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         # Borrado de publicaciones y anuncios vencidos de la cartelera:
         # domingos 3:45 AM. El feed ya las oculta al vencer; esto libera la
         # base y las imágenes en S3.
@@ -229,6 +241,7 @@ def start_scheduler():
         logger.info('  - 07:00 (diario): Encuestas — recordatorio 24h y auto-cierre')
         logger.info('  - 03:30 AM (domingos): Limpieza de notificaciones antiguas')
         logger.info('  - 03:45 AM (domingos): Borrar publicaciones vencidas de la cartelera')
+        logger.info('  - 08:30 (diario): Avisar documentos por vencer')
         # (Polla Mundial deshabilitada — Mundial 2026 terminado)
 
         return scheduler
@@ -893,3 +906,12 @@ def _limpiar_publicaciones_expiradas():
         logger.info('Limpieza de publicaciones vencidas completada.')
     except Exception as exc:
         logger.error(f'Error en limpieza de publicaciones: {exc}', exc_info=True)
+
+
+def _avisar_vencimientos_documentos():
+    """Corre diario a las 8:30. Ver apps/documents/vencimientos.py."""
+    try:
+        from apps.documents.vencimientos import avisar_vencimientos
+        avisar_vencimientos()
+    except Exception as exc:
+        logger.error(f'Error avisando vencimientos de documentos: {exc}', exc_info=True)

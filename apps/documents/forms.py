@@ -66,29 +66,6 @@ class DocumentoEmpleadoForm(forms.ModelForm):
                 self.fields['fecha_vencimiento'].widget = forms.HiddenInput()
     
     def get_available_document_types(self):
-        """Obtener tipos de documentos disponibles para el empleado"""
-        # Documentos obligatorios para todos
-        obligatorios = TipoDocumentoEmpleado.objects.filter(obligatorio=True, activo=True)
-        # Documentos opcionales
-        opcionales = TipoDocumentoEmpleado.objects.filter(obligatorio=False, activo=True)
-        # Documentos específicos del cargo actual
-        cargo_actual = None
-        historial_actual = self.empleado.historialcargo_set.filter(activo=True).first()
-        if historial_actual:
-            cargo_actual = historial_actual.cargo
-        tipos_disponibles = list(obligatorios) + list(opcionales)
-        if cargo_actual:
-            especificos = list(TipoDocumentoEmpleado.objects.filter(
-                tipodocumentocargo__cargo=cargo_actual,
-                activo=True
-            ))
-            tipos_disponibles += especificos
-        # Excluir documentos ya subidos
-        docs_existentes = set(DocumentoEmpleado.objects.filter(empleado=self.empleado).values_list('tipo_documento', flat=True))
-        tipos_disponibles = [td for td in tipos_disponibles if td.id not in docs_existentes]
-        return tipos_disponibles
-    
-    def get_available_document_types(self):
         """Obtener tipos de documentos disponibles según el usuario (admin/empleado)"""
         # Si el usuario es admin (is_staff), mostrar todos los tipos activos excluyendo los ya subidos
         if self.usuario and getattr(self.usuario, 'is_staff', False):
@@ -284,6 +261,20 @@ class MultipleDocumentUploadForm(forms.Form):
         tipos_disponibles = [td for td in tipos_disponibles if td.id not in docs_existentes]
         return tipos_disponibles
     
+    def clean(self):
+        """Las mismas reglas de formato, tamaño y contenido que la subida
+        individual: antes este formulario aceptaba cualquier archivo."""
+        datos = super().clean()
+        for tipo_doc in self.get_available_document_types():
+            campo = f'documento_{tipo_doc.codigo}'
+            archivo = datos.get(campo)
+            if archivo:
+                try:
+                    DocumentValidator(tipo_doc)(archivo)
+                except ValidationError as e:
+                    self.add_error(campo, str(e))
+        return datos
+
     def get_accept_string(self, formatos):
         """Convertir formatos a string accept de HTML"""
         format_map = {

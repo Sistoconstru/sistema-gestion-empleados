@@ -9,7 +9,5 @@ class DocumentsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.documents'
     verbose_name = 'Gestión de Documentos'
-    
-    def ready(self):
-        """Configurar señales cuando la app esté lista"""
-        import apps.documents.signals
+    # Sin señales: solo activaban al empleado en prueba al aprobar sus
+    # documentos (saltándose los 60 días + evaluación) y escribían logs.

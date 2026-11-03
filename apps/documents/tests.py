@@ -30,7 +30,8 @@ def pdf(nombre='contrato.pdf', contenido=PDF):
 
 
 @override_settings(MEDIA_ROOT=MEDIA_TMP)
-class VersionesYAnexosTests(TestCase):
+class DocumentosBaseTestCase(TestCase):
+    """Datos comunes: RRHH, dos empleados y un contrato aprobado."""
 
     @classmethod
     def tearDownClass(cls):
@@ -74,6 +75,8 @@ class VersionesYAnexosTests(TestCase):
 
     def url(self, nombre, pk):
         return reverse(f'documents:{nombre}', args=[pk])
+
+class VersionesYAnexosTests(DocumentosBaseTestCase):
 
     # --- A. Versiones --------------------------------------------------------
 
@@ -186,3 +189,111 @@ class VersionesYAnexosTests(TestCase):
         self.crear_anexo(self.rrhh)
         r = self.client.get(reverse('documents:empleado_documentos', args=[self.empleado.pk]))
         self.assertContains(r, '1 anexo')
+
+
+# =============================================================================
+# Correcciones de la revisión del módulo
+# =============================================================================
+
+from datetime import timedelta
+from unittest import mock
+
+from apps.documents.forms import MultipleDocumentUploadForm
+from apps.documents.vencimientos import avisar_vencimientos
+from apps.notifications.models import Notificacion
+
+
+@override_settings(MEDIA_ROOT=MEDIA_TMP)
+class RevisionModuloTests(DocumentosBaseTestCase):
+
+    def test_la_lista_completa_ya_no_da_error(self):
+        self.client.force_login(self.rrhh)
+        r = self.client.get(reverse('documents:documento_list') + '?estado=aprobado&q=Ana')
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, self.empleado.nombre_completo)
+
+    def test_la_lista_completa_es_solo_para_rrhh(self):
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get(reverse('documents:documento_list')).status_code, 403)
+
+    def test_aprobar_documentos_no_activa_a_un_empleado_en_prueba(self):
+        """Antes, con todos los obligatorios aprobados lo pasaba a activo,
+        saltándose los 60 días + evaluación."""
+        prueba = EstadoEmpleado.objects.create(codigo='p-prue', nombre='Prueba')
+        self.empleado.estado = prueba
+        self.empleado.save()
+        pendiente = DocumentoEmpleado.objects.create(
+            empleado=self.empleado, tipo_documento=self.tipo_cedula,
+            nombre_archivo='CED_111.pdf', archivo=pdf('ced.pdf'), cargado_por=self.rrhh,
+        )
+        self.tipo_cedula.obligatorio = True
+        self.tipo_cedula.save()
+        self.client.force_login(self.rrhh)
+        self.client.post(self.url('documento_approve', pendiente.pk), {'estado_aprobacion': 'aprobado'})
+        self.empleado.refresh_from_db()
+        self.assertEqual(self.empleado.estado, prueba)
+
+    def test_el_motivo_del_rechazo_queda_en_motivo_rechazo(self):
+        self.client.force_login(self.rrhh)
+        self.client.post(self.url('documento_approve', self.contrato.pk),
+                         {'estado_aprobacion': 'rechazado', 'observaciones': 'Falta la firma'})
+        self.contrato.refresh_from_db()
+        self.assertEqual(self.contrato.motivo_rechazo, 'Falta la firma')
+
+    def test_la_subida_multiple_valida_el_archivo(self):
+        form = MultipleDocumentUploadForm(
+            data={}, files={'documento_CED': SimpleUploadedFile('ced.exe', b'MZ\x90\x00', content_type='application/octet-stream')},
+            empleado=self.otro.empleado,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn('documento_CED', form.errors)
+
+    def test_el_progreso_no_cuenta_los_opcionales(self):
+        """Solo el contrato es obligatorio y está aprobado: 100%."""
+        self.client.force_login(self.rrhh)
+        r = self.client.get(reverse('documents:empleado_documentos', args=[self.empleado.pk]))
+        self.assertEqual(r.context['documentos']['progreso'], 100)
+
+    @mock.patch('apps.notifications.push_utils.send_push', return_value=(0, 0))
+    def test_aviso_de_vencimiento_a_30_dias_una_sola_vez(self, _):
+        self.contrato.fecha_vencimiento = date.today() + timedelta(days=30)
+        self.contrato.save()
+        avisar_vencimientos()
+        avisar_vencimientos()  # segunda corrida el mismo día: no repite
+        self.assertEqual(Notificacion.objects.filter(usuario=self.user).count(), 1)
+        self.assertEqual(Notificacion.objects.filter(usuario=self.rrhh).count(), 1)
+
+    def test_un_dia_sin_umbral_no_avisa(self):
+        self.contrato.fecha_vencimiento = date.today() + timedelta(days=12)
+        self.contrato.save()
+        self.assertEqual(avisar_vencimientos(), 0)
+
+    def test_el_admin_no_deja_marcar_obligatorio_un_tipo_por_cargo(self):
+        from apps.documents.admin import TipoDocumentoEmpleadoForm
+        from apps.documents.models import TipoDocumentoCargo
+        from apps.organizational.models import AreaEmpresa, Cargo
+        area = AreaEmpresa.objects.create(codigo='MTO', nombre='Mantenimiento')
+        cargo = Cargo.objects.create(codigo='MEC', nombre='Mecánico', area=area, nivel_jerarquico=3)
+        TipoDocumentoCargo.objects.create(tipo_documento=self.tipo_cedula, cargo=cargo)
+        datos = {f: getattr(self.tipo_cedula, f) for f in (
+            'codigo', 'nombre', 'descripcion', 'tiene_vencimiento', 'dias_notificacion_vencimiento',
+            'formatos_permitidos', 'tamaño_maximo_mb', 'requiere_aprobacion', 'activo', 'admite_anexos')}
+        form = TipoDocumentoEmpleadoForm(data={**datos, 'obligatorio': True}, instance=self.tipo_cedula)
+        self.assertFalse(form.is_valid())
+        self.assertIn('obligatorio', form.errors)
+
+    def test_pendientes_para_rrhh(self):
+        DocumentoEmpleado.objects.create(
+            empleado=self.empleado, tipo_documento=self.tipo_cedula,
+            nombre_archivo='CED_111.pdf', archivo=pdf('ced.pdf'), cargado_por=self.rrhh,
+        )
+        self.client.force_login(self.rrhh)
+        r = self.client.get(reverse('documents:empleados_documentos_pendientes'))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.context['total_documentos'], 1)
+
+    def test_pendientes_sin_ficha_y_sin_staff_no_revienta(self):
+        """Antes: AttributeError (500) al buscar request.user.empleado."""
+        sin_ficha = User.objects.create_user(username='sinficha', password='x-9slek31')
+        self.client.force_login(sin_ficha)
+        self.assertEqual(self.client.get(reverse('documents:empleados_documentos_pendientes')).status_code, 403)
