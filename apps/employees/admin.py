@@ -21,7 +21,7 @@ from .models import (
     # Messaging
     Conversacion, Mensaje, LecturaConversacion,
     # Feed/Publicaciones
-    Publicacion, Comentario,
+    Publicacion, Comentario, Reaccion,
     # Polla Mundial
     PartidoMundial, PrediccionMundial
 )
@@ -640,18 +640,46 @@ class ComentarioInline(admin.TabularInline):
     can_delete = True
 
 
+class ReaccionInline(admin.TabularInline):
+    """Quién le dio "me gusta" a esta publicación.
+
+    Solo lectura: un me gusta lo pone la persona desde la cartelera, y uno
+    agregado a mano aquí sería un dato inventado. Se puede borrar, que es lo
+    único que puede necesitar moderación.
+    """
+    model = Reaccion
+    extra = 0
+    max_num = 0
+    fields = ('autor', 'fecha_creacion')
+    readonly_fields = ('autor', 'fecha_creacion')
+    can_delete = True
+    verbose_name = 'Me gusta'
+    verbose_name_plural = 'Me gusta'
+    ordering = ('-fecha_creacion',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('autor')
+
+
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
     """Admin para gestionar publicaciones del feed"""
     list_display = (
         'titulo_display', 'autor', 'tipo_publicacion',
-        'fecha_creacion', 'tiene_imagen', 'estado_publicacion'
+        'fecha_creacion', 'tiene_imagen', 'total_me_gusta', 'estado_publicacion'
     )
+    # 'fecha_fin' estaba aquí con RelatedOnlyFieldListFilter, que es para
+    # claves foráneas: sobre una fecha hacía fallar el listado entero con
+    # NotRelationField.
     list_filter = (
-        'es_anuncio', 'es_importante', 'fecha_creacion',
-        ('fecha_fin', admin.RelatedOnlyFieldListFilter)
+        'es_anuncio', 'es_importante', 'es_rapida', 'fecha_creacion',
     )
-    search_fields = ('titulo', 'contenido', 'autor__nombre_completo')
+    # nombre_completo es una @property, no una columna: buscar por ella
+    # rompía con FieldError.
+    search_fields = (
+        'titulo', 'contenido',
+        'autor__nombres', 'autor__apellidos', 'autor__numero_documento',
+    )
     readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion')
 
     fieldsets = (
@@ -673,8 +701,25 @@ class PublicacionAdmin(admin.ModelAdmin):
         }),
     )
 
-    inlines = [ComentarioInline]
+    inlines = [ComentarioInline, ReaccionInline]
     ordering = ('-fecha_creacion',)
+
+    def get_queryset(self, request):
+        from django.db.models import Count
+        return (super().get_queryset(request)
+                .select_related('autor')
+                .annotate(_num_reacciones=Count('reacciones', distinct=True)))
+
+    def total_me_gusta(self, obj):
+        """Cuántos me gusta, con enlace a la lista de quiénes fueron."""
+        n = obj._num_reacciones
+        if not n:
+            return '—'
+        url = (reverse('admin:employees_reaccion_changelist')
+               + f'?publicacion__id__exact={obj.pk}')
+        return format_html('<a href="{}">❤ {}</a>', url, n)
+    total_me_gusta.short_description = 'Me gusta'
+    total_me_gusta.admin_order_field = '_num_reacciones'
 
     def titulo_display(self, obj):
         """Muestra título o primeras 50 caracteres del contenido"""
@@ -714,8 +759,12 @@ class PublicacionAdmin(admin.ModelAdmin):
 class ComentarioAdmin(admin.ModelAdmin):
     """Admin para gestionar comentarios"""
     list_display = ('autor', 'publicacion', 'contenido_preview', 'fecha_creacion')
-    list_filter = ('fecha_creacion', 'autor')
-    search_fields = ('contenido', 'autor__nombre_completo', 'publicacion__titulo')
+    list_filter = ('fecha_creacion', ('autor', admin.RelatedOnlyFieldListFilter))
+    # Igual que en publicaciones: nombre_completo es una @property.
+    search_fields = (
+        'contenido', 'publicacion__titulo',
+        'autor__nombres', 'autor__apellidos', 'autor__numero_documento',
+    )
     readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion')
 
     fieldsets = (
@@ -735,6 +784,53 @@ class ComentarioAdmin(admin.ModelAdmin):
         preview = obj.contenido[:50] + '...' if len(obj.contenido) > 50 else obj.contenido
         return preview
     contenido_preview.short_description = 'Contenido'
+
+
+@admin.register(Reaccion)
+class ReaccionAdmin(admin.ModelAdmin):
+    """Quién dio "me gusta" a cada publicación de la cartelera.
+
+    Es un registro de lo que hizo la gente, no algo que se administre: desde
+    aquí se consulta y, si hace falta, se borra. Agregar uno a mano quedaría
+    como un me gusta que nadie dio, así que esa opción está deshabilitada.
+    """
+    list_display = ('autor_nombre', 'documento', 'publicacion_display', 'fecha_creacion')
+    list_filter = (
+        'fecha_creacion',
+        ('publicacion', admin.RelatedOnlyFieldListFilter),
+        ('autor', admin.RelatedOnlyFieldListFilter),
+    )
+    search_fields = (
+        'autor__nombres', 'autor__apellidos', 'autor__numero_documento',
+        'publicacion__titulo', 'publicacion__contenido',
+    )
+    readonly_fields = ('id', 'publicacion', 'autor', 'fecha_creacion')
+    ordering = ('-fecha_creacion',)
+    date_hierarchy = 'fecha_creacion'
+    list_select_related = ('autor', 'publicacion', 'publicacion__autor')
+
+    def has_add_permission(self, request):
+        return False
+
+    def autor_nombre(self, obj):
+        return obj.autor.nombre_completo
+    autor_nombre.short_description = 'Quién'
+    autor_nombre.admin_order_field = 'autor__apellidos'
+
+    def documento(self, obj):
+        return obj.autor.numero_documento
+    documento.short_description = 'Documento'
+    documento.admin_order_field = 'autor__numero_documento'
+
+    def publicacion_display(self, obj):
+        """Título o inicio del contenido, enlazado a la publicación."""
+        p = obj.publicacion
+        texto = (p.titulo or p.contenido or '').strip() or '(sin título)'
+        if len(texto) > 60:
+            texto = texto[:60] + '...'
+        url = reverse('admin:employees_publicacion_change', args=[p.pk])
+        return format_html('<a href="{}">{}</a>', url, texto)
+    publicacion_display.short_description = 'Publicación'
 
 
 # =============================================================================
