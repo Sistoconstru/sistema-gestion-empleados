@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
+from apps.authentication.models import Usuario
 from apps.employees.models import Empleado, EstadoEmpleado
 from apps.evaluations.models import AsignacionEvaluacion, EvaluacionDesempeño, TipoEvaluacion
 import logging
@@ -55,6 +56,23 @@ class Command(BaseCommand):
             )
             return
 
+        # `asignado_por` es obligatorio en el modelo. Sin esto, cada create()
+        # moria con IntegrityError y la asignacion automatica no llegaba a
+        # crear ninguna fila. Mismo criterio que los otros comandos de
+        # asignacion: el superusuario mas antiguo, para que la auditoria
+        # apunte siempre al mismo y no cambie segun el orden de la consulta.
+        usuario_sistema = Usuario.objects.filter(
+            is_superuser=True, is_active=True
+        ).order_by('date_joined', 'id').first()
+        if not usuario_sistema:
+            self.stdout.write(
+                self.style.ERROR(
+                    'Error: no hay ningún superusuario activo para registrar '
+                    'quién asigna la evaluación.'
+                )
+            )
+            return
+
         # Calcular fechas límite
         fecha_hoy = timezone.now().date()
         fecha_limite_minima = fecha_hoy - timedelta(days=dias_maximos)  # Hace 60 días
@@ -99,11 +117,17 @@ class Command(BaseCommand):
                 f'  Sede: {empleado.sede}'
             )
 
-            # Verificar si ya tiene asignación
+            # Verificar si ya tiene asignación. No se filtra por
+            # periodo_evaluacion: cuando RRHH la asigna a mano desde el panel
+            # ese texto queda libre ("2026", "Evaluación Periodo d..."), así
+            # que comparar contra "<año>-PP" no reconocía esas filas y se
+            # habría creado una segunda evaluación al mismo empleado. Se
+            # acota a partir de la fecha de ingreso para que un reingreso sí
+            # reciba la suya.
             existe_asignacion = AsignacionEvaluacion.objects.filter(
                 empleado_evaluado=empleado,
-                evaluacion=evaluacion,
-                periodo_evaluacion=periodo_evaluacion
+                evaluacion__tipo_evaluacion=tipo_evaluacion,
+                fecha_asignacion__date__gte=empleado.fecha_ingreso,
             ).exists()
 
             if existe_asignacion:
@@ -137,10 +161,15 @@ class Command(BaseCommand):
                         empleado_evaluado=empleado,
                         evaluacion=evaluacion,
                         evaluador=jefe_directo,
+                        asignado_por=usuario_sistema,
                         periodo_evaluacion=periodo_evaluacion,
                         fecha_vencimiento=fecha_vencimiento,
                         estado='pendiente',
                         es_autoevaluacion=False,
+                        observaciones=(
+                            f'Asignada automáticamente al cumplir '
+                            f'{dias_transcurridos} días de período de prueba.'
+                        ),
                     )
 
                     asignaciones_creadas.append(empleado)
