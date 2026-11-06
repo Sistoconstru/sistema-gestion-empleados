@@ -2085,39 +2085,43 @@ def gestionar_seguimiento_bimensual(request, seguimiento_id):
                 messages.error(request, 'No tiene permisos para gestionar este seguimiento.')
                 return redirect('evaluations:admin_pendientes_aprobacion')
 
-        # Si ya está resuelto no hay nada que diligenciar
         if seguimiento.esta_resuelto:
-            if seguimiento.cerrado_por_antiguedad:
-                messages.info(
-                    request,
-                    f'El seguimiento del {seguimiento.numero_bimestre}° bimestre lo cerró '
-                    f'el sistema por llevar demasiado tiempo vencido, sin calificación. '
-                    f'No es necesario diligenciarlo.'
-                )
-            else:
-                messages.info(
-                    request,
-                    f'El seguimiento del {seguimiento.numero_bimestre}° bimestre ya está completado.'
-                )
-            return redirect('evaluations:supervisor_seguimientos_pendientes')
-
-        # Verificar que los seguimientos se completen en orden. Aplica también
-        # a los 'atrasado': antes la validación solo corría para 'pendiente',
-        # así que un vencido se podía completar fuera de orden por URL directa.
-        seguimientos_plan = SeguimientoBimensual.objects.filter(
-            plan_mejora=plan
-        ).order_by('numero_bimestre')
-
-        for seg_anterior in seguimientos_plan:
-            if seg_anterior.numero_bimestre >= seguimiento.numero_bimestre:
-                break
-            if not seg_anterior.esta_resuelto:
-                messages.error(
-                    request,
-                    f'No puede completar el seguimiento del {seguimiento.numero_bimestre}° bimestre. '
-                    f'Primero debe completar el seguimiento del {seg_anterior.numero_bimestre}° bimestre.'
-                )
+            # Consultarlo sigue siendo útil (la plantilla lo muestra en solo
+            # lectura); lo que no debe poder es volver a diligenciarse.
+            if request.method == 'POST':
+                if seguimiento.cerrado_por_antiguedad:
+                    messages.info(
+                        request,
+                        f'El seguimiento del {seguimiento.numero_bimestre}° bimestre lo cerró '
+                        f'el sistema por llevar demasiado tiempo vencido, sin calificación. '
+                        f'No es necesario diligenciarlo.'
+                    )
+                else:
+                    messages.info(
+                        request,
+                        f'El seguimiento del {seguimiento.numero_bimestre}° bimestre '
+                        f'ya está completado.'
+                    )
                 return redirect('evaluations:supervisor_seguimientos_pendientes')
+        else:
+            # Verificar que los seguimientos se completen en orden. Aplica
+            # también a los 'atrasado': antes la validación solo corría para
+            # 'pendiente', así que un vencido se podía completar fuera de
+            # orden entrando por la URL directa.
+            seguimientos_plan = SeguimientoBimensual.objects.filter(
+                plan_mejora=plan
+            ).order_by('numero_bimestre')
+
+            for seg_anterior in seguimientos_plan:
+                if seg_anterior.numero_bimestre >= seguimiento.numero_bimestre:
+                    break
+                if not seg_anterior.esta_resuelto:
+                    messages.error(
+                        request,
+                        f'No puede completar el seguimiento del {seguimiento.numero_bimestre}° bimestre. '
+                        f'Primero debe completar el seguimiento del {seg_anterior.numero_bimestre}° bimestre.'
+                    )
+                    return redirect('evaluations:supervisor_seguimientos_pendientes')
 
         if request.method == 'POST':
             avance_satisfactorio = request.POST.get('avance_satisfactorio') == 'true'
