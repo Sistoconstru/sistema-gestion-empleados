@@ -1849,8 +1849,12 @@ def seguimientos_pendientes_supervisor(request):
             # Si es admin, mostrar todos
             if request.user.is_staff:
                 es_admin = True
+                # Incluye los 'atrasado': esta misma vista los marca así al
+                # pasarse de fecha (más abajo) y guardarlos, de modo que
+                # filtrar solo 'pendiente' los hacía desaparecer de la lista
+                # mientras el bimestre siguiente los seguía exigiendo.
                 seguimientos = SeguimientoBimensual.objects.filter(
-                    estado='pendiente'
+                    estado__in=['pendiente', 'atrasado']
                 ).select_related(
                     'plan_mejora',
                     'plan_mejora__asignacion_evaluacion',
@@ -1889,7 +1893,7 @@ def seguimientos_pendientes_supervisor(request):
             # Mostrar seguimientos donde el usuario es evaluador
             seguimientos = SeguimientoBimensual.objects.filter(
                 plan_mejora__asignacion_evaluacion__evaluador=empleado_usuario,
-                estado='pendiente'
+                estado__in=['pendiente', 'atrasado']
             ).select_related(
                 'plan_mejora',
                 'plan_mejora__asignacion_evaluacion',
@@ -1949,17 +1953,19 @@ def seguimientos_pendientes_supervisor(request):
                 # Verificar si este seguimiento está bloqueado (requiere completar anteriores)
                 s.esta_bloqueado = False
                 s.razon_bloqueo = None
-                if s.estado == 'pendiente':
+                if not s.esta_resuelto:
                     # Obtener todos los seguimientos del plan ordenados
                     segs_del_plan = SeguimientoBimensual.objects.filter(
                         plan_mejora=s.plan_mejora
                     ).order_by('numero_bimestre')
 
-                    # Verificar si hay seguimientos anteriores sin completar
+                    # Un bimestre anterior bloquea solo si sigue sin resolver.
+                    # Los que cerró el sistema por antigüedad cuentan como
+                    # resueltos: si no, dejarían trabado para siempre al resto.
                     for seg_anterior in segs_del_plan:
                         if seg_anterior.numero_bimestre >= s.numero_bimestre:
                             break
-                        if seg_anterior.estado != 'completado':
+                        if not seg_anterior.esta_resuelto:
                             s.esta_bloqueado = True
                             s.razon_bloqueo = f'Debe completar primero el {seg_anterior.numero_bimestre}° bimestre'
                             break
@@ -2022,15 +2028,21 @@ def seguimientos_pendientes_supervisor(request):
             if puede_generar_evaluacion_final(plan):
                 # Verificar que NO tenga evaluación final ya creada
                 if not hasattr(plan, 'evaluacion_final'):
-                    # Contar seguimientos satisfactorios
+                    # Contar seguimientos satisfactorios. Los que cerró el
+                    # sistema no llevan calificación, así que quedan fuera del
+                    # total: contarlos daría "1 de 3" cuando en realidad solo
+                    # se alcanzó a calificar uno.
                     seguimientos_plan = plan.seguimientos.all()
-                    satisfactorios = sum(1 for s in seguimientos_plan if s.avance_satisfactorio is True)
+                    calificados = [s for s in seguimientos_plan if s.estado == 'completado']
+                    satisfactorios = sum(1 for s in calificados if s.avance_satisfactorio is True)
+                    cerrados = sum(1 for s in seguimientos_plan if s.cerrado_por_antiguedad)
 
                     planes_listos_evaluacion_final.append({
                         'plan': plan,
                         'asignacion': plan.asignacion_evaluacion,
                         'seguimientos_satisfactorios': satisfactorios,
-                        'total_seguimientos': seguimientos_plan.count(),
+                        'total_seguimientos': len(calificados),
+                        'seguimientos_cerrados': cerrados,
                     })
 
         return render(request, 'evaluations/supervisor/seguimientos_pendientes.html', {
@@ -2073,24 +2085,39 @@ def gestionar_seguimiento_bimensual(request, seguimiento_id):
                 messages.error(request, 'No tiene permisos para gestionar este seguimiento.')
                 return redirect('evaluations:admin_pendientes_aprobacion')
 
-        # Verificar que los seguimientos se completen en orden
-        if seguimiento.estado == 'pendiente':
-            # Obtener todos los seguimientos del plan ordenados por número de bimestre
-            seguimientos_plan = SeguimientoBimensual.objects.filter(
-                plan_mejora=plan
-            ).order_by('numero_bimestre')
+        # Si ya está resuelto no hay nada que diligenciar
+        if seguimiento.esta_resuelto:
+            if seguimiento.cerrado_por_antiguedad:
+                messages.info(
+                    request,
+                    f'El seguimiento del {seguimiento.numero_bimestre}° bimestre lo cerró '
+                    f'el sistema por llevar demasiado tiempo vencido, sin calificación. '
+                    f'No es necesario diligenciarlo.'
+                )
+            else:
+                messages.info(
+                    request,
+                    f'El seguimiento del {seguimiento.numero_bimestre}° bimestre ya está completado.'
+                )
+            return redirect('evaluations:supervisor_seguimientos_pendientes')
 
-            # Verificar que todos los bimestres anteriores estén completados
-            for seg_anterior in seguimientos_plan:
-                if seg_anterior.numero_bimestre >= seguimiento.numero_bimestre:
-                    break
-                if seg_anterior.estado != 'completado':
-                    messages.error(
-                        request,
-                        f'No puede completar el seguimiento del {seguimiento.numero_bimestre}° bimestre. '
-                        f'Primero debe completar el seguimiento del {seg_anterior.numero_bimestre}° bimestre.'
-                    )
-                    return redirect('evaluations:supervisor_seguimientos_pendientes')
+        # Verificar que los seguimientos se completen en orden. Aplica también
+        # a los 'atrasado': antes la validación solo corría para 'pendiente',
+        # así que un vencido se podía completar fuera de orden por URL directa.
+        seguimientos_plan = SeguimientoBimensual.objects.filter(
+            plan_mejora=plan
+        ).order_by('numero_bimestre')
+
+        for seg_anterior in seguimientos_plan:
+            if seg_anterior.numero_bimestre >= seguimiento.numero_bimestre:
+                break
+            if not seg_anterior.esta_resuelto:
+                messages.error(
+                    request,
+                    f'No puede completar el seguimiento del {seguimiento.numero_bimestre}° bimestre. '
+                    f'Primero debe completar el seguimiento del {seg_anterior.numero_bimestre}° bimestre.'
+                )
+                return redirect('evaluations:supervisor_seguimientos_pendientes')
 
         if request.method == 'POST':
             avance_satisfactorio = request.POST.get('avance_satisfactorio') == 'true'
@@ -2190,13 +2217,17 @@ def evaluacion_final_plan(request, plan_id):
         # GET - Mostrar formulario
         seguimientos = plan.seguimientos.all().order_by('numero_bimestre')
 
-        # Contar seguimientos satisfactorios
-        satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+        # Solo los que alcanzaron a calificarse cuentan; los cerrados por
+        # antigüedad no tienen avance registrado.
+        calificados = [s for s in seguimientos if s.estado == 'completado']
+        satisfactorios = sum(1 for s in calificados if s.avance_satisfactorio is True)
 
         return render(request, 'evaluations/admin/evaluacion_final.html', {
             'plan': plan,
             'seguimientos': seguimientos,
-            'satisfactorios': satisfactorios
+            'satisfactorios': satisfactorios,
+            'total_calificados': len(calificados),
+            'seguimientos_cerrados': sum(1 for s in seguimientos if s.cerrado_por_antiguedad),
         })
         
     except Exception as e:
@@ -2518,14 +2549,17 @@ def evaluaciones_finales_rechazadas_rrhh(request):
         evaluaciones_con_info = []
         for eval_final in evaluaciones_rechazadas:
             seguimientos = eval_final.plan_mejora.seguimientos.all()
-            satisfactorios = sum(1 for s in seguimientos if s.avance_satisfactorio is True)
+            calificados = [s for s in seguimientos if s.estado == 'completado']
+            satisfactorios = sum(1 for s in calificados if s.avance_satisfactorio is True)
 
             evaluaciones_con_info.append({
                 'evaluacion_final': eval_final,
                 'plan': eval_final.plan_mejora,
                 'asignacion': eval_final.plan_mejora.asignacion_evaluacion,
                 'seguimientos_satisfactorios': satisfactorios,
-                'total_seguimientos': seguimientos.count(),
+                'total_seguimientos': len(calificados),
+                'seguimientos_cerrados': sum(
+                    1 for s in seguimientos if s.cerrado_por_antiguedad),
             })
 
         return render(request, 'evaluations/admin/evaluaciones_finales_rechazadas.html', {

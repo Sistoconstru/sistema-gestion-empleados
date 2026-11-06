@@ -99,6 +99,19 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 6: Cerrar seguimientos con más de 6 meses vencidos, a las 4:30 AM
+        scheduler.add_job(
+            _cerrar_seguimientos_vencidos,
+            'cron',
+            hour=4,
+            minute=30,
+            id='cerrar_seguimientos_vencidos',
+            name='Cerrar seguimientos bimensuales muy vencidos',
+            replace_existing=True,
+            misfire_grace_time=600,
+            coalesce=True,
+        )
+
         # DESHABILITADO: Polla Mundial (Mundial 2026 terminó). Reactivar en la
         # próxima copa comentando/eliminando este bloque y descomentando los
         # scheduler.add_job de abajo.
@@ -235,6 +248,7 @@ def start_scheduler():
         logger.info('  - 03:00 AM (día 1): Limpiar logs de auditoría antiguos')
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
+        logger.info('  - 04:30 AM: Cerrar seguimientos bimensuales muy vencidos')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
@@ -367,6 +381,30 @@ def _enviar_recordatorios_evaluaciones():
     except Exception as e:
         logger.error(
             f'❌ Error al enviar recordatorios de evaluaciones: {e}',
+            exc_info=True
+        )
+
+
+def _cerrar_seguimientos_vencidos():
+    """
+    Cierra sin calificación los seguimientos bimensuales que llevan más de
+    6 meses vencidos.
+
+    Un bimestre que nadie diligenció en medio año ya no se puede medir, y
+    mientras siga abierto deja trabado al resto del plan. Se cierra marcado
+    como cerrado por el sistema, sin calificación, para que el plan pueda
+    llegar a su evaluación final con los bimestres que sí se registraron.
+    """
+    try:
+        logger.info('🔄 Cerrando seguimientos bimensuales muy vencidos...')
+
+        call_command('cerrar_seguimientos_vencidos', '--meses', '6')
+
+        logger.info('✅ Cierre de seguimientos vencidos completado')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error al cerrar seguimientos vencidos: {e}',
             exc_info=True
         )
 

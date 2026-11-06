@@ -539,7 +539,13 @@ class SeguimientoBimensual(models.Model):
         ('pendiente', 'Pendiente'),
         ('completado', 'Completado'),
         ('atrasado', 'Atrasado'),
+        ('cerrado_sistema', 'Cerrado por el sistema'),
     ]
+
+    # Estados en los que el bimestre ya no espera nada: o lo hicieron, o el
+    # sistema lo cerró por antigüedad. Se usa para no bloquear al siguiente y
+    # para saber cuándo el plan puede ir a evaluación final.
+    ESTADOS_RESUELTOS = ('completado', 'cerrado_sistema')
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plan_mejora = models.ForeignKey(PlanMejoraPredefinido, on_delete=models.CASCADE, related_name='seguimientos')
@@ -570,10 +576,25 @@ class SeguimientoBimensual(models.Model):
         return f"Seguimiento {self.numero_bimestre}° - {self.plan_mejora}"
     
     @property
+    def esta_resuelto(self):
+        """El bimestre ya no espera acción del supervisor."""
+        return self.estado in self.ESTADOS_RESUELTOS
+
+    @property
     def esta_vencido(self):
-        """Verifica si el seguimiento está vencido"""
+        """Pasó su fecha límite y sigue sin resolverse.
+
+        Antes exigía estado == 'pendiente', pero el sistema marca como
+        'atrasado' justo a los que se pasan de fecha, así que devolvía False
+        precisamente para los vencidos y no se pintaban como tales.
+        """
         from django.utils import timezone
-        return timezone.now().date() > self.fecha_limite and self.estado == 'pendiente'
+        return timezone.now().date() > self.fecha_limite and not self.esta_resuelto
+
+    @property
+    def cerrado_por_antiguedad(self):
+        """Lo cerró el sistema sin calificar, por llevar demasiado vencido."""
+        return self.estado == 'cerrado_sistema'
 
 
 class EvaluacionFinal(models.Model):

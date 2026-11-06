@@ -70,11 +70,13 @@ class Command(BaseCommand):
         hoy = timezone.now().date()
         fecha_limite_recordatorio = hoy + timedelta(days=dias_anticipacion)
 
-        # Buscar seguimientos pendientes próximos a vencer
+        # Buscar seguimientos próximos a vencer y los que ya se pasaron.
+        # Los 'atrasado' estaban fuera de este aviso, que es justo al revés de
+        # lo que hace falta: dejaban de recordarse en el momento en que más
+        # urgía hacerlos, y así se quedaban meses sin que nadie avisara.
         seguimientos_proximos = SeguimientoBimensual.objects.filter(
-            estado='pendiente',
+            estado__in=['pendiente', 'atrasado'],
             fecha_limite__lte=fecha_limite_recordatorio,
-            fecha_limite__gte=hoy  # Solo los que AÚN no están atrasados
         ).select_related(
             'plan_mejora__asignacion_evaluacion__empleado_evaluado__usuario',
             'plan_mejora__asignacion_evaluacion__evaluador__usuario',

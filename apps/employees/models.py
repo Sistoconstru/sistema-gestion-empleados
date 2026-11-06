@@ -279,6 +279,26 @@ class Empleado(BaseModel):
             return None
 
     @property
+    def jefe_inmediato(self):
+        """Jefe directo del empleado según su cargo activo.
+
+        Las vistas de evaluaciones ya consultaban `empleado.jefe_inmediato`
+        para decidir permisos, pero el atributo no existía: `jefe_directo` vive
+        en HistorialCargo, no en Empleado. Esas comprobaciones reventaban con
+        AttributeError apenas el usuario no era el evaluador, y el error
+        quedaba tapado por un try/except que solo mostraba "Error al gestionar
+        seguimiento".
+        """
+        try:
+            historial = self.cargo_actual
+            return historial.jefe_directo if historial else None
+        except (AttributeError, TypeError, ValueError) as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Error obteniendo jefe inmediato para empleado {self.id}: {e}")
+            return None
+
+    @property
     def nombre_cargo_actual(self):
         """Retorna el nombre del cargo actual del empleado"""
         try:

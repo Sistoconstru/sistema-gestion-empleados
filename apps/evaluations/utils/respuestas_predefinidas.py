@@ -472,7 +472,8 @@ def obtener_plan_por_categoria_y_nivel(categoria, nivel):
 def puede_generar_evaluacion_final(plan_mejora):
     """
     Verifica si se puede generar la evaluación final del plan de mejora
-    Se requiere que todos los seguimientos bimensuales estén completados (3 seguimientos)
+    Se requiere que los 3 seguimientos bimensuales estén resueltos: completados
+    por el supervisor, o cerrados por el sistema por antigüedad.
 
     Args:
         plan_mejora: Instancia de PlanMejoraPredefinido
@@ -489,7 +490,10 @@ def puede_generar_evaluacion_final(plan_mejora):
     if seguimientos.count() != 3:
         return False
 
-    # Verificar que todos estén completados
-    completados = seguimientos.filter(estado='completado').count()
+    # Un bimestre que el sistema cerró por antigüedad no se va a diligenciar
+    # nunca; si contara como pendiente, el plan no podría cerrarse jamás.
+    resueltos = seguimientos.filter(
+        estado__in=SeguimientoBimensual.ESTADOS_RESUELTOS
+    ).count()
 
-    return completados == 3
+    return resueltos == 3
