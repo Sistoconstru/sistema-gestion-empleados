@@ -168,11 +168,36 @@
             </div>
 
             <!-- Formulario de Seguimiento -->
-            {# Se diligencia mientras no esté resuelto. Comparar contra
-               'pendiente' dejaba fuera a los 'atrasado', que son justamente
-               los que hay que ponerse al día, y los mostraba como si ya
-               estuvieran completados. #}
-            {% if not seguimiento.esta_resuelto %}
+            {# Se diligencia mientras no esté resuelto y la ventana esté
+               abierta. Comparar contra 'pendiente' dejaba fuera a los
+               'atrasado', que son justamente los que hay que ponerse al día,
+               y los mostraba como si ya estuvieran completados. #}
+            {% if not seguimiento.esta_resuelto and not puede_diligenciar %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-hourglass-half text-warning"></i>
+                        Todavía no se puede diligenciar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning mb-0">
+                        <strong>Se habilita el {{ seguimiento.disponible_desde|date:"d/m/Y" }}.</strong><br>
+                        El seguimiento del {{ seguimiento.numero_bimestre }}° bimestre
+                        vence el {{ seguimiento.fecha_limite|date:"d/m/Y" }} y se puede
+                        registrar desde {{ seguimiento.DIAS_ANTICIPACION_DILIGENCIAMIENTO }}
+                        días antes, para que el avance que se califique sea el del bimestre
+                        y no una previsión.
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'evaluations:supervisor_seguimientos_pendientes' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Volver a Seguimientos Pendientes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% elif not seguimiento.esta_resuelto %}
             <div class="card mt-3">
                 <div class="card-header">
                     <h6 class="mb-0">

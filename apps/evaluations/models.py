@@ -546,6 +546,12 @@ class SeguimientoBimensual(models.Model):
     # sistema lo cerró por antigüedad. Se usa para no bloquear al siguiente y
     # para saber cuándo el plan puede ir a evaluación final.
     ESTADOS_RESUELTOS = ('completado', 'cerrado_sistema')
+
+    # Días antes de la fecha límite en que se habilita el diligenciamiento.
+    # Un bimestre se califica por lo que pasó durante el bimestre, así que
+    # abrirlo con semanas de anticipación invita a registrar un avance que
+    # todavía no ocurrió. Vencido sí se puede, para poder ponerse al día.
+    DIAS_ANTICIPACION_DILIGENCIAMIENTO = 5
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     plan_mejora = models.ForeignKey(PlanMejoraPredefinido, on_delete=models.CASCADE, related_name='seguimientos')
@@ -595,6 +601,25 @@ class SeguimientoBimensual(models.Model):
     def cerrado_por_antiguedad(self):
         """Lo cerró el sistema sin calificar, por llevar demasiado vencido."""
         return self.estado == 'cerrado_sistema'
+
+    @property
+    def disponible_desde(self):
+        """Primer día en que se puede diligenciar."""
+        from datetime import timedelta
+        return self.fecha_limite - timedelta(
+            days=self.DIAS_ANTICIPACION_DILIGENCIAMIENTO)
+
+    @property
+    def puede_diligenciarse(self):
+        """Se habilita 5 días antes del límite y no se cierra al vencerse.
+
+        Que siga disponible después del límite es deliberado: es la única
+        forma de ponerse al día con un bimestre atrasado.
+        """
+        from django.utils import timezone
+        if self.esta_resuelto:
+            return False
+        return timezone.now().date() >= self.disponible_desde
 
 
 class EvaluacionFinal(models.Model):

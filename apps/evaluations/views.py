@@ -1970,6 +1970,15 @@ def seguimientos_pendientes_supervisor(request):
                             s.razon_bloqueo = f'Debe completar primero el {seg_anterior.numero_bimestre}° bimestre'
                             break
 
+                    # Aún estando en orden, no se diligencia antes de tiempo.
+                    if not s.esta_bloqueado and not s.puede_diligenciarse:
+                        s.esta_bloqueado = True
+                        s.razon_bloqueo = (
+                            f'Se habilita el {s.disponible_desde:%d/%m/%Y}, '
+                            f'{s.DIAS_ANTICIPACION_DILIGENCIAMIENTO} días antes '
+                            f'de la fecha límite'
+                        )
+
                 segs_con_info.append(s)
 
             # Agrupar seguimientos de este evaluador por empleado evaluado
@@ -2123,6 +2132,18 @@ def gestionar_seguimiento_bimensual(request, seguimiento_id):
                     )
                     return redirect('evaluations:supervisor_seguimientos_pendientes')
 
+            # Todavía no se abre la ventana: se puede consultar, no diligenciar.
+            if not seguimiento.puede_diligenciarse:
+                if request.method == 'POST':
+                    messages.error(
+                        request,
+                        f'El seguimiento del {seguimiento.numero_bimestre}° bimestre '
+                        f'se habilita el {seguimiento.disponible_desde:%d/%m/%Y}, '
+                        f'{seguimiento.DIAS_ANTICIPACION_DILIGENCIAMIENTO} días antes '
+                        f'de la fecha límite.'
+                    )
+                    return redirect('evaluations:supervisor_seguimientos_pendientes')
+
         if request.method == 'POST':
             avance_satisfactorio = request.POST.get('avance_satisfactorio') == 'true'
             observaciones = request.POST.get('observaciones', '').strip()
@@ -2144,7 +2165,8 @@ def gestionar_seguimiento_bimensual(request, seguimiento_id):
         
         return render(request, 'evaluations/admin/seguimiento_bimensual.html', {
             'seguimiento': seguimiento,
-            'plan': plan
+            'plan': plan,
+            'puede_diligenciar': seguimiento.puede_diligenciarse,
         })
         
     except Exception as e:
