@@ -140,9 +140,23 @@ python manage.py collectstatic --noinput
 echo "🔑 Verificando claves VAPID para notificaciones push..."
 eval "$(python manage.py asegurar_vapid_keys)" || echo "⚠️  No se pudo asegurar VAPID; push quedará deshabilitado."
 
-# Inicia el scheduler de tareas automáticas en segundo plano (modo daemon)
+# Inicia el scheduler de tareas automáticas en segundo plano (modo daemon).
+#
+# Este proceso es el ÚNICO que debe planificar tareas. Gunicorn no arranca
+# scheduler (ver apps/core/apps.py): cuando lo hacía, cada tarea corría dos
+# veces y las notificaciones llegaban duplicadas a todo el mundo.
+#
+# La salida ya no va a /dev/null. Siendo el único planificador, si muere hay
+# que poder verlo en los logs de Railway; antes moría en silencio y el
+# scheduler embebido en Gunicorn tapaba el problema sin que nadie lo supiera.
 echo "🔄 Iniciando scheduler de evaluaciones automáticas..."
-python manage.py start_scheduler --daemon > /dev/null 2>&1 &
+(
+  while true; do
+    python manage.py start_scheduler --daemon
+    echo "⚠️  El scheduler terminó inesperadamente. Reintentando en 30s..."
+    sleep 30
+  done
+) &
 SCHEDULER_PID=$!
 echo "✅ Scheduler iniciado (PID: $SCHEDULER_PID)"
 echo "  - 02:00 AM: Asignar evaluaciones de período de prueba"

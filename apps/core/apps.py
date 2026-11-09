@@ -13,34 +13,19 @@ class CoreConfig(AppConfig):
         from django.conf import settings
         logging.getLogger('django').info(f"[CoreConfig.ready] DEFAULT_FILE_STORAGE: {getattr(settings, 'DEFAULT_FILE_STORAGE', None)}")
 
-        # Iniciar scheduler de tareas automáticas
-        self._iniciar_scheduler_automatico()
-
-    def _iniciar_scheduler_automatico(self):
-        """Inicia el scheduler de tareas automáticas de forma segura."""
-        try:
-            # Solo iniciar en producción (DEBUG=False) o si está explícitamente activado
-            from django.conf import settings
-            from django.core.management import execute_from_command_line
-            import sys
-
-            # No iniciar si se está ejecutando migraciones o test
-            if any(cmd in sys.argv for cmd in ['migrate', 'test', 'makemigrations']):
-                return
-
-            # No iniciar si se está ejecutando manage.py (evita inicios duplicados)
-            if 'manage.py' in sys.argv:
-                return
-
-            # Iniciar el scheduler
-            from apps.core.scheduler import start_scheduler
-            scheduler = start_scheduler()
-
-            if scheduler and scheduler.running:
-                logger.info('✅ Scheduler de evaluaciones iniciado automáticamente')
-            else:
-                logger.warning('⚠️ No se pudo iniciar el scheduler automáticamente')
-
-        except Exception as e:
-            logger.warning(f'⚠️ No se pudo iniciar scheduler automático: {e}')
-            # No interrumpir el inicio de Django si falla el scheduler
+        # El scheduler NO se arranca aquí a propósito. Lo lanza start.sh como
+        # proceso aparte (`manage.py start_scheduler --daemon`), que es su
+        # único dueño.
+        #
+        # Antes se arrancaba también en este `ready()`, que corre en cada
+        # proceso de Gunicorn. Había un intento de evitar el doble arranque,
+        # `if 'manage.py' in sys.argv: return`, pero protegía justo el caso
+        # contrario: bajo Gunicorn el argv es ['gunicorn', 'config.wsgi...'],
+        # no contiene 'manage.py', así que el guardia no hacía nada y quedaban
+        # dos planificadores vivos. Cada tarea corría dos veces y todo el mundo
+        # recibía las notificaciones duplicadas: 6.384 copias de más sobre
+        # 14.583 notificaciones, siempre exactamente 2 por aviso.
+        #
+        # Si alguna vez hiciera falta un scheduler dentro del proceso web,
+        # primero hay que quitarlo de start.sh: dos dueños vuelven a duplicar,
+        # y con más de un worker de Gunicorn se multiplicaría por worker.

@@ -27,8 +27,11 @@ def start_scheduler():
     global scheduler
 
     if scheduler is not None and scheduler.running:
+        # Se devuelve el que ya está corriendo, no None: quien llama suele
+        # comprobar `if scheduler and scheduler.running` y con None concluía
+        # que había fallado el arranque cuando en realidad estaba todo bien.
         logger.info('Scheduler ya está corriendo')
-        return
+        return scheduler
 
     try:
         scheduler = BackgroundScheduler()
