@@ -109,7 +109,10 @@
         {% if form.errors %}
             <div class="error-message">Usuario o contraseña incorrectos.</div>
         {% endif %}
-        <form method="post" autocomplete="off">
+        {% for message in messages %}
+            <div class="error-message">{{ message }}</div>
+        {% endfor %}
+        <form method="post" autocomplete="off" id="login-form">
             {% csrf_token %}
             <div class="input-group">
                 <i class="fa fa-user"></i>
@@ -133,6 +136,23 @@
         </form>
     </div>
     <script>
+        // Rechazos CSRF en el login (6 en tres días). Dos causas en el celular:
+        // - Doble toque en "Entrar": el primer envío inicia sesión y renueva el
+        //   token; el segundo llega con el viejo y Django lo rechaza.
+        // - Volver atrás a una copia guardada de esta página (Safari la conserva
+        //   en memoria) con un token que ya no vale.
+        (function() {
+            var form = document.getElementById('login-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    var boton = form.querySelector('button[type="submit"]');
+                    if (boton) { boton.disabled = true; boton.textContent = 'Entrando...'; }
+                });
+            }
+            window.addEventListener('pageshow', function(e) {
+                if (e.persisted) { window.location.reload(); }
+            });
+        })();
         (function() {
             var toggle = document.getElementById('togglePassword');
             var icon = document.getElementById('togglePasswordIcon');

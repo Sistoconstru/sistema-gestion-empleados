@@ -212,6 +212,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Login URLs
+# En vez del "Prohibido (403)" de Django: recarga el login o explica cómo reintentar.
+CSRF_FAILURE_VIEW = 'apps.core.views.csrf_fallo'
+
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/empleados/feed/'
 LOGOUT_REDIRECT_URL = '/auth/login/'

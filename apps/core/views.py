@@ -346,3 +346,25 @@ def configuracion(request):
     activo `debe_cambiar_password`.
     """
     return render(request, 'core/configuracion.html')
+
+
+def csrf_fallo(request, reason=''):
+    """Reemplaza la página "Prohibido (403) Verificación CSRF fallida".
+
+    En la práctica ocurre por:
+    - Login con un token viejo (doble toque en "Entrar", o volver atrás a una
+      copia guardada de la página): si el primer envío ya inició sesión, se
+      sigue adelante; si no, se recarga el login con un token nuevo.
+    - Un formulario que llegó incompleto (se cortó la conexión mientras subía
+      una foto) o que llevaba demasiado tiempo abierto: se explica y se ofrece
+      volver a intentarlo.
+    """
+    from django.conf import settings
+
+    logger.warning(f'[CSRF] {reason} | {request.method} {request.path} | usuario={request.user}')
+    if request.path.startswith(settings.LOGIN_URL):
+        if request.user.is_authenticated:
+            return redirect(settings.LOGIN_REDIRECT_URL)
+        messages.info(request, 'La página de inicio había caducado. Ingresa tus datos de nuevo.')
+        return redirect(settings.LOGIN_URL)
+    return render(request, 'core/csrf_fallo.html', status=403)

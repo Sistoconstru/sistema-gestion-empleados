@@ -412,15 +412,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearPreviewBtn = document.getElementById('clear-preview');
     const imagenFormField = document.getElementById('{{ form.imagen.id_for_label }}');
 
+    // Las fotos del celular pesan 3-8 MB. Subirlas así con poca señal cortaba
+    // el envío a mitad y Django respondía "Verificación CSRF fallida" (el token
+    // no alcanzaba a llegar). Se reduce a 1600 px y JPEG antes de enviar:
+    // queda en unos cientos de KB.
+    function comprimir(file) {
+        return new Promise(function (resolve) {
+            if (file.type === 'image/gif') { resolve(file); return; }  // puede ser animado
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+            img.onload = function () {
+                URL.revokeObjectURL(url);
+                const escala = Math.min(1, 1600 / Math.max(img.width, img.height));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(img.width * escala);
+                canvas.height = Math.round(img.height * escala);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(function (blob) {
+                    if (!blob || blob.size >= file.size) { resolve(file); return; }
+                    resolve(new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }));
+                }, 'image/jpeg', 0.82);
+            };
+            img.onerror = function () { URL.revokeObjectURL(url); resolve(file); };
+            img.src = url;
+        });
+    }
+
     // Función para manejar la selección de archivo (desde cámara o selector)
-    function handleFileSelect(file) {
+    async function handleFileSelect(original) {
         // Validar que sea una imagen
-        if (!file.type.startsWith('image/')) {
+        if (!original.type.startsWith('image/')) {
             alert('Por favor selecciona un archivo de imagen válido');
             return;
         }
 
-        // Validar tamaño (máximo 5MB)
+        const file = await comprimir(original);
+
+        // Validar tamaño (máximo 5MB), ya comprimida
         const maxSize = 5 * 1024 * 1024; // 5MB en bytes
         if (file.size > maxSize) {
             alert('El archivo es demasiado grande. Máximo 5MB permitido.');
@@ -455,6 +483,24 @@ document.addEventListener('DOMContentLoaded', function() {
             handleFileSelect(this.files[0]);
         }
     });
+
+    // Un solo envío: con la conexión lenta, tocar dos veces mandaba dos.
+    const formulario = imagenFormField.form;
+    if (formulario) {
+        formulario.addEventListener('submit', function () {
+            const boton = formulario.querySelector('button[type="submit"]');
+            if (boton) {
+                boton.dataset.texto = boton.innerHTML;
+                boton.disabled = true;
+                boton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+            }
+        });
+        // Al volver atrás (p. ej. desde la página de error) el botón queda usable.
+        window.addEventListener('pageshow', function (e) {
+            const boton = formulario.querySelector('button[type="submit"]');
+            if (e.persisted && boton) { boton.disabled = false; boton.innerHTML = boton.dataset.texto || boton.innerHTML; }
+        });
+    }
 
     // Evento para limpiar la vista previa
     clearPreviewBtn.addEventListener('click', function(e) {
