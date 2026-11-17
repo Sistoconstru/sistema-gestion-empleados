@@ -39,10 +39,19 @@
         </div>
     {% endif %}
 
-    {% if atrasados or de_hoy %}
+    {% if atrasados or de_hoy or en_ruta %}
     <div class="row g-2 mb-3">
+        {% if en_ruta %}
+        <div class="col-sm-4">
+            <div class="alert alert-success mb-0 py-2">
+                <i class="fas fa-truck-fast me-1"></i>
+                <strong>{{ en_ruta }}</strong>
+                en ruta ahora mismo
+            </div>
+        </div>
+        {% endif %}
         {% if de_hoy %}
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="alert alert-primary mb-0 py-2">
                 <i class="fas fa-calendar-day me-1"></i>
                 <strong>{{ de_hoy }}</strong>
@@ -51,7 +60,7 @@
         </div>
         {% endif %}
         {% if atrasados %}
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="alert alert-danger mb-0 py-2">
                 <i class="fas fa-triangle-exclamation me-1"></i>
                 <strong>{{ atrasados }}</strong>
@@ -141,6 +150,57 @@
                         </span>
                         <div class="small text-muted mt-1">{{ s.estado_display }}</div>
                     </div>
+                </div>
+
+                {# --- Salida: la marca el conductor al arrancar --- #}
+                <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center gap-2">
+                    {% if s.inicio %}
+                        <span class="badge bg-success">
+                            <i class="fas fa-truck-fast me-1"></i>
+                            En ruta desde las {{ s.inicio.iniciado_en|time:"H:i" }}
+                        </span>
+                        <span class="small text-muted">
+                            {{ s.inicio.iniciado_en|date:"d/m/Y" }}
+                            {% if not g.es_mi_vehiculo %}
+                                · {{ s.inicio.conductor.nombre_completo }}
+                            {% endif %}
+                        </span>
+                        {% if g.es_mi_vehiculo and s.inicio.puede_deshacerse %}
+                        <form method="post"
+                              action="{% url 'transporte:deshacer_inicio' s.inicio.id %}"
+                              class="ms-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-rotate-left me-1"></i>Deshacer
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% elif g.es_mi_vehiculo %}
+                        <form method="post"
+                              action="{% url 'transporte:iniciar_servicio' %}"
+                              class="w-100">
+                            {% csrf_token %}
+                            <input type="hidden" name="odoo_modelo" value="{{ s.odoo_modelo }}">
+                            <input type="hidden" name="odoo_id" value="{{ s.odoo_id }}">
+                            <input type="hidden" name="ref" value="{{ s.ref }}">
+                            <input type="hidden" name="tipo" value="{{ s.tipo }}">
+                            <input type="hidden" name="resumen" value="{{ s.resumen }}">
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" name="kilometraje" min="0" step="1"
+                                       inputmode="numeric" class="form-control form-control-sm"
+                                       style="max-width: 140px;"
+                                       placeholder="Kilometraje"
+                                       aria-label="Kilometraje al salir (opcional)">
+                                <button type="submit" class="btn btn-success flex-grow-1">
+                                    <i class="fas fa-play me-1"></i>Iniciar servicio
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <span class="small text-muted">
+                            <i class="fas fa-clock me-1"></i>Sin iniciar
+                        </span>
+                    {% endif %}
                 </div>
             </li>
             {% empty %}

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import DocumentoVehiculo, GastoVehiculo, Vehiculo
+from .models import (
+    DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
+)
 
 
 class DocumentoVehiculoInline(admin.TabularInline):
@@ -132,3 +134,33 @@ class GastoVehiculoAdmin(admin.ModelAdmin):
         return obj.cuenta_como_costo
     cuenta_costo.short_description = '¿Entra al costo?'
     cuenta_costo.boolean = True
+
+
+@admin.register(ServicioIniciado)
+class ServicioIniciadoAdmin(admin.ModelAdmin):
+    """Las salidas que marcan los conductores. Aquí solo se consultan."""
+    list_display = ('iniciado_en', 'ref', 'vehiculo', 'conductor',
+                    'estado_aviso', 'anulado')
+    list_filter = ('sincronizado', 'tipo', 'iniciado_en')
+    search_fields = ('ref', 'resumen', 'vehiculo__placa',
+                     'conductor__nombres', 'conductor__apellidos',
+                     'conductor__numero_documento')
+    autocomplete_fields = ('vehiculo', 'conductor')
+    readonly_fields = ('id', 'odoo_modelo', 'odoo_id', 'ref', 'tipo',
+                       'resumen', 'fecha_creacion', 'fecha_sincronizacion',
+                       'ultimo_error', 'anulado_en', 'anulado_por')
+    date_hierarchy = 'iniciado_en'
+    ordering = ('-iniciado_en',)
+
+    def estado_aviso(self, obj):
+        if obj.sincronizado:
+            return format_html('<span style="color:#146c43;">✓ Odoo lo recibió</span>')
+        return format_html(
+            '<span style="color:#997404;" title="{}">⏳ Pendiente de avisar</span>',
+            obj.ultimo_error or 'Sin intentos todavía')
+    estado_aviso.short_description = 'Aviso a Odoo'
+
+    def anulado(self, obj):
+        return not obj.esta_activo
+    anulado.short_description = 'Anulado'
+    anulado.boolean = True

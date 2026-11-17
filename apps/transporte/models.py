@@ -16,6 +16,7 @@ from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 from custom_storage.media import MediaStorage
 
@@ -459,3 +460,117 @@ class GastoVehiculo(models.Model):
     def editable_por_conductor(self):
         """Mientras nadie lo haya revisado, el conductor puede corregirlo."""
         return self.estado == self.PENDIENTE
+
+
+class ServicioIniciado(models.Model):
+    """El momento en que el conductor sale a hacer un servicio de Odoo.
+
+    El servicio es de Odoo: allá se crea, se le asigna el vehículo y se
+    cobra. Lo único que SIGHU agrega es el instante en que el vehículo
+    arrancó, que es lo que nadie más registra y que el conductor marca
+    desde el celular al salir.
+
+    Queda guardado aquí y no solo se le manda a Odoo porque la salida no
+    puede depender de que Odoo conteste: el camión ya salió, y si el aviso
+    falla ese dato se pierde para siempre. Lo que falle se reintenta.
+
+    El servicio se identifica por `(odoo_modelo, odoo_id)` y no por `ref`:
+    la referencia es para leerla, y dos modelos distintos de Odoo podrían
+    repetirla. Se guarda además un resumen de a dónde iba, porque cuando
+    Odoo cierra el documento el servicio desaparece de la consulta y sin
+    ese texto el historial quedaría en un número.
+    """
+
+    # Margen para deshacer un inicio marcado por error. Corto a propósito:
+    # es para el dedo que se resbaló al arrancar, no para reescribir a qué
+    # hora salió el camión.
+    MINUTOS_PARA_DESHACER = 15
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    odoo_modelo = models.CharField(
+        max_length=80,
+        help_text='Modelo del documento en Odoo (p. ej. stock.picking).')
+    odoo_id = models.PositiveIntegerField(
+        help_text='Id del documento en Odoo.')
+    ref = models.CharField(
+        max_length=60, blank=True,
+        help_text='Referencia legible del servicio, como la muestra Odoo.')
+    tipo = models.CharField(
+        max_length=40, blank=True,
+        help_text='Tipo de servicio según Odoo: traslado, entrega, recepción.')
+    resumen = models.CharField(
+        max_length=200, blank=True,
+        help_text='A dónde iba, para que el historial se entienda después.')
+
+    vehiculo = models.ForeignKey(
+        Vehiculo, on_delete=models.PROTECT, related_name='servicios_iniciados')
+    conductor = models.ForeignKey(
+        'employees.Empleado', on_delete=models.PROTECT,
+        related_name='servicios_iniciados',
+        help_text='Quien salió a hacerlo.')
+
+    iniciado_en = models.DateTimeField(
+        default=timezone.now,
+        help_text='Momento en que el conductor marcó la salida.')
+    kilometraje = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text='Kilometraje al salir. Opcional.')
+
+    # Anular en vez de borrar: un inicio equivocado se corrige, pero quién
+    # lo marcó y a qué hora sigue siendo parte del historial.
+    anulado_en = models.DateTimeField(null=True, blank=True)
+    anulado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='servicios_inicio_anulados')
+
+    sincronizado = models.BooleanField(
+        default=False,
+        help_text='True cuando Odoo ya recibió el aviso de la salida.')
+    fecha_sincronizacion = models.DateTimeField(null=True, blank=True)
+    ultimo_error = models.CharField(
+        max_length=300, blank=True,
+        help_text='Por qué falló el último intento de avisarle a Odoo.')
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'transporte_servicios_iniciados'
+        verbose_name = 'Servicio iniciado'
+        verbose_name_plural = 'Servicios iniciados'
+        ordering = ['-iniciado_en']
+        constraints = [
+            # Un servicio no se puede iniciar dos veces. La restricción
+            # excluye los anulados para que, tras deshacer, se pueda volver
+            # a marcar la salida.
+            models.UniqueConstraint(
+                fields=['odoo_modelo', 'odoo_id'],
+                condition=models.Q(anulado_en__isnull=True),
+                name='servicio_iniciado_una_sola_vez',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['odoo_id']),
+            models.Index(fields=['vehiculo', '-iniciado_en']),
+            models.Index(fields=['conductor', '-iniciado_en']),
+            models.Index(fields=['sincronizado']),
+        ]
+
+    def __str__(self):
+        return f'{self.ref or self.odoo_id} — {self.vehiculo.placa} ({self.iniciado_en:%d/%m/%Y %H:%M})'
+
+    @property
+    def esta_activo(self):
+        return self.anulado_en is None
+
+    @property
+    def puede_deshacerse(self):
+        """Solo el rato justo después de marcarlo, y si Odoo no lo recibió.
+
+        Si Odoo ya lo registró, deshacerlo aquí dejaría los dos sistemas
+        diciendo cosas distintas; eso lo arregla el jefe, no el conductor.
+        """
+        if not self.esta_activo or self.sincronizado:
+            return False
+        limite = self.fecha_creacion + timedelta(minutes=self.MINUTOS_PARA_DESHACER)
+        return timezone.now() <= limite

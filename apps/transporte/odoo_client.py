@@ -160,6 +160,45 @@ def listar_viajes_pendientes(tipo=None, sede=None, timeout=None):
     return datos
 
 
+def avisar_servicio_iniciado(servicio, timeout=None):
+    """Le avisa a Odoo que el conductor salió a hacer un servicio.
+
+    El endpoint todavía no existe del lado de Odoo: mientras tanto esto
+    responde 404 y el inicio queda marcado para reintentar, que es justo lo
+    que se quiere. El dato ya está guardado en SIGHU; el día que Odoo lo
+    implemente se sincroniza solo, sin tocar código.
+
+    Contrato propuesto, en la misma línea que `vehiculo_asignacion`:
+
+        POST /sighu_sync/webhook/servicio_iniciado
+        {
+          "odoo_modelo": "stock.picking",
+          "odoo_id": 385,
+          "ref": "CAL/OUT/00060",
+          "placa": "JYN 240",
+          "cedula": "71391550",
+          "iniciado_en": "2026-11-17T06:42:00-05:00",
+          "kilometraje": 125400
+        }
+
+    Idempotente: repetir el mismo aviso responde 200 y no cambia nada.
+    """
+    cuerpo = {
+        'odoo_modelo': servicio.odoo_modelo,
+        'odoo_id': servicio.odoo_id,
+        'ref': servicio.ref,
+        'placa': servicio.vehiculo.placa,
+        'cedula': str(servicio.conductor.numero_documento),
+        'iniciado_en': servicio.iniciado_en.isoformat(),
+    }
+    if servicio.kilometraje is not None:
+        cuerpo['kilometraje'] = servicio.kilometraje
+    logger.info('Avisando a Odoo la salida de %s (%s)',
+                servicio.ref or servicio.odoo_id, servicio.vehiculo.placa)
+    return _pedir('POST', 'webhook/servicio_iniciado',
+                  json=cuerpo, timeout=timeout)
+
+
 def buscar_clientes(q):
     """Clientes aprobados para facturar, por NIT (con o sin dígito) o nombre.
 

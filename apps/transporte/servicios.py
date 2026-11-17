@@ -19,7 +19,7 @@ from datetime import datetime
 from django.utils import timezone
 
 from .odoo_client import OdooTransporteError, listar_viajes_pendientes
-from .permisos import es_admin_transporte, vehiculos_visibles
+from .permisos import empleado_de, es_admin_transporte, vehiculos_visibles
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,48 @@ def normalizar(crudo):
         'toneladas': crudo.get('toneladas'),
         'distancia_km': crudo.get('distancia_km'),
         'vehiculo_odoo_id': crudo.get('vehiculo_id'),
+        # La pareja que identifica el documento en Odoo. Es la clave con la
+        # que se cruza el inicio que marca el conductor; `ref` es solo para
+        # leerla.
+        'odoo_modelo': _texto(crudo.get('odoo_modelo')),
+        'odoo_id': crudo.get('odoo_id'),
     }
+
+
+def resumen_de(servicio):
+    """"Entrega a cliente: Caldas → Cra. 53 #96a-20, Medellín".
+
+    Se guarda junto al inicio porque cuando Odoo cierra el documento el
+    servicio desaparece de la consulta, y sin este texto el historial
+    quedaría en un número de referencia que nadie reconoce.
+    """
+    tramo = ' → '.join(p for p in (servicio.get('origen'),
+                                   servicio.get('destino')) if p)
+    partes = [servicio.get('tipo_display') or 'Servicio']
+    if tramo:
+        partes.append(tramo)
+    return ': '.join(partes)[:200]
+
+
+def _marcar_iniciados(servicios):
+    """Le cuelga a cada servicio su inicio, si el conductor ya salió.
+
+    Una sola consulta para toda la lista: se filtra por los ids de Odoo y
+    el cruce fino —modelo e id— se hace en memoria, que es más simple que
+    armar un OR por cada servicio y da lo mismo con estos volúmenes.
+    """
+    from .models import ServicioIniciado
+
+    ids = [s['odoo_id'] for s in servicios if s['odoo_id']]
+    por_clave = {}
+    if ids:
+        for inicio in (ServicioIniciado.objects
+                       .filter(odoo_id__in=ids, anulado_en__isnull=True)
+                       .select_related('conductor', 'vehiculo')):
+            por_clave[(inicio.odoo_modelo, inicio.odoo_id)] = inicio
+
+    for s in servicios:
+        s['inicio'] = por_clave.get((s['odoo_modelo'], s['odoo_id']))
 
 
 def _orden(servicio):
@@ -193,10 +234,16 @@ def servicios_visibles(usuario):
     servicios = [s for s in (normalizar(c) for c in crudos) if s]
     for s in servicios:
         s['urgencia'] = _urgencia(s['fecha'], hoy)
+        s['resumen'] = resumen_de(s)
     servicios.sort(key=_orden)
+    _marcar_iniciados(servicios)
 
+    # El botón de salida es del conductor del vehículo, no de su jefe: el
+    # que sale es él, y la hora tiene que ser la real.
+    empleado = empleado_de(usuario)
     grupos = [
         {'vehiculo': v,
+         'es_mi_vehiculo': bool(empleado) and v.conductor_id == empleado.pk,
          'servicios': [s for s in servicios
                        if v.odoo_id and s['vehiculo_odoo_id'] == v.odoo_id]}
         for v in vehiculos

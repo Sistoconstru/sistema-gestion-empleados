@@ -20,7 +20,10 @@ from apps.employees.models import Empleado
 logger = logging.getLogger(__name__)
 
 from .forms import DocumentoVehiculoForm, GastoVehiculoForm, RevisionGastoForm
-from .models import DocumentoVehiculo, GastoVehiculo, Vehiculo
+from .models import (
+    DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
+)
+from .odoo_client import OdooTransporteError, avisar_servicio_iniciado
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
     es_conductor, empleado_de, transporte_required, vehiculos_visibles,
@@ -232,7 +235,124 @@ def servicios(request):
         'atrasados': sum(1 for s in asignados
                          if s['urgencia']['clave'] == 'atrasado'),
         'de_hoy': sum(1 for s in asignados if s['urgencia']['clave'] == 'hoy'),
+        'en_ruta': sum(1 for s in asignados if s.get('inicio')),
     })
+
+
+@login_required
+@transporte_required
+@require_POST
+def iniciar_servicio(request):
+    """El conductor marca que salió a hacer un servicio.
+
+    No se valida el servicio contra Odoo antes de guardar, y es a
+    propósito: el camión ya arrancó y la salida no puede depender de que
+    Odoo conteste. Lo que sí se fija aquí es a quién pertenece: el vehículo
+    y el conductor salen de la sesión, nunca del formulario, así que lo
+    peor que podría hacer alguien manipulando la página es crearse un
+    registro suyo, que su jefe ve.
+    """
+    empleado = empleado_de(request.user)
+    vehiculo = Vehiculo.objects.filter(
+        conductor=empleado, activo=True).first() if empleado else None
+
+    if not vehiculo:
+        messages.error(
+            request,
+            'No tienes un vehículo asignado, así que no puedes iniciar un '
+            'servicio. Habla con tu jefe para que te asigne uno.')
+        return redirect('transporte:servicios')
+
+    odoo_modelo = (request.POST.get('odoo_modelo') or '').strip()[:80]
+    odoo_id_raw = (request.POST.get('odoo_id') or '').strip()
+    if not odoo_modelo or not odoo_id_raw.isdigit():
+        messages.error(request, 'No se pudo identificar el servicio.')
+        return redirect('transporte:servicios')
+    odoo_id = int(odoo_id_raw)
+
+    ya = ServicioIniciado.objects.filter(
+        odoo_modelo=odoo_modelo, odoo_id=odoo_id, anulado_en__isnull=True
+    ).select_related('conductor').first()
+    if ya:
+        messages.info(
+            request,
+            f'Ese servicio ya estaba iniciado por {ya.conductor.nombre_completo} '
+            f'a las {timezone.localtime(ya.iniciado_en):%H:%M}.')
+        return redirect('transporte:servicios')
+
+    kilometraje = (request.POST.get('kilometraje') or '').strip()
+    servicio = ServicioIniciado.objects.create(
+        odoo_modelo=odoo_modelo,
+        odoo_id=odoo_id,
+        ref=(request.POST.get('ref') or '').strip()[:60],
+        tipo=(request.POST.get('tipo') or '').strip()[:40],
+        resumen=(request.POST.get('resumen') or '').strip()[:200],
+        vehiculo=vehiculo,
+        conductor=empleado,
+        kilometraje=int(kilometraje) if kilometraje.isdigit() else None,
+    )
+
+    _avisar_inicio_a_odoo(servicio)
+
+    messages.success(
+        request,
+        f'Servicio {servicio.ref or servicio.odoo_id} iniciado a las '
+        f'{timezone.localtime(servicio.iniciado_en):%H:%M}. Buen viaje.')
+    return redirect('transporte:servicios')
+
+
+def _avisar_inicio_a_odoo(servicio):
+    """Avisa la salida con timeout corto; si falla, queda para reintentar.
+
+    Nunca interrumpe al conductor: el registro ya está guardado y lo que
+    falte es cosa de la sincronización, no suya.
+    """
+    try:
+        avisar_servicio_iniciado(servicio, timeout=5)
+    except OdooTransporteError as e:
+        ServicioIniciado.objects.filter(pk=servicio.pk).update(
+            ultimo_error=str(e)[:300])
+        logger.info('Salida de %s pendiente de avisar a Odoo: %s',
+                    servicio.ref or servicio.odoo_id, e)
+        return False
+    ServicioIniciado.objects.filter(pk=servicio.pk).update(
+        sincronizado=True, fecha_sincronizacion=timezone.now(), ultimo_error='')
+    return True
+
+
+@login_required
+@transporte_required
+@require_POST
+def deshacer_inicio(request, inicio_id):
+    """Anula un inicio marcado por error, poco después de marcarlo."""
+    servicio = get_object_or_404(ServicioIniciado, pk=inicio_id)
+    empleado = empleado_de(request.user)
+
+    if servicio.conductor_id != (empleado.pk if empleado else None):
+        messages.error(request, 'Ese servicio no es tuyo.')
+        return redirect('transporte:servicios')
+
+    if not servicio.puede_deshacerse:
+        if servicio.sincronizado:
+            messages.error(
+                request,
+                'Odoo ya registró esa salida, así que no se puede deshacer '
+                'desde aquí. Avísale a tu jefe.')
+        else:
+            messages.error(
+                request,
+                f'Ya pasaron más de {ServicioIniciado.MINUTOS_PARA_DESHACER} '
+                f'minutos desde que lo iniciaste. Avísale a tu jefe.')
+        return redirect('transporte:servicios')
+
+    servicio.anulado_en = timezone.now()
+    servicio.anulado_por = request.user
+    servicio.save(update_fields=['anulado_en', 'anulado_por'])
+    messages.success(
+        request,
+        f'Se deshizo el inicio de {servicio.ref or servicio.odoo_id}. '
+        f'Puedes volver a marcarlo cuando salgas.')
+    return redirect('transporte:servicios')
 
 
 # =========================================================================
