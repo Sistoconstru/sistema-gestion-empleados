@@ -53,6 +53,7 @@ urlpatterns = [
     path('notificaciones/', include('apps.notifications.urls')),
     path('reportes/', include('apps.reports.urls')),
     path('beneficios-retencion/', include('apps.beneficios_retencion.urls')),
+    path('transporte/', include('apps.transporte.urls')),
     
     
     

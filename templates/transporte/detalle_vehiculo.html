@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ vehiculo.placa }} — Documentos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-1">
+                <i class="fas fa-truck me-2"></i>{{ vehiculo.placa }}
+                {% if not vehiculo.activo %}
+                    <span class="badge bg-secondary">Dado de baja{% if vehiculo.fecha_baja %}
+                        el {{ vehiculo.fecha_baja|date:"d/m/Y" }}{% endif %}</span>
+                {% endif %}
+            </h4>
+            <p class="text-muted small mb-0">
+                {{ vehiculo.marca }} {{ vehiculo.modelo }}{% if vehiculo.anio %} · {{ vehiculo.anio }}{% endif %}
+                {% if vehiculo.conductor %} · Conduce {{ vehiculo.conductor.nombre_completo }}{% endif %}
+            </p>
+        </div>
+        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Volver a la flota
+        </a>
+    </div>
+
+    {# --- Estado actual de cada documento --- #}
+    <div class="row g-2 mb-4">
+        {% for fila in estado_por_tipo %}
+        <div class="col-md-3 col-sm-6">
+            <div class="card h-100">
+                <div class="card-body py-3">
+                    <div class="small text-muted">{{ fila.nombre }}</div>
+                    {% if fila.doc %}
+                        <div class="fs-6 fw-bold
+                            {% if fila.doc.estado == 'vencido' %}text-danger
+                            {% elif fila.doc.estado == 'por_vencer' %}text-warning
+                            {% elif fila.doc.estado == 'no_aplica' %}text-muted
+                            {% else %}text-success{% endif %}">
+                            {{ fila.doc.estado_display }}
+                        </div>
+                        {% if fila.doc.fecha_vencimiento and fila.doc.aplica %}
+                            <div class="small text-muted">
+                                Vence {{ fila.doc.fecha_vencimiento|date:"d/m/Y" }}
+                                {% if fila.doc.estado == 'vencido' %}
+                                    (hace {{ fila.doc.dias_para_vencer|cut:"-" }} días)
+                                {% elif fila.doc.estado == 'por_vencer' %}
+                                    (en {{ fila.doc.dias_para_vencer }} días)
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="fs-6 text-muted">Sin registrar</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# --- Historial completo --- #}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0"><i class="fas fa-clock-rotate-left me-2"></i>Historial de documentos</h6>
+            {% if es_admin %}
+            <a href="/admin/transporte/documentovehiculo/add/?vehiculo={{ vehiculo.id }}"
+               class="btn btn-sm btn-primary">
+                <i class="fas fa-plus me-1"></i>Registrar documento
+            </a>
+            {% endif %}
+        </div>
+        <div class="card-body p-0">
+            {% if documentos %}
+            <div class="table-responsive">
+                <table class="table table-sm mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Número</th>
+                            <th>Entidad</th>
+                            <th>Expedido</th>
+                            <th>Vence</th>
+                            <th>Estado</th>
+                            <th>Soporte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in documentos %}
+                        <tr>
+                            <td>{{ d.get_tipo_display }}</td>
+                            <td>{{ d.numero|default:"—" }}</td>
+                            <td>{{ d.entidad|default:"—" }}</td>
+                            <td>{{ d.fecha_expedicion|date:"d/m/Y"|default:"—" }}</td>
+                            <td>{{ d.fecha_vencimiento|date:"d/m/Y"|default:"—" }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if d.estado == 'vencido' %}bg-danger
+                                    {% elif d.estado == 'por_vencer' %}bg-warning text-dark
+                                    {% elif d.estado == 'no_aplica' %}bg-light text-muted border
+                                    {% else %}bg-success{% endif %}">
+                                    {{ d.estado_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if d.archivo %}
+                                    <a href="{{ d.archivo.url }}" target="_blank"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-4">
+                Este vehículo no tiene documentos registrados.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <p class="text-muted small mt-2">
+        <i class="fas fa-circle-info me-1"></i>
+        Cada renovación se guarda como un registro nuevo: el documento anterior
+        queda como constancia de que el vehículo estuvo en regla. El vigente es
+        el de vencimiento más lejano.
+    </p>
+</div>
+{% endblock %}

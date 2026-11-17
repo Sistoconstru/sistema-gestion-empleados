@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Flota de vehículos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-1"><i class="fas fa-truck me-2"></i>Flota de vehículos</h4>
+            <p class="text-muted small mb-0">
+                {% if es_solo_conductor %}
+                    El vehículo que tienes asignado y el estado de sus documentos.
+                {% else %}
+                    Los vehículos los administra Odoo. Aquí se asigna el conductor
+                    y se llevan los documentos.
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Volver al panel
+        </a>
+    </div>
+
+    {# Resumen: solo lo que exige atención, no estadísticas de adorno #}
+    {% if total_vencidos or total_por_vencer or sin_conductor %}
+    <div class="row g-2 mb-3">
+        {% if total_vencidos %}
+        <div class="col-md-4">
+            <div class="alert alert-danger mb-0 py-2">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                <strong>{{ total_vencidos }}</strong>
+                documento{{ total_vencidos|pluralize }} vencido{{ total_vencidos|pluralize }}
+            </div>
+        </div>
+        {% endif %}
+        {% if total_por_vencer %}
+        <div class="col-md-4">
+            <div class="alert alert-warning mb-0 py-2">
+                <i class="fas fa-clock me-1"></i>
+                <strong>{{ total_por_vencer }}</strong>
+                por vencer en 30 días
+            </div>
+        </div>
+        {% endif %}
+        {% if sin_conductor and not es_solo_conductor %}
+        <div class="col-md-4">
+            <div class="alert alert-secondary mb-0 py-2">
+                <i class="fas fa-user-slash me-1"></i>
+                <strong>{{ sin_conductor }}</strong>
+                sin conductor asignado
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if not vehiculos %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-truck fa-3x mb-3 d-block opacity-25"></i>
+            {% if es_solo_conductor %}
+                No tienes ningún vehículo asignado todavía.
+            {% else %}
+                No hay vehículos. Se traen desde Odoo automáticamente cada 6 horas.
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for v in vehiculos %}
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100 {% if not v.activo %}border-secondary opacity-75{% endif %}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="fs-5">{{ v.placa }}</strong>
+                        {% if not v.activo %}
+                            <span class="badge bg-secondary ms-2">Dado de baja</span>
+                        {% endif %}
+                        <div class="small text-muted">
+                            {{ v.marca }} {{ v.modelo }}{% if v.anio %} · {{ v.anio }}{% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'transporte:detalle_vehiculo' v.id %}"
+                       class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-folder-open me-1"></i>Documentos
+                    </a>
+                </div>
+
+                <div class="card-body">
+                    {# --- Documentos --- #}
+                    <div class="mb-3">
+                        {% for d in v.documentos_vigentes %}
+                            <span class="badge me-1 mb-1
+                                {% if d.estado == 'vencido' %}bg-danger
+                                {% elif d.estado == 'por_vencer' %}bg-warning text-dark
+                                {% elif d.estado == 'no_aplica' %}bg-light text-muted border
+                                {% else %}bg-success{% endif %}">
+                                {{ d.get_tipo_display }}
+                                {% if d.estado == 'vencido' %}
+                                    · vencido
+                                {% elif d.estado == 'por_vencer' %}
+                                    · {{ d.dias_para_vencer }} día{{ d.dias_para_vencer|pluralize }}
+                                {% elif d.estado == 'no_aplica' %}
+                                    · no aplica
+                                {% else %}
+                                    · {{ d.fecha_vencimiento|date:"d/m/Y" }}
+                                {% endif %}
+                            </span>
+                        {% empty %}
+                            <span class="text-muted small">
+                                <i class="fas fa-circle-exclamation me-1"></i>
+                                Sin documentos registrados
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    {# --- Conductor --- #}
+                    <div class="border-top pt-3">
+                        <div class="small text-muted mb-1">Conductor</div>
+                        {% if v.conductor %}
+                            <div class="fw-bold">{{ v.conductor.nombre_completo }}</div>
+                            <div class="small text-muted">
+                                C.C. {{ v.conductor.numero_documento }}
+                                {% if v.asignacion_desde %}
+                                    · desde el {{ v.asignacion_desde|date:"d/m/Y" }}
+                                {% endif %}
+                            </div>
+                            {% if not v.asignacion_sincronizada %}
+                                <div class="small text-warning mt-1">
+                                    <i class="fas fa-rotate me-1"></i>
+                                    Odoo aún no confirma esta asignación. Se reintenta solo.
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-muted fst-italic">Sin asignar</div>
+                        {% endif %}
+
+                        {% if es_admin and v.activo %}
+                        <form method="post"
+                              action="{% url 'transporte:asignar_conductor' v.id %}"
+                              class="row g-2 mt-2 align-items-end">
+                            {% csrf_token %}
+                            <div class="col-sm-6">
+                                <label class="form-label small mb-1"
+                                       for="conductor-{{ v.id }}">Asignar a</label>
+                                <select name="conductor" id="conductor-{{ v.id }}"
+                                        class="form-select form-select-sm">
+                                    <option value="">— Sin conductor —</option>
+                                    {% for c in asignables %}
+                                        <option value="{{ c.pk }}"
+                                            {% if v.conductor_id == c.pk %}selected{% endif %}>
+                                            {{ c.nombre_completo }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label small mb-1"
+                                       for="desde-{{ v.id }}">Desde</label>
+                                <input type="date" name="desde" id="desde-{{ v.id }}"
+                                       class="form-control form-control-sm"
+                                       value="{{ hoy|date:'Y-m-d' }}"
+                                       max="{{ hoy|date:'Y-m-d' }}">
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-sm btn-primary w-100">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if es_admin %}
+    <p class="text-muted small mt-2">
+        <i class="fas fa-circle-info me-1"></i>
+        Al asignar un conductor se le avisa a Odoo, que cierra sola la asignación
+        anterior. Si Odoo no responde en el momento, el cambio queda guardado aquí
+        y el aviso se reintenta; no hay que repetirlo.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

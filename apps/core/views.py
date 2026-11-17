@@ -300,6 +300,11 @@ def dashboard_view(request):
     from apps.beneficios_retencion.permisos import _usuario_puede_gestionar
     context['puede_ver_beneficios_rrhh'] = _usuario_puede_gestionar(request.user)
 
+    # Transporte: lo ven quienes administran la flota (jefe y director de los
+    # conductores) y el staff. El conductor entra desde su propio perfil.
+    from apps.transporte.permisos import es_admin_transporte
+    context['puede_ver_transporte'] = es_admin_transporte(request.user)
+
     return render(request, 'core/dashboard.html', context)
 
 # Vista basada en clase para el dashboard, reutiliza la lógica de dashboard_view

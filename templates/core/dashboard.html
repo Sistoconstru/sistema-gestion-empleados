@@ -209,6 +209,16 @@
                         </a>
                     </div>
                     {% endif %}
+
+                    {% if puede_ver_transporte %}
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="fas fa-truck fa-2x d-block mb-2"></i>
+                            <strong>Vehículos</strong>
+                            <div class="small text-muted">Asignar conductor y documentos</div>
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
