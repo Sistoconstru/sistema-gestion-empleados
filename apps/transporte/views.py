@@ -26,6 +26,46 @@ def _miles(n):
     return f'{n:,}'.replace(',', '.')
 
 
+def _registrar_rechazo(servicio, error, que):
+    """Deja el rechazo en el log, con el nivel que corresponde.
+
+    Un 409 es parte de la operación: el coordinador movió algo. Un 400
+    significa que SIGHU mandó un dato que no sirve, y eso es un error
+    nuestro que hay que ir a mirar, no una situación normal.
+    """
+    identificador = servicio.ref or servicio.odoo_id
+    registrar = logger.error if error.es_culpa_nuestra else logger.warning
+    registrar('Odoo rechazó %s de %s (%s): %s',
+              que, identificador, error.status_code, error.motivo)
+
+
+def _con_punto(texto):
+    """Cierra la frase si Odoo no la cerró, para que no se peguen dos."""
+    texto = (texto or '').strip()
+    if texto and texto[-1] not in '.!?:;':
+        return texto + '.'
+    return texto
+
+
+def _de(que):
+    """"el cierre" → "del cierre"; "la salida" → "de la salida"."""
+    return f'del {que[3:]}' if que.startswith('el ') else f'de {que}'
+
+
+def _mensaje_de_rechazo(error, que, identificador):
+    """Lo que ve el conductor. Depende de si puede hacer algo o no.
+
+    `que` llega con su artículo —"la salida", "el cierre"— porque el
+    género cambia y una frase mal concordada se nota.
+    """
+    motivo = _con_punto(error.motivo)
+    if error.es_culpa_nuestra:
+        return (f'Odoo rechazó el dato {_de(que)} de {identificador}: '
+                f'{motivo} Quedó registrado acá; avísale a sistemas, '
+                f'no es algo que puedas corregir tú.')
+    return f'Odoo no aceptó {que} de {identificador}: {motivo}'
+
+
 def _decimal_o_none(texto):
     """Un decimal del formulario, aceptando coma o punto. None si no vale.
 
@@ -323,10 +363,11 @@ def iniciar_servicio(request):
 
     rechazo = _avisar_inicio_a_odoo(servicio)
     if rechazo:
-        messages.error(
-            request,
-            f'Odoo no aceptó la salida de {servicio.ref or servicio.odoo_id}: '
-            f'{rechazo} Habla con tu coordinador antes de arrancar.')
+        aviso = _mensaje_de_rechazo(
+            rechazo, 'la salida', servicio.ref or servicio.odoo_id)
+        if not rechazo.es_culpa_nuestra:
+            aviso += ' Habla con tu coordinador antes de arrancar.'
+        messages.error(request, aviso)
         return redirect('transporte:servicios')
 
     messages.success(
@@ -337,16 +378,15 @@ def iniciar_servicio(request):
 
 
 def _avisar_inicio_a_odoo(servicio):
-    """Avisa la salida con timeout corto. Devuelve el motivo si Odoo dice no.
+    """Avisa la salida con timeout corto. Devuelve el rechazo si lo hubo.
 
     Tres desenlaces distintos:
 
     - Odoo lo acepta: queda sincronizado.
     - Odoo no contesta: queda pendiente y la sincronización lo reintenta.
-    - Odoo lo rechaza (409): no se reintenta nunca más, porque del otro
-      lado cambió algo —el coordinador reasignó el viaje, por ejemplo— y
-      repetir el aviso daría siempre lo mismo. El motivo se le muestra al
-      conductor, que es quien tiene que enterarse de que no va.
+    - Odoo lo rechaza (400 o 409): no se reintenta nunca más, porque
+      repetir el aviso daría siempre lo mismo. El motivo se le muestra a
+      quien lo marcó.
 
     Nunca interrumpe al conductor: el registro ya está guardado.
     """
@@ -355,9 +395,8 @@ def _avisar_inicio_a_odoo(servicio):
     except OdooConflictoError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             conflicto_odoo=True, ultimo_error=e.motivo[:300])
-        logger.warning('Odoo rechazó la salida de %s: %s',
-                       servicio.ref or servicio.odoo_id, e.motivo)
-        return e.motivo
+        _registrar_rechazo(servicio, e, 'la salida')
+        return e
     except OdooTransporteError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             ultimo_error=str(e)[:300])
@@ -442,10 +481,11 @@ def entregar_servicio(request, inicio_id):
 
     rechazo = _avisar_entrega_a_odoo(servicio)
     if rechazo:
-        messages.error(
-            request,
-            f'Odoo no aceptó el cierre de {servicio.ref or servicio.odoo_id}: '
-            f'{rechazo} Queda registrado acá; avísale a tu coordinador.')
+        aviso = _mensaje_de_rechazo(
+            rechazo, 'el cierre', servicio.ref or servicio.odoo_id)
+        if not rechazo.es_culpa_nuestra:
+            aviso += ' Queda registrado acá; avísale a tu coordinador.'
+        messages.error(request, aviso)
         return redirect('transporte:servicios')
 
     recorrido = ''
@@ -463,15 +503,14 @@ def entregar_servicio(request, inicio_id):
 
 
 def _avisar_entrega_a_odoo(servicio):
-    """Igual que la salida: devuelve el motivo si Odoo la rechaza."""
+    """Igual que la salida: devuelve el rechazo si Odoo la rechaza."""
     try:
         avisar_servicio_finalizado(servicio, timeout=5)
     except OdooConflictoError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             conflicto_odoo_entrega=True, ultimo_error_entrega=e.motivo[:300])
-        logger.warning('Odoo rechazó el cierre de %s: %s',
-                       servicio.ref or servicio.odoo_id, e.motivo)
-        return e.motivo
+        _registrar_rechazo(servicio, e, 'el cierre')
+        return e
     except OdooTransporteError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             ultimo_error_entrega=str(e)[:300])

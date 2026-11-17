@@ -204,11 +204,15 @@ class Command(BaseCommand):
                 rechazadas += 1
                 ServicioIniciado.objects.filter(pk=servicio.pk).update(
                     **{campo_conflicto: True, campo_error: e.motivo[:300]})
-                self.stdout.write(self.style.WARNING(
-                    f'  rechazada por Odoo: {servicio.ref or servicio.odoo_id} '
+                self.stdout.write(self.style.ERROR(
+                    f'  rechazada por Odoo ({e.status_code}): '
+                    f'{servicio.ref or servicio.odoo_id} '
                     f'({servicio.vehiculo.placa}) — {e.motivo[:120]}'))
-                logger.warning('Odoo rechazó %s de %s: %s', etiqueta.lower(),
-                               servicio.ref or servicio.odoo_id, e.motivo)
+                # Un 400 es dato malo de SIGHU: no es operación, es un bug.
+                registrar = logger.error if e.es_culpa_nuestra else logger.warning
+                registrar('Odoo rechazó %s de %s (%s): %s', etiqueta.lower(),
+                          servicio.ref or servicio.odoo_id, e.status_code,
+                          e.motivo)
                 continue
             except OdooTransporteError as e:
                 fallidas += 1

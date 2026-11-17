@@ -28,17 +28,29 @@ class OdooTransporteError(Exception):
 
 
 class OdooConflictoError(OdooTransporteError):
-    """Odoo rechazó el aviso a propósito (409), no por una falla.
+    """Odoo rechazó el aviso a propósito, no por una falla.
 
-    Significa que del lado de Odoo cambió algo —el coordinador reasignó el
-    viaje, por ejemplo—, así que reintentar no sirve de nada: hay que
-    mostrarle el motivo a quien lo marcó y parar.
+    Dos códigos, dos culpables, el mismo tratamiento: no se reintenta,
+    porque repetir el mismo aviso daría siempre lo mismo.
+
+    - 409: cambió algo del lado de Odoo. El viaje está sin asignar,
+      cancelado, o es de otro conductor o de otro vehículo. El conductor
+      puede hacer algo al respecto: hablar con su coordinador.
+    - 400: el dato que mandó SIGHU no sirve —novedad desconocida,
+      toneladas negativas, un fin anterior al inicio—. Eso no debería
+      pasar nunca porque se valida antes de guardar; si pasa es un error
+      nuestro y el conductor no tiene cómo arreglarlo.
     """
 
     def __init__(self, motivo, status_code=409):
         self.motivo = motivo
         self.status_code = status_code
         super().__init__(motivo)
+
+    @property
+    def es_culpa_nuestra(self):
+        """True cuando Odoo rechazó el dato, no la situación."""
+        return self.status_code == 400
 
 
 def _motivo(resp):
@@ -104,11 +116,13 @@ def _pedir(metodo, ruta, timeout=None, **kwargs):
     except requests.RequestException as e:
         raise OdooTransporteError(f'No se pudo contactar a Odoo ({url}): {e}') from e
 
-    # Un 409 no es una falla: es Odoo diciendo que no, con un motivo. Se
-    # separa del resto porque se trata al revés —no se reintenta— y lo que
-    # importa es el texto, que va derecho a la pantalla del conductor.
-    if resp.status_code == 409:
-        raise OdooConflictoError(_motivo(resp))
+    # 400 y 409 no son fallas: son Odoo diciendo que no, con un motivo. Se
+    # separan del resto porque se tratan al revés —no se reintentan— y lo
+    # que importa es el texto, que va a la pantalla de quien lo marcó.
+    # Reintentar un rechazo definitivo es gastar llamadas para que Odoo
+    # conteste lo mismo cada seis horas.
+    if resp.status_code in (400, 409):
+        raise OdooConflictoError(_motivo(resp), status_code=resp.status_code)
 
     if resp.status_code >= 400:
         raise OdooTransporteError(
@@ -256,7 +270,16 @@ def avisar_servicio_finalizado(servicio, timeout=None):
         }
 
     Las toneladas son soporte, no base de cobro: el valor lo calcula Odoo
-    con su propio documento y usa esto para contrastar.
+    con su propio documento y usa esto para contrastar. Si no van, Odoo
+    toma las del servicio.
+
+    Acordado con Odoo, y por eso el orden de la cola no importa:
+
+    - El fin puede llegar antes que el inicio; Odoo lo acepta y cierra.
+    - El inicio que llega después del fin responde 200 con
+      `cambio: false`, no 409.
+    - Repetir el fin responde `cambio: false` y no toca nada. Corregir una
+      novedad ya enviada se hace en Odoo, no reenviando esto.
     """
     cuerpo = {
         'odoo_modelo': servicio.odoo_modelo,
