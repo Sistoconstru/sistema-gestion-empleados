@@ -1,0 +1,135 @@
+"""Refresca la flota desde Odoo y le avisa las asignaciones pendientes.
+
+Odoo es el dueño del maestro: aquí solo se copia lo necesario para
+identificar el vehículo y saber quién lo conduce. Lo que SIGHU aporta
+—documentos y vencimientos— no se toca nunca, ni siquiera cuando el
+vehículo se da de baja: ese historial es la constancia de que el vehículo
+estuvo en regla mientras rodaba.
+
+El cruce es por `odoo_id`, no por placa. Odoo no reutiliza ese id, así que
+un vehículo archivado y uno nuevo nunca se confunden.
+"""
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from apps.employees.models import Empleado
+from apps.transporte.models import Vehiculo
+from apps.transporte.odoo_client import (
+    OdooTransporteError, avisar_asignacion, listar_vehiculos,
+)
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class Command(BaseCommand):
+    help = 'Trae los vehículos desde Odoo y reintenta las asignaciones pendientes.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry-run', action='store_true',
+            help='Muestra qué cambiaría sin guardar nada',
+        )
+        parser.add_argument(
+            '--sin-archivados', action='store_true',
+            help='No pedir los dados de baja (por defecto sí se piden, para marcarlos)',
+        )
+
+    def handle(self, **options):
+        dry_run = options['dry_run']
+        incluir_archivados = not options['sin_archivados']
+
+        try:
+            vehiculos = listar_vehiculos(incluir_archivados=incluir_archivados)
+        except OdooTransporteError as e:
+            self.stdout.write(self.style.ERROR(f'No se pudo consultar Odoo: {e}'))
+            logger.error('Sincronización de vehículos fallida: %s', e)
+            return
+
+        self.stdout.write(f'Vehículos que reporta Odoo: {len(vehiculos)}\n')
+
+        creados = actualizados = dados_de_baja = 0
+        ahora = timezone.now()
+
+        for v in vehiculos:
+            odoo_id = v.get('id') or v.get('vehiculo_id')
+            if not odoo_id:
+                self.stdout.write(self.style.WARNING(f'  sin id, se omite: {v}'))
+                continue
+
+            datos = {
+                'placa': v.get('placa') or '',
+                'marca': v.get('marca') or '',
+                'modelo': v.get('modelo') or '',
+                'activo': bool(v.get('activo', True)),
+                'fecha_baja': v.get('fecha_baja') or None,
+                'fecha_sincronizacion': ahora,
+            }
+            if v.get('anio') or v.get('año'):
+                datos['anio'] = v.get('anio') or v.get('año')
+
+            # El conductor lo decide SIGHU y se le avisa a Odoo, así que no
+            # se pisa con lo que Odoo reporte: si difieren, manda el aviso
+            # pendiente, no la lectura.
+            existente = Vehiculo.objects.filter(odoo_id=odoo_id).first()
+
+            if dry_run:
+                accion = 'actualizaría' if existente else 'crearía'
+                baja = ' (DE BAJA)' if not datos['activo'] else ''
+                self.stdout.write(f'  {accion}: {datos["placa"]}{baja}')
+                continue
+
+            vehiculo, creado = Vehiculo.objects.update_or_create(
+                odoo_id=odoo_id, defaults=datos)
+            if creado:
+                creados += 1
+                self.stdout.write(f'  nuevo: {vehiculo.placa}')
+            else:
+                actualizados += 1
+            if not datos['activo']:
+                dados_de_baja += 1
+
+        if dry_run:
+            self.stdout.write(self.style.WARNING(
+                f'\nDRY RUN sobre {len(vehiculos)} vehículo(s). No se guardó nada.'))
+            return
+
+        self.stdout.write(
+            f'\nCreados: {creados} | actualizados: {actualizados} '
+            f'| dados de baja: {dados_de_baja}')
+
+        # --- Asignaciones que quedaron sin avisar ---------------------------
+        pendientes = Vehiculo.objects.filter(
+            asignacion_sincronizada=False, conductor__isnull=False)
+        if not pendientes.exists():
+            self.stdout.write('Sin asignaciones pendientes de avisar.')
+            return
+
+        self.stdout.write(f'\nAsignaciones por avisar a Odoo: {pendientes.count()}')
+        avisadas = fallidas = 0
+        for vehiculo in pendientes.select_related('conductor'):
+            desde = vehiculo.asignacion_desde or timezone.localdate()
+            try:
+                avisar_asignacion(
+                    placa=vehiculo.placa,
+                    cedula=vehiculo.conductor.numero_documento,
+                    desde=desde,
+                )
+            except OdooTransporteError as e:
+                fallidas += 1
+                self.stdout.write(self.style.ERROR(
+                    f'  {vehiculo.placa}: {e}'))
+                logger.warning('Asignación no avisada (%s): %s', vehiculo.placa, e)
+                continue
+            Vehiculo.objects.filter(pk=vehiculo.pk).update(
+                asignacion_sincronizada=True)
+            avisadas += 1
+            self.stdout.write(
+                f'  avisada: {vehiculo.placa} → {vehiculo.conductor.nombre_completo}')
+
+        self.stdout.write(
+            self.style.SUCCESS(f'\nAsignaciones avisadas: {avisadas}')
+            if not fallidas else
+            self.style.WARNING(
+                f'\nAvisadas: {avisadas} | quedan pendientes: {fallidas}'))

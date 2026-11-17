@@ -102,6 +102,20 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 8: Sincronizar la flota con Odoo, cada 6 horas.
+        # Odoo es el dueño del maestro de vehículos; esto trae las altas y
+        # bajas, y reintenta las asignaciones que no se pudieron avisar.
+        scheduler.add_job(
+            _sincronizar_vehiculos,
+            'interval',
+            hours=6,
+            id='sincronizar_vehiculos',
+            name='Sincronizar flota con Odoo',
+            replace_existing=True,
+            misfire_grace_time=1800,
+            coalesce=True,
+        )
+
         # Tarea 7: Documentos de vehículos por vencer, a las 7:30 AM.
         # Más tarde que el resto a propósito: avisa de un trámite que hay que
         # hacer en horario de oficina, y a las 4 AM nadie lo lee.
@@ -268,6 +282,7 @@ def start_scheduler():
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
         logger.info('  - 04:30 AM: Cerrar seguimientos bimensuales muy vencidos')
         logger.info('  - 07:30 AM: Alertas de documentos de vehículos')
+        logger.info('  - cada 6 h: Sincronizar flota con Odoo')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
@@ -402,6 +417,25 @@ def _enviar_recordatorios_evaluaciones():
             f'❌ Error al enviar recordatorios de evaluaciones: {e}',
             exc_info=True
         )
+
+
+def _sincronizar_vehiculos():
+    """
+    Refresca la flota desde Odoo y reintenta las asignaciones pendientes.
+
+    Odoo administra el maestro de vehículos; aquí se copian las altas, las
+    bajas y los datos de identificación. Los documentos y vencimientos son
+    de SIGHU y no se tocan.
+    """
+    try:
+        logger.info('🔄 Sincronizando flota con Odoo...')
+
+        call_command('sincronizar_vehiculos')
+
+        logger.info('✅ Flota sincronizada')
+
+    except Exception as e:
+        logger.error(f'❌ Error al sincronizar la flota: {e}', exc_info=True)
 
 
 def _alertar_documentos_vehiculos():

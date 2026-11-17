@@ -71,6 +71,19 @@ class Vehiculo(models.Model):
         help_text='Fecha de baja según Odoo. Solo informativa.',
     )
 
+    # Cuando se cambia el conductor hay que avisarle a Odoo. Si ese aviso
+    # falla —Odoo caído, red— el cambio no se pierde: queda marcado y la
+    # sincronización lo reintenta. Sin esto, una caída de Odoo dejaría la
+    # asignación solo en SIGHU y nadie se enteraría.
+    asignacion_sincronizada = models.BooleanField(
+        default=True,
+        help_text='False cuando falta avisarle a Odoo del cambio de conductor.',
+    )
+    asignacion_desde = models.DateField(
+        null=True, blank=True,
+        help_text='Fecha desde la que rige la asignación actual.',
+    )
+
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     fecha_sincronizacion = models.DateTimeField(
