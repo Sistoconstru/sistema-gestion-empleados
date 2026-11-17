@@ -10,13 +10,14 @@ El cruce es por `odoo_id`, no por placa. Odoo no reutiliza ese id, así que
 un vehículo archivado y uno nuevo nunca se confunden.
 """
 from django.core.management.base import BaseCommand
+from django.db import models
 from django.utils import timezone
 
 from apps.employees.models import Empleado
 from apps.transporte.models import ServicioIniciado, Vehiculo
 from apps.transporte.odoo_client import (
-    OdooTransporteError, avisar_asignacion, avisar_servicio_entregado,
-    avisar_servicio_iniciado, listar_vehiculos,
+    OdooConflictoError, OdooTransporteError, avisar_asignacion,
+    avisar_servicio_finalizado, avisar_servicio_iniciado, listar_vehiculos,
 )
 
 import logging
@@ -147,41 +148,68 @@ class Command(BaseCommand):
         estas quedan pendientes y eso está bien: el dato ya está guardado
         en SIGHU y el día que Odoo los implemente se ponen al día solas.
         """
+        # Los que Odoo rechazó con un 409 quedan fuera a propósito: del
+        # otro lado cambió algo y repetir el aviso da siempre lo mismo.
         self._reintentar_avisos(
             etiqueta='Salidas',
             pendientes=ServicioIniciado.objects.filter(
-                sincronizado=False, anulado_en__isnull=True
+                sincronizado=False, conflicto_odoo=False,
+                anulado_en__isnull=True,
             ).select_related('vehiculo', 'conductor'),
             avisar=avisar_servicio_iniciado,
             campos_ok={'sincronizado': True},
             campo_error='ultimo_error',
             campo_fecha='fecha_sincronizacion',
+            campo_conflicto='conflicto_odoo',
         )
         self._reintentar_avisos(
             etiqueta='Entregas',
             pendientes=ServicioIniciado.objects.filter(
                 entrega_sincronizada=False,
+                conflicto_odoo_entrega=False,
                 entregado_en__isnull=False,
                 anulado_en__isnull=True,
             ).select_related('vehiculo', 'conductor'),
-            avisar=avisar_servicio_entregado,
+            avisar=avisar_servicio_finalizado,
             campos_ok={'entrega_sincronizada': True},
             campo_error='ultimo_error_entrega',
             campo_fecha='fecha_sincronizacion_entrega',
+            campo_conflicto='conflicto_odoo_entrega',
         )
 
+        rechazados = ServicioIniciado.objects.filter(
+            anulado_en__isnull=True
+        ).filter(
+            models.Q(conflicto_odoo=True) | models.Q(conflicto_odoo_entrega=True)
+        ).count()
+        if rechazados:
+            self.stdout.write(self.style.WARNING(
+                f'\nRechazados por Odoo y no se reintentan: {rechazados}. '
+                f'Se revisan en el admin, en Servicios iniciados.'))
+
     def _reintentar_avisos(self, etiqueta, pendientes, avisar,
-                           campos_ok, campo_error, campo_fecha):
+                           campos_ok, campo_error, campo_fecha,
+                           campo_conflicto):
         if not pendientes.exists():
             self.stdout.write(f'Sin {etiqueta.lower()} pendientes de avisar.')
             return
 
         self.stdout.write(f'\n{etiqueta} por avisar a Odoo: {pendientes.count()}')
-        avisadas = fallidas = 0
+        avisadas = fallidas = rechazadas = 0
         ultimo_error = ''
         for servicio in pendientes:
             try:
                 avisar(servicio)
+            except OdooConflictoError as e:
+                rechazadas += 1
+                ServicioIniciado.objects.filter(pk=servicio.pk).update(
+                    **{campo_conflicto: True, campo_error: e.motivo[:300]})
+                self.stdout.write(self.style.WARNING(
+                    f'  rechazada por Odoo: {servicio.ref or servicio.odoo_id} '
+                    f'({servicio.vehiculo.placa}) — {e.motivo[:120]}'))
+                logger.warning('Odoo rechazó %s de %s: %s', etiqueta.lower(),
+                               servicio.ref or servicio.odoo_id, e.motivo)
+                continue
             except OdooTransporteError as e:
                 fallidas += 1
                 ultimo_error = str(e)
@@ -189,7 +217,9 @@ class Command(BaseCommand):
                     **{campo_error: str(e)[:300]})
                 continue
             ServicioIniciado.objects.filter(pk=servicio.pk).update(
-                **campos_ok, **{campo_fecha: timezone.now(), campo_error: ''})
+                **campos_ok,
+                **{campo_fecha: timezone.now(), campo_error: '',
+                   campo_conflicto: False})
             avisadas += 1
             self.stdout.write(
                 f'  avisada: {servicio.ref or servicio.odoo_id} '

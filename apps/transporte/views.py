@@ -7,6 +7,7 @@ registrado y se reintenta solo.
 """
 import logging
 from datetime import date
+from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -24,12 +25,29 @@ def _miles(n):
     """125487 → "125.487", como se escriben los números en Colombia."""
     return f'{n:,}'.replace(',', '.')
 
+
+def _decimal_o_none(texto):
+    """Un decimal del formulario, aceptando coma o punto. None si no vale.
+
+    El conductor escribe "0,519" o "0.519" según el teclado del celular;
+    las dos quieren decir lo mismo.
+    """
+    texto = (texto or '').strip().replace(',', '.')
+    if not texto:
+        return None
+    try:
+        valor = Decimal(texto)
+    except (InvalidOperation, ValueError):
+        return None
+    return valor if valor >= 0 else None
+
 from .forms import DocumentoVehiculoForm, GastoVehiculoForm, RevisionGastoForm
 from .models import (
     DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
 )
 from .odoo_client import (
-    OdooTransporteError, avisar_servicio_entregado, avisar_servicio_iniciado,
+    OdooConflictoError, OdooTransporteError, avisar_servicio_finalizado,
+    avisar_servicio_iniciado,
 )
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
@@ -246,6 +264,7 @@ def servicios(request):
                        if s.get('inicio') and not s['inicio'].esta_entregado),
         'entregados': sum(1 for s in asignados
                           if s.get('inicio') and s['inicio'].esta_entregado),
+        'novedades': ServicioIniciado.NOVEDADES,
     })
 
 
@@ -302,7 +321,13 @@ def iniciar_servicio(request):
         kilometraje=int(kilometraje) if kilometraje.isdigit() else None,
     )
 
-    _avisar_inicio_a_odoo(servicio)
+    rechazo = _avisar_inicio_a_odoo(servicio)
+    if rechazo:
+        messages.error(
+            request,
+            f'Odoo no aceptó la salida de {servicio.ref or servicio.odoo_id}: '
+            f'{rechazo} Habla con tu coordinador antes de arrancar.')
+        return redirect('transporte:servicios')
 
     messages.success(
         request,
@@ -312,22 +337,37 @@ def iniciar_servicio(request):
 
 
 def _avisar_inicio_a_odoo(servicio):
-    """Avisa la salida con timeout corto; si falla, queda para reintentar.
+    """Avisa la salida con timeout corto. Devuelve el motivo si Odoo dice no.
 
-    Nunca interrumpe al conductor: el registro ya está guardado y lo que
-    falte es cosa de la sincronización, no suya.
+    Tres desenlaces distintos:
+
+    - Odoo lo acepta: queda sincronizado.
+    - Odoo no contesta: queda pendiente y la sincronización lo reintenta.
+    - Odoo lo rechaza (409): no se reintenta nunca más, porque del otro
+      lado cambió algo —el coordinador reasignó el viaje, por ejemplo— y
+      repetir el aviso daría siempre lo mismo. El motivo se le muestra al
+      conductor, que es quien tiene que enterarse de que no va.
+
+    Nunca interrumpe al conductor: el registro ya está guardado.
     """
     try:
         avisar_servicio_iniciado(servicio, timeout=5)
+    except OdooConflictoError as e:
+        ServicioIniciado.objects.filter(pk=servicio.pk).update(
+            conflicto_odoo=True, ultimo_error=e.motivo[:300])
+        logger.warning('Odoo rechazó la salida de %s: %s',
+                       servicio.ref or servicio.odoo_id, e.motivo)
+        return e.motivo
     except OdooTransporteError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             ultimo_error=str(e)[:300])
         logger.info('Salida de %s pendiente de avisar a Odoo: %s',
                     servicio.ref or servicio.odoo_id, e)
-        return False
+        return None
     ServicioIniciado.objects.filter(pk=servicio.pk).update(
-        sincronizado=True, fecha_sincronizacion=timezone.now(), ultimo_error='')
-    return True
+        sincronizado=True, fecha_sincronizacion=timezone.now(),
+        ultimo_error='', conflicto_odoo=False)
+    return None
 
 
 @login_required
@@ -359,6 +399,23 @@ def entregar_servicio(request, inicio_id):
     km_raw = (request.POST.get('kilometraje_llegada') or '').strip()
     km_llegada = int(km_raw) if km_raw.isdigit() else None
 
+    novedad = (request.POST.get('novedad') or '').strip()
+    if novedad not in dict(ServicioIniciado.NOVEDADES):
+        novedad = ServicioIniciado.SIN_NOVEDAD
+    observacion = (request.POST.get('observacion') or '').strip()
+
+    # Si hubo novedad, la observación no es opcional: una entrega parcial o
+    # una devolución mueve inventario y de este texto sale el ajuste en
+    # Odoo. "Hubo un problema" sin decir cuál no le sirve a nadie.
+    if novedad != ServicioIniciado.SIN_NOVEDAD and not observacion:
+        messages.error(
+            request,
+            'Marcaste una novedad, así que hay que explicar qué pasó: de '
+            'ahí sale el ajuste en Odoo.')
+        return redirect('transporte:servicios')
+
+    toneladas = _decimal_o_none(request.POST.get('toneladas_entregadas'))
+
     # Un kilometraje de llegada menor al de salida es un dedazo, no un
     # viaje. Se rechaza en vez de guardarlo: un recorrido negativo daña
     # cualquier cuenta que se haga después con estos números.
@@ -376,35 +433,56 @@ def entregar_servicio(request, inicio_id):
 
     servicio.entregado_en = timezone.now()
     servicio.kilometraje_llegada = km_llegada
-    servicio.save(update_fields=['entregado_en', 'kilometraje_llegada'])
+    servicio.novedad = novedad
+    servicio.observacion = observacion
+    servicio.toneladas_entregadas = toneladas
+    servicio.save(update_fields=['entregado_en', 'kilometraje_llegada',
+                                 'novedad', 'observacion',
+                                 'toneladas_entregadas'])
 
-    _avisar_entrega_a_odoo(servicio)
+    rechazo = _avisar_entrega_a_odoo(servicio)
+    if rechazo:
+        messages.error(
+            request,
+            f'Odoo no aceptó el cierre de {servicio.ref or servicio.odoo_id}: '
+            f'{rechazo} Queda registrado acá; avísale a tu coordinador.')
+        return redirect('transporte:servicios')
 
     recorrido = ''
     if km_llegada is not None and servicio.kilometraje is not None:
         recorrido = f' Recorriste {_miles(km_llegada - servicio.kilometraje)} km.'
+    aviso = ''
+    if novedad != ServicioIniciado.SIN_NOVEDAD:
+        aviso = (f' Quedó reportada la novedad: '
+                 f'{servicio.get_novedad_display().lower()}.')
     messages.success(
         request,
         f'Entrega de {servicio.ref or servicio.odoo_id} registrada a las '
-        f'{timezone.localtime(servicio.entregado_en):%H:%M}.{recorrido}')
+        f'{timezone.localtime(servicio.entregado_en):%H:%M}.{recorrido}{aviso}')
     return redirect('transporte:servicios')
 
 
 def _avisar_entrega_a_odoo(servicio):
-    """Igual que la salida: si falla, queda para reintentar."""
+    """Igual que la salida: devuelve el motivo si Odoo la rechaza."""
     try:
-        avisar_servicio_entregado(servicio, timeout=5)
+        avisar_servicio_finalizado(servicio, timeout=5)
+    except OdooConflictoError as e:
+        ServicioIniciado.objects.filter(pk=servicio.pk).update(
+            conflicto_odoo_entrega=True, ultimo_error_entrega=e.motivo[:300])
+        logger.warning('Odoo rechazó el cierre de %s: %s',
+                       servicio.ref or servicio.odoo_id, e.motivo)
+        return e.motivo
     except OdooTransporteError as e:
         ServicioIniciado.objects.filter(pk=servicio.pk).update(
             ultimo_error_entrega=str(e)[:300])
         logger.info('Entrega de %s pendiente de avisar a Odoo: %s',
                     servicio.ref or servicio.odoo_id, e)
-        return False
+        return None
     ServicioIniciado.objects.filter(pk=servicio.pk).update(
         entrega_sincronizada=True,
         fecha_sincronizacion_entrega=timezone.now(),
-        ultimo_error_entrega='')
-    return True
+        ultimo_error_entrega='', conflicto_odoo_entrega=False)
+    return None
 
 
 @login_required
@@ -436,7 +514,15 @@ def deshacer_entrega(request, inicio_id):
 
     servicio.entregado_en = None
     servicio.kilometraje_llegada = None
-    servicio.save(update_fields=['entregado_en', 'kilometraje_llegada'])
+    servicio.novedad = ServicioIniciado.SIN_NOVEDAD
+    servicio.observacion = ''
+    servicio.toneladas_entregadas = None
+    servicio.conflicto_odoo_entrega = False
+    servicio.ultimo_error_entrega = ''
+    servicio.save(update_fields=[
+        'entregado_en', 'kilometraje_llegada', 'novedad', 'observacion',
+        'toneladas_entregadas', 'conflicto_odoo_entrega',
+        'ultimo_error_entrega'])
     messages.success(
         request,
         f'Se quitó la entrega de {servicio.ref or servicio.odoo_id}. '

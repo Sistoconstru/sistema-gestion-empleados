@@ -486,6 +486,17 @@ class ServicioIniciado(models.Model):
     # hora salió el camión.
     MINUTOS_PARA_DESHACER = 15
 
+    SIN_NOVEDAD = 'sin_novedad'
+    ENTREGA_PARCIAL = 'entrega_parcial'
+    DEVOLUCION = 'devolucion'
+    RECHAZO = 'rechazo'
+    NOVEDADES = [
+        (SIN_NOVEDAD, 'Sin novedad'),
+        (ENTREGA_PARCIAL, 'Entrega parcial'),
+        (DEVOLUCION, 'Devolución'),
+        (RECHAZO, 'El cliente la rechazó'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     odoo_modelo = models.CharField(
@@ -527,6 +538,23 @@ class ServicioIniciado(models.Model):
         null=True, blank=True,
         help_text='Kilometraje al llegar. Opcional.')
 
+    # Lo que pasó en la entrega. Una entrega parcial o una devolución mueve
+    # inventario y hay que ajustarla en Odoo, así que si el conductor no lo
+    # reporta nadie se entera hasta que reclama el cliente.
+    novedad = models.CharField(
+        max_length=20, choices=NOVEDADES, default=SIN_NOVEDAD,
+        help_text='Qué pasó en la entrega.')
+    observacion = models.TextField(
+        blank=True,
+        help_text='Obligatoria cuando hubo novedad: qué pasó exactamente.')
+
+    # Soporte, no base de cobro: el valor lo calcula Odoo con su documento
+    # y usa esto para contrastar.
+    toneladas_entregadas = models.DecimalField(
+        max_digits=10, decimal_places=3, null=True, blank=True,
+        validators=[MinValueValidator(0)],
+        help_text='Lo que el conductor dice que entregó. Opcional.')
+
     # Anular en vez de borrar: un inicio equivocado se corrige, pero quién
     # lo marcó y a qué hora sigue siendo parte del historial.
     anulado_en = models.DateTimeField(null=True, blank=True)
@@ -541,6 +569,11 @@ class ServicioIniciado(models.Model):
     ultimo_error = models.CharField(
         max_length=300, blank=True,
         help_text='Por qué falló el último intento de avisarle a Odoo.')
+    # Odoo respondió 409: lo rechazó a propósito. No se reintenta, porque
+    # del otro lado cambió algo y repetir el aviso da siempre lo mismo.
+    conflicto_odoo = models.BooleanField(
+        default=False,
+        help_text='True si Odoo rechazó la salida. El motivo va en ultimo_error.')
 
     # La entrega lleva su propio estado de aviso: salida y entrega son dos
     # hechos distintos y uno puede llegar a Odoo sin el otro.
@@ -549,6 +582,9 @@ class ServicioIniciado(models.Model):
         help_text='True cuando Odoo ya recibió el aviso de la entrega.')
     fecha_sincronizacion_entrega = models.DateTimeField(null=True, blank=True)
     ultimo_error_entrega = models.CharField(max_length=300, blank=True)
+    conflicto_odoo_entrega = models.BooleanField(
+        default=False,
+        help_text='True si Odoo rechazó la entrega. El motivo va en ultimo_error_entrega.')
 
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
@@ -578,10 +614,16 @@ class ServicioIniciado(models.Model):
         return f'{self.ref or self.odoo_id} — {self.vehiculo.placa} ({self.iniciado_en:%d/%m/%Y %H:%M})'
 
     def clean(self):
+        errores = {}
         if self.entregado_en and self.entregado_en < self.iniciado_en:
-            raise ValidationError({
-                'entregado_en': 'La entrega no puede ser anterior a la salida.'
-            })
+            errores['entregado_en'] = 'La entrega no puede ser anterior a la salida.'
+        if (self.entregado_en and self.novedad != self.SIN_NOVEDAD
+                and not (self.observacion or '').strip()):
+            errores['observacion'] = (
+                'Si hubo novedad hay que decir qué pasó: de ahí sale el '
+                'ajuste en Odoo.')
+        if errores:
+            raise ValidationError(errores)
 
     @property
     def esta_activo(self):
@@ -604,9 +646,15 @@ class ServicioIniciado(models.Model):
         diciendo cosas distintas; eso lo arregla el jefe, no el conductor.
         Un servicio ya entregado tampoco se des-inicia: primero se deshace
         la entrega.
+
+        La excepción es cuando Odoo rechazó la salida: ahí la salida sobra,
+        y obligar al conductor a dejarla porque pasaron 15 minutos sería
+        quedarse con un registro que el propio Odoo ya desconoció.
         """
         if not self.esta_activo or self.sincronizado or self.esta_entregado:
             return False
+        if self.conflicto_odoo:
+            return True
         limite = self.fecha_creacion + timedelta(minutes=self.MINUTOS_PARA_DESHACER)
         return timezone.now() <= limite
 
@@ -617,8 +665,14 @@ class ServicioIniciado(models.Model):
             return False
         if self.entrega_sincronizada:
             return False
+        if self.conflicto_odoo_entrega:
+            return True
         limite = self.entregado_en + timedelta(minutes=self.MINUTOS_PARA_DESHACER)
         return timezone.now() <= limite
+
+    @property
+    def tuvo_novedad(self):
+        return self.esta_entregado and self.novedad != self.SIN_NOVEDAD
 
     @property
     def duracion_texto(self):

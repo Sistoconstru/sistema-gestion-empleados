@@ -140,8 +140,9 @@ class GastoVehiculoAdmin(admin.ModelAdmin):
 class ServicioIniciadoAdmin(admin.ModelAdmin):
     """Las salidas que marcan los conductores. Aquí solo se consultan."""
     list_display = ('iniciado_en', 'ref', 'vehiculo', 'conductor',
-                    'entregado_en', 'estado_aviso', 'anulado')
-    list_filter = ('sincronizado', 'entrega_sincronizada', 'tipo',
+                    'entregado_en', 'novedad', 'estado_aviso', 'anulado')
+    list_filter = ('conflicto_odoo', 'conflicto_odoo_entrega', 'novedad',
+                   'sincronizado', 'entrega_sincronizada', 'tipo',
                    'iniciado_en')
     search_fields = ('ref', 'resumen', 'vehiculo__placa',
                      'conductor__nombres', 'conductor__apellidos',
@@ -156,19 +157,32 @@ class ServicioIniciadoAdmin(admin.ModelAdmin):
     ordering = ('-iniciado_en',)
 
     def estado_aviso(self, obj):
-        """Los dos avisos en una columna: salida y, si la hubo, entrega."""
-        def marca(ok, error, nombre):
+        """Los dos avisos en una columna: salida y, si la hubo, entrega.
+
+        El rechazo se distingue del pendiente porque son cosas opuestas:
+        uno se reintenta solo y el otro hay que ir a resolverlo.
+        """
+        def marca(ok, rechazado, error, nombre):
             if ok:
                 return f'✓ {nombre}'
+            if rechazado:
+                return f'✗ {nombre} rechazada ({error[:60]})'
             return f'⏳ {nombre}' + (f' ({error[:40]})' if error else '')
 
-        partes = [marca(obj.sincronizado, obj.ultimo_error, 'salida')]
+        partes = [marca(obj.sincronizado, obj.conflicto_odoo,
+                        obj.ultimo_error, 'salida')]
         if obj.esta_entregado:
             partes.append(marca(obj.entrega_sincronizada,
+                                obj.conflicto_odoo_entrega,
                                 obj.ultimo_error_entrega, 'entrega'))
-        pendiente = (not obj.sincronizado
-                     or (obj.esta_entregado and not obj.entrega_sincronizada))
-        color = '#997404' if pendiente else '#146c43'
+
+        if obj.conflicto_odoo or obj.conflicto_odoo_entrega:
+            color = '#b02a37'
+        elif (not obj.sincronizado
+              or (obj.esta_entregado and not obj.entrega_sincronizada)):
+            color = '#997404'
+        else:
+            color = '#146c43'
         return format_html('<span style="color:{};">{}</span>',
                            color, ' · '.join(partes))
     estado_aviso.short_description = 'Aviso a Odoo'

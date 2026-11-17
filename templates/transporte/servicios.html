@@ -164,9 +164,12 @@
                 {# --- Salida y entrega: las marca el conductor --- #}
                 <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center gap-2">
                     {% if s.inicio and s.inicio.esta_entregado %}
-                        <span class="badge bg-secondary">
+                        <span class="badge {% if s.inicio.tuvo_novedad %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
                             <i class="fas fa-circle-check me-1"></i>
                             Entregado a las {{ s.inicio.entregado_en|time:"H:i" }}
+                            {% if s.inicio.tuvo_novedad %}
+                                · {{ s.inicio.get_novedad_display|lower }}
+                            {% endif %}
                         </span>
                         <span class="small text-muted">
                             Salió {{ s.inicio.iniciado_en|time:"H:i" }}
@@ -176,10 +179,25 @@
                             {% if s.inicio.kilometraje_llegada %}
                                 · {{ s.inicio.kilometraje_llegada }} km al llegar
                             {% endif %}
+                            {% if s.inicio.toneladas_entregadas %}
+                                · {{ s.inicio.toneladas_entregadas }} t entregadas
+                            {% endif %}
                             {% if not g.es_mi_vehiculo %}
                                 · {{ s.inicio.conductor.nombre_completo }}
                             {% endif %}
                         </span>
+                        {% if s.inicio.observacion %}
+                        <div class="w-100 small alert alert-warning py-1 px-2 mb-0 mt-1">
+                            <strong>Novedad:</strong> {{ s.inicio.observacion }}
+                        </div>
+                        {% endif %}
+                        {% if s.inicio.conflicto_odoo_entrega %}
+                        <div class="w-100 small alert alert-danger py-1 px-2 mb-0 mt-1">
+                            <i class="fas fa-circle-xmark me-1"></i>
+                            <strong>Odoo no aceptó este cierre:</strong>
+                            {{ s.inicio.ultimo_error_entrega }}
+                        </div>
+                        {% endif %}
                         {% if g.es_mi_vehiculo and s.inicio.puede_deshacer_entrega %}
                         <form method="post"
                               action="{% url 'transporte:deshacer_entrega' s.inicio.id %}"
@@ -202,19 +220,55 @@
                                 · {{ s.inicio.conductor.nombre_completo }}
                             {% endif %}
                         </span>
+                        {% if s.inicio.conflicto_odoo %}
+                        <div class="w-100 small alert alert-danger py-1 px-2 mb-0 mt-1">
+                            <i class="fas fa-circle-xmark me-1"></i>
+                            <strong>Odoo no aceptó esta salida:</strong>
+                            {{ s.inicio.ultimo_error }}
+                            Habla con tu coordinador antes de arrancar.
+                        </div>
+                        {% endif %}
                         {% if g.es_mi_vehiculo %}
                         <div class="w-100 mt-2">
                             <form method="post"
-                                  action="{% url 'transporte:entregar_servicio' s.inicio.id %}">
+                                  action="{% url 'transporte:entregar_servicio' s.inicio.id %}"
+                                  class="js-form-entrega">
                                 {% csrf_token %}
-                                <div class="d-flex gap-2 align-items-center">
-                                    <input type="number" name="kilometraje_llegada"
-                                           min="0" step="1" inputmode="numeric"
-                                           class="form-control form-control-sm"
-                                           style="max-width: 140px;"
-                                           placeholder="Km al llegar"
-                                           aria-label="Kilometraje al llegar (opcional)">
-                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-6 col-md-3">
+                                        <input type="number" name="kilometraje_llegada"
+                                               min="0" step="1" inputmode="numeric"
+                                               class="form-control form-control-sm"
+                                               placeholder="Km al llegar"
+                                               aria-label="Kilometraje al llegar (opcional)">
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <input type="text" name="toneladas_entregadas"
+                                               inputmode="decimal"
+                                               class="form-control form-control-sm"
+                                               placeholder="Toneladas"
+                                               aria-label="Toneladas entregadas (opcional)">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <select name="novedad"
+                                                class="form-select form-select-sm js-novedad"
+                                                aria-label="¿Hubo alguna novedad?">
+                                            {% for codigo, nombre in novedades %}
+                                                <option value="{{ codigo }}">{{ nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                {# Solo estorba cuando hace falta: aparece al
+                                   marcar una novedad distinta de "sin novedad". #}
+                                <div class="mt-2 js-observacion d-none">
+                                    <textarea name="observacion" rows="2"
+                                              class="form-control form-control-sm"
+                                              placeholder="¿Qué pasó? De esto sale el ajuste en Odoo."
+                                              aria-label="Qué pasó"></textarea>
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-flag-checkered me-1"></i>Entregué
                                     </button>
                                 </div>
@@ -327,4 +381,28 @@
         cuadra, se corrige en Odoo y aquí aparece al actualizar.
     </p>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// La observación solo aparece cuando hace falta. El servidor la vuelve a
+// exigir: esto es comodidad, no validación.
+document.querySelectorAll('.js-form-entrega').forEach(function (form) {
+    var select = form.querySelector('.js-novedad');
+    var caja = form.querySelector('.js-observacion');
+    if (!select || !caja) { return; }
+    var texto = caja.querySelector('textarea');
+
+    function refrescar() {
+        var hayNovedad = select.value !== 'sin_novedad';
+        caja.classList.toggle('d-none', !hayNovedad);
+        if (texto) {
+            texto.required = hayNovedad;
+            if (hayNovedad) { texto.focus(); }
+        }
+    }
+
+    select.addEventListener('change', refrescar);
+});
+</script>
 {% endblock %}

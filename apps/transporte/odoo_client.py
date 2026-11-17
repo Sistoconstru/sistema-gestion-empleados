@@ -27,6 +27,34 @@ class OdooTransporteError(Exception):
     """Falla al hablar con Odoo: red, autenticación o respuesta inesperada."""
 
 
+class OdooConflictoError(OdooTransporteError):
+    """Odoo rechazó el aviso a propósito (409), no por una falla.
+
+    Significa que del lado de Odoo cambió algo —el coordinador reasignó el
+    viaje, por ejemplo—, así que reintentar no sirve de nada: hay que
+    mostrarle el motivo a quien lo marcó y parar.
+    """
+
+    def __init__(self, motivo, status_code=409):
+        self.motivo = motivo
+        self.status_code = status_code
+        super().__init__(motivo)
+
+
+def _motivo(resp):
+    """El texto que Odoo da para rechazar, sin el envoltorio del JSON."""
+    try:
+        datos = resp.json()
+    except ValueError:
+        return (resp.text or '').strip()[:300] or 'Odoo no explicó el motivo.'
+    if isinstance(datos, dict):
+        for llave in ('detail', 'error', 'mensaje', 'message', 'motivo'):
+            valor = datos.get(llave)
+            if isinstance(valor, str) and valor.strip():
+                return valor.strip()[:300]
+    return str(datos)[:300]
+
+
 def _timeout():
     return getattr(settings, 'SIGHU_ODOO_TRANSPORTE_TIMEOUT', 30)
 
@@ -75,6 +103,12 @@ def _pedir(metodo, ruta, timeout=None, **kwargs):
             timeout=timeout or _timeout(), **kwargs)
     except requests.RequestException as e:
         raise OdooTransporteError(f'No se pudo contactar a Odoo ({url}): {e}') from e
+
+    # Un 409 no es una falla: es Odoo diciendo que no, con un motivo. Se
+    # separa del resto porque se trata al revés —no se reintenta— y lo que
+    # importa es el texto, que va derecho a la pantalla del conductor.
+    if resp.status_code == 409:
+        raise OdooConflictoError(_motivo(resp))
 
     if resp.status_code >= 400:
         raise OdooTransporteError(
@@ -199,13 +233,14 @@ def avisar_servicio_iniciado(servicio, timeout=None):
                   json=cuerpo, timeout=timeout)
 
 
-def avisar_servicio_entregado(servicio, timeout=None):
-    """Le avisa a Odoo que el conductor ya entregó.
+def avisar_servicio_finalizado(servicio, timeout=None):
+    """Le avisa a Odoo que el conductor cerró el servicio.
 
-    Mismo caso que la salida: el endpoint todavía no existe del lado de
-    Odoo, así que por ahora queda pendiente y se reintenta.
+    El formato y el nombre son los que propuso Odoo. SIGHU le dice
+    "entrega" de cara al conductor, que es su palabra, y traduce aquí:
+    esta función es la frontera entre los dos vocabularios.
 
-        POST /sighu_sync/webhook/servicio_entregado
+        POST /sighu_sync/webhook/servicio_finalizado
         {
           "odoo_modelo": "stock.picking",
           "odoo_id": 385,
@@ -213,11 +248,15 @@ def avisar_servicio_entregado(servicio, timeout=None):
           "placa": "JYN 240",
           "cedula": "71391550",
           "iniciado_en": "2026-11-17T06:42:00-05:00",
-          "entregado_en": "2026-11-17T09:15:00-05:00",
-          "kilometraje_llegada": 125620
+          "finalizado_en": "2026-11-17T09:15:00-05:00",
+          "kilometraje": 125620,
+          "toneladas_entregadas": 0.519,
+          "novedad": "sin_novedad",
+          "observacion": ""
         }
 
-    Idempotente igual que el de salida.
+    Las toneladas son soporte, no base de cobro: el valor lo calcula Odoo
+    con su propio documento y usa esto para contrastar.
     """
     cuerpo = {
         'odoo_modelo': servicio.odoo_modelo,
@@ -226,13 +265,18 @@ def avisar_servicio_entregado(servicio, timeout=None):
         'placa': servicio.vehiculo.placa,
         'cedula': str(servicio.conductor.numero_documento),
         'iniciado_en': servicio.iniciado_en.isoformat(),
-        'entregado_en': servicio.entregado_en.isoformat(),
+        'finalizado_en': servicio.entregado_en.isoformat(),
+        'novedad': servicio.novedad,
+        'observacion': servicio.observacion,
     }
     if servicio.kilometraje_llegada is not None:
-        cuerpo['kilometraje_llegada'] = servicio.kilometraje_llegada
-    logger.info('Avisando a Odoo la entrega de %s (%s)',
-                servicio.ref or servicio.odoo_id, servicio.vehiculo.placa)
-    return _pedir('POST', 'webhook/servicio_entregado',
+        cuerpo['kilometraje'] = servicio.kilometraje_llegada
+    if servicio.toneladas_entregadas is not None:
+        cuerpo['toneladas_entregadas'] = float(servicio.toneladas_entregadas)
+    logger.info('Avisando a Odoo el cierre de %s (%s), novedad=%s',
+                servicio.ref or servicio.odoo_id, servicio.vehiculo.placa,
+                servicio.novedad)
+    return _pedir('POST', 'webhook/servicio_finalizado',
                   json=cuerpo, timeout=timeout)
 
 
