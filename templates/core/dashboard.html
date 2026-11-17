@@ -115,7 +115,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-corporativo w-100 py-3">
+                        <a href="{% url 'employees:empleado_list' %}" class="btn btn-outline-corporativo w-100 h-100 py-3">
                             <i class="fas fa-users fa-2x d-block mb-2"></i>
                             <strong>Gestionar Empleados</strong>
                             <div class="small text-muted">Ver y administrar</div>
@@ -123,7 +123,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-corporativo w-100 py-3">
+                        <a href="{% url 'employees:empleado_create' %}" class="btn btn-outline-corporativo w-100 h-100 py-3">
                             <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                             <strong>Nuevo Empleado</strong>
                             <div class="small text-muted">Registrar personal</div>
@@ -131,7 +131,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-success w-100 py-3">
+                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-success w-100 h-100 py-3">
                             <i class="fas fa-chart-line fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>
                             <div class="small text-muted">Sistema integral</div>
@@ -139,18 +139,15 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'reports:index' %}" class="btn btn-outline-corporativo w-100 py-3">
+                        <a href="{% url 'reports:index' %}" class="btn btn-outline-corporativo w-100 h-100 py-3">
                             <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
                             <strong>Reportes</strong>
                             <div class="small text-muted">Análisis y estadísticas</div>
                         </a>
                     </div>
-                </div>
-                
-                <!-- Segunda fila de módulos -->
-                <div class="row">
+
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3">
+                        <a href="{% url 'training:capacitacion_list' %}" class="btn btn-outline-amarillo text-corporativo w-100 h-100 py-3">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Capacitaciones</strong>
                             <div class="small text-muted">Gestión y seguimiento</div>
@@ -158,7 +155,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'surveys:index' %}" class="btn btn-outline-info w-100 py-3">
+                        <a href="{% url 'surveys:index' %}" class="btn btn-outline-info w-100 h-100 py-3">
                             <i class="fas fa-poll-h fa-2x d-block mb-2"></i>
                             <strong>Encuestas</strong>
                             <div class="small text-muted">Evaluaciones y feedback</div>
@@ -166,7 +163,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'sorteos:index' %}" class="btn btn-outline-danger w-100 py-3">
+                        <a href="{% url 'sorteos:index' %}" class="btn btn-outline-danger w-100 h-100 py-3">
                             <i class="fas fa-gift fa-2x d-block mb-2"></i>
                             <strong>Sorteos</strong>
                             <div class="small text-muted">Inscríbete a los sorteos activos</div>
@@ -174,7 +171,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-warning w-100 py-3">
+                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-warning w-100 h-100 py-3">
                             <i class="fas fa-award fa-2x d-block mb-2"></i>
                             <strong>Reconocimientos</strong>
                             <div class="small text-muted">Premios y logros</div>
@@ -182,18 +179,15 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success w-100 py-3">
+                        <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success w-100 h-100 py-3">
                             <i class="fas fa-shopping-cart fa-2x d-block mb-2"></i>
                             <strong>El Toldo</strong>
                             <div class="small text-muted">Productos y transacciones</div>
                         </a>
                     </div>
-                </div>
 
-                <!-- Tercera fila de módulos -->
-                <div class="row">
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'notifications:index' %}" class="btn btn-outline-warning w-100 py-3">
+                        <a href="{% url 'notifications:index' %}" class="btn btn-outline-warning w-100 h-100 py-3">
                             <i class="fas fa-bell fa-2x d-block mb-2"></i>
                             <strong>Notificaciones</strong>
                             <div class="small text-muted">Alertas y avisos</div>
@@ -202,7 +196,7 @@
 
                     {% if puede_ver_beneficios_rrhh %}
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'beneficios_retencion:bandeja_rrhh' %}" class="btn btn-outline-corporativo w-100 py-3">
+                        <a href="{% url 'beneficios_retencion:bandeja_rrhh' %}" class="btn btn-outline-corporativo w-100 h-100 py-3">
                             <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
                             <strong>Beneficios — RRHH</strong>
                             <div class="small text-muted">Validar soportes y enviar a Odoo</div>
@@ -212,21 +206,21 @@
 
                     {% if puede_ver_transporte %}
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-primary w-100 py-3">
+                        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-primary w-100 h-100 py-3">
                             <i class="fas fa-truck fa-2x d-block mb-2"></i>
                             <strong>Vehículos</strong>
                             <div class="small text-muted">Asignar conductor y documentos</div>
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'transporte:gastos_flota' %}" class="btn btn-outline-primary w-100 py-3">
+                        <a href="{% url 'transporte:gastos_flota' %}" class="btn btn-outline-primary w-100 h-100 py-3">
                             <i class="fas fa-receipt fa-2x d-block mb-2"></i>
                             <strong>Gastos de la flota</strong>
                             <div class="small text-muted">Revisar lo que registran los conductores</div>
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-primary w-100 py-3">
+                        <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-primary w-100 h-100 py-3">
                             <i class="fas fa-route fa-2x d-block mb-2"></i>
                             <strong>Servicios asignados</strong>
                             <div class="small text-muted">Lo que Odoo programó para cada vehículo</div>
