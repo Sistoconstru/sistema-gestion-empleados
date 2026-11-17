@@ -11,6 +11,9 @@ urlpatterns = [
     path('vehiculo/<uuid:vehiculo_id>/asignar/', views.asignar_conductor, name='asignar_conductor'),
     path('vehiculo/<uuid:vehiculo_id>/documento/', views.registrar_documento, name='registrar_documento'),
 
+    # Servicios — los asigna Odoo, acá solo se listan
+    path('servicios/', views.servicios, name='servicios'),
+
     # Gastos — conductor
     path('mis-gastos/', views.mis_gastos, name='mis_gastos'),
     path('mis-gastos/nuevo/', views.registrar_gasto, name='registrar_gasto'),

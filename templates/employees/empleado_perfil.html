@@ -275,6 +275,13 @@
                                 <div class="small text-muted">Registrar gastos y ver tus documentos</div>
                             </a>
                         </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                                <i class="fas fa-route fa-2x d-block mb-2"></i>
+                                <strong>Mis servicios</strong>
+                                <div class="small text-muted">Lo que tienes asignado desde Odoo</div>
+                            </a>
+                        </div>
                     {% endif %}
 
                     {% if puede_ver_vacaciones_equipo %}

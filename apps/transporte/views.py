@@ -25,6 +25,7 @@ from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
     es_conductor, empleado_de, transporte_required, vehiculos_visibles,
 )
+from .servicios import servicios_visibles
 
 
 @login_required
@@ -201,6 +202,36 @@ def detalle_vehiculo(request, vehiculo_id):
         'documentos': documentos,
         'estado_por_tipo': estado_por_tipo,
         'es_admin': es_admin_transporte(request.user),
+    })
+
+
+# =========================================================================
+# Servicios asignados
+# =========================================================================
+
+@login_required
+@transporte_required
+def servicios(request):
+    """Los servicios que Odoo le asignó a cada vehículo.
+
+    Es solo un listado: el tablero y la asignación son de Odoo. Aquí se
+    muestran para que el conductor sepa qué tiene encima sin entrar a Odoo.
+    """
+    grupos, sin_vehiculo, error = servicios_visibles(request.user)
+
+    asignados = [s for g in grupos for s in g['servicios']]
+    es_admin = es_admin_transporte(request.user)
+
+    return render(request, 'transporte/servicios.html', {
+        'grupos': grupos,
+        'sin_vehiculo': sin_vehiculo,
+        'error': error,
+        'es_admin': es_admin,
+        'es_solo_conductor': es_conductor(empleado_de(request.user)) and not es_admin,
+        'total': len(asignados),
+        'atrasados': sum(1 for s in asignados
+                         if s['urgencia']['clave'] == 'atrasado'),
+        'de_hoy': sum(1 for s in asignados if s['urgencia']['clave'] == 'hoy'),
     })
 
 

@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}Servicios asignados{% endblock %}
+
+{% block content %}
+<div class="container py-3" style="max-width: 980px;">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-3 gap-2">
+        <div>
+            <h5 class="mb-1"><i class="fas fa-route me-2"></i>Servicios asignados</h5>
+            <p class="text-muted small mb-0">
+                {% if es_solo_conductor %}
+                    Lo que tienes asignado. Los servicios se programan en Odoo.
+                {% else %}
+                    Los servicios se crean y se asignan en Odoo. Aquí solo se
+                    consultan, para que cada conductor sepa qué tiene asignado.
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-rotate me-1"></i>Actualizar
+            </a>
+            {% if es_solo_conductor %}
+                <a href="{% url 'transporte:mis_gastos' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-truck me-1"></i>Mi vehículo
+                </a>
+            {% else %}
+                <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-truck me-1"></i>Flota
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-warning">
+            <i class="fas fa-plug-circle-xmark me-1"></i>{{ error }}
+        </div>
+    {% endif %}
+
+    {% if atrasados or de_hoy %}
+    <div class="row g-2 mb-3">
+        {% if de_hoy %}
+        <div class="col-sm-6">
+            <div class="alert alert-primary mb-0 py-2">
+                <i class="fas fa-calendar-day me-1"></i>
+                <strong>{{ de_hoy }}</strong>
+                servicio{{ de_hoy|pluralize }} programado{{ de_hoy|pluralize }} para hoy
+            </div>
+        </div>
+        {% endif %}
+        {% if atrasados %}
+        <div class="col-sm-6">
+            <div class="alert alert-danger mb-0 py-2">
+                <i class="fas fa-triangle-exclamation me-1"></i>
+                <strong>{{ atrasados }}</strong>
+                con la fecha ya pasada
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if not grupos and not error %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-route fa-3x mb-3 d-block opacity-25"></i>
+            {% if es_solo_conductor %}
+                No tienes un vehículo asignado, así que no hay servicios que mostrar.<br>
+                <span class="small">Habla con tu jefe para que te asigne uno.</span>
+            {% else %}
+                No hay vehículos activos en tu flota.
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% for g in grupos %}
+    <div class="card mb-3">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <strong class="fs-5">{{ g.vehiculo.placa }}</strong>
+                <span class="text-muted small ms-1">
+                    {{ g.vehiculo.marca }} {{ g.vehiculo.modelo }}
+                </span>
+                <div class="small text-muted">
+                    {% if g.vehiculo.conductor %}
+                        Conduce {{ g.vehiculo.conductor.nombre_completo }}
+                    {% else %}
+                        Sin conductor asignado
+                    {% endif %}
+                </div>
+            </div>
+            <span class="badge {% if g.servicios %}bg-primary{% else %}bg-light text-muted border{% endif %}">
+                {{ g.servicios|length }} servicio{{ g.servicios|length|pluralize }}
+            </span>
+        </div>
+
+        <ul class="list-group list-group-flush">
+            {% for s in g.servicios %}
+            <li class="list-group-item">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                    <div class="flex-grow-1">
+                        <div>
+                            <strong>{{ s.tipo_display }}</strong>
+                            <span class="text-muted small ms-1">{{ s.ref }}</span>
+                            {% if s.pedido %}
+                                <span class="text-muted small">· pedido {{ s.pedido }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small mt-1">
+                            <i class="fas fa-location-dot text-muted me-1"></i>
+                            {% if s.origen %}{{ s.origen }}{% else %}—{% endif %}
+                            <i class="fas fa-arrow-right text-muted mx-1"></i>
+                            {% if s.destino %}<strong>{{ s.destino }}</strong>{% else %}—{% endif %}
+                        </div>
+
+                        {% if s.cliente %}
+                        <div class="small text-muted">
+                            <i class="fas fa-user me-1"></i>{{ s.cliente }}
+                        </div>
+                        {% endif %}
+
+                        <div class="small text-muted mt-1">
+                            {% if s.fecha %}{{ s.fecha|date:"d/m/Y H:i" }}{% endif %}
+                            {% if s.toneladas %} · {{ s.toneladas|floatformat:3 }} t{% endif %}
+                            {% if s.distancia_km %} · {{ s.distancia_km|floatformat:0 }} km{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <span class="badge
+                            {% if s.urgencia.clave == 'atrasado' %}bg-danger
+                            {% elif s.urgencia.clave == 'hoy' %}bg-primary
+                            {% elif s.urgencia.clave == 'pronto' %}bg-warning text-dark
+                            {% elif s.urgencia.clave == 'sin_fecha' %}bg-light text-muted border
+                            {% else %}bg-secondary{% endif %}">
+                            {{ s.urgencia.texto }}
+                        </span>
+                        <div class="small text-muted mt-1">{{ s.estado_display }}</div>
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted text-center py-4">
+                Sin servicios asignados en Odoo.
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+    {% if sin_vehiculo %}
+    <div class="card mb-3 border-secondary">
+        <div class="card-header bg-light">
+            <strong><i class="fas fa-circle-question me-1"></i>Sin vehículo asignado</strong>
+            <div class="small text-muted">
+                Están programados en Odoo pero todavía no tienen vehículo.
+                La asignación se hace allá, no aquí.
+            </div>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for s in sin_vehiculo %}
+            <li class="list-group-item">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                    <div>
+                        <div>
+                            <strong>{{ s.tipo_display }}</strong>
+                            <span class="text-muted small ms-1">{{ s.ref }}</span>
+                        </div>
+                        <div class="small mt-1">
+                            <i class="fas fa-location-dot text-muted me-1"></i>
+                            {% if s.origen %}{{ s.origen }}{% else %}—{% endif %}
+                            <i class="fas fa-arrow-right text-muted mx-1"></i>
+                            {% if s.destino %}<strong>{{ s.destino }}</strong>{% else %}—{% endif %}
+                        </div>
+                        {% if s.cliente %}
+                        <div class="small text-muted">
+                            <i class="fas fa-user me-1"></i>{{ s.cliente }}
+                        </div>
+                        {% endif %}
+                        <div class="small text-muted mt-1">
+                            {% if s.fecha %}{{ s.fecha|date:"d/m/Y H:i" }}{% endif %}
+                            {% if s.toneladas %} · {{ s.toneladas|floatformat:3 }} t{% endif %}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge
+                            {% if s.urgencia.clave == 'atrasado' %}bg-danger
+                            {% elif s.urgencia.clave == 'hoy' %}bg-primary
+                            {% elif s.urgencia.clave == 'pronto' %}bg-warning text-dark
+                            {% elif s.urgencia.clave == 'sin_fecha' %}bg-light text-muted border
+                            {% else %}bg-secondary{% endif %}">
+                            {{ s.urgencia.texto }}
+                        </span>
+                        <div class="small text-muted mt-1">{{ s.estado_display }}</div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <p class="text-muted small">
+        <i class="fas fa-circle-info me-1"></i>
+        Este listado se lee de Odoo en el momento de abrirlo. Si algo no
+        cuadra, se corrige en Odoo y aquí aparece al actualizar.
+    </p>
+</div>
+{% endblock %}

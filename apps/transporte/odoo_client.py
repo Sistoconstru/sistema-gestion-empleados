@@ -133,23 +133,40 @@ def avisar_asignacion(placa, cedula, desde, hasta=None, timeout=None):
                   json=cuerpo, timeout=timeout)
 
 
-# --- Para la fase de fletes ---------------------------------------------
+# --- Servicios ----------------------------------------------------------
 
-def listar_viajes_pendientes(tipo=None, sede=None):
-    """Traslados entre sedes, entregas de pedidos y recepciones de materia prima."""
+def listar_viajes_pendientes(tipo=None, sede=None, timeout=None):
+    """Traslados entre sedes, entregas de pedidos y recepciones de materia prima.
+
+    Cada uno trae `vehiculo_id` cuando Odoo ya le asignó vehículo, que es lo
+    que permite mostrarle a cada conductor lo suyo. Viene envuelto en
+    `results`; se aceptan las otras formas por si cambia el envoltorio.
+
+    `timeout` corto cuando se llama desde una pantalla: el valor general es
+    para tareas de fondo, no para alguien esperando.
+    """
     params = {}
     if tipo:
         params['tipo'] = tipo
     if sede:
         params['sede'] = sede
-    datos = _pedir('GET', 'viajes_pendientes', params=params or None)
+    datos = _pedir('GET', 'viajes_pendientes',
+                   params=params or None, timeout=timeout)
     if isinstance(datos, dict):
-        datos = datos.get('viajes') or datos.get('results') or datos.get('data') or []
+        datos = datos.get('results') or datos.get('viajes') or datos.get('data') or []
+    if not isinstance(datos, list):
+        raise OdooTransporteError(
+            f'Se esperaba una lista de viajes y llegó {type(datos).__name__}.')
     return datos
 
 
 def buscar_clientes(q):
-    """Clientes aprobados para facturar, por NIT (con o sin dígito) o nombre."""
+    """Clientes aprobados para facturar, por NIT (con o sin dígito) o nombre.
+
+    Hoy ninguna pantalla lo usa: los servicios se crean en Odoo, que ya sabe
+    a quién le cobra. Se deja porque es el endpoint que haría falta si algún
+    día SIGHU tuviera que registrar un flete externo por su cuenta.
+    """
     datos = _pedir('GET', 'clientes', params={'q': q})
     if isinstance(datos, dict):
         datos = datos.get('clientes') or datos.get('results') or datos.get('data') or []
