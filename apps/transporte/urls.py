@@ -16,6 +16,10 @@ urlpatterns = [
     path('servicios/iniciar/', views.iniciar_servicio, name='iniciar_servicio'),
     path('servicios/<uuid:inicio_id>/deshacer/', views.deshacer_inicio,
          name='deshacer_inicio'),
+    path('servicios/<uuid:inicio_id>/entregar/', views.entregar_servicio,
+         name='entregar_servicio'),
+    path('servicios/<uuid:inicio_id>/deshacer-entrega/', views.deshacer_entrega,
+         name='deshacer_entrega'),
 
     # Gastos — conductor
     path('mis-gastos/', views.mis_gastos, name='mis_gastos'),

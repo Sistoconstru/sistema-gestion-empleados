@@ -39,10 +39,10 @@
         </div>
     {% endif %}
 
-    {% if atrasados or de_hoy or en_ruta %}
+    {% if atrasados or de_hoy or en_ruta or entregados %}
     <div class="row g-2 mb-3">
         {% if en_ruta %}
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <div class="alert alert-success mb-0 py-2">
                 <i class="fas fa-truck-fast me-1"></i>
                 <strong>{{ en_ruta }}</strong>
@@ -50,8 +50,17 @@
             </div>
         </div>
         {% endif %}
+        {% if entregados %}
+        <div class="col-sm-3">
+            <div class="alert alert-secondary mb-0 py-2">
+                <i class="fas fa-circle-check me-1"></i>
+                <strong>{{ entregados }}</strong>
+                ya entregado{{ entregados|pluralize }}
+            </div>
+        </div>
+        {% endif %}
         {% if de_hoy %}
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <div class="alert alert-primary mb-0 py-2">
                 <i class="fas fa-calendar-day me-1"></i>
                 <strong>{{ de_hoy }}</strong>
@@ -60,7 +69,7 @@
         </div>
         {% endif %}
         {% if atrasados %}
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <div class="alert alert-danger mb-0 py-2">
                 <i class="fas fa-triangle-exclamation me-1"></i>
                 <strong>{{ atrasados }}</strong>
@@ -152,9 +161,37 @@
                     </div>
                 </div>
 
-                {# --- Salida: la marca el conductor al arrancar --- #}
+                {# --- Salida y entrega: las marca el conductor --- #}
                 <div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center gap-2">
-                    {% if s.inicio %}
+                    {% if s.inicio and s.inicio.esta_entregado %}
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-circle-check me-1"></i>
+                            Entregado a las {{ s.inicio.entregado_en|time:"H:i" }}
+                        </span>
+                        <span class="small text-muted">
+                            Salió {{ s.inicio.iniciado_en|time:"H:i" }}
+                            {% if s.inicio.duracion_texto %}
+                                · duró {{ s.inicio.duracion_texto }}
+                            {% endif %}
+                            {% if s.inicio.kilometraje_llegada %}
+                                · {{ s.inicio.kilometraje_llegada }} km al llegar
+                            {% endif %}
+                            {% if not g.es_mi_vehiculo %}
+                                · {{ s.inicio.conductor.nombre_completo }}
+                            {% endif %}
+                        </span>
+                        {% if g.es_mi_vehiculo and s.inicio.puede_deshacer_entrega %}
+                        <form method="post"
+                              action="{% url 'transporte:deshacer_entrega' s.inicio.id %}"
+                              class="ms-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-rotate-left me-1"></i>Quitar entrega
+                            </button>
+                        </form>
+                        {% endif %}
+
+                    {% elif s.inicio %}
                         <span class="badge bg-success">
                             <i class="fas fa-truck-fast me-1"></i>
                             En ruta desde las {{ s.inicio.iniciado_en|time:"H:i" }}
@@ -165,16 +202,36 @@
                                 · {{ s.inicio.conductor.nombre_completo }}
                             {% endif %}
                         </span>
-                        {% if g.es_mi_vehiculo and s.inicio.puede_deshacerse %}
-                        <form method="post"
-                              action="{% url 'transporte:deshacer_inicio' s.inicio.id %}"
-                              class="ms-auto">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-rotate-left me-1"></i>Deshacer
-                            </button>
-                        </form>
+                        {% if g.es_mi_vehiculo %}
+                        <div class="w-100 mt-2">
+                            <form method="post"
+                                  action="{% url 'transporte:entregar_servicio' s.inicio.id %}">
+                                {% csrf_token %}
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="number" name="kilometraje_llegada"
+                                           min="0" step="1" inputmode="numeric"
+                                           class="form-control form-control-sm"
+                                           style="max-width: 140px;"
+                                           placeholder="Km al llegar"
+                                           aria-label="Kilometraje al llegar (opcional)">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="fas fa-flag-checkered me-1"></i>Entregué
+                                    </button>
+                                </div>
+                            </form>
+                            {% if s.inicio.puede_deshacerse %}
+                            <form method="post"
+                                  action="{% url 'transporte:deshacer_inicio' s.inicio.id %}"
+                                  class="mt-1 text-end">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-link text-muted p-0">
+                                    <i class="fas fa-rotate-left me-1"></i>Deshacer la salida
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
                         {% endif %}
+
                     {% elif g.es_mi_vehiculo %}
                         <form method="post"
                               action="{% url 'transporte:iniciar_servicio' %}"

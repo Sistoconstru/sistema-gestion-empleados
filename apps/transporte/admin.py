@@ -140,24 +140,37 @@ class GastoVehiculoAdmin(admin.ModelAdmin):
 class ServicioIniciadoAdmin(admin.ModelAdmin):
     """Las salidas que marcan los conductores. Aquí solo se consultan."""
     list_display = ('iniciado_en', 'ref', 'vehiculo', 'conductor',
-                    'estado_aviso', 'anulado')
-    list_filter = ('sincronizado', 'tipo', 'iniciado_en')
+                    'entregado_en', 'estado_aviso', 'anulado')
+    list_filter = ('sincronizado', 'entrega_sincronizada', 'tipo',
+                   'iniciado_en')
     search_fields = ('ref', 'resumen', 'vehiculo__placa',
                      'conductor__nombres', 'conductor__apellidos',
                      'conductor__numero_documento')
     autocomplete_fields = ('vehiculo', 'conductor')
     readonly_fields = ('id', 'odoo_modelo', 'odoo_id', 'ref', 'tipo',
                        'resumen', 'fecha_creacion', 'fecha_sincronizacion',
-                       'ultimo_error', 'anulado_en', 'anulado_por')
+                       'ultimo_error', 'fecha_sincronizacion_entrega',
+                       'ultimo_error_entrega', 'anulado_en', 'anulado_por',
+                       'duracion_texto')
     date_hierarchy = 'iniciado_en'
     ordering = ('-iniciado_en',)
 
     def estado_aviso(self, obj):
-        if obj.sincronizado:
-            return format_html('<span style="color:#146c43;">✓ Odoo lo recibió</span>')
-        return format_html(
-            '<span style="color:#997404;" title="{}">⏳ Pendiente de avisar</span>',
-            obj.ultimo_error or 'Sin intentos todavía')
+        """Los dos avisos en una columna: salida y, si la hubo, entrega."""
+        def marca(ok, error, nombre):
+            if ok:
+                return f'✓ {nombre}'
+            return f'⏳ {nombre}' + (f' ({error[:40]})' if error else '')
+
+        partes = [marca(obj.sincronizado, obj.ultimo_error, 'salida')]
+        if obj.esta_entregado:
+            partes.append(marca(obj.entrega_sincronizada,
+                                obj.ultimo_error_entrega, 'entrega'))
+        pendiente = (not obj.sincronizado
+                     or (obj.esta_entregado and not obj.entrega_sincronizada))
+        color = '#997404' if pendiente else '#146c43'
+        return format_html('<span style="color:{};">{}</span>',
+                           color, ' · '.join(partes))
     estado_aviso.short_description = 'Aviso a Odoo'
 
     def anulado(self, obj):

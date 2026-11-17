@@ -19,11 +19,18 @@ from apps.employees.models import Empleado
 
 logger = logging.getLogger(__name__)
 
+
+def _miles(n):
+    """125487 → "125.487", como se escriben los números en Colombia."""
+    return f'{n:,}'.replace(',', '.')
+
 from .forms import DocumentoVehiculoForm, GastoVehiculoForm, RevisionGastoForm
 from .models import (
     DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
 )
-from .odoo_client import OdooTransporteError, avisar_servicio_iniciado
+from .odoo_client import (
+    OdooTransporteError, avisar_servicio_entregado, avisar_servicio_iniciado,
+)
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
     es_conductor, empleado_de, transporte_required, vehiculos_visibles,
@@ -235,7 +242,10 @@ def servicios(request):
         'atrasados': sum(1 for s in asignados
                          if s['urgencia']['clave'] == 'atrasado'),
         'de_hoy': sum(1 for s in asignados if s['urgencia']['clave'] == 'hoy'),
-        'en_ruta': sum(1 for s in asignados if s.get('inicio')),
+        'en_ruta': sum(1 for s in asignados
+                       if s.get('inicio') and not s['inicio'].esta_entregado),
+        'entregados': sum(1 for s in asignados
+                          if s.get('inicio') and s['inicio'].esta_entregado),
     })
 
 
@@ -318,6 +328,120 @@ def _avisar_inicio_a_odoo(servicio):
     ServicioIniciado.objects.filter(pk=servicio.pk).update(
         sincronizado=True, fecha_sincronizacion=timezone.now(), ultimo_error='')
     return True
+
+
+@login_required
+@transporte_required
+@require_POST
+def entregar_servicio(request, inicio_id):
+    """El conductor marca que ya entregó.
+
+    Cierra el viaje del lado del conductor. El documento de Odoo lo cierra
+    Odoo; esto es lo que solo el conductor sabe: que ya descargó.
+    """
+    servicio = get_object_or_404(ServicioIniciado, pk=inicio_id)
+    empleado = empleado_de(request.user)
+
+    if servicio.conductor_id != (empleado.pk if empleado else None):
+        messages.error(request, 'Ese servicio no es tuyo.')
+        return redirect('transporte:servicios')
+
+    if not servicio.puede_entregarse:
+        if servicio.esta_entregado:
+            messages.info(
+                request,
+                f'Ese servicio ya lo entregaste a las '
+                f'{timezone.localtime(servicio.entregado_en):%H:%M}.')
+        else:
+            messages.error(request, 'Ese servicio no está activo.')
+        return redirect('transporte:servicios')
+
+    km_raw = (request.POST.get('kilometraje_llegada') or '').strip()
+    km_llegada = int(km_raw) if km_raw.isdigit() else None
+
+    # Un kilometraje de llegada menor al de salida es un dedazo, no un
+    # viaje. Se rechaza en vez de guardarlo: un recorrido negativo daña
+    # cualquier cuenta que se haga después con estos números.
+    if (km_llegada is not None and servicio.kilometraje is not None
+            and km_llegada < servicio.kilometraje):
+        # El separador de miles se cambia sobre cada número, no sobre la
+        # frase: hacerlo sobre todo el texto se lleva por delante las comas
+        # de la redacción.
+        messages.error(
+            request,
+            f'El kilometraje de llegada ({_miles(km_llegada)}) es menor que '
+            f'el de salida ({_miles(servicio.kilometraje)}). Revisa el '
+            f'número, o déjalo vacío y márcala sin kilometraje.')
+        return redirect('transporte:servicios')
+
+    servicio.entregado_en = timezone.now()
+    servicio.kilometraje_llegada = km_llegada
+    servicio.save(update_fields=['entregado_en', 'kilometraje_llegada'])
+
+    _avisar_entrega_a_odoo(servicio)
+
+    recorrido = ''
+    if km_llegada is not None and servicio.kilometraje is not None:
+        recorrido = f' Recorriste {_miles(km_llegada - servicio.kilometraje)} km.'
+    messages.success(
+        request,
+        f'Entrega de {servicio.ref or servicio.odoo_id} registrada a las '
+        f'{timezone.localtime(servicio.entregado_en):%H:%M}.{recorrido}')
+    return redirect('transporte:servicios')
+
+
+def _avisar_entrega_a_odoo(servicio):
+    """Igual que la salida: si falla, queda para reintentar."""
+    try:
+        avisar_servicio_entregado(servicio, timeout=5)
+    except OdooTransporteError as e:
+        ServicioIniciado.objects.filter(pk=servicio.pk).update(
+            ultimo_error_entrega=str(e)[:300])
+        logger.info('Entrega de %s pendiente de avisar a Odoo: %s',
+                    servicio.ref or servicio.odoo_id, e)
+        return False
+    ServicioIniciado.objects.filter(pk=servicio.pk).update(
+        entrega_sincronizada=True,
+        fecha_sincronizacion_entrega=timezone.now(),
+        ultimo_error_entrega='')
+    return True
+
+
+@login_required
+@transporte_required
+@require_POST
+def deshacer_entrega(request, inicio_id):
+    """Quita una entrega marcada por error, poco después de marcarla."""
+    servicio = get_object_or_404(ServicioIniciado, pk=inicio_id)
+    empleado = empleado_de(request.user)
+
+    if servicio.conductor_id != (empleado.pk if empleado else None):
+        messages.error(request, 'Ese servicio no es tuyo.')
+        return redirect('transporte:servicios')
+
+    if not servicio.puede_deshacer_entrega:
+        if servicio.entrega_sincronizada:
+            messages.error(
+                request,
+                'Odoo ya registró esa entrega, así que no se puede deshacer '
+                'desde aquí. Avísale a tu jefe.')
+        elif not servicio.esta_entregado:
+            messages.info(request, 'Ese servicio todavía no está entregado.')
+        else:
+            messages.error(
+                request,
+                f'Ya pasaron más de {ServicioIniciado.MINUTOS_PARA_DESHACER} '
+                f'minutos desde que la marcaste. Avísale a tu jefe.')
+        return redirect('transporte:servicios')
+
+    servicio.entregado_en = None
+    servicio.kilometraje_llegada = None
+    servicio.save(update_fields=['entregado_en', 'kilometraje_llegada'])
+    messages.success(
+        request,
+        f'Se quitó la entrega de {servicio.ref or servicio.odoo_id}. '
+        f'El servicio vuelve a quedar en ruta.')
+    return redirect('transporte:servicios')
 
 
 @login_required

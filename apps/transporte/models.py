@@ -517,6 +517,16 @@ class ServicioIniciado(models.Model):
         null=True, blank=True,
         help_text='Kilometraje al salir. Opcional.')
 
+    # La entrega cierra el viaje del lado del conductor. El documento de
+    # Odoo lo cierra Odoo; esto es lo que el conductor sabe y nadie más:
+    # que ya descargó.
+    entregado_en = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Momento en que el conductor marcó la entrega.')
+    kilometraje_llegada = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text='Kilometraje al llegar. Opcional.')
+
     # Anular en vez de borrar: un inicio equivocado se corrige, pero quién
     # lo marcó y a qué hora sigue siendo parte del historial.
     anulado_en = models.DateTimeField(null=True, blank=True)
@@ -531,6 +541,14 @@ class ServicioIniciado(models.Model):
     ultimo_error = models.CharField(
         max_length=300, blank=True,
         help_text='Por qué falló el último intento de avisarle a Odoo.')
+
+    # La entrega lleva su propio estado de aviso: salida y entrega son dos
+    # hechos distintos y uno puede llegar a Odoo sin el otro.
+    entrega_sincronizada = models.BooleanField(
+        default=False,
+        help_text='True cuando Odoo ya recibió el aviso de la entrega.')
+    fecha_sincronizacion_entrega = models.DateTimeField(null=True, blank=True)
+    ultimo_error_entrega = models.CharField(max_length=300, blank=True)
 
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
@@ -559,9 +577,24 @@ class ServicioIniciado(models.Model):
     def __str__(self):
         return f'{self.ref or self.odoo_id} — {self.vehiculo.placa} ({self.iniciado_en:%d/%m/%Y %H:%M})'
 
+    def clean(self):
+        if self.entregado_en and self.entregado_en < self.iniciado_en:
+            raise ValidationError({
+                'entregado_en': 'La entrega no puede ser anterior a la salida.'
+            })
+
     @property
     def esta_activo(self):
         return self.anulado_en is None
+
+    @property
+    def esta_entregado(self):
+        return self.entregado_en is not None
+
+    @property
+    def puede_entregarse(self):
+        """Se entrega lo que salió y todavía no se ha entregado."""
+        return self.esta_activo and not self.esta_entregado
 
     @property
     def puede_deshacerse(self):
@@ -569,8 +602,35 @@ class ServicioIniciado(models.Model):
 
         Si Odoo ya lo registró, deshacerlo aquí dejaría los dos sistemas
         diciendo cosas distintas; eso lo arregla el jefe, no el conductor.
+        Un servicio ya entregado tampoco se des-inicia: primero se deshace
+        la entrega.
         """
-        if not self.esta_activo or self.sincronizado:
+        if not self.esta_activo or self.sincronizado or self.esta_entregado:
             return False
         limite = self.fecha_creacion + timedelta(minutes=self.MINUTOS_PARA_DESHACER)
         return timezone.now() <= limite
+
+    @property
+    def puede_deshacer_entrega(self):
+        """Mismo margen que la salida, por la misma razón: el dedo."""
+        if not self.esta_activo or not self.esta_entregado:
+            return False
+        if self.entrega_sincronizada:
+            return False
+        limite = self.entregado_en + timedelta(minutes=self.MINUTOS_PARA_DESHACER)
+        return timezone.now() <= limite
+
+    @property
+    def duracion_texto(self):
+        """Cuánto duró el viaje, en palabras. Vacío si no ha entregado."""
+        if not self.esta_entregado:
+            return ''
+        minutos = int((self.entregado_en - self.iniciado_en).total_seconds() // 60)
+        if minutos < 0:
+            return ''
+        horas, resto = divmod(minutos, 60)
+        if horas and resto:
+            return f'{horas} h {resto} min'
+        if horas:
+            return f'{horas} h'
+        return f'{resto} min'

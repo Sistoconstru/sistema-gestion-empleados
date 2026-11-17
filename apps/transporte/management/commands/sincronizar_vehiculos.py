@@ -15,8 +15,8 @@ from django.utils import timezone
 from apps.employees.models import Empleado
 from apps.transporte.models import ServicioIniciado, Vehiculo
 from apps.transporte.odoo_client import (
-    OdooTransporteError, avisar_asignacion, avisar_servicio_iniciado,
-    listar_vehiculos,
+    OdooTransporteError, avisar_asignacion, avisar_servicio_entregado,
+    avisar_servicio_iniciado, listar_vehiculos,
 )
 
 import logging
@@ -141,48 +141,68 @@ class Command(BaseCommand):
                 f'\nAvisadas: {avisadas} | quedan pendientes: {fallidas}'))
 
     def _reintentar_salidas(self):
-        """Salidas de servicio que Odoo todavía no ha recibido.
+        """Salidas y entregas que Odoo todavía no ha recibido.
 
-        Hoy el endpoint no existe del lado de Odoo, así que estas quedan
-        pendientes y eso está bien: el dato ya está guardado en SIGHU y el
-        día que Odoo lo implemente se ponen al día solas.
+        Hoy ninguno de los dos endpoints existe del lado de Odoo, así que
+        estas quedan pendientes y eso está bien: el dato ya está guardado
+        en SIGHU y el día que Odoo los implemente se ponen al día solas.
         """
-        pendientes = ServicioIniciado.objects.filter(
-            sincronizado=False, anulado_en__isnull=True
-        ).select_related('vehiculo', 'conductor')
+        self._reintentar_avisos(
+            etiqueta='Salidas',
+            pendientes=ServicioIniciado.objects.filter(
+                sincronizado=False, anulado_en__isnull=True
+            ).select_related('vehiculo', 'conductor'),
+            avisar=avisar_servicio_iniciado,
+            campos_ok={'sincronizado': True},
+            campo_error='ultimo_error',
+            campo_fecha='fecha_sincronizacion',
+        )
+        self._reintentar_avisos(
+            etiqueta='Entregas',
+            pendientes=ServicioIniciado.objects.filter(
+                entrega_sincronizada=False,
+                entregado_en__isnull=False,
+                anulado_en__isnull=True,
+            ).select_related('vehiculo', 'conductor'),
+            avisar=avisar_servicio_entregado,
+            campos_ok={'entrega_sincronizada': True},
+            campo_error='ultimo_error_entrega',
+            campo_fecha='fecha_sincronizacion_entrega',
+        )
+
+    def _reintentar_avisos(self, etiqueta, pendientes, avisar,
+                           campos_ok, campo_error, campo_fecha):
         if not pendientes.exists():
-            self.stdout.write('Sin salidas pendientes de avisar.')
+            self.stdout.write(f'Sin {etiqueta.lower()} pendientes de avisar.')
             return
 
-        self.stdout.write(f'\nSalidas por avisar a Odoo: {pendientes.count()}')
+        self.stdout.write(f'\n{etiqueta} por avisar a Odoo: {pendientes.count()}')
         avisadas = fallidas = 0
         ultimo_error = ''
         for servicio in pendientes:
             try:
-                avisar_servicio_iniciado(servicio)
+                avisar(servicio)
             except OdooTransporteError as e:
                 fallidas += 1
                 ultimo_error = str(e)
                 ServicioIniciado.objects.filter(pk=servicio.pk).update(
-                    ultimo_error=str(e)[:300])
+                    **{campo_error: str(e)[:300]})
                 continue
             ServicioIniciado.objects.filter(pk=servicio.pk).update(
-                sincronizado=True,
-                fecha_sincronizacion=timezone.now(),
-                ultimo_error='')
+                **campos_ok, **{campo_fecha: timezone.now(), campo_error: ''})
             avisadas += 1
             self.stdout.write(
                 f'  avisada: {servicio.ref or servicio.odoo_id} '
                 f'({servicio.vehiculo.placa})')
 
         if fallidas:
-            # Un solo renglón y no uno por salida: cuando el endpoint aún no
-            # existe, todas fallan por lo mismo y repetirlo solo hace ruido.
+            # Un solo renglón y no uno por registro: cuando el endpoint aún
+            # no existe todas fallan por lo mismo y repetirlo solo hace ruido.
             self.stdout.write(self.style.WARNING(
-                f'\nSalidas avisadas: {avisadas} | quedan pendientes: '
+                f'\n{etiqueta} avisadas: {avisadas} | quedan pendientes: '
                 f'{fallidas} — {ultimo_error[:160]}'))
-            logger.info('Salidas pendientes de avisar a Odoo: %s (%s)',
-                        fallidas, ultimo_error[:200])
+            logger.info('%s pendientes de avisar a Odoo: %s (%s)',
+                        etiqueta, fallidas, ultimo_error[:200])
         else:
             self.stdout.write(self.style.SUCCESS(
-                f'\nSalidas avisadas: {avisadas}'))
+                f'\n{etiqueta} avisadas: {avisadas}'))

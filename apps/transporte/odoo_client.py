@@ -199,6 +199,43 @@ def avisar_servicio_iniciado(servicio, timeout=None):
                   json=cuerpo, timeout=timeout)
 
 
+def avisar_servicio_entregado(servicio, timeout=None):
+    """Le avisa a Odoo que el conductor ya entregó.
+
+    Mismo caso que la salida: el endpoint todavía no existe del lado de
+    Odoo, así que por ahora queda pendiente y se reintenta.
+
+        POST /sighu_sync/webhook/servicio_entregado
+        {
+          "odoo_modelo": "stock.picking",
+          "odoo_id": 385,
+          "ref": "CAL/OUT/00060",
+          "placa": "JYN 240",
+          "cedula": "71391550",
+          "iniciado_en": "2026-11-17T06:42:00-05:00",
+          "entregado_en": "2026-11-17T09:15:00-05:00",
+          "kilometraje_llegada": 125620
+        }
+
+    Idempotente igual que el de salida.
+    """
+    cuerpo = {
+        'odoo_modelo': servicio.odoo_modelo,
+        'odoo_id': servicio.odoo_id,
+        'ref': servicio.ref,
+        'placa': servicio.vehiculo.placa,
+        'cedula': str(servicio.conductor.numero_documento),
+        'iniciado_en': servicio.iniciado_en.isoformat(),
+        'entregado_en': servicio.entregado_en.isoformat(),
+    }
+    if servicio.kilometraje_llegada is not None:
+        cuerpo['kilometraje_llegada'] = servicio.kilometraje_llegada
+    logger.info('Avisando a Odoo la entrega de %s (%s)',
+                servicio.ref or servicio.odoo_id, servicio.vehiculo.placa)
+    return _pedir('POST', 'webhook/servicio_entregado',
+                  json=cuerpo, timeout=timeout)
+
+
 def buscar_clientes(q):
     """Clientes aprobados para facturar, por NIT (con o sin dígito) o nombre.
 
