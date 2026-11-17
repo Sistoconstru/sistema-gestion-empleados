@@ -205,7 +205,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-outline-corporativo w-100 py-3">
+                        <a href="{% url 'documents:empleado_documentos' empleado_pk=empleado.pk %}" class="btn btn-outline-corporativo w-100 h-100 py-3">
                             <i class="fas fa-file-upload fa-2x d-block mb-2"></i>
                             <strong>Mis Documentos</strong>
                             <div class="small text-muted">Subir y gestionar</div>
@@ -213,7 +213,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'training:mis_capacitaciones' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-graduation-cap fa-2x d-block mb-2"></i>
                             <strong>Mis Capacitaciones</strong>
                             <div class="small text-muted">{{ capacitaciones.completadas }}/{{ capacitaciones.total }} completadas</div>
@@ -231,7 +231,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'training:catalogo' %}" class="btn btn-outline-azul w-100 py-3">
+                        <a href="{% url 'training:catalogo' %}" class="btn btn-outline-azul w-100 h-100 py-3">
                             <i class="fas fa-chalkboard-teacher fa-2x d-block mb-2"></i>
                             <strong>Catálogo de Capacitaciones</strong>
                             <div class="small text-muted">Capacitaciones disponibles</div>
@@ -239,7 +239,7 @@
                     </div>
                     
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:familia_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'employees:familia_panel' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-users fa-2x d-block mb-2"></i>
                             <strong>Mi Familia</strong>
                             <div class="small text-muted">Estado civil, pareja, hijos, documentos</div>
@@ -252,7 +252,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'core:documentos_institucionales' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'core:documentos_institucionales' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-folder-open fa-2x d-block mb-2"></i>
                             <strong>Documentos Institucionales</strong>
                             <div class="small text-muted">Reglamentos, políticas, manuales</div>
@@ -260,7 +260,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:mis_vacaciones' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'employees:mis_vacaciones' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
                             <strong>Mis vacaciones</strong>
                             <div class="small text-muted">Historial y estado de tus solicitudes</div>
@@ -269,14 +269,14 @@
 
                     {% if es_conductor_flota %}
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'transporte:mis_gastos' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'transporte:mis_gastos' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-truck fa-2x d-block mb-2"></i>
                                 <strong>Mi vehículo</strong>
                                 <div class="small text-muted">Registrar gastos y ver tus documentos</div>
                             </a>
                         </div>
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'transporte:servicios' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-route fa-2x d-block mb-2"></i>
                                 <strong>Mis servicios</strong>
                                 <div class="small text-muted">Lo que tienes asignado desde Odoo</div>
@@ -286,7 +286,7 @@
 
                     {% if puede_ver_vacaciones_equipo %}
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'employees:vacaciones_equipo' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'employees:vacaciones_equipo' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-umbrella-beach fa-2x d-block mb-2"></i>
                                 <strong>Vacaciones del equipo</strong>
                                 <div class="small text-muted">Solicitar y aprobar vacaciones de tus subordinados</div>
@@ -296,14 +296,14 @@
 
                     {% if puede_ver_asistencia_equipo %}
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'employees:asistencia_diaria' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'employees:asistencia_diaria' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                                 <strong>Asistencia del equipo</strong>
                                 <div class="small text-muted">Registrar quién asistió hoy (L–V) y motivos de ausencia</div>
                             </a>
                         </div>
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'employees:novedades_semana' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'employees:novedades_semana' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-business-time fa-2x d-block mb-2"></i>
                                 <strong>Novedades del equipo</strong>
                                 <div class="small text-muted">Horas extras y recargos — vista semanal L–D</div>
@@ -312,7 +312,7 @@
 
                         {% if puede_aprobar_novedades %}
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'employees:novedades_aprobacion' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'employees:novedades_aprobacion' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-check-double fa-2x d-block mb-2"></i>
                                 <strong>Aprobar novedades</strong>
                                 <div class="small text-muted">Revisar y aprobar horas extras de tus coordinadores</div>
@@ -458,7 +458,7 @@
 
                     {% if puede_ver_vacaciones_admin %}
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'employees:vacaciones_admin_panel' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                            <a href="{% url 'employees:vacaciones_admin_panel' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                                 <i class="fas fa-user-shield fa-2x d-block mb-2"></i>
                                 <strong>Vacaciones — RRHH</strong>
                                 <div class="small text-muted">Solicitar para cualquier empleado y ver historial global</div>
@@ -467,7 +467,7 @@
                     {% endif %}
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-amarillo text-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'evaluations:index' %}" class="btn btn-outline-amarillo text-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-clipboard-check fa-2x d-block mb-2"></i>
                             <strong>Evaluaciones</strong>
                             <div class="small text-muted">{{ evaluaciones.pendientes }} pendientes</div>
@@ -485,7 +485,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-outline-corporativo w-100 py-3 position-relative">
+                        <a href="{% url 'surveys:mis_encuestas' %}" class="btn btn-outline-corporativo w-100 h-100 py-3 position-relative">
                             <i class="fas fa-poll-h fa-2x d-block mb-2"></i>
                             <strong>Mis Encuestas</strong>
                             <div class="small text-muted">{{ encuestas.pendientes }} pendientes</div>
@@ -503,7 +503,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-azul w-100 py-3">
+                        <a href="{% url 'recognition:index' %}" class="btn btn-outline-azul w-100 h-100 py-3">
                             <i class="fas fa-trophy fa-2x d-block mb-2"></i>
                             <strong>Centro de Reconocimientos</strong>
                             <div class="small text-muted">Puntos, ranking e insignias</div>
@@ -511,7 +511,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success w-100 py-3">
+                        <a href="{% url 'employees:producto_list' %}" class="btn btn-outline-success w-100 h-100 py-3">
                             <i class="fas fa-shopping-bag fa-2x d-block mb-2"></i>
                             <strong>El Toldo</strong>
                             <div class="small text-muted">Ver todos los productos</div>
@@ -519,7 +519,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'employees:mis_productos' %}" class="btn btn-outline-info w-100 py-3">
+                        <a href="{% url 'employees:mis_productos' %}" class="btn btn-outline-info w-100 h-100 py-3">
                             <i class="fas fa-box fa-2x d-block mb-2"></i>
                             <strong>Mis Productos</strong>
                             <div class="small text-muted">Mis publicaciones</div>
@@ -527,7 +527,7 @@
                     </div>
 
                     <div class="col-md-3 col-sm-6 mb-3">
-                        <a href="{% url 'sorteos:index' %}" class="btn btn-outline-danger w-100 py-3 position-relative">
+                        <a href="{% url 'sorteos:index' %}" class="btn btn-outline-danger w-100 h-100 py-3 position-relative">
                             <i class="fas fa-gift fa-2x d-block mb-2"></i>
                             <strong>Sorteos</strong>
                             <div class="small text-muted">
@@ -553,13 +553,13 @@
                     {# Beneficios de retención #}
                     <div class="col-md-3 col-sm-6 mb-3">
                         {% if empleado.es_declarante %}
-                            <a href="{% url 'beneficios_retencion:mis_tramites' %}" class="btn btn-outline-primary w-100 py-3">
+                            <a href="{% url 'beneficios_retencion:mis_tramites' %}" class="btn btn-outline-primary w-100 h-100 py-3">
                                 <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
                                 <strong>Beneficios de retención</strong>
                                 <div class="small text-muted">Deducciones para tu retención en la fuente</div>
                             </a>
                         {% else %}
-                            <button type="button" class="btn btn-outline-secondary w-100 py-3"
+                            <button type="button" class="btn btn-outline-secondary w-100 h-100 py-3"
                                     data-bs-toggle="modal" data-bs-target="#modalDeclarante">
                                 <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
                                 <strong>¿Eres declarante?</strong>
