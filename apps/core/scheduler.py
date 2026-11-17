@@ -102,6 +102,21 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 7: Documentos de vehículos por vencer, a las 7:30 AM.
+        # Más tarde que el resto a propósito: avisa de un trámite que hay que
+        # hacer en horario de oficina, y a las 4 AM nadie lo lee.
+        scheduler.add_job(
+            _alertar_documentos_vehiculos,
+            'cron',
+            hour=7,
+            minute=30,
+            id='alertar_documentos_vehiculos',
+            name='Alertas de documentos de vehículos',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         # Tarea 6: Cerrar seguimientos con más de 6 meses vencidos, a las 4:30 AM
         scheduler.add_job(
             _cerrar_seguimientos_vencidos,
@@ -252,6 +267,7 @@ def start_scheduler():
         logger.info('  - 04:00 AM: Enviar recordatorios de evaluaciones pendientes')
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
         logger.info('  - 04:30 AM: Cerrar seguimientos bimensuales muy vencidos')
+        logger.info('  - 07:30 AM: Alertas de documentos de vehículos')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
         logger.info('  - 10:00 (enero 1-20): Recordatorio actualizar SMMLV del año')
@@ -384,6 +400,28 @@ def _enviar_recordatorios_evaluaciones():
     except Exception as e:
         logger.error(
             f'❌ Error al enviar recordatorios de evaluaciones: {e}',
+            exc_info=True
+        )
+
+
+def _alertar_documentos_vehiculos():
+    """
+    Avisa de los documentos de vehículos vencidos o próximos a vencer.
+
+    Notifica al conductor del vehículo, a su jefe directo y al jefe de este.
+    Solo en hitos (30, 15, 7, 3 y 1 día antes, el día del vencimiento y luego
+    semanalmente), para no repetir el mismo aviso cada mañana.
+    """
+    try:
+        logger.info('🔄 Revisando documentos de vehículos...')
+
+        call_command('alertar_documentos_vehiculos')
+
+        logger.info('✅ Alertas de documentos de vehículos enviadas')
+
+    except Exception as e:
+        logger.error(
+            f'❌ Error al alertar documentos de vehículos: {e}',
             exc_info=True
         )
 

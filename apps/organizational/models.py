@@ -88,6 +88,17 @@ class Cargo(models.Model):
         ),
     )
 
+    es_cargo_conductor = models.BooleanField(
+        default=False,
+        verbose_name="¿Es cargo de conductor?",
+        help_text=(
+            "Marca este cargo si su ocupante conduce vehículos de la flota. Solo esos "
+            "empleados entran al módulo de transporte, junto con su jefe directo y el "
+            "jefe de este. Va aparte de 'requiere licencia de conducir', que indica un "
+            "requisito del cargo y puede aplicar a quien no conduce la flota."
+        ),
+    )
+
     excluido_control_asistencia = models.BooleanField(
         default=False,
         verbose_name="¿No se le registra asistencia?",
