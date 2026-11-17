@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import DocumentoVehiculo, Vehiculo
+from .models import DocumentoVehiculo, GastoVehiculo, Vehiculo
 
 
 class DocumentoVehiculoInline(admin.TabularInline):
@@ -111,3 +111,24 @@ class DocumentoVehiculoAdmin(admin.ModelAdmin):
         if not obj.registrado_por_id:
             obj.registrado_por = request.user
         super().save_model(request, obj, form, change)
+
+
+@admin.register(GastoVehiculo)
+class GastoVehiculoAdmin(admin.ModelAdmin):
+    """Los gastos se registran y revisan en el módulo; aquí solo se consultan."""
+    list_display = ('fecha', 'vehiculo', 'conductor', 'tipo', 'monto',
+                    'estado', 'cuenta_costo')
+    list_filter = ('estado', 'tipo', 'responsable', 'fecha')
+    search_fields = ('vehiculo__placa', 'conductor__nombres',
+                     'conductor__apellidos', 'conductor__numero_documento',
+                     'descripcion')
+    autocomplete_fields = ('vehiculo', 'conductor')
+    readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion',
+                       'revisado_por', 'fecha_revision')
+    date_hierarchy = 'fecha'
+    ordering = ('-fecha',)
+
+    def cuenta_costo(self, obj):
+        return obj.cuenta_como_costo
+    cuenta_costo.short_description = '¿Entra al costo?'
+    cuenta_costo.boolean = True

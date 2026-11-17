@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar documento — {{ vehiculo.placa }}{% endblock %}
+
+{% block content %}
+<div class="container py-3" style="max-width: 640px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="fas fa-file-shield me-2"></i>Registrar documento
+        </h5>
+        <a href="{% url 'transporte:detalle_vehiculo' vehiculo.id %}"
+           class="btn btn-sm btn-outline-secondary">Cancelar</a>
+    </div>
+
+    <div class="alert alert-light border py-2 small mb-3">
+        <i class="fas fa-truck me-1"></i>
+        Vehículo <strong>{{ vehiculo.placa }}</strong>
+        — {{ vehiculo.marca }} {{ vehiculo.modelo }}
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.tipo.id_for_label }}">Documento</label>
+            {{ form.tipo }}
+            {% for e in form.tipo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.numero.id_for_label }}">Número</label>
+                {{ form.numero }}
+                {% for e in form.numero.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.entidad.id_for_label }}">Entidad</label>
+                {{ form.entidad }}
+                {% for e in form.entidad.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.fecha_expedicion.id_for_label }}">
+                    Fecha de expedición
+                </label>
+                {{ form.fecha_expedicion }}
+                {% for e in form.fecha_expedicion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.fecha_vencimiento.id_for_label }}">
+                    Vencimiento
+                </label>
+                {{ form.fecha_vencimiento }}
+                <div class="form-text">{{ form.fecha_vencimiento.help_text }}</div>
+                {% for e in form.fecha_vencimiento.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.valor.id_for_label }}">Valor pagado</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    {{ form.valor }}
+                </div>
+                {% for e in form.valor.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    {{ form.aplica }}
+                    <label class="form-check-label" for="{{ form.aplica.id_for_label }}">
+                        Este tributo aplica al vehículo
+                    </label>
+                    <div class="form-text">{{ form.aplica.help_text }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.archivo.id_for_label }}">
+                Soporte <span class="text-muted small">(foto o PDF)</span>
+            </label>
+            {{ form.archivo }}
+            {% for e in form.archivo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.observaciones.id_for_label }}">
+                Observaciones <span class="text-muted small">(opcional)</span>
+            </label>
+            {{ form.observaciones }}
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-check me-2"></i>Registrar
+            </button>
+        </div>
+    </form>
+
+    <p class="text-muted small mt-3">
+        <i class="fas fa-circle-info me-1"></i>
+        Si estás renovando, registra el documento nuevo sin borrar el anterior:
+        queda como constancia de que el vehículo estuvo en regla.
+    </p>
+</div>
+{% endblock %}

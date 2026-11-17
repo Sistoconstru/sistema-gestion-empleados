@@ -5,6 +5,7 @@ Django: la hace el coordinador, no un técnico. Al guardar se le avisa a
 Odoo, que es el dueño del maestro; si Odoo no contesta, el cambio queda
 registrado y se reintenta solo.
 """
+import logging
 from datetime import date
 
 from django.contrib import messages
@@ -16,7 +17,10 @@ from django.views.decorators.http import require_POST
 
 from apps.employees.models import Empleado
 
-from .models import DocumentoVehiculo, Vehiculo
+logger = logging.getLogger(__name__)
+
+from .forms import DocumentoVehiculoForm, GastoVehiculoForm, RevisionGastoForm
+from .models import DocumentoVehiculo, GastoVehiculo, Vehiculo
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
     es_conductor, empleado_de, transporte_required, vehiculos_visibles,
@@ -198,3 +202,261 @@ def detalle_vehiculo(request, vehiculo_id):
         'estado_por_tipo': estado_por_tipo,
         'es_admin': es_admin_transporte(request.user),
     })
+
+
+# =========================================================================
+# Documentos
+# =========================================================================
+
+@login_required
+@admin_transporte_required
+def registrar_documento(request, vehiculo_id):
+    """Registrar o renovar un documento del vehículo.
+
+    Vive en el módulo y no en el admin de Django porque lo hace el
+    coordinador, que es quien tiene el papel en la mano.
+    """
+    vehiculo = get_object_or_404(Vehiculo, pk=vehiculo_id)
+    if vehiculo not in vehiculos_visibles(request.user):
+        messages.error(request, 'Ese vehículo no es de tu flota.')
+        return redirect('transporte:flota')
+
+    if request.method == 'POST':
+        form = DocumentoVehiculoForm(
+            request.POST, request.FILES, vehiculo=vehiculo)
+        if form.is_valid():
+            doc = form.save(usuario=request.user)
+            if doc.fecha_vencimiento:
+                messages.success(
+                    request,
+                    f'{doc.get_tipo_display()} registrado para {vehiculo.placa}. '
+                    f'Vence el {doc.fecha_vencimiento:%d/%m/%Y}; el aviso sale '
+                    f'30 días antes.')
+            else:
+                messages.warning(
+                    request,
+                    f'{doc.get_tipo_display()} registrado, pero sin fecha de '
+                    f'vencimiento: no se podrá avisar cuándo se vence.')
+            return redirect('transporte:detalle_vehiculo', vehiculo_id=vehiculo.pk)
+    else:
+        inicial = {}
+        tipo = request.GET.get('tipo')
+        if tipo in dict(DocumentoVehiculo.TIPOS):
+            inicial['tipo'] = tipo
+        form = DocumentoVehiculoForm(initial=inicial, vehiculo=vehiculo)
+
+    return render(request, 'transporte/documento_form.html', {
+        'form': form,
+        'vehiculo': vehiculo,
+    })
+
+
+# =========================================================================
+# Gastos
+# =========================================================================
+
+@login_required
+@transporte_required
+def mis_gastos(request):
+    """Lo que ve el conductor: su vehículo y los gastos que ha registrado."""
+    empleado = empleado_de(request.user)
+    if not empleado:
+        messages.error(request, 'Tu usuario no tiene ficha de empleado.')
+        return redirect('core:dashboard')
+
+    vehiculo = Vehiculo.objects.filter(
+        conductor=empleado, activo=True).select_related('conductor').first()
+
+    gastos = list(GastoVehiculo.objects
+                  .filter(conductor=empleado)
+                  .select_related('vehiculo')
+                  .order_by('-fecha', '-fecha_creacion')[:60])
+
+    hoy = timezone.localdate()
+    inicio_mes = hoy.replace(day=1)
+    del_mes = [g for g in gastos if g.fecha >= inicio_mes]
+    total_mes = sum(g.monto for g in del_mes if g.cuenta_como_costo)
+
+    return render(request, 'transporte/mis_gastos.html', {
+        'vehiculo': vehiculo,
+        'gastos': gastos,
+        'total_mes': total_mes,
+        'cantidad_mes': len(del_mes),
+        'rechazados': sum(1 for g in gastos if g.estado == GastoVehiculo.RECHAZADO),
+        'documentos': vehiculo.documentos_vigentes() if vehiculo else [],
+    })
+
+
+@login_required
+@transporte_required
+def registrar_gasto(request):
+    """El conductor registra un gasto con el recibo."""
+    empleado = empleado_de(request.user)
+    vehiculo = Vehiculo.objects.filter(conductor=empleado, activo=True).first()
+
+    if not vehiculo:
+        messages.error(
+            request,
+            'No tienes un vehículo asignado, así que no puedes registrar '
+            'gastos. Habla con tu jefe para que te asigne uno.')
+        return redirect('transporte:mis_gastos')
+
+    if request.method == 'POST':
+        form = GastoVehiculoForm(
+            request.POST, request.FILES, vehiculo=vehiculo, conductor=empleado)
+        if form.is_valid():
+            gasto = form.save()
+            monto = f'{gasto.monto:,.0f}'.replace(',', '.')
+            messages.success(
+                request,
+                f'Gasto de {gasto.get_tipo_display().lower()} por ${monto} '
+                f'registrado. Queda pendiente de revisión.')
+            return redirect('transporte:mis_gastos')
+    else:
+        form = GastoVehiculoForm(vehiculo=vehiculo, conductor=empleado)
+
+    return render(request, 'transporte/gasto_form.html', {
+        'form': form,
+        'vehiculo': vehiculo,
+    })
+
+
+@login_required
+@transporte_required
+def editar_gasto(request, gasto_id):
+    """Corregir un gasto que todavía nadie ha revisado."""
+    gasto = get_object_or_404(GastoVehiculo, pk=gasto_id)
+    empleado = empleado_de(request.user)
+
+    if gasto.conductor_id != (empleado.pk if empleado else None):
+        messages.error(request, 'Ese gasto no es tuyo.')
+        return redirect('transporte:mis_gastos')
+    if not gasto.editable_por_conductor:
+        messages.error(
+            request,
+            f'Ese gasto ya fue {gasto.get_estado_display().lower()} y no se '
+            f'puede cambiar. Si hay un error, avísale a tu jefe.')
+        return redirect('transporte:mis_gastos')
+
+    if request.method == 'POST':
+        form = GastoVehiculoForm(
+            request.POST, request.FILES, instance=gasto,
+            vehiculo=gasto.vehiculo, conductor=empleado)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Gasto corregido.')
+            return redirect('transporte:mis_gastos')
+    else:
+        form = GastoVehiculoForm(
+            instance=gasto, vehiculo=gasto.vehiculo, conductor=empleado)
+
+    return render(request, 'transporte/gasto_form.html', {
+        'form': form,
+        'vehiculo': gasto.vehiculo,
+        'gasto': gasto,
+    })
+
+
+@login_required
+@admin_transporte_required
+def gastos_flota(request):
+    """Lo que ve el jefe: los gastos de sus conductores, para revisarlos."""
+    vehiculos = vehiculos_visibles(request.user)
+    gastos = (GastoVehiculo.objects
+              .filter(vehiculo__in=vehiculos)
+              .select_related('vehiculo', 'conductor', 'revisado_por')
+              .order_by('-fecha', '-fecha_creacion'))
+
+    estado = request.GET.get('estado')
+    if estado in dict(GastoVehiculo.ESTADOS):
+        gastos = gastos.filter(estado=estado)
+
+    hoy = timezone.localdate()
+    inicio_mes = hoy.replace(day=1)
+    todos = GastoVehiculo.objects.filter(vehiculo__in=vehiculos)
+    del_mes = [g for g in todos if g.fecha >= inicio_mes]
+
+    return render(request, 'transporte/gastos_flota.html', {
+        'gastos': list(gastos[:200]),
+        'estado_filtro': estado or '',
+        'estados': GastoVehiculo.ESTADOS,
+        'pendientes': todos.filter(estado=GastoVehiculo.PENDIENTE).count(),
+        'total_mes': sum(g.monto for g in del_mes if g.cuenta_como_costo),
+        'multas_conductor_mes': sum(
+            g.monto for g in del_mes
+            if g.tipo == GastoVehiculo.MULTA
+            and g.responsable == GastoVehiculo.RESPONSABLE_CONDUCTOR
+            and g.estado != GastoVehiculo.RECHAZADO),
+    })
+
+
+@login_required
+@admin_transporte_required
+@require_POST
+def revisar_gasto(request, gasto_id):
+    """Aprobar o rechazar un gasto."""
+    gasto = get_object_or_404(GastoVehiculo, pk=gasto_id)
+    if gasto.vehiculo not in vehiculos_visibles(request.user):
+        messages.error(request, 'Ese gasto no es de tu flota.')
+        return redirect('transporte:gastos_flota')
+
+    form = RevisionGastoForm(request.POST)
+    if not form.is_valid():
+        for errores in form.errors.values():
+            for e in errores:
+                messages.error(request, e)
+        return redirect('transporte:gastos_flota')
+
+    decision = form.cleaned_data['decision']
+    gasto.estado = (GastoVehiculo.APROBADO if decision == 'aprobar'
+                    else GastoVehiculo.RECHAZADO)
+    gasto.observaciones_revision = form.cleaned_data['observaciones']
+    gasto.revisado_por = request.user
+    gasto.fecha_revision = timezone.now()
+    gasto.save()
+
+    verbo = 'aprobado' if decision == 'aprobar' else 'rechazado'
+    messages.success(
+        request, f'Gasto de {gasto.conductor.nombre_completo} {verbo}.')
+
+    # Al rechazar, el conductor tiene que enterarse: si no, el gasto queda en
+    # el limbo y nadie lo corrige.
+    if decision == 'rechazar' and gasto.conductor.usuario_id:
+        _avisar_rechazo(gasto)
+
+    return redirect('transporte:gastos_flota')
+
+
+def _avisar_rechazo(gasto):
+    """Notifica al conductor que su gasto fue rechazado."""
+    try:
+        from apps.notifications.models import Notificacion, TipoNotificacion
+        tipo, _ = TipoNotificacion.objects.get_or_create(
+            codigo='gasto_vehiculo_rechazado',
+            defaults={
+                'nombre': 'Gasto de vehículo rechazado',
+                'plantilla_titulo': '{titulo}',
+                'plantilla_mensaje': '{mensaje}',
+                'enviar_push': True,
+            },
+        )
+        titulo = f'Gasto rechazado — {gasto.vehiculo.placa}'
+        cuerpo = (
+            f'Tu gasto de {gasto.get_tipo_display().lower()} del '
+            f'{gasto.fecha:%d/%m/%Y} fue rechazado. '
+            f'Motivo: {gasto.observaciones_revision}')
+        Notificacion.objects.create(
+            usuario=gasto.conductor.usuario,
+            tipo_notificacion=tipo,
+            titulo=titulo[:200],
+            mensaje=cuerpo,
+            datos_adicionales={'gasto_id': str(gasto.pk)},
+        )
+        try:
+            from apps.notifications.push_utils import send_push
+            send_push(gasto.conductor.usuario, titulo, cuerpo,
+                      url='/transporte/mis-gastos/')
+        except Exception as e:
+            logger.warning('Push de rechazo no enviado: %s', e)
+    except Exception as e:
+        logger.error('No se pudo avisar el rechazo del gasto %s: %s', gasto.pk, e)

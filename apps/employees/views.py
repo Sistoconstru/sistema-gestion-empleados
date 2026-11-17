@@ -1327,6 +1327,11 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             )
         )
 
+        # Transporte: el tile lo ve el conductor, que es quien registra los
+        # gastos desde el celular. Los jefes entran por el panel de admin.
+        from apps.transporte.permisos import es_conductor
+        context['es_conductor_flota'] = es_conductor(empleado)
+
         # Novedades — aprobación del director: pendientes de coordinadores
         # que le reportan directamente. Tile visible cuando tiene subordinados
         # directos (aunque haya 0 pendientes en el momento).

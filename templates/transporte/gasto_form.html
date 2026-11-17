@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if gasto %}Corregir gasto{% else %}Registrar gasto{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-3" style="max-width: 560px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="fas fa-receipt me-2"></i>
+            {% if gasto %}Corregir gasto{% else %}Registrar gasto{% endif %}
+        </h5>
+        <a href="{% url 'transporte:mis_gastos' %}" class="btn btn-sm btn-outline-secondary">
+            Cancelar
+        </a>
+    </div>
+
+    <div class="alert alert-light border py-2 small mb-3">
+        <i class="fas fa-truck me-1"></i>
+        Vehículo <strong>{{ vehiculo.placa }}</strong>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.tipo.id_for_label }}">
+                ¿En qué gastaste?
+            </label>
+            {{ form.tipo }}
+            {% for e in form.tipo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.monto.id_for_label }}">Valor</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">$</span>
+                {{ form.monto }}
+            </div>
+            <div class="form-text" id="monto-en-letras"></div>
+            {% for e in form.monto.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        {# Solo aparece si el tipo es multa: a quién le toca pagarla #}
+        <div class="mb-3 d-none" id="bloque-responsable">
+            <label class="form-label" for="{{ form.responsable.id_for_label }}">
+                ¿Quién responde por la multa?
+            </label>
+            {{ form.responsable }}
+            <div class="form-text">
+                Las multas del conductor no entran al costo del vehículo.
+            </div>
+            {% for e in form.responsable.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-7">
+                <label class="form-label" for="{{ form.fecha.id_for_label }}">Fecha</label>
+                {{ form.fecha }}
+                {% for e in form.fecha.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="col-5">
+                <label class="form-label" for="{{ form.kilometraje.id_for_label }}">Kilometraje</label>
+                {{ form.kilometraje }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.descripcion.id_for_label }}">
+                Detalle <span class="text-muted small">(opcional)</span>
+            </label>
+            {{ form.descripcion }}
+            {% for e in form.descripcion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        {# --- Recibo: cámara primero, que es como se usa de verdad --- #}
+        <div class="mb-3">
+            <label class="form-label">
+                Recibo
+                {% if not gasto %}<span class="text-danger">*</span>{% endif %}
+            </label>
+
+            {% if gasto and gasto.recibo %}
+                <div class="small text-muted mb-2">
+                    Ya tiene recibo.
+                    <a href="{{ gasto.recibo.url }}" target="_blank">Ver el actual</a>.
+                    Sube otro solo si quieres reemplazarlo.
+                </div>
+            {% endif %}
+
+            <div class="d-grid gap-2 mb-2">
+                <button type="button" class="btn btn-outline-primary btn-lg" id="btn-camara">
+                    <i class="fas fa-camera me-2"></i>Tomar foto del recibo
+                </button>
+            </div>
+            <input type="file" id="input-camara" accept="image/*" capture="environment" class="d-none">
+
+            {{ form.recibo }}
+            <div class="form-text">
+                También puedes elegir una foto de la galería o un PDF.
+            </div>
+            <div id="vista-previa" class="mt-2 d-none">
+                <img src="" alt="Recibo" class="img-fluid rounded border" style="max-height: 260px;">
+            </div>
+            {% for e in form.recibo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-check me-2"></i>
+                {% if gasto %}Guardar cambios{% else %}Registrar gasto{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+(function () {
+    var selectTipo = document.getElementById('id_tipo_gasto');
+    var bloqueResp = document.getElementById('bloque-responsable');
+    var selectResp = document.getElementById('id_responsable_gasto');
+
+    // El responsable solo tiene sentido en una multa. Mostrarlo siempre
+    // invita a llenarlo en un tanqueo, y el modelo lo rechaza.
+    function alternarResponsable() {
+        var esMulta = selectTipo && selectTipo.value === 'multa';
+        if (!bloqueResp) return;
+        bloqueResp.classList.toggle('d-none', !esMulta);
+        if (!esMulta && selectResp) selectResp.value = '';
+    }
+    if (selectTipo) {
+        selectTipo.addEventListener('change', alternarResponsable);
+        alternarResponsable();
+    }
+
+    // La cámara y el selector de archivo son el mismo campo: el botón solo
+    // dispara la captura y deja el resultado en el input del formulario.
+    var btnCamara = document.getElementById('btn-camara');
+    var inputCamara = document.getElementById('input-camara');
+    var inputRecibo = document.querySelector('input[name="recibo"]');
+    var preview = document.getElementById('vista-previa');
+
+    if (btnCamara && inputCamara) {
+        btnCamara.addEventListener('click', function () { inputCamara.click(); });
+        inputCamara.addEventListener('change', function () {
+            if (!inputCamara.files.length || !inputRecibo) return;
+            var dt = new DataTransfer();
+            dt.items.add(inputCamara.files[0]);
+            inputRecibo.files = dt.files;
+            inputRecibo.dispatchEvent(new Event('change'));
+        });
+    }
+
+    if (inputRecibo && preview) {
+        inputRecibo.addEventListener('change', function () {
+            var f = inputRecibo.files && inputRecibo.files[0];
+            if (!f || !f.type.startsWith('image/')) {
+                preview.classList.add('d-none');
+                return;
+            }
+            preview.querySelector('img').src = URL.createObjectURL(f);
+            preview.classList.remove('d-none');
+        });
+    }
+
+    // Eco del valor en pesos mientras se escribe, para que un cero de más
+    // se vea antes de guardar.
+    var inputMonto = document.querySelector('input[name="monto"]');
+    var eco = document.getElementById('monto-en-letras');
+    if (inputMonto && eco) {
+        inputMonto.addEventListener('input', function () {
+            var v = parseFloat(inputMonto.value);
+            eco.textContent = (!v || v <= 0) ? '' :
+                v.toLocaleString('es-CO', {style: 'currency', currency: 'COP',
+                                           minimumFractionDigits: 0});
+        });
+        inputMonto.dispatchEvent(new Event('input'));
+    }
+})();
+</script>
+{% endblock %}

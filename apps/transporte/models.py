@@ -27,6 +27,13 @@ def _documento_upload_path(instance, filename):
     return f'vehiculos/{placa}/{instance.tipo}/{anio}/{filename}'
 
 
+def _recibo_upload_path(instance, filename):
+    """media/vehiculos/<placa>/gastos/<año>/<mes>/<archivo>"""
+    placa = (instance.vehiculo.placa or 'sin-placa').replace(' ', '').replace('/', '')
+    f = instance.fecha or date.today()
+    return f'vehiculos/{placa}/gastos/{f.year}/{f.month:02d}/{filename}'
+
+
 class Vehiculo(models.Model):
     """Espejo del vehículo que administra Odoo.
 
@@ -314,3 +321,141 @@ class DocumentoVehiculo(models.Model):
             'por_vencer': 'Por vencer',
             'vigente': 'Vigente',
         }[self.estado]
+
+
+class GastoVehiculo(models.Model):
+    """Gasto de un vehículo, registrado por el conductor con su recibo.
+
+    El conductor lo captura desde el celular al momento de pagar, porque un
+    recibo de combustible que se guarda en el bolsillo para digitarlo el
+    viernes casi nunca llega. Por eso el recibo es obligatorio: sin soporte
+    el gasto no se puede legalizar.
+
+    Las multas son el caso aparte. Cuando la responsable es la empresa
+    entran al costo del vehículo; cuando es del conductor no, porque no son
+    un gasto de operación sino algo que él debe. Mezclarlas distorsiona el
+    costo por kilómetro, que es justo lo que se quiere medir.
+    """
+    COMBUSTIBLE = 'combustible'
+    PEAJE = 'peaje'
+    MANTENIMIENTO = 'mantenimiento'
+    REPARACION = 'reparacion'
+    LLANTAS = 'llantas'
+    LAVADO = 'lavado'
+    PARQUEADERO = 'parqueadero'
+    MULTA = 'multa'
+    OTRO = 'otro'
+    TIPOS = [
+        (COMBUSTIBLE, 'Combustible'),
+        (PEAJE, 'Peaje'),
+        (MANTENIMIENTO, 'Mantenimiento'),
+        (REPARACION, 'Reparación'),
+        (LLANTAS, 'Llantas'),
+        (LAVADO, 'Lavado'),
+        (PARQUEADERO, 'Parqueadero'),
+        (MULTA, 'Multa o comparendo'),
+        (OTRO, 'Otro'),
+    ]
+
+    RESPONSABLE_EMPRESA = 'empresa'
+    RESPONSABLE_CONDUCTOR = 'conductor'
+    RESPONSABLES = [
+        (RESPONSABLE_EMPRESA, 'La empresa'),
+        (RESPONSABLE_CONDUCTOR, 'El conductor'),
+    ]
+
+    PENDIENTE = 'pendiente'
+    APROBADO = 'aprobado'
+    RECHAZADO = 'rechazado'
+    ESTADOS = [
+        (PENDIENTE, 'Pendiente de revisión'),
+        (APROBADO, 'Aprobado'),
+        (RECHAZADO, 'Rechazado'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vehiculo = models.ForeignKey(
+        Vehiculo, on_delete=models.PROTECT, related_name='gastos')
+    conductor = models.ForeignKey(
+        'employees.Empleado', on_delete=models.PROTECT,
+        related_name='gastos_vehiculo',
+        help_text='Quien hizo el gasto.')
+
+    tipo = models.CharField(max_length=20, choices=TIPOS)
+    monto = models.DecimalField(
+        max_digits=12, decimal_places=2,
+        validators=[MinValueValidator(1)],
+        help_text='Valor pagado, en pesos.')
+    fecha = models.DateField(default=date.today)
+    descripcion = models.CharField(
+        max_length=200, blank=True,
+        help_text='Dónde fue, qué se hizo. Opcional salvo en "Otro".')
+
+    # Solo aplica a multas: quién la asume.
+    responsable = models.CharField(
+        max_length=12, choices=RESPONSABLES, blank=True,
+        help_text='Solo para multas: quién responde por ella.')
+
+    recibo = models.FileField(
+        upload_to=_recibo_upload_path,
+        storage=MediaStorage(),
+        help_text='Foto o PDF del recibo. Sin soporte el gasto no se legaliza.')
+
+    kilometraje = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text='Kilometraje del vehículo al momento del gasto. Opcional.')
+
+    estado = models.CharField(max_length=12, choices=ESTADOS, default=PENDIENTE)
+    observaciones_revision = models.TextField(
+        blank=True, help_text='Por qué se rechazó, o nota de quien revisó.')
+    revisado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='gastos_vehiculo_revisados')
+    fecha_revision = models.DateTimeField(null=True, blank=True)
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'transporte_gastos_vehiculo'
+        verbose_name = 'Gasto de vehículo'
+        verbose_name_plural = 'Gastos de vehículos'
+        ordering = ['-fecha', '-fecha_creacion']
+        indexes = [
+            models.Index(fields=['vehiculo', '-fecha']),
+            models.Index(fields=['conductor', '-fecha']),
+            models.Index(fields=['estado']),
+        ]
+
+    def __str__(self):
+        return f'{self.get_tipo_display()} {self.monto} — {self.vehiculo.placa} ({self.fecha})'
+
+    def clean(self):
+        errores = {}
+        if self.tipo == self.MULTA and not self.responsable:
+            errores['responsable'] = 'En una multa hay que decir quién responde.'
+        if self.tipo != self.MULTA and self.responsable:
+            errores['responsable'] = 'El responsable solo aplica a las multas.'
+        if self.tipo == self.OTRO and not self.descripcion.strip():
+            errores['descripcion'] = 'Si el tipo es "Otro", explica de qué se trata.'
+        if self.fecha and self.fecha > date.today():
+            errores['fecha'] = 'No se puede registrar un gasto con fecha futura.'
+        if errores:
+            raise ValidationError(errores)
+
+    @property
+    def cuenta_como_costo(self):
+        """Si entra al costo de operación del vehículo.
+
+        Las multas que asume el conductor quedan fuera: son una deuda suya,
+        no un gasto de operar el vehículo.
+        """
+        if self.estado == self.RECHAZADO:
+            return False
+        return not (self.tipo == self.MULTA
+                    and self.responsable == self.RESPONSABLE_CONDUCTOR)
+
+    @property
+    def editable_por_conductor(self):
+        """Mientras nadie lo haya revisado, el conductor puede corregirlo."""
+        return self.estado == self.PENDIENTE

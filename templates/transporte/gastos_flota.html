@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Gastos de la flota{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="mb-1"><i class="fas fa-receipt me-2"></i>Gastos de la flota</h5>
+            <p class="text-muted small mb-0">
+                Lo que registran tus conductores, para revisarlo.
+            </p>
+        </div>
+        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-truck me-1"></i>Ver vehículos
+        </a>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Pendientes de revisar</div>
+                    <div class="fs-4 fw-bold {% if pendientes %}text-warning{% endif %}">
+                        {{ pendientes }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Costo del mes</div>
+                    <div class="fs-4 fw-bold">${{ total_mes|floatformat:0 }}</div>
+                    <div class="small text-muted">Sin las multas del conductor</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Multas a cargo del conductor</div>
+                    <div class="fs-4 fw-bold {% if multas_conductor_mes %}text-danger{% endif %}">
+                        ${{ multas_conductor_mes|floatformat:0 }}
+                    </div>
+                    <div class="small text-muted">No entran al costo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <a href="{% url 'transporte:gastos_flota' %}"
+           class="btn btn-sm {% if not estado_filtro %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            Todos
+        </a>
+        {% for codigo, nombre in estados %}
+            <a href="?estado={{ codigo }}"
+               class="btn btn-sm {% if estado_filtro == codigo %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                {{ nombre }}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% for g in gastos %}
+    <div class="card mb-2">
+        <div class="card-body py-2">
+            <div class="row align-items-center g-2">
+                <div class="col-md-3">
+                    <strong>{{ g.conductor.nombre_completo }}</strong>
+                    <div class="small text-muted">{{ g.vehiculo.placa }}</div>
+                </div>
+                <div class="col-md-3">
+                    {{ g.get_tipo_display }}
+                    {% if g.tipo == 'multa' and g.responsable %}
+                        <span class="badge {% if g.responsable == 'conductor' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            paga {{ g.get_responsable_display|lower }}
+                        </span>
+                    {% endif %}
+                    <div class="small text-muted">
+                        {{ g.fecha|date:"d/m/Y" }}
+                        {% if g.descripcion %} · {{ g.descripcion|truncatechars:34 }}{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-2 text-md-end">
+                    <span class="fs-5 fw-bold">${{ g.monto|floatformat:0 }}</span>
+                    {% if not g.cuenta_como_costo and g.estado != 'rechazado' %}
+                        <div class="small text-muted">fuera del costo</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <span class="badge
+                        {% if g.estado == 'aprobado' %}bg-success
+                        {% elif g.estado == 'rechazado' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ g.get_estado_display }}
+                    </span>
+                    {% if g.revisado_por %}
+                        <div class="small text-muted">
+                            por {{ g.revisado_por.get_full_name|default:g.revisado_por.username }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2 text-md-end">
+                    {% if g.recibo %}
+                        <a href="{{ g.recibo.url }}" target="_blank"
+                           class="btn btn-sm btn-outline-secondary mb-1">
+                            <i class="fas fa-receipt"></i>
+                        </a>
+                    {% endif %}
+                    {% if g.estado == 'pendiente' %}
+                        <button class="btn btn-sm btn-outline-primary mb-1"
+                                type="button" data-bs-toggle="collapse"
+                                data-bs-target="#revisar-{{ g.id }}">
+                            Revisar
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if g.estado == 'rechazado' and g.observaciones_revision %}
+                <div class="alert alert-danger py-1 px-2 small mt-2 mb-0">
+                    <strong>Motivo:</strong> {{ g.observaciones_revision }}
+                </div>
+            {% endif %}
+
+            {% if g.estado == 'pendiente' %}
+            <div class="collapse mt-2" id="revisar-{{ g.id }}">
+                <form method="post"
+                      action="{% url 'transporte:revisar_gasto' g.id %}"
+                      class="border-top pt-2">
+                    {% csrf_token %}
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label class="form-label small mb-1"
+                                   for="obs-{{ g.id }}">
+                                Observación <span class="text-muted">(obligatoria si rechazas)</span>
+                            </label>
+                            <textarea name="observaciones" id="obs-{{ g.id }}"
+                                      class="form-control form-control-sm" rows="1"></textarea>
+                        </div>
+                        <div class="col-md-4 d-flex gap-2">
+                            <button type="submit" name="decision" value="aprobar"
+                                    class="btn btn-sm btn-success flex-fill">
+                                <i class="fas fa-check me-1"></i>Aprobar
+                            </button>
+                            <button type="submit" name="decision" value="rechazar"
+                                    class="btn btn-sm btn-outline-danger flex-fill">
+                                <i class="fas fa-xmark me-1"></i>Rechazar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-4">
+            No hay gastos{% if estado_filtro %} en ese estado{% endif %}.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
