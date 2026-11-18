@@ -40,20 +40,42 @@ class Command(BaseCommand):
             '--todos', action='store_true',
             help='Avisa de todo, ignorando los hitos')
 
-    def _toca_avisar(self, estado, hoy, todos):
+    def _ya_se_aviso(self, empleado, estado):
+        """¿Alguna vez se avisó de esta licencia en este mismo estado?
+
+        El recordatorio semanal se cuenta desde el vencimiento, así que una
+        licencia que ya estaba vencida cuando se instaló este aviso puede
+        caer a mitad de ciclo y quedarse callada varios días. Justo el caso
+        que más urge es el que más esperaría.
+        """
+        from apps.notifications.models import Notificacion
+
+        return Notificacion.objects.filter(
+            datos_adicionales__contains={
+                'conductor_id': str(empleado.pk),
+                'estado_licencia': estado['clave'],
+            }
+        ).exists()
+
+    def _toca_avisar(self, empleado, estado, hoy, todos):
         if todos:
             return True
         clave, dias = estado['clave'], estado['dias']
         if clave == 'vigente':
             return False
-        if clave in ('sin_licencia', 'sin_fecha'):
+
+        # Lo que ya está mal se avisa la primera vez que se ve, sin esperar
+        # a que cuadre el calendario.
+        primera_vez = not self._ya_se_aviso(empleado, estado)
+
+        if clave in ('sin_licencia', 'sin_fecha') or dias is None:
             # Sin fecha no hay hitos: una vez por semana, los lunes.
-            return hoy.weekday() == 0
-        if dias is None:
-            return hoy.weekday() == 0
+            return primera_vez or hoy.weekday() == 0
         if dias in HITOS_AVISO:
             return True
-        return dias < 0 and abs(dias) % 7 == 0
+        if dias < 0:
+            return primera_vez or abs(dias) % 7 == 0
+        return False
 
     def handle(self, **options):
         dry_run = options['dry_run']
@@ -73,7 +95,7 @@ class Command(BaseCommand):
             aprobada = '' if estado['aprobada'] else ' (sin aprobar)'
             self.stdout.write(
                 f'  {empleado.nombre_completo:<34} {estado["texto"]}{aprobada}{marca}')
-            if self._toca_avisar(estado, hoy, todos):
+            if self._toca_avisar(empleado, estado, hoy, todos):
                 pendientes.append((empleado, estado))
 
         if not pendientes:
