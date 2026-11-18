@@ -332,15 +332,27 @@
                         <div class="alert alert-info alert-sm">
                             <i class="fas fa-calendar-alt me-2"></i>
                             <strong>{{ documentos_por_vencer }}</strong> documento{{ documentos_por_vencer|pluralize }} por vencer
+                            <div class="mt-2">
+                                <a href="{% url 'documents:documento_list' %}?vencimiento=por_vencer"
+                                   class="btn btn-sm btn-info">
+                                    <i class="fas fa-list me-1"></i>Ver cuáles
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if alertas_documentos.vencidos %}
                     <div class="col-md-6 mb-2">
                         <div class="alert alert-danger alert-sm">
                             <i class="fas fa-times-circle me-2"></i>
                             <strong>{{ documentos_vencidos }}</strong> documento{{ documentos_vencidos|pluralize }} vencido{{ documentos_vencidos|pluralize }}
+                            <div class="mt-2">
+                                <a href="{% url 'documents:documento_list' %}?vencimiento=vencidos"
+                                   class="btn btn-sm btn-danger">
+                                    <i class="fas fa-list me-1"></i>Ver cuáles y de quién
+                                </a>
+                            </div>
                         </div>
                     </div>
                     {% endif %}

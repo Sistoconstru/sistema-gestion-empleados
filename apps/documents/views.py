@@ -451,6 +451,15 @@ class DocumentoEmpleadoListView(StaffRequiredMixin, ListView):
     paginate_by = 25
     ESTADOS = [('', 'Todos'), ('pendiente', 'Pendientes'), ('aprobado', 'Aprobados'), ('rechazado', 'Rechazados')]
 
+    # El panel avisa cuántos documentos están vencidos, pero hasta ahora no
+    # había dónde ver cuáles ni de quién. Este filtro es ese destino.
+    VENCIMIENTOS = [
+        ('', 'Cualquiera'),
+        ('vencidos', 'Vencidos'),
+        ('por_vencer', 'Por vencer (30 días)'),
+    ]
+    DIAS_POR_VENCER = 30
+
     def get_queryset(self):
         from django.db.models import Q
         queryset = DocumentoEmpleado.objects.select_related(
@@ -459,6 +468,21 @@ class DocumentoEmpleadoListView(StaffRequiredMixin, ListView):
         estado = self.request.GET.get('estado', '')
         if estado in dict(self.ESTADOS) and estado:
             queryset = queryset.filter(estado_aprobacion=estado)
+
+        vencimiento = self.request.GET.get('vencimiento', '')
+        if vencimiento == 'vencidos':
+            # Lo vencido se ordena por el más viejo: es lo que lleva más
+            # tiempo sin resolverse y lo primero que hay que perseguir.
+            queryset = queryset.filter(
+                fecha_vencimiento__lt=timezone.now().date()
+            ).order_by('fecha_vencimiento')
+        elif vencimiento == 'por_vencer':
+            hoy = timezone.now().date()
+            queryset = queryset.filter(
+                fecha_vencimiento__gte=hoy,
+                fecha_vencimiento__lte=hoy + timedelta(days=self.DIAS_POR_VENCER),
+            ).order_by('fecha_vencimiento')
+
         buscar = self.request.GET.get('q', '').strip()
         if buscar:
             queryset = queryset.filter(
@@ -473,13 +497,24 @@ class DocumentoEmpleadoListView(StaffRequiredMixin, ListView):
         por_estado = dict(
             DocumentoEmpleado.objects.values_list('estado_aprobacion').annotate(n=Count('id'))
         )
+        hoy = timezone.now().date()
+        vencimiento = self.request.GET.get('vencimiento', '')
         context.update({
             'total_documentos': sum(por_estado.values()),
             'pendientes': por_estado.get('pendiente', 0),
             'aprobados': por_estado.get('aprobado', 0),
             'rechazados': por_estado.get('rechazado', 0),
+            'vencidos': DocumentoEmpleado.objects.filter(
+                fecha_vencimiento__lt=hoy).count(),
+            'por_vencer': DocumentoEmpleado.objects.filter(
+                fecha_vencimiento__gte=hoy,
+                fecha_vencimiento__lte=hoy + timedelta(days=self.DIAS_POR_VENCER),
+            ).count(),
             'estados': self.ESTADOS,
             'estado_filtro': self.request.GET.get('estado', ''),
+            'vencimientos': self.VENCIMIENTOS,
+            'vencimiento_filtro': vencimiento if vencimiento in dict(self.VENCIMIENTOS) else '',
+            'hoy': hoy,
             'buscar': self.request.GET.get('q', '').strip(),
         })
         return context
