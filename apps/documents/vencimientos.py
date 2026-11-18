@@ -4,10 +4,17 @@ Reemplaza al comando check_document_expiry (eliminado), que nunca se
 programó: mandaba un correo en cada corrida, sin control de repetidos, y su
 reporte a administradores usaba una plantilla que no existía.
 
-Avisa a 30 y 7 días, el día del vencimiento, y después una vez por semana
-mientras siga vencido. Lo de después del vencimiento importa tanto como lo
-de antes: avisar el día 0 y callarse deja un documento vencido sin que
-nadie vuelva a mencionarlo nunca.
+Avisa a 30 y 7 días y el día del vencimiento. Lo de después importa tanto
+como lo de antes: avisar el día 0 y callarse deja un documento vencido sin
+que nadie vuelva a mencionarlo nunca. Así que mientras siga vencido se
+sigue recordando, con una cadencia distinta para cada uno, porque son dos
+trabajos distintos:
+
+- Al empleado, día por medio hasta que lo actualice. Es quien tiene que ir
+  a renovarlo, y un recordatorio seguido es lo que hace que lo haga.
+- A Talento Humano, una vez por semana. Revisan una lista, no corren a la
+  notaría: doce avisos diarios de lo mismo se vuelven ruido y se dejan de
+  leer, que es la forma más segura de que un vencido pase inadvertido.
 
 Se incluyen los documentos pendientes de aprobación, no solo los aprobados.
 Uno pendiente también se vence, y dejarlo fuera significaba que el empleado
@@ -74,6 +81,17 @@ def avisar_vencimientos(hoy=None):
         umbral = _umbral(dias)
         if umbral is None:
             continue
+        # No hace falta preguntar si ya lo renovó: `DocumentoEmpleado` es
+        # único por (empleado, tipo), así que renovar actualiza esta misma
+        # fila y le cambia la fecha. Cuando eso pasa, el documento sale solo
+        # de esta consulta y los avisos paran.
+
+        # Dos cadencias distintas porque son dos trabajos distintos. El
+        # empleado tiene que ir a renovar, y un recordatorio día por medio
+        # es lo que hace que lo haga. Talento Humano revisa la lista, y para
+        # eso le basta una vez por semana: doce avisos diarios de lo mismo
+        # se vuelven ruido y se dejan de leer.
+        tag_empleado, tag_rrhh = _tags(doc, dias, hoy)
 
         url_empleado = f'/documentos/empleado/{doc.empleado_id}/'
         datos = {'documento_id': str(doc.pk), 'umbral': umbral,
@@ -108,12 +126,12 @@ def avisar_vencimientos(hoy=None):
         if doc.empleado.usuario and doc.empleado.usuario.is_active:
             avisos += _avisar(
                 doc.empleado.usuario, tipo, titulo_empleado, cuerpo_empleado,
-                url_empleado, f'doc-venc-{doc.pk}-{umbral}', datos,
+                url_empleado, tag_empleado, datos,
             )
         for usuario in rrhh:
             avisos += _avisar(
                 usuario, tipo, titulo_rrhh, cuerpo_rrhh, url_empleado,
-                f'doc-venc-{doc.pk}-{umbral}-rrhh-{usuario.pk}', datos,
+                f'{tag_rrhh}-rrhh-{usuario.pk}', datos,
             )
 
     logger.info(f'Vencimientos de documentos: {avisos} avisos.')
@@ -132,3 +150,27 @@ def _umbral(dias):
     if dias >= 0:
         return dias if dias in UMBRALES_DIAS else None
     return -((abs(dias) // 7) + 1)
+
+
+def _tags(doc, dias, hoy):
+    """Las etiquetas que marcan "de esto ya se avisó" para cada destinatario.
+
+    La cadencia no se decide con un `if` sobre el día: se decide con la
+    etiqueta. El job corre todos los días y la etiqueta solo cambia cuando
+    toca avisar de nuevo, así que un día que el servidor esté caído no
+    pierde el aviso, solo lo corre al siguiente.
+
+    - Antes del vencimiento: una etiqueta por hito, igual para los dos.
+    - Ya vencido: el empleado cambia de etiqueta cada dos días; Talento
+      Humano, una vez por semana calendario, así que le llega el lunes —o
+      el primer día que el job alcance a correr esa semana.
+    """
+    if dias >= 0:
+        comun = f'doc-venc-{doc.pk}-{dias}'
+        return comun, comun
+
+    anio, semana, _ = hoy.isocalendar()
+    return (f'doc-venc-{doc.pk}-d{hoy.toordinal() // 2}',
+            f'doc-venc-{doc.pk}-s{anio}-{semana:02d}')
+
+

@@ -9,10 +9,13 @@ Va al conductor y a quienes lo administran —su jefe directo y el jefe de
 este—, porque el conductor es quien tiene que renovarla y el jefe es quien
 decide si lo deja salir mientras tanto.
 
-Para no repetir lo mismo cada mañana se avisa en hitos: 30, 15, 7, 3 y 1
-día antes, el día del vencimiento, y después una vez por semana mientras
-siga vencida. Lo que no tiene fecha o no está cargado se avisa semanal,
-contado desde el lunes, porque no hay vencimiento del cual colgarse.
+Antes del vencimiento se avisa en hitos: 30, 15, 7, 3 y 1 día antes, y el
+día mismo. Después, mientras siga sin resolverse, cada uno recibe a su
+ritmo, porque tienen tareas distintas:
+
+- El conductor, día por medio hasta que la actualice.
+- El jefe y el director, una vez por semana. No son ellos los que van al
+  tránsito; necesitan saberlo, no que se lo repitan cada mañana.
 """
 from datetime import date
 
@@ -40,42 +43,50 @@ class Command(BaseCommand):
             '--todos', action='store_true',
             help='Avisa de todo, ignorando los hitos')
 
-    def _ya_se_aviso(self, empleado, estado):
-        """¿Alguna vez se avisó de esta licencia en este mismo estado?
+    def _tags(self, empleado, estado, hoy):
+        """Las etiquetas de "ya se avisó", una por cadencia.
 
-        El recordatorio semanal se cuenta desde el vencimiento, así que una
-        licencia que ya estaba vencida cuando se instaló este aviso puede
-        caer a mitad de ciclo y quedarse callada varios días. Justo el caso
-        que más urge es el que más esperaría.
+        La cadencia se decide con la etiqueta y no con un `if` sobre el día:
+        el comando corre todos los días y la etiqueta solo cambia cuando
+        toca avisar de nuevo. Así un día con el servidor caído no pierde el
+        aviso, solo lo corre al siguiente.
+
+        - Al conductor, día por medio: es quien tiene que ir a renovar.
+        - Al jefe y al director, una vez por semana calendario, así que les
+          llega el lunes o el primer día que el comando alcance a correr.
+
+        Antes del vencimiento son hitos exactos y la etiqueta es la misma
+        para todos: ahí no hay insistencia que valga, es una fecha concreta.
         """
+        base = f'lic-{empleado.pk}-{estado["clave"]}'
+        dias = estado['dias']
+        if dias is not None and dias >= 0:
+            return f'{base}-{dias}', f'{base}-{dias}'
+
+        anio, semana, _ = hoy.isocalendar()
+        return (f'{base}-d{hoy.toordinal() // 2}',
+                f'{base}-s{anio}-{semana:02d}')
+
+    def _ya_se_aviso(self, destino, tag):
         from apps.notifications.models import Notificacion
 
         return Notificacion.objects.filter(
-            datos_adicionales__contains={
-                'conductor_id': str(empleado.pk),
-                'estado_licencia': estado['clave'],
-            }
+            usuario=destino.usuario,
+            datos_adicionales__contains={'aviso_tag': tag},
         ).exists()
 
-    def _toca_avisar(self, empleado, estado, hoy, todos):
+    def _toca_avisar(self, estado, todos):
+        """¿Este estado amerita aviso hoy? El cuándo lo decide la etiqueta."""
         if todos:
             return True
         clave, dias = estado['clave'], estado['dias']
         if clave == 'vigente':
             return False
-
-        # Lo que ya está mal se avisa la primera vez que se ve, sin esperar
-        # a que cuadre el calendario.
-        primera_vez = not self._ya_se_aviso(empleado, estado)
-
         if clave in ('sin_licencia', 'sin_fecha') or dias is None:
-            # Sin fecha no hay hitos: una vez por semana, los lunes.
-            return primera_vez or hoy.weekday() == 0
-        if dias in HITOS_AVISO:
             return True
         if dias < 0:
-            return primera_vez or abs(dias) % 7 == 0
-        return False
+            return True
+        return dias in HITOS_AVISO
 
     def handle(self, **options):
         dry_run = options['dry_run']
@@ -95,25 +106,34 @@ class Command(BaseCommand):
             aprobada = '' if estado['aprobada'] else ' (sin aprobar)'
             self.stdout.write(
                 f'  {empleado.nombre_completo:<34} {estado["texto"]}{aprobada}{marca}')
-            if self._toca_avisar(empleado, estado, hoy, todos):
+            if self._toca_avisar(estado, todos):
                 pendientes.append((empleado, estado))
 
         if not pendientes:
             self.stdout.write(self.style.SUCCESS('\nNada que avisar hoy.'))
             return
 
-        self.stdout.write(f'\nAvisos que tocan hoy: {len(pendientes)}')
+        self.stdout.write(f'\nLicencias que ameritan aviso: {len(pendientes)}')
         enviadas = 0
         for empleado, estado in pendientes:
             titulo, cuerpo = self._mensaje(empleado, estado)
-            destinatarios = self._destinatarios(empleado)
-            nombres = ', '.join(e.nombre_completo for e in destinatarios)
+            tag_conductor, tag_jefes = self._tags(empleado, estado, hoy)
             self.stdout.write(f'  {titulo}')
-            self.stdout.write(f'      → {nombres or "sin destinatarios"}')
-            if dry_run:
-                continue
-            for destino in destinatarios:
-                if self._notificar(destino, empleado, titulo, cuerpo, estado):
+
+            for destino in self._destinatarios(empleado):
+                es_el_conductor = destino.pk == empleado.pk
+                tag = tag_conductor if es_el_conductor else tag_jefes
+                cadencia = 'día por medio' if es_el_conductor else 'semanal'
+                if not todos and self._ya_se_aviso(destino, tag):
+                    self.stdout.write(
+                        f'      · {destino.nombre_completo} — ya avisado '
+                        f'({cadencia})')
+                    continue
+                self.stdout.write(
+                    f'      → {destino.nombre_completo} ({cadencia})')
+                if dry_run:
+                    continue
+                if self._notificar(destino, empleado, titulo, cuerpo, estado, tag):
                     enviadas += 1
 
         if dry_run:
@@ -170,7 +190,7 @@ class Command(BaseCommand):
                 unicos.append(e)
         return unicos
 
-    def _notificar(self, destino, conductor, titulo, cuerpo, estado):
+    def _notificar(self, destino, conductor, titulo, cuerpo, estado, tag):
         try:
             from apps.notifications.models import Notificacion, TipoNotificacion
             tipo, _ = TipoNotificacion.objects.get_or_create(
@@ -188,6 +208,7 @@ class Command(BaseCommand):
                 titulo=titulo[:200],
                 mensaje=cuerpo,
                 datos_adicionales={
+                    'aviso_tag': tag,
                     'conductor_id': str(conductor.pk),
                     'estado_licencia': estado['clave'],
                     'fecha_vencimiento': (
@@ -199,7 +220,8 @@ class Command(BaseCommand):
             try:
                 from apps.notifications.push_utils import send_push
                 send_push(destino.usuario, titulo, cuerpo,
-                          url=f'/documentos/empleado/{conductor.pk}/')
+                          url=f'/documentos/empleado/{conductor.pk}/',
+                          tag=tag, tag_group='licencias')
             except Exception as e:
                 logger.warning('Push de licencia no enviado a %s: %s', destino.pk, e)
             return True
