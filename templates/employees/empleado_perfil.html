@@ -757,6 +757,48 @@
                     </div>
                 </div>
                 
+                {# Lo vencido va primero: es lo único de esta tarjeta que
+                   puede dejar a alguien sin poder trabajar hoy. #}
+                {% if documentos.lista_vencidos %}
+                <div class="alert alert-danger alert-sm">
+                    <strong><i class="fas fa-times-circle me-1"></i>Documentos vencidos:</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for doc in documentos.lista_vencidos %}
+                        <li>
+                            {{ doc.tipo_documento.nombre }} —
+                            venció el {{ doc.fecha_vencimiento|date:"d/m/Y" }}
+                            {% if doc.estado_aprobacion != 'aprobado' %}
+                                <span class="badge bg-secondary">sin aprobar</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if documentos.vencidos > 5 %}
+                    <div class="small mt-1">y {{ documentos.vencidos|add:"-5" }} más.</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if documentos.lista_por_vencer %}
+                <div class="alert alert-warning alert-sm">
+                    <strong><i class="fas fa-calendar-alt me-1"></i>Por vencer en 30 días:</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for doc in documentos.lista_por_vencer %}
+                        <li>
+                            {{ doc.tipo_documento.nombre }} —
+                            vence el {{ doc.fecha_vencimiento|date:"d/m/Y" }}
+                            {% if doc.estado_aprobacion != 'aprobado' %}
+                                <span class="badge bg-secondary">sin aprobar</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if documentos.por_vencer > 5 %}
+                    <div class="small mt-1">y {{ documentos.por_vencer|add:"-5" }} más.</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
                 {% if documentos.lista_faltantes %}
                 <div class="alert alert-warning alert-sm">
                     <strong>Documentos faltantes:</strong>

@@ -1437,19 +1437,25 @@ class EmpleadoPerfilView(LoginRequiredMixin, DetailView):
             # Documentos pendientes
             docs_pendientes = documentos.filter(estado_aprobacion='pendiente')
             
+            # Vencimientos: se miran sobre todos los documentos, no solo los
+            # aprobados. Uno pendiente de revisión también se vence, y si se
+            # excluye el empleado nunca se entera de que tiene que renovarlo.
+            # Los rechazados no cuentan: ese documento no vale de todos modos.
+            vigentes = documentos.exclude(estado_aprobacion='rechazado')
+
             # Documentos próximos a vencer (30 días)
             fecha_limite = date.today() + timedelta(days=30)
-            docs_por_vencer = docs_aprobados.filter(
+            docs_por_vencer = vigentes.filter(
                 fecha_vencimiento__isnull=False,
                 fecha_vencimiento__lte=fecha_limite,
                 fecha_vencimiento__gte=date.today()
-            )
-            
+            ).select_related('tipo_documento').order_by('fecha_vencimiento')
+
             # Documentos vencidos
-            docs_vencidos = docs_aprobados.filter(
+            docs_vencidos = vigentes.filter(
                 fecha_vencimiento__isnull=False,
                 fecha_vencimiento__lt=date.today()
-            )
+            ).select_related('tipo_documento').order_by('fecha_vencimiento')
             
             # Documentos faltantes (obligatorios no subidos)
             tipos_subidos = documentos.values_list('tipo_documento_id', flat=True)
