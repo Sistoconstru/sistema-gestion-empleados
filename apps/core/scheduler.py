@@ -131,6 +131,22 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 7b: Licencias de conducción, a las 7:35 AM.
+        # Aparte del aviso general de documentos porque ese solo mira los
+        # aprobados, y en la flota hay licencias que nadie revisó: para esas
+        # no existía ningún aviso.
+        scheduler.add_job(
+            _alertar_licencias_conductores,
+            'cron',
+            hour=7,
+            minute=35,
+            id='alertar_licencias_conductores',
+            name='Alertas de licencias de conducción',
+            replace_existing=True,
+            misfire_grace_time=3600,
+            coalesce=True,
+        )
+
         # Tarea 6: Cerrar seguimientos con más de 6 meses vencidos, a las 4:30 AM
         scheduler.add_job(
             _cerrar_seguimientos_vencidos,
@@ -282,6 +298,7 @@ def start_scheduler():
         logger.info('  - 04:15 AM: Enviar recordatorios de seguimientos bimensuales')
         logger.info('  - 04:30 AM: Cerrar seguimientos bimensuales muy vencidos')
         logger.info('  - 07:30 AM: Alertas de documentos de vehículos')
+        logger.info('  - 07:35 AM: Alertas de licencias de conducción')
         logger.info('  - cada 6 h: Sincronizar flota con Odoo')
         logger.info('  - 08:00 (L-V, no festivos): Recordatorio de asistencia a jefes')
         logger.info('  - 09:00 (L-V): Alertas SENA (cuota + vencimientos aprendices)')
@@ -436,6 +453,21 @@ def _sincronizar_vehiculos():
 
     except Exception as e:
         logger.error(f'❌ Error al sincronizar la flota: {e}', exc_info=True)
+
+
+def _alertar_licencias_conductores():
+    """
+    Avisa de las licencias de conducción vencidas o próximas a vencer.
+
+    Ver apps/transporte/management/commands/alertar_licencias_conductores.py
+    """
+    try:
+        logger.info('🔄 Revisando licencias de conducción...')
+        call_command('alertar_licencias_conductores')
+        logger.info('✅ Alertas de licencias de conducción enviadas')
+    except Exception as e:
+        logger.error(f'❌ Error al alertar licencias de conducción: {e}',
+                     exc_info=True)
 
 
 def _alertar_documentos_vehiculos():

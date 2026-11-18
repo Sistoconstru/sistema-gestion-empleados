@@ -93,6 +93,7 @@ from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
     es_conductor, empleado_de, transporte_required, vehiculos_visibles,
 )
+from .licencias import estado_licencia, estados_de
 from .servicios import servicios_visibles
 
 
@@ -135,6 +136,16 @@ def flota(request):
             elif d.por_vencer:
                 por_vencer += 1
 
+    # La licencia del conductor se mira acá, que es donde se le entrega el
+    # camión. Una consulta para toda la flota, no una por vehículo.
+    conductores_en_pantalla = [v.conductor for v in vehiculos if v.conductor_id]
+    estados_licencia = estados_de(conductores_en_pantalla)
+    for v in vehiculos:
+        v.licencia = estados_licencia.get(v.conductor_id)
+    sin_licencia_al_dia = sum(
+        1 for v in vehiculos
+        if v.activo and v.licencia and not v.licencia['al_dia'])
+
     return render(request, 'transporte/flota.html', {
         'vehiculos': vehiculos,
         'hoy': timezone.localdate(),
@@ -143,6 +154,7 @@ def flota(request):
         'total_vencidos': vencidos,
         'total_por_vencer': por_vencer,
         'sin_conductor': sum(1 for v in vehiculos if v.activo and not v.conductor_id),
+        'sin_licencia_al_dia': sin_licencia_al_dia,
         'es_solo_conductor': es_conductor(empleado) and not es_admin,
     })
 
@@ -679,6 +691,9 @@ def mis_gastos(request):
 
     return render(request, 'transporte/mis_gastos.html', {
         'vehiculo': vehiculo,
+        # Que el conductor vea el estado de su propia licencia: es el papel
+        # que le piden a él en la vía, no al coordinador.
+        'licencia': estado_licencia(empleado),
         'gastos': gastos,
         'total_mes': total_mes,
         'cantidad_mes': len(del_mes),

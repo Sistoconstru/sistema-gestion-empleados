@@ -63,6 +63,15 @@
             </div>
         </div>
         {% endif %}
+        {% if sin_licencia_al_dia %}
+        <div class="col-md-4">
+            <div class="alert alert-danger mb-0 py-2">
+                <i class="fas fa-id-card me-1"></i>
+                <strong>{{ sin_licencia_al_dia }}</strong>
+                conductor{{ sin_licencia_al_dia|pluralize:"es" }} sin licencia al día
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 
@@ -138,6 +147,32 @@
                                     · desde el {{ v.asignacion_desde|date:"d/m/Y" }}
                                 {% endif %}
                             </div>
+
+                            {# La licencia: el papel que lo habilita a manejar
+                               esto. Va junto al nombre, no en otra pantalla. #}
+                            {% if v.licencia %}
+                            <div class="mt-1">
+                                <span class="badge
+                                    {% if v.licencia.clave == 'vencida' %}bg-danger
+                                    {% elif v.licencia.clave == 'sin_licencia' or v.licencia.clave == 'sin_fecha' %}bg-danger
+                                    {% elif v.licencia.clave == 'por_vencer' %}bg-warning text-dark
+                                    {% else %}bg-success{% endif %}">
+                                    <i class="fas fa-id-card me-1"></i>{{ v.licencia.texto }}
+                                </span>
+                                {% if v.licencia.documento and not v.licencia.aprobada %}
+                                    <span class="badge bg-secondary"
+                                          title="Talento Humano no ha revisado este documento">
+                                        sin aprobar
+                                    </span>
+                                {% endif %}
+                                {% if not v.licencia.al_dia %}
+                                    <div class="small text-danger mt-1">
+                                        <i class="fas fa-triangle-exclamation me-1"></i>
+                                        No debería estar conduciendo hasta resolverlo.
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                             {% if not v.asignacion_sincronizada %}
                                 <div class="small text-warning mt-1">
                                     <i class="fas fa-rotate me-1"></i>

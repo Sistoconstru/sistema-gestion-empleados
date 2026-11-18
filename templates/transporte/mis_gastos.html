@@ -7,6 +7,26 @@
 
     <h5 class="mb-3"><i class="fas fa-truck me-2"></i>Mi vehículo</h5>
 
+    {# La licencia primero: si no está al día, lo demás no importa. #}
+    {% if licencia and not licencia.al_dia %}
+    <div class="alert alert-danger">
+        <i class="fas fa-id-card me-1"></i>
+        <strong>{{ licencia.texto }}.</strong>
+        {% if licencia.clave == 'sin_licencia' %}
+            Súbela en tus documentos para poder conducir.
+        {% elif licencia.clave == 'sin_fecha' %}
+            Avísale a Talento Humano: sin la fecha de vencimiento no se
+            puede verificar que esté vigente.
+        {% else %}
+            No deberías conducir hasta renovarla. Avísale a tu jefe.
+        {% endif %}
+    </div>
+    {% elif licencia and licencia.clave == 'por_vencer' %}
+    <div class="alert alert-warning py-2">
+        <i class="fas fa-id-card me-1"></i>{{ licencia.texto }}. Ve tramitando la renovación.
+    </div>
+    {% endif %}
+
     {% if not vehiculo %}
         <div class="card">
             <div class="card-body text-center text-muted py-5">
