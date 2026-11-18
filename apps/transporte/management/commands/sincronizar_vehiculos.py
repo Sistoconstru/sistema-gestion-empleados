@@ -92,6 +92,8 @@ class Command(BaseCommand):
             if not datos['activo']:
                 dados_de_baja += 1
 
+        self._dar_de_baja_ausentes(vehiculos, incluir_archivados, dry_run, ahora)
+
         if dry_run:
             self.stdout.write(self.style.WARNING(
                 f'\nDRY RUN sobre {len(vehiculos)} vehículo(s). No se guardó nada.'))
@@ -103,6 +105,73 @@ class Command(BaseCommand):
 
         self._reintentar_asignaciones()
         self._reintentar_salidas()
+
+    # --- Los que Odoo dejó de reportar ----------------------------------
+
+    def _dar_de_baja_ausentes(self, reportados, incluir_archivados, dry_run, ahora):
+        """Da de baja los vehículos que Odoo ya no lista.
+
+        Un vehículo archivado vuelve con `activo: false` y se marca en el
+        bucle de arriba. Pero si en Odoo lo *borran*, simplemente deja de
+        venir, y entonces nada lo tocaría: SIGHU lo seguiría mostrando
+        activo para siempre, con su conductor y todo.
+
+        No se borra nunca. Sus documentos, gastos y servicios son parte del
+        historial y lo referencian; además, si el vehículo reaparece en
+        Odoo la siguiente sincronización lo vuelve a activar sola.
+        """
+        if not incluir_archivados:
+            # Una consulta de solo activos no dice nada de los demás:
+            # tomarla como la flota completa daría de baja a los archivados
+            # una y otra vez.
+            return
+
+        ids = {v.get('id') or v.get('vehiculo_id') for v in reportados}
+        ids.discard(None)
+        if not ids:
+            # Una respuesta vacía es mucho más probable que sea un problema
+            # de Odoo que una flota entera borrada.
+            self.stdout.write(self.style.WARNING(
+                'Odoo no reportó ningún vehículo: no se da de baja nada.'))
+            return
+
+        activos = Vehiculo.objects.filter(activo=True)
+        ausentes = list(activos.exclude(odoo_id__in=ids).select_related('conductor'))
+        if not ausentes:
+            return
+
+        # Si faltara más de la mitad, lo más probable es que la respuesta
+        # llegara recortada —una paginación nueva, por ejemplo— y no que se
+        # hubiera borrado media flota. Mejor avisar que vaciar el tablero.
+        if len(ausentes) > activos.count() / 2:
+            self.stdout.write(self.style.ERROR(
+                f'Odoo no reporta {len(ausentes)} de {activos.count()} '
+                f'vehículos activos. Es demasiado para ser una baja real, '
+                f'así que no se toca nada. Revisar la respuesta de Odoo.'))
+            logger.error('Sincronización sospechosa: faltan %s de %s vehículos',
+                         len(ausentes), activos.count())
+            return
+
+        self.stdout.write(f'\nVehículos que Odoo ya no reporta: {len(ausentes)}')
+        hoy = timezone.localdate()
+        for v in ausentes:
+            if dry_run:
+                self.stdout.write(f'  daría de baja: {v.placa}')
+                continue
+            # El conductor no se quita: saber de quién era el vehículo le
+            # sirve al coordinador para reasignarlo, y nada que dependa del
+            # vehículo activo lo sigue tomando en cuenta.
+            Vehiculo.objects.filter(pk=v.pk).update(
+                activo=False,
+                fecha_baja=v.fecha_baja or hoy,
+                fecha_sincronizacion=ahora,
+            )
+            quien = (f' {v.conductor.nombre_completo} se queda sin vehículo.'
+                     if v.conductor_id else '')
+            self.stdout.write(self.style.WARNING(
+                f'  dado de baja: {v.placa} — Odoo ya no lo reporta.{quien}'))
+            logger.info('Vehículo %s dado de baja: Odoo dejó de reportarlo',
+                        v.placa)
 
     # --- Avisos que quedaron pendientes ---------------------------------
 
