@@ -50,8 +50,14 @@ contrato y está en §4.
 
 ## 2. `POST /sighu_sync/webhook/cierre_gastos`
 
-Ejemplo real, generado con
-`python manage.py enviar_cierres_contabilidad --payload`:
+Ejemplo generado con `python manage.py enviar_cierres_contabilidad --payload`.
+Las placas y los `vehiculo_odoo_id` son los reales del maestro de producción
+(`TIA 673` es el `3`), para que se pueda contrastar.
+
+`placa` y `vehiculo_odoo_id` salen siempre de la misma fila de la copia que
+SIGHU hace del maestro de Odoo, así que no pueden discrepar entre sí: si
+alguna vez no cuadran, lo que está mal es la copia y se arregla
+resincronizando, no el payload.
 
 ```json
 {
@@ -82,7 +88,7 @@ Ejemplo real, generado con
       "estado": "aprobado",
       "cuenta_como_costo": true,
       "placa": "TIA 673",
-      "vehiculo_odoo_id": 5,
+      "vehiculo_odoo_id": 3,
       "conductor_cedula": "71391550",
       "kilometraje": null,
       "recibo_url": "https://empleados.sistemaconstruinmuniza.com/api/v1/odoo/transporte/gastos/e6f5a0d3-66c9-40bb-8a8f-a79b2aacc0e0/recibo/",
@@ -99,7 +105,7 @@ Ejemplo real, generado con
       "estado": "aprobado",
       "cuenta_como_costo": true,
       "placa": "TIA 673",
-      "vehiculo_odoo_id": 5,
+      "vehiculo_odoo_id": 3,
       "conductor_cedula": "71391550",
       "kilometraje": 125400,
       "recibo_url": "https://empleados.sistemaconstruinmuniza.com/api/v1/odoo/transporte/gastos/fb0fbf27-080c-4af0-88c0-85565479e7a2/recibo/",
@@ -122,7 +128,7 @@ Ejemplo real, generado con
       "cuenta_como_costo": false,
       "responsable": "conductor",
       "placa": "TIA 673",
-      "vehiculo_odoo_id": 5,
+      "vehiculo_odoo_id": 3,
       "conductor_cedula": "71391550",
       "kilometraje": null,
       "recibo_url": "https://empleados.sistemaconstruinmuniza.com/api/v1/odoo/transporte/gastos/7aa23ff9-2b0a-4ad4-8f53-2ed762bd131e/recibo/",
@@ -210,21 +216,24 @@ momentos distintos. Entonces ese `gasto_id` va a llegar:
 **`gasto_id` es el mismo en los dos**, y es estable para siempre. Es lo que
 permite no contarlo dos veces.
 
-Lo que proponemos, y por lo que está armado así:
+**Decidido con Odoo el 23/11/2026:**
 
-- **El cierre de conductor es el que mueve plata.** Es a esa persona a quien
-  se le legaliza o se le paga, y todos los gastos pasan por un conductor
-  —el campo es obligatorio en SIGHU—, así que nada se escapa por ahí.
-  Cada renglón trae `vehiculo_odoo_id`, con lo que el costo se puede
-  distribuir por vehículo desde ese mismo asiento.
-- **El cierre de vehículo es la vista de costo del carro.** Si les sirve para
-  analítica, úsenlo; si lo contabilizan además del de conductor, el costo
-  queda contado dos veces.
+- **Se contabiliza el cierre de conductor.** Es a esa persona a quien se le
+  legaliza, y todos los gastos pasan por un conductor —el campo es
+  obligatorio en SIGHU—, así que nada se escapa por ahí. Cada renglón trae
+  `vehiculo_odoo_id`, con lo que el costo se distribuye por vehículo desde
+  ese mismo asiento.
+- **El cierre de vehículo se guarda solo para consulta.** No genera asiento.
+  Es la vista de cuánto cuesta operar ese carro, incluidos los gastos que
+  un conductor hizo sobre un vehículo que no es el suyo.
 
-Si prefieren lo contrario —contabilizar por vehículo y usar el de conductor
-solo para la legalización— también funciona, con una advertencia: los gastos
-con `placa: null` no aparecen en ningún cierre de vehículo. Dígannos cuál
-eligen y lo dejamos escrito acá.
+SIGHU sigue mandando los dos. Que uno no se contabilice no lo vuelve
+opcional: es la misma información vista por el otro lado y para eso la
+guardan.
+
+Consecuencia de haber elegido el de conductor: los gastos con `placa: null`
+—un almuerzo en ruta, una herramienta— quedan cubiertos, porque igual
+aparecen en el cierre de su conductor. Al revés se habrían perdido.
 
 ---
 
@@ -305,7 +314,7 @@ Mismo criterio que en `servicio_iniciado` / `servicio_finalizado`:
 
 | Código | Qué entiende SIGHU | Qué hace |
 |---|---|---|
-| `200` | Recibido | Marca el cierre como sincronizado. Si el body trae `odoo_ref`, `ref`, `documento`, `move_name` o `name`, lo guarda y lo muestra en pantalla para poder buscarlo en Odoo. |
+| `200` | Recibido | Marca el cierre como sincronizado y guarda el `odoo_ref` del body: **el número de la legalización**, acordado el 23/11/2026. Queda a la vista en la pantalla del cierre para poder buscarlo en Odoo. Si no viniera, SIGHU acepta igual y lo deja vacío (también lee `ref`, `documento`, `move_name` o `name`). |
 | `400` | El dato que mandamos no sirve | **No reintenta.** Es un bug nuestro; queda registrado como error. |
 | `409` | Odoo lo rechaza a propósito (p. ej. el vehículo no tiene cuenta configurada, el período está cerrado) | **No reintenta.** Muestra el motivo al jefe que cerró, con un botón para reenviar cuando esté resuelto del lado de Odoo. |
 | `5xx`, timeout, conexión caída | No llegó | Queda en cola y se reintenta cada dos horas, indefinidamente. |
