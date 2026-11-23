@@ -30,4 +30,12 @@ urlpatterns = [
     path('gastos/', views.gastos_flota, name='gastos_flota'),
     path('gastos/nuevo/', views.registrar_gasto_admin, name='registrar_gasto_admin'),
     path('gastos/<uuid:gasto_id>/revisar/', views.revisar_gasto, name='revisar_gasto'),
+
+    # Cuentas y cierres — jefe y director
+    path('cuentas/', views.cuentas, name='cuentas'),
+    path('cuentas/<str:ambito>/<uuid:sujeto_id>/cerrar/',
+         views.cerrar_cuenta_vista, name='cerrar_cuenta'),
+    path('cierre/<uuid:cierre_id>/', views.detalle_cierre, name='detalle_cierre'),
+    path('cierre/<uuid:cierre_id>/anular/', views.anular_cierre_vista,
+         name='anular_cierre'),
 ]

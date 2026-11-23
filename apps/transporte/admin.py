@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
+    CierreGastos, DocumentoVehiculo, GastoVehiculo, ServicioIniciado,
+    Vehiculo,
 )
 
 
@@ -147,6 +148,34 @@ class GastoVehiculoAdmin(admin.ModelAdmin):
                                nombre)
         return 'el conductor'
     quien_registro.short_description = 'Registrado por'
+
+
+@admin.register(CierreGastos)
+class CierreGastosAdmin(admin.ModelAdmin):
+    """Los cierres se hacen en el módulo; aquí solo se consultan.
+
+    Todo de solo lectura a propósito: un cierre editable a mano deja de ser
+    una constancia. Si está mal, se anula desde el módulo y se rehace.
+    """
+    list_display = ('fecha_cierre', 'ambito', 'sujeto', 'cantidad',
+                    'total_costo', 'total_deuda', 'cerrado_por', 'anulado')
+    list_filter = ('ambito', 'fecha_cierre')
+    search_fields = ('conductor__nombres', 'conductor__apellidos',
+                     'conductor__numero_documento', 'vehiculo__placa',
+                     'observaciones')
+    date_hierarchy = 'fecha_cierre'
+    ordering = ('-fecha_cierre',)
+
+    def get_readonly_fields(self, request, obj=None):
+        return [f.name for f in self.model._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def anulado(self, obj):
+        return not obj.esta_activo
+    anulado.short_description = 'Anulado'
+    anulado.boolean = True
 
 
 @admin.register(ServicioIniciado)

@@ -415,6 +415,18 @@ class GastoVehiculo(models.Model):
         null=True, blank=True, related_name='gastos',
         help_text='Servicio que originó el gasto, si aplica.')
 
+    # Dos llaves y no una: la cuenta del conductor y la del vehículo se
+    # cierran por separado, así que el mismo gasto puede estar cerrado en
+    # una y seguir abierto en la otra.
+    cierre_conductor = models.ForeignKey(
+        'CierreGastos', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='gastos_de_conductor',
+        help_text='Cierre que selló este gasto en la cuenta del conductor.')
+    cierre_vehiculo = models.ForeignKey(
+        'CierreGastos', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='gastos_de_vehiculo',
+        help_text='Cierre que selló este gasto en la cuenta del vehículo.')
+
     tipo = models.CharField(max_length=20, choices=TIPOS)
     monto = models.DecimalField(
         max_digits=12, decimal_places=2,
@@ -510,9 +522,19 @@ class GastoVehiculo(models.Model):
             estado=cls.RECHAZADO)
 
     @property
+    def cerrado(self):
+        """¿Quedó sellado por algún cierre de cuentas?
+
+        Basta una de las dos cuentas: si el total del vehículo ya se firmó,
+        cambiarle el monto al gasto dejaría ese cierre diciendo algo que no
+        corresponde con sus propios renglones.
+        """
+        return bool(self.cierre_conductor_id or self.cierre_vehiculo_id)
+
+    @property
     def editable_por_conductor(self):
-        """Mientras nadie lo haya revisado, el conductor puede corregirlo."""
-        return self.estado == self.PENDIENTE
+        """Mientras nadie lo haya revisado ni cerrado, se puede corregir."""
+        return self.estado == self.PENDIENTE and not self.cerrado
 
     @property
     def lo_registro_otro(self):
@@ -525,6 +547,119 @@ class GastoVehiculo(models.Model):
             return False
         return self.registrado_por_id != getattr(
             self.conductor, 'usuario_id', None)
+
+
+class CierreGastos(models.Model):
+    """Corte de cuentas de un conductor o de un vehículo.
+
+    Lo hace el jefe cuando quiere: no hay períodos automáticos ni cortes de
+    fin de mes. Lo que queda es una foto —cuánto sumaban los gastos
+    abiertos en ese momento, quién cerró y cuándo— y de ahí en adelante la
+    cuenta arranca de cero.
+
+    La pertenencia la marca la llave que queda en cada gasto, **no** el
+    rango de fechas. Es la diferencia que importa: un gasto que se registra
+    tarde, con fecha de un período ya cerrado, no se cuela en un total que
+    alguien ya revisó y dio por bueno. Queda abierto y entra en el cierre
+    siguiente. Las fechas que guarda el cierre son para leerlas, no para
+    decidir qué entró.
+
+    La del conductor y la del vehículo son cuentas independientes, porque
+    responden preguntas distintas: cuánto le debo a Duvier, y cuánto cuesta
+    operar el TIA 673. El mismo gasto entra en las dos y cada una se cierra
+    por su lado.
+    """
+    CONDUCTOR = 'conductor'
+    VEHICULO = 'vehiculo'
+    AMBITOS = [
+        (CONDUCTOR, 'Conductor'),
+        (VEHICULO, 'Vehículo'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ambito = models.CharField(max_length=12, choices=AMBITOS)
+
+    conductor = models.ForeignKey(
+        'employees.Empleado', on_delete=models.PROTECT,
+        null=True, blank=True, related_name='cierres_gastos')
+    vehiculo = models.ForeignKey(
+        Vehiculo, on_delete=models.PROTECT,
+        null=True, blank=True, related_name='cierres_gastos')
+
+    # Congelados al cerrar. No se recalculan: el valor de un cierre es
+    # justamente que diga lo que decía el día que se firmó.
+    total_costo = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    total_deuda = models.DecimalField(
+        max_digits=14, decimal_places=2, default=0,
+        help_text='Multas a cargo del conductor. No entran al costo.')
+    cantidad = models.PositiveIntegerField(default=0)
+
+    # Informativas: el primero y el último gasto que entraron.
+    desde = models.DateField(null=True, blank=True)
+    hasta = models.DateField(null=True, blank=True)
+
+    cerrado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='cierres_gastos_hechos')
+    fecha_cierre = models.DateTimeField(auto_now_add=True)
+    observaciones = models.TextField(blank=True)
+
+    # Anular en vez de borrar: si el cierre se hizo mal, los gastos vuelven
+    # a quedar abiertos pero queda constancia de que existió y de quién lo
+    # deshizo.
+    anulado_en = models.DateTimeField(null=True, blank=True)
+    anulado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='cierres_gastos_anulados')
+    motivo_anulacion = models.CharField(max_length=300, blank=True)
+
+    class Meta:
+        db_table = 'transporte_cierres_gastos'
+        verbose_name = 'Cierre de gastos'
+        verbose_name_plural = 'Cierres de gastos'
+        ordering = ['-fecha_cierre']
+        constraints = [
+            # El ámbito y el sujeto tienen que concordar: un cierre de
+            # conductor sin conductor, o con vehículo además, no significa
+            # nada y ensuciaría los totales.
+            models.CheckConstraint(
+                condition=(
+                    models.Q(ambito='conductor',
+                             conductor__isnull=False, vehiculo__isnull=True)
+                    | models.Q(ambito='vehiculo',
+                               vehiculo__isnull=False, conductor__isnull=True)
+                ),
+                name='cierre_ambito_coherente',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['ambito', '-fecha_cierre']),
+            models.Index(fields=['conductor', '-fecha_cierre']),
+            models.Index(fields=['vehiculo', '-fecha_cierre']),
+        ]
+
+    def __str__(self):
+        return f'Cierre {self.get_ambito_display().lower()} {self.sujeto} — {self.fecha_cierre:%d/%m/%Y}'
+
+    @property
+    def sujeto(self):
+        """De quién o de qué es la cuenta, para mostrarlo."""
+        if self.ambito == self.CONDUCTOR and self.conductor_id:
+            return self.conductor.nombre_completo
+        if self.ambito == self.VEHICULO and self.vehiculo_id:
+            return self.vehiculo.placa
+        return '—'
+
+    @property
+    def esta_activo(self):
+        return self.anulado_en is None
+
+    def gastos(self):
+        """Los gastos que quedaron sellados por este cierre."""
+        campo = ('cierre_conductor' if self.ambito == self.CONDUCTOR
+                 else 'cierre_vehiculo')
+        return GastoVehiculo.objects.filter(**{campo: self}).select_related(
+            'vehiculo', 'conductor', 'servicio')
 
 
 class ServicioIniciado(models.Model):

@@ -16,6 +16,9 @@
             <a href="{% url 'transporte:registrar_gasto_admin' %}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus me-1"></i>Registrar gasto
             </a>
+            <a href="{% url 'transporte:cuentas' %}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-calculator me-1"></i>Cuentas y cierres
+            </a>
             <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
                 <i class="fas fa-truck me-1"></i>Ver vehículos
             </a>
@@ -248,7 +251,11 @@
                             <i class="fas fa-receipt"></i>
                         </a>
                     {% endif %}
-                    {% if g.estado == 'pendiente' %}
+                    {% if g.cerrado %}
+                        <span class="badge bg-dark" title="Está en una cuenta cerrada">
+                            <i class="fas fa-lock me-1"></i>cerrado
+                        </span>
+                    {% elif g.estado == 'pendiente' %}
                         <button class="btn btn-sm btn-outline-primary mb-1"
                                 type="button" data-bs-toggle="collapse"
                                 data-bs-target="#revisar-{{ g.id }}">
@@ -264,7 +271,7 @@
                 </div>
             {% endif %}
 
-            {% if g.estado == 'pendiente' %}
+            {% if g.estado == 'pendiente' and not g.cerrado %}
             <div class="collapse mt-2" id="revisar-{{ g.id }}">
                 <form method="post"
                       action="{% url 'transporte:revisar_gasto' g.id %}"

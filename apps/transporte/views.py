@@ -86,16 +86,20 @@ from .forms import (
     RevisionGastoForm,
 )
 from .models import (
-    DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
+    CierreGastos, DocumentoVehiculo, GastoVehiculo, ServicioIniciado,
+    Vehiculo,
 )
 from .odoo_client import (
     OdooConflictoError, OdooTransporteError, avisar_servicio_finalizado,
     avisar_servicio_iniciado,
 )
 from .permisos import (
-    admin_transporte_required, conductores_a_cargo, es_admin_transporte,
-    es_conductor, empleado_de, gastos_visibles, transporte_required,
-    vehiculos_visibles,
+    admin_transporte_required, conductores_a_cargo, conductores_vigentes,
+    es_admin_transporte, es_conductor, empleado_de, gastos_visibles,
+    transporte_required, vehiculos_visibles,
+)
+from .cuentas import (
+    CierreImposible, anular_cierre, cerrar_cuenta, cuentas_abiertas,
 )
 from .licencias import estado_licencia, estados_de
 from .servicios import servicios_visibles
@@ -122,7 +126,6 @@ def flota(request):
     # que tengan cargo de conductor; un coordinador, solo los suyos.
     if es_admin:
         if request.user.is_staff:
-            from .permisos import conductores_vigentes
             asignables = conductores_vigentes()
         else:
             asignables = conductores_a_cargo(empleado)
@@ -213,7 +216,6 @@ def asignar_conductor(request, vehiculo_id):
 
     # Solo se puede asignar a alguien que este usuario administre.
     if request.user.is_staff:
-        from .permisos import conductores_vigentes
         permitidos = conductores_vigentes()
     else:
         permitidos = conductores_a_cargo(empleado_de(request.user))
@@ -765,7 +767,6 @@ def registrar_gasto_admin(request):
     """
     empleado = empleado_de(request.user)
     if request.user.is_staff:
-        from .permisos import conductores_vigentes
         conductores = conductores_vigentes()
     else:
         conductores = conductores_a_cargo(empleado)
@@ -910,7 +911,6 @@ def gastos_flota(request):
 
     empleado = empleado_de(request.user)
     if request.user.is_staff:
-        from .permisos import conductores_vigentes
         conductores = conductores_vigentes()
     else:
         conductores = conductores_a_cargo(empleado)
@@ -943,6 +943,128 @@ def _fecha_o_none(texto):
         return None
 
 
+# =========================================================================
+# Cuentas y cierres
+# =========================================================================
+
+@login_required
+@admin_transporte_required
+def cuentas(request):
+    """Lo que cada conductor y cada vehículo tiene sin cerrar."""
+    por_conductor, por_vehiculo = cuentas_abiertas(request.user)
+
+    cierres = (CierreGastos.objects
+               .filter(_cierres_del_usuario(request.user))
+               .select_related('conductor', 'vehiculo', 'cerrado_por',
+                               'anulado_por')
+               .order_by('-fecha_cierre')[:40])
+
+    return render(request, 'transporte/cuentas.html', {
+        'por_conductor': por_conductor,
+        'por_vehiculo': por_vehiculo,
+        'cierres': list(cierres),
+        'total_abierto_conductores': sum(c['costo'] for c in por_conductor),
+        'total_deuda_conductores': sum(c['deuda'] for c in por_conductor),
+        'pendientes_en_cuentas': sum(c['pendientes'] for c in por_conductor),
+    })
+
+
+def _cierres_del_usuario(usuario):
+    """Los cierres de los conductores y vehículos que este usuario ve."""
+    from django.db.models import Q
+
+    if usuario.is_staff:
+        return Q()
+    empleado = empleado_de(usuario)
+    return (Q(conductor__in=conductores_a_cargo(empleado))
+            | Q(vehiculo__in=vehiculos_visibles(usuario)))
+
+
+@login_required
+@admin_transporte_required
+@require_POST
+def cerrar_cuenta_vista(request, ambito, sujeto_id):
+    """Cierra la cuenta de un conductor o de un vehículo."""
+    if ambito == CierreGastos.CONDUCTOR:
+        permitidos = (conductores_vigentes() if request.user.is_staff
+                      else conductores_a_cargo(empleado_de(request.user)))
+        sujeto = permitidos.filter(pk=sujeto_id).first()
+        if not sujeto:
+            messages.error(request, 'Ese conductor no está a tu cargo.')
+            return redirect('transporte:cuentas')
+    elif ambito == CierreGastos.VEHICULO:
+        sujeto = vehiculos_visibles(request.user).filter(pk=sujeto_id).first()
+        if not sujeto:
+            messages.error(request, 'Ese vehículo no es de tu flota.')
+            return redirect('transporte:cuentas')
+    else:
+        messages.error(request, 'Ámbito de cierre desconocido.')
+        return redirect('transporte:cuentas')
+
+    try:
+        cierre = cerrar_cuenta(
+            ambito, sujeto, request.user,
+            observaciones=request.POST.get('observaciones', ''),
+            base=gastos_visibles(request.user))
+    except CierreImposible as e:
+        messages.error(request, str(e))
+        return redirect('transporte:cuentas')
+
+    messages.success(
+        request,
+        f'Cuenta de {cierre.sujeto} cerrada: {cierre.cantidad} gasto'
+        f'{"s" if cierre.cantidad != 1 else ""} por '
+        f'${_miles(int(cierre.total_costo))}'
+        + (f', más ${_miles(int(cierre.total_deuda))} de multas a su cargo'
+           if cierre.total_deuda else '')
+        + '. La cuenta arranca de cero.')
+    return redirect('transporte:detalle_cierre', cierre_id=cierre.pk)
+
+
+@login_required
+@admin_transporte_required
+def detalle_cierre(request, cierre_id):
+    """El detalle de un cierre: sus renglones y sus totales congelados."""
+    cierre = get_object_or_404(
+        CierreGastos.objects.select_related(
+            'conductor', 'vehiculo', 'cerrado_por', 'anulado_por'),
+        pk=cierre_id)
+
+    if not CierreGastos.objects.filter(
+            _cierres_del_usuario(request.user), pk=cierre.pk).exists():
+        messages.error(request, 'Ese cierre no es de tu flota.')
+        return redirect('transporte:cuentas')
+
+    return render(request, 'transporte/cierre_detalle.html', {
+        'cierre': cierre,
+        'gastos': list(cierre.gastos().order_by('-fecha', '-fecha_creacion')),
+    })
+
+
+@login_required
+@admin_transporte_required
+@require_POST
+def anular_cierre_vista(request, cierre_id):
+    """Deshace un cierre mal hecho y devuelve los gastos a la cuenta."""
+    cierre = get_object_or_404(CierreGastos, pk=cierre_id)
+    if not CierreGastos.objects.filter(
+            _cierres_del_usuario(request.user), pk=cierre.pk).exists():
+        messages.error(request, 'Ese cierre no es de tu flota.')
+        return redirect('transporte:cuentas')
+
+    try:
+        anular_cierre(cierre, request.user, request.POST.get('motivo', ''))
+    except CierreImposible as e:
+        messages.error(request, str(e))
+        return redirect('transporte:detalle_cierre', cierre_id=cierre.pk)
+
+    messages.success(
+        request,
+        f'Cierre de {cierre.sujeto} anulado. Sus {cierre.cantidad} gasto'
+        f'{"s" if cierre.cantidad != 1 else ""} volvieron a la cuenta abierta.')
+    return redirect('transporte:cuentas')
+
+
 @login_required
 @admin_transporte_required
 @require_POST
@@ -952,6 +1074,15 @@ def revisar_gasto(request, gasto_id):
     # Por el gasto y no por el vehículo: uno sin vehículo también se revisa.
     if not gastos_visibles(request.user).filter(pk=gasto.pk).exists():
         messages.error(request, 'Ese gasto no es de tus conductores.')
+        return redirect('transporte:gastos_flota')
+
+    if gasto.cerrado:
+        # Aprobar o rechazar cambia si entra al costo, y el total del cierre
+        # ya quedó firmado con este renglón adentro.
+        messages.error(
+            request,
+            'Ese gasto ya está en una cuenta cerrada. Si hay que cambiarlo, '
+            'anula el cierre primero.')
         return redirect('transporte:gastos_flota')
 
     form = RevisionGastoForm(request.POST)

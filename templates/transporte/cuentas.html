@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuentas de gastos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-3 gap-2">
+        <div>
+            <h5 class="mb-1"><i class="fas fa-calculator me-2"></i>Cuentas de gastos</h5>
+            <p class="text-muted small mb-0">
+                Lo que cada conductor y cada vehículo tiene sin cerrar. Al
+                cerrar, esos gastos quedan sellados con el total del día y la
+                cuenta arranca de cero.
+            </p>
+        </div>
+        <a href="{% url 'transporte:gastos_flota' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-receipt me-1"></i>Ver los gastos
+        </a>
+    </div>
+
+    {% if pendientes_en_cuentas %}
+    <div class="alert alert-warning py-2">
+        <i class="fas fa-triangle-exclamation me-1"></i>
+        Hay <strong>{{ pendientes_en_cuentas }}</strong> gasto{{ pendientes_en_cuentas|pluralize }}
+        sin revisar en las cuentas abiertas. Esas cuentas no se pueden cerrar
+        hasta que los apruebes o los rechaces.
+        <a href="{% url 'transporte:gastos_flota' %}?estado=pendiente" class="alert-link">
+            Revisarlos
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="row g-2 mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Abierto en cuentas de conductores</div>
+                    <div class="fs-4 fw-bold">${{ total_abierto_conductores|floatformat:0 }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Multas a cargo de conductores</div>
+                    <div class="fs-4 fw-bold {% if total_deuda_conductores %}text-danger{% endif %}">
+                        ${{ total_deuda_conductores|floatformat:0 }}
+                    </div>
+                    <div class="small text-muted">No entran al costo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- Cuentas por conductor --- #}
+    <h6 class="text-muted small text-uppercase mb-2">Por conductor</h6>
+    <div class="card mb-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Conductor</th>
+                        <th class="text-end">Costo</th>
+                        <th class="text-end">Multas suyas</th>
+                        <th>Período abierto</th>
+                        <th class="text-end">Cerrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in por_conductor %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'transporte:gastos_flota' %}?conductor={{ c.sujeto_id }}"
+                               class="text-decoration-none fw-bold">
+                                {{ c.sujeto.nombre_completo }}
+                            </a>
+                            <div class="small text-muted">
+                                {{ c.cantidad }} gasto{{ c.cantidad|pluralize }} sin cerrar
+                                {% if c.pendientes %}
+                                    · <span class="text-warning">{{ c.pendientes }} sin revisar</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="text-end fw-bold">${{ c.costo|floatformat:0 }}</td>
+                        <td class="text-end {% if c.deuda %}text-danger{% endif %}">
+                            {% if c.deuda %}${{ c.deuda|floatformat:0 }}{% else %}—{% endif %}
+                        </td>
+                        <td class="small text-muted">
+                            {% if c.desde %}
+                                {{ c.desde|date:"d/m/Y" }} – {{ c.hasta|date:"d/m/Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if c.cantidad and not c.pendientes %}
+                            <button class="btn btn-sm btn-primary" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#cerrar-c-{{ c.sujeto_id }}">
+                                <i class="fas fa-lock me-1"></i>Cerrar cuenta
+                            </button>
+                            {% elif c.pendientes %}
+                            <span class="small text-muted">Hay pendientes</span>
+                            {% else %}
+                            <span class="small text-muted">Sin movimiento</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if c.cantidad and not c.pendientes %}
+                    <tr class="collapse" id="cerrar-c-{{ c.sujeto_id }}">
+                        <td colspan="5" class="bg-light">
+                            <form method="post"
+                                  action="{% url 'transporte:cerrar_cuenta' 'conductor' c.sujeto_id %}"
+                                  class="row g-2 align-items-end">
+                                {% csrf_token %}
+                                <div class="col-md-8">
+                                    <label class="form-label small mb-1"
+                                           for="obs-c-{{ c.sujeto_id }}">
+                                        Observación <span class="text-muted">(opcional)</span>
+                                    </label>
+                                    <input type="text" name="observaciones"
+                                           id="obs-c-{{ c.sujeto_id }}"
+                                           class="form-control form-control-sm"
+                                           placeholder="Pagado en efectivo, descontado de nómina...">
+                                </div>
+                                <div class="col-md-4 d-flex gap-2">
+                                    <button type="submit" class="btn btn-sm btn-primary flex-fill">
+                                        Cerrar por ${{ c.costo|floatformat:0 }}
+                                    </button>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-text">
+                                        Se sellan los {{ c.cantidad }} gasto{{ c.cantidad|pluralize }}
+                                        que hoy están abiertos. Después no se pueden editar;
+                                        si hay un error se anula el cierre.
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">
+                        No tienes conductores a cargo.
+                    </td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# --- Cuentas por vehículo --- #}
+    <h6 class="text-muted small text-uppercase mb-2">Por vehículo</h6>
+    <div class="card mb-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Vehículo</th>
+                        <th class="text-end">Costo</th>
+                        <th>Período abierto</th>
+                        <th class="text-end">Cerrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in por_vehiculo %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'transporte:gastos_flota' %}?vehiculo={{ v.sujeto_id }}"
+                               class="text-decoration-none fw-bold">
+                                {{ v.sujeto.placa }}
+                            </a>
+                            <div class="small text-muted">
+                                {{ v.cantidad }} gasto{{ v.cantidad|pluralize }} sin cerrar
+                                {% if v.pendientes %}
+                                    · <span class="text-warning">{{ v.pendientes }} sin revisar</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="text-end fw-bold">${{ v.costo|floatformat:0 }}</td>
+                        <td class="small text-muted">
+                            {% if v.desde %}
+                                {{ v.desde|date:"d/m/Y" }} – {{ v.hasta|date:"d/m/Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if v.cantidad and not v.pendientes %}
+                            <button class="btn btn-sm btn-primary" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#cerrar-v-{{ v.sujeto_id }}">
+                                <i class="fas fa-lock me-1"></i>Cerrar cuenta
+                            </button>
+                            {% elif v.pendientes %}
+                            <span class="small text-muted">Hay pendientes</span>
+                            {% else %}
+                            <span class="small text-muted">Sin movimiento</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if v.cantidad and not v.pendientes %}
+                    <tr class="collapse" id="cerrar-v-{{ v.sujeto_id }}">
+                        <td colspan="4" class="bg-light">
+                            <form method="post"
+                                  action="{% url 'transporte:cerrar_cuenta' 'vehiculo' v.sujeto_id %}"
+                                  class="row g-2 align-items-end">
+                                {% csrf_token %}
+                                <div class="col-md-8">
+                                    <label class="form-label small mb-1"
+                                           for="obs-v-{{ v.sujeto_id }}">
+                                        Observación <span class="text-muted">(opcional)</span>
+                                    </label>
+                                    <input type="text" name="observaciones"
+                                           id="obs-v-{{ v.sujeto_id }}"
+                                           class="form-control form-control-sm"
+                                           placeholder="Corte de mantenimiento, cambio de conductor...">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-sm btn-primary w-100">
+                                        Cerrar por ${{ v.costo|floatformat:0 }}
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">
+                        No hay vehículos en tu flota.
+                    </td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# --- Historial --- #}
+    <h6 class="text-muted small text-uppercase mb-2">Cierres anteriores</h6>
+    {% for c in cierres %}
+    <div class="card mb-2 {% if not c.esta_activo %}border-secondary opacity-75{% endif %}">
+        <div class="card-body py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <a href="{% url 'transporte:detalle_cierre' c.id %}" class="text-decoration-none">
+                    <strong>{{ c.sujeto }}</strong>
+                </a>
+                <span class="badge bg-light text-dark border">{{ c.get_ambito_display }}</span>
+                {% if not c.esta_activo %}
+                    <span class="badge bg-secondary">Anulado</span>
+                {% endif %}
+                <div class="small text-muted">
+                    {{ c.cantidad }} gasto{{ c.cantidad|pluralize }}
+                    {% if c.desde %}· {{ c.desde|date:"d/m/Y" }} – {{ c.hasta|date:"d/m/Y" }}{% endif %}
+                    · cerró {{ c.cerrado_por.get_full_name|default:c.cerrado_por.username }}
+                    el {{ c.fecha_cierre|date:"d/m/Y H:i" }}
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="fs-5 fw-bold">${{ c.total_costo|floatformat:0 }}</div>
+                {% if c.total_deuda %}
+                <div class="small text-danger">+ ${{ c.total_deuda|floatformat:0 }} en multas</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-4">
+            Todavía no se ha cerrado ninguna cuenta.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
