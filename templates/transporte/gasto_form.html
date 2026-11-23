@@ -10,15 +10,19 @@
             <i class="fas fa-receipt me-2"></i>
             {% if gasto %}Corregir gasto{% else %}Registrar gasto{% endif %}
         </h5>
-        <a href="{% url 'transporte:mis_gastos' %}" class="btn btn-sm btn-outline-secondary">
+        <a href="{% if modo_admin %}{% url 'transporte:gastos_flota' %}{% else %}{% url 'transporte:mis_gastos' %}{% endif %}"
+           class="btn btn-sm btn-outline-secondary">
             Cancelar
         </a>
     </div>
 
-    <div class="alert alert-light border py-2 small mb-3">
-        <i class="fas fa-truck me-1"></i>
-        Vehículo <strong>{{ vehiculo.placa }}</strong>
+    {% if modo_admin %}
+    <div class="alert alert-info py-2 small mb-3">
+        <i class="fas fa-user-pen me-1"></i>
+        Lo estás registrando tú a nombre del conductor, así que
+        <strong>queda aprobado</strong> y con tu nombre como quien lo registró.
     </div>
+    {% endif %}
 
     <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
@@ -26,6 +30,39 @@
         {% if form.non_field_errors %}
             <div class="alert alert-danger">{{ form.non_field_errors }}</div>
         {% endif %}
+
+        {% if form.conductor %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.conductor.id_for_label }}">
+                ¿De quién es el gasto?
+            </label>
+            {{ form.conductor }}
+            {% for e in form.conductor.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.vehiculo.id_for_label }}">
+                ¿A qué vehículo se le carga?
+            </label>
+            {{ form.vehiculo }}
+            <div class="form-text">
+                {% if vehiculo %}Viene el tuyo, pero puedes cambiarlo.{% endif %}
+                Déjalo en «Ningún vehículo» si el gasto no es de un carro.
+            </div>
+            {% for e in form.vehiculo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.servicio.id_for_label }}">
+                ¿Fue por un servicio en particular?
+            </label>
+            {{ form.servicio }}
+            <div class="form-text">
+                Así queda sumado al costo de ese viaje, aparte de los del mes.
+            </div>
+            {% for e in form.servicio.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
 
         <div class="mb-3">
             <label class="form-label" for="{{ form.tipo.id_for_label }}">

@@ -112,6 +112,37 @@ def vehiculos_visibles(usuario):
     return Vehiculo.objects.none()
 
 
+def gastos_visibles(usuario):
+    """Los gastos que este usuario puede ver.
+
+    Por conductor **o** por vehículo, no solo por vehículo. Desde que un
+    gasto puede no tener vehículo —un almuerzo en ruta, una herramienta—,
+    mirar únicamente la flota dejaría esos registros invisibles justo para
+    el jefe que tiene que revisarlos.
+    """
+    from django.db.models import Q
+
+    from .models import GastoVehiculo
+
+    if not usuario or not usuario.is_authenticated:
+        return GastoVehiculo.objects.none()
+    if usuario.is_staff:
+        return GastoVehiculo.objects.all()
+
+    empleado = empleado_de(usuario)
+    if not empleado:
+        return GastoVehiculo.objects.none()
+
+    a_cargo = conductores_a_cargo(empleado)
+    if a_cargo.exists():
+        return GastoVehiculo.objects.filter(
+            Q(conductor__in=a_cargo) | Q(vehiculo__conductor__in=a_cargo)
+        ).distinct()
+    if es_conductor(empleado):
+        return GastoVehiculo.objects.filter(conductor=empleado)
+    return GastoVehiculo.objects.none()
+
+
 def transporte_required(view_func):
     """Deja pasar a conductores y a quienes administran la flota."""
     @wraps(view_func)

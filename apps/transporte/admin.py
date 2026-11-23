@@ -119,14 +119,15 @@ class DocumentoVehiculoAdmin(admin.ModelAdmin):
 class GastoVehiculoAdmin(admin.ModelAdmin):
     """Los gastos se registran y revisan en el módulo; aquí solo se consultan."""
     list_display = ('fecha', 'vehiculo', 'conductor', 'tipo', 'monto',
-                    'estado', 'cuenta_costo')
+                    'estado', 'cuenta_costo', 'quien_registro')
     list_filter = ('estado', 'tipo', 'responsable', 'fecha')
     search_fields = ('vehiculo__placa', 'conductor__nombres',
                      'conductor__apellidos', 'conductor__numero_documento',
-                     'descripcion')
+                     'descripcion', 'servicio__ref')
     autocomplete_fields = ('vehiculo', 'conductor')
     readonly_fields = ('id', 'fecha_creacion', 'fecha_actualizacion',
-                       'revisado_por', 'fecha_revision')
+                       'revisado_por', 'fecha_revision', 'registrado_por',
+                       'servicio')
     date_hierarchy = 'fecha'
     ordering = ('-fecha',)
 
@@ -134,6 +135,18 @@ class GastoVehiculoAdmin(admin.ModelAdmin):
         return obj.cuenta_como_costo
     cuenta_costo.short_description = '¿Entra al costo?'
     cuenta_costo.boolean = True
+
+    def quien_registro(self, obj):
+        """El conductor mismo, o el coordinador que lo digitó por él."""
+        if not obj.registrado_por_id:
+            return '—'
+        if obj.lo_registro_otro:
+            nombre = (obj.registrado_por.get_full_name()
+                      or obj.registrado_por.username)
+            return format_html('<span title="Lo registró un tercero">👤 {}</span>',
+                               nombre)
+        return 'el conductor'
+    quien_registro.short_description = 'Registrado por'
 
 
 @admin.register(ServicioIniciado)

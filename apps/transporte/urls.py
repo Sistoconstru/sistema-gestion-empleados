@@ -28,5 +28,6 @@ urlpatterns = [
 
     # Gastos — jefe y director
     path('gastos/', views.gastos_flota, name='gastos_flota'),
+    path('gastos/nuevo/', views.registrar_gasto_admin, name='registrar_gasto_admin'),
     path('gastos/<uuid:gasto_id>/revisar/', views.revisar_gasto, name='revisar_gasto'),
 ]

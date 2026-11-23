@@ -11,7 +11,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -81,7 +81,10 @@ def _decimal_o_none(texto):
         return None
     return valor if valor >= 0 else None
 
-from .forms import DocumentoVehiculoForm, GastoVehiculoForm, RevisionGastoForm
+from .forms import (
+    DocumentoVehiculoForm, GastoAdminForm, GastoVehiculoForm,
+    RevisionGastoForm,
+)
 from .models import (
     DocumentoVehiculo, GastoVehiculo, ServicioIniciado, Vehiculo,
 )
@@ -91,7 +94,8 @@ from .odoo_client import (
 )
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, es_admin_transporte,
-    es_conductor, empleado_de, transporte_required, vehiculos_visibles,
+    es_conductor, empleado_de, gastos_visibles, transporte_required,
+    vehiculos_visibles,
 )
 from .licencias import estado_licencia, estados_de
 from .servicios import servicios_visibles
@@ -705,27 +709,32 @@ def mis_gastos(request):
 @login_required
 @transporte_required
 def registrar_gasto(request):
-    """El conductor registra un gasto con el recibo."""
-    empleado = empleado_de(request.user)
-    vehiculo = Vehiculo.objects.filter(conductor=empleado, activo=True).first()
+    """El conductor registra un gasto con el recibo.
 
-    if not vehiculo:
+    Ya no se exige tener vehículo asignado: hay gastos que no son de
+    ningún carro, y el conductor sigue siendo conductor aunque ese día no
+    tenga uno a su nombre. El suyo viene propuesto en el formulario.
+    """
+    empleado = empleado_de(request.user)
+    if not es_conductor(empleado):
         messages.error(
             request,
-            'No tienes un vehículo asignado, así que no puedes registrar '
-            'gastos. Habla con tu jefe para que te asigne uno.')
-        return redirect('transporte:mis_gastos')
+            'Los gastos los registra el conductor. Si vas a registrar uno '
+            'por él, hazlo desde Gastos de la flota.')
+        return redirect('transporte:gastos_flota')
+
+    vehiculo = Vehiculo.objects.filter(conductor=empleado, activo=True).first()
 
     if request.method == 'POST':
         form = GastoVehiculoForm(
             request.POST, request.FILES, vehiculo=vehiculo, conductor=empleado)
         if form.is_valid():
-            gasto = form.save()
-            monto = f'{gasto.monto:,.0f}'.replace(',', '.')
+            gasto = form.save(usuario=request.user)
             messages.success(
                 request,
-                f'Gasto de {gasto.get_tipo_display().lower()} por ${monto} '
-                f'registrado. Queda pendiente de revisión.')
+                f'Gasto de {gasto.get_tipo_display().lower()} por '
+                f'${_miles(int(gasto.monto))} registrado'
+                f'{_donde(gasto)}. Queda pendiente de revisión.')
             return redirect('transporte:mis_gastos')
     else:
         form = GastoVehiculoForm(vehiculo=vehiculo, conductor=empleado)
@@ -733,6 +742,61 @@ def registrar_gasto(request):
     return render(request, 'transporte/gasto_form.html', {
         'form': form,
         'vehiculo': vehiculo,
+    })
+
+
+def _donde(gasto):
+    """" para JYN 240", " para el servicio X", o nada."""
+    partes = []
+    if gasto.vehiculo_id:
+        partes.append(f'para {gasto.vehiculo.placa}')
+    if gasto.servicio_id:
+        partes.append(f'en el servicio {gasto.servicio.ref or gasto.servicio.odoo_id}')
+    return f' {" ".join(partes)}' if partes else ''
+
+
+@login_required
+@admin_transporte_required
+def registrar_gasto_admin(request):
+    """El coordinador registra un gasto a nombre de uno de sus conductores.
+
+    Nace aprobado y con la marca de quién lo digitó: pedirle que después
+    apruebe lo que él mismo registró no agrega control, solo pasos.
+    """
+    empleado = empleado_de(request.user)
+    if request.user.is_staff:
+        from .permisos import conductores_vigentes
+        conductores = conductores_vigentes()
+    else:
+        conductores = conductores_a_cargo(empleado)
+
+    if not conductores.exists():
+        messages.error(request, 'No tienes conductores a cargo.')
+        return redirect('transporte:gastos_flota')
+
+    if request.method == 'POST':
+        form = GastoAdminForm(request.POST, request.FILES,
+                              conductores=conductores)
+        if form.is_valid():
+            gasto = form.save(commit=False)
+            gasto.registrado_por = request.user
+            gasto.estado = GastoVehiculo.APROBADO
+            gasto.revisado_por = request.user
+            gasto.fecha_revision = timezone.now()
+            gasto.save()
+            messages.success(
+                request,
+                f'Gasto de {gasto.get_tipo_display().lower()} por '
+                f'${_miles(int(gasto.monto))} registrado a nombre de '
+                f'{gasto.conductor.nombre_completo}{_donde(gasto)}. '
+                f'Queda aprobado.')
+            return redirect('transporte:gastos_flota')
+    else:
+        form = GastoAdminForm(conductores=conductores)
+
+    return render(request, 'transporte/gasto_form.html', {
+        'form': form,
+        'modo_admin': True,
     })
 
 
@@ -775,34 +839,108 @@ def editar_gasto(request, gasto_id):
 @login_required
 @admin_transporte_required
 def gastos_flota(request):
-    """Lo que ve el jefe: los gastos de sus conductores, para revisarlos."""
-    vehiculos = vehiculos_visibles(request.user)
-    gastos = (GastoVehiculo.objects
-              .filter(vehiculo__in=vehiculos)
-              .select_related('vehiculo', 'conductor', 'revisado_por')
-              .order_by('-fecha', '-fecha_creacion'))
+    """Los gastos de los conductores a cargo, con filtros y cuentas.
 
-    estado = request.GET.get('estado')
+    Los totales se suman en la base y no recorriendo los gastos en
+    memoria: con el histórico de un par de años, traerlos todos para sumar
+    en Python deja de ser gratis.
+    """
+    visibles = gastos_visibles(request.user)
+    gastos = visibles.select_related(
+        'vehiculo', 'conductor', 'revisado_por', 'registrado_por', 'servicio')
+
+    filtros = {}
+
+    estado = (request.GET.get('estado') or '').strip()
     if estado in dict(GastoVehiculo.ESTADOS):
         gastos = gastos.filter(estado=estado)
+        filtros['estado'] = estado
 
-    hoy = timezone.localdate()
-    inicio_mes = hoy.replace(day=1)
-    todos = GastoVehiculo.objects.filter(vehiculo__in=vehiculos)
-    del_mes = [g for g in todos if g.fecha >= inicio_mes]
+    conductor_id = (request.GET.get('conductor') or '').strip()
+    if conductor_id:
+        gastos = gastos.filter(conductor_id=conductor_id)
+        filtros['conductor'] = conductor_id
+
+    vehiculo_id = (request.GET.get('vehiculo') or '').strip()
+    if vehiculo_id == 'sin':
+        # "Sin vehículo" es un filtro útil por sí mismo: son los gastos que
+        # van a la cuenta del conductor y a la de ningún carro.
+        gastos = gastos.filter(vehiculo__isnull=True)
+        filtros['vehiculo'] = 'sin'
+    elif vehiculo_id:
+        gastos = gastos.filter(vehiculo_id=vehiculo_id)
+        filtros['vehiculo'] = vehiculo_id
+
+    servicio_id = (request.GET.get('servicio') or '').strip()
+    if servicio_id:
+        gastos = gastos.filter(servicio_id=servicio_id)
+        filtros['servicio'] = servicio_id
+
+    desde = _fecha_o_none(request.GET.get('desde'))
+    hasta = _fecha_o_none(request.GET.get('hasta'))
+    if desde:
+        gastos = gastos.filter(fecha__gte=desde)
+        filtros['desde'] = desde.isoformat()
+    if hasta:
+        gastos = gastos.filter(fecha__lte=hasta)
+        filtros['hasta'] = hasta.isoformat()
+
+    gastos = gastos.order_by('-fecha', '-fecha_creacion')
+
+    # Los totales son de lo filtrado, no del mes: si el jefe acotó a un
+    # conductor y a unas fechas, lo que quiere ver es esa cuenta.
+    resumen = gastos.aggregate(
+        costo=Sum('monto', filter=GastoVehiculo.filtro_costo()),
+        deuda=Sum('monto', filter=GastoVehiculo.filtro_deuda_conductor()),
+        cantidad=Count('id'),
+    )
+
+    por_conductor = (gastos.values('conductor_id',
+                                   'conductor__nombres',
+                                   'conductor__apellidos')
+                     .annotate(costo=Sum('monto', filter=GastoVehiculo.filtro_costo()),
+                               deuda=Sum('monto', filter=GastoVehiculo.filtro_deuda_conductor()),
+                               cantidad=Count('id'))
+                     .order_by('conductor__apellidos'))
+
+    por_vehiculo = (gastos.values('vehiculo_id', 'vehiculo__placa')
+                    .annotate(costo=Sum('monto', filter=GastoVehiculo.filtro_costo()),
+                              cantidad=Count('id'))
+                    .order_by('vehiculo__placa'))
+
+    empleado = empleado_de(request.user)
+    if request.user.is_staff:
+        from .permisos import conductores_vigentes
+        conductores = conductores_vigentes()
+    else:
+        conductores = conductores_a_cargo(empleado)
 
     return render(request, 'transporte/gastos_flota.html', {
         'gastos': list(gastos[:200]),
-        'estado_filtro': estado or '',
+        'total_filtrado': resumen['cantidad'] or 0,
         'estados': GastoVehiculo.ESTADOS,
-        'pendientes': todos.filter(estado=GastoVehiculo.PENDIENTE).count(),
-        'total_mes': sum(g.monto for g in del_mes if g.cuenta_como_costo),
-        'multas_conductor_mes': sum(
-            g.monto for g in del_mes
-            if g.tipo == GastoVehiculo.MULTA
-            and g.responsable == GastoVehiculo.RESPONSABLE_CONDUCTOR
-            and g.estado != GastoVehiculo.RECHAZADO),
+        'estado_filtro': filtros.get('estado', ''),
+        'conductor_filtro': filtros.get('conductor', ''),
+        'vehiculo_filtro': filtros.get('vehiculo', ''),
+        'servicio_filtro': filtros.get('servicio', ''),
+        'desde': filtros.get('desde', ''),
+        'hasta': filtros.get('hasta', ''),
+        'hay_filtros': bool(filtros),
+        'conductores': conductores.order_by('apellidos', 'nombres'),
+        'vehiculos': vehiculos_visibles(request.user).order_by('placa'),
+        'pendientes': visibles.filter(estado=GastoVehiculo.PENDIENTE).count(),
+        'costo_total': resumen['costo'] or 0,
+        'deuda_total': resumen['deuda'] or 0,
+        'por_conductor': list(por_conductor),
+        'por_vehiculo': list(por_vehiculo),
     })
+
+
+def _fecha_o_none(texto):
+    try:
+        return date.fromisoformat((texto or '').strip())
+    except ValueError:
+        return None
 
 
 @login_required
@@ -811,8 +949,9 @@ def gastos_flota(request):
 def revisar_gasto(request, gasto_id):
     """Aprobar o rechazar un gasto."""
     gasto = get_object_or_404(GastoVehiculo, pk=gasto_id)
-    if gasto.vehiculo not in vehiculos_visibles(request.user):
-        messages.error(request, 'Ese gasto no es de tu flota.')
+    # Por el gasto y no por el vehículo: uno sin vehículo también se revisa.
+    if not gastos_visibles(request.user).filter(pk=gasto.pk).exists():
+        messages.error(request, 'Ese gasto no es de tus conductores.')
         return redirect('transporte:gastos_flota')
 
     form = RevisionGastoForm(request.POST)

@@ -29,10 +29,18 @@ def _documento_upload_path(instance, filename):
 
 
 def _recibo_upload_path(instance, filename):
-    """media/vehiculos/<placa>/gastos/<año>/<mes>/<archivo>"""
-    placa = (instance.vehiculo.placa or 'sin-placa').replace(' ', '').replace('/', '')
+    """media/vehiculos/<placa>/gastos/<año>/<mes>/<archivo>
+
+    Sin vehículo el recibo cuelga del conductor: hay gastos que no son de
+    ningún carro y aun así hay que poder encontrarlos después.
+    """
     f = instance.fecha or date.today()
-    return f'vehiculos/{placa}/gastos/{f.year}/{f.month:02d}/{filename}'
+    if instance.vehiculo_id and instance.vehiculo.placa:
+        carpeta = instance.vehiculo.placa.replace(' ', '').replace('/', '')
+        return f'vehiculos/{carpeta}/gastos/{f.year}/{f.month:02d}/{filename}'
+    cedula = (getattr(instance.conductor, 'numero_documento', '')
+              or 'sin-cedula')
+    return f'gastos-conductor/{cedula}/{f.year}/{f.month:02d}/{filename}'
 
 
 class Vehiculo(models.Model):
@@ -375,12 +383,37 @@ class GastoVehiculo(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    # Puede ir vacío a propósito. No todo gasto de un conductor es de un
+    # vehículo —un almuerzo en ruta, una herramienta— y forzarlo a colgar de
+    # uno ensuciaría el costo del camión con cosas que no le corresponden.
+    # Tampoco tiene que ser el vehículo que conduce: si tanquea el de un
+    # compañero, el gasto es de ese carro.
     vehiculo = models.ForeignKey(
-        Vehiculo, on_delete=models.PROTECT, related_name='gastos')
+        Vehiculo, on_delete=models.PROTECT, related_name='gastos',
+        null=True, blank=True,
+        help_text='Vehículo al que se le carga. Vacío si el gasto no es de ninguno.')
+
     conductor = models.ForeignKey(
         'employees.Empleado', on_delete=models.PROTECT,
         related_name='gastos_vehiculo',
-        help_text='Quien hizo el gasto.')
+        help_text='A quién se le atribuye el gasto.')
+
+    # Quién digitó el registro, que no siempre es de quién es el gasto: un
+    # coordinador puede registrarlo por el conductor. Sin esto los dos casos
+    # se ven idénticos y no hay forma de saber quién respondió por el dato.
+    registrado_por = models.ForeignKey(
+        'authentication.Usuario', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='gastos_vehiculo_registrados',
+        help_text='Usuario que creó el registro.')
+
+    # El servicio que causó el gasto, cuando fue por uno en particular. Un
+    # flete trae sus costos propios —peajes, combustible del viaje— y
+    # poder separarlos de los del mes es lo que permite saber qué dejó.
+    servicio = models.ForeignKey(
+        'ServicioIniciado', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='gastos',
+        help_text='Servicio que originó el gasto, si aplica.')
 
     tipo = models.CharField(max_length=20, choices=TIPOS)
     monto = models.DecimalField(
@@ -426,10 +459,12 @@ class GastoVehiculo(models.Model):
             models.Index(fields=['vehiculo', '-fecha']),
             models.Index(fields=['conductor', '-fecha']),
             models.Index(fields=['estado']),
+            models.Index(fields=['servicio']),
         ]
 
     def __str__(self):
-        return f'{self.get_tipo_display()} {self.monto} — {self.vehiculo.placa} ({self.fecha})'
+        donde = self.vehiculo.placa if self.vehiculo_id else 'sin vehículo'
+        return f'{self.get_tipo_display()} {self.monto} — {donde} ({self.fecha})'
 
     def clean(self):
         errores = {}
@@ -456,10 +491,40 @@ class GastoVehiculo(models.Model):
         return not (self.tipo == self.MULTA
                     and self.responsable == self.RESPONSABLE_CONDUCTOR)
 
+    @classmethod
+    def filtro_costo(cls):
+        """`cuenta_como_costo` escrito como consulta.
+
+        Los totales se suman en la base, no recorriendo los gastos en
+        memoria, y la regla de qué entra al costo tiene que ser la misma en
+        los dos sitios. Vive aquí para que no se separen.
+        """
+        return ~models.Q(estado=cls.RECHAZADO) & ~models.Q(
+            tipo=cls.MULTA, responsable=cls.RESPONSABLE_CONDUCTOR)
+
+    @classmethod
+    def filtro_deuda_conductor(cls):
+        """Lo que el conductor debe: multas a su cargo, no rechazadas."""
+        return models.Q(tipo=cls.MULTA,
+                        responsable=cls.RESPONSABLE_CONDUCTOR) & ~models.Q(
+            estado=cls.RECHAZADO)
+
     @property
     def editable_por_conductor(self):
         """Mientras nadie lo haya revisado, el conductor puede corregirlo."""
         return self.estado == self.PENDIENTE
+
+    @property
+    def lo_registro_otro(self):
+        """¿Lo digitó alguien distinto del conductor al que se le atribuye?
+
+        Se compara contra el usuario del conductor y no contra el empleado,
+        porque lo que se guarda es quién estaba en la sesión.
+        """
+        if not self.registrado_por_id:
+            return False
+        return self.registrado_por_id != getattr(
+            self.conductor, 'usuario_id', None)
 
 
 class ServicioIniciado(models.Model):

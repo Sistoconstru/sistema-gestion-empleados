@@ -12,56 +12,178 @@
                 Lo que registran tus conductores, para revisarlo.
             </p>
         </div>
-        <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-truck me-1"></i>Ver vehículos
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{% url 'transporte:registrar_gasto_admin' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Registrar gasto
+            </a>
+            <a href="{% url 'transporte:flota' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-truck me-1"></i>Ver vehículos
+            </a>
+        </div>
     </div>
 
     <div class="row g-2 mb-3">
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-3">
+            <div class="card h-100">
                 <div class="card-body py-3">
                     <div class="small text-muted">Pendientes de revisar</div>
                     <div class="fs-4 fw-bold {% if pendientes %}text-warning{% endif %}">
                         {{ pendientes }}
                     </div>
+                    <div class="small text-muted">En toda tu flota</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-3">
+            <div class="card h-100">
                 <div class="card-body py-3">
-                    <div class="small text-muted">Costo del mes</div>
-                    <div class="fs-4 fw-bold">${{ total_mes|floatformat:0 }}</div>
+                    <div class="small text-muted">
+                        Costo {% if hay_filtros %}de lo filtrado{% else %}acumulado{% endif %}
+                    </div>
+                    <div class="fs-4 fw-bold">${{ costo_total|floatformat:0 }}</div>
                     <div class="small text-muted">Sin las multas del conductor</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-md-3">
+            <div class="card h-100">
                 <div class="card-body py-3">
                     <div class="small text-muted">Multas a cargo del conductor</div>
-                    <div class="fs-4 fw-bold {% if multas_conductor_mes %}text-danger{% endif %}">
-                        ${{ multas_conductor_mes|floatformat:0 }}
+                    <div class="fs-4 fw-bold {% if deuda_total %}text-danger{% endif %}">
+                        ${{ deuda_total|floatformat:0 }}
                     </div>
                     <div class="small text-muted">No entran al costo</div>
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body py-3">
+                    <div class="small text-muted">Registros</div>
+                    <div class="fs-4 fw-bold">{{ total_filtrado }}</div>
+                    {% if total_filtrado > 200 %}
+                    <div class="small text-muted">Se listan los 200 más recientes</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <a href="{% url 'transporte:gastos_flota' %}"
-           class="btn btn-sm {% if not estado_filtro %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-            Todos
-        </a>
-        {% for codigo, nombre in estados %}
-            <a href="?estado={{ codigo }}"
-               class="btn btn-sm {% if estado_filtro == codigo %}btn-primary{% else %}btn-outline-secondary{% endif %}">
-                {{ nombre }}
-            </a>
-        {% endfor %}
+    {# --- Filtros: sin esto no hay forma de hacer la cuenta de nadie --- #}
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="get" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="f-conductor">Conductor</label>
+                    <select name="conductor" id="f-conductor" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        {% for c in conductores %}
+                        <option value="{{ c.pk }}" {% if conductor_filtro == c.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ c.nombre_completo }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="f-vehiculo">Vehículo</label>
+                    <select name="vehiculo" id="f-vehiculo" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        <option value="sin" {% if vehiculo_filtro == 'sin' %}selected{% endif %}>
+                            — Sin vehículo —
+                        </option>
+                        {% for v in vehiculos %}
+                        <option value="{{ v.pk }}" {% if vehiculo_filtro == v.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ v.placa }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="f-estado">Estado</label>
+                    <select name="estado" id="f-estado" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        {% for codigo, nombre in estados %}
+                        <option value="{{ codigo }}" {% if estado_filtro == codigo %}selected{% endif %}>
+                            {{ nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="f-desde">Desde</label>
+                    <input type="date" name="desde" id="f-desde" value="{{ desde }}"
+                           class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="f-hasta">Hasta</label>
+                    <input type="date" name="hasta" id="f-hasta" value="{{ hasta }}"
+                           class="form-control form-control-sm">
+                </div>
+                {% if servicio_filtro %}
+                <input type="hidden" name="servicio" value="{{ servicio_filtro }}">
+                {% endif %}
+                <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-filter me-1"></i>Filtrar
+                    </button>
+                    {% if hay_filtros %}
+                    <a href="{% url 'transporte:gastos_flota' %}" class="btn btn-sm btn-outline-secondary">
+                        Quitar filtros
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
     </div>
+
+    {# --- Las cuentas: cuánto va por conductor y por vehículo --- #}
+    {% if por_conductor|length > 1 or por_vehiculo|length > 1 %}
+    <div class="row g-2 mb-3">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header py-2">
+                    <strong class="small">Cuenta por conductor</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for fila in por_conductor %}
+                    <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                        <a href="?conductor={{ fila.conductor_id }}{% if desde %}&desde={{ desde }}{% endif %}{% if hasta %}&hasta={{ hasta }}{% endif %}"
+                           class="text-decoration-none">
+                            {{ fila.conductor__nombres }} {{ fila.conductor__apellidos }}
+                            <span class="text-muted small">({{ fila.cantidad }})</span>
+                        </a>
+                        <span class="text-end">
+                            <strong>${{ fila.costo|default:0|floatformat:0 }}</strong>
+                            {% if fila.deuda %}
+                            <div class="small text-danger">debe ${{ fila.deuda|floatformat:0 }}</div>
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header py-2">
+                    <strong class="small">Cuenta por vehículo</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for fila in por_vehiculo %}
+                    <li class="list-group-item py-2 d-flex justify-content-between align-items-center">
+                        <a href="?vehiculo={{ fila.vehiculo_id|default:'sin' }}{% if desde %}&desde={{ desde }}{% endif %}{% if hasta %}&hasta={{ hasta }}{% endif %}"
+                           class="text-decoration-none">
+                            {{ fila.vehiculo__placa|default:"— Sin vehículo —" }}
+                            <span class="text-muted small">({{ fila.cantidad }})</span>
+                        </a>
+                        <strong>${{ fila.costo|default:0|floatformat:0 }}</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     {% for g in gastos %}
     <div class="card mb-2">
@@ -69,7 +191,24 @@
             <div class="row align-items-center g-2">
                 <div class="col-md-3">
                     <strong>{{ g.conductor.nombre_completo }}</strong>
-                    <div class="small text-muted">{{ g.vehiculo.placa }}</div>
+                    <div class="small text-muted">
+                        {% if g.vehiculo %}{{ g.vehiculo.placa }}
+                        {% else %}<span class="fst-italic">sin vehículo</span>{% endif %}
+                    </div>
+                    {% if g.servicio %}
+                    <div class="small">
+                        <i class="fas fa-route text-muted me-1"></i>
+                        <a href="?servicio={{ g.servicio_id }}" class="text-decoration-none">
+                            {{ g.servicio.ref|default:g.servicio.odoo_id }}
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if g.lo_registro_otro %}
+                    <div class="small text-muted">
+                        <i class="fas fa-user-pen me-1"></i>registró
+                        {{ g.registrado_por.get_full_name|default:g.registrado_por.username }}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-3">
                     {{ g.get_tipo_display }}
@@ -159,7 +298,7 @@
     {% empty %}
     <div class="card">
         <div class="card-body text-center text-muted py-4">
-            No hay gastos{% if estado_filtro %} en ese estado{% endif %}.
+            No hay gastos{% if hay_filtros %} con esos filtros{% endif %}.
         </div>
     </div>
     {% endfor %}
