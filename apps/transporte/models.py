@@ -167,14 +167,23 @@ class DocumentoVehiculo(models.Model):
     """
     SOAT = 'soat'
     TECNOMECANICA = 'tecnomecanica'
+    POLIZA = 'poliza'
     IMPUESTO = 'impuesto'
     RODAMIENTO = 'rodamiento'
     TIPOS = [
         (SOAT, 'SOAT'),
         (TECNOMECANICA, 'Revisión tecnicomecánica'),
+        (POLIZA, 'Póliza de responsabilidad civil'),
         (IMPUESTO, 'Impuesto vehicular'),
         (RODAMIENTO, 'Impuesto de rodamiento'),
     ]
+
+    # Los que vencen al año de expedidos, no en una fecha de calendario.
+    ANUALES_DESDE_EXPEDICION = (SOAT, TECNOMECANICA, POLIZA)
+
+    # Los que son un papel emitido por alguien: tienen número y entidad.
+    # El impuesto y el rodamiento son un pago, no una póliza.
+    CON_NUMERO_Y_ENTIDAD = (SOAT, TECNOMECANICA, POLIZA)
 
     # Días antes del vencimiento en que se empieza a avisar. Un SOAT se
     # consigue en el día, pero la tecnomecánica puede necesitar cita y un
@@ -245,11 +254,14 @@ class DocumentoVehiculo(models.Model):
     def calcular_vencimiento(self):
         """Fecha de vencimiento según el tipo, o None si no se puede.
 
-        SOAT y tecnomecánica vencen al año de expedidos. El impuesto
-        vehicular y el de rodamiento son anuales de calendario y vencen en
-        una fecha fija, no a los 365 días del pago.
+        SOAT, tecnomecánica y póliza vencen al año de expedidos. El
+        impuesto vehicular y el de rodamiento son anuales de calendario y
+        vencen en una fecha fija, no a los 365 días del pago.
+
+        Lo calculado es una propuesta: el campo queda editable porque una
+        póliza puede venir a seis meses o a dos años según se contrate.
         """
-        if self.tipo in (self.SOAT, self.TECNOMECANICA):
+        if self.tipo in self.ANUALES_DESDE_EXPEDICION:
             if not self.fecha_expedicion:
                 return None
             try:
@@ -274,15 +286,17 @@ class DocumentoVehiculo(models.Model):
 
     def clean(self):
         errores = {}
-        if self.tipo in (self.SOAT, self.TECNOMECANICA):
+        if self.tipo in self.CON_NUMERO_Y_ENTIDAD:
             if not self.fecha_expedicion:
-                errores['fecha_expedicion'] = 'Obligatoria para SOAT y tecnomecánica.'
+                errores['fecha_expedicion'] = (
+                    'Obligatoria para SOAT, tecnomecánica y pólizas.')
             if not self.numero:
                 errores['numero'] = 'Indica el número de póliza o certificado.'
             if not self.entidad:
                 errores['entidad'] = (
-                    'Indica la aseguradora.' if self.tipo == self.SOAT
-                    else 'Indica el centro de diagnóstico.')
+                    'Indica el centro de diagnóstico.'
+                    if self.tipo == self.TECNOMECANICA
+                    else 'Indica la aseguradora.')
         if (self.fecha_expedicion and self.fecha_vencimiento
                 and self.fecha_vencimiento < self.fecha_expedicion):
             errores['fecha_vencimiento'] = 'No puede ser anterior a la expedición.'

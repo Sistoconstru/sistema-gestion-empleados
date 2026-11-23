@@ -80,9 +80,10 @@ class DocumentoVehiculoAdmin(admin.ModelAdmin):
         }),
         ('Vigencia', {
             'fields': ('fecha_expedicion', 'fecha_vencimiento', 'valor'),
-            'description': ('Si dejas el vencimiento vacío se calcula solo: SOAT y '
-                            'tecnomecánica al año de la expedición, el impuesto '
-                            'vehicular el 30 de junio y el rodamiento el 31 de diciembre.'),
+            'description': ('Si dejas el vencimiento vacío se calcula solo: SOAT, '
+                            'tecnomecánica y póliza al año de la expedición, el '
+                            'impuesto vehicular el 30 de junio y el rodamiento el '
+                            '31 de diciembre.'),
         }),
         ('Soporte', {'fields': ('archivo', 'observaciones')}),
         ('Registro', {
