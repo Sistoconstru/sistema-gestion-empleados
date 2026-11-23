@@ -5,6 +5,7 @@ from .views import (
     OdooEmpleadoInactivarView,
     OdooEmpleadoViewSet,
     OdooHealthcheckView,
+    OdooReciboGastoView,
     OdooVacacionEstadoView,
     OdooVacacionImportarView,
 )
@@ -19,4 +20,8 @@ urlpatterns = [
     path('healthcheck/', OdooHealthcheckView.as_view(), name='odoo-healthcheck'),
     path('vacaciones/estado/', OdooVacacionEstadoView.as_view(), name='odoo-vacacion-estado'),
     path('vacaciones/importar/', OdooVacacionImportarView.as_view(), name='odoo-vacacion-importar'),
+    # Soporte de un gasto de vehículo. El cierre de gastos manda este enlace
+    # en cada renglón para que Odoo archive el recibo con el asiento.
+    path('transporte/gastos/<uuid:gasto_id>/recibo/', OdooReciboGastoView.as_view(),
+         name='odoo-transporte-recibo-gasto'),
 ]

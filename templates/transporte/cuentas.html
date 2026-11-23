@@ -249,6 +249,17 @@
                 {% if not c.esta_activo %}
                     <span class="badge bg-secondary">Anulado</span>
                 {% endif %}
+                {% with estado=c.estado_contabilidad %}
+                    {% if estado == 'rechazado' %}
+                        <span class="badge bg-danger" title="{{ c.ultimo_error }}">
+                            Odoo lo rechazó
+                        </span>
+                    {% elif estado == 'anulado_por_avisar' %}
+                        <span class="badge bg-danger">Falta avisar la anulación</span>
+                    {% elif estado == 'en_cola' %}
+                        <span class="badge bg-warning text-dark">En cola para Odoo</span>
+                    {% endif %}
+                {% endwith %}
                 <div class="small text-muted">
                     {{ c.cantidad }} gasto{{ c.cantidad|pluralize }}
                     {% if c.desde %}· {{ c.desde|date:"d/m/Y" }} – {{ c.hasta|date:"d/m/Y" }}{% endif %}

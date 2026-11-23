@@ -98,6 +98,10 @@ from .permisos import (
     es_admin_transporte, es_conductor, empleado_de, gastos_visibles,
     transporte_required, vehiculos_visibles,
 )
+from .contabilidad import (
+    ENVIADO, RECHAZADO, TIMEOUT_PANTALLA, enviar as enviar_cierre_a_odoo,
+    enviar_anulacion as enviar_anulacion_a_odoo,
+)
 from .cuentas import (
     CierreImposible, anular_cierre, cerrar_cuenta, cuentas_abiertas,
 )
@@ -1018,7 +1022,38 @@ def cerrar_cuenta_vista(request, ambito, sujeto_id):
         + (f', más ${_miles(int(cierre.total_deuda))} de multas a su cargo'
            if cierre.total_deuda else '')
         + '. La cuenta arranca de cero.')
+
+    # El cierre ya está firmado; esto es lo que sigue. Se intenta acá para
+    # que el jefe sepa en el momento si llegó, pero si no llega no se
+    # deshace nada: queda en cola.
+    _contar_a_odoo(request, cierre)
     return redirect('transporte:detalle_cierre', cierre_id=cierre.pk)
+
+
+def _contar_a_odoo(request, cierre):
+    """Manda el cierre a la contabilidad y cuenta en pantalla qué pasó.
+
+    Tres desenlaces y tres mensajes distintos, porque lo que tiene que
+    hacer quien cerró la cuenta es distinto en cada uno: nada, esperar, o
+    ir a hablar con quien lleva la contabilidad.
+    """
+    resultado, detalle = enviar_cierre_a_odoo(cierre, timeout=TIMEOUT_PANTALLA)
+    if resultado == ENVIADO:
+        messages.info(
+            request,
+            'Ya está en la contabilidad de Odoo'
+            + (f' como {detalle}.' if detalle else '.'))
+    elif resultado == RECHAZADO:
+        messages.warning(
+            request,
+            f'Odoo no aceptó el cierre: {detalle} El cierre vale igual en '
+            f'SIGHU, pero allá no quedó contabilizado y no se reintenta '
+            f'solo.')
+    else:
+        messages.info(
+            request,
+            'Odoo no contestó ahora mismo, así que el cierre quedó en cola. '
+            'Se reintenta solo; no hay que volver a cerrar nada.')
 
 
 @login_required
@@ -1052,6 +1087,8 @@ def anular_cierre_vista(request, cierre_id):
         messages.error(request, 'Ese cierre no es de tu flota.')
         return redirect('transporte:cuentas')
 
+    ya_estaba_en_odoo = cierre.sincronizado
+
     try:
         anular_cierre(cierre, request.user, request.POST.get('motivo', ''))
     except CierreImposible as e:
@@ -1062,7 +1099,81 @@ def anular_cierre_vista(request, cierre_id):
         request,
         f'Cierre de {cierre.sujeto} anulado. Sus {cierre.cantidad} gasto'
         f'{"s" if cierre.cantidad != 1 else ""} volvieron a la cuenta abierta.')
+
+    # Si Odoo ya lo tenía, hay que decírselo: esos mismos gastos van a
+    # volver a llegar en el cierre siguiente y sin el aviso quedarían
+    # contabilizados dos veces.
+    if ya_estaba_en_odoo:
+        cierre.refresh_from_db()
+        resultado, detalle = enviar_anulacion_a_odoo(
+            cierre, timeout=TIMEOUT_PANTALLA)
+        if resultado == ENVIADO:
+            messages.info(request, 'Odoo ya sabe que el cierre dejó de valer.')
+        elif resultado == RECHAZADO:
+            messages.warning(
+                request,
+                f'Odoo no aceptó la anulación: {detalle} Ese cierre ya estaba '
+                f'contabilizado allá: hay que reversarlo a mano, porque sus '
+                f'gastos van a volver a llegar en el próximo cierre.')
+        else:
+            messages.warning(
+                request,
+                'Ese cierre ya estaba en Odoo y no se pudo avisar la '
+                'anulación ahora. Queda en cola y se reintenta solo.')
     return redirect('transporte:cuentas')
+
+
+@login_required
+@admin_transporte_required
+@require_POST
+def reenviar_cierre_odoo(request, cierre_id):
+    """Vuelve a intentar el envío a la contabilidad, a mano.
+
+    Existe para los rechazados, que son los únicos que el reintento
+    automático no toca: una vez que alguien arregló del lado de Odoo lo
+    que lo hizo fallar —una cuenta sin configurar, un vehículo que allá no
+    existía— hace falta algo que lo empuje de nuevo. Los que están en cola
+    también se pueden empujar, aunque no haga falta esperar al cron.
+    """
+    cierre = get_object_or_404(CierreGastos, pk=cierre_id)
+    if not CierreGastos.objects.filter(
+            _cierres_del_usuario(request.user), pk=cierre.pk).exists():
+        messages.error(request, 'Ese cierre no es de tu flota.')
+        return redirect('transporte:cuentas')
+
+    destino = redirect('transporte:detalle_cierre', cierre_id=cierre.pk)
+
+    if not cierre.esta_activo:
+        if not cierre.sincronizado:
+            messages.info(
+                request,
+                'Ese cierre está anulado y nunca llegó a Odoo. No hay nada '
+                'que enviar.')
+            return destino
+        # Lo que falta mandar de un cierre anulado es la anulación, no el
+        # cierre: reenviarlo lo volvería a contabilizar.
+        resultado, detalle = enviar_anulacion_a_odoo(
+            cierre, timeout=TIMEOUT_PANTALLA)
+        if resultado == ENVIADO:
+            messages.success(request, 'Odoo ya sabe que el cierre dejó de valer.')
+        else:
+            messages.warning(request, f'Sigue sin poder avisarse: {detalle}')
+        return destino
+
+    if cierre.sincronizado:
+        messages.info(
+            request,
+            'Ese cierre ya está en Odoo'
+            + (f' como {cierre.odoo_ref}.' if cierre.odoo_ref else '.')
+            + ' Si allá quedó mal, se corrige allá.')
+        return destino
+
+    # Se limpia la marca de rechazo antes de intentar: si vuelve a fallar,
+    # la vuelve a poner con el motivo nuevo, que es el que sirve.
+    CierreGastos.objects.filter(pk=cierre.pk).update(conflicto_odoo=False)
+    cierre.refresh_from_db()
+    _contar_a_odoo(request, cierre)
+    return destino
 
 
 @login_required

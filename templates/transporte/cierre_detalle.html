@@ -75,6 +75,77 @@
     </div>
     {% endif %}
 
+    {# La contabilidad de los vehículos la lleva Odoo, así que lo que
+       importa saber de un cierre es si allá llegó. #}
+    {% with estado=cierre.estado_contabilidad %}
+    <div class="card mb-3 {% if estado == 'rechazado' or estado == 'anulado_por_avisar' %}border-danger{% elif estado == 'enviado' or estado == 'anulado_avisado' %}border-success{% endif %}">
+        <div class="card-body py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <div class="small text-muted">Contabilidad</div>
+                <div class="fw-semibold">
+                    {% if estado == 'enviado' %}
+                        <i class="fas fa-circle-check text-success me-1"></i>
+                        En la contabilidad de Odoo
+                        {% if cierre.odoo_ref %}como <code>{{ cierre.odoo_ref }}</code>{% endif %}
+                    {% elif estado == 'en_cola' %}
+                        <i class="fas fa-clock text-secondary me-1"></i>
+                        En cola para Odoo
+                    {% elif estado == 'rechazado' %}
+                        <i class="fas fa-triangle-exclamation text-danger me-1"></i>
+                        Odoo lo rechazó
+                    {% elif estado == 'anulado_sin_enviar' %}
+                        <i class="fas fa-minus text-muted me-1"></i>
+                        Nunca llegó a Odoo, y ya está anulado
+                    {% elif estado == 'anulado_por_avisar' %}
+                        <i class="fas fa-triangle-exclamation text-danger me-1"></i>
+                        Está contabilizado en Odoo y falta avisar la anulación
+                    {% else %}
+                        <i class="fas fa-circle-check text-success me-1"></i>
+                        Anulado, y Odoo ya lo sabe
+                    {% endif %}
+                </div>
+                <div class="small text-muted">
+                    {% if estado == 'enviado' %}
+                        Llegó el {{ cierre.fecha_sincronizacion|date:"d/m/Y H:i" }}.
+                        Si quedó mal, se corrige en Odoo.
+                    {% elif estado == 'en_cola' %}
+                        Se reintenta solo cada dos horas. El cierre vale igual
+                        desde que se firmó.
+                        {% if cierre.ultimo_error %}
+                        <div class="fst-italic">{{ cierre.ultimo_error }}</div>
+                        {% endif %}
+                    {% elif estado == 'rechazado' %}
+                        {{ cierre.ultimo_error }}
+                        <div>Esto no se reintenta solo. Cuando esté resuelto en
+                             Odoo, reenvíalo desde acá.</div>
+                    {% elif estado == 'anulado_sin_enviar' %}
+                        No hay nada que deshacer del otro lado.
+                    {% elif estado == 'anulado_por_avisar' %}
+                        Sus gastos van a volver a llegar en el próximo cierre,
+                        así que mientras no se avise, allá quedan contados dos
+                        veces.
+                        {% if cierre.ultimo_error_anulacion %}
+                        <div class="fst-italic">{{ cierre.ultimo_error_anulacion }}</div>
+                        {% endif %}
+                    {% else %}
+                        Avisado el {{ cierre.fecha_sincronizacion_anulacion|date:"d/m/Y H:i" }}.
+                    {% endif %}
+                </div>
+            </div>
+            {% if cierre.pendiente_para_odoo or estado == 'rechazado' %}
+            <form method="post"
+                  action="{% url 'transporte:reenviar_cierre_odoo' cierre.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-paper-plane me-1"></i>
+                    {% if not cierre.esta_activo %}Avisar la anulación{% else %}Reenviar a Odoo{% endif %}
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+
     <div class="card mb-3">
         <div class="table-responsive">
             <table class="table table-sm align-middle mb-0">
@@ -149,6 +220,14 @@
                 vuelven a la cuenta abierta y se pueden corregir. El cierre no
                 se borra: queda con el motivo y con quién lo anuló.
             </p>
+            {% if cierre.sincronizado %}
+            <p class="small text-danger mb-2">
+                <i class="fas fa-triangle-exclamation me-1"></i>
+                Este cierre ya está en la contabilidad de Odoo. Al anularlo se
+                le avisa para que reversen el asiento, porque estos mismos
+                gastos van a volver a llegar en el cierre siguiente.
+            </p>
+            {% endif %}
             <form method="post" action="{% url 'transporte:anular_cierre' cierre.id %}"
                   class="row g-2 align-items-end">
                 {% csrf_token %}

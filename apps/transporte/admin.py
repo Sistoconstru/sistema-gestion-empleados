@@ -161,8 +161,9 @@ class CierreGastosAdmin(admin.ModelAdmin):
     una constancia. Si está mal, se anula desde el módulo y se rehace.
     """
     list_display = ('fecha_cierre', 'ambito', 'sujeto', 'cantidad',
-                    'total_costo', 'total_deuda', 'cerrado_por', 'anulado')
-    list_filter = ('ambito', 'fecha_cierre')
+                    'total_costo', 'total_deuda', 'cerrado_por', 'anulado',
+                    'estado_contabilidad_texto')
+    list_filter = ('ambito', 'sincronizado', 'conflicto_odoo', 'fecha_cierre')
     search_fields = ('conductor__nombres', 'conductor__apellidos',
                      'conductor__numero_documento', 'vehiculo__placa',
                      'observaciones')
@@ -179,6 +180,10 @@ class CierreGastosAdmin(admin.ModelAdmin):
         return not obj.esta_activo
     anulado.short_description = 'Anulado'
     anulado.boolean = True
+
+    def estado_contabilidad_texto(self, obj):
+        return obj.estado_contabilidad_texto
+    estado_contabilidad_texto.short_description = 'Contabilidad'
 
 
 @admin.register(ServicioIniciado)

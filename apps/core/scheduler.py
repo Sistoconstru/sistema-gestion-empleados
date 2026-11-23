@@ -116,6 +116,20 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 8b: Cierres de gastos hacia la contabilidad de Odoo, cada 2 h.
+        # Más seguido que la flota porque acá lo que espera es plata: un
+        # cierre que no llegó es una legalización que el contador no ve.
+        scheduler.add_job(
+            _enviar_cierres_contabilidad,
+            'interval',
+            hours=2,
+            id='enviar_cierres_contabilidad',
+            name='Enviar cierres de gastos a Odoo',
+            replace_existing=True,
+            misfire_grace_time=1800,
+            coalesce=True,
+        )
+
         # Tarea 7: Documentos de vehículos por vencer, a las 7:30 AM.
         # Más tarde que el resto a propósito: avisa de un trámite que hay que
         # hacer en horario de oficina, y a las 4 AM nadie lo lee.
@@ -453,6 +467,27 @@ def _sincronizar_vehiculos():
 
     except Exception as e:
         logger.error(f'❌ Error al sincronizar la flota: {e}', exc_info=True)
+
+
+def _enviar_cierres_contabilidad():
+    """
+    Manda a la contabilidad de Odoo los cierres de gastos que no llegaron.
+
+    El envío se intenta al cerrar la cuenta; esto recoge lo que falló por
+    red o porque Odoo estaba caído. Los que Odoo rechazó a propósito no se
+    reintentan: se resuelven a mano desde el detalle del cierre.
+
+    Ver apps/transporte/management/commands/enviar_cierres_contabilidad.py
+    """
+    try:
+        logger.info('🔄 Enviando cierres de gastos a Odoo...')
+
+        call_command('enviar_cierres_contabilidad')
+
+        logger.info('✅ Cierres de gastos al día')
+
+    except Exception as e:
+        logger.error(f'❌ Error al enviar cierres de gastos: {e}', exc_info=True)
 
 
 def _alertar_licencias_conductores():

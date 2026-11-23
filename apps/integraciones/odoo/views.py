@@ -1,3 +1,6 @@
+import logging
+import os
+
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q
 from rest_framework import mixins, viewsets, status
@@ -10,6 +13,8 @@ from apps.employees.models import Empleado
 
 from .auth import OdooServiceTokenAuthentication
 from .serializers import OdooEmpleadoSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class OdooPagination(PageNumberPagination):
@@ -667,3 +672,51 @@ class OdooEmpleadoInactivarView(APIView):
              'fecha_retiro': fecha_retiro.isoformat()},
             status=status.HTTP_200_OK,
         )
+
+
+class OdooReciboGastoView(APIView):
+    """Entrega el soporte de un gasto de vehículo para que Odoo lo archive.
+
+    El cierre de gastos le manda a Odoo un enlace a esta vista por cada
+    renglón, en vez de la URL de S3 o del archivo en base64:
+
+    - La URL del bucket va firmada y caduca en una hora. Un soporte
+      contable tiene que poder abrirse cuando lo pida la revisoría, no
+      solo el día que se envió.
+    - En base64 tampoco: un cierre puede traer cuarenta fotos de recibo y
+      el payload pesaría más que la contabilidad del mes. Odoo descarga el
+      que necesite, cuando lo necesite.
+
+    Es `GET` autenticado con el mismo `SIGHU_ODOO_TOKEN` de los demás
+    endpoints entrantes. El archivo se lee por el storage, no armando una
+    ruta con lo que venga en la URL: lo único que se recibe es el id del
+    gasto.
+    """
+    authentication_classes = [OdooServiceTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, gasto_id):
+        from django.http import FileResponse
+
+        from apps.transporte.models import GastoVehiculo
+
+        gasto = GastoVehiculo.objects.filter(pk=gasto_id).first()
+        if gasto is None:
+            return Response({'detail': 'No existe ese gasto.'},
+                            status=status.HTTP_404_NOT_FOUND)
+        if not gasto.recibo:
+            return Response({'detail': 'Ese gasto no tiene recibo cargado.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            archivo = gasto.recibo.open('rb')
+        except (FileNotFoundError, OSError) as e:
+            logger.warning('Recibo del gasto %s ilegible: %s', gasto_id, e)
+            return Response({'detail': 'El recibo no se pudo leer.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        nombre = os.path.basename(gasto.recibo.name) or f'recibo-{gasto_id}'
+        respuesta = FileResponse(archivo, as_attachment=True, filename=nombre)
+        # Para que el asiento quede trazable sin abrir el archivo.
+        respuesta['X-SIGHU-Gasto'] = str(gasto.pk)
+        return respuesta

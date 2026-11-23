@@ -647,6 +647,35 @@ class CierreGastos(models.Model):
         null=True, blank=True, related_name='cierres_gastos_anulados')
     motivo_anulacion = models.CharField(max_length=300, blank=True)
 
+    # --- Lo que sabe Odoo de este cierre --------------------------------
+    #
+    # La contabilidad de los vehículos vive en Odoo, así que el cierre es
+    # el documento que viaja: un total sellado, con fecha, responsable y
+    # renglones que ya no cambian. Se guarda aquí si llegó, porque el
+    # cierre no puede depender de que Odoo conteste: se firma igual y el
+    # envío se reintenta.
+    sincronizado = models.BooleanField(
+        default=False,
+        help_text='True cuando Odoo ya recibió el cierre.')
+    fecha_sincronizacion = models.DateTimeField(null=True, blank=True)
+    odoo_ref = models.CharField(
+        max_length=60, blank=True,
+        help_text='Documento que Odoo creó con este cierre, para poder buscarlo allá.')
+    ultimo_error = models.CharField(
+        max_length=300, blank=True,
+        help_text='Por qué falló el último intento de enviarlo.')
+    conflicto_odoo = models.BooleanField(
+        default=False,
+        help_text='True si Odoo lo rechazó a propósito. El motivo va en ultimo_error.')
+
+    # La anulación lleva su propio estado: si el cierre ya se contabilizó,
+    # deshacerlo en SIGHU no deshace el asiento. Hay que decírselo, y ese
+    # aviso puede fallar por su cuenta.
+    anulacion_sincronizada = models.BooleanField(default=False)
+    fecha_sincronizacion_anulacion = models.DateTimeField(null=True, blank=True)
+    ultimo_error_anulacion = models.CharField(max_length=300, blank=True)
+    conflicto_odoo_anulacion = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'transporte_cierres_gastos'
         verbose_name = 'Cierre de gastos'
@@ -670,6 +699,7 @@ class CierreGastos(models.Model):
             models.Index(fields=['ambito', '-fecha_cierre']),
             models.Index(fields=['conductor', '-fecha_cierre']),
             models.Index(fields=['vehiculo', '-fecha_cierre']),
+            models.Index(fields=['sincronizado']),
         ]
 
     def __str__(self):
@@ -687,6 +717,45 @@ class CierreGastos(models.Model):
     @property
     def esta_activo(self):
         return self.anulado_en is None
+
+    @property
+    def estado_contabilidad(self):
+        """Dónde va el cierre camino a la contabilidad de Odoo.
+
+        Cuatro situaciones que se tratan distinto, y por eso no alcanza un
+        booleano: lo que está en cola se arregla solo, lo rechazado hay que
+        ir a resolverlo, y un cierre anulado que ya se había contabilizado
+        tiene un asiento allá esperando que alguien lo reverse.
+        """
+        if not self.esta_activo:
+            if not self.sincronizado:
+                return 'anulado_sin_enviar'
+            return ('anulado_avisado' if self.anulacion_sincronizada
+                    else 'anulado_por_avisar')
+        if self.conflicto_odoo:
+            return 'rechazado'
+        return 'enviado' if self.sincronizado else 'en_cola'
+
+    @property
+    def estado_contabilidad_texto(self):
+        return {
+            'enviado': 'En la contabilidad de Odoo',
+            'en_cola': 'En cola para Odoo',
+            'rechazado': 'Odoo lo rechazó',
+            'anulado_sin_enviar': 'Anulado, nunca llegó a Odoo',
+            'anulado_por_avisar': 'Anulado, falta avisarle a Odoo',
+            'anulado_avisado': 'Anulado y avisado a Odoo',
+        }[self.estado_contabilidad]
+
+    @property
+    def pendiente_para_odoo(self):
+        """¿Hay algo que todavía haya que mandarle a Odoo de este cierre?"""
+        if self.esta_activo:
+            return not self.sincronizado and not self.conflicto_odoo
+        # Anulado: solo se avisa si alcanzó a enviarse. Un cierre que
+        # nunca llegó no tiene nada que deshacer del otro lado.
+        return (self.sincronizado and not self.anulacion_sincronizada
+                and not self.conflicto_odoo_anulacion)
 
     def gastos(self):
         """Los gastos que quedaron sellados por este cierre."""

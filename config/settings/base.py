@@ -231,6 +231,14 @@ SIGHU_ODOO_PUSH_TIMEOUT = config('SIGHU_ODOO_PUSH_TIMEOUT', default=2, cast=int)
 SIGHU_ODOO_BENEFICIOS_URL = config('SIGHU_ODOO_BENEFICIOS_URL', default='')
 SIGHU_ODOO_BENEFICIOS_TIMEOUT = config('SIGHU_ODOO_BENEFICIOS_TIMEOUT', default=30, cast=int)
 
+# Dirección pública de SIGHU, para armar enlaces que alguien de afuera va a
+# abrir. Hoy la usan los recibos de gastos que Odoo descarga al contabilizar
+# un cierre: el enlace tiene que servir dentro de meses, cuando ya no hay
+# ningún request del cual derivar el host.
+SIGHU_URL_PUBLICA = config(
+    'SIGHU_URL_PUBLICA',
+    default='https://empleados.sistemaconstruinmuniza.com')
+
 # Email Configuration (Para notificaciones)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')

@@ -38,4 +38,6 @@ urlpatterns = [
     path('cierre/<uuid:cierre_id>/', views.detalle_cierre, name='detalle_cierre'),
     path('cierre/<uuid:cierre_id>/anular/', views.anular_cierre_vista,
          name='anular_cierre'),
+    path('cierre/<uuid:cierre_id>/reenviar-odoo/', views.reenviar_cierre_odoo,
+         name='reenviar_cierre_odoo'),
 ]

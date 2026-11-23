@@ -10,6 +10,10 @@ mismo token saliente de empleados, vacaciones y beneficios:
     GET  /sighu_sync/vehiculos[?incluir_archivados=1]
     POST /sighu_sync/webhook/vehiculo_asignacion
     GET  /sighu_sync/viajes_pendientes
+    POST /sighu_sync/webhook/servicio_iniciado
+    POST /sighu_sync/webhook/servicio_finalizado
+    POST /sighu_sync/webhook/cierre_gastos
+    POST /sighu_sync/webhook/cierre_gastos_anulado
     GET  /sighu_sync/clientes?q=
 
 Fechas sin hora en `YYYY-MM-DD`, y con hora en ISO 8601 con offset
@@ -301,6 +305,55 @@ def avisar_servicio_finalizado(servicio, timeout=None):
                 servicio.novedad)
     return _pedir('POST', 'webhook/servicio_finalizado',
                   json=cuerpo, timeout=timeout)
+
+
+# --- Contabilidad de gastos ---------------------------------------------
+
+def enviar_cierre_gastos(payload, timeout=None):
+    """Le entrega a Odoo un cierre de cuentas para que lo contabilice.
+
+    El endpoint todavía no existe del lado de Odoo: mientras tanto esto
+    responde 404, el cierre queda en cola y se reintenta. El cierre ya
+    está firmado en SIGHU, así que no se pierde nada esperando.
+
+    Contrato propuesto —el payload completo está en
+    `docs/INTEGRACION_ODOO_GASTOS_VEHICULOS.md`—:
+
+        POST /sighu_sync/webhook/cierre_gastos
+
+    `cierre_id` es la llave de idempotencia: repetir el mismo envío
+    responde 200 y no duplica nada. `gasto_id`, en cada renglón, es la
+    llave de la línea, y el mismo gasto llega en dos cierres distintos
+    —el del conductor y el del vehículo—, así que sirve para no contarlo
+    dos veces.
+    """
+    logger.info('Enviando a Odoo el cierre %s (%s, %s gastos, costo %s)',
+                payload.get('cierre_id'), payload.get('ambito'),
+                payload.get('cantidad'), payload.get('total_costo'))
+    return _pedir('POST', 'webhook/cierre_gastos', json=payload, timeout=timeout)
+
+
+def avisar_cierre_anulado(payload, timeout=None):
+    """Le avisa a Odoo que un cierre que ya recibió dejó de valer.
+
+    Un cierre se anula cuando se hizo mal: sus gastos vuelven a quedar
+    abiertos en SIGHU y van a llegar otra vez, en el cierre siguiente. Si
+    Odoo ya lo contabilizó tiene que reversar el asiento, porque si no el
+    costo queda contado dos veces.
+
+        POST /sighu_sync/webhook/cierre_gastos_anulado
+        {
+          "cierre_id": "…",
+          "ambito": "conductor",
+          "anulado_en": "2026-11-23T15:40:00-05:00",
+          "anulado_por": "Diego Espinal",
+          "motivo": "Faltaban dos peajes del viaje a Bogotá."
+        }
+    """
+    logger.info('Avisando a Odoo la anulación del cierre %s',
+                payload.get('cierre_id'))
+    return _pedir('POST', 'webhook/cierre_gastos_anulado',
+                  json=payload, timeout=timeout)
 
 
 def buscar_clientes(q):
