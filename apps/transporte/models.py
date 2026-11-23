@@ -175,7 +175,7 @@ class DocumentoVehiculo(models.Model):
         (TECNOMECANICA, 'Revisión tecnicomecánica'),
         (POLIZA, 'Póliza de responsabilidad civil'),
         (IMPUESTO, 'Impuesto vehicular'),
-        (RODAMIENTO, 'Impuesto de rodamiento'),
+        (RODAMIENTO, 'Semaforización o derechos de tránsito'),
     ]
 
     # Los que vencen al año de expedidos, no en una fecha de calendario.
@@ -184,6 +184,15 @@ class DocumentoVehiculo(models.Model):
     # Los que son un papel emitido por alguien: tienen número y entidad.
     # El impuesto y el rodamiento son un pago, no una póliza.
     CON_NUMERO_Y_ENTIDAD = (SOAT, TECNOMECANICA, POLIZA)
+
+    # Tributos anuales: el plazo es una fecha del calendario, (mes, día).
+    # El impuesto vehicular se paga hasta junio; la semaforización se puede
+    # pagar en cualquier momento del año, así que su plazo es el 31 de
+    # diciembre.
+    LIMITES_ANUALES = {
+        IMPUESTO: (6, 30),
+        RODAMIENTO: (12, 31),
+    }
 
     # Días antes del vencimiento en que se empieza a avisar. Un SOAT se
     # consigue en el día, pero la tecnomecánica puede necesitar cita y un
@@ -219,7 +228,7 @@ class DocumentoVehiculo(models.Model):
     # aplica, el documento queda registrado como constancia pero no se avisa.
     aplica = models.BooleanField(
         default=True,
-        help_text='Desmarcar cuando el tributo no aplica a este vehículo (p. ej. rodamiento en municipios que no lo cobran).',
+        help_text='Desmarcar cuando el tributo no aplica a este vehículo (p. ej. semaforización en municipios que no la cobran).',
     )
 
     archivo = models.FileField(
@@ -254,12 +263,17 @@ class DocumentoVehiculo(models.Model):
     def calcular_vencimiento(self):
         """Fecha de vencimiento según el tipo, o None si no se puede.
 
-        SOAT, tecnomecánica y póliza vencen al año de expedidos. El
-        impuesto vehicular y el de rodamiento son anuales de calendario y
-        vencen en una fecha fija, no a los 365 días del pago.
+        SOAT, tecnomecánica y póliza vencen al año de expedidos.
+
+        Los tributos anuales no: lo que vence no es el pago sino el plazo
+        para hacer el siguiente, que cae en una fecha fija del calendario.
+        Por eso un pago del año en curso queda vigente hasta el plazo del
+        año que viene.
 
         Lo calculado es una propuesta: el campo queda editable porque una
-        póliza puede venir a seis meses o a dos años según se contrate.
+        póliza puede venir a seis meses o a dos años según se contrate, y
+        porque un tributo pagado tarde corresponde al año anterior y
+        entonces la fecha hay que escribirla.
         """
         if self.tipo in self.ANUALES_DESDE_EXPEDICION:
             if not self.fecha_expedicion:
@@ -272,12 +286,18 @@ class DocumentoVehiculo(models.Model):
                 return self.fecha_expedicion.replace(
                     year=self.fecha_expedicion.year + 1, day=28)
 
+        limite = self.LIMITES_ANUALES.get(self.tipo)
+        if not limite:
+            return None
+
+        # El pago cubre su propio año: lo que vence es el plazo del año
+        # siguiente. Un impuesto de 2026 pagado en junio de 2026 deja al
+        # vehículo al día hasta el 30 de junio de 2027, que es cuando toca
+        # el de 2027. Calcularlo sobre el mismo año lo marcaba vencido a
+        # los doce días de haberlo pagado.
+        mes, dia = limite
         anio = (self.fecha_expedicion or date.today()).year
-        if self.tipo == self.IMPUESTO:
-            return date(anio, 6, 30)
-        if self.tipo == self.RODAMIENTO:
-            return date(anio, 12, 31)
-        return None
+        return date(anio + 1, mes, dia)
 
     def save(self, *args, **kwargs):
         if not self.fecha_vencimiento:

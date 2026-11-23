@@ -66,9 +66,11 @@ class DocumentoVehiculoForm(forms.ModelForm):
         help_texts = {
             'fecha_vencimiento': (
                 'Déjalo vacío y se calcula solo: SOAT, tecnomecánica y '
-                'póliza al año de la expedición, impuesto el 30 de junio y '
-                'rodamiento el 31 de diciembre. Si la póliza es a otro plazo, '
-                'escribe la fecha.'),
+                'póliza al año de la expedición; el impuesto vehicular al 30 '
+                'de junio del año siguiente y la semaforización al 31 de '
+                'diciembre del año siguiente, que es cuando vence el plazo '
+                'para hacer el pago que sigue. Si no corresponde, escribe la '
+                'fecha.'),
             'aplica': 'Desmarca si este tributo no aplica al vehículo.',
         }
 
