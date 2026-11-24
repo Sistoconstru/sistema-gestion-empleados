@@ -510,7 +510,21 @@ class GastoVehiculo(models.Model):
 
     def __str__(self):
         donde = self.vehiculo.placa if self.vehiculo_id else 'sin vehículo'
-        return f'{self.get_tipo_display()} {self.monto} — {donde} ({self.fecha})'
+        return f'{self.tipo_texto} {self.monto} — {donde} ({self.fecha})'
+
+    @property
+    def tipo_texto(self):
+        """El nombre del gasto para mostrarlo.
+
+        En "Otro" es lo que escribió quien lo registró: una lista llena de
+        "Otro" no dice nada, y la descripción es justamente el tipo que no
+        estaba en la lista. Odoo sigue recibiendo `tipo: "otro"` y la
+        descripción aparte, que es lo acordado.
+        """
+        texto = (self.descripcion or '').strip()
+        if self.tipo == self.OTRO and texto:
+            return texto[:1].upper() + texto[1:]
+        return self.get_tipo_display()
 
     def clean(self):
         errores = {}
@@ -519,7 +533,7 @@ class GastoVehiculo(models.Model):
         if self.tipo != self.MULTA and self.responsable:
             errores['responsable'] = 'El responsable solo aplica a las multas.'
         if self.tipo == self.OTRO and not self.descripcion.strip():
-            errores['descripcion'] = 'Si el tipo es "Otro", explica de qué se trata.'
+            errores['descripcion'] = 'Si es "Otro", escribe en qué fue el gasto.'
         if self.fecha and self.fecha > date.today():
             errores['fecha'] = 'No se puede registrar un gasto con fecha futura.'
         if errores:

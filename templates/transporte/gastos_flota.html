@@ -214,7 +214,7 @@
                     {% endif %}
                 </div>
                 <div class="col-md-3">
-                    {{ g.get_tipo_display }}
+                    {{ g.tipo_texto }}
                     {% if g.tipo == 'multa' and g.responsable %}
                         <span class="badge {% if g.responsable == 'conductor' %}bg-danger{% else %}bg-secondary{% endif %}">
                             paga {{ g.get_responsable_display|lower }}
@@ -222,7 +222,7 @@
                     {% endif %}
                     <div class="small text-muted">
                         {{ g.fecha|date:"d/m/Y" }}
-                        {% if g.descripcion %} · {{ g.descripcion|truncatechars:34 }}{% endif %}
+                        {% if g.descripcion and g.tipo != 'otro' %} · {{ g.descripcion|truncatechars:34 }}{% endif %}
                     </div>
                 </div>
                 <div class="col-md-2 text-md-end">

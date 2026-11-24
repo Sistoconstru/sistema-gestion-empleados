@@ -738,7 +738,7 @@ def registrar_gasto(request):
             gasto = form.save(usuario=request.user)
             messages.success(
                 request,
-                f'Gasto de {gasto.get_tipo_display().lower()} por '
+                f'Gasto de {_tipo_en_frase(gasto)} por '
                 f'${_miles(int(gasto.monto))} registrado'
                 f'{_donde(gasto)}. Queda pendiente de revisión.')
             return redirect('transporte:mis_gastos')
@@ -749,6 +749,18 @@ def registrar_gasto(request):
         'form': form,
         'vehiculo': vehiculo,
     })
+
+
+def _tipo_en_frase(gasto):
+    """El tipo para ir en medio de una oración: "de combustible", "de grúa".
+
+    Lo que escribió el usuario en "Otro" no se pasa a minúsculas: puede
+    traer un nombre propio, y "taller el pistón" se lee peor que el error
+    que se quería evitar.
+    """
+    if gasto.tipo == gasto.OTRO and (gasto.descripcion or '').strip():
+        return gasto.descripcion.strip()
+    return gasto.get_tipo_display().lower()
 
 
 def _donde(gasto):
@@ -791,7 +803,7 @@ def registrar_gasto_admin(request):
             gasto.save()
             messages.success(
                 request,
-                f'Gasto de {gasto.get_tipo_display().lower()} por '
+                f'Gasto de {_tipo_en_frase(gasto)} por '
                 f'${_miles(int(gasto.monto))} registrado a nombre de '
                 f'{gasto.conductor.nombre_completo}{_donde(gasto)}. '
                 f'Queda aprobado.')
@@ -1236,9 +1248,13 @@ def _avisar_rechazo(gasto):
                 'enviar_push': True,
             },
         )
-        titulo = f'Gasto rechazado — {gasto.vehiculo.placa}'
+        # Sin vehículo no hay placa que poner, y antes esto levantaba acá
+        # mismo: el except de abajo se lo tragaba y el conductor nunca se
+        # enteraba del rechazo de su almuerzo en ruta.
+        titulo = ('Gasto rechazado — '
+                  f'{gasto.vehiculo.placa if gasto.vehiculo_id else gasto.tipo_texto}')
         cuerpo = (
-            f'Tu gasto de {gasto.get_tipo_display().lower()} del '
+            f'Tu gasto de {_tipo_en_frase(gasto)} del '
             f'{gasto.fecha:%d/%m/%Y} fue rechazado. '
             f'Motivo: {gasto.observaciones_revision}')
         Notificacion.objects.create(

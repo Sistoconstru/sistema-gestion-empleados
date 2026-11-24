@@ -164,13 +164,13 @@
                     <tr>
                         <td class="small">{{ g.fecha|date:"d/m/Y" }}</td>
                         <td>
-                            {{ g.get_tipo_display }}
+                            {{ g.tipo_texto }}
                             {% if g.tipo == 'multa' and g.responsable %}
                             <span class="badge {% if g.responsable == 'conductor' %}bg-danger{% else %}bg-secondary{% endif %}">
                                 paga {{ g.get_responsable_display|lower }}
                             </span>
                             {% endif %}
-                            {% if g.descripcion %}
+                            {% if g.descripcion and g.tipo != 'otro' %}
                             <div class="small text-muted">{{ g.descripcion }}</div>
                             {% endif %}
                         </td>

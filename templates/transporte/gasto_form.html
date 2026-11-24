@@ -72,6 +72,16 @@
             {% for e in form.tipo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
         </div>
 
+        {# Debajo del tipo y no al final: en "Otro" es donde se dice qué fue, #}
+        {# y si queda después de la fecha nadie lo asocia con el desplegable. #}
+        <div class="mb-3" id="bloque-descripcion">
+            <label class="form-label" for="{{ form.descripcion.id_for_label }}" id="label-descripcion">
+                Detalle <span class="text-muted small">(opcional)</span>
+            </label>
+            {{ form.descripcion }}
+            {% for e in form.descripcion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
         <div class="mb-3">
             <label class="form-label" for="{{ form.monto.id_for_label }}">Valor</label>
             <div class="input-group input-group-lg">
@@ -104,14 +114,6 @@
                 <label class="form-label" for="{{ form.kilometraje.id_for_label }}">Kilometraje</label>
                 {{ form.kilometraje }}
             </div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="{{ form.descripcion.id_for_label }}">
-                Detalle <span class="text-muted small">(opcional)</span>
-            </label>
-            {{ form.descripcion }}
-            {% for e in form.descripcion.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
         </div>
 
         {# --- Recibo: cámara primero, que es como se usa de verdad --- #}
@@ -172,6 +174,28 @@
     if (selectTipo) {
         selectTipo.addEventListener('change', alternarResponsable);
         alternarResponsable();
+    }
+
+    // En "Otro" el detalle deja de ser opcional: es el nombre del gasto.
+    // El servidor lo exige igual; esto es para que se note antes de enviar.
+    var labelDesc = document.getElementById('label-descripcion');
+    var inputDesc = document.querySelector('input[name="descripcion"]');
+    var placeholderNormal = inputDesc ? inputDesc.getAttribute('placeholder') : '';
+    function alternarDescripcion(enfocar) {
+        if (!labelDesc || !inputDesc) return;
+        var esOtro = selectTipo && selectTipo.value === 'otro';
+        labelDesc.innerHTML = esOtro
+            ? '¿En qué fue el gasto? <span class="text-danger">*</span>'
+            : 'Detalle <span class="text-muted small">(opcional)</span>';
+        inputDesc.placeholder = esOtro
+            ? 'Grúa, repuesto de espejo, cerrajero...'
+            : placeholderNormal;
+        inputDesc.required = esOtro;
+        if (esOtro && enfocar) inputDesc.focus();
+    }
+    if (selectTipo) {
+        selectTipo.addEventListener('change', function () { alternarDescripcion(true); });
+        alternarDescripcion(false);
     }
 
     // La cámara y el selector de archivo son el mismo campo: el botón solo

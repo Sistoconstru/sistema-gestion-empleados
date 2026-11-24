@@ -114,7 +114,7 @@
             <div class="card-body py-2">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <strong>{{ g.get_tipo_display }}</strong>
+                        <strong>{{ g.tipo_texto }}</strong>
                         {% if g.tipo == 'multa' and g.responsable %}
                             <span class="badge bg-light text-dark border ms-1">
                                 paga {{ g.get_responsable_display|lower }}
@@ -122,7 +122,7 @@
                         {% endif %}
                         <div class="small text-muted">
                             {{ g.fecha|date:"d/m/Y" }}
-                            {% if g.descripcion %} · {{ g.descripcion }}{% endif %}
+                            {% if g.descripcion and g.tipo != 'otro' %} · {{ g.descripcion }}{% endif %}
                         </div>
                     </div>
                     <div class="text-end">
