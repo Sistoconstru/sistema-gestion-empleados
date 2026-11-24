@@ -1,7 +1,7 @@
-{% load static %}// SIGHU service worker — v2 (postMessage a clientes al recibir push)
+{% load static %}// SIGHU service worker — v3 (el clic en una notificación no secuestra la pestaña)
 // Mantiene la app instalable, cachea shell mínimo y maneja push notifications.
 
-const CACHE_NAME = 'sighu-shell-v2';
+const CACHE_NAME = 'sighu-shell-v3';
 const OFFLINE_URL = '/pwa/offline/';
 const ICON_192 = '{% static "pwa/icon-192.png" %}';
 const ICON_512 = '{% static "pwa/icon-512.png" %}';
@@ -84,21 +84,52 @@ self.addEventListener('push', (event) => {
 });
 
 // Click en la notificación (o en un botón de acción) — enfoca ventana o abre nueva
+//
+// Lo importante acá es lo que NO se hace: no se navega la ventana que el
+// usuario ya tiene abierta. Antes se tomaba la primera y se le hacía
+// `navigate(targetUrl)`, así que un aviso de mensaje nuevo se llevaba por
+// delante la página en la que estuviera trabajando. Desde su lado se veía
+// como que el sistema salta solo: apretaba un botón de gastos y aparecía en
+// una conversación, sin relación aparente.
+//
+// Ahora la ventana abierta solo se reusa cuando ya está en el destino —ahí
+// no hay nada que perder y enfocarla es justo lo que se espera—; en
+// cualquier otro caso se abre una nueva y la página de trabajo queda
+// intacta.
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
     const dataUrl = (event.notification.data && event.notification.data.url) || '/';
     const actionUrls = (event.notification.data && event.notification.data.actionUrls) || {};
     // Si tocó un botón de acción con URL propia, gana esa; si no, la general.
     const targetUrl = (event.action && actionUrls[event.action]) || dataUrl;
+    // La url sale de `datos_adicionales` de la notificación, o sea de la base.
+    // Si viniera mal escrita, dejar que `new URL` levante acá mataría el
+    // handler entero y el clic no haría nada: mejor caer a la raíz.
+    let destino;
+    try {
+        destino = new URL(targetUrl, self.location.origin);
+    } catch (e) {
+        destino = new URL('/', self.location.origin);
+    }
+
     event.waitUntil(
         self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             for (const client of clientList) {
-                if ('focus' in client) {
-                    client.navigate(targetUrl);
-                    return client.focus();
-                }
+                let mismaPagina = false;
+                try {
+                    mismaPagina = new URL(client.url).pathname === destino.pathname;
+                } catch (e) { /* url rara: se trata como distinta */ }
+                if (mismaPagina && 'focus' in client) return client.focus();
             }
-            if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+            if (self.clients.openWindow) return self.clients.openWindow(destino.href);
+            // Sin openWindow —raro, pero pasa en algunos webviews— es mejor
+            // reusar una ventana que dejar el clic sin efecto.
+            const alguna = clientList[0];
+            if (alguna && 'navigate' in alguna) {
+                return alguna.navigate(destino.href)
+                    .then((c) => (c && 'focus' in c) ? c.focus() : undefined)
+                    .catch(() => undefined);
+            }
         })
     );
 });
