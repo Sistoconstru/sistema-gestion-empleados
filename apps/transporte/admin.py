@@ -189,17 +189,17 @@ class CierreGastosAdmin(admin.ModelAdmin):
 @admin.register(ServicioIniciado)
 class ServicioIniciadoAdmin(admin.ModelAdmin):
     """Las salidas que marcan los conductores. Aquí solo se consultan."""
-    list_display = ('iniciado_en', 'ref', 'vehiculo', 'conductor',
+    list_display = ('iniciado_en', 'ref', 'viaje_ref', 'vehiculo', 'conductor',
                     'entregado_en', 'novedad', 'estado_aviso', 'anulado')
     list_filter = ('conflicto_odoo', 'conflicto_odoo_entrega', 'novedad',
                    'sincronizado', 'entrega_sincronizada', 'tipo',
                    'iniciado_en')
-    search_fields = ('ref', 'resumen', 'vehiculo__placa',
+    search_fields = ('ref', 'viaje_ref', 'resumen', 'vehiculo__placa',
                      'conductor__nombres', 'conductor__apellidos',
                      'conductor__numero_documento')
     autocomplete_fields = ('vehiculo', 'conductor')
-    readonly_fields = ('id', 'odoo_modelo', 'odoo_id', 'ref', 'tipo',
-                       'resumen', 'fecha_creacion', 'fecha_sincronizacion',
+    readonly_fields = ('id', 'odoo_modelo', 'odoo_id', 'ref', 'viaje_odoo_id',
+                       'viaje_ref', 'tipo', 'resumen', 'fecha_creacion', 'fecha_sincronizacion',
                        'ultimo_error', 'fecha_sincronizacion_entrega',
                        'ultimo_error_entrega', 'anulado_en', 'anulado_por',
                        'duracion_texto')

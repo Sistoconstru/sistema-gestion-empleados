@@ -818,12 +818,24 @@ class ServicioIniciado(models.Model):
 
     odoo_modelo = models.CharField(
         max_length=80,
-        help_text='Modelo del documento en Odoo (p. ej. stock.picking).')
+        help_text='Modelo del documento en Odoo (construinmuniza.flete).')
     odoo_id = models.PositiveIntegerField(
         help_text='Id del documento en Odoo.')
     ref = models.CharField(
         max_length=60, blank=True,
         help_text='Referencia legible del servicio, como la muestra Odoo.')
+
+    # El viaje con el que salió, si el servicio iba con otros en la misma
+    # salida del camión. Cada parada sigue siendo su propio registro —se
+    # entrega y se cierra por separado, porque una puede tener devolución y
+    # otra no—, pero salieron juntas, y deshacer la salida es deshacerla
+    # para todas.
+    viaje_odoo_id = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text='Id del viaje en Odoo, si el servicio salió en un viaje.')
+    viaje_ref = models.CharField(
+        max_length=60, blank=True,
+        help_text='Número del viaje (VJE/...), para leerlo.')
     tipo = models.CharField(
         max_length=40, blank=True,
         help_text='Tipo de servicio según Odoo: traslado, entrega, recepción.')
@@ -922,6 +934,7 @@ class ServicioIniciado(models.Model):
         ]
         indexes = [
             models.Index(fields=['odoo_id']),
+            models.Index(fields=['viaje_odoo_id']),
             models.Index(fields=['vehiculo', '-iniciado_en']),
             models.Index(fields=['conductor', '-iniciado_en']),
             models.Index(fields=['sincronizado']),

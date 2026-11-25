@@ -14,6 +14,7 @@ urlpatterns = [
     # Servicios — los asigna Odoo; acá se listan y el conductor marca la salida
     path('servicios/', views.servicios, name='servicios'),
     path('servicios/iniciar/', views.iniciar_servicio, name='iniciar_servicio'),
+    path('servicios/iniciar-viaje/', views.iniciar_viaje, name='iniciar_viaje'),
     path('servicios/<uuid:inicio_id>/deshacer/', views.deshacer_inicio,
          name='deshacer_inicio'),
     path('servicios/<uuid:inicio_id>/entregar/', views.entregar_servicio,

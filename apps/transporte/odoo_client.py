@@ -9,9 +9,9 @@ mismo token saliente de empleados, vacaciones y beneficios:
 
     GET  /sighu_sync/vehiculos[?incluir_archivados=1]
     POST /sighu_sync/webhook/vehiculo_asignacion
-    GET  /sighu_sync/viajes_pendientes
-    POST /sighu_sync/webhook/servicio_iniciado
-    POST /sighu_sync/webhook/servicio_finalizado
+    GET  /sighu_sync/servicios[?estado=&cedula=&modificado_desde=]
+    POST /sighu_sync/webhook/servicio_iniciado   (un servicio, o el viaje entero)
+    POST /sighu_sync/webhook/servicio_finalizado (siempre por servicio)
     POST /sighu_sync/webhook/cierre_gastos
     POST /sighu_sync/webhook/cierre_gastos_anulado
     GET  /sighu_sync/clientes?q=
@@ -187,46 +187,78 @@ def avisar_asignacion(placa, cedula, desde, hasta=None, timeout=None):
 
 # --- Servicios ----------------------------------------------------------
 
-def listar_viajes_pendientes(tipo=None, sede=None, timeout=None):
-    """Traslados entre sedes, entregas de pedidos y recepciones de materia prima.
+# Modelos de Odoo con los que se identifica lo que el conductor inicia y
+# cierra. El servicio es la unidad de entrega; el viaje agrupa varios
+# servicios en una sola salida del camión.
+MODELO_SERVICIO = 'construinmuniza.flete'
+MODELO_VIAJE = 'construinmuniza.flota.viaje'
 
-    Cada uno trae `vehiculo_id` cuando Odoo ya le asignó vehículo, que es lo
-    que permite mostrarle a cada conductor lo suyo. Viene envuelto en
-    `results`; se aceptan las otras formas por si cambia el envoltorio.
 
-    `timeout` corto cuando se llama desde una pantalla: el valor general es
-    para tareas de fondo, no para alguien esperando.
+def listar_servicios(estado=None, cedula=None, timeout=None):
+    """Los servicios de transporte que Odoo ya asignó a un conductor.
+
+    Reemplaza a `viajes_pendientes`, que Odoo retiró el 17/11/2026 cuando
+    los servicios pasaron a ser un registro propio (`SRV/...`) en vez de
+    leerse directo de las entregas y traslados.
+
+    Odoo solo devuelve lo que ya tiene conductor: lo pendiente de asignar
+    es asunto del coordinador y allá se ve. Sin fechas, trae los últimos 30
+    días por fecha programada, hasta 500.
+
+    Cada servicio puede traer un bloque `viaje` cuando va junto con otros
+    en la misma salida (ver docs de Odoo `integracion_sighu_viajes_transporte`).
     """
     params = {}
-    if tipo:
-        params['tipo'] = tipo
-    if sede:
-        params['sede'] = sede
-    datos = _pedir('GET', 'viajes_pendientes',
-                   params=params or None, timeout=timeout)
+    if estado:
+        params['estado'] = estado
+    if cedula:
+        params['cedula'] = str(cedula)
+    datos = _pedir('GET', 'servicios', params=params or None, timeout=timeout)
     if isinstance(datos, dict):
-        datos = datos.get('results') or datos.get('viajes') or datos.get('data') or []
+        datos = datos.get('results') or datos.get('data') or []
     if not isinstance(datos, list):
         raise OdooTransporteError(
-            f'Se esperaba una lista de viajes y llegó {type(datos).__name__}.')
+            f'Se esperaba una lista de servicios y llegó {type(datos).__name__}.')
     return datos
+
+
+def avisar_viaje_iniciado(viaje_odoo_id, viaje_ref, placa, cedula,
+                          iniciado_en, kilometraje=None, timeout=None):
+    """Le avisa a Odoo que el conductor salió con el viaje completo.
+
+    Un solo aviso pone en curso todas las paradas asignadas del viaje y
+    registra un solo kilometraje de salida. Idempotente: un reintento
+    responde `cambio: false`. 409 si el viaje es de otro conductor, va en
+    otro vehículo o no está asignado; 404 si no existe.
+
+    El reintento de fondo no usa esto: reavisa parada por parada con
+    `avisar_servicio_iniciado`, que Odoo acepta igual y que sirve aunque el
+    viaje haya cambiado de paradas entre tanto.
+    """
+    cuerpo = {
+        'odoo_modelo': MODELO_VIAJE,
+        'odoo_id': viaje_odoo_id,
+        'ref': viaje_ref,
+        'placa': placa,
+        'cedula': str(cedula),
+        'iniciado_en': iniciado_en.isoformat(),
+    }
+    if kilometraje is not None:
+        cuerpo['kilometraje'] = kilometraje
+    logger.info('Avisando a Odoo la salida del viaje %s (%s)',
+                viaje_ref or viaje_odoo_id, placa)
+    return _pedir('POST', 'webhook/servicio_iniciado',
+                  json=cuerpo, timeout=timeout)
 
 
 def avisar_servicio_iniciado(servicio, timeout=None):
     """Le avisa a Odoo que el conductor salió a hacer un servicio.
 
-    El endpoint todavía no existe del lado de Odoo: mientras tanto esto
-    responde 404 y el inicio queda marcado para reintentar, que es justo lo
-    que se quiere. El dato ya está guardado en SIGHU; el día que Odoo lo
-    implemente se sincroniza solo, sin tocar código.
-
-    Contrato propuesto, en la misma línea que `vehiculo_asignacion`:
-
         POST /sighu_sync/webhook/servicio_iniciado
         {
-          "odoo_modelo": "stock.picking",
-          "odoo_id": 385,
-          "ref": "CAL/OUT/00060",
+          "odoo_modelo": "construinmuniza.flete",
+          "odoo_id": 412,
+          "ref": "SRV/2026/00031",
           "placa": "JYN 240",
           "cedula": "71391550",
           "iniciado_en": "2026-11-17T06:42:00-05:00",
@@ -260,9 +292,9 @@ def avisar_servicio_finalizado(servicio, timeout=None):
 
         POST /sighu_sync/webhook/servicio_finalizado
         {
-          "odoo_modelo": "stock.picking",
-          "odoo_id": 385,
-          "ref": "CAL/OUT/00060",
+          "odoo_modelo": "construinmuniza.flete",
+          "odoo_id": 412,
+          "ref": "SRV/2026/00031",
           "placa": "JYN 240",
           "cedula": "71391550",
           "iniciado_en": "2026-11-17T06:42:00-05:00",

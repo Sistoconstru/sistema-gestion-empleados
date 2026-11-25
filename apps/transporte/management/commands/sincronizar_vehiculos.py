@@ -213,9 +213,10 @@ class Command(BaseCommand):
     def _reintentar_salidas(self):
         """Salidas y entregas que Odoo todavía no ha recibido.
 
-        Hoy ninguno de los dos endpoints existe del lado de Odoo, así que
-        estas quedan pendientes y eso está bien: el dato ya está guardado
-        en SIGHU y el día que Odoo los implemente se ponen al día solas.
+        Se reavisan una por una, por servicio, también las que salieron en
+        un viaje: Odoo acepta el inicio por servicio igual que por viaje, y
+        así el reintento no depende de que el viaje siga teniendo las
+        mismas paradas cuando vuelva la red.
         """
         # Los que Odoo rechazó con un 409 quedan fuera a propósito: del
         # otro lado cambió algo y repetir el aviso da siempre lo mismo.

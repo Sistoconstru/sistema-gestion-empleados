@@ -1,0 +1,244 @@
+{% comment %}
+Un servicio: lo que hay que saber de él y lo que el conductor puede hacer.
+Se usa para un servicio suelto y para cada parada de un viaje.
+
+Variables: `s` (el servicio normalizado), `g` (el grupo del vehículo) y
+`en_viaje` (True si es una parada). En una parada no hay botón de salida
+propio ni "deshacer la salida": las paradas salen y se deshacen juntas,
+desde el encabezado del viaje. La entrega sí es por parada.
+{% endcomment %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+    <div class="flex-grow-1">
+        <div>
+            {% if en_viaje and s.viaje.parada %}
+                <span class="badge bg-dark me-1">Parada {{ s.viaje.parada }}</span>
+            {% endif %}
+            <strong>{{ s.tipo_display }}</strong>
+            <span class="text-muted small ms-1">{{ s.ref }}</span>
+            {% if s.documento %}
+                <span class="text-muted small">· {{ s.documento }}</span>
+            {% endif %}
+            {% if s.pedido %}
+                <span class="text-muted small">· pedido {{ s.pedido }}</span>
+            {% endif %}
+            {% if s.urgente %}
+                <span class="badge bg-danger ms-1"><i class="fas fa-bolt me-1"></i>Urgente</span>
+            {% endif %}
+        </div>
+
+        <div class="small mt-1">
+            <i class="fas fa-location-dot text-muted me-1"></i>
+            {% if s.origen %}{{ s.origen }}{% else %}—{% endif %}
+            <i class="fas fa-arrow-right text-muted mx-1"></i>
+            {% if s.destino %}<strong>{{ s.destino }}</strong>{% else %}—{% endif %}
+            {% if s.zona %}<span class="text-muted">· {{ s.zona }}</span>{% endif %}
+        </div>
+        {% if s.direccion and s.direccion != s.destino %}
+        <div class="small text-muted ms-3">{{ s.direccion }}</div>
+        {% endif %}
+
+        {% if s.cliente %}
+        <div class="small text-muted">
+            <i class="fas fa-user me-1"></i>{{ s.cliente }}
+        </div>
+        {% endif %}
+        {% if s.contacto %}
+        <div class="small">
+            <i class="fas fa-phone text-muted me-1"></i>Recibe: {{ s.contacto }}
+        </div>
+        {% endif %}
+        {% if s.que_se_mueve %}
+        <div class="small">
+            <i class="fas fa-box text-muted me-1"></i>{{ s.que_se_mueve }}
+        </div>
+        {% endif %}
+        {% if s.indicaciones %}
+        <div class="small fst-italic">
+            <i class="fas fa-circle-info text-muted me-1"></i>{{ s.indicaciones }}
+        </div>
+        {% endif %}
+
+        <div class="small text-muted mt-1">
+            {% if s.fecha %}{{ s.fecha|date:"d/m/Y H:i" }}{% endif %}
+            {% if s.toneladas %} · {{ s.toneladas|floatformat:"-2" }} t{% endif %}
+        </div>
+    </div>
+
+    <div class="text-end">
+        {% if not en_viaje %}
+        <span class="badge
+            {% if s.urgencia.clave == 'atrasado' %}bg-danger
+            {% elif s.urgencia.clave == 'hoy' %}bg-primary
+            {% elif s.urgencia.clave == 'pronto' %}bg-warning text-dark
+            {% elif s.urgencia.clave == 'sin_fecha' %}bg-light text-muted border
+            {% else %}bg-secondary{% endif %}">
+            {{ s.urgencia.texto }}
+        </span>
+        {% endif %}
+        <div class="small text-muted mt-1">{{ s.estado_display }}</div>
+    </div>
+</div>
+
+{# --- Salida y entrega: las marca el conductor --- #}
+<div class="mt-2 pt-2 border-top d-flex flex-wrap align-items-center gap-2">
+    {% if s.inicio and s.inicio.esta_entregado %}
+        <span class="badge {% if s.inicio.tuvo_novedad %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+            <i class="fas fa-circle-check me-1"></i>
+            Entregado a las {{ s.inicio.entregado_en|time:"H:i" }}
+            {% if s.inicio.tuvo_novedad %}
+                · {{ s.inicio.get_novedad_display|lower }}
+            {% endif %}
+        </span>
+        <span class="small text-muted">
+            Salió {{ s.inicio.iniciado_en|time:"H:i" }}
+            {% if s.inicio.duracion_texto %}
+                · duró {{ s.inicio.duracion_texto }}
+            {% endif %}
+            {% if s.inicio.kilometraje_llegada %}
+                · {{ s.inicio.kilometraje_llegada }} km al llegar
+            {% endif %}
+            {% if s.inicio.toneladas_entregadas %}
+                · {{ s.inicio.toneladas_entregadas }} t entregadas
+            {% endif %}
+            {% if not g.es_mi_vehiculo %}
+                · {{ s.inicio.conductor.nombre_completo }}
+            {% endif %}
+        </span>
+        {% if s.inicio.observacion %}
+        <div class="w-100 small alert alert-warning py-1 px-2 mb-0 mt-1">
+            <strong>Novedad:</strong> {{ s.inicio.observacion }}
+        </div>
+        {% endif %}
+        {% if s.inicio.conflicto_odoo_entrega %}
+        <div class="w-100 small alert alert-danger py-1 px-2 mb-0 mt-1">
+            <i class="fas fa-circle-xmark me-1"></i>
+            <strong>Odoo no aceptó este cierre:</strong>
+            {{ s.inicio.ultimo_error_entrega }}
+        </div>
+        {% endif %}
+        {% if g.es_mi_vehiculo and s.inicio.puede_deshacer_entrega %}
+        <form method="post"
+              action="{% url 'transporte:deshacer_entrega' s.inicio.id %}"
+              class="ms-auto">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-rotate-left me-1"></i>Quitar entrega
+            </button>
+        </form>
+        {% endif %}
+
+    {% elif s.inicio %}
+        <span class="badge bg-success">
+            <i class="fas fa-truck-fast me-1"></i>
+            En ruta desde las {{ s.inicio.iniciado_en|time:"H:i" }}
+        </span>
+        <span class="small text-muted">
+            {{ s.inicio.iniciado_en|date:"d/m/Y" }}
+            {% if not g.es_mi_vehiculo %}
+                · {{ s.inicio.conductor.nombre_completo }}
+            {% endif %}
+        </span>
+        {% if s.inicio.conflicto_odoo and not en_viaje %}
+        <div class="w-100 small alert alert-danger py-1 px-2 mb-0 mt-1">
+            <i class="fas fa-circle-xmark me-1"></i>
+            <strong>Odoo no aceptó esta salida:</strong>
+            {{ s.inicio.ultimo_error }}
+            Habla con tu coordinador antes de arrancar.
+        </div>
+        {% endif %}
+        {% if g.es_mi_vehiculo %}
+        <div class="w-100 mt-2">
+            <form method="post"
+                  action="{% url 'transporte:entregar_servicio' s.inicio.id %}"
+                  class="js-form-entrega">
+                {% csrf_token %}
+                <div class="row g-2 align-items-center">
+                    <div class="col-6 col-md-3">
+                        <input type="number" name="kilometraje_llegada"
+                               min="0" step="1" inputmode="numeric"
+                               class="form-control form-control-sm"
+                               placeholder="Km al llegar"
+                               aria-label="Kilometraje al llegar (opcional)">
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <input type="text" name="toneladas_entregadas"
+                               inputmode="decimal"
+                               class="form-control form-control-sm"
+                               placeholder="Toneladas"
+                               aria-label="Toneladas entregadas (opcional)">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <select name="novedad"
+                                class="form-select form-select-sm js-novedad"
+                                aria-label="¿Hubo alguna novedad?">
+                            {% for codigo, nombre in novedades %}
+                                <option value="{{ codigo }}">{{ nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {# Solo estorba cuando hace falta: aparece al
+                   marcar una novedad distinta de "sin novedad". #}
+                <div class="mt-2 js-observacion d-none">
+                    <textarea name="observacion" rows="2"
+                              class="form-control form-control-sm"
+                              placeholder="¿Qué pasó? De esto sale el ajuste en Odoo."
+                              aria-label="Qué pasó"></textarea>
+                </div>
+                <div class="d-grid mt-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-flag-checkered me-1"></i>
+                        {% if en_viaje %}Entregué esta parada{% else %}Entregué{% endif %}
+                    </button>
+                </div>
+            </form>
+            {% if not en_viaje and s.inicio.puede_deshacerse %}
+            <form method="post"
+                  action="{% url 'transporte:deshacer_inicio' s.inicio.id %}"
+                  class="mt-1 text-end">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-link text-muted p-0">
+                    <i class="fas fa-rotate-left me-1"></i>Deshacer la salida
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    {% elif s.estado == 'finalizado' %}
+        <span class="badge bg-secondary">
+            <i class="fas fa-circle-check me-1"></i>Cerrado en Odoo
+        </span>
+
+    {% elif en_viaje %}
+        <span class="small text-muted">
+            <i class="fas fa-clock me-1"></i>Sin iniciar · sale con el viaje
+        </span>
+
+    {% elif g.es_mi_vehiculo %}
+        <form method="post"
+              action="{% url 'transporte:iniciar_servicio' %}"
+              class="w-100">
+            {% csrf_token %}
+            <input type="hidden" name="odoo_modelo" value="{{ s.odoo_modelo }}">
+            <input type="hidden" name="odoo_id" value="{{ s.odoo_id }}">
+            <input type="hidden" name="ref" value="{{ s.ref }}">
+            <input type="hidden" name="tipo" value="{{ s.tipo }}">
+            <input type="hidden" name="resumen" value="{{ s.resumen }}">
+            <div class="d-flex gap-2 align-items-center">
+                <input type="number" name="kilometraje" min="0" step="1"
+                       inputmode="numeric" class="form-control form-control-sm"
+                       style="max-width: 140px;"
+                       placeholder="Kilometraje"
+                       aria-label="Kilometraje al salir (opcional)">
+                <button type="submit" class="btn btn-success flex-grow-1">
+                    <i class="fas fa-play me-1"></i>Iniciar servicio
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <span class="small text-muted">
+            <i class="fas fa-clock me-1"></i>Sin iniciar
+        </span>
+    {% endif %}
+</div>

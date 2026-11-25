@@ -11,6 +11,7 @@ from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Prefetch, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -90,8 +91,8 @@ from .models import (
     Vehiculo,
 )
 from .odoo_client import (
-    OdooConflictoError, OdooTransporteError, avisar_servicio_finalizado,
-    avisar_servicio_iniciado,
+    MODELO_SERVICIO, OdooConflictoError, OdooTransporteError,
+    avisar_servicio_finalizado, avisar_servicio_iniciado, avisar_viaje_iniciado,
 )
 from .permisos import (
     admin_transporte_required, conductores_a_cargo, conductores_vigentes,
@@ -302,19 +303,19 @@ def detalle_vehiculo(request, vehiculo_id):
 @login_required
 @transporte_required
 def servicios(request):
-    """Los servicios que Odoo le asignó a cada vehículo.
+    """Los servicios que Odoo le asignó a cada vehículo, agrupados por viaje.
 
-    Es solo un listado: el tablero y la asignación son de Odoo. Aquí se
-    muestran para que el conductor sepa qué tiene encima sin entrar a Odoo.
+    El tablero y la asignación son de Odoo. Aquí el conductor ve qué tiene
+    encima, marca la salida —del viaje entero o del servicio suelto— y
+    cierra cada entrega.
     """
-    grupos, sin_vehiculo, error = servicios_visibles(request.user)
+    grupos, error = servicios_visibles(request.user)
 
     asignados = [s for g in grupos for s in g['servicios']]
     es_admin = es_admin_transporte(request.user)
 
     return render(request, 'transporte/servicios.html', {
         'grupos': grupos,
-        'sin_vehiculo': sin_vehiculo,
         'error': error,
         'es_admin': es_admin,
         'es_solo_conductor': es_conductor(empleado_de(request.user)) and not es_admin,
@@ -426,6 +427,144 @@ def _avisar_inicio_a_odoo(servicio):
                     servicio.ref or servicio.odoo_id, e)
         return None
     ServicioIniciado.objects.filter(pk=servicio.pk).update(
+        sincronizado=True, fecha_sincronizacion=timezone.now(),
+        ultimo_error='', conflicto_odoo=False)
+    return None
+
+
+@login_required
+@transporte_required
+@require_POST
+def iniciar_viaje(request):
+    """El conductor sale con el viaje entero: todas sus paradas a la vez.
+
+    Se guarda una salida por parada, con la misma hora y el mismo
+    kilometraje, porque cada parada se entrega y se cierra por su lado. A
+    Odoo va un solo aviso por el viaje, que es como Odoo lo pidió: pone en
+    curso todas las paradas y registra un solo kilometraje.
+
+    Mismas reglas que la salida de un servicio: no se espera a que Odoo
+    valide, porque el camión ya arrancó, y el vehículo y el conductor salen
+    de la sesión, nunca del formulario. Solo se crean las paradas que no
+    tenían salida, así que tocar el botón dos veces no duplica nada.
+    """
+    empleado = empleado_de(request.user)
+    vehiculo = Vehiculo.objects.filter(
+        conductor=empleado, activo=True).first() if empleado else None
+    if not vehiculo:
+        messages.error(
+            request,
+            'No tienes un vehículo asignado, así que no puedes iniciar un '
+            'viaje. Habla con tu jefe para que te asigne uno.')
+        return redirect('transporte:servicios')
+
+    viaje_raw = (request.POST.get('viaje_odoo_id') or '').strip()
+    if not viaje_raw.isdigit():
+        messages.error(request, 'No se pudo identificar el viaje.')
+        return redirect('transporte:servicios')
+    viaje_odoo_id = int(viaje_raw)
+    viaje_ref = (request.POST.get('viaje_ref') or '').strip()[:60]
+    nombre = viaje_ref or str(viaje_odoo_id)
+
+    # Las paradas vienen como listas paralelas, una posición por parada.
+    ids = request.POST.getlist('parada_odoo_id')
+    refs = request.POST.getlist('parada_ref')
+    tipos = request.POST.getlist('parada_tipo')
+    resumenes = request.POST.getlist('parada_resumen')
+
+    def _en(lista, i):
+        return (lista[i] if i < len(lista) else '').strip()
+
+    paradas = [
+        {'odoo_id': int(raw.strip()), 'ref': _en(refs, i)[:60],
+         'tipo': _en(tipos, i)[:40], 'resumen': _en(resumenes, i)[:200]}
+        for i, raw in enumerate(ids) if raw.strip().isdigit()
+    ]
+    if not paradas:
+        messages.error(request, f'El viaje {nombre} no tiene paradas por iniciar.')
+        return redirect('transporte:servicios')
+
+    km_raw = (request.POST.get('kilometraje') or '').strip()
+    kilometraje = int(km_raw) if km_raw.isdigit() else None
+    ahora = timezone.now()
+
+    try:
+        with transaction.atomic():
+            ya_salieron = set(ServicioIniciado.objects.filter(
+                odoo_modelo=MODELO_SERVICIO,
+                odoo_id__in=[p['odoo_id'] for p in paradas],
+                anulado_en__isnull=True,
+            ).values_list('odoo_id', flat=True))
+            creados = [
+                ServicioIniciado.objects.create(
+                    odoo_modelo=MODELO_SERVICIO,
+                    odoo_id=p['odoo_id'],
+                    ref=p['ref'],
+                    tipo=p['tipo'],
+                    resumen=p['resumen'],
+                    viaje_odoo_id=viaje_odoo_id,
+                    viaje_ref=viaje_ref,
+                    vehiculo=vehiculo,
+                    conductor=empleado,
+                    iniciado_en=ahora,
+                    kilometraje=kilometraje,
+                )
+                for p in paradas if p['odoo_id'] not in ya_salieron
+            ]
+    except IntegrityError:
+        # Dos toques casi al mismo tiempo: el otro ganó y ya guardó.
+        creados = []
+
+    if not creados:
+        messages.info(request, f'El viaje {nombre} ya estaba iniciado.')
+        return redirect('transporte:servicios')
+
+    rechazo = _avisar_viaje_a_odoo(creados, viaje_odoo_id, viaje_ref,
+                                   vehiculo, empleado, ahora, kilometraje)
+    if rechazo:
+        aviso = _mensaje_de_rechazo(rechazo, 'la salida', nombre)
+        if not rechazo.es_culpa_nuestra:
+            aviso += ' Habla con tu coordinador antes de arrancar.'
+        messages.error(request, aviso)
+        return redirect('transporte:servicios')
+
+    n = len(creados)
+    messages.success(
+        request,
+        f'Viaje {nombre} iniciado a las {timezone.localtime(ahora):%H:%M} '
+        f'con {n} parada{"s" if n != 1 else ""}. Cierra cada una al '
+        f'entregar. Buen viaje.')
+    return redirect('transporte:servicios')
+
+
+def _avisar_viaje_a_odoo(creados, viaje_odoo_id, viaje_ref, vehiculo,
+                         empleado, iniciado_en, kilometraje):
+    """Un aviso por el viaje; el resultado se anota en todas sus paradas.
+
+    Si Odoo no contesta, las paradas quedan pendientes y el reintento de
+    fondo las avisa una por una. Odoo acepta igual el inicio por servicio,
+    y así el reintento no depende de que el viaje siga teniendo las mismas
+    paradas cuando por fin haya red.
+    """
+    pks = [c.pk for c in creados]
+    try:
+        avisar_viaje_iniciado(
+            viaje_odoo_id, viaje_ref, vehiculo.placa,
+            empleado.numero_documento, iniciado_en, kilometraje, timeout=5)
+    except OdooConflictoError as e:
+        ServicioIniciado.objects.filter(pk__in=pks).update(
+            conflicto_odoo=True, ultimo_error=e.motivo[:300])
+        registrar = logger.error if e.es_culpa_nuestra else logger.warning
+        registrar('Odoo rechazó la salida del viaje %s (%s): %s',
+                  viaje_ref or viaje_odoo_id, e.status_code, e.motivo)
+        return e
+    except OdooTransporteError as e:
+        ServicioIniciado.objects.filter(pk__in=pks).update(
+            ultimo_error=str(e)[:300])
+        logger.info('Salida del viaje %s pendiente de avisar a Odoo: %s',
+                    viaje_ref or viaje_odoo_id, e)
+        return None
+    ServicioIniciado.objects.filter(pk__in=pks).update(
         sincronizado=True, fecha_sincronizacion=timezone.now(),
         ultimo_error='', conflicto_odoo=False)
     return None
@@ -603,6 +742,9 @@ def deshacer_inicio(request, inicio_id):
         messages.error(request, 'Ese servicio no es tuyo.')
         return redirect('transporte:servicios')
 
+    if servicio.viaje_odoo_id:
+        return _deshacer_salida_de_viaje(request, servicio)
+
     if not servicio.puede_deshacerse:
         if servicio.sincronizado:
             messages.error(
@@ -623,6 +765,47 @@ def deshacer_inicio(request, inicio_id):
         request,
         f'Se deshizo el inicio de {servicio.ref or servicio.odoo_id}. '
         f'Puedes volver a marcarlo cuando salgas.')
+    return redirect('transporte:servicios')
+
+
+def _deshacer_salida_de_viaje(request, servicio):
+    """Deshace la salida de todas las paradas que salieron juntas.
+
+    Todas o ninguna. Salieron con el mismo toque, y dejar unas salidas y
+    otras no sería un viaje a medias que no existió. Si alguna ya no se
+    puede deshacer —ya entregada, ya registrada en Odoo, fuera de plazo—
+    no se toca ninguna y se dice por qué.
+    """
+    hermanos = list(ServicioIniciado.objects.filter(
+        viaje_odoo_id=servicio.viaje_odoo_id,
+        conductor_id=servicio.conductor_id,
+        iniciado_en=servicio.iniciado_en,
+        anulado_en__isnull=True,
+    ))
+    nombre = f'viaje {servicio.viaje_ref or servicio.viaje_odoo_id}'
+
+    trabados = [h for h in hermanos if not h.puede_deshacerse]
+    if trabados:
+        if any(h.esta_entregado for h in trabados):
+            motivo = ('Ya entregaste una parada de ese viaje. Si fue por '
+                      'error, quita primero esa entrega.')
+        elif any(h.sincronizado for h in trabados):
+            motivo = ('Odoo ya registró esa salida, así que no se puede '
+                      'deshacer desde aquí. Avísale a tu jefe.')
+        else:
+            motivo = (f'Ya pasaron más de '
+                      f'{ServicioIniciado.MINUTOS_PARA_DESHACER} minutos desde '
+                      f'que lo iniciaste. Avísale a tu jefe.')
+        messages.error(request, f'No se deshizo la salida del {nombre}. {motivo}')
+        return redirect('transporte:servicios')
+
+    ServicioIniciado.objects.filter(pk__in=[h.pk for h in hermanos]).update(
+        anulado_en=timezone.now(), anulado_por=request.user)
+    n = len(hermanos)
+    messages.success(
+        request,
+        f'Se deshizo la salida del {nombre} ({n} parada{"s" if n != 1 else ""}). '
+        f'Puedes volver a iniciarlo cuando salgas.')
     return redirect('transporte:servicios')
 
 
