@@ -139,6 +139,11 @@
                                 <a href="{% url 'evaluations:evaluaciones_finales_rechazadas_rrhh' %}" class="btn btn-sm btn-danger ms-2">
                                     <i class="fas fa-exclamation-triangle me-1"></i>Validar en RRHH
                                 </a>
+                            {% elif notificacion.tipo_notificacion.codigo == 'servicio_asignado' %}
+                                <a href="{% url 'transporte:servicios' %}" class="btn btn-sm btn-primary ms-2"
+                                   onclick="marcarLeidaYNavegar('{{ notificacion.id }}', this.href, event)">
+                                    <i class="fas fa-route me-1"></i>Ver mis servicios
+                                </a>
                             {% elif notificacion.datos_adicionales.conversacion_id %}
                                 <a href="/empleados/mensajeria/conversacion/{{ notificacion.datos_adicionales.conversacion_id }}/"
                                    class="btn btn-sm btn-primary ms-2"

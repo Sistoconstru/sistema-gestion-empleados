@@ -18,6 +18,7 @@ Se consulta en vivo. Si Odoo no responde no hay nada que mostrar, y eso se
 dice en pantalla en vez de dejar un listado viejo que el conductor creería
 vigente.
 """
+import hashlib
 import logging
 from datetime import datetime
 
@@ -134,6 +135,7 @@ def normalizar(crudo):
     destino = crudo.get('destino') if isinstance(crudo.get('destino'), dict) else {}
     cliente = crudo.get('cliente') if isinstance(crudo.get('cliente'), dict) else {}
     vehiculo = crudo.get('vehiculo') if isinstance(crudo.get('vehiculo'), dict) else {}
+    conductor = crudo.get('conductor') if isinstance(crudo.get('conductor'), dict) else {}
 
     direccion = ', '.join(p for p in (_texto(destino.get('direccion')),
                                       _texto(destino.get('ciudad'))) if p)
@@ -168,7 +170,12 @@ def normalizar(crudo):
         'indicaciones': _texto(crudo.get('indicaciones')),
         'urgente': crudo.get('urgente') is True,
         'vehiculo_odoo_id': _entero(vehiculo.get('id')),
+        'placa': _texto(vehiculo.get('placa')),
+        'conductor_cedula': _texto(conductor.get('cedula')),
         'fin_real': _fecha(crudo.get('fin_real')),
+        # La última vez que alguien lo tocó en Odoo. Sirve para saber si la
+        # pantalla quedó vieja y si una asignación es reciente.
+        'actualizado': _fecha(crudo.get('actualizado')),
         'viaje': _viaje(crudo.get('viaje')),
     }
 
@@ -369,3 +376,32 @@ def servicios_visibles(usuario):
         })
 
     return grupos, None
+
+
+def firma(grupos):
+    """Una huella corta de lo que muestra la pantalla de servicios.
+
+    La pantalla la guarda al abrirse y cada tanto pregunta la de ahora; si
+    cambió, se recarga. Entra lo que cambia lo que el conductor ve o puede
+    hacer: qué servicios hay, en qué estado, cuándo los tocó Odoo por
+    última vez (destino, hora, paradas...) y lo que se marcó en SIGHU.
+    No entra la urgencia en palabras, que cambia sola a medianoche.
+    """
+    partes = []
+    for g in grupos:
+        partes.append(f'v{g["vehiculo"].pk}')
+        for s in g['servicios']:
+            inicio = s.get('inicio')
+            viaje = s['viaje']
+            partes.append('|'.join(str(x) for x in (
+                s['odoo_id'], s['estado'],
+                s['actualizado'].isoformat() if s['actualizado'] else '',
+                viaje['odoo_id'] if viaje else '',
+                viaje['parada'] if viaje else '',
+                viaje['total_paradas'] if viaje else '',
+                inicio.pk if inicio else '',
+                inicio.entregado_en.isoformat() if inicio and inicio.entregado_en else '',
+                int(bool(inicio and inicio.conflicto_odoo)),
+                int(bool(inicio and inicio.conflicto_odoo_entrega)),
+            )))
+    return hashlib.sha1('\n'.join(partes).encode()).hexdigest()[:16]

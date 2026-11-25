@@ -1018,3 +1018,47 @@ class ServicioIniciado(models.Model):
         if horas:
             return f'{horas} h'
         return f'{resto} min'
+
+
+class AvisoServicioAsignado(models.Model):
+    """Constancia de que a un conductor ya se le avisó de un servicio.
+
+    Los servicios se asignan en Odoo y Odoo no le avisa a SIGHU; SIGHU
+    consulta cada pocos minutos y compara contra esta tabla. La llave es el
+    servicio y la cédula del conductor que tiene en Odoo: si el coordinador
+    se lo pasa a otro conductor, el nuevo recibe su aviso.
+
+    También queda el renglón cuando no se avisó (`avisado=False`): el
+    conductor no tiene usuario en SIGHU, o el servicio ya era viejo cuando
+    se vio por primera vez. Así no se reintenta cada pocos minutos lo que
+    no tiene a quién llegar.
+    """
+    odoo_id = models.PositiveIntegerField(
+        help_text='Id del servicio (construinmuniza.flete) en Odoo.')
+    cedula = models.CharField(
+        max_length=20, help_text='Cédula del conductor asignado en Odoo.')
+    empleado = models.ForeignKey(
+        'employees.Empleado', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='avisos_servicio')
+    viaje_odoo_id = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text='Id del viaje en Odoo, si el servicio va en uno.')
+    ref = models.CharField(max_length=60, blank=True)
+    avisado = models.BooleanField(
+        default=True,
+        help_text='False si se registró sin avisar (sin usuario, o ya era viejo).')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'transporte_avisos_servicio_asignado'
+        verbose_name = 'Aviso de servicio asignado'
+        verbose_name_plural = 'Avisos de servicios asignados'
+        ordering = ['-fecha_creacion']
+        constraints = [
+            models.UniqueConstraint(fields=['odoo_id', 'cedula'],
+                                    name='aviso_servicio_una_vez_por_conductor'),
+        ]
+        indexes = [models.Index(fields=['viaje_odoo_id', 'cedula'])]
+
+    def __str__(self):
+        return f'{self.ref or self.odoo_id} → {self.cedula}'

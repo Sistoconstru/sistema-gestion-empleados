@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Prefetch, Sum
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -107,7 +108,7 @@ from .cuentas import (
     CierreImposible, anular_cierre, cerrar_cuenta, cuentas_abiertas,
 )
 from .licencias import estado_licencia, estados_de
-from .servicios import servicios_visibles
+from .servicios import firma, servicios_visibles
 
 
 @login_required
@@ -328,7 +329,21 @@ def servicios(request):
         'entregados': sum(1 for s in asignados
                           if s.get('inicio') and s['inicio'].esta_entregado),
         'novedades': ServicioIniciado.NOVEDADES,
+        'firma': '' if error else firma(grupos),
     })
+
+
+@login_required
+@transporte_required
+def servicios_firma(request):
+    """La huella de lo que vería ahora la pantalla de servicios.
+
+    La pantalla la pide cada minuto y al volver a primer plano; si no
+    coincide con la suya, se recarga. Sin Odoo no hay huella: la pantalla
+    se queda como está en vez de recargarse para mostrar un error.
+    """
+    grupos, error = servicios_visibles(request.user)
+    return JsonResponse({'firma': None if error else firma(grupos)})
 
 
 @login_required

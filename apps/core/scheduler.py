@@ -130,6 +130,21 @@ def start_scheduler():
             coalesce=True,
         )
 
+        # Tarea 8c: Avisarle al conductor los servicios que le asignan en
+        # Odoo, cada 2 minutos. Odoo no le avisa a SIGHU, así que se
+        # pregunta; más espaciado y el conductor ya habría salido.
+        scheduler.add_job(
+            _avisar_servicios_asignados,
+            'interval',
+            minutes=2,
+            id='avisar_servicios_asignados',
+            name='Avisar servicios asignados a los conductores',
+            replace_existing=True,
+            misfire_grace_time=60,
+            coalesce=True,
+            max_instances=1,
+        )
+
         # Tarea 7: Documentos de vehículos por vencer, a las 7:30 AM.
         # Más tarde que el resto a propósito: avisa de un trámite que hay que
         # hacer en horario de oficina, y a las 4 AM nadie lo lee.
@@ -488,6 +503,30 @@ def _enviar_cierres_contabilidad():
 
     except Exception as e:
         logger.error(f'❌ Error al enviar cierres de gastos: {e}', exc_info=True)
+
+
+def _avisar_servicios_asignados():
+    """
+    Avisa a los conductores de los servicios y viajes recién asignados.
+
+    Corre cada 2 minutos, así que no escribe nada en el log cuando no hay
+    novedades: el comando solo registra lo que avisa y los errores.
+    Ver apps/transporte/management/commands/avisar_servicios_asignados.py
+    """
+    try:
+        call_command('avisar_servicios_asignados', stdout=_Silencio())
+    except Exception as e:
+        logger.error(f'❌ Error al avisar servicios asignados: {e}',
+                     exc_info=True)
+
+
+class _Silencio:
+    """Un stdout que no imprime: el comando corre cada 2 minutos."""
+    def write(self, *args, **kwargs):
+        pass
+
+    def flush(self):
+        pass
 
 
 def _alertar_licencias_conductores():

@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import (
-    CierreGastos, DocumentoVehiculo, GastoVehiculo, ServicioIniciado,
-    Vehiculo,
+    AvisoServicioAsignado, CierreGastos, DocumentoVehiculo, GastoVehiculo,
+    ServicioIniciado, Vehiculo,
 )
 
 
@@ -241,3 +241,18 @@ class ServicioIniciadoAdmin(admin.ModelAdmin):
         return not obj.esta_activo
     anulado.short_description = 'Anulado'
     anulado.boolean = True
+
+
+@admin.register(AvisoServicioAsignado)
+class AvisoServicioAsignadoAdmin(admin.ModelAdmin):
+    """Qué asignaciones de Odoo ya se le avisaron a qué conductor. Consulta."""
+    list_display = ('fecha_creacion', 'ref', 'cedula', 'empleado', 'avisado')
+    list_filter = ('avisado', 'fecha_creacion')
+    search_fields = ('ref', 'cedula', 'empleado__nombres', 'empleado__apellidos')
+    date_hierarchy = 'fecha_creacion'
+
+    def get_readonly_fields(self, request, obj=None):
+        return [f.name for f in self.model._meta.fields]
+
+    def has_add_permission(self, request):
+        return False

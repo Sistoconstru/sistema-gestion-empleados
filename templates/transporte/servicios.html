@@ -247,9 +247,16 @@
 
     <p class="text-muted small">
         <i class="fas fa-circle-info me-1"></i>
-        Este listado se lee de Odoo en el momento de abrirlo. Si algo no
-        cuadra, se corrige en Odoo y aquí aparece al actualizar.
+        Este listado se lee de Odoo y se actualiza solo cuando allá cambia
+        algo. Si algo no cuadra, se corrige en Odoo.
     </p>
+</div>
+
+{# Sale cuando Odoo cambió algo pero hay un formulario a medio llenar. #}
+<div id="aviso-cambios" class="alert alert-info shadow position-fixed bottom-0 start-50 translate-middle-x mb-3 py-2 d-none"
+     style="z-index: 1080; max-width: 94vw;" role="status">
+    <i class="fas fa-rotate me-1"></i>Hubo cambios en tus servicios.
+    <a href="{% url 'transporte:servicios' %}" class="btn btn-sm btn-primary ms-2">Actualizar</a>
 </div>
 {% endblock %}
 
@@ -274,5 +281,76 @@ document.querySelectorAll('.js-form-entrega').forEach(function (form) {
 
     select.addEventListener('change', refrescar);
 });
+
+// Se recarga sola cuando Odoo cambia algo (un servicio nuevo, otra hora,
+// una parada más, uno cancelado). Pregunta cada minuto y apenas el
+// conductor vuelve a la pantalla, que en el celular es lo más común.
+// Si está llenando un formulario no se recarga: se le ofrece el botón,
+// para no borrarle el kilometraje o la novedad que iba escribiendo.
+(function () {
+    var firma = '{{ firma }}';
+    var url = '{% url "transporte:servicios_firma" %}';
+    var ultimo = Date.now(), consultando = false, enviando = false;
+
+    document.addEventListener('submit', function () { enviando = true; });
+
+    function ocupado() {
+        if (enviando) { return true; }
+        var activo = document.activeElement;
+        if (activo && activo.form && /^(INPUT|TEXTAREA|SELECT)$/.test(activo.tagName)
+                && activo.type !== 'hidden' && activo.type !== 'submit') {
+            return true;
+        }
+        var campos = document.querySelectorAll(
+            '.container form input, .container form textarea, .container form select');
+        for (var i = 0; i < campos.length; i++) {
+            var c = campos[i];
+            if (c.type === 'hidden' || c.type === 'submit') { continue; }
+            if (c.tagName === 'SELECT') {
+                for (var j = 0; j < c.options.length; j++) {
+                    if (c.options[j].selected !== c.options[j].defaultSelected) { return true; }
+                }
+            } else if (c.type === 'checkbox' || c.type === 'radio') {
+                if (c.checked !== c.defaultChecked) { return true; }
+            } else if (c.value !== c.defaultValue) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function cambio() {
+        if (ocupado()) {
+            document.getElementById('aviso-cambios').classList.remove('d-none');
+        } else {
+            window.location.reload();
+        }
+    }
+
+    function revisar(desdeReloj) {
+        if (consultando || document.hidden) { return; }
+        // Volver a la pestaña dos veces seguidas no son dos consultas.
+        if (!desdeReloj && Date.now() - ultimo < 15000) { return; }
+        ultimo = Date.now();
+        consultando = true;
+        fetch(url, {credentials: 'same-origin', cache: 'no-store',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}})
+            .then(function (r) {
+                // Con la sesión vencida llega el login en HTML: no es un cambio.
+                var tipo = r.headers.get('content-type') || '';
+                return r.ok && tipo.indexOf('json') !== -1 ? r.json() : null;
+            })
+            // Sin firma es que Odoo no contestó: se deja la pantalla como está.
+            .then(function (d) { if (d && d.firma && d.firma !== firma) { cambio(); } })
+            .catch(function () {})
+            .then(function () { consultando = false; });
+    }
+
+    setInterval(function () { revisar(true); }, 60000);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) { revisar(false); }
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) { revisar(true); } });
+})();
 </script>
 {% endblock %}
