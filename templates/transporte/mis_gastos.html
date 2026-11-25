@@ -51,8 +51,10 @@
                     </div>
                 </div>
 
-                {# Los documentos le importan al conductor: si lo paran, le
-                   piden el SOAT a él, no al coordinador. #}
+                {% comment %}
+                    Los documentos le importan al conductor: si lo paran, le
+                    piden el SOAT a él, no al coordinador.
+                {% endcomment %}
                 <div class="mt-3">
                     {% for d in documentos %}
                         <span class="badge me-1 mb-1

@@ -75,8 +75,10 @@
     </div>
     {% endif %}
 
-    {# La contabilidad de los vehículos la lleva Odoo, así que lo que
-       importa saber de un cierre es si allá llegó. #}
+    {% comment %}
+        La contabilidad de los vehículos la lleva Odoo, así que lo que
+        importa saber de un cierre es si allá llegó.
+    {% endcomment %}
     {% with estado=cierre.estado_contabilidad %}
     <div class="card mb-3 {% if estado == 'rechazado' or estado == 'anulado_por_avisar' %}border-danger{% elif estado == 'enviado' or estado == 'anulado_avisado' %}border-success{% endif %}">
         <div class="card-body py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">

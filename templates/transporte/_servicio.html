@@ -177,8 +177,10 @@ desde el encabezado del viaje. La entrega sí es por parada.
                         </select>
                     </div>
                 </div>
-                {# Solo estorba cuando hace falta: aparece al
-                   marcar una novedad distinta de "sin novedad". #}
+                {% comment %}
+                    Solo estorba cuando hace falta: aparece al
+                    marcar una novedad distinta de "sin novedad".
+                {% endcomment %}
                 <div class="mt-2 js-observacion d-none">
                     <textarea name="observacion" rows="2"
                               class="form-control form-control-sm"

@@ -148,8 +148,10 @@
                                 {% endif %}
                             </div>
 
-                            {# La licencia: el papel que lo habilita a manejar
-                               esto. Va junto al nombre, no en otra pantalla. #}
+                            {% comment %}
+                                La licencia: el papel que lo habilita a manejar
+                                esto. Va junto al nombre, no en otra pantalla.
+                            {% endcomment %}
                             {% if v.licencia %}
                             <div class="mt-1">
                                 <span class="badge

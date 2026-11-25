@@ -1,7 +1,9 @@
-{# Modal reutilizable para editar fechas de una solicitud de vacaciones en
-   estado 'enviada_pendiente_rrhh'. Los botones que lo activan deben tener:
-     class="btn-editar-fechas" data-pk data-empleado data-fi data-ff
-   Se hace POST a employees:vacacion_editar_fechas con fecha_inicio y fecha_fin. #}
+{% comment %}
+    Modal reutilizable para editar fechas de una solicitud de vacaciones en
+    estado 'enviada_pendiente_rrhh'. Los botones que lo activan deben tener:
+    class="btn-editar-fechas" data-pk data-empleado data-fi data-ff
+    Se hace POST a employees:vacacion_editar_fechas con fecha_inicio y fecha_fin.
+{% endcomment %}
 <div class="modal fade" id="modalEditarFechasVacacion" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

@@ -757,8 +757,10 @@
                     </div>
                 </div>
                 
-                {# Lo vencido va primero: es lo único de esta tarjeta que
-                   puede dejar a alguien sin poder trabajar hoy. #}
+                {% comment %}
+                    Lo vencido va primero: es lo único de esta tarjeta que
+                    puede dejar a alguien sin poder trabajar hoy.
+                {% endcomment %}
                 {% if documentos.lista_vencidos %}
                 <div class="alert alert-danger alert-sm">
                     <strong><i class="fas fa-times-circle me-1"></i>Documentos vencidos:</strong>

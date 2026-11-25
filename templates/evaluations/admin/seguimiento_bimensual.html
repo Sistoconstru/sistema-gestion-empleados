@@ -168,10 +168,12 @@
             </div>
 
             <!-- Formulario de Seguimiento -->
-            {# Se diligencia mientras no esté resuelto y la ventana esté
-               abierta. Comparar contra 'pendiente' dejaba fuera a los
-               'atrasado', que son justamente los que hay que ponerse al día,
-               y los mostraba como si ya estuvieran completados. #}
+            {% comment %}
+                Se diligencia mientras no esté resuelto y la ventana esté
+                abierta. Comparar contra 'pendiente' dejaba fuera a los
+                'atrasado', que son justamente los que hay que ponerse al día,
+                y los mostraba como si ya estuvieran completados.
+            {% endcomment %}
             {% if not seguimiento.esta_resuelto and not puede_diligenciar %}
             <div class="card mt-3">
                 <div class="card-header">
@@ -290,8 +292,10 @@
 
                     <div class="form-group">
                         <legend class="font-weight-bold">Avance fue satisfactorio:</legend>
-                        {# Sin calificar no es lo mismo que insatisfactorio: los
-                           que cierra el sistema nunca se midieron. #}
+                        {% comment %}
+                            Sin calificar no es lo mismo que insatisfactorio: los
+                            que cierra el sistema nunca se midieron.
+                        {% endcomment %}
                         {% if seguimiento.avance_satisfactorio is None %}
                         <p class="text-muted">
                             <i class="fas fa-minus-circle"></i> Sin calificación
