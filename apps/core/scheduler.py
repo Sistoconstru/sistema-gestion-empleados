@@ -131,12 +131,18 @@ def start_scheduler():
         )
 
         # Tarea 8c: Avisarle al conductor los servicios que le asignan en
-        # Odoo, cada 2 minutos. Odoo no le avisa a SIGHU, así que se
-        # pregunta; más espaciado y el conductor ya habría salido.
+        # Odoo, cada 2 minutos de 5:00 a. m. a 9:00 p. m. (hora de Colombia).
+        # Odoo no le avisa a SIGHU, así que se pregunta; más espaciado y el
+        # conductor ya habría salido. De noche no se pregunta: lo que se
+        # asigne entonces se avisa en la primera vuelta de las 5:00.
+        # La zona va explícita porque el contenedor corre en UTC y "5 a 9"
+        # se leería cinco horas corrido.
         scheduler.add_job(
             _avisar_servicios_asignados,
-            'interval',
-            minutes=2,
+            'cron',
+            hour='5-20',
+            minute='*/2',
+            timezone='America/Bogota',
             id='avisar_servicios_asignados',
             name='Avisar servicios asignados a los conductores',
             replace_existing=True,
