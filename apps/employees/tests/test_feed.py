@@ -187,9 +187,12 @@ class VigenciaYEnlacesTests(FeedBaseTestCase):
     """Las publicaciones de empleados duran 30 días y sus URL son enlaces."""
 
     def publicar(self, texto):
+        # La recién creada, sin depender del reloj: dos publicaciones en el
+        # mismo instante hacían que latest('fecha_creacion') devolviera la otra.
+        previas = set(Publicacion.objects.values_list('pk', flat=True))
         self.client.post(self.url_rapida, {'contenido': texto},
                          HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        return Publicacion.objects.latest('fecha_creacion')
+        return Publicacion.objects.exclude(pk__in=previas).get()
 
     def test_la_publicacion_vence_a_los_30_dias(self):
         """La señal post_save le ponía 15 días y pisaba lo que fijaba la vista."""

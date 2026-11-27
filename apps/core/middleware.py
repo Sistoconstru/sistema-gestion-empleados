@@ -52,6 +52,14 @@ class AuditLogMiddleware(MiddlewareMixin):
             'ip_address': self._get_client_ip(request),
             'user_agent': request.META.get('HTTP_USER_AGENT', '')[:500],
         }
+        # Antes de la vista: ruta y objeto afectado (un borrado conserva el
+        # nombre de lo que se borra). Ver apps/core/auditoria.py.
+        try:
+            from apps.core import auditoria
+            request._audit_data['contexto'] = auditoria.preparar(request)
+        except Exception as e:
+            logger.warning(f"Auditoría: no se pudo preparar el contexto: {e}")
+            request._audit_data['contexto'] = None
 
         return None
 
@@ -61,8 +69,10 @@ class AuditLogMiddleware(MiddlewareMixin):
         if not hasattr(request, '_audit_data'):
             return response
 
-        # Solo registrar si la respuesta fue exitosa (2xx o 3xx)
-        if not (200 <= response.status_code < 400):
+        # Solo registrar si la respuesta fue exitosa (2xx o 3xx). Excepción: el
+        # bloqueo del login por demasiados intentos (429 de axes) sí interesa.
+        es_bloqueo_login = response.status_code == 429 and 'login' in request.path
+        if not (200 <= response.status_code < 400) and not es_bloqueo_login:
             return response
 
         # Registrar la acción en segundo plano
@@ -76,110 +86,46 @@ class AuditLogMiddleware(MiddlewareMixin):
 
     def _create_audit_log(self, request, response):
         """Crea el registro de auditoría en la base de datos"""
+        from apps.core import auditoria
         from apps.core.models import LogActividad
 
         audit_data = request._audit_data
-
-        # Determinar la acción basada en el método HTTP y la ruta
-        accion = self._determinar_accion(request)
-
-        # Intentar extraer información del modelo y objeto
-        modelo, objeto_id = self._extraer_modelo_objeto(request)
-
-        # Extraer cambios realizados del request
         cambios = self._extraer_cambios(request)
+        accion, modulo, texto = auditoria.interpretar(
+            audit_data.get('contexto'), cambios, response.status_code,
+        )
 
-        # Generar descripción legible
-        descripcion = self._generar_descripcion(audit_data['user'], accion, modelo, cambios, request.path)
+        # Tras un login exitoso el usuario ya está en la sesión; antes del
+        # login (process_request) era anónimo.
+        usuario = request.user if request.user.is_authenticated else audit_data['user']
+        if accion == 'login_fallido' or accion == 'login_bloqueado':
+            usuario = None
+        if usuario:
+            quien = usuario.get_full_name() or usuario.username
+        elif modulo == 'odoo':
+            quien = 'Odoo'
+        else:
+            quien = 'Alguien sin sesión'
 
-        # Crear el log solo si tenemos información relevante
-        if accion or modelo:
-            LogActividad.objects.create(
-                usuario=audit_data['user'],
-                accion=accion,
-                # `modelo` es NOT NULL en la tabla: red de seguridad para que un
-                # path inesperado no tumbe el registro de auditoría entero.
-                modelo=modelo or '',
-                objeto_id=objeto_id,
-                descripcion=descripcion,
-                cambios_realizados=cambios,
-                ip_address=audit_data['ip_address'],
-                user_agent=audit_data['user_agent'],
-                metodo_http=audit_data['method'],
-                url_accedida=audit_data['path']
-            )
+        LogActividad.objects.create(
+            usuario=usuario,
+            accion=accion,
+            modelo=(modulo or '')[:50],
+            objeto_id=self._extraer_objeto_id(request),
+            descripcion=f'{quien} {texto}',
+            cambios_realizados=cambios,
+            ip_address=audit_data['ip_address'],
+            user_agent=audit_data['user_agent'],
+            metodo_http=audit_data['method'],
+            url_accedida=audit_data['path']
+        )
 
-    def _determinar_accion(self, request):
-        """Determina la acción realizada basada en el método HTTP y la URL"""
-        metodo = request.method
-        path = request.path.lower()
-
-        # Mapeo de métodos a acciones
-        if metodo == 'POST':
-            if 'delete' in path or 'eliminar' in path:
-                return 'eliminar'
-            elif 'upload' in path or 'subir' in path or 'cargar' in path:
-                return 'subir_archivo'
-            elif 'aprobar' in path:
-                return 'aprobar'
-            elif 'rechazar' in path:
-                return 'rechazar'
-            elif 'asignar' in path:
-                return 'asignar'
-            elif 'enviar' in path:
-                return 'enviar'
-            else:
-                return 'crear'
-        elif metodo in ['PUT', 'PATCH']:
-            if 'estado' in path:
-                return 'cambiar_estado'
-            elif 'cargo' in path:
-                return 'cambiar_cargo'
-            else:
-                return 'modificar'
-        elif metodo == 'DELETE':
-            return 'eliminar'
-
-        return 'accion'
-
-    def _extraer_modelo_objeto(self, request):
-        """Extrae el nombre del modelo y el ID del objeto de la URL"""
-        path_parts = request.path.strip('/').split('/')
-
-        # Intentar detectar el modelo de la URL
-        modelo = None
-        objeto_id = None
-
-        # Rutas comunes: /app/model/id/ o /app/model/id/action/
-        modelo_candidato = None
-        if len(path_parts) >= 2:
-            # El segundo elemento suele ser el modelo
-            modelo_candidato = path_parts[1]
-        elif path_parts and path_parts[0]:
-            # Rutas de un solo segmento, como /login/ o /logout/: no hay modelo
-            # que extraer, pero el registro igual tiene que guardarse. Antes
-            # `modelo` quedaba en None y el INSERT reventaba contra la columna
-            # NOT NULL, así que esas acciones no se auditaban: los accesos por
-            # /login/ no dejaban rastro (los de /auth/login/ sí, por tener dos
-            # segmentos).
-            modelo_candidato = path_parts[0]
-
-        # Limpiar y formatear el nombre del modelo
-        if modelo_candidato:
-            modelo = modelo_candidato.rstrip('s')  # Quitar plural simple
-
-            # Buscar ID en la URL (usualmente es UUID o número)
-            for part in path_parts[2:]:
-                # Detectar UUID
-                if len(part) == 36 and part.count('-') == 4:
-                    objeto_id = part
-                    break
-                # Detectar ID numérico
-                elif part.isdigit():
-                    objeto_id = part
-                    break
-
-        return modelo, objeto_id
+    def _extraer_objeto_id(self, request):
+        """Primer UUID o número de la URL (el objeto afectado)."""
+        for part in request.path.strip('/').split('/')[1:]:
+            if len(part) == 36 and part.count('-') == 4:
+                return part
+        return None
 
     # Subcadenas que marcan un campo como no auditable. Cubren los nombres de
     # los formularios de Django (old_password, new_password1/2), los del alta de
@@ -245,107 +191,3 @@ class AuditLogMiddleware(MiddlewareMixin):
         else:
             ip = request.META.get('REMOTE_ADDR', '0.0.0.0')
         return ip
-
-    def _generar_descripcion(self, usuario, accion, modelo, cambios, url):
-        """Genera una descripción legible en español de la acción realizada"""
-
-        # Mapeo de acciones a verbos en español
-        acciones_es = {
-            'crear': 'creó',
-            'modificar': 'modificó',
-            'eliminar': 'eliminó',
-            'aprobar': 'aprobó',
-            'rechazar': 'rechazó',
-            'subir_archivo': 'subió archivo a',
-            'cambiar_estado': 'cambió el estado de',
-            'cambiar_cargo': 'cambió el cargo de',
-            'asignar': 'asignó',
-            'enviar': 'envió',
-        }
-
-        # Mapeo de modelos a nombres legibles
-        modelos_es = {
-            'empleado': 'un empleado',
-            'documento': 'un documento',
-            'documentoempleado': 'un documento de empleado',
-            'cargo': 'un cargo',
-            'historialcargo': 'el historial de cargo',
-            'evaluacion': 'una evaluación',
-            'asignacionevaluacion': 'una asignación de evaluación',
-            'capacitacion': 'una capacitación',
-            'inscripcioncapacitacion': 'una inscripción a capacitación',
-            'producto': 'un producto',
-            'venta': 'una venta',
-            'publicacion': 'una publicación',
-            'anuncio': 'un anuncio',
-            'notificacion': 'una notificación',
-            'mensaje': 'un mensaje',
-        }
-
-        # Obtener nombre del usuario
-        usuario_nombre = usuario.get_full_name() if usuario and hasattr(usuario, 'get_full_name') and usuario.get_full_name() else (
-            usuario.username if usuario else 'Sistema'
-        )
-
-        # Obtener verbo en español
-        verbo = acciones_es.get(accion, accion)
-
-        # Obtener nombre del modelo en español
-        modelo_lower = modelo.lower() if modelo else 'registro'
-        modelo_es = modelos_es.get(modelo_lower, f'el {modelo_lower}' if modelo else 'un registro')
-
-        # Construir la descripción base
-        descripcion = f"{usuario_nombre} {verbo} {modelo_es}"
-
-        # Agregar información específica según el modelo y cambios
-        if cambios:
-            # Para empleados, agregar nombre si está disponible
-            if modelo_lower == 'empleado' and isinstance(cambios, dict):
-                nombre = self._extraer_nombre_de_cambios(cambios)
-                if nombre:
-                    descripcion = f"{usuario_nombre} {verbo} el empleado {nombre}"
-
-            # Para documentos, mencionar tipo si está disponible
-            elif 'documento' in modelo_lower and isinstance(cambios, dict):
-                tipo_doc = cambios.get('tipo_documento', [''])[0] if isinstance(cambios.get('tipo_documento'), list) else cambios.get('tipo_documento', '')
-                if tipo_doc:
-                    descripcion = f"{usuario_nombre} {verbo} un documento tipo {tipo_doc}"
-
-            # Para cambios de estado, mencionar el nuevo estado
-            elif accion == 'cambiar_estado' and isinstance(cambios, dict):
-                nuevo_estado = cambios.get('estado', [''])[0] if isinstance(cambios.get('estado'), list) else cambios.get('estado', '')
-                if nuevo_estado:
-                    descripcion = f"{usuario_nombre} cambió el estado a '{nuevo_estado}'"
-
-            # Para publicaciones/anuncios, agregar título
-            elif modelo_lower in ['publicacion', 'anuncio'] and isinstance(cambios, dict):
-                titulo = cambios.get('titulo', [''])[0] if isinstance(cambios.get('titulo'), list) else cambios.get('titulo', '')
-                if titulo:
-                    titulo_corto = titulo[:50] + '...' if len(titulo) > 50 else titulo
-                    descripcion = f"{usuario_nombre} {verbo} '{titulo_corto}'"
-
-        # Agregar información de la URL si es relevante
-        if '/aprobar/' in url.lower():
-            descripcion = f"{usuario_nombre} aprobó un registro"
-        elif '/rechazar/' in url.lower():
-            descripcion = f"{usuario_nombre} rechazó un registro"
-
-        return descripcion
-
-    def _extraer_nombre_de_cambios(self, cambios):
-        """Intenta extraer el nombre completo de los cambios"""
-        if not isinstance(cambios, dict):
-            return None
-
-        # Intentar obtener nombres y apellidos
-        nombres = cambios.get('nombres', [''])[0] if isinstance(cambios.get('nombres'), list) else cambios.get('nombres', '')
-        apellidos = cambios.get('apellidos', [''])[0] if isinstance(cambios.get('apellidos'), list) else cambios.get('apellidos', '')
-
-        if nombres and apellidos:
-            return f"{nombres} {apellidos}"
-        elif nombres:
-            return nombres
-        elif apellidos:
-            return apellidos
-
-        return None

@@ -100,6 +100,10 @@ class DocumentoEmpleado(models.Model):
         verbose_name = 'Documento de Empleado'
         verbose_name_plural = 'Documentos de Empleado'
 
+    def __str__(self):
+        # Sin esto el admin y la auditoría mostraban "DocumentoEmpleado object (uuid)".
+        return f'{self.tipo_documento.nombre} de {self.empleado.nombre_completo}'
+
 
 def get_upload_path_anexo(instance, filename):
     """documentos/<cedula>/<TIPO>/anexos/<tipo_anexo>_<timestamp>.<ext>"""

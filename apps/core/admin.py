@@ -53,21 +53,37 @@ class ConfiguracionSistemaAdmin(admin.ModelAdmin):
         }),
     )
 
+class AccionFilter(admin.SimpleListFilter):
+    """Filtro por acción con nombres legibles en vez de los códigos."""
+    title = 'acción'
+    parameter_name = 'accion'
+
+    def lookups(self, request, model_admin):
+        from .auditoria import etiqueta
+        usadas = model_admin.get_queryset(request).values_list('accion', flat=True).distinct()
+        return sorted(((a, etiqueta(a)) for a in usadas if a), key=lambda x: x[1])
+
+    def queryset(self, request, queryset):
+        return queryset.filter(accion=self.value()) if self.value() else queryset
+
+
 # Registro del modelo LogActividad en el admin de Django
 @admin.register(LogActividad)
 class LogActividadAdmin(admin.ModelAdmin):
     # Campos que se mostrarán en la lista de logs
     list_display = (
         'fecha_accion',
+        'accion_display',
         'descripcion_corta',
         'usuario_display',
         'ip_address',
     )
+    list_select_related = ('usuario',)
 
     # Filtros disponibles en la barra lateral
     list_filter = (
-        'accion',
-        'modelo',
+        AccionFilter,
+        ('modelo', admin.AllValuesFieldListFilter),
         'metodo_http',
         ('fecha_accion', admin.DateFieldListFilter),
         'usuario',
@@ -134,8 +150,8 @@ class LogActividadAdmin(admin.ModelAdmin):
     def descripcion_corta(self, obj):
         """Muestra la descripción truncada"""
         if obj.descripcion:
-            if len(obj.descripcion) > 80:
-                return obj.descripcion[:80] + '...'
+            if len(obj.descripcion) > 160:
+                return obj.descripcion[:160] + '...'
             return obj.descripcion
         return f"{obj.accion} - {obj.modelo}"
     descripcion_corta.short_description = 'Descripción de la Acción'
@@ -153,22 +169,21 @@ class LogActividadAdmin(admin.ModelAdmin):
         """Muestra la acción con colores según el tipo"""
         from django.utils.html import format_html
 
-        colores = {
-            'crear': 'green',
-            'modificar': 'blue',
-            'eliminar': 'red',
-            'cambiar_estado': 'orange',
-            'cambiar_cargo': 'purple',
-            'aprobar': 'darkgreen',
-            'rechazar': 'darkred',
-            'subir_archivo': 'teal',
-        }
+        from .auditoria import etiqueta
 
-        color = colores.get(obj.accion, 'black')
+        colores = {
+            'eliminar': '#c0392b', 'eliminar_sin_confirmar': '#e67e22',
+            'login_fallido': '#c0392b', 'login_bloqueado': '#c0392b',
+            'rechazar': '#c0392b', 'aprobar': '#1e8449',
+            'crear': '#1e8449', 'agregar_anexo': '#1e8449',
+            'modificar': '#2471a3', 'actualizar_documento': '#2471a3',
+            'cambiar_contrasena': '#8e44ad', 'inactivar': '#e67e22',
+            'accion_masiva': '#e67e22',
+        }
         return format_html(
             '<span style="color: {}; font-weight: bold;">{}</span>',
-            color,
-            obj.accion.replace('_', ' ').title()
+            colores.get(obj.accion, '#333'),
+            etiqueta(obj.accion),
         )
     accion_display.short_description = 'Acción'
     accion_display.admin_order_field = 'accion'
@@ -211,7 +226,8 @@ class LogActividadAdmin(admin.ModelAdmin):
             'Fecha/Hora',
             'Usuario',
             'Acción',
-            'Modelo',
+            'Descripción',
+            'Módulo',
             'Objeto ID',
             'IP Address',
             'Método HTTP',
@@ -223,6 +239,7 @@ class LogActividadAdmin(admin.ModelAdmin):
                 log.fecha_accion.strftime('%Y-%m-%d %H:%M:%S'),
                 log.usuario.username if log.usuario else 'Sistema',
                 log.accion,
+                log.descripcion,
                 log.modelo,
                 log.objeto_id or '',
                 log.ip_address,
